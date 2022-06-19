@@ -5,7 +5,6 @@ import json
 import random
 import string
 import glob
-
 import numpy as np
 
 def mkdir(dir_path):
