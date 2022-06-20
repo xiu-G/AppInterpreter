@@ -1,7 +1,7 @@
 import codecs
 import re
-import sys
-from tools import basic_tool
+
+from tools import basic_tool, nlp_tool
 # 词组形式
 source_base_dir = 'data/source_words/database/android/f_base'
 api_references_dir = 'data/source_words/database/android/api_reference'
@@ -11,6 +11,8 @@ api_list_result = 'data/source_words/database/api_list_dir/android_api_list.txt'
 api_name_list_result = 'data/source_words/database/api_list_dir/android_apiname_list.txt'
 android_corpus_result = 'data/source_words/database/api_list_dir/android_corpus.txt'
 apiname_api_map_result = 'data/source_words/database/api_list_dir/apiname_api.json'
+api_apiname_map_result = 'data/source_words/database/api_list_dir/api_apiname.json'
+
 def read_current_txt(dirs):
     files = basic_tool.getAllFiles(dirs, [], '.txt')
     api_lists = []
@@ -147,7 +149,7 @@ def get_api_name(api_lists):
     for api in api_lists:
         items = api.split()
         package = items[0][1:]
-        clazz = package.split('.')[-1].split('<')[0]
+        clazz = package.split('.')[-1].split('<')[0].split(':')[0]
         function = items[-1].split('(')[0]
         if clazz+':'+function not in name_dic:
             name_dic[clazz+':'+function] = ''
@@ -170,15 +172,32 @@ def save_name():
     print(len(api_names))
     basic_tool.writeContentLists(api_name_list_result, list(api_names.keys()))
 
-def split_name():
-    pass
 
 def save_corpus():
     api_lists = basic_tool.readContentLists_withoutbr(api_list_result)
     api_names, name2api_dic, api2name_dic = get_api_name(api_lists)
+    words_dic = {}
+    for api_name in api_names:
+        words = []
+        items = api_name.split(':')
+        class_name = items[0]
+        function_name = items[1]
+        words += nlp_tool.split_string(class_name).split(' ')
+        words += nlp_tool.split_string(function_name).split(' ')
+        if api_name in name2api_dic:
+            apis = name2api_dic[api_name]
+            name2api_dic[api_name] = {'apis':apis, 'name':words}
+        for word in words:
+            if word not in words_dic:
+                words_dic[word] = ''
+    print(len(words_dic))
+    basic_tool.writeContentLists(android_corpus_result, list(words_dic.keys()))
+    basic_tool.write_json(name2api_dic, apiname_api_map_result)
+    basic_tool.write_json(api2name_dic, api_apiname_map_result)
 
 
 
 if __name__ == '__main__':
     # save_database()
-    save_name()
+    # save_name()
+    save_corpus()
