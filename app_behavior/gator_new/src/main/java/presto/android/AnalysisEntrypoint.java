@@ -46,34 +46,6 @@ public class AnalysisEntrypoint {
       validate();
     }
 
-
-//    final int[] numStmt = {0};
-//    Scene.v().getClasses().parallelStream().forEach(new Consumer<SootClass>() {
-//      @Override
-//      public void accept(SootClass sootClass) {
-//        if (!sootClass.isConcrete())
-//          return;
-//        sootClass.getMethods().parallelStream().forEach(new Consumer<SootMethod>() {
-//          @Override
-//          public void accept(SootMethod sootMethod) {
-//            if (!sootMethod.isConcrete())
-//              return;
-//            Body b = sootMethod.retrieveActiveBody();
-//            Stream<Unit> stmtStream = b.getUnits().parallelStream();
-//            stmtStream.forEach(new Consumer<Unit>() {
-//              @Override
-//              public void accept(Unit unit) {
-//                Stmt currentStmt = (Stmt) unit;
-//                numStmt[0] += 1;
-//              }
-//            });
-//          }
-//        });
-//      }
-//    });
-//
-//    Logger.stat("#Stmt: " + numStmt[0] + " (not correct)");
-
     if (Configs.libraryPackages == null || Configs.libraryPackages.isEmpty()) {
       //If library packages are not defined
       Logger.trace("VERB", "lib pkg list is empty. Use default");

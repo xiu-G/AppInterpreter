@@ -30,6 +30,56 @@ import java.util.Map;
 public class Main {
 
   public static void main(String[] args) {
+    // args = new String []{
+    //   "-project",
+    //   "/home/data/xiu/code-translation/code/guibat/apk/com.voicenotebook.voicenotebook.apk",
+    //   "-sdkDir",
+    //   "/home/data/xiu/android-sdk",
+    //   "-android",
+    //   "/home/data/xiu/android-sdk/platforms/android-8/android.jar::/home/data/xiu/android-sdk/add-ons/addon-google_apis-google-15/libs/effects.jar:/home/data/xiu/android-sdk/add-ons/addon-google_apis-google-15/libs/maps.jar:/home/data/xiu/android-sdk/add-ons/addon-google_apis-google-15/libs/usb.jar:/home/data/xiu/android-sdk/add-ons/addon-google_apis-google-15/libs/effects.jar:/home/data/xiu/android-sdk/add-ons/addon-google_apis-google-15/libs/maps.jar:/home/data/xiu/android-sdk/add-ons/addon-google_apis-google-15/libs/usb.jar",
+    //   "-classFiles",
+    //   "/home/data/xiu/code-translation/code/DeepIntent/data/text_example/total/apk/com.apostek.untangle.apk",
+    //   "-resourcePath",
+    //   "/home/data/xiu/code-translation/code/DeepIntent/data/decode_dir/com.apostek.untangle/res",
+    //   "-manifestFile",
+    //   "/home/data/xiu/code-translation/code/DeepIntent/data/decode_dir/com.apostek.untangle/AndroidManifest.xml",
+    //   "-apiLevel",
+    //   "android-8",
+    //   "-benchmarkName",
+    //   "/home/data/xiu/code-translation/code/DeepIntent/data/com.apostek.untangle.apk",
+    //   "-guiAnalysis",
+    //   "-listenerSpecFile",
+    //   "/home/data/xiu/code-translation/code/DeepIntent/IconWidgetAnalysis/Static_Analysis/gator-IconIntent/SootAndroid/listeners.xml",
+    //   "-wtgSpecFile",
+    //   "/home/data/xiu/code-translation/code/DeepIntent/IconWidgetAnalysis/Static_Analysis/gator-IconIntent/SootAndroid/wtg.xml",
+    //   "-client",
+    //   "WTGDemoClient",
+    // };
+    args = new String []{
+      "-project",
+      "/mnt/e/WorkSpace/vscode/guibat/apks_sw/com.voicenotebook.voicenotebook.apk",
+      "-sdkDir",
+      "/mnt/e/Files/Sdk",
+      "-android",
+      "/mnt/e/Files/Sdk/platforms/android-18/android.jar",
+      "-resourcePath",
+      "/mnt/e/WorkSpace/vscode/AppInterpreter/data/decode_dir/com.voicenotebook.voicenotebook/res",
+      "-manifestFile",
+      "/mnt/e/WorkSpace/vscode/AppInterpreter/data/decode_dir/com.voicenotebook.voicenotebook/AndroidManifest.xml",
+      "-apiLevel",
+      "android-18",
+      "-benchmarkName",
+      "/home/data/xiu/code-translation/code/DeepIntent/data/com.voicenotebook.voicenotebook.apk",
+      "-guiAnalysis",
+      "-listenerSpecFile",
+      "/mnt/e/WorkSpace/vscode/AppInterpreter/app_behavior/gator_new/listeners.xml",
+      "-wtgSpecFile",
+      "/mnt/e/WorkSpace/vscode/AppInterpreter/app_behavior/gator_new/wtg.xml",
+      "-client",
+      "WTGDemoClient",
+      "-sootandroidDir",
+      "/mnt/e/WorkSpace/vscode/AppInterpreter/app_behavior/gator_new",
+    };
     Logger.trace("TIMECOST", "Main starting at " + System.currentTimeMillis());
     Debug.v().setStartTime();
     parseArgs(args);
@@ -51,6 +101,7 @@ public class Main {
       } else if ("-benchmarkName".equals(s)) {
         Configs.benchmarkName = args[++i];
       } else if ("-sdkDir".equals(s)) {
+
         Configs.sdkDir = args[++i];
       } else if ("-apiLevel".equals(s)) {
         Configs.apiLevel = args[++i];
