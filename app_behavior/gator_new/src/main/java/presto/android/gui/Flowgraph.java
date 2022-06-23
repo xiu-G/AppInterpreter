@@ -1058,7 +1058,7 @@ public class Flowgraph implements MethodNames {
 
     //Here is the example from walmart app;
     //In public void onSuccessSameThread(com.walmart.android.data.StoreItem)
-    //The body is 
+    //The body is
     //{
     //     com.walmart.android.app.qr.QRProductPagePresenter$7 r0;
     //     com.walmart.android.data.StoreItem r1;
@@ -1076,7 +1076,7 @@ public class Flowgraph implements MethodNames {
     //     $r6 = staticinvoke <com.walmart.android.app.qr.QRProductPagePresenter: android.view.View access$1000(com.walmart.android.app.qr.QRProductPagePresenter)>($r5);
     //     virtualinvoke $r6.<android.view.View: android.view.View findViewById(int)>(2131231309);
     //     return;
-    // }    
+    // }
     if (!(s instanceof DefinitionStmt)) {
       return null;
     }
@@ -3533,7 +3533,7 @@ public class Flowgraph implements MethodNames {
       }
       dismisses.add(dismissStmt);
     }
-//    Logger.verb(this.getClass().getSimpleName(), 
+//    Logger.verb(this.getClass().getSimpleName(),
 //        "[dismiss] " + dismissStmt + "[" + dismissStmt.hashCode() + "]"
 //            + " | " + fakeOnClickMethod);
 
@@ -3721,7 +3721,7 @@ public class Flowgraph implements MethodNames {
 //            graphUtil.backwardReachableNodes(receiverNode);
 //            for (NNode obj : receiverObjects) {
 //              if (obj instanceof NVarNode) {
-//                Logger.verb(this.getClass().getSimpleName(), 
+//                Logger.verb(this.getClass().getSimpleName(),
 //                    "  * " + obj + " | " + ((NVarNode)obj).l.getType());
 //              }
 //            }

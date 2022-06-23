@@ -40,6 +40,7 @@ class DefaultXMLParser extends AbstractXMLParser {
   private static final String ANDROID_NS = "http://schemas.android.com/apk/res/android";
   private IntentFilterManager intentFilterManager = IntentFilterManager.v();
 
+
   @Override
   public Integer getSystemRIdValue(String idName) {
     return lookupIdInGeneralMap("id", idName, true);
@@ -193,7 +194,6 @@ class DefaultXMLParser extends AbstractXMLParser {
     invRGeneralIdMap = Maps.newHashMap();
     sysRGeneralIdMap = Maps.newHashMap();
     invSysRGeneralIdMap = Maps.newHashMap();
-
     readManifest();
 
 
@@ -1636,5 +1636,53 @@ class DefaultXMLParser extends AbstractXMLParser {
     for (String str : this.services) {
       Logger.verb(this.getClass().getSimpleName(), str);
     }
+  }
+
+  @Override
+  public Set<Integer> getApplicationPreferenceIdValues() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public Set<Integer> getApplicationPreferenceHeaderIdValues() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public String getApplicationPreferenceName(Integer value) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public Set<String> getApplicationPreferenceKeys() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public Set<String> getImageFiles(String resName) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public Set<String> getImageFiles(int resId) {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public HashMap<String, String> getActivityLabels() {
+    // TODO Auto-generated method stub
+    return null;
+  }
+
+  @Override
+  public HashMap<String, String> getUsesPermissions() {
+    // TODO Auto-generated method stub
+    return null;
   }
 }

@@ -275,6 +275,7 @@ public class APKCallGraph {
 				writeInfoToFile(permissionOutput, apk);
 			}
 		}
+		scanner.close();
 	}
 
 	    /**
@@ -298,7 +299,7 @@ public class APKCallGraph {
                 dot.drawNode(target.toString());
                 visited.add(target.toString());
             }
-            
+
             dot.drawEdge(src.toString(), target.toString());
         }
         System.out.println(cg.size());
@@ -310,7 +311,7 @@ public class APKCallGraph {
 		 * Running BFS to build call graph
 		 * Integrate multi-threading methods, callbacks, ICC and so on.
 		 */
-		soot.G.reset(); 
+		soot.G.reset();
         InfoflowAndroidConfiguration config = new InfoflowAndroidConfiguration();
         config.getAnalysisFileConfig().setTargetAPKFile(Configs.apkPath);
         config.getAnalysisFileConfig().setAndroidPlatformDir(Configs.platformPath);
@@ -373,13 +374,13 @@ public class APKCallGraph {
 			if (!methodKey.containsKey(list.get(0).getSignature().toString())){
 				methodKey.put(list.get(0).getSignature().toString(), list.get(0));
 			}
-			
+
 			if (visited.containsKey(list.get(0)) == false){
 				if (!list.get(0).hasActiveBody()){
 					list.remove(list.get(0));
 					continue;
 				}
-				
+
 				Body body = list.get(0).retrieveActiveBody();
 				Iterator<Unit> stmts = body.getUnits().iterator();
 				visited.put(list.get(0), true);
@@ -442,7 +443,7 @@ public class APKCallGraph {
 										}else{
 											tarActivity = tarActivity.substring(1, tarActivity.length()-1);
 										}
-										
+
 									}else{
 										tarActivity = "";
 									}
@@ -454,7 +455,7 @@ public class APKCallGraph {
 										startActivity.get(srcMethod).add(tarActivity);
 									}
 								}catch(Exception e){
-									System.out.println("Intent Error!"); 
+									System.out.println("Intent Error!");
 								}
 							}
 
@@ -470,7 +471,7 @@ public class APKCallGraph {
 							}else if (!edges.get(list.get(0).getSignature()).contains(expr.getMethodRef().getSignature())){
 								edges.get(list.get(0).getSignature()).add(expr.getMethodRef().getSignature());
 							}
-							
+
 							methodsList.add(expr.getMethod());
 							list.add(expr.getMethod());
 							String key = expr.getMethod().getSignature();
@@ -615,7 +616,7 @@ public class APKCallGraph {
 							}catch (Exception e){
 								System.out.println("clazz in ic3 cannot be loaded!");
 							}
-							
+
 						}
 						for (String src: edges.get(fromMethod)){
 							System.out.println(src);
@@ -643,14 +644,14 @@ public class APKCallGraph {
 								}
 							}
 						}
-						
+
 						for (String action: actions){
 							action = "<android.addextras."+action+": void <init>()>";
 							if (!methods.containsKey(action)){
 								nodeId++;
 								methods.put(action, apkg.new MethodNode(action, nodeId));
 								jg.addVertex(methods.get(action));
-							}							
+							}
 							edgeId++;
 							MethodNode to = methods.get(action);
 							jg.addEdge(from, to, apkg.new CallEdge(from, to, edgeId)); //add by me
@@ -668,7 +669,7 @@ public class APKCallGraph {
 								nodeId++;
 								methods.put(tmpURI, apkg.new MethodNode(tmpURI, nodeId));
 								jg.addVertex(methods.get(tmpURI));
-							}							
+							}
 							edgeId++;
 							MethodNode to = methods.get(tmpURI);
 							jg.addEdge(from, to, apkg.new CallEdge(from, to, edgeId)); //add by me
@@ -679,7 +680,7 @@ public class APKCallGraph {
 								nodeId++;
 								methods.put(extra, apkg.new MethodNode(extra, nodeId));
 								jg.addVertex(methods.get(extra));
-							}							
+							}
 							edgeId++;
 							MethodNode to = methods.get(extra);
 							jg.addEdge(from, to, apkg.new CallEdge(from, to, edgeId)); //add by me
@@ -777,7 +778,7 @@ public class APKCallGraph {
 		if ((src.contains("android.os.AsyncTask execute(java.lang.Object[])>")) || src.contains("AsyncTask executeOnExecutor(")){
 			for (SootMethod tgt: asyncExecuteMethods){
                 List<String> tgtClass= methodsClass.get(tgt.getSignature());
-                
+
                 if (!methodsClass.containsKey(src)){
                     continue;
                 }
@@ -785,7 +786,7 @@ public class APKCallGraph {
                     if (methodsClass.get(src).contains(sootClass) || methodsClass.get(src).contains(sootClass.split("\\$")[0])){
                         MethodNode srcNode = methods.get(src);
 				        MethodNode tgtNode = methods.get(tgt.getSignature());
-                        
+
                         if (edges.containsKey(src)){
                             edges.get(src).add(tgt.getSignature());
                         }else{
@@ -825,7 +826,7 @@ public class APKCallGraph {
 			System.out.println("Connect timer successful");
 		}
 	 }
-	 
+
 	 public static void generateSubGraphOfMethod(String apk, String method) throws IOException, SQLException {
 		/*
 		 * This function is used to generate subgraph of an event handler.
