@@ -1,3 +1,4 @@
+from unittest import result
 from tools import apk_tool
 import os
 import sys
@@ -6,6 +7,7 @@ import shutil
 import tempfile
 import subprocess
 import multiprocessing as mp
+from tools import basic_tool
 
 # g_app_dir = sys.argv[1]
 # g_adk_dir = sys.argv[2]
@@ -283,9 +285,9 @@ def main(apps, g_gator_root, result_dir, g_adk_dir):
                         print("{}\t{}".format(apk_name, "SUCCESS"), file=fo)
 
     # init multi-processing pool
-    global g_lock
-    pool = mp.Pool(g_process_size)
-    g_lock = mp.Lock()
+    # global g_lock
+    # pool = mp.Pool(g_process_size)
+    # g_lock = mp.Lock()
 
     for i in range(0, len(apps)):
         app_path = apps[i]
@@ -300,17 +302,20 @@ def main(apps, g_gator_root, result_dir, g_adk_dir):
         fp_output = os.path.join(os.path.join(result_dir, "log_output"), app.replace(".apk", ".log"))
         msg = "{}/{}".format(i, len(apps))
 
-        # args = run_gator(configs, msg, fp_output, g_timeout)
-        # after_gator(args)
-        pool.apply_async(func=run_gator,
-                         args=(configs, msg, fp_output, g_timeout),
-                         callback=after_gator)
+        args = run_gator(configs, msg, fp_output, g_timeout)
+        after_gator(args)
+        # pool.apply_async(func=run_gator,
+        #                  args=(configs, msg, fp_output, g_timeout),
+        #                  callback=after_gator)
 
-    pool.close()
-    pool.join()
+    # pool.close()
+    # pool.join()
 
 
-# if __name__ == '__main__':
-#     apps = ['']
-#     apps, g_gator_root, result_dir, g_adk_dir
-#     main(apps, g_gator_root, result_dir, g_adk_dir)
+if __name__ == '__main__':
+    app_dir = '/mnt/e/WorkSpace/vscode/guibat/apks_sw'
+    g_gator_root = "/mnt/e/WorkSpace/vscode/AppInterpreter/app_behavior/gator"
+    result_dir = 'data'
+    g_adk_dir = '/mnt/e/Files/Sdk/platforms/android-18/android.jar'
+    apps = basic_tool.getAllFiles(app_dir, [], '.apk')
+    main(apps, g_gator_root, result_dir, g_adk_dir)

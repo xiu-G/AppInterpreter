@@ -3,129 +3,39 @@
 import argparse
 import glob
 import os
+import shutil
+import subprocess
 import sys
 from subprocess import call, TimeoutExpired
+import tempfile
+from tools import basic_tool
+import multiprocessing as mp
+from tools import apk_tool
+from tools.apk_tool import add_google, decode_apk
 
-from pygator.unpacker import decode_res_from_apk
-from pygator.utils import remove_temp_dirs, extract_target_api
 
 gator_dir = os.path.dirname(os.path.realpath(__file__))
+g_lock = None
+g_skip_handled = True
+g_redo_failed = True
+g_fp_result = "data/gator_result.txt"
+g_process_size = 10
+
+class GlobalConfigs:
+    def __init__(self, g_gator_root="", g_sdk_dir=""):
+        self.GATOR_ROOT = g_gator_root
+        self.SDK_ROOT = g_sdk_dir
+        self.GATOR_OPTIONS = ["-client", "WTGDemoClient"]
+        self.KEEP_DECODE = True
+        self.ADD_GOOGLE = False
+        self.VERVOSE = False
+        self.APK_PATH = ""
+        self.API_LEVEL = -1
+        self.DECODED_DIR = ""
+        self.TIMEOUT = 3600
 
 
-def path_exists(path_name):
-    if os.access(path_name, os.F_OK):
-        return True
-    return False
-
-
-def extract_libs_from_path(path_name):
-    if not path_exists(path_name):
-        return ""
-        pass
-    file_list = glob.glob(path_name + "/*.jar")
-    if len(file_list) == 0:
-        return ""
-    ret = ""
-    for item in file_list:
-        ret += ':' + item
-    return ret[1:]
-
-
-def find_best_google_api(sdk_path, api_level):
-    google_api_lib_dirs = glob.glob(sdk_path + "/add-ons/addon-google_apis-google-*")
-    available_levels = []
-    for item in google_api_lib_dirs:
-        id = item.rfind('-')
-        digits = int(item[id + 1:])
-        available_levels.append(digits)
-    available_levels.sort(reverse=True)
-    if len(available_levels) == 0:
-        return 0
-    if api_level not in available_levels:
-        api_level = available_levels[0]
-    return sdk_path + "/add-ons/addon-google_apis-google-" + str(api_level)
-
-
-def analyze(args, unknown):
-    jar = os.path.join(gator_dir, 'sootandroid', 'build', 'libs', 'sootandroid-1.0-SNAPSHOT-all.jar')
-    if not os.path.exists(jar):
-        print('...... please build GATOR first.')
-        exit(-1)
-    apktool_dir = decode_res_from_apk(args.apkpath)
-    if args.apilevel != '-1':
-        target_level = int(args.apilevel)
-    else:
-        target_level = extract_target_api(os.path.join(apktool_dir, 'apktool.yml'))
-        if target_level == -1:
-            print('...... cannot determine the target API level for APK. Fallback to use 27.')
-            target_level = 27
-        elif target_level < 10:
-            print('...... target API level is below 10. Force to use 10.')
-            target_level = 10
-    if not args.sdkpath:
-        args.sdkpath = os.environ['ANDROID_SDK']
-    print('...... resource decoded to %s' % apktool_dir)
-    cmd = ['java', '-Xmx12G', '-cp', jar, 'presto.android.Main',
-           '-sootandroidDir', os.path.join(gator_dir, 'sootandroid'),
-           '-sdkDir', args.sdkpath,
-           '-listenerSpecFile', os.path.join(gator_dir, 'sootandroid', 'listeners.xml'),
-           '-wtgSpecFile', os.path.join(gator_dir, 'sootandroid', 'wtg.xml'),
-           '-resourcePath', os.path.join(apktool_dir, 'res'),
-           '-manifestFile', os.path.join(apktool_dir, 'AndroidManifest.xml'),
-           '-project', args.apkpath,
-           '-apiLevel', 'android-%s' % target_level,
-           '-guiAnalysis',
-           '-benchmarkName', args.apkpath.split('/')[-1],
-           '-libraryPackageListFile', os.path.join(gator_dir, 'sootandroid', 'libPackages.txt')
-           ]
-    android_jar = os.path.join(args.sdkpath, 'platforms', 'android-%s' % target_level, 'android.jar')
-    if not path_exists(android_jar):
-        print('>>>>>> %s does not exist, try to install with sdkmanager...' % android_jar)
-        sub_cmd = [os.path.join(args.sdkpath, 'tools', 'bin', 'sdkmanager'),
-                   'platforms;android-%s' % target_level]
-        # print('>>>>>> %s' % ' '.join(sub_cmd))
-        call(sub_cmd)
-    if args.google:
-        google_api_dir = find_best_google_api(args.sdkpath, target_level)
-        if google_api_dir == 0 or not path_exists(google_api_dir):
-            print(">>>>>> Google API Level: %d not installed, try to install with sdkmanager..." % target_level)
-            sub_cmd = [os.path.join(args.sdkpath, 'tools', 'bin', 'sdkmanager'),
-                       'add-ons;addon-google_apis-google-%s' % target_level]
-            # print('>>>>>> %s' % ' '.join(sub_cmd))
-            if call(sub_cmd) != 0:
-                sub_cmd = [os.path.join(args.sdkpath, 'tools', 'bin', 'sdkmanager'),
-                           'add-ons;addon-google_apis-google-24']
-                # print('>>>>>> %s' % ' '.join(sub_cmd))
-                call(sub_cmd)
-            google_api_dir = find_best_google_api(args.sdkpath, target_level)
-        google_api = extract_libs_from_path(google_api_dir + "/libs")
-        if len(google_api) != 0:
-            android_jar = android_jar + ":" + google_api
-    cmd.extend(['-android', android_jar])
-    if args.verbose:
-        cmd.append('-verbose')
-    cmd.extend(unknown)
-    print('...... %s' % ' '.join(cmd))
-    if args.debug:  # print out the command
-        return
-    if not args.logpath:
-        try:
-            call(cmd, timeout=int(args.timeout))
-        except TimeoutExpired:
-            sys.exit(-50)
-    else:
-        with open(args.logpath, 'w') as outfile:
-            call(cmd, timeout=int(args.timeout), stdout=outfile, stderr=outfile)
-            print('...... log saved to %s' % outfile.name)
-    remove_temp_dirs()
-
-
-def build(args, unknown):
-    cmd = [os.path.join(gator_dir, 'gradlew'), ':sootandroid:shadowJar']
-    call(cmd)
-
-
-def main():
+def set_args():
     parser = argparse.ArgumentParser(
         description='GATOR: Program Analysis Toolkit For Android.')
 
@@ -133,19 +43,11 @@ def main():
                                        metavar='COMMAND')
     subparsers.required = True
 
-    ####################################
-    ####################################
-    parser_compile = subparsers.add_parser('build',
-                                           aliases=['b'],
-                                           help='build GATOR')
-    parser_compile.set_defaults(func=build)
-
-    ####################################
-    ####################################
-    parser_analyze = subparsers.add_parser('analyze',
-                                           aliases=['a'],
-                                           help='analyze APK')
-    parser_analyze.set_defaults(func=analyze)
+    parser_analyze= subparsers.add_parser('-p', '--apk',
+                                dest='apkpath',
+                                metavar='APK',
+                                required=True,
+                                help='path to the APK')
 
     parser_analyze.add_argument('-d', '--debug',
                                 dest='debug',
@@ -175,7 +77,8 @@ def main():
     parser_analyze.add_argument('-t', '--timeout',
                                 dest='timeout',
                                 metavar='TIMEOUT',
-                                default='3600',
+                                # default='600',
+                                default='36000',
                                 required=False,
                                 help='timeout in seconds')
 
@@ -192,18 +95,206 @@ def main():
                                 default='-1',
                                 help='specify API level')
 
-    parser_analyze.add_argument('-p', '--apk',
-                                dest='apkpath',
-                                metavar='APK',
-                                required=True,
-                                help='path to the APK')
+    parser_analyze.add_argument('-o', '--outputFile',
+                            dest='outputFile',
+                            metavar='outputFile',
+                            required=True,
+                            help='path to the output location')
+    return parser
 
-    ####################################
-    ####################################
+def invoke_gator_on_apk(
+        apk_path,
+        decode_dir,
+        api_level,
+        android_sdk_path,
+        benchmark_name,
+        options,
+        configs,
+        output=None,
+        timeout=0,
+):
+    soot_android_path = configs.GATOR_ROOT
+    s_level_num = api_level[api_level.find('-') + 1:]
+    i_level_num = int(s_level_num)
+    platform_api_dir = os.path.join(android_sdk_path, "platforms", "android-" + str(i_level_num))
+    cp_jars = basic_tool.extract_jar_libs(os.path.join(soot_android_path, "lib"))
+    cp_jars = ":" + os.path.join(soot_android_path, "bin") + cp_jars
 
-    args, unknown = parser.parse_known_args()
-    args.func(args, unknown)
+    platform_jars = os.path.join(platform_api_dir, "android.jar")
+    if configs.ADD_GOOGLE:
+        platform_jars = add_google(android_sdk_path, i_level_num, platform_jars)
+    platform_jars += ":{0}/deps/android-support-annotations.jar" \
+                     ":{0}/deps/android-support-v4.jar" \
+                     ":{0}/deps/android-support-v7-appcompat.jar" \
+                     ":{0}/deps/android-support-v7-cardview.jar" \
+                     ":{0}/deps/android-support-v7-gridlayout.jar" \
+                     ":{0}/deps/android-support-v7-mediarouter.jar" \
+                     ":{0}/deps/android-support-v7-palette.jar" \
+                     ":{0}/deps/android-support-v7-preference.jar" \
+                     ":{0}/deps/android-support-v7-recyclerview.jar".format(soot_android_path)
+    # Finished computing platform libraries
+
+    cmd = ["java", "-Xmx12G",
+           "-classpath", cp_jars,
+           "presto.android.Main",
+           "sootandroidDir", soot_android_path,
+           "-sdkDir", android_sdk_path,
+           "-listenerSpecFile", os.path.join(soot_android_path, 'listeners.xml'),
+           '-wtgSpecFile', os.path.join(soot_android_path, 'wtg.xml'),
+           '-resourcePath', os.path.join(decode_dir, 'res'),
+           '-manifestFile', os.path.join(decode_dir, 'AndroidManifest.xml'),
+           "-project", apk_path,
+           "-apiLevel", "android-" + str(s_level_num),
+           '-guiAnalysis',
+           '-benchmarkName', benchmark_name,
+           "-android", platform_jars,]
+    cmd.extend(options)
+    # for line in cmd:
+    #     print(line)
+
+    if configs.VERVOSE:
+        cmd.append('-verbose')
+
+    if timeout == 0:
+        return subprocess.run(cmd, stdout=output, stderr=output)
+    else:
+        try:
+            return subprocess.run(cmd, stdout=output, stderr=output, timeout=timeout)
+        except subprocess.TimeoutExpired:
+            return -50
+
+def after_gator(args):
+    r, apk_name, msg = args
+    result_type = {
+        0: "SUCCESS",
+        -1: "DECODE_ERROR",
+        -2: "TIMEOUT",
+        -3: "GATOR_ERROR"
+    }
+
+    print("<finish>{}({}) {}".format(apk_name, msg, "fail" if r != 0 else "success"))
+    g_lock.acquire()
+    with open(g_fp_result, mode="a") as fo:
+        print("{}\t{}".format(apk_name, result_type[r]), file=fo)
+    g_lock.release()
+    sys.stdout.flush()
+
+def run_gator(configs, msg, output=None, timeout=0):
+    apk_name = os.path.basename(configs.APK_PATH)
+    print("<start>{}({})".format(apk_name, msg))
+    # create output file
+    b_out2file = False
+    if output is None:
+        output = sys.stdout
+    elif isinstance(output, str):
+        b_out2file = True
+        output = open(output, mode="w")
+
+    # decode apk to temp folder
+    decode_dir = configs.DECODED_DIR
+    frame_dir = tempfile.mkdtemp()
+    print("Extract APK at:", decode_dir, ". Frameworks:", frame_dir, file=output)
+    if not os.path.exists(decode_dir):
+        dec_ret = decode_apk(configs.APK_PATH, decode_dir, frame_dir, output=output)
+        dec_ret = dec_ret.returncode
+        shutil.rmtree(frame_dir)
+        print("Frameworks removed!", file=output)
+        if dec_ret != 0:
+            if not configs.KEEP_DECODE:
+                shutil.rmtree(decode_dir)
+                print("Extracted APK resources removed!", file=output)
+            if b_out2file:
+                output.close()
+            return -1, apk_name, msg
+    api_level = apk_tool.get_api_version(configs.APK_PATH, decode_dir)
+
+    gator_ret = invoke_gator_on_apk(
+        apk_path=configs.APK_PATH,
+        decode_dir=decode_dir,
+        api_level=api_level,
+        android_sdk_path=configs.SDK_ROOT,
+        benchmark_name=apk_name,
+        options=configs.OPTIONS,
+        configs=configs,
+        output=None,
+        timeout=configs.TIMEOUT,
+    )
+    if isinstance(gator_ret, int):
+        assert gator_ret == -50
+        gator_ret = -2
+    elif gator_ret.returncode != 0:
+        gator_ret = -3
+    else:
+        gator_ret = gator_ret.returncode
+
+    if not configs.KEEP_DECODE:
+        shutil.rmtree(decode_dir)
+        print("Extracted APK resources removed!", file=output)
+    if b_out2file:
+        output.close()
+    return gator_ret, apk_name, msg
+
+def main(apps, g_gator_root, g_sdk_dir, result_dir):
+    print("app total size:", len(apps))
+    output_dirs = ["output", "dot_output", "log_output"]
+    for output_dir in output_dirs:
+        output_dir = os.path.join(result_dir, output_dir)
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+    # skip settings
+    apps_handled = []
+    if os.path.exists(g_fp_result):
+        if not g_skip_handled:
+            os.remove(g_fp_result)
+        else:
+            with open(g_fp_result, mode="r") as fi:
+                for line in fi:
+                    apk_name, r = line.strip().split("\t")
+                    if g_redo_failed and r != "SUCCESS":
+                        continue
+                    apps_handled.append(apk_name)
+            if g_redo_failed:
+                with open(g_fp_result, mode="w") as fo:
+                    for apk_name in apps_handled:
+                        print("{}\t{}".format(apk_name, "SUCCESS"), file=fo)
+
+    to_handle_apps = []
+    for i in range(0, len(apps)):
+        app_path = apps[i]
+        app = os.path.split(app_path)[1]
+        if app in apps_handled:
+            print("<handled>{}({}/{})".format(app, i, len(apps)))
+            continue
+        if not app.endswith(".apk"):
+            continue
+        to_handle_apps.append(app_path)
+
+    # global g_lock
+    # pool = mp.Pool(g_process_size)
+    # g_lock = mp.Lock()
+    for i in range(0, len(to_handle_apps)):
+        app_path = apps[i]
+        app = os.path.split(app_path)[1]
+        decode_dir = os.path.join(result_dir, 'decode_dir', os.path.splitext(app)[0])
+        configs = GlobalConfigs(g_gator_root, g_sdk_dir)
+        configs.DECODED_DIR = decode_dir
+        configs.APK_PATH = app_path
+        fp_output = os.path.join(os.path.join(result_dir, "log_output"), app.replace(".apk", ".log"))
+        msg = "{}/{}".format(i, len(apps))
+        args = run_gator(configs, msg, fp_output)
+        after_gator(args)
+        # pool.apply_async(func=run_gator,
+        #                  args=(configs, msg, fp_output, g_timeout),
+        #                  callback=after_gator)
+
+    # pool.close()
+    # pool.join()
 
 
 if __name__ == '__main__':
-    main()
+    apk_dir = '/mnt/e/WorkSpace/vscode/guibat/apks_sw'
+    apps = basic_tool.getAllFiles(apk_dir, [], '.apk')
+    g_gator_root = "app_behavior/gator"
+    g_sdk_dir = '/mnt/e/Files/Sdk/platforms'
+    result_dir = 'data'
+    main(apps, g_gator_root, g_sdk_dir, result_dir)
