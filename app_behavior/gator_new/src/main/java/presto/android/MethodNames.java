@@ -38,6 +38,8 @@ public interface MethodNames {
 
   String setIdSubSig = "void setId(int)";
 
+  String setImageSubSig = "void setImageResource(int)";
+
   String addViewName = "addView";
 
   String findFocusSubSig = "android.view.View findFocus()";

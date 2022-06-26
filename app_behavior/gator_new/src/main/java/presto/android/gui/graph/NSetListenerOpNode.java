@@ -65,5 +65,8 @@ public class NSetListenerOpNode extends NOpNode {
   public ListenerInstance getListenerInstance() {
     return listenerInstance;
   }
+  public void setListenerInstance(ListenerInstance listenerInstance) {
+    this.listenerInstance = listenerInstance;
+  }
 
 }

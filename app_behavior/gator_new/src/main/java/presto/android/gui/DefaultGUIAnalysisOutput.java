@@ -17,6 +17,8 @@ import presto.android.Hierarchy;
 import presto.android.Logger;
 import presto.android.MethodNames;
 import presto.android.MultiMapUtil;
+import presto.android.gui.graph.NIdNode;
+import presto.android.gui.graph.NSetImageResourceOpNode;
 import presto.android.gui.graph.*;
 import presto.android.gui.listener.EventType;
 import presto.android.gui.listener.ListenerInstance;
@@ -341,10 +343,12 @@ public class DefaultGUIAnalysisOutput implements GUIAnalysisOutput {
   // For a specified GUI object, based on a specified condition, return the
   // satisfying events that can be triggered on it and the corresponding event
   // handlers.
+  // need to change by me
   public Map<EventType, Set<SootMethod>> getSupportedEventsAndTheirHandlers(
           NObjectNode guiObject, Predicate<EventType> condition) {
     Map<EventType, Set<SootMethod>> result = Maps.newHashMap();
     Set<NSetListenerOpNode> regs = getCallbackRegistrations(guiObject, condition);
+
     for (NSetListenerOpNode setListenerOpNode : regs) {
       ListenerInstance listenerInstance = setListenerOpNode.getListenerInstance();
       Set<SootMethod> handlers = result.get(listenerInstance.getEventType());
@@ -361,7 +365,25 @@ public class DefaultGUIAnalysisOutput implements GUIAnalysisOutput {
     }
     return result;
   }
+  @Override
+	public Set<NIdNode> getImageResourceId(NObjectNode guiObject) {
+		Set<NIdNode> result = Sets.newHashSet();
+		for (NOpNode opNode : NOpNode.getNodes(NSetImageResourceOpNode.class)) {
+			NSetImageResourceOpNode setImageResourceOp = (NSetImageResourceOpNode) opNode;
+			Set<NNode> receiverSet = solver.solutionReceivers.get(setImageResourceOp);
+			if (receiverSet != null && receiverSet.contains(guiObject)) {
 
+				if (setImageResourceOp.getParameter() instanceof NIdNode) {
+					result.add((NIdNode) setImageResourceOp.getParameter());
+				} else {
+//					System.out.println();
+//					TODO:cannot handle string variables
+				}
+			}
+		}
+
+		return result;
+	}
   // For a specified GUI object, return the set of all supported events.
   @Override
   public Set<EventType> getAllSupportedEvents(NObjectNode guiObject) {
@@ -380,6 +402,7 @@ public class DefaultGUIAnalysisOutput implements GUIAnalysisOutput {
 
   // For a specified GUI object, return the set of supported events that
   // satisfy a specified condition.
+  // need to change by me
   public Set<EventType> getSupportedEvents(NObjectNode guiObject,
                                            Predicate<EventType> condition) {
     Set<NSetListenerOpNode> regs = getCallbackRegistrations(guiObject, condition);
@@ -392,6 +415,7 @@ public class DefaultGUIAnalysisOutput implements GUIAnalysisOutput {
 
   // For a specified GUI object, return the set of all its corresponding
   // callback registration statements satisfying a specified condition.
+  // need to change by me
   private Set<NSetListenerOpNode> getCallbackRegistrations(NObjectNode guiObject,
                                                            Predicate<EventType> condition) {
     Set<NSetListenerOpNode> result = Sets.newHashSet();
@@ -434,6 +458,7 @@ public class DefaultGUIAnalysisOutput implements GUIAnalysisOutput {
 
   // For a specified GUI object, return the set of all its corresponding
   // event handler methods satisfying a specified condition.
+  // need to change by me
   public Set<SootMethod> getEventHandlers(NObjectNode guiObject,
                                           Predicate<EventType> condition) {
     Set<NSetListenerOpNode> registrations = getCallbackRegistrations(guiObject);

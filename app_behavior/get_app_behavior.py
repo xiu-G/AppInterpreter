@@ -13,7 +13,7 @@ def parse_args(args_list):
                         help="apps'dir")
     parser.add_argument("--android_sdk", default=None, type=str,
                         help="android sdk dir" )
-    parser.add_argument("--result_dir", default=os.path.realpath("../../data"), type=str,
+    parser.add_argument("--result_dir", default=os.path.realpath("data"), type=str,
                         help="DeepIntent all result dir" )
     parser.add_argument("--gator_root", default=os.path.realpath('gator-IconIntent'), type=str,
                         help="The path of gator-IconIntent")
@@ -119,7 +119,7 @@ def run_ic3(result_dir, jellybean, apps, android_sdk, RetargetedApp_jar, ic3_jar
         forceAndroidJar=os.path.join(android_platform, 'android-'+str(api_level), 'android.jar')
         app_name = os.path.splitext(os.path.split(app)[1])[0]
         retargetedPath = os.path.join(os.path.join(result_dir, "testspace"), app_name+'.apk')
-        ic3_app_path = os.path.join(result_dir, "ic3_output", app_name) 
+        ic3_app_path = os.path.join(result_dir, "ic3_output", app_name)
         if os.path.exists(ic3_app_path):
             continue
         os.makedirs(ic3_app_path)
@@ -141,7 +141,7 @@ def run_callgraph(i, apps, root_path, result_dir, apk_dir, sdk_dir, time_out=0):
         print(i, index, len(apps))
         if os.path.exists(os.path.join(result_dir, 'dot_output', name, name+'.dot')):
             continue
-        
+
         output.write("-----------------------------------------\n")
         output.write(app+"\n")
         api_level = basic_tool.get_api_version(app)
@@ -239,7 +239,7 @@ def main(args_list):
     ## once
     img2widgets = os.path.join(args.result_dir, "img2widgets")
     basic_tool.mkdir(os.path.join(img2widgets))
-    
+
     run_img2widget(args.image2widget_root, args.result_dir, args.time_out, out_put, img2widgets, args.apkname_path)
     run_callgraph(apps, args.callgraph_root, args.result_dir, args.apk_dir, args.android_sdk,)
     # permissions = os.path.join(args.result_dir, "permission_output")

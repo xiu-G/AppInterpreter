@@ -80,4 +80,8 @@ public class HandlerBean {
   private NObjectNode guiWidget;
   private EventType event;
   private Set<SootMethod> handlers;
+  @Override
+  public String toString() {
+    return "HandlerBean [event=" + event + ", handlers=" + handlers + "]";
+  }
 }

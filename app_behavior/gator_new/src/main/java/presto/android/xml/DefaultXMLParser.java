@@ -79,7 +79,10 @@ class DefaultXMLParser extends AbstractXMLParser {
     }
     return null;
   }
-
+  @Override
+  public Map<Integer, Pair<String, Boolean>> retrieveCallbacks() {
+    return null;
+  }
   @Override
   public Set<Integer> getApplicationLayoutIdValues() {
     return invRGeneralIdMap.get("layout").keySet();
@@ -1685,4 +1688,10 @@ class DefaultXMLParser extends AbstractXMLParser {
     // TODO Auto-generated method stub
     return null;
   }
+  @Override
+  public Set<Integer> getDrawableIdValues() {
+    // TODO Auto-generated method stub
+    return invRGeneralIdMap.get("drawable").keySet();
+  }
+
 }

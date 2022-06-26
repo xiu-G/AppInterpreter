@@ -13,6 +13,7 @@ import com.google.common.collect.*;
 import presto.android.Hierarchy;
 import presto.android.*;
 import presto.android.gui.graph.*;
+import presto.android.gui.graph.NDrawableIdNode;
 import presto.android.gui.graph.NFindView1OpNode.FindView1Type;
 import presto.android.gui.graph.NFindView3OpNode.FindView3Type;
 import presto.android.gui.listener.EventType;
@@ -83,7 +84,7 @@ public class FixpointSolver {
   public Map<NDialogNode, Set<NNode>> dialogRoots = Maps.newHashMap();
 
   public Map<NNode, Set<NOpNode>> viewProducers;
-
+  public Map<NObjectNode, Set<NIdNode>> viewLayoutIds;
   // hailong: string append
   public Multimap<NStringBuilderAppendOpNode, NNode> strbldReachingStrings = LinkedListMultimap.create();
 
@@ -146,6 +147,7 @@ public class FixpointSolver {
     activityRoots = Maps.newHashMap();
 
     viewProducers = Maps.newHashMap();
+		viewLayoutIds = Maps.newHashMap();
   }
 
   void computePathsFromViewProducerToViewConsumer() {
@@ -698,6 +700,7 @@ public class FixpointSolver {
               || opNode instanceof NFindView3OpNode
               || opNode instanceof NSetIdOpNode
               || opNode instanceof NSetTextOpNode
+              || opNode instanceof NSetImageResourceOpNode
               || (opNode instanceof NSetListenerOpNode && reachables.contains(opNode.getReceiver()))
               || (opNode instanceof NAddView2OpNode && reachables.contains(opNode.getReceiver()))) {
         if (((source instanceof NOptionsMenuNode) || (source instanceof NContextMenuNode)) &&
@@ -727,6 +730,10 @@ public class FixpointSolver {
       MultiMapUtil.addKeyAndHashSetElement(reachingListeners, target, source);
     }
   }
+
+  public Map<NObjectNode, Set<NIdNode>> getViewToLayoutIds(){
+		return viewLayoutIds;
+	}
 
   //==== inflater calls
   XMLParser xmlParser;
@@ -812,6 +819,11 @@ public class FixpointSolver {
             }
 
             addViewToWindowRoot(windowNode, root);
+            if(!viewLayoutIds.containsKey(windowNode)){
+							viewLayoutIds.put(windowNode, Sets.newHashSet());
+						}
+
+						viewLayoutIds.get(windowNode).add(layoutIdNode);
           }
         } else if (!(opNode instanceof NSetIdOpNode)) {
           if (Configs.sanityCheck)
@@ -1094,6 +1106,7 @@ public class FixpointSolver {
         continue;
       }
       NInflNode vNode = flowgraph.inflNode(v.getSootClass());
+      // need to change by me
       processInlineEventHandlers(vNode, v, rootparent, inflateOpNodeReciever);
       inflationImplicitEffects(vNode);
 
@@ -1292,6 +1305,11 @@ public class FixpointSolver {
           changed = true;
         }
       }
+      for (NOpNode setImageResource : NOpNode.getNodes(NSetImageResourceOpNode.class)) {
+				if (processSetImageResource((NSetImageResourceOpNode) setImageResource)) {
+					changed = true;
+				}
+			}
       // SetListener: need to recompute path summary if anything changes
       for (NOpNode setListener : NOpNode.getNodes(NSetListenerOpNode.class)) {
         if (processSetListener((NSetListenerOpNode) setListener)) {
@@ -1613,6 +1631,37 @@ public class FixpointSolver {
     }
     return changed;
   }
+  // SetImageResource: view.setImageResource(id)
+	boolean processSetImageResource(NSetImageResourceOpNode node) {
+
+		NNode resourceNode = node.getParameter();
+		boolean resolved = false;
+		boolean changed = false;
+
+		Set<NNode> receiverSet = solutionReceivers.get(node);
+		if (receiverSet == null || receiverSet.isEmpty()) {
+			return false;
+		}
+		// GraphUtil.verbose = true;
+		for (NNode n : graphUtil.backwardReachableNodes(resourceNode)) {
+			if (n instanceof NDrawableIdNode) {
+				resolved = true;
+				for (NNode receiver : receiverSet) {
+					if (receiver.addDrawableNode(n)) {
+						changed = true;
+					}
+				}
+			}
+		}
+		// GraphUtil.verbose = false;
+		if (!resolved) {
+			if (Configs.verbose) {
+				System.out.println("[WARNING] Text unknown at " + node);
+			}
+		}
+
+		return changed;
+	}
 
   boolean processSetListener(NSetListenerOpNode node) {
     boolean changed = false;

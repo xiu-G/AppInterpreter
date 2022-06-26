@@ -20,6 +20,8 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
@@ -36,7 +38,7 @@ public class PrerunXMLParser {
 
   private static PrerunXMLParser theInst;
 
-  public static void resolveGUINameSTR(String guiName) {
+  public static void resolveGUINameSTR(String guiName, String fileName) {
     if ("view".equals(guiName)) {
       throw new RuntimeException("It shouldn't happen!!!");
     }
@@ -122,7 +124,9 @@ public class PrerunXMLParser {
     try {
       DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
       DocumentBuilder dBuilder = dbFactory.newDocumentBuilder();
-      doc = dBuilder.parse(file);
+      InputStream is= new  FileInputStream(file);
+      doc = dBuilder.parse(is);
+      // doc = dBuilder.parse(file);
     } catch (SAXException e) {
       Logger.err(getClass().getSimpleName(), "invalid xml file. Error message: " + e.getMessage()
                   + " File name: " + file);
@@ -180,7 +184,8 @@ public class PrerunXMLParser {
       }
 
       //Save
-      resolveGUINameSTR(guiName);
+      // resolveGUINameSTR(guiName);
+      resolveGUINameSTR(guiName, file);
 
       //Look for children
       NodeList children = node.getChildNodes();
@@ -271,7 +276,7 @@ public class PrerunXMLParser {
         Logger.trace("XML", "Unhandled menu tag " + guiName);
         //throw new RuntimeException("Unhandled menu tag " + guiName);
       }
-      resolveGUINameSTR(guiName);
+      resolveGUINameSTR(guiName, file);
       NodeList children = node.getChildNodes();
       for (int i = 0; i < children.getLength(); i++) {
         Node newNode = children.item(i);

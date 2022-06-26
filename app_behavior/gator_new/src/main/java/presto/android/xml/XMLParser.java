@@ -15,7 +15,7 @@ import presto.android.Configs;
 import presto.android.Logger;
 import soot.Scene;
 import soot.SootClass;
-
+import soot.toolkits.scalar.Pair;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -149,6 +149,9 @@ public interface XMLParser {
 
   String getStringValue(Integer idValue);
 
+  // R.drawable.*
+  Set<Integer> getDrawableIdValues();
+
   // === AndroidManifest.xml
   SootClass getMainActivity();
 
@@ -193,4 +196,5 @@ public interface XMLParser {
 
   HashMap<String, String> getActivityLabels();
   HashMap<String, String> getUsesPermissions();
+  Map<Integer, Pair<String, Boolean>> retrieveCallbacks();
 }

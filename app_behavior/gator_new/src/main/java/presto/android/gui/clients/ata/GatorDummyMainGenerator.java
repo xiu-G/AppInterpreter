@@ -206,7 +206,6 @@ public class GatorDummyMainGenerator implements DummyMainGenerator {
       System.out.print(" ");
     }
     System.out.printf(fmt, args);
-    System.out.println();
   }
 
   ArrayList<String> pendingPrints = Lists.newArrayList();

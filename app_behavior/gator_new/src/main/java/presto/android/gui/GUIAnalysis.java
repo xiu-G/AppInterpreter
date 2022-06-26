@@ -31,6 +31,7 @@ public class GUIAnalysis {
   public Set<Integer> allMenuIds = Sets.newHashSet();
   public Set<Integer> allWidgetIds = Sets.newHashSet();
   public Set<Integer> allStringIds = Sets.newHashSet();
+  public Set<Integer> allDrawableIds = Sets.newHashSet();
 
   public Flowgraph flowgraph;
   public FixpointSolver fixpointSolver;
@@ -65,6 +66,7 @@ public class GUIAnalysis {
     allWidgetIds.addAll(xmlParser.getApplicationRIdValues());
     allWidgetIds.addAll(xmlParser.getSystemRIdValues());
     allStringIds.addAll(xmlParser.getStringIdValues());
+    allDrawableIds.addAll(xmlParser.getDrawableIdValues());
     Logger.verb(
             TAG,
             "[XML] Layout Ids: "
@@ -86,7 +88,7 @@ public class GUIAnalysis {
     populateIDContainers();
 
     // 1. Build flow graph
-    flowgraph = new Flowgraph(hier, allLayoutIds, allMenuIds, allWidgetIds, allStringIds);
+    flowgraph = new Flowgraph(hier, allLayoutIds, allMenuIds, allWidgetIds, allStringIds, allDrawableIds);
     flowgraph.build();
 
     //Added for Experiment

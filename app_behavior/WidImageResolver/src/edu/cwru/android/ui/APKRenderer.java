@@ -259,7 +259,7 @@ public class APKRenderer {
 					ComponentNameProvider<UIElement> provider = new UIElementNameProvider();
 					DOTExporter<UIElement, DefaultEdge> exporter = new DOTExporter<UIElement, DefaultEdge>(
 							new UIElementIdProvider(), provider, null);
-					exporter.exportGraph(uiHierarchy, new FileWriter(Paths.get(new File("../..").getCanonicalPath(), "data", "dot_output" + layout + ".dot").toString()));
+					exporter.exportGraph(uiHierarchy, new FileWriter(Paths.get(new File(".").getCanonicalPath(), "data", "dot_output" + layout + ".dot").toString()));
 					for (UIElement ele : uiHierarchy.vertexSet()) {
 						fout.println("id: " + ele.id + " res id: " + resolver.resolveNameForId(ele.id));
 						System.out.println("id: " + ele.id + " res id: " + resolver.resolveNameForId(ele.id));
@@ -283,7 +283,7 @@ public class APKRenderer {
 									+ resolver.resolveNameForId(editBoxId) + " tag: " + tag);
 						}
 					}
-					
+
 				}
 				fout.close();
 

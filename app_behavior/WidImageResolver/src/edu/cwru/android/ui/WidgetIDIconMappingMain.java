@@ -40,7 +40,7 @@ public class WidgetIDIconMappingMain {
 				} // returning 0 would merge keys
 			}
 		}
-		
+
 		String folder = args[0];
 		File dir = new File(folder);
 		Map<String, Integer> stats = new HashMap<>();
@@ -62,7 +62,7 @@ public class WidgetIDIconMappingMain {
 				continue;
 			}
 			try {
-				String outPath = Paths.get(new File("../..").getCanonicalPath(), "data", "output", apkfile.getName().substring(0, apkfile.getName().length()-4)+".json").toString();
+				String outPath = Paths.get(new File(".").getCanonicalPath(), "data", "output", apkfile.getName().substring(0, apkfile.getName().length()-4)+".json").toString();
 				if (new File(outPath).exists()){
 					continue;
 				}

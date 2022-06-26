@@ -28,6 +28,7 @@ public abstract class NNode implements Comparable<NNode> {
   // The displayed text for this GUI object. Right now, only valid for the
   // NInflNode nodes representing menu items.
   private Set<NNode> textNodes;
+  private Set<NNode> drawableNodes;
 
   // The displayed hint for GUI object.
   private Set<NNode> hintNodes;
@@ -39,7 +40,9 @@ public abstract class NNode implements Comparable<NNode> {
 
   // NOTE(tony): "alias" nodes/paths
   protected ArrayList<NNode> succ;
-  protected ArrayList<NNode> pred;
+	public ArrayList<Stmt> succSites;
+	protected ArrayList<NNode> pred;
+	public ArrayList<Stmt> predSites;
 
   // Anyone whose 'parent' is this obj. Used only in
   // NViewAllocNode, NInflNode, and NActivityNode
@@ -124,6 +127,7 @@ public abstract class NNode implements Comparable<NNode> {
   public synchronized void addEdgeTo(NNode x, Stmt s) {
     if (succ == null) {
       succ = Lists.newArrayListWithCapacity(4);
+      succSites = Lists.newArrayListWithCapacity(4);
     }
     if (!succ.contains(x)) {
       succ.add(x);
@@ -131,7 +135,7 @@ public abstract class NNode implements Comparable<NNode> {
     } else {
       return;
     }
-
+    succSites.add(s);
     if (s == null) {
       Logger.trace(this.getClass().getSimpleName(), this + " ==> " + x);
     } else {
@@ -141,11 +145,13 @@ public abstract class NNode implements Comparable<NNode> {
     // predecessors
     if (x.pred == null) {
       x.pred = Lists.newArrayListWithCapacity(4);
+      x.predSites = Lists.newArrayListWithCapacity(4);
     }
     if (x.pred.contains(this)) {
       throw new RuntimeException();
     }
     x.pred.add(this);
+    x.predSites.add(s);
   }
 
   public synchronized void addParent(NNode p) {
@@ -187,6 +193,12 @@ public abstract class NNode implements Comparable<NNode> {
     }
     return hintNodes.add(text);
   }
+  public synchronized boolean addDrawableNode(NNode drawable) {
+		if (drawableNodes == null) {
+			drawableNodes = Sets.newHashSet();
+		}
+		return drawableNodes.add(drawable);
+	}
 
   public synchronized Iterator<NNode> getHintNodes() {
     if (hintNodes == null) {
@@ -199,4 +211,5 @@ public abstract class NNode implements Comparable<NNode> {
   public int compareTo(NNode o) {
     return this.id - o.id;
   }
+
 }

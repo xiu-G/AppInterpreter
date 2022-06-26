@@ -129,7 +129,7 @@ public class APKResourceResolver {
 	private int nextAvailableThemeIdx = 0;
 	// default language is NULL string. use "##" to label it.
 	public final static String DefaultLanguage = "##";
-	
+
 	public String getPackageName(){
 		return appPackage;
 	}
@@ -390,8 +390,8 @@ public class APKResourceResolver {
 		}else{
 			outputfile = apkfilename.substring(0, apkfilename.length()-4);
 		}
-		
-		PrintWriter out = new PrintWriter(Paths.get(new File("../..").getCanonicalPath(), "data", "output", outputfile + ".image.json").toString());
+
+		PrintWriter out = new PrintWriter(Paths.get(new File(".").getCanonicalPath(), "data", "output", outputfile + ".image.json").toString());
 		HashMap<String, Set<String>> map = new HashMap<>();
 		Set<Map.Entry<String, ZipEntry>> entrySet = drawableEntries.entrySet();
 		for (Map.Entry<String, ZipEntry> entry : entrySet) {
@@ -1173,7 +1173,7 @@ public class APKResourceResolver {
 				handleSingleXML(name, xml);
 		}
 		postHandleLayoutXML();
-		if (taghandler != null) {			
+		if (taghandler != null) {
 			taghandler.endOneApp(apkfilename);
 		}
 	}

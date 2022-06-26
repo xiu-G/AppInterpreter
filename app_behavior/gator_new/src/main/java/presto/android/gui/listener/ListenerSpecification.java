@@ -52,13 +52,14 @@ public class ListenerSpecification {
   private final JimpleUtil jimpleUtil;
 
   private static ListenerSpecification theInstance;
-
+  Map<Stmt, EventType> regAndEvents;
   private ListenerSpecification() {
     rawSpecs = Maps.newHashMap();
     viewAndRegistrations = Maps.newHashMap();
     viewAndRegistrationSubsigs = Maps.newHashMap();
     regAndListenerPositions = Maps.newHashMap();
     handlerViewPositions = Maps.newHashMap();
+    regAndEvents = Maps.newHashMap();
     listeners = Sets.newHashSet();
 
     hier = Hierarchy.v();
@@ -71,6 +72,13 @@ public class ListenerSpecification {
       theInstance = new ListenerSpecification();
     }
     return theInstance;
+  }
+  public void saveRegAndEvents(Stmt regStmt, EventType type) {
+    regAndEvents.put(regStmt, type);
+  }
+
+  public EventType lookupEventType(Stmt regStmt) {
+    return regAndEvents.get(regStmt);
   }
 
   public Set<SootClass> getGUITypes() {

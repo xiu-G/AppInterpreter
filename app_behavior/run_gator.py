@@ -16,7 +16,7 @@ g_timeout = 180000
 g_lock = None
 g_skip_handled = True
 g_redo_failed = True
-g_fp_result = "../../data/gator_result.txt"  # file path
+g_fp_result = "data/gator_result.txt"  # file path
 
 
 class GlobalConfigs:
@@ -280,8 +280,8 @@ def main(apps, g_gator_root, result_dir, g_adk_dir):
             if g_redo_failed:
                 with open(g_fp_result, mode="w") as fo:
                     for apk_name in apps_handled:
-                        print("{}\t{}".format(apk_name, "SUCCESS"), file=fo)    
-    
+                        print("{}\t{}".format(apk_name, "SUCCESS"), file=fo)
+
     # init multi-processing pool
     global g_lock
     pool = mp.Pool(g_process_size)

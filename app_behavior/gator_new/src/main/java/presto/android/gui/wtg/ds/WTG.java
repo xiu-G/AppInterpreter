@@ -23,6 +23,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -43,6 +44,8 @@ public class WTG {
   private Map<EventHandlerSig, EventHandler> allHandlers;
   // map from window back to owners
   private Multimap<WTGNode, NActivityNode> ownership;
+
+  public String apkname;
 
   public WTG() {
     allNodes = Maps.newHashMap();
@@ -210,7 +213,8 @@ public class WTG {
   public void dump() {
     String dotFile = null;
     try {
-      dotFile = new File(".").getCanonicalPath() + "/wtg.dot";
+      // dotFile = new File(".").getCanonicalPath() + "/wtg.dot";
+      dotFile = Paths.get(new File(".").getCanonicalPath(), "data", "dot_output", apkname+".wtg.dot").toString();;
       FileWriter output = new FileWriter(dotFile);
 
       BufferedWriter writer = new BufferedWriter(output);

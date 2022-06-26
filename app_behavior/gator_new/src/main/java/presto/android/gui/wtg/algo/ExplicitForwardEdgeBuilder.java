@@ -23,6 +23,7 @@ import presto.android.gui.GUIAnalysisOutput;
 import presto.android.gui.GraphUtil;
 import presto.android.gui.JimpleUtil;
 import presto.android.gui.graph.*;
+import presto.android.gui.graph.NIdNode;
 import presto.android.gui.listener.EventType;
 import presto.android.gui.wtg.EventHandler;
 import presto.android.gui.wtg.RootTag;
@@ -61,11 +62,26 @@ public class ExplicitForwardEdgeBuilder implements Algorithm {
   private GUIAnalysisOutput guiOutput;
 
   private FlowgraphRebuilder flowgraphRebuilder;
+  private Multimap<NObjectNode, NObjectNode> guiHierarchy;
+	private Multimap<NObjectNode, HandlerBean> widgetToHandlers;
+	private Multimap<NObjectNode, NIdNode> widgetToImagess;
 
   public ExplicitForwardEdgeBuilder(GUIAnalysisOutput guiOutput, FlowgraphRebuilder flowgraphRebuilder) {
     this.guiOutput = guiOutput;
     this.flowgraphRebuilder = flowgraphRebuilder;
   }
+
+  public Multimap<NObjectNode, NObjectNode> getGUIHierarchy() {
+		return this.guiHierarchy;
+	}
+
+	public Multimap<NObjectNode, HandlerBean> getWidgetToHandlers() {
+		return this.widgetToHandlers;
+	}
+
+	public Multimap<NObjectNode, NIdNode> getWidgetToImages() {
+		return this.widgetToImagess;
+	}
 
   /**
    * build gui hierarchy and necessary wtg nodes before creating edges
@@ -88,7 +104,7 @@ public class ExplicitForwardEdgeBuilder implements Algorithm {
     buildWTGNodes(wtg, guiHierarchy, menuToWindowMap, windowToContextMenus);
     // build edges
     buildWTGEdges(newEdges, wtg, guiHierarchy, menuToWindowMap, windowToContextMenus);
-
+    this.guiHierarchy = guiHierarchy;
     return newEdges;
   }
 
@@ -193,9 +209,30 @@ public class ExplicitForwardEdgeBuilder implements Algorithm {
     // build other forward edges
     Multimap<NObjectNode, HandlerBean> widgetToHandlers = buildWidgetHandlers(guiHierarchy,
             menuToWindows, windowToContextMenus);
-
+    // build image resource associations
+		Multimap<NObjectNode, NIdNode> widgetToImagess = buildWidgetImages(guiHierarchy, menuToWindows, windowToContextMenus);
     buildExplicitForwardEdges(newEdges, wtg, guiHierarchy, widgetToHandlers);
+    this.widgetToHandlers = widgetToHandlers;
+		this.widgetToImagess = widgetToImagess;
   }
+
+  private Multimap<NObjectNode, NIdNode> buildWidgetImages(Multimap<NObjectNode, NObjectNode> guiHierarchy, Multimap<NMenuNode, NWindowNode> menuToWindows, Multimap<NWindowNode, Pair<NObjectNode, NContextMenuNode>> windowToContextMenus) {
+		Multimap<NObjectNode, NIdNode> viewToImages = HashMultimap.create();
+		for (NObjectNode window : guiHierarchy.keySet()) {
+			Collection<NObjectNode> underneathViews = guiHierarchy.get(window);
+			for (NObjectNode v : underneathViews) {
+				Set<NIdNode> evtToCallbacks = guiOutput.getImageResourceId(v);
+				for (NIdNode idnode : evtToCallbacks) {
+					if (!viewToImages.containsKey(v)) {
+						viewToImages.put(v, idnode);
+					} else {
+						viewToImages.get(v).add(idnode);
+					}
+				}
+			}
+		}
+		return viewToImages;
+	}
 
   private void buildWTGNodes(
           final WTG wtg,

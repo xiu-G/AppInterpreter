@@ -8,7 +8,17 @@
  */
 package presto.android.gui;
 
-import presto.android.gui.graph.*;
+import com.google.common.collect.Sets;
+
+import presto.android.gui.graph.NContextMenuNode;
+import presto.android.gui.graph.NDialogNode;
+import presto.android.gui.graph.NIdNode;
+import presto.android.gui.graph.NNode;
+import presto.android.gui.graph.NObjectNode;
+import presto.android.gui.graph.NOpNode;
+import presto.android.gui.graph.NOptionsMenuNode;
+import presto.android.gui.graph.NSetImageResourceOpNode;
+import presto.android.gui.graph.NSetListenerOpNode;
 import presto.android.gui.listener.EventType;
 import soot.Local;
 import soot.SootClass;
@@ -124,4 +134,5 @@ public interface GUIAnalysisOutput {
   String getAppPackageName();
 
   boolean isLifecycleHandler(SootMethod handler);
+  Set<NIdNode> getImageResourceId(NObjectNode guiObject);
 }

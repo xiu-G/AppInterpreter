@@ -18,8 +18,11 @@ import presto.android.Debug;
 import presto.android.Logger;
 import presto.android.gui.GUIAnalysisOutput;
 import presto.android.gui.graph.NActivityNode;
+import presto.android.gui.graph.NIdNode;
+import presto.android.gui.graph.NObjectNode;
 import presto.android.gui.wtg.algo.*;
 import presto.android.gui.wtg.analyzer.CFGAnalyzer;
+import presto.android.gui.wtg.ds.HandlerBean;
 import presto.android.gui.wtg.ds.WTG;
 import presto.android.gui.wtg.ds.WTGEdge;
 import presto.android.gui.wtg.ds.WTGEdge.WTGEdgeSig;
@@ -43,6 +46,13 @@ public class WTGBuilder {
   private WTG wtg;
   // output of each stage
   private List<Multimap<WTGEdgeSig, WTGEdge>> stageOutput;
+  public Multimap<NObjectNode, NObjectNode> guiHierarchy;
+
+	public Multimap<NObjectNode, HandlerBean> widgetToHandlers;
+
+	private String apkname;
+
+	public Multimap<NObjectNode, NIdNode> widgetToImages;
 
   public void build(GUIAnalysisOutput output) {
     preBuild(output);
@@ -54,6 +64,11 @@ public class WTGBuilder {
     wtg = new WTG();
     stageOutput = Lists.newArrayList();
   }
+  public WTGBuilder(String apkname) {
+		this();
+		this.apkname = apkname;
+		wtg.apkname = apkname;
+	}
 
   WTG getWTG() {
     return wtg;
@@ -61,8 +76,9 @@ public class WTGBuilder {
 
   private void building() {
     Multimap<WTGNode, NActivityNode> ownership = HashMultimap.create();
-    Multimap<WTGEdgeSig, WTGEdge> stage1 = new ExplicitForwardEdgeBuilder(guiOutput, flowgraphRebuilder)
-            .buildEdges(wtg);
+    ExplicitForwardEdgeBuilder explicitForwardEdgeBuilder = new ExplicitForwardEdgeBuilder(guiOutput,
+				flowgraphRebuilder);
+    Multimap<WTGEdgeSig, WTGEdge> stage1 = explicitForwardEdgeBuilder.buildEdges(wtg);
     Logger.verb(TAG, "stage 1 finishes");
     Multimap<WTGEdgeSig, WTGEdge> stage2 = new LifecycleForwardEdgeBuilder(guiOutput, flowgraphRebuilder)
             .buildEdges(wtg, stage1, ownership);
@@ -95,6 +111,9 @@ public class WTGBuilder {
     }
     // resurrect the edges
     ignoreEdges(stageOutput);
+    this.guiHierarchy = explicitForwardEdgeBuilder.getGUIHierarchy();
+		this.widgetToHandlers = explicitForwardEdgeBuilder.getWidgetToHandlers();
+		this.widgetToImages = explicitForwardEdgeBuilder.getWidgetToImages();
   }
 
   // do initialisation stuff, e.g., rebuild flow graph

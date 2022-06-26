@@ -11,14 +11,18 @@ package presto.android.gui;
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.HashMultimap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
 import com.google.common.collect.Sets;
 import presto.android.Hierarchy;
 import presto.android.*;
 import presto.android.gui.graph.*;
+import presto.android.gui.graph.NDrawableIdNode;
 import presto.android.gui.graph.NFindView1OpNode.FindView1Type;
 import presto.android.gui.graph.NFindView3OpNode.FindView3Type;
+import presto.android.gui.graph.NSetImageResourceOpNode;
 import presto.android.gui.listener.EventType;
 import presto.android.gui.listener.ListenerInstance;
 import presto.android.gui.listener.ListenerRegistration;
@@ -58,6 +62,7 @@ public class Flowgraph implements MethodNames {
   public Map<Integer, NMenuIdNode> allNMenuIdNodes = Maps.newHashMap();
   public Map<Integer, NWidgetIdNode> allNWidgetIdNodes = Maps.newHashMap();
   public Map<Integer, NStringIdNode> allNStringIdNodes = Maps.newHashMap();
+  public Map<Integer, NDrawableIdNode> allNDrawableIdNode = Maps.newHashMap();
   public Map<Stmt, NDialogNode> allNDialogNodes = Maps.newHashMap();
   // Right now, we don't distinguish string constants "allocated" at different
   // locations but contain the same value.
@@ -77,21 +82,19 @@ public class Flowgraph implements MethodNames {
   public Map<Expr, NStringBuilderNode> allStringBuilderAllocNodes = Maps.newHashMap();
 
   ListenerSpecification listenerSpecs;
-
+  public Multimap<Stmt, SootMethod> regToEventHandlers = HashMultimap.create();
   // Utils
   JimpleUtil jimpleUtil;
   GraphUtil graphUtil;
   XMLParser xmlUtil;
-
-  public Flowgraph(Hierarchy hier, Set<Integer> allLayoutIds,
-                   Set<Integer> allMenuIds, Set<Integer> allWidgetIds,
-                   Set<Integer> allStringIds) {
+  private Set<Integer> allDrawableIds;
+  public Flowgraph(Hierarchy hier, Set<Integer> allLayoutIds, Set<Integer> allMenuIds, Set<Integer> allWidgetIds, Set<Integer> allStringIds, Set<Integer> allDrawableIds) {
     this.hier = hier;
     this.allLayoutIds = allLayoutIds;
     this.allMenuIds = allMenuIds;
     this.allWidgetIds = allWidgetIds;
     this.allStringIds = allStringIds;
-
+    this.allDrawableIds = allDrawableIds;
     this.listenerSpecs = ListenerSpecification.v();
 
     this.jimpleUtil = JimpleUtil.v(hier);
@@ -113,6 +116,9 @@ public class Flowgraph implements MethodNames {
     for (Integer i : allStringIds) {
       stringIdNode(i);
     }
+    for (Integer i : allDrawableIds) {
+			drawableIdNode(i);
+		}
   }
 
   void processFrameworkManagedCallbacks() {
@@ -488,7 +494,7 @@ public class Flowgraph implements MethodNames {
     for (FlowFromSetListenerToEventHandlers t : tasks) {
       processFlowFromSetListenerToEventHandlers(t.listenerClass,
               t.listenerParameterType, t.listenerNode, t.viewNode, t.setListener,
-              t.s, t.caller, t.isContextMenuSetListener);
+              t.s, t.caller, t.registration, t.isContextMenuSetListener);
     }
     tasks.clear();
     return true;
@@ -778,6 +784,14 @@ public class Flowgraph implements MethodNames {
       }
     }
 
+    // SetImageResource: view.setImageResource(id)
+		{
+			NOpNode setImageResource = createSetImageResourceOpNode(s);
+			if (setImageResource != null) {
+				return setImageResource;
+			}
+		}
+
     // SetListener: view.setXYZListener(listener)
     {
       NOpNode setListener = createSetListenerOpNode(s);
@@ -844,6 +858,37 @@ public class Flowgraph implements MethodNames {
 
     return null;
   }
+
+  private NOpNode createSetImageResourceOpNode(Stmt s) {
+		InvokeExpr ie = s.getInvokeExpr();
+		SootMethod callee = ie.getMethod();
+		String subsig = callee.getSubSignature();
+
+		if (!subsig.equals(setImageSubSig)) {
+			return null;
+		}
+		Local rcv = jimpleUtil.receiver(ie);
+		SootClass rcvClass = ((RefType) rcv.getType()).getSootClass();
+		if (!hier.viewClasses.contains(rcvClass)) {
+			return null;
+		}
+		NVarNode receiverNode = varNode(rcv);
+
+		Value viewId = ie.getArg(0);
+		NNode idNode = simpleNode(viewId);
+		if (idNode == null) {
+			if (Configs.verbose) {
+				System.out.println(
+						"[WARNING] Unknown view id node for SetId: '" + s + " @ " + jimpleUtil.lookup(s) + "'");
+			}
+			return null;
+		}
+
+		NOpNode setImageResource = new NSetImageResourceOpNode(idNode, receiverNode,
+				new Pair<Stmt, SootMethod>(s, jimpleUtil.lookup(s)), false);
+
+		return setImageResource;
+	}
 
   // Inflate1: view = inflater.inflate(id)
   //   Inflate1.pred[0]: layout id node
@@ -1434,12 +1479,31 @@ public class Flowgraph implements MethodNames {
     // Find the ListenerRegistration from the SetListener statement
     SootClass listenerClass = listenerObject.getClassType();
     Pair<Stmt, SootMethod> callSite = opNode.callSite;
-    Stmt s = callSite != null ? callSite.getO1() : null;
+    Set<SootMethod> handlers = Sets.newHashSet();
+    try{
+      Stmt s = callSite.getO1();
+      SootMethod caller = callSite.getO2();
+      ListenerRegistration registration = listenerSpecs.getListenerRegistration(s);
+      if (registration == null) {
+        throw new RuntimeException("Unexpected SetListener stmt: " + s + " @ " + caller);
+      }
 
+      // Resolve event handlers: first get prototype, and then do virtual
+      // dispatch
+      Set<SootMethod> handlerPrototypes = registration.getHandlerPrototypes();
+      computeConcreteHandlers(handlers, handlerPrototypes, Collections.singleton(listenerClass));
+      regToEventHandlers.putAll(s, handlers);
+    } catch(Exception e){
+      System.out.println();
+    }
+    Stmt s = callSite != null ? callSite.getO1() : null; //need to change by me
     // Resolve event handlers: first get prototype, and then do virtual dispatch
-    Set<SootMethod> handlers = opNode.getListenerInstance().computeConcreteHandlers(listenerClass);
+    Set<SootMethod> handlers2 = opNode.getListenerInstance().computeConcreteHandlers(listenerClass);
+    if (handlers.size() != handlers2.size()){
+      System.out.println();
+    }
     // For each dispatched handler, connect the flow.
-    for (SootMethod h : handlers) {
+    for (SootMethod h : handlers2) {
       // this := listenerObject
       listenerObject.addEdgeTo(varNode(jimpleUtil.thisLocal(h)), s);
 
@@ -1487,29 +1551,36 @@ public class Flowgraph implements MethodNames {
     //Compute eventType & handlerPrototypes
     // First, find the method prototypes in listener interface. Listener
     // interface is the parameter type of the SetListener call.
+    // need to change by me
+    // Create SetListener op node
+		NVarNode viewNode = varNode(viewLocal);
+		NVarNode listenerNode = varNode(listenerLocal);
+		Pair<Stmt, SootMethod> callSite = (s == null ? null : new Pair<Stmt, SootMethod>(s, caller));
+		NSetListenerOpNode setListener = new NSetListenerOpNode(null,viewNode, listenerNode, callSite,
+				isContextMenuSetListener, artificial);
+
     Set<SootMethod> handlerPrototypes;
     if (isContextMenuSetListener) {
       eventType = EventType.implicit_create_context_menu;
       handlerPrototypes = jimpleUtil.getMethodsInInterface(listenerParameterType);
+      listenerSpecs.saveRegAndEvents(s, EventType.implicit_create_context_menu);
     } else {
       if (registration == null) {
         if (eventType == null) {
           throw new RuntimeException("Event type unknown for " + s + " @ " + caller);
-        }
+        }else {
+					listenerSpecs.saveRegAndEvents(s, eventType);
+				}
         handlerPrototypes = jimpleUtil.getMethodsInInterface(listenerParameterType);
       } else {
+        listenerSpecs.saveRegAndEvents(s, registration.eventType);
         eventType = registration.eventType;
         handlerPrototypes = registration.getHandlerPrototypes();
       }
     }
     // Create SetListener op node
-    NVarNode viewNode = varNode(viewLocal);
-    NVarNode listenerNode = varNode(listenerLocal);
-    Pair<Stmt, SootMethod> callSite = (s == null ? null :
-            new Pair<Stmt, SootMethod>(s, caller));
     ListenerInstance listenerInstance = new ListenerInstance(listenerParameterType, listenerClass, handlerPrototypes, eventType);
-    NSetListenerOpNode setListener = new NSetListenerOpNode(
-            listenerInstance, viewNode, listenerNode, callSite, isContextMenuSetListener, artificial);
+    setListener.setListenerInstance(listenerInstance);
 
     // From SetListener to callback
     if (shouldProcessFlow) {
@@ -1539,6 +1610,7 @@ public class Flowgraph implements MethodNames {
     NSetListenerOpNode setListener;
     Stmt s;
     SootMethod caller;
+    ListenerRegistration registration;
     boolean isContextMenuSetListener;
 
     FlowFromSetListenerToEventHandlers(
@@ -1549,6 +1621,7 @@ public class Flowgraph implements MethodNames {
             NSetListenerOpNode setListener,
             Stmt s,
             SootMethod caller,
+            ListenerRegistration registration,
             boolean isContextMenuSetListener) {
       this.listenerClass = listenerClass;
       this.listenerParameterType = listenerParameterType;
@@ -1557,6 +1630,7 @@ public class Flowgraph implements MethodNames {
       this.setListener = setListener;
       this.s = s;
       this.caller = caller;
+      this.registration = registration;
       this.isContextMenuSetListener = isContextMenuSetListener;
     }
   }
@@ -1574,7 +1648,7 @@ public class Flowgraph implements MethodNames {
     FlowFromSetListenerToEventHandlers t =
             new FlowFromSetListenerToEventHandlers(listenerClass,
                     listenerParameterType, listenerNode, viewNode, setListener,
-                    s, caller, isContextMenuSetListener);
+                    s, caller, registration, isContextMenuSetListener);
     tasks.add(t);
   }
 
@@ -1588,16 +1662,29 @@ public class Flowgraph implements MethodNames {
           NSetListenerOpNode setListener,
           Stmt s,
           SootMethod caller,
+          ListenerRegistration registration,
           boolean isContextMenuSetListener) {
+    Set<SootMethod> handlerPrototypes;
+    if (isContextMenuSetListener || registration == null) {
+      handlerPrototypes = jimpleUtil.getMethodsInInterface(listenerParameterType);
+    } else {
+      handlerPrototypes = registration.getHandlerPrototypes();
+    }
+    Set<SootMethod> handlers = Sets.newHashSet();
+		computeConcreteHandlers(handlers, handlerPrototypes, listenerNode);
     // Some listeners may be "inflated" because they are views as well. So, we
     // cannot use graph reachability to find concrete type of listener. Instead,
     // we should use class hierarchy.
     // Then, for each concrete actual type, do virtual dispatch for the method
     // prototypes found in first step.
-    Set<SootMethod> handlers = setListener.getListenerInstance().computeConcreteHandlers(listenerNode);
+
+    Set<SootMethod> handlers2 = setListener.getListenerInstance().computeConcreteHandlers(listenerNode);
+    if (handlers.size() != handlers2.size()){
+      System.out.println();
+    }
     // Finally, create flow edges to represent the link between SetListener
     // and the dispatched callback methods.
-    for (SootMethod h : handlers) {
+    for (SootMethod h : handlers2) {
       if (Configs.debugCodes.contains(Debug.LISTENER_DEBUG)) {
         Logger.verb(this.getClass().getSimpleName(), "{SL->CB} " + setListener + " ===> " + h);
       }
@@ -1647,6 +1734,32 @@ public class Flowgraph implements MethodNames {
     }
   }
 
+  void computeConcreteHandlers(Set<SootMethod> handlers, Set<SootMethod> handlerPrototypes, NVarNode listenerNode) {
+		Set<SootClass> listenerTypes = computePossibleListenerTypesCHA(listenerNode);
+		computeConcreteHandlers(handlers, handlerPrototypes, listenerTypes);
+	}
+
+	void computeConcreteHandlers(Set<SootMethod> handlers, Set<SootMethod> handlerPrototypes,
+			Set<SootClass> listenerTypes) {
+		for (SootClass possibleListenerType : listenerTypes) {
+			for (SootMethod prototype : handlerPrototypes) {
+				String prototypeSubsig = prototype.getSubSignature();
+				SootClass matchedClass = hier.matchForVirtualDispatch(prototypeSubsig, possibleListenerType);
+				if (matchedClass != null && matchedClass.isApplicationClass()
+						&& listenerSpecs.isListenerType(matchedClass)) {
+					SootMethod h = matchedClass.getMethod(prototypeSubsig);
+					if (h.isConcrete()) {
+						handlers.add(h);
+					}
+				}
+			}
+		}
+	}
+
+	Set<SootClass> computePossibleListenerTypesCHA(NVarNode listenerNode) {
+		SootClass declaredListenerType = ((RefType) listenerNode.l.getType()).getSootClass();
+		return Collections.unmodifiableSet(hier.getSubtypes(declaredListenerType));
+	}
 
   Set<SootClass> computePossibleListenerTypesPTA(NVarNode listenerNode) {
     Set<SootClass> types = Sets.newHashSet();
@@ -4765,6 +4878,18 @@ public class Flowgraph implements MethodNames {
     return intConstantNode;
   }
 
+  public NDrawableIdNode drawableIdNode(Integer drawableId) {
+		Preconditions.checkNotNull(drawableId);
+		NDrawableIdNode drawableIdNode = allNDrawableIdNode.get(drawableId);
+		if (drawableIdNode == null) {
+			drawableIdNode = new NDrawableIdNode(drawableId);
+			allNDrawableIdNode.put(drawableId, drawableIdNode);
+			allNNodes.add(drawableIdNode);
+			// System.out.println("{Flowgraph.stringIdNode} " + stringIdNode);
+		}
+		return drawableIdNode;
+	}
+
   public NStringConstantNode stringConstantNode(String value) {
     Preconditions.checkNotNull(value);
     NStringConstantNode stringConstantNode = allNStringConstantNodes.get(value);
@@ -4807,6 +4932,9 @@ public class Flowgraph implements MethodNames {
       if (allStringIds.contains(integerConstant)) {
         return stringIdNode(integerConstant);
       }
+      if (allDrawableIds.contains(integerConstant)) {
+				return drawableIdNode(integerConstant);
+			}
       return integerConstantNode(integerConstant);
     }
     if (jimpleValue instanceof LongConstant) {
