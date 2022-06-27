@@ -4,11 +4,11 @@ import subprocess
 
 from tools.basic_tool import extract_jar_libs
 
-def decode_apk(apk_path, decode_path, frame_path="", output=None):
+def decode_apk(jarfile, apk_path, decode_path, frame_path="", output=None):
     if frame_path=="":
-        cmd =["java", "-jar", "apktool.jar", "d", apk_path, "-o", decode_path, "-f"]
+        cmd =["java", "-jar", jarfile, "d", apk_path, "-o", decode_path, "-f"]
     else:
-        cmd = ["java", "-jar", "apktool.jar", "d", apk_path,
+        cmd = ["java", "-jar", jarfile, "d", apk_path,
             "--frame-path", frame_path,
             "-o", decode_path, "-f"]
     print(' '.join(cmd))
@@ -64,14 +64,15 @@ def get_api_version(apk, decode_dir="", api_level=-1):
         target_level = extract_target_api(os.path.join(decode_dir, 'apktool.yml'), "targetSdkVersion")
     if target_level == -1:
         target_level = extract_target_api_from_aapt(apk)
-    if target_level == -1 or target_level >= 30:
+    if target_level >= 30:
         print('...... cannot determine the target API level for APK. Fallback to use 27.')
-        target_level = 27
+        target_level = 29
     elif target_level < 10:
         print('...... target API level is below 10. Force to use 10.')
         target_level = 10
     elif target_level > 100:
         return -1
+    return target_level
 
 
 def extract_number(cur_line):
