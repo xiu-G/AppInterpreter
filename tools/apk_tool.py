@@ -65,7 +65,7 @@ def get_api_version(apk, decode_dir="", api_level=-1):
     if target_level == -1:
         target_level = extract_target_api_from_aapt(apk)
     if target_level >= 30:
-        print('...... cannot determine the target API level for APK. Fallback to use 27.')
+        print('...... cannot determine the target API level for APK. Fallback to use 29.')
         target_level = 29
     elif target_level < 10:
         print('...... target API level is below 10. Force to use 10.')
