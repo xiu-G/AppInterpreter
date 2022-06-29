@@ -146,10 +146,10 @@ def after_gator(result_gator):
     }
 
     print("<finish>{}({}) {}".format(apk_name, msg, "fail" if r != 0 else "success"))
-    # g_lock.acquire()
+    g_lock.acquire()
     with open(g_fp_result, mode="a") as fo:
         print("{}\t{}".format(apk_name, result_type[r]), file=fo)
-    # g_lock.release()
+    g_lock.release()
     sys.stdout.flush()
 
 def run_gator(args, msg):
@@ -248,8 +248,8 @@ def main(apps, result_dir):
         parser = set_args()
         args, unknown = parser.parse_known_args(args)
         msg = "{}/{}".format(i, len(to_handle_apps))
-        # result_gator = run_gator(args, msg)
-        # after_gator(result_gator)
+        result_gator = run_gator(args, msg)
+        after_gator(result_gator)
         pool.apply_async(func=run_gator,
                          args=(args, msg),
                          callback=after_gator)

@@ -317,18 +317,22 @@ public class WTGUtil {
   }
 
   private boolean isCreateIntentCall(SootMethod mtd) {
-    SootClass declz = mtd.getDeclaringClass();
-    String mtdSig = mtd.getSubSignature();
-    for (SootClass clz : createIntentMethods.keySet()) {
-      boolean is = hier.isSubclassOf(declz, clz);
-      if (is) {
-        Map<String, Map<Integer, IntentField>> subsigPair = createIntentMethods
-                .get(clz);
-        is = subsigPair.containsKey(mtdSig);
+    try{
+      SootClass declz = mtd.getDeclaringClass();
+      String mtdSig = mtd.getSubSignature();
+      for (SootClass clz : createIntentMethods.keySet()) {
+        boolean is = hier.isSubclassOf(declz, clz);
         if (is) {
-          return true;
+          Map<String, Map<Integer, IntentField>> subsigPair = createIntentMethods
+                  .get(clz);
+          is = subsigPair.containsKey(mtdSig);
+          if (is) {
+            return true;
+          }
         }
       }
+    }catch (Exception e){
+      
     }
     return false;
   }

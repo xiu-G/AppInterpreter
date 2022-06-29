@@ -50,7 +50,7 @@ public class Flowgraph implements MethodNames {
   String nextFakeName() {
     return FAKE_NAME_PREFIX + fakeNameIndex++;
   }
-
+  public Map<String, SootMethod> allStrings = Maps.newHashMap(); //add by me to get strings
   public Map<SootMethod, SootMethod> fakeHandlerToRealHandler = Maps.newHashMap();
 
   public Set<NNode> allNNodes = Sets.newHashSet();

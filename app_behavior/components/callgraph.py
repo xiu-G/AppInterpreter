@@ -24,7 +24,7 @@ def set_args():
                         help='path to gator root dir')
     parser.add_argument('--result_dir',
                         dest='result_dir',
-                        default=CALLGRAPH_ROOT,
+                        default="",
                         help='path to result dir')
     
     parser.add_argument('-t', '--timeout',
@@ -116,7 +116,7 @@ def run_callgraph(apps, apk_dir, result_dir):
         ]
         args, unknown = parser.parse_known_args(args)
         run_callgraph_apk(args)
-        p.apply_async(run_callgraph_apk, args=(args))  
+        # p.apply_async(run_callgraph_apk, args=(args))  
     p.close()
     p.join()
 

@@ -12,11 +12,14 @@ import java.util.regex.Pattern;
 import org.jgrapht.ext.ComponentNameProvider;
 import org.jgrapht.ext.DOTExporter;
 import org.jgrapht.graph.DirectedPseudograph;
+import org.json.simple.JSONObject;
 import org.xmlpull.v1.XmlPullParserException;
 
 import soot.*;
 import soot.jimple.InvokeExpr;
 import soot.jimple.Stmt;
+import soot.jimple.StringConstant;
+import soot.jimple.AssignStmt;
 import soot.jimple.infoflow.android.InfoflowAndroidConfiguration;
 import soot.jimple.infoflow.android.SetupApplication;
 import soot.jimple.infoflow.android.config.SootConfigForAndroid;
@@ -69,6 +72,7 @@ public class APKCallGraph {
 	static ArrayList<String> handlers = new ArrayList<>();
 	static HashMap<String, ArrayList<Stmt>> methodToStmts = new HashMap<>();
 	static HashMap<String, ArrayList<String>> startActivity = new HashMap<>();
+	static HashMap<String, ArrayList<String>> stringLists = new HashMap<>();
 
 
 	class MethodNode {
@@ -213,7 +217,7 @@ public class APKCallGraph {
 		// 	"/home/data/yuec/DeepIntent/data/example/benign",
 		// 	"/home/data/xiu/code-translation/code/DeepIntent/data/img2widgets/", //inputCSVPath
 		// 	"/home/data/xiu/code-translation/code/DeepIntent/data/permission_output/", //permissionOutput
-		// 	"/home/data/xiu/code-translation/code/DeepIntent/data//ic3_output/", //ic3Output
+		// 	"/home/data/xiu/code-translation/code/DeepIntent/data/ic3_output/", //ic3Output
 		// 	"18",
 		// 	"/home/data/xiu/android-sdk/platforms",
 		// 	"/home/data/xiu/code-translation/code/DeepIntent/data/decode_dir",
@@ -383,9 +387,22 @@ public class APKCallGraph {
 				Iterator<Unit> stmts = body.getUnits().iterator();
 				visited.put(list.get(0), true);
 				while (stmts.hasNext()) {
-					Stmt s = (Stmt) stmts.next();
+					Stmt s = (Stmt) stmts.next(); 
+					if (s.toString().contains("\"")){
+						// String tmpS = assign.getRightOp().toString();
+						String tmpS = s.toString().substring(s.toString().indexOf("\""), s.toString().lastIndexOf("\"")+1);
+						if (!stringLists.containsKey(tmpS)){
+							ArrayList<String> temp = new ArrayList<>();
+								temp.add(list.get(0).getSignature().toString());
+								stringLists.put(tmpS, temp);	
+						}else{
+							if (!stringLists.get(tmpS).contains(list.get(0).getSignature().toString())){
+								stringLists.get(tmpS).add(list.get(0).getSignature().toString());
+							}
+							
+						}
+					}
 					if (s.toString().contains("invoke")) {
-
 						if (list.get(0).getSignature().contains("void handleMessage(android.os.Message)>")){
 							if (!handleMessageMethods.contains(list.get(0))){
 								handleMessageMethods.add(list.get(0));
@@ -498,6 +515,7 @@ public class APKCallGraph {
 							System.out.println("getInvokeExpr() called with no invokeExpr present!");
 						}
 					}
+					
 				}
 
 			}
@@ -702,8 +720,20 @@ public class APKCallGraph {
 		File file = new File(Paths.get(Configs.dotPath, apk).toString());
 		file.mkdir();
 		exporter.exportGraph(jg, new FileWriter(Paths.get(Configs.dotPath, apk, apk+".dot").toString()));
+		writeStringList(apk);
+		
 	}
 
+	public static void writeStringList(String apk) throws IOException{
+		File file = new File(Paths.get(Configs.stringPath, apk+".json").toString());
+		BufferedWriter bw = new BufferedWriter(new FileWriter(file, false));
+		JSONObject jsonObject = new JSONObject(stringLists);
+		bw.write(jsonObject.toJSONString());   
+		bw.close();   
+		// s.writeObject(stringLists);
+		// s.flush();
+		// s.close();
+    }
 
 
 	 public static void connectThread(String src){

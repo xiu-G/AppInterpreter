@@ -56,7 +56,7 @@ def main(apk_dirs, result_dir):
         print('image2widget start')
         image2widget.run_img2widget(apk_dir, result_dir)
         print('callgraph start')
-        callgraph.run_callgraph(torun_apps, apk_dir, result_dir)
+        callgraph.run_callgraph(apps, apk_dir, result_dir)
         
         
      

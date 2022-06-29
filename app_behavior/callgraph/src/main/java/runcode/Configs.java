@@ -12,6 +12,7 @@ public class Configs {
     public static String callBackFile = Paths.get(usrDir, "AndroidCallbacks.txt").toString();
     public static String projectDir;
     public static String dotPath;
+    public static String stringPath;
     public static String dotPathFlowdroid;
     public static String inputCSVPath;
     public static String permissionOutput;
@@ -25,6 +26,7 @@ public class Configs {
         projectDir = new File(".").getCanonicalPath();
         // projectDir = "/home/data/xiu/code-translation/code/DeepIntent";
         dotPath = Paths.get(projectDir, "data", "dot_output").toString();
+        stringPath = Paths.get(projectDir, "data", "strings", "code_strings").toString();
         dotPathFlowdroid = Paths.get(projectDir, "data", "dot_output").toString();
         inputCSVPath = Paths.get(projectDir, "data", "inputCSVPath").toString();
         permissionOutput = Paths.get(projectDir, "data", "permissionOutput").toString();

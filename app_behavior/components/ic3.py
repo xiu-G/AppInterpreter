@@ -7,7 +7,7 @@ from tools import basic_tool, apk_tool
 
 IC3_ROOT = 'app_behavior/ic3'
 TIME_OUT = 3600
-g_process_size = 10
+g_process_size = 15
 IC3_JAR = 'app_behavior/ic3/ic3.jar'
 IC3_JAR2 = 'app_behavior/ic3/ic3-0.2.0-full.jar'
 RETARGEDED_JAR = 'app_behavior/ic3/RetargetedApp.jar'
@@ -37,6 +37,10 @@ def set_args():
                         dest='cc',
                         default=CC,
                         help='filepath of ic3 jar')
+    parser.add_argument('--result_dir',
+                        dest='result_dir',
+                        default="data",
+                        help='path to result dir')
     
     parser.add_argument('-t', '--timeout',
                         dest='time_out',
@@ -84,6 +88,7 @@ def set_args():
     return parser
 
 def run_ic3_1(args):
+    print('ic31:'+args.apk_file)
     output = open(args.log_path, mode="w")
     android_platform = os.path.join(args.sdk_path, 'platforms')
     cmd = [
@@ -107,8 +112,9 @@ def run_ic3_1(args):
 
 def run_ic3_2(args, output):
     # output = open(args.log_path, mode="w")
+    print('ic32:'+args.apk_file)
     android_jar =os.path.join(args.sdk_path, 'platforms', 'android-'+str(args.api_level), 'android.jar')
-    retargetedPath = os.path.join(os.path.join(result_dir, "testspace"), args.apk_name+'.apk')
+    retargetedPath = os.path.join(os.path.join(args.result_dir, "testspace"), args.apk_name+'.apk')
     cmd1 = [
         'java', '-Xmx24000m', '-jar',
         args.retargeted_jar, 
@@ -137,6 +143,7 @@ def run(args):
     output = run_ic3_1(args)
     if len(os.listdir(args.output_file))==1:
         return
+    # output = open(args.log_path, mode="w")
     run_ic3_2(args, output)
     if len(os.listdir(args.output_file))==0:
         shutil.rmtree(args.output_file)
@@ -154,14 +161,12 @@ def run_ic3(apps, result_dir):
 
     p = mp.Pool(g_process_size)
     for i in range(len(to_handle_apps)):
-        parser = set_args()
-        app_path = apps[i]
+        app_path = to_handle_apps[i]
         app = os.path.splitext(os.path.basename(app_path))[0]
         ic3_app_path = os.path.join(result_dir, "ic3_output", app)
         decode_dir = os.path.join(result_dir, 'decode_dir', app)
         if not os.path.exists(decode_dir):
             decode_dir = ''
-        basic_tool.mkdir(ic3_app_path)
         api_version = apk_tool.get_api_version(app_path, decode_dir)
         log = os.path.join(log_dir, app+'.txt')
         args = [
@@ -170,10 +175,13 @@ def run_ic3(apps, result_dir):
             '-a', app_path,
             '-n', app,
             '--api', str(api_version),
+            '--result_dir', result_dir,
         ]
+        parser = set_args()
         args, unknown = parser.parse_known_args(args)
+        basic_tool.mkdir(ic3_app_path)
         # run(args)
-        p.apply_async(run, args=(args))  
+        p.apply_async(run, args=(args,))  
     p.close()
     p.join()
 
