@@ -1,0 +1,139 @@
+public abstract class com.snowbee.core.Contact.ContactAPIAbstractFactory extends java.lang.Object
+{
+    protected android.content.Context mContext;
+
+    public void <init>(android.content.Context)
+    {
+        android.content.Context $r1;
+        com.snowbee.core.Contact.ContactAPIAbstractFactory r0;
+
+        r0 := @this: com.snowbee.core.Contact.ContactAPIAbstractFactory;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<com.snowbee.core.Contact.ContactAPIAbstractFactory: android.content.Context mContext> = $r1;
+
+        return;
+    }
+
+    public abstract com.snowbee.core.Contact.Contact getContactInfoForEmailAddress(java.lang.String);
+
+    public abstract com.snowbee.core.Contact.Contact getContactInfoForPhoneNumber(java.lang.String);
+
+    public byte[] loadAvatarData(com.snowbee.core.Contact.Contact)
+    {
+        java.lang.Throwable $r8, $r9, $r10, $r11, $r12;
+        byte[] r2, $r3;
+        android.content.Context $r5;
+        android.net.Uri $r4;
+        long $l0;
+        byte $b1;
+        android.content.ContentResolver $r6;
+        int $i2;
+        com.snowbee.core.Contact.ContactAPIAbstractFactory r0;
+        com.snowbee.core.Contact.Contact $r1;
+        java.io.InputStream $r7;
+
+        r0 := @this: com.snowbee.core.Contact.ContactAPIAbstractFactory;
+
+        $r1 := @parameter0: com.snowbee.core.Contact.Contact;
+
+        r2 = null;
+
+        $l0 = virtualinvoke $r1.<com.snowbee.core.Contact.Contact: long getPersonId()>();
+
+        $b1 = $l0 cmp 0L;
+
+        if $b1 == 0 goto label17;
+
+        $r3 = virtualinvoke $r1.<com.snowbee.core.Contact.Contact: byte[] getAvatarData()>();
+
+        if $r3 == null goto label01;
+
+        return null;
+
+     label01:
+        $r4 = <android.provider.ContactsContract$Contacts: android.net.Uri CONTENT_URI>;
+
+        $l0 = virtualinvoke $r1.<com.snowbee.core.Contact.Contact: long getPersonId()>();
+
+        $r4 = staticinvoke <android.content.ContentUris: android.net.Uri withAppendedId(android.net.Uri,long)>($r4, $l0);
+
+        $r5 = r0.<com.snowbee.core.Contact.ContactAPIAbstractFactory: android.content.Context mContext>;
+
+        $r6 = virtualinvoke $r5.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        $r7 = staticinvoke <android.provider.ContactsContract$Contacts: java.io.InputStream openContactPhotoInputStream(android.content.ContentResolver,android.net.Uri)>($r6, $r4);
+
+        if $r7 == null goto label07;
+
+     label02:
+        $i2 = virtualinvoke $r7.<java.io.InputStream: int available()>();
+
+     label03:
+        r2 = newarray (byte)[$i2];
+
+        $i2 = lengthof r2;
+
+     label04:
+        virtualinvoke $r7.<java.io.InputStream: int read(byte[],int,int)>(r2, 0, $i2);
+
+     label05:
+        if $r7 == null goto label07;
+
+     label06:
+        virtualinvoke $r7.<java.io.InputStream: void close()>();
+
+     label07:
+        return r2;
+
+     label08:
+        $r8 := @caughtexception;
+
+        if $r7 == null goto label07;
+
+     label09:
+        virtualinvoke $r7.<java.io.InputStream: void close()>();
+
+     label10:
+        goto label07;
+
+     label11:
+        $r9 := @caughtexception;
+
+        goto label07;
+
+     label12:
+        $r10 := @caughtexception;
+
+        if $r7 == null goto label14;
+
+     label13:
+        virtualinvoke $r7.<java.io.InputStream: void close()>();
+
+     label14:
+        throw $r10;
+
+     label15:
+        $r11 := @caughtexception;
+
+        goto label14;
+
+     label16:
+        $r12 := @caughtexception;
+
+        goto label07;
+
+     label17:
+        return null;
+
+        catch java.io.IOException from label02 to label03 with label08;
+        catch java.io.IOException from label04 to label05 with label08;
+        catch java.lang.Throwable from label02 to label05 with label12;
+        catch java.io.IOException from label06 to label07 with label16;
+        catch java.io.IOException from label09 to label10 with label11;
+        catch java.io.IOException from label13 to label14 with label15;
+    }
+}

@@ -1,0 +1,247 @@
+public abstract class com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache extends com.nostra13.universalimageloader.cache.memory.BaseMemoryCache
+{
+    private static final int MAX_NORMAL_CACHE_SIZE;
+    private static final int MAX_NORMAL_CACHE_SIZE_IN_MB;
+    private final java.util.concurrent.atomic.AtomicInteger cacheSize;
+    private final java.util.List hardCache;
+    private final int sizeLimit;
+
+    public void <init>(int)
+    {
+        java.util.List $r2;
+        java.lang.Object[] $r4;
+        java.util.concurrent.atomic.AtomicInteger $r3;
+        com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache r0;
+        int $i0;
+        java.util.LinkedList $r1;
+        java.lang.Integer $r5;
+
+        r0 := @this: com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache;
+
+        $i0 := @parameter0: int;
+
+        specialinvoke r0.<com.nostra13.universalimageloader.cache.memory.BaseMemoryCache: void <init>()>();
+
+        $r1 = new java.util.LinkedList;
+
+        specialinvoke $r1.<java.util.LinkedList: void <init>()>();
+
+        $r2 = staticinvoke <java.util.Collections: java.util.List synchronizedList(java.util.List)>($r1);
+
+        r0.<com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache: java.util.List hardCache> = $r2;
+
+        r0.<com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache: int sizeLimit> = $i0;
+
+        $r3 = new java.util.concurrent.atomic.AtomicInteger;
+
+        specialinvoke $r3.<java.util.concurrent.atomic.AtomicInteger: void <init>()>();
+
+        r0.<com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache: java.util.concurrent.atomic.AtomicInteger cacheSize> = $r3;
+
+        if $i0 <= 16777216 goto label1;
+
+        $r4 = newarray (java.lang.Object)[1];
+
+        $r5 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(16);
+
+        $r4[0] = $r5;
+
+        staticinvoke <com.nostra13.universalimageloader.utils.L: void w(java.lang.String,java.lang.Object[])>("You set too large memory cache size (more than %1$d Mb)", $r4);
+
+     label1:
+        return;
+    }
+
+    public void clear()
+    {
+        java.util.List $r1;
+        java.util.concurrent.atomic.AtomicInteger $r2;
+        com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache r0;
+
+        r0 := @this: com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache;
+
+        $r1 = r0.<com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache: java.util.List hardCache>;
+
+        interfaceinvoke $r1.<java.util.List: void clear()>();
+
+        $r2 = r0.<com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache: java.util.concurrent.atomic.AtomicInteger cacheSize>;
+
+        virtualinvoke $r2.<java.util.concurrent.atomic.AtomicInteger: void set(int)>(0);
+
+        specialinvoke r0.<com.nostra13.universalimageloader.cache.memory.BaseMemoryCache: void clear()>();
+
+        return;
+    }
+
+    protected abstract int getSize(android.graphics.Bitmap);
+
+    protected int getSizeLimit()
+    {
+        int i0;
+        com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache r0;
+
+        r0 := @this: com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache;
+
+        i0 = r0.<com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache: int sizeLimit>;
+
+        return i0;
+    }
+
+    public volatile boolean put(java.lang.Object, java.lang.Object)
+    {
+        android.graphics.Bitmap $r4;
+        com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache r0;
+        java.lang.Object $r1, $r2;
+        java.lang.String $r3;
+        boolean $z0;
+
+        r0 := @this: com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 := @parameter1: java.lang.Object;
+
+        $r3 = (java.lang.String) $r1;
+
+        $r4 = (android.graphics.Bitmap) $r2;
+
+        $z0 = virtualinvoke r0.<com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache: boolean put(java.lang.String,android.graphics.Bitmap)>($r3, $r4);
+
+        return $z0;
+    }
+
+    public boolean put(java.lang.String, android.graphics.Bitmap)
+    {
+        com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache r0;
+        java.util.List $r5;
+        java.util.concurrent.atomic.AtomicInteger $r3;
+        android.graphics.Bitmap $r2, $r4;
+        int $i0, $i1, $i2, $i3;
+        java.lang.String $r1;
+        boolean $z0;
+
+        r0 := @this: com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: android.graphics.Bitmap;
+
+        $z0 = 0;
+
+        $i0 = virtualinvoke r0.<com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache: int getSize(android.graphics.Bitmap)>($r2);
+
+        $i1 = virtualinvoke r0.<com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache: int getSizeLimit()>();
+
+        $r3 = r0.<com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache: java.util.concurrent.atomic.AtomicInteger cacheSize>;
+
+        if $i0 >= $i1 goto label3;
+
+        $i2 = virtualinvoke $r3.<java.util.concurrent.atomic.AtomicInteger: int get()>();
+
+     label1:
+        $i3 = $i2 + $i0;
+
+        if $i3 <= $i1 goto label2;
+
+        $r4 = virtualinvoke r0.<com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache: android.graphics.Bitmap removeNext()>();
+
+        $r5 = r0.<com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache: java.util.List hardCache>;
+
+        $z0 = interfaceinvoke $r5.<java.util.List: boolean remove(java.lang.Object)>($r4);
+
+        if $z0 == 0 goto label1;
+
+        $r3 = r0.<com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache: java.util.concurrent.atomic.AtomicInteger cacheSize>;
+
+        $i2 = virtualinvoke r0.<com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache: int getSize(android.graphics.Bitmap)>($r4);
+
+        $i2 = neg $i2;
+
+        $i2 = virtualinvoke $r3.<java.util.concurrent.atomic.AtomicInteger: int addAndGet(int)>($i2);
+
+        goto label1;
+
+     label2:
+        $r5 = r0.<com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache: java.util.List hardCache>;
+
+        interfaceinvoke $r5.<java.util.List: boolean add(java.lang.Object)>($r2);
+
+        $r3 = r0.<com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache: java.util.concurrent.atomic.AtomicInteger cacheSize>;
+
+        virtualinvoke $r3.<java.util.concurrent.atomic.AtomicInteger: int addAndGet(int)>($i0);
+
+        $z0 = 1;
+
+     label3:
+        specialinvoke r0.<com.nostra13.universalimageloader.cache.memory.BaseMemoryCache: boolean put(java.lang.String,android.graphics.Bitmap)>($r1, $r2);
+
+        return $z0;
+    }
+
+    public android.graphics.Bitmap remove(java.lang.String)
+    {
+        java.util.List $r3;
+        java.util.concurrent.atomic.AtomicInteger $r4;
+        android.graphics.Bitmap $r2;
+        com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache r0;
+        int $i0;
+        java.lang.String $r1;
+        boolean $z0;
+
+        r0 := @this: com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = specialinvoke r0.<com.nostra13.universalimageloader.cache.memory.BaseMemoryCache: android.graphics.Bitmap get(java.lang.String)>($r1);
+
+        if $r2 == null goto label1;
+
+        $r3 = r0.<com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache: java.util.List hardCache>;
+
+        $z0 = interfaceinvoke $r3.<java.util.List: boolean remove(java.lang.Object)>($r2);
+
+        if $z0 == 0 goto label1;
+
+        $r4 = r0.<com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache: java.util.concurrent.atomic.AtomicInteger cacheSize>;
+
+        $i0 = virtualinvoke r0.<com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache: int getSize(android.graphics.Bitmap)>($r2);
+
+        $i0 = neg $i0;
+
+        virtualinvoke $r4.<java.util.concurrent.atomic.AtomicInteger: int addAndGet(int)>($i0);
+
+     label1:
+        $r2 = specialinvoke r0.<com.nostra13.universalimageloader.cache.memory.BaseMemoryCache: android.graphics.Bitmap remove(java.lang.String)>($r1);
+
+        return $r2;
+    }
+
+    public volatile java.lang.Object remove(java.lang.Object)
+    {
+        android.graphics.Bitmap $r1;
+        com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache r0;
+        java.lang.Object $r2;
+        java.lang.String $r3;
+
+        r0 := @this: com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache;
+
+        $r2 := @parameter0: java.lang.Object;
+
+        $r3 = (java.lang.String) $r2;
+
+        $r1 = virtualinvoke r0.<com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache: android.graphics.Bitmap remove(java.lang.String)>($r3);
+
+        return $r1;
+    }
+
+    protected abstract android.graphics.Bitmap removeNext();
+
+    public static void <clinit>()
+    {
+        <com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache: int MAX_NORMAL_CACHE_SIZE_IN_MB> = 16;
+
+        <com.nostra13.universalimageloader.cache.memory.LimitedMemoryCache: int MAX_NORMAL_CACHE_SIZE> = 16777216;
+
+        return;
+    }
+}

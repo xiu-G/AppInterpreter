@@ -1,0 +1,1770 @@
+public class com.icksoft.translator.Translator extends android.app.Activity implements android.view.View$OnClickListener, android.widget.AdapterView$OnItemSelectedListener
+{
+    private static final java.lang.String AppId;
+    private android.widget.PopupWindow about;
+    private android.widget.TextView about_ok;
+    private org.apache.http.client.HttpClient httpClient;
+    private org.apache.http.HttpEntity httpEntity;
+    private android.widget.EditText input;
+    private java.lang.String[] langPair_from_keys;
+    private java.lang.String[] langPair_from_values;
+    private java.lang.String[] langPair_to_keys;
+    private java.lang.String[] langPair_to_values;
+    private final int menu_about;
+    private final int menu_feedback;
+    private final int menu_sms;
+    private android.os.Message msg;
+    private android.widget.EditText output;
+    private android.widget.LinearLayout outputLayout;
+    private java.util.concurrent.Executor pool;
+    private java.lang.String src_lang;
+    private android.widget.Spinner src_lang_selector;
+    private int src_pos;
+    private android.widget.ImageButton swap;
+    private int swapTab;
+    private java.lang.String target_lang;
+    private android.widget.Spinner target_lang_selector;
+    private int target_pos;
+    private boolean trans;
+    private android.os.Handler transHandler;
+    private java.lang.String transUriPrefix;
+    private final int trans_cancel;
+    private final int trans_detect;
+    private final int trans_failed;
+    private final int trans_ok;
+    private android.widget.Button translate;
+    public android.content.Intent ipcIntent;
+    public android.content.Intent ipcResultIntent;
+
+    public void <init>()
+    {
+        org.apache.http.impl.client.DefaultHttpClient $r3;
+        com.icksoft.translator.Translator r0;
+        java.lang.String[] $r1;
+        java.lang.String $r2;
+
+        r0 := @this: com.icksoft.translator.Translator;
+
+        specialinvoke r0.<android.app.Activity: void <init>()>();
+
+        $r1 = newarray (java.lang.String)[33];
+
+        $r1[0] = "";
+
+        $r1[1] = "en";
+
+        $r1[2] = "zh-CHS";
+
+        $r1[3] = "zh-CHT";
+
+        $r1[4] = "ja";
+
+        $r1[5] = "ar";
+
+        $r1[6] = "et";
+
+        $r1[7] = "bg";
+
+        $r1[8] = "pl";
+
+        $r1[9] = "ko";
+
+        $r1[10] = "da";
+
+        $r1[11] = "de";
+
+        $r1[12] = "ru";
+
+        $r1[13] = "fr";
+
+        $r1[14] = "fi";
+
+        $r1[15] = "ht";
+
+        $r1[16] = "nl";
+
+        $r1[17] = "cs";
+
+        $r1[18] = "lv";
+
+        $r1[19] = "lt";
+
+        $r1[20] = "ro";
+
+        $r1[21] = "no";
+
+        $r1[22] = "pt";
+
+        $r1[23] = "sv";
+
+        $r1[24] = "sk";
+
+        $r1[25] = "sl";
+
+        $r1[26] = "th";
+
+        $r1[27] = "tr";
+
+        $r1[28] = "es";
+
+        $r1[29] = "he";
+
+        $r1[30] = "el";
+
+        $r1[31] = "hu";
+
+        $r1[32] = "it";
+
+        r0.<com.icksoft.translator.Translator: java.lang.String[] langPair_from_keys> = $r1;
+
+        $r1 = newarray (java.lang.String)[33];
+
+        $r1[0] = "\u81ea\u52a8\u68c0\u6d4b";
+
+        $r1[1] = "\u82f1\u8bed";
+
+        $r1[2] = "\u7b80\u4f53\u4e2d\u6587";
+
+        $r1[3] = "\u7e41\u4f53\u4e2d\u6587";
+
+        $r1[4] = "\u65e5\u8bed";
+
+        $r1[5] = "\u963f\u62c9\u4f2f\u8bed";
+
+        $r1[6] = "\u7231\u6c99\u5c3c\u4e9a\u8bed";
+
+        $r1[7] = "\u4fdd\u52a0\u5229\u4e9a\u8bed";
+
+        $r1[8] = "\u6ce2\u5170\u8bed";
+
+        $r1[9] = "\u671d\u9c9c\u8bed";
+
+        $r1[10] = "\u4e39\u9ea6\u8bed";
+
+        $r1[11] = "\u5fb7\u8bed";
+
+        $r1[12] = "\u4fc4\u8bed";
+
+        $r1[13] = "\u6cd5\u8bed";
+
+        $r1[14] = "\u82ac\u5170\u8bed";
+
+        $r1[15] = "\u6d77\u5730\u514b\u91cc\u5965\u5c14\u8bed";
+
+        $r1[16] = "\u8377\u5170\u8bed";
+
+        $r1[17] = "\u6377\u514b\u8bed";
+
+        $r1[18] = "\u62c9\u8131\u7ef4\u4e9a\u8bed";
+
+        $r1[19] = "\u7acb\u9676\u5b9b\u8bed";
+
+        $r1[20] = "\u7f57\u9a6c\u5c3c\u4e9a";
+
+        $r1[21] = "\u632a\u5a01\u8bed";
+
+        $r1[22] = "\u8461\u8404\u7259\u8bed";
+
+        $r1[23] = "\u745e\u5178\u8bed";
+
+        $r1[24] = "\u65af\u6d1b\u4f10\u514b\u8bed";
+
+        $r1[25] = "\u65af\u6d1b\u6587\u5c3c\u4e9a\u8bed";
+
+        $r1[26] = "\u6cf0\u8bed";
+
+        $r1[27] = "\u571f\u8033\u5176\u8bed";
+
+        $r1[28] = "\u897f\u73ed\u7259\u8bed";
+
+        $r1[29] = "\u5e0c\u4f2f\u6765\u8bed";
+
+        $r1[30] = "\u5e0c\u814a\u8bed";
+
+        $r1[31] = "\u5308\u7259\u5229\u8bed";
+
+        $r1[32] = "\u610f\u5927\u5229\u8bed";
+
+        r0.<com.icksoft.translator.Translator: java.lang.String[] langPair_from_values> = $r1;
+
+        $r1 = newarray (java.lang.String)[32];
+
+        $r1[0] = "zh-CHS";
+
+        $r1[1] = "en";
+
+        $r1[2] = "zh-CHT";
+
+        $r1[3] = "ja";
+
+        $r1[4] = "ar";
+
+        $r1[5] = "et";
+
+        $r1[6] = "bg";
+
+        $r1[7] = "pl";
+
+        $r1[8] = "ko";
+
+        $r1[9] = "da";
+
+        $r1[10] = "de";
+
+        $r1[11] = "ru";
+
+        $r1[12] = "fr";
+
+        $r1[13] = "fi";
+
+        $r1[14] = "ht";
+
+        $r1[15] = "nl";
+
+        $r1[16] = "cs";
+
+        $r1[17] = "lv";
+
+        $r1[18] = "lt";
+
+        $r1[19] = "ro";
+
+        $r1[20] = "no";
+
+        $r1[21] = "pt";
+
+        $r1[22] = "sv";
+
+        $r1[23] = "sk";
+
+        $r1[24] = "sl";
+
+        $r1[25] = "th";
+
+        $r1[26] = "tr";
+
+        $r1[27] = "es";
+
+        $r1[28] = "he";
+
+        $r1[29] = "el";
+
+        $r1[30] = "hu";
+
+        $r1[31] = "it";
+
+        r0.<com.icksoft.translator.Translator: java.lang.String[] langPair_to_keys> = $r1;
+
+        $r1 = newarray (java.lang.String)[32];
+
+        $r1[0] = "\u7b80\u4f53\u4e2d\u6587";
+
+        $r1[1] = "\u82f1\u8bed";
+
+        $r1[2] = "\u7e41\u4f53\u4e2d\u6587";
+
+        $r1[3] = "\u65e5\u8bed";
+
+        $r1[4] = "\u963f\u62c9\u4f2f\u8bed";
+
+        $r1[5] = "\u7231\u6c99\u5c3c\u4e9a\u8bed";
+
+        $r1[6] = "\u4fdd\u52a0\u5229\u4e9a\u8bed";
+
+        $r1[7] = "\u6ce2\u5170\u8bed";
+
+        $r1[8] = "\u671d\u9c9c\u8bed";
+
+        $r1[9] = "\u4e39\u9ea6\u8bed";
+
+        $r1[10] = "\u5fb7\u8bed";
+
+        $r1[11] = "\u4fc4\u8bed";
+
+        $r1[12] = "\u6cd5\u8bed";
+
+        $r1[13] = "\u82ac\u5170\u8bed";
+
+        $r1[14] = "\u6d77\u5730\u514b\u91cc\u5965\u5c14\u8bed";
+
+        $r1[15] = "\u8377\u5170\u8bed";
+
+        $r1[16] = "\u6377\u514b\u8bed";
+
+        $r1[17] = "\u62c9\u8131\u7ef4\u4e9a\u8bed";
+
+        $r1[18] = "\u7acb\u9676\u5b9b\u8bed";
+
+        $r1[19] = "\u7f57\u9a6c\u5c3c\u4e9a";
+
+        $r1[20] = "\u632a\u5a01\u8bed";
+
+        $r1[21] = "\u8461\u8404\u7259\u8bed";
+
+        $r1[22] = "\u745e\u5178\u8bed";
+
+        $r1[23] = "\u65af\u6d1b\u4f10\u514b\u8bed";
+
+        $r1[24] = "\u65af\u6d1b\u6587\u5c3c\u4e9a\u8bed";
+
+        $r1[25] = "\u6cf0\u8bed";
+
+        $r1[26] = "\u571f\u8033\u5176\u8bed";
+
+        $r1[27] = "\u897f\u73ed\u7259\u8bed";
+
+        $r1[28] = "\u5e0c\u4f2f\u6765\u8bed";
+
+        $r1[29] = "\u5e0c\u814a\u8bed";
+
+        $r1[30] = "\u5308\u7259\u5229\u8bed";
+
+        $r1[31] = "\u610f\u5927\u5229\u8bed";
+
+        r0.<com.icksoft.translator.Translator: java.lang.String[] langPair_to_values> = $r1;
+
+        r0.<com.icksoft.translator.Translator: boolean trans> = 0;
+
+        r0.<com.icksoft.translator.Translator: int menu_about> = 1;
+
+        r0.<com.icksoft.translator.Translator: int menu_feedback> = 2;
+
+        r0.<com.icksoft.translator.Translator: int menu_sms> = 3;
+
+        r0.<com.icksoft.translator.Translator: int trans_ok> = 1;
+
+        r0.<com.icksoft.translator.Translator: int trans_failed> = -1;
+
+        r0.<com.icksoft.translator.Translator: int trans_detect> = 2;
+
+        r0.<com.icksoft.translator.Translator: int trans_cancel> = 0;
+
+        $r3 = new org.apache.http.impl.client.DefaultHttpClient;
+
+        specialinvoke $r3.<org.apache.http.impl.client.DefaultHttpClient: void <init>()>();
+
+        r0.<com.icksoft.translator.Translator: org.apache.http.client.HttpClient httpClient> = $r3;
+
+        r0.<com.icksoft.translator.Translator: java.lang.String transUriPrefix> = "http://api.microsofttranslator.com/V2/Http.svc/";
+
+        r0.<com.icksoft.translator.Translator: int src_pos> = 0;
+
+        r0.<com.icksoft.translator.Translator: int target_pos> = 0;
+
+        $r1 = r0.<com.icksoft.translator.Translator: java.lang.String[] langPair_from_keys>;
+
+        $r2 = $r1[0];
+
+        r0.<com.icksoft.translator.Translator: java.lang.String src_lang> = $r2;
+
+        $r1 = r0.<com.icksoft.translator.Translator: java.lang.String[] langPair_to_keys>;
+
+        $r2 = $r1[0];
+
+        r0.<com.icksoft.translator.Translator: java.lang.String target_lang> = $r2;
+
+        r0.<com.icksoft.translator.Translator: int swapTab> = 1;
+
+        r0.<com.icksoft.translator.Translator: org.apache.http.HttpEntity httpEntity> = null;
+
+        return;
+    }
+
+    static java.lang.String access$0(com.icksoft.translator.Translator)
+    {
+        java.lang.String r1;
+        com.icksoft.translator.Translator $r0;
+
+        $r0 := @parameter0: com.icksoft.translator.Translator;
+
+        r1 = $r0.<com.icksoft.translator.Translator: java.lang.String src_lang>;
+
+        return r1;
+    }
+
+    static boolean access$1(com.icksoft.translator.Translator) throws org.apache.http.client.ClientProtocolException, java.io.IOException
+    {
+        com.icksoft.translator.Translator $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: com.icksoft.translator.Translator;
+
+        $z0 = specialinvoke $r0.<com.icksoft.translator.Translator: boolean checkSrcLang()>();
+
+        return $z0;
+    }
+
+    static android.widget.EditText access$10(com.icksoft.translator.Translator)
+    {
+        com.icksoft.translator.Translator $r0;
+        android.widget.EditText r1;
+
+        $r0 := @parameter0: com.icksoft.translator.Translator;
+
+        r1 = $r0.<com.icksoft.translator.Translator: android.widget.EditText output>;
+
+        return r1;
+    }
+
+    static android.widget.LinearLayout access$11(com.icksoft.translator.Translator)
+    {
+        android.widget.LinearLayout r1;
+        com.icksoft.translator.Translator $r0;
+
+        $r0 := @parameter0: com.icksoft.translator.Translator;
+
+        r1 = $r0.<com.icksoft.translator.Translator: android.widget.LinearLayout outputLayout>;
+
+        return r1;
+    }
+
+    static void access$12(com.icksoft.translator.Translator, java.lang.String)
+    {
+        java.lang.String $r1;
+        com.icksoft.translator.Translator $r0;
+
+        $r0 := @parameter0: com.icksoft.translator.Translator;
+
+        $r1 := @parameter1: java.lang.String;
+
+        specialinvoke $r0.<com.icksoft.translator.Translator: void showMsg(java.lang.String)>($r1);
+
+        return;
+    }
+
+    static android.widget.EditText access$13(com.icksoft.translator.Translator)
+    {
+        com.icksoft.translator.Translator $r0;
+        android.widget.EditText r1;
+
+        $r0 := @parameter0: com.icksoft.translator.Translator;
+
+        r1 = $r0.<com.icksoft.translator.Translator: android.widget.EditText input>;
+
+        return r1;
+    }
+
+    static android.widget.Spinner access$14(com.icksoft.translator.Translator)
+    {
+        com.icksoft.translator.Translator $r0;
+        android.widget.Spinner r1;
+
+        $r0 := @parameter0: com.icksoft.translator.Translator;
+
+        r1 = $r0.<com.icksoft.translator.Translator: android.widget.Spinner src_lang_selector>;
+
+        return r1;
+    }
+
+    static void access$15(com.icksoft.translator.Translator, java.lang.String)
+    {
+        java.lang.String $r1;
+        com.icksoft.translator.Translator $r0;
+
+        $r0 := @parameter0: com.icksoft.translator.Translator;
+
+        $r1 := @parameter1: java.lang.String;
+
+        specialinvoke $r0.<com.icksoft.translator.Translator: void sendWebMsg(java.lang.String)>($r1);
+
+        return;
+    }
+
+    static void access$16(com.icksoft.translator.Translator, java.lang.String, java.lang.String)
+    {
+        java.lang.String $r1, $r2;
+        com.icksoft.translator.Translator $r0;
+
+        $r0 := @parameter0: com.icksoft.translator.Translator;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 := @parameter2: java.lang.String;
+
+        specialinvoke $r0.<com.icksoft.translator.Translator: void sendSMS(java.lang.String,java.lang.String)>("13636483729", $r2);
+
+        return;
+    }
+
+    static org.apache.http.HttpEntity access$2(com.icksoft.translator.Translator)
+    {
+        org.apache.http.HttpEntity r1;
+        com.icksoft.translator.Translator $r0;
+
+        $r0 := @parameter0: com.icksoft.translator.Translator;
+
+        r1 = $r0.<com.icksoft.translator.Translator: org.apache.http.HttpEntity httpEntity>;
+
+        return r1;
+    }
+
+    static void access$3(com.icksoft.translator.Translator, java.lang.String)
+    {
+        java.lang.String $r1;
+        com.icksoft.translator.Translator $r0;
+
+        $r0 := @parameter0: com.icksoft.translator.Translator;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r0.<com.icksoft.translator.Translator: java.lang.String src_lang> = $r1;
+
+        return;
+    }
+
+    static int access$4(com.icksoft.translator.Translator, java.lang.String)
+    {
+        int $i0;
+        java.lang.String $r1;
+        com.icksoft.translator.Translator $r0;
+
+        $r0 := @parameter0: com.icksoft.translator.Translator;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $i0 = specialinvoke $r0.<com.icksoft.translator.Translator: int findIndex(java.lang.String)>($r1);
+
+        return $i0;
+    }
+
+    static android.os.Handler access$5(com.icksoft.translator.Translator)
+    {
+        com.icksoft.translator.Translator $r0;
+        android.os.Handler r1;
+
+        $r0 := @parameter0: com.icksoft.translator.Translator;
+
+        r1 = $r0.<com.icksoft.translator.Translator: android.os.Handler transHandler>;
+
+        return r1;
+    }
+
+    static void access$6(com.icksoft.translator.Translator, android.os.Message)
+    {
+        android.os.Message $r1;
+        com.icksoft.translator.Translator $r0;
+
+        $r0 := @parameter0: com.icksoft.translator.Translator;
+
+        $r1 := @parameter1: android.os.Message;
+
+        $r0.<com.icksoft.translator.Translator: android.os.Message msg> = $r1;
+
+        return;
+    }
+
+    static android.os.Message access$7(com.icksoft.translator.Translator)
+    {
+        android.os.Message r1;
+        com.icksoft.translator.Translator $r0;
+
+        $r0 := @parameter0: com.icksoft.translator.Translator;
+
+        r1 = $r0.<com.icksoft.translator.Translator: android.os.Message msg>;
+
+        return r1;
+    }
+
+    static java.lang.String access$8(com.icksoft.translator.Translator)
+    {
+        java.lang.String r1;
+        com.icksoft.translator.Translator $r0;
+
+        $r0 := @parameter0: com.icksoft.translator.Translator;
+
+        r1 = $r0.<com.icksoft.translator.Translator: java.lang.String target_lang>;
+
+        return r1;
+    }
+
+    static void access$9(com.icksoft.translator.Translator) throws org.apache.http.ParseException, java.io.IOException
+    {
+        com.icksoft.translator.Translator $r0;
+
+        $r0 := @parameter0: com.icksoft.translator.Translator;
+
+        specialinvoke $r0.<com.icksoft.translator.Translator: void translating()>();
+
+        return;
+    }
+
+    private boolean checkSrcLang() throws org.apache.http.client.ClientProtocolException, java.io.IOException
+    {
+        com.icksoft.translator.Translator r0;
+        java.lang.StringBuilder $r1;
+        java.lang.String $r2;
+        android.widget.EditText $r3;
+        android.text.Editable $r4;
+        boolean $z0;
+
+        r0 := @this: com.icksoft.translator.Translator;
+
+        $r1 = new java.lang.StringBuilder;
+
+        $r2 = r0.<com.icksoft.translator.Translator: java.lang.String transUriPrefix>;
+
+        $r2 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r2);
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>(java.lang.String)>($r2);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Detect?");
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("appId=");
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("53D991AB0C8F2E4315795C6E986811D42CBD78A9");
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("&text=");
+
+        $r3 = r0.<com.icksoft.translator.Translator: android.widget.EditText input>;
+
+        $r4 = virtualinvoke $r3.<android.widget.EditText: android.text.Editable getText()>();
+
+        $r2 = interfaceinvoke $r4.<android.text.Editable: java.lang.String toString()>();
+
+        $r2 = staticinvoke <java.net.URLEncoder: java.lang.String encode(java.lang.String,java.lang.String)>($r2, "UTF-8");
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $z0 = specialinvoke r0.<com.icksoft.translator.Translator: boolean interactionWithServer(java.lang.String)>($r2);
+
+        return $z0;
+    }
+
+    private int findIndex(java.lang.String)
+    {
+        com.icksoft.translator.Translator r0;
+        int i0, $i1;
+        java.lang.String[] $r2;
+        java.lang.String $r1, $r3;
+        boolean $z0;
+
+        r0 := @this: com.icksoft.translator.Translator;
+
+        $r1 := @parameter0: java.lang.String;
+
+        i0 = 0;
+
+     label1:
+        $r2 = r0.<com.icksoft.translator.Translator: java.lang.String[] langPair_from_keys>;
+
+        $i1 = lengthof $r2;
+
+        if i0 < $i1 goto label2;
+
+        return 1;
+
+     label2:
+        $r2 = r0.<com.icksoft.translator.Translator: java.lang.String[] langPair_from_keys>;
+
+        $r3 = $r2[i0];
+
+        $z0 = virtualinvoke $r3.<java.lang.String: boolean equals(java.lang.Object)>($r1);
+
+        if $z0 == 0 goto label3;
+
+        return i0;
+
+     label3:
+        i0 = i0 + 1;
+
+        goto label1;
+    }
+
+    private int getSwapedPosition(int, int)
+    {
+        java.lang.String[] $r1;
+        com.icksoft.translator.Translator r0;
+        int $i0, $i1, $i2;
+        java.lang.String $r2, $r3;
+        boolean $z0;
+
+        r0 := @this: com.icksoft.translator.Translator;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        if $i0 != 1 goto label5;
+
+        $i0 = 0;
+
+     label1:
+        $r1 = r0.<com.icksoft.translator.Translator: java.lang.String[] langPair_from_values>;
+
+        $i2 = lengthof $r1;
+
+        if $i0 < $i2 goto label3;
+
+     label2:
+        return 0;
+
+     label3:
+        $r1 = r0.<com.icksoft.translator.Translator: java.lang.String[] langPair_from_values>;
+
+        $r2 = $r1[$i0];
+
+        $r1 = r0.<com.icksoft.translator.Translator: java.lang.String[] langPair_to_values>;
+
+        $r3 = $r1[$i1];
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>($r3);
+
+        if $z0 == 0 goto label4;
+
+        return $i0;
+
+     label4:
+        $i0 = $i0 + 1;
+
+        goto label1;
+
+     label5:
+        if $i0 != 2 goto label2;
+
+        $i0 = 0;
+
+     label6:
+        $r1 = r0.<com.icksoft.translator.Translator: java.lang.String[] langPair_to_values>;
+
+        $i2 = lengthof $r1;
+
+        if $i0 >= $i2 goto label2;
+
+        $r1 = r0.<com.icksoft.translator.Translator: java.lang.String[] langPair_to_values>;
+
+        $r2 = $r1[$i0];
+
+        $r1 = r0.<com.icksoft.translator.Translator: java.lang.String[] langPair_from_values>;
+
+        $r3 = $r1[$i1];
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>($r3);
+
+        if $z0 == 0 goto label7;
+
+        return $i0;
+
+     label7:
+        $i0 = $i0 + 1;
+
+        goto label6;
+    }
+
+    private boolean interactionWithServer(java.lang.String) throws org.apache.http.client.ClientProtocolException, java.io.IOException
+    {
+        org.apache.http.HttpEntity $r6;
+        org.apache.http.StatusLine $r5;
+        org.apache.http.client.methods.HttpGet r2;
+        org.apache.http.client.HttpClient $r3;
+        com.icksoft.translator.Translator r0;
+        int $i0;
+        org.apache.http.HttpResponse $r4;
+        java.lang.String $r1;
+
+        r0 := @this: com.icksoft.translator.Translator;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r2 = new org.apache.http.client.methods.HttpGet;
+
+        specialinvoke r2.<org.apache.http.client.methods.HttpGet: void <init>(java.lang.String)>($r1);
+
+        $r3 = r0.<com.icksoft.translator.Translator: org.apache.http.client.HttpClient httpClient>;
+
+        $r4 = interfaceinvoke $r3.<org.apache.http.client.HttpClient: org.apache.http.HttpResponse execute(org.apache.http.client.methods.HttpUriRequest)>(r2);
+
+        $r5 = interfaceinvoke $r4.<org.apache.http.HttpResponse: org.apache.http.StatusLine getStatusLine()>();
+
+        $i0 = interfaceinvoke $r5.<org.apache.http.StatusLine: int getStatusCode()>();
+
+        if $i0 != 200 goto label1;
+
+        $r6 = interfaceinvoke $r4.<org.apache.http.HttpResponse: org.apache.http.HttpEntity getEntity()>();
+
+        r0.<com.icksoft.translator.Translator: org.apache.http.HttpEntity httpEntity> = $r6;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    private boolean isURL(java.lang.String)
+    {
+        com.icksoft.translator.Translator r0;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r1;
+        boolean $z0;
+
+        r0 := @this: com.icksoft.translator.Translator;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean startsWith(java.lang.String)>("www.");
+
+        if $z0 == 0 goto label1;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("http://");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label1:
+        $z0 = staticinvoke <android.webkit.URLUtil: boolean isHttpUrl(java.lang.String)>($r1);
+
+        return $z0;
+    }
+
+    private void sendSMS(java.lang.String, java.lang.String)
+    {
+        android.telephony.gsm.SmsManager $r6;
+        com.icksoft.translator.Translator r0;
+        android.content.Intent r3;
+        java.lang.String $r1, $r2;
+        android.app.PendingIntent $r4, $r5;
+
+        r0 := @this: com.icksoft.translator.Translator;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        r3 = new android.content.Intent;
+
+        specialinvoke r3.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>(r0, class "Lcom/icksoft/translator/FeedbackNotification;");
+
+        virtualinvoke r3.<android.content.Intent: android.content.Intent setAction(java.lang.String)>("TRANS_SMS_SENT");
+
+        $r4 = staticinvoke <android.app.PendingIntent: android.app.PendingIntent getBroadcast(android.content.Context,int,android.content.Intent,int)>(r0, 0, r3, 0);
+
+        r3 = new android.content.Intent;
+
+        specialinvoke r3.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>(r0, class "Lcom/icksoft/translator/FeedbackNotification;");
+
+        virtualinvoke r3.<android.content.Intent: android.content.Intent setAction(java.lang.String)>("TRANS_SMS_DELIVERED");
+
+        $r5 = staticinvoke <android.app.PendingIntent: android.app.PendingIntent getBroadcast(android.content.Context,int,android.content.Intent,int)>(r0, 0, r3, 0);
+
+        $r6 = staticinvoke <android.telephony.gsm.SmsManager: android.telephony.gsm.SmsManager getDefault()>();
+
+        virtualinvoke $r6.<android.telephony.gsm.SmsManager: void sendTextMessage(java.lang.String,java.lang.String,java.lang.String,android.app.PendingIntent,android.app.PendingIntent)>("13636483729", null, $r2, $r4, $r5);
+
+        return;
+    }
+
+    private void sendWebMsg(java.lang.String)
+    {
+        java.lang.String $r1;
+        com.icksoft.translator.Translator r0;
+
+        r0 := @this: com.icksoft.translator.Translator;
+
+        $r1 := @parameter0: java.lang.String;
+
+        return;
+    }
+
+    private void setupView()
+    {
+        android.widget.ImageButton $r4;
+        android.widget.LinearLayout $r6;
+        java.lang.String[] $r8;
+        android.widget.Spinner $r7;
+        android.widget.ArrayAdapter r1;
+        com.icksoft.translator.Translator r0;
+        android.view.View $r2;
+        android.widget.Button $r3;
+        android.widget.EditText $r5;
+
+        r0 := @this: com.icksoft.translator.Translator;
+
+        $r2 = virtualinvoke r0.<com.icksoft.translator.Translator: android.view.View findViewById(int)>(2131493125);
+
+        $r3 = (android.widget.Button) $r2;
+
+        r0.<com.icksoft.translator.Translator: android.widget.Button translate> = $r3;
+
+        $r3 = r0.<com.icksoft.translator.Translator: android.widget.Button translate>;
+
+        virtualinvoke $r3.<android.widget.Button: void setOnClickListener(android.view.View$OnClickListener)>(r0);
+
+        $r2 = virtualinvoke r0.<com.icksoft.translator.Translator: android.view.View findViewById(int)>(2131493123);
+
+        $r4 = (android.widget.ImageButton) $r2;
+
+        r0.<com.icksoft.translator.Translator: android.widget.ImageButton swap> = $r4;
+
+        $r4 = r0.<com.icksoft.translator.Translator: android.widget.ImageButton swap>;
+
+        virtualinvoke $r4.<android.widget.ImageButton: void setOnClickListener(android.view.View$OnClickListener)>(r0);
+
+        $r2 = virtualinvoke r0.<com.icksoft.translator.Translator: android.view.View findViewById(int)>(2131493128);
+
+        virtualinvoke $r2.<android.view.View: void setOnClickListener(android.view.View$OnClickListener)>(r0);
+
+        $r2 = virtualinvoke r0.<com.icksoft.translator.Translator: android.view.View findViewById(int)>(2131493120);
+
+        virtualinvoke $r2.<android.view.View: void setOnClickListener(android.view.View$OnClickListener)>(r0);
+
+        $r2 = virtualinvoke r0.<com.icksoft.translator.Translator: android.view.View findViewById(int)>(2131493121);
+
+        virtualinvoke $r2.<android.view.View: void setOnClickListener(android.view.View$OnClickListener)>(r0);
+
+        $r2 = virtualinvoke r0.<com.icksoft.translator.Translator: android.view.View findViewById(int)>(2131493122);
+
+        $r5 = (android.widget.EditText) $r2;
+
+        r0.<com.icksoft.translator.Translator: android.widget.EditText input> = $r5;
+
+        $r2 = virtualinvoke r0.<com.icksoft.translator.Translator: android.view.View findViewById(int)>(2131493127);
+
+        $r5 = (android.widget.EditText) $r2;
+
+        r0.<com.icksoft.translator.Translator: android.widget.EditText output> = $r5;
+
+        $r2 = virtualinvoke r0.<com.icksoft.translator.Translator: android.view.View findViewById(int)>(2131493126);
+
+        $r6 = (android.widget.LinearLayout) $r2;
+
+        r0.<com.icksoft.translator.Translator: android.widget.LinearLayout outputLayout> = $r6;
+
+        $r2 = virtualinvoke r0.<com.icksoft.translator.Translator: android.view.View findViewById(int)>(2131493119);
+
+        $r7 = (android.widget.Spinner) $r2;
+
+        r0.<com.icksoft.translator.Translator: android.widget.Spinner src_lang_selector> = $r7;
+
+        r1 = new android.widget.ArrayAdapter;
+
+        $r8 = r0.<com.icksoft.translator.Translator: java.lang.String[] langPair_from_values>;
+
+        specialinvoke r1.<android.widget.ArrayAdapter: void <init>(android.content.Context,int,java.lang.Object[])>(r0, 17367048, $r8);
+
+        virtualinvoke r1.<android.widget.ArrayAdapter: void setDropDownViewResource(int)>(17367049);
+
+        $r7 = r0.<com.icksoft.translator.Translator: android.widget.Spinner src_lang_selector>;
+
+        virtualinvoke $r7.<android.widget.Spinner: void setAdapter(android.widget.SpinnerAdapter)>(r1);
+
+        $r7 = r0.<com.icksoft.translator.Translator: android.widget.Spinner src_lang_selector>;
+
+        virtualinvoke $r7.<android.widget.Spinner: void setOnItemSelectedListener(android.widget.AdapterView$OnItemSelectedListener)>(r0);
+
+        $r2 = virtualinvoke r0.<com.icksoft.translator.Translator: android.view.View findViewById(int)>(2131493124);
+
+        $r7 = (android.widget.Spinner) $r2;
+
+        r0.<com.icksoft.translator.Translator: android.widget.Spinner target_lang_selector> = $r7;
+
+        r1 = new android.widget.ArrayAdapter;
+
+        $r8 = r0.<com.icksoft.translator.Translator: java.lang.String[] langPair_to_values>;
+
+        specialinvoke r1.<android.widget.ArrayAdapter: void <init>(android.content.Context,int,java.lang.Object[])>(r0, 17367048, $r8);
+
+        virtualinvoke r1.<android.widget.ArrayAdapter: void setDropDownViewResource(int)>(17367049);
+
+        $r7 = r0.<com.icksoft.translator.Translator: android.widget.Spinner target_lang_selector>;
+
+        virtualinvoke $r7.<android.widget.Spinner: void setAdapter(android.widget.SpinnerAdapter)>(r1);
+
+        $r7 = r0.<com.icksoft.translator.Translator: android.widget.Spinner target_lang_selector>;
+
+        virtualinvoke $r7.<android.widget.Spinner: void setOnItemSelectedListener(android.widget.AdapterView$OnItemSelectedListener)>(r0);
+
+        return;
+    }
+
+    private void showAboutDialog()
+    {
+        android.widget.TextView $r4;
+        com.icksoft.translator.Translator r0;
+        android.view.LayoutInflater $r1;
+        android.view.View $r2, $r3;
+        android.widget.PopupWindow $r5;
+        android.graphics.drawable.ColorDrawable $r6;
+
+        r0 := @this: com.icksoft.translator.Translator;
+
+        $r1 = staticinvoke <android.view.LayoutInflater: android.view.LayoutInflater 'from'(android.content.Context)>(r0);
+
+        $r2 = virtualinvoke $r1.<android.view.LayoutInflater: android.view.View inflate(int,android.view.ViewGroup)>(2130903040, null);
+
+        $r3 = virtualinvoke $r2.<android.view.View: android.view.View findViewById(int)>(2131492901);
+
+        $r4 = (android.widget.TextView) $r3;
+
+        r0.<com.icksoft.translator.Translator: android.widget.TextView about_ok> = $r4;
+
+        $r4 = r0.<com.icksoft.translator.Translator: android.widget.TextView about_ok>;
+
+        virtualinvoke $r4.<android.widget.TextView: void setOnClickListener(android.view.View$OnClickListener)>(r0);
+
+        $r5 = new android.widget.PopupWindow;
+
+        specialinvoke $r5.<android.widget.PopupWindow: void <init>(android.view.View,int,int,boolean)>($r2, 300, 340, 1);
+
+        r0.<com.icksoft.translator.Translator: android.widget.PopupWindow about> = $r5;
+
+        $r5 = r0.<com.icksoft.translator.Translator: android.widget.PopupWindow about>;
+
+        $r6 = new android.graphics.drawable.ColorDrawable;
+
+        specialinvoke $r6.<android.graphics.drawable.ColorDrawable: void <init>(int)>(-7829368);
+
+        virtualinvoke $r5.<android.widget.PopupWindow: void setBackgroundDrawable(android.graphics.drawable.Drawable)>($r6);
+
+        $r5 = r0.<com.icksoft.translator.Translator: android.widget.PopupWindow about>;
+
+        virtualinvoke $r5.<android.widget.PopupWindow: void setAnimationStyle(int)>(17432576);
+
+        $r5 = r0.<com.icksoft.translator.Translator: android.widget.PopupWindow about>;
+
+        $r2 = virtualinvoke r0.<com.icksoft.translator.Translator: android.view.View findViewById(int)>(2131493116);
+
+        virtualinvoke $r5.<android.widget.PopupWindow: void showAtLocation(android.view.View,int,int,int)>($r2, 17, 0, 0);
+
+        return;
+    }
+
+    private void showFeedback()
+    {
+        com.icksoft.translator.Translator r0;
+        android.app.AlertDialog$Builder $r2;
+        com.icksoft.translator.Translator$3 $r4;
+        com.icksoft.translator.Translator$2 $r3;
+        android.widget.EditText r1;
+
+        r0 := @this: com.icksoft.translator.Translator;
+
+        r1 = new android.widget.EditText;
+
+        specialinvoke r1.<android.widget.EditText: void <init>(android.content.Context)>(r0);
+
+        virtualinvoke r1.<android.widget.EditText: void setHint(int)>(2131165692);
+
+        $r2 = new android.app.AlertDialog$Builder;
+
+        specialinvoke $r2.<android.app.AlertDialog$Builder: void <init>(android.content.Context)>(r0);
+
+        $r2 = virtualinvoke $r2.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setView(android.view.View)>(r1);
+
+        $r2 = virtualinvoke $r2.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setTitle(int)>(2131165691);
+
+        $r2 = virtualinvoke $r2.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setIcon(int)>(2130837603);
+
+        $r3 = new com.icksoft.translator.Translator$2;
+
+        specialinvoke $r3.<com.icksoft.translator.Translator$2: void <init>(com.icksoft.translator.Translator,android.widget.EditText)>(r0, r1);
+
+        $r2 = virtualinvoke $r2.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setPositiveButton(int,android.content.DialogInterface$OnClickListener)>(2131165699, $r3);
+
+        $r4 = new com.icksoft.translator.Translator$3;
+
+        specialinvoke $r4.<com.icksoft.translator.Translator$3: void <init>(com.icksoft.translator.Translator)>(r0);
+
+        $r2 = virtualinvoke $r2.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setNegativeButton(int,android.content.DialogInterface$OnClickListener)>(2131165698, $r4);
+
+        virtualinvoke $r2.<android.app.AlertDialog$Builder: android.app.AlertDialog show()>();
+
+        return;
+    }
+
+    private void showMsg(java.lang.String)
+    {
+        java.lang.String $r1;
+        com.icksoft.translator.Translator r0;
+        android.widget.Toast $r2;
+
+        r0 := @this: com.icksoft.translator.Translator;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = staticinvoke <android.widget.Toast: android.widget.Toast makeText(android.content.Context,java.lang.CharSequence,int)>(r0, $r1, 1);
+
+        virtualinvoke $r2.<android.widget.Toast: void show()>();
+
+        return;
+    }
+
+    private void translating() throws org.apache.http.ParseException, java.io.IOException
+    {
+        org.apache.http.HttpEntity $r5;
+        android.text.Editable $r4;
+        android.os.Message $r7;
+        com.icksoft.translator.Translator r0;
+        android.os.Handler $r6;
+        int i0, $i1;
+        java.lang.StringBuilder $r1;
+        java.lang.String $r2;
+        android.widget.EditText $r3;
+        boolean $z0;
+
+        r0 := @this: com.icksoft.translator.Translator;
+
+        $r1 = new java.lang.StringBuilder;
+
+        $r2 = r0.<com.icksoft.translator.Translator: java.lang.String transUriPrefix>;
+
+        $r2 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r2);
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>(java.lang.String)>($r2);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Translate?");
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("appId=");
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("53D991AB0C8F2E4315795C6E986811D42CBD78A9");
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("&text=");
+
+        $r3 = r0.<com.icksoft.translator.Translator: android.widget.EditText input>;
+
+        $r4 = virtualinvoke $r3.<android.widget.EditText: android.text.Editable getText()>();
+
+        $r2 = interfaceinvoke $r4.<android.text.Editable: java.lang.String toString()>();
+
+        $r2 = staticinvoke <java.net.URLEncoder: java.lang.String encode(java.lang.String,java.lang.String)>($r2, "UTF-8");
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("&from=");
+
+        $r2 = r0.<com.icksoft.translator.Translator: java.lang.String src_lang>;
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("&to=");
+
+        $r2 = r0.<com.icksoft.translator.Translator: java.lang.String target_lang>;
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $z0 = specialinvoke r0.<com.icksoft.translator.Translator: boolean interactionWithServer(java.lang.String)>($r2);
+
+        if $z0 == 0 goto label1;
+
+        $r5 = r0.<com.icksoft.translator.Translator: org.apache.http.HttpEntity httpEntity>;
+
+        $r2 = staticinvoke <org.apache.http.util.EntityUtils: java.lang.String toString(org.apache.http.HttpEntity,java.lang.String)>($r5, "UTF-8");
+
+        i0 = virtualinvoke $r2.<java.lang.String: int indexOf(int)>(62);
+
+        i0 = i0 + 1;
+
+        $i1 = virtualinvoke $r2.<java.lang.String: int indexOf(int,int)>(60, i0);
+
+        $r2 = virtualinvoke $r2.<java.lang.String: java.lang.String substring(int,int)>(i0, $i1);
+
+        $r6 = r0.<com.icksoft.translator.Translator: android.os.Handler transHandler>;
+
+        $r7 = virtualinvoke $r6.<android.os.Handler: android.os.Message obtainMessage(int,java.lang.Object)>(1, $r2);
+
+        r0.<com.icksoft.translator.Translator: android.os.Message msg> = $r7;
+
+        $r6 = r0.<com.icksoft.translator.Translator: android.os.Handler transHandler>;
+
+        $r7 = r0.<com.icksoft.translator.Translator: android.os.Message msg>;
+
+        virtualinvoke $r6.<android.os.Handler: boolean sendMessage(android.os.Message)>($r7);
+
+     label1:
+        return;
+    }
+
+    public void onClick(android.view.View)
+    {
+        android.widget.LinearLayout $r15;
+        java.lang.Object[] $r6;
+        android.content.Intent r10;
+        java.lang.String[] $r18;
+        android.text.Editable $r3;
+        com.icksoft.translator.Translator r0;
+        java.util.Locale $r5;
+        int $i0;
+        android.view.View $r1;
+        android.text.ClipboardManager r17;
+        java.lang.String $r4, $r7, $r8, $r19;
+        com.icksoft.translator.Translator$TransTask $r12;
+        boolean $z0;
+        java.util.concurrent.Executor $r11;
+        android.widget.PopupWindow $r20;
+        android.widget.Spinner $r13;
+        java.lang.StringBuilder $r9;
+        java.lang.Object $r16;
+        android.widget.EditText $r2, $r14;
+
+        r0 := @this: com.icksoft.translator.Translator;
+
+        $r1 := @parameter0: android.view.View;
+
+        $i0 = virtualinvoke $r1.<android.view.View: int getId()>();
+
+        lookupswitch($i0)
+        {
+            case 2131492901: goto label12;
+            case 2131493120: goto label10;
+            case 2131493121: goto label11;
+            case 2131493123: goto label06;
+            case 2131493125: goto label02;
+            case 2131493128: goto label09;
+            default: goto label01;
+        };
+
+     label01:
+        return;
+
+     label02:
+        $r2 = r0.<com.icksoft.translator.Translator: android.widget.EditText input>;
+
+        $r3 = virtualinvoke $r2.<android.widget.EditText: android.text.Editable getText()>();
+
+        $r4 = interfaceinvoke $r3.<android.text.Editable: java.lang.String toString()>();
+
+        $i0 = virtualinvoke $r4.<java.lang.String: int length()>();
+
+        if $i0 != 0 goto label03;
+
+        $r4 = virtualinvoke r0.<com.icksoft.translator.Translator: java.lang.String getString(int)>(2131165705);
+
+        specialinvoke r0.<com.icksoft.translator.Translator: void showMsg(java.lang.String)>($r4);
+
+        return;
+
+     label03:
+        $z0 = specialinvoke r0.<com.icksoft.translator.Translator: boolean isURL(java.lang.String)>($r4);
+
+        if $z0 == 0 goto label05;
+
+        $r5 = staticinvoke <java.util.Locale: java.util.Locale getDefault()>();
+
+        $r6 = newarray (java.lang.Object)[2];
+
+        $r7 = virtualinvoke $r5.<java.util.Locale: java.lang.String getLanguage()>();
+
+        $r6[0] = $r7;
+
+        $r7 = virtualinvoke $r5.<java.util.Locale: java.lang.String getCountry()>();
+
+        $r6[1] = $r7;
+
+        $r7 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("%s-%s", $r6);
+
+        $r8 = r0.<com.icksoft.translator.Translator: java.lang.String target_lang>;
+
+        $z0 = virtualinvoke $r8.<java.lang.String: boolean equals(java.lang.Object)>("zh-CHS");
+
+        if $z0 == 0 goto label04;
+
+        r0.<com.icksoft.translator.Translator: java.lang.String target_lang> = "zh-CN";
+
+     label04:
+        $r9 = new java.lang.StringBuilder;
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>(java.lang.String)>("http://translate.google.com.hk/translate?hl=");
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("&sl=");
+
+        $r7 = r0.<com.icksoft.translator.Translator: java.lang.String src_lang>;
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("&tl=");
+
+        $r7 = r0.<com.icksoft.translator.Translator: java.lang.String target_lang>;
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("&u=");
+
+        $r4 = staticinvoke <java.net.URLEncoder: java.lang.String encode(java.lang.String)>($r4);
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        r10 = new android.content.Intent;
+
+        specialinvoke r10.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>(r0, class "Lcom/icksoft/translator/WebFullScreen;");
+
+        virtualinvoke r10.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("url", $r4);
+
+        virtualinvoke r0.<com.icksoft.translator.Translator: void startActivity(android.content.Intent)>(r10);
+
+        return;
+
+     label05:
+        virtualinvoke r0.<com.icksoft.translator.Translator: void setProgressBarIndeterminateVisibility(boolean)>(1);
+
+        $r11 = r0.<com.icksoft.translator.Translator: java.util.concurrent.Executor pool>;
+
+        $r12 = new com.icksoft.translator.Translator$TransTask;
+
+        specialinvoke $r12.<com.icksoft.translator.Translator$TransTask: void <init>(com.icksoft.translator.Translator)>(r0);
+
+        interfaceinvoke $r11.<java.util.concurrent.Executor: void execute(java.lang.Runnable)>($r12);
+
+        return;
+
+     label06:
+        $r2 = r0.<com.icksoft.translator.Translator: android.widget.EditText input>;
+
+        $r3 = virtualinvoke $r2.<android.widget.EditText: android.text.Editable getText()>();
+
+        $r4 = interfaceinvoke $r3.<android.text.Editable: java.lang.String toString()>();
+
+        $i0 = virtualinvoke $r4.<java.lang.String: int length()>();
+
+        if $i0 != 0 goto label07;
+
+        $r2 = r0.<com.icksoft.translator.Translator: android.widget.EditText output>;
+
+        $r3 = virtualinvoke $r2.<android.widget.EditText: android.text.Editable getText()>();
+
+        $r4 = interfaceinvoke $r3.<android.text.Editable: java.lang.String toString()>();
+
+        $i0 = virtualinvoke $r4.<java.lang.String: int length()>();
+
+        if $i0 == 0 goto label13;
+
+     label07:
+        $r13 = r0.<com.icksoft.translator.Translator: android.widget.Spinner src_lang_selector>;
+
+        $i0 = r0.<com.icksoft.translator.Translator: int target_pos>;
+
+        $i0 = specialinvoke r0.<com.icksoft.translator.Translator: int getSwapedPosition(int,int)>(1, $i0);
+
+        virtualinvoke $r13.<android.widget.Spinner: void setSelection(int)>($i0);
+
+        $r13 = r0.<com.icksoft.translator.Translator: android.widget.Spinner target_lang_selector>;
+
+        $i0 = r0.<com.icksoft.translator.Translator: int src_pos>;
+
+        $i0 = specialinvoke r0.<com.icksoft.translator.Translator: int getSwapedPosition(int,int)>(2, $i0);
+
+        virtualinvoke $r13.<android.widget.Spinner: void setSelection(int)>($i0);
+
+        $r2 = r0.<com.icksoft.translator.Translator: android.widget.EditText input>;
+
+        $r3 = virtualinvoke $r2.<android.widget.EditText: android.text.Editable getText()>();
+
+        $r4 = interfaceinvoke $r3.<android.text.Editable: java.lang.String toString()>();
+
+        $r2 = r0.<com.icksoft.translator.Translator: android.widget.EditText input>;
+
+        $r14 = r0.<com.icksoft.translator.Translator: android.widget.EditText output>;
+
+        $r3 = virtualinvoke $r14.<android.widget.EditText: android.text.Editable getText()>();
+
+        $r7 = interfaceinvoke $r3.<android.text.Editable: java.lang.String toString()>();
+
+        virtualinvoke $r2.<android.widget.EditText: void setText(java.lang.CharSequence)>($r7);
+
+        $r2 = r0.<com.icksoft.translator.Translator: android.widget.EditText output>;
+
+        virtualinvoke $r2.<android.widget.EditText: void setText(java.lang.CharSequence)>($r4);
+
+        $r2 = r0.<com.icksoft.translator.Translator: android.widget.EditText output>;
+
+        $r3 = virtualinvoke $r2.<android.widget.EditText: android.text.Editable getText()>();
+
+        $r4 = interfaceinvoke $r3.<android.text.Editable: java.lang.String toString()>();
+
+        $i0 = virtualinvoke $r4.<java.lang.String: int length()>();
+
+        if $i0 == 0 goto label08;
+
+        $r15 = r0.<com.icksoft.translator.Translator: android.widget.LinearLayout outputLayout>;
+
+        virtualinvoke $r15.<android.widget.LinearLayout: void setVisibility(int)>(0);
+
+        return;
+
+     label08:
+        $r15 = r0.<com.icksoft.translator.Translator: android.widget.LinearLayout outputLayout>;
+
+        virtualinvoke $r15.<android.widget.LinearLayout: void setVisibility(int)>(8);
+
+        return;
+
+     label09:
+        $r2 = r0.<com.icksoft.translator.Translator: android.widget.EditText output>;
+
+        $r3 = virtualinvoke $r2.<android.widget.EditText: android.text.Editable getText()>();
+
+        $r4 = interfaceinvoke $r3.<android.text.Editable: java.lang.String toString()>();
+
+        $i0 = virtualinvoke $r4.<java.lang.String: int length()>();
+
+        if $i0 == 0 goto label13;
+
+        $r16 = virtualinvoke r0.<com.icksoft.translator.Translator: java.lang.Object getSystemService(java.lang.String)>("clipboard");
+
+        r17 = (android.text.ClipboardManager) $r16;
+
+        $r2 = r0.<com.icksoft.translator.Translator: android.widget.EditText output>;
+
+        $r3 = virtualinvoke $r2.<android.widget.EditText: android.text.Editable getText()>();
+
+        $r4 = interfaceinvoke $r3.<android.text.Editable: java.lang.String toString()>();
+
+        virtualinvoke r17.<android.text.ClipboardManager: void setText(java.lang.CharSequence)>($r4);
+
+        $r4 = virtualinvoke r0.<com.icksoft.translator.Translator: java.lang.String getString(int)>(2131165703);
+
+        specialinvoke r0.<com.icksoft.translator.Translator: void showMsg(java.lang.String)>($r4);
+
+        return;
+
+     label10:
+        $r2 = r0.<com.icksoft.translator.Translator: android.widget.EditText input>;
+
+        virtualinvoke $r2.<android.widget.EditText: void setText(java.lang.CharSequence)>("");
+
+        $r2 = r0.<com.icksoft.translator.Translator: android.widget.EditText output>;
+
+        virtualinvoke $r2.<android.widget.EditText: void setText(java.lang.CharSequence)>("");
+
+        $r15 = r0.<com.icksoft.translator.Translator: android.widget.LinearLayout outputLayout>;
+
+        virtualinvoke $r15.<android.widget.LinearLayout: void setVisibility(int)>(8);
+
+        return;
+
+     label11:
+        $r2 = r0.<com.icksoft.translator.Translator: android.widget.EditText input>;
+
+        $r3 = virtualinvoke $r2.<android.widget.EditText: android.text.Editable getText()>();
+
+        $r4 = interfaceinvoke $r3.<android.text.Editable: java.lang.String toString()>();
+
+        $r2 = r0.<com.icksoft.translator.Translator: android.widget.EditText output>;
+
+        $r3 = virtualinvoke $r2.<android.widget.EditText: android.text.Editable getText()>();
+
+        $r7 = interfaceinvoke $r3.<android.text.Editable: java.lang.String toString()>();
+
+        $i0 = virtualinvoke $r4.<java.lang.String: int length()>();
+
+        if $i0 == 0 goto label13;
+
+        $i0 = virtualinvoke $r7.<java.lang.String: int length()>();
+
+        if $i0 == 0 goto label13;
+
+        $r18 = r0.<com.icksoft.translator.Translator: java.lang.String[] langPair_from_values>;
+
+        $i0 = r0.<com.icksoft.translator.Translator: int src_pos>;
+
+        $r8 = $r18[$i0];
+
+        $r18 = r0.<com.icksoft.translator.Translator: java.lang.String[] langPair_from_values>;
+
+        $i0 = r0.<com.icksoft.translator.Translator: int target_pos>;
+
+        $r19 = $r18[$i0];
+
+        $z0 = virtualinvoke $r8.<java.lang.String: boolean equals(java.lang.Object)>($r19);
+
+        if $z0 != 0 goto label13;
+
+        r10 = new android.content.Intent;
+
+        specialinvoke r10.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>(r0, class "Lcom/icksoft/translator/FullScreen;");
+
+        virtualinvoke r10.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("src", $r4);
+
+        virtualinvoke r10.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("target", $r7);
+
+        virtualinvoke r0.<com.icksoft.translator.Translator: void startActivity(android.content.Intent)>(r10);
+
+        return;
+
+     label12:
+        $r20 = r0.<com.icksoft.translator.Translator: android.widget.PopupWindow about>;
+
+        if $r20 == null goto label13;
+
+        $r20 = r0.<com.icksoft.translator.Translator: android.widget.PopupWindow about>;
+
+        virtualinvoke $r20.<android.widget.PopupWindow: void dismiss()>();
+
+     label13:
+        return;
+    }
+
+    public void onCreate(android.os.Bundle)
+    {
+        android.os.Bundle $r1;
+        com.icksoft.translator.Translator r0;
+        com.icksoft.translator.Translator$1 $r3;
+        java.util.concurrent.ExecutorService $r2;
+
+        r0 := @this: com.icksoft.translator.Translator;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke r0.<android.app.Activity: void onCreate(android.os.Bundle)>($r1);
+
+        virtualinvoke r0.<com.icksoft.translator.Translator: boolean requestWindowFeature(int)>(5);
+
+        virtualinvoke r0.<com.icksoft.translator.Translator: void setContentView(int)>(2130903087);
+
+        specialinvoke r0.<com.icksoft.translator.Translator: void setupView()>();
+
+        $r3 = new com.icksoft.translator.Translator$1;
+
+        specialinvoke $r3.<com.icksoft.translator.Translator$1: void <init>(com.icksoft.translator.Translator)>(r0);
+
+        r0.<com.icksoft.translator.Translator: android.os.Handler transHandler> = $r3;
+
+        $r2 = staticinvoke <java.util.concurrent.Executors: java.util.concurrent.ExecutorService newSingleThreadExecutor()>();
+
+        r0.<com.icksoft.translator.Translator: java.util.concurrent.Executor pool> = $r2;
+
+        return;
+    }
+
+    public boolean onCreateOptionsMenu(android.view.Menu)
+    {
+        com.icksoft.translator.Translator r0;
+        android.view.Menu $r1;
+        android.view.MenuItem $r2;
+        boolean $z0;
+
+        r0 := @this: com.icksoft.translator.Translator;
+
+        $r1 := @parameter0: android.view.Menu;
+
+        interfaceinvoke $r1.<android.view.Menu: android.view.MenuItem add(int,int,int,int)>(0, 1, 1, 2131165365);
+
+        interfaceinvoke $r1.<android.view.Menu: android.view.MenuItem add(int,int,int,int)>(0, 2, 2, 2131165711);
+
+        $r2 = interfaceinvoke $r1.<android.view.Menu: android.view.MenuItem add(int,int,int,int)>(0, 3, 3, 2131165712);
+
+        interfaceinvoke $r2.<android.view.MenuItem: android.view.MenuItem setVisible(boolean)>(0);
+
+        $z0 = specialinvoke r0.<android.app.Activity: boolean onCreateOptionsMenu(android.view.Menu)>($r1);
+
+        return $z0;
+    }
+
+    public void onItemSelected(android.widget.AdapterView, android.view.View, int, long)
+    {
+        long $l1;
+        java.lang.String[] $r3;
+        com.icksoft.translator.Translator r0;
+        int $i0, $i2;
+        android.view.View $r2;
+        android.widget.AdapterView r1;
+        java.lang.String $r4;
+
+        r0 := @this: com.icksoft.translator.Translator;
+
+        r1 := @parameter0: android.widget.AdapterView;
+
+        $r2 := @parameter1: android.view.View;
+
+        $i0 := @parameter2: int;
+
+        $l1 := @parameter3: long;
+
+        $i2 = virtualinvoke r1.<android.widget.AdapterView: int getId()>();
+
+        if $i2 != 2131493119 goto label1;
+
+        $r3 = r0.<com.icksoft.translator.Translator: java.lang.String[] langPair_from_keys>;
+
+        $r4 = $r3[$i0];
+
+        r0.<com.icksoft.translator.Translator: java.lang.String src_lang> = $r4;
+
+        r0.<com.icksoft.translator.Translator: int src_pos> = $i0;
+
+        return;
+
+     label1:
+        $r3 = r0.<com.icksoft.translator.Translator: java.lang.String[] langPair_to_keys>;
+
+        $r4 = $r3[$i0];
+
+        r0.<com.icksoft.translator.Translator: java.lang.String target_lang> = $r4;
+
+        r0.<com.icksoft.translator.Translator: int target_pos> = $i0;
+
+        return;
+    }
+
+    public void onNothingSelected(android.widget.AdapterView)
+    {
+        android.widget.AdapterView r1;
+        com.icksoft.translator.Translator r0;
+
+        r0 := @this: com.icksoft.translator.Translator;
+
+        r1 := @parameter0: android.widget.AdapterView;
+
+        return;
+    }
+
+    public boolean onOptionsItemSelected(android.view.MenuItem)
+    {
+        android.content.Intent r2;
+        android.text.Editable $r4;
+        android.view.MenuItem $r1;
+        com.icksoft.translator.Translator r0;
+        int $i0;
+        java.lang.String $r5;
+        android.widget.EditText $r3;
+        boolean $z0;
+
+        r0 := @this: com.icksoft.translator.Translator;
+
+        $r1 := @parameter0: android.view.MenuItem;
+
+        $i0 = interfaceinvoke $r1.<android.view.MenuItem: int getItemId()>();
+
+        lookupswitch($i0)
+        {
+            case 1: goto label2;
+            case 2: goto label3;
+            case 3: goto label4;
+            default: goto label1;
+        };
+
+     label1:
+        $z0 = specialinvoke r0.<android.app.Activity: boolean onOptionsItemSelected(android.view.MenuItem)>($r1);
+
+        return $z0;
+
+     label2:
+        specialinvoke r0.<com.icksoft.translator.Translator: void showAboutDialog()>();
+
+        goto label1;
+
+     label3:
+        specialinvoke r0.<com.icksoft.translator.Translator: void showFeedback()>();
+
+        goto label1;
+
+     label4:
+        r2 = new android.content.Intent;
+
+        specialinvoke r2.<android.content.Intent: void <init>(java.lang.String)>("android.intent.action.SEND");
+
+        $r3 = r0.<com.icksoft.translator.Translator: android.widget.EditText output>;
+
+        $r4 = virtualinvoke $r3.<android.widget.EditText: android.text.Editable getText()>();
+
+        $r5 = interfaceinvoke $r4.<android.text.Editable: java.lang.String toString()>();
+
+        virtualinvoke r2.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("android.intent.extra.TEXT", $r5);
+
+        virtualinvoke r2.<android.content.Intent: android.content.Intent setType(java.lang.String)>("text/plain");
+
+        virtualinvoke r0.<com.icksoft.translator.Translator: void startActivity(android.content.Intent)>(r2);
+
+        goto label1;
+    }
+
+    public boolean onPrepareOptionsMenu(android.view.Menu)
+    {
+        android.text.Editable $r3;
+        android.view.MenuItem $r5;
+        com.icksoft.translator.Translator r0;
+        android.view.Menu $r1;
+        int $i0;
+        java.lang.String $r4;
+        android.widget.EditText $r2;
+        boolean $z0;
+
+        r0 := @this: com.icksoft.translator.Translator;
+
+        $r1 := @parameter0: android.view.Menu;
+
+        $r2 = r0.<com.icksoft.translator.Translator: android.widget.EditText output>;
+
+        $r3 = virtualinvoke $r2.<android.widget.EditText: android.text.Editable getText()>();
+
+        $r4 = interfaceinvoke $r3.<android.text.Editable: java.lang.String toString()>();
+
+        $i0 = virtualinvoke $r4.<java.lang.String: int length()>();
+
+        if $i0 == 0 goto label2;
+
+        $r5 = interfaceinvoke $r1.<android.view.Menu: android.view.MenuItem getItem(int)>(2);
+
+        interfaceinvoke $r5.<android.view.MenuItem: android.view.MenuItem setVisible(boolean)>(1);
+
+     label1:
+        $z0 = specialinvoke r0.<android.app.Activity: boolean onPrepareOptionsMenu(android.view.Menu)>($r1);
+
+        return $z0;
+
+     label2:
+        $r5 = interfaceinvoke $r1.<android.view.Menu: android.view.MenuItem getItem(int)>(2);
+
+        interfaceinvoke $r5.<android.view.MenuItem: android.view.MenuItem setVisible(boolean)>(0);
+
+        goto label1;
+    }
+
+    public android.content.Intent getIntent()
+    {
+        android.content.Intent $r0;
+        com.icksoft.translator.Translator this;
+
+        this := @this: com.icksoft.translator.Translator;
+
+        $r0 = this.<com.icksoft.translator.Translator: android.content.Intent ipcIntent>;
+
+        return $r0;
+    }
+
+    public void setIntent(android.content.Intent)
+    {
+        android.content.Intent parameter0;
+        com.icksoft.translator.Translator this;
+
+        this := @this: com.icksoft.translator.Translator;
+
+        parameter0 := @parameter0: android.content.Intent;
+
+        this.<com.icksoft.translator.Translator: android.content.Intent ipcIntent> = parameter0;
+
+        return;
+    }
+
+    public void setResult(int, android.content.Intent)
+    {
+        int parameter0;
+        android.content.Intent parameter1;
+        com.icksoft.translator.Translator this;
+
+        this := @this: com.icksoft.translator.Translator;
+
+        parameter0 := @parameter0: int;
+
+        parameter1 := @parameter1: android.content.Intent;
+
+        this.<com.icksoft.translator.Translator: android.content.Intent ipcResultIntent> = parameter1;
+
+        return;
+    }
+
+    public static void <clinit>()
+    {
+        <com.icksoft.translator.Translator: java.lang.String AppId> = "53D991AB0C8F2E4315795C6E986811D42CBD78A9";
+
+        return;
+    }
+}

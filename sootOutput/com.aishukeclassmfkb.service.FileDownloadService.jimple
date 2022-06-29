@@ -1,0 +1,1062 @@
+public class com.aishukeclassmfkb.service.FileDownloadService extends android.app.Service
+{
+    private static final int NOTIFY_ID;
+    private java.lang.Integer DownloadFileSize;
+    private java.lang.Integer FileSize;
+    public final int MSG_DownLoadFinished;
+    public final int MSG_DownloadChapter;
+    public final int MSG_DownloadErrorFinished;
+    public final int MSG_SaveChapterInfo;
+    private com.aishukeclassmfkb.entity.FileDownloadInfo bindinfo;
+    private boolean cancelled;
+    private java.net.URLConnection connection;
+    private java.lang.Integer downcontenttrytimes;
+    private android.os.Handler handler;
+    private java.io.InputStream inputStream;
+    private android.content.Context mContext;
+    private android.app.Notification mNotification;
+    private android.app.NotificationManager mNotificationManager;
+    private java.io.OutputStream outputStream;
+    public android.content.Intent ipcIntent;
+    public android.os.IBinder ipcBinder_0;
+
+    public void <init>()
+    {
+        com.aishukeclassmfkb.service.FileDownloadService$1 $r2;
+        com.aishukeclassmfkb.service.FileDownloadService r0;
+        java.lang.Integer $r1;
+
+        r0 := @this: com.aishukeclassmfkb.service.FileDownloadService;
+
+        specialinvoke r0.<android.app.Service: void <init>()>();
+
+        r0.<com.aishukeclassmfkb.service.FileDownloadService: android.content.Context mContext> = r0;
+
+        r0.<com.aishukeclassmfkb.service.FileDownloadService: int MSG_SaveChapterInfo> = 100001;
+
+        r0.<com.aishukeclassmfkb.service.FileDownloadService: int MSG_DownloadChapter> = 100002;
+
+        r0.<com.aishukeclassmfkb.service.FileDownloadService: int MSG_DownLoadFinished> = 100003;
+
+        r0.<com.aishukeclassmfkb.service.FileDownloadService: int MSG_DownloadErrorFinished> = 100004;
+
+        $r1 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(0);
+
+        r0.<com.aishukeclassmfkb.service.FileDownloadService: java.lang.Integer downcontenttrytimes> = $r1;
+
+        $r2 = new com.aishukeclassmfkb.service.FileDownloadService$1;
+
+        specialinvoke $r2.<com.aishukeclassmfkb.service.FileDownloadService$1: void <init>(com.aishukeclassmfkb.service.FileDownloadService)>(r0);
+
+        r0.<com.aishukeclassmfkb.service.FileDownloadService: android.os.Handler handler> = $r2;
+
+        return;
+    }
+
+    private void SendBroadCast(java.lang.Boolean, java.lang.Integer, java.lang.Integer, java.lang.Integer, java.lang.String)
+    {
+        android.content.Intent $r6;
+        com.aishukeclassmfkb.service.FileDownloadService r0;
+        java.lang.Integer $r2, $r3, $r4;
+        java.lang.Boolean $r1;
+        java.lang.StringBuilder $r7;
+        java.lang.String $r5, $r8;
+
+        r0 := @this: com.aishukeclassmfkb.service.FileDownloadService;
+
+        $r1 := @parameter0: java.lang.Boolean;
+
+        $r2 := @parameter1: java.lang.Integer;
+
+        $r3 := @parameter2: java.lang.Integer;
+
+        $r4 := @parameter3: java.lang.Integer;
+
+        $r5 := @parameter4: java.lang.String;
+
+        $r6 = new android.content.Intent;
+
+        specialinvoke $r6.<android.content.Intent: void <init>()>();
+
+        virtualinvoke $r6.<android.content.Intent: android.content.Intent setAction(java.lang.String)>("android.intent.action.FileDownloadReceiver");
+
+        virtualinvoke $r6.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.io.Serializable)>("iserrorfinish", $r1);
+
+        virtualinvoke $r6.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.io.Serializable)>("progress", $r2);
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>()>();
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("(");
+
+        $r8 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r3);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/");
+
+        $r8 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r4);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(")");
+
+        $r8 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r6.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("textprogress", $r8);
+
+        virtualinvoke $r6.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("msg", $r5);
+
+        virtualinvoke r0.<com.aishukeclassmfkb.service.FileDownloadService: void sendBroadcast(android.content.Intent)>($r6);
+
+        return;
+    }
+
+    static boolean access$000(com.aishukeclassmfkb.service.FileDownloadService)
+    {
+        com.aishukeclassmfkb.service.FileDownloadService $r0;
+        boolean z0;
+
+        $r0 := @parameter0: com.aishukeclassmfkb.service.FileDownloadService;
+
+        z0 = $r0.<com.aishukeclassmfkb.service.FileDownloadService: boolean cancelled>;
+
+        return z0;
+    }
+
+    static java.lang.Integer access$100(com.aishukeclassmfkb.service.FileDownloadService)
+    {
+        com.aishukeclassmfkb.service.FileDownloadService $r0;
+        java.lang.Integer r1;
+
+        $r0 := @parameter0: com.aishukeclassmfkb.service.FileDownloadService;
+
+        r1 = $r0.<com.aishukeclassmfkb.service.FileDownloadService: java.lang.Integer FileSize>;
+
+        return r1;
+    }
+
+    static void access$200(com.aishukeclassmfkb.service.FileDownloadService, java.lang.Boolean, java.lang.Integer, java.lang.Integer, java.lang.Integer, java.lang.String)
+    {
+        java.lang.Boolean $r1;
+        java.lang.String $r5;
+        com.aishukeclassmfkb.service.FileDownloadService $r0;
+        java.lang.Integer $r2, $r3, $r4;
+
+        $r0 := @parameter0: com.aishukeclassmfkb.service.FileDownloadService;
+
+        $r1 := @parameter1: java.lang.Boolean;
+
+        $r2 := @parameter2: java.lang.Integer;
+
+        $r3 := @parameter3: java.lang.Integer;
+
+        $r4 := @parameter4: java.lang.Integer;
+
+        $r5 := @parameter5: java.lang.String;
+
+        specialinvoke $r0.<com.aishukeclassmfkb.service.FileDownloadService: void SendBroadCast(java.lang.Boolean,java.lang.Integer,java.lang.Integer,java.lang.Integer,java.lang.String)>($r1, $r2, $r3, $r4, $r5);
+
+        return;
+    }
+
+    static java.lang.Integer access$300(com.aishukeclassmfkb.service.FileDownloadService)
+    {
+        com.aishukeclassmfkb.service.FileDownloadService $r0;
+        java.lang.Integer r1;
+
+        $r0 := @parameter0: com.aishukeclassmfkb.service.FileDownloadService;
+
+        r1 = $r0.<com.aishukeclassmfkb.service.FileDownloadService: java.lang.Integer DownloadFileSize>;
+
+        return r1;
+    }
+
+    static android.app.NotificationManager access$400(com.aishukeclassmfkb.service.FileDownloadService)
+    {
+        android.app.NotificationManager r1;
+        com.aishukeclassmfkb.service.FileDownloadService $r0;
+
+        $r0 := @parameter0: com.aishukeclassmfkb.service.FileDownloadService;
+
+        r1 = $r0.<com.aishukeclassmfkb.service.FileDownloadService: android.app.NotificationManager mNotificationManager>;
+
+        return r1;
+    }
+
+    static void access$500(com.aishukeclassmfkb.service.FileDownloadService)
+    {
+        com.aishukeclassmfkb.service.FileDownloadService $r0;
+
+        $r0 := @parameter0: com.aishukeclassmfkb.service.FileDownloadService;
+
+        specialinvoke $r0.<com.aishukeclassmfkb.service.FileDownloadService: void startDownload()>();
+
+        return;
+    }
+
+    private void startDownload()
+    {
+        byte[] $r16;
+        java.net.URL $r6, $r22;
+        java.lang.Integer $r2, $r17;
+        boolean $z0;
+        java.io.FileNotFoundException $r28;
+        java.lang.StringBuilder $r12, $r23;
+        java.lang.Throwable $r9, $r11, $r15, $r19, $r20;
+        android.content.Intent $r5, $r21;
+        com.aishukeclassmfkb.service.FileDownloadService r0;
+        java.net.URLConnection $r8;
+        int $i0, $i1;
+        java.lang.Boolean $r1;
+        java.lang.String $r4, $r7, $r14;
+        java.io.OutputStream $r18;
+        java.net.MalformedURLException $r26;
+        java.io.FileOutputStream $r25;
+        java.io.IOException $r27;
+        com.aishukeclassmfkb.entity.FileDownloadInfo $r3;
+        java.io.File $r13, $r24;
+        java.io.InputStream $r10;
+
+        r0 := @this: com.aishukeclassmfkb.service.FileDownloadService;
+
+        r0.<com.aishukeclassmfkb.service.FileDownloadService: boolean cancelled> = 0;
+
+        $r1 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(1);
+
+        $r2 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(0);
+
+        r0.<com.aishukeclassmfkb.service.FileDownloadService: java.lang.Integer DownloadFileSize> = $r2;
+
+        $r3 = r0.<com.aishukeclassmfkb.service.FileDownloadService: com.aishukeclassmfkb.entity.FileDownloadInfo bindinfo>;
+
+        $r4 = virtualinvoke $r3.<com.aishukeclassmfkb.entity.FileDownloadInfo: java.lang.String getFileURL()>();
+
+        $r4 = staticinvoke <com.aishukeclassmfkb.util.LeDuUtil: java.lang.String getURLFileName2(java.lang.String)>($r4);
+
+        $z0 = virtualinvoke $r4.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("");
+
+        if $z0 == 0 goto label01;
+
+        $r21 = new android.content.Intent;
+
+        $r5 = $r21;
+
+        specialinvoke $r21.<android.content.Intent: void <init>()>();
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent setAction(java.lang.String)>("android.intent.action.FileDownloadReceiver");
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,boolean)>("iserrorfinish", 1);
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,int)>("progress", 0);
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("textprogress", "(0/0)");
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("msg", "\u6587\u4ef6\u4e0d\u5b58\u5728\u6216\u8005\u7f51\u7edc\u4e2d\u65ad\uff0c\u4e0b\u8f7d\u53d6\u6d88");
+
+        virtualinvoke r0.<com.aishukeclassmfkb.service.FileDownloadService: void sendBroadcast(android.content.Intent)>($r5);
+
+        return;
+
+     label01:
+        $r22 = new java.net.URL;
+
+        $r6 = $r22;
+
+        $r3 = r0.<com.aishukeclassmfkb.service.FileDownloadService: com.aishukeclassmfkb.entity.FileDownloadInfo bindinfo>;
+
+     label02:
+        $r7 = virtualinvoke $r3.<com.aishukeclassmfkb.entity.FileDownloadInfo: java.lang.String getFileURL()>();
+
+        $r7 = staticinvoke <com.aishukeclassmfkb.util.LeDuUtil: java.lang.String getDownURL(java.lang.String)>($r7);
+
+        specialinvoke $r22.<java.net.URL: void <init>(java.lang.String)>($r7);
+
+        $r8 = virtualinvoke $r6.<java.net.URL: java.net.URLConnection openConnection()>();
+
+     label03:
+        r0.<com.aishukeclassmfkb.service.FileDownloadService: java.net.URLConnection connection> = $r8;
+
+        $r8 = r0.<com.aishukeclassmfkb.service.FileDownloadService: java.net.URLConnection connection>;
+
+     label04:
+        $i0 = virtualinvoke $r8.<java.net.URLConnection: int getReadTimeout()>();
+
+     label05:
+        if $i0 != 5 goto label10;
+
+     label06:
+        staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(0);
+
+     label07:
+        return;
+
+     label08:
+        $r9 := @caughtexception;
+
+        $r1 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(0);
+
+        $r26 = (java.net.MalformedURLException) $r9;
+
+        virtualinvoke $r26.<java.net.MalformedURLException: void printStackTrace()>();
+
+     label09:
+        $z0 = virtualinvoke $r1.<java.lang.Boolean: boolean booleanValue()>();
+
+        if $z0 != 0 goto label14;
+
+        $r21 = new android.content.Intent;
+
+        $r5 = $r21;
+
+        specialinvoke $r21.<android.content.Intent: void <init>()>();
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent setAction(java.lang.String)>("android.intent.action.FileDownloadReceiver");
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,boolean)>("iserrorfinish", 1);
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,int)>("progress", 0);
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("textprogress", "(0/0)");
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("msg", "\u7531\u4e8e\u7f51\u7edc\u539f\u56e0\uff0c\u4e0b\u8f7d\u53d6\u6d88");
+
+        virtualinvoke r0.<com.aishukeclassmfkb.service.FileDownloadService: void sendBroadcast(android.content.Intent)>($r5);
+
+        return;
+
+     label10:
+        $r8 = r0.<com.aishukeclassmfkb.service.FileDownloadService: java.net.URLConnection connection>;
+
+     label11:
+        $r10 = virtualinvoke $r8.<java.net.URLConnection: java.io.InputStream getInputStream()>();
+
+     label12:
+        r0.<com.aishukeclassmfkb.service.FileDownloadService: java.io.InputStream inputStream> = $r10;
+
+        goto label09;
+
+     label13:
+        $r11 := @caughtexception;
+
+        $r1 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(0);
+
+        $r27 = (java.io.IOException) $r11;
+
+        virtualinvoke $r27.<java.io.IOException: void printStackTrace()>();
+
+        goto label09;
+
+     label14:
+        $r23 = new java.lang.StringBuilder;
+
+        specialinvoke $r23.<java.lang.StringBuilder: void <init>()>();
+
+        $r13 = staticinvoke <android.os.Environment: java.io.File getExternalStorageDirectory()>();
+
+        $r12 = virtualinvoke $r23.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r13);
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/ledu/downbook");
+
+        $r7 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r24 = new java.io.File;
+
+        $r13 = $r24;
+
+        specialinvoke $r24.<java.io.File: void <init>(java.lang.String)>($r7);
+
+        $z0 = virtualinvoke $r13.<java.io.File: boolean exists()>();
+
+        if $z0 != 0 goto label15;
+
+        virtualinvoke $r13.<java.io.File: boolean mkdir()>();
+
+     label15:
+        $r4 = staticinvoke <java.net.URLDecoder: java.lang.String decode(java.lang.String)>($r4);
+
+        $r3 = r0.<com.aishukeclassmfkb.service.FileDownloadService: com.aishukeclassmfkb.entity.FileDownloadInfo bindinfo>;
+
+        $r14 = virtualinvoke $r3.<com.aishukeclassmfkb.entity.FileDownloadInfo: java.lang.String getFileName()>();
+
+        $z0 = virtualinvoke $r14.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("");
+
+        if $z0 == 0 goto label19;
+
+        $r23 = new java.lang.StringBuilder;
+
+        specialinvoke $r23.<java.lang.StringBuilder: void <init>()>();
+
+        $r12 = virtualinvoke $r23.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/");
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r7 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label16:
+        $r24 = new java.io.File;
+
+        $r13 = $r24;
+
+        specialinvoke $r24.<java.io.File: void <init>(java.lang.String)>($r7);
+
+        $z0 = virtualinvoke $r13.<java.io.File: boolean exists()>();
+
+        if $z0 != 0 goto label21;
+
+     label17:
+        virtualinvoke $r13.<java.io.File: boolean createNewFile()>();
+
+     label18:
+        $z0 = virtualinvoke $r1.<java.lang.Boolean: boolean booleanValue()>();
+
+        if $z0 != 0 goto label22;
+
+        $r21 = new android.content.Intent;
+
+        $r5 = $r21;
+
+        specialinvoke $r21.<android.content.Intent: void <init>()>();
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent setAction(java.lang.String)>("android.intent.action.FileDownloadReceiver");
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,boolean)>("iserrorfinish", 1);
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,int)>("progress", 0);
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("textprogress", "(0/0)");
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("msg", "\u7531\u4e8e\u7f51\u7edc\u539f\u56e0\uff0c\u4e0b\u8f7d\u53d6\u6d88");
+
+        virtualinvoke r0.<com.aishukeclassmfkb.service.FileDownloadService: void sendBroadcast(android.content.Intent)>($r5);
+
+        return;
+
+     label19:
+        $r23 = new java.lang.StringBuilder;
+
+        specialinvoke $r23.<java.lang.StringBuilder: void <init>()>();
+
+        $r12 = virtualinvoke $r23.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/");
+
+        $r3 = r0.<com.aishukeclassmfkb.service.FileDownloadService: com.aishukeclassmfkb.entity.FileDownloadInfo bindinfo>;
+
+        $r7 = virtualinvoke $r3.<com.aishukeclassmfkb.entity.FileDownloadInfo: java.lang.String getFileName()>();
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $i0 = virtualinvoke $r4.<java.lang.String: int lastIndexOf(java.lang.String)>(".");
+
+        $r7 = virtualinvoke $r4.<java.lang.String: java.lang.String substring(int)>($i0);
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $r7 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        goto label16;
+
+     label20:
+        $r15 := @caughtexception;
+
+        $r1 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(0);
+
+        $r27 = (java.io.IOException) $r15;
+
+        virtualinvoke $r27.<java.io.IOException: void printStackTrace()>();
+
+        goto label18;
+
+     label21:
+        $r21 = new android.content.Intent;
+
+        $r5 = $r21;
+
+        specialinvoke $r21.<android.content.Intent: void <init>()>();
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent setAction(java.lang.String)>("android.intent.action.FileDownloadReceiver");
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,boolean)>("iserrorfinish", 1);
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,int)>("progress", 0);
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("textprogress", "(0/0)");
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("msg", "\u5df2\u7ecf\u5b58\u5728\u76f8\u540c\u6587\u4ef6\u540d\u6587\u4ef6\uff0c\u60a8\u53ef\u80fd\u5df2\u7ecf\u4e0b\u8f7d\u8fc7\u672c\u6587\u4ef6\u3002");
+
+        virtualinvoke r0.<com.aishukeclassmfkb.service.FileDownloadService: void sendBroadcast(android.content.Intent)>($r5);
+
+        return;
+
+     label22:
+        $r25 = new java.io.FileOutputStream;
+
+     label23:
+        specialinvoke $r25.<java.io.FileOutputStream: void <init>(java.io.File)>($r13);
+
+     label24:
+        r0.<com.aishukeclassmfkb.service.FileDownloadService: java.io.OutputStream outputStream> = $r25;
+
+        $r16 = newarray (byte)[4096];
+
+        $r8 = r0.<com.aishukeclassmfkb.service.FileDownloadService: java.net.URLConnection connection>;
+
+     label25:
+        $i0 = virtualinvoke $r8.<java.net.URLConnection: int getContentLength()>();
+
+        $r2 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+     label26:
+        r0.<com.aishukeclassmfkb.service.FileDownloadService: java.lang.Integer FileSize> = $r2;
+
+        $r21 = new android.content.Intent;
+
+        $r5 = $r21;
+
+     label27:
+        specialinvoke $r21.<android.content.Intent: void <init>()>();
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent setAction(java.lang.String)>("android.intent.action.FileDownloadReceiver");
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,boolean)>("iserrorfinish", 0);
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,int)>("progress", 0);
+
+     label28:
+        $r23 = new java.lang.StringBuilder;
+
+        $r12 = $r23;
+
+     label29:
+        specialinvoke $r23.<java.lang.StringBuilder: void <init>()>();
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("(0/");
+
+     label30:
+        $r2 = r0.<com.aishukeclassmfkb.service.FileDownloadService: java.lang.Integer FileSize>;
+
+     label31:
+        $r14 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r2);
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r14);
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(")");
+
+        $r14 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("textprogress", $r14);
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("msg", "\u5f00\u59cb\u4e0b\u8f7d\u7535\u5b50\u4e66...");
+
+        virtualinvoke r0.<com.aishukeclassmfkb.service.FileDownloadService: void sendBroadcast(android.content.Intent)>($r5);
+
+     label32:
+        $r2 = r0.<com.aishukeclassmfkb.service.FileDownloadService: java.lang.Integer DownloadFileSize>;
+
+     label33:
+        $i0 = virtualinvoke $r2.<java.lang.Integer: int intValue()>();
+
+     label34:
+        $r2 = r0.<com.aishukeclassmfkb.service.FileDownloadService: java.lang.Integer FileSize>;
+
+     label35:
+        $i1 = virtualinvoke $r2.<java.lang.Integer: int intValue()>();
+
+     label36:
+        if $i0 >= $i1 goto label39;
+
+        $r10 = r0.<com.aishukeclassmfkb.service.FileDownloadService: java.io.InputStream inputStream>;
+
+     label37:
+        $i0 = virtualinvoke $r10.<java.io.InputStream: int read(byte[])>($r16);
+
+        $r2 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        $i0 = virtualinvoke $r2.<java.lang.Integer: int intValue()>();
+
+     label38:
+        if $i0 > 0 goto label60;
+
+     label39:
+        $r3 = r0.<com.aishukeclassmfkb.service.FileDownloadService: com.aishukeclassmfkb.entity.FileDownloadInfo bindinfo>;
+
+        $r2 = r0.<com.aishukeclassmfkb.service.FileDownloadService: java.lang.Integer FileSize>;
+
+     label40:
+        virtualinvoke $r3.<com.aishukeclassmfkb.entity.FileDownloadInfo: void setFileSize(java.lang.Integer)>($r2);
+
+     label41:
+        $r3 = r0.<com.aishukeclassmfkb.service.FileDownloadService: com.aishukeclassmfkb.entity.FileDownloadInfo bindinfo>;
+
+     label42:
+        $r14 = virtualinvoke $r3.<com.aishukeclassmfkb.entity.FileDownloadInfo: java.lang.String getFileName()>();
+
+        $z0 = virtualinvoke $r14.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("");
+
+     label43:
+        if $z0 == 0 goto label45;
+
+        $r3 = r0.<com.aishukeclassmfkb.service.FileDownloadService: com.aishukeclassmfkb.entity.FileDownloadInfo bindinfo>;
+
+     label44:
+        $r4 = virtualinvoke $r4.<java.lang.String: java.lang.String replace(java.lang.CharSequence,java.lang.CharSequence)>(".txt", "");
+
+        virtualinvoke $r3.<com.aishukeclassmfkb.entity.FileDownloadInfo: void setFileName(java.lang.String)>($r4);
+
+     label45:
+        $r3 = r0.<com.aishukeclassmfkb.service.FileDownloadService: com.aishukeclassmfkb.entity.FileDownloadInfo bindinfo>;
+
+     label46:
+        virtualinvoke $r3.<com.aishukeclassmfkb.entity.FileDownloadInfo: void setSavePath(java.lang.String)>($r7);
+
+     label47:
+        $r21 = new android.content.Intent;
+
+        $r5 = $r21;
+
+     label48:
+        specialinvoke $r21.<android.content.Intent: void <init>()>();
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent setAction(java.lang.String)>("android.intent.action.FileDownloadReceiver");
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,boolean)>("iserrorfinish", 0);
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,int)>("progress", 100);
+
+     label49:
+        $r23 = new java.lang.StringBuilder;
+
+        $r12 = $r23;
+
+     label50:
+        specialinvoke $r23.<java.lang.StringBuilder: void <init>()>();
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("(");
+
+     label51:
+        $r2 = r0.<com.aishukeclassmfkb.service.FileDownloadService: java.lang.Integer FileSize>;
+
+     label52:
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r2);
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/");
+
+     label53:
+        $r2 = r0.<com.aishukeclassmfkb.service.FileDownloadService: java.lang.Integer FileSize>;
+
+     label54:
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r2);
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(")");
+
+        $r4 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("textprogress", $r4);
+
+     label55:
+        $r23 = new java.lang.StringBuilder;
+
+        $r12 = $r23;
+
+     label56:
+        specialinvoke $r23.<java.lang.StringBuilder: void <init>()>();
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\u7535\u5b50\u4e66\u4e0b\u8f7d\u5df2\u7ecf\u5b8c\u6210\uff0c\u6587\u4ef6\u4fdd\u5b58\u5730\u5740\uff1a");
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $r4 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("msg", $r4);
+
+     label57:
+        $r3 = r0.<com.aishukeclassmfkb.service.FileDownloadService: com.aishukeclassmfkb.entity.FileDownloadInfo bindinfo>;
+
+     label58:
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.io.Serializable)>("downinfo", $r3);
+
+        virtualinvoke r0.<com.aishukeclassmfkb.service.FileDownloadService: void sendBroadcast(android.content.Intent)>($r5);
+
+     label59:
+        $z0 = virtualinvoke $r1.<java.lang.Boolean: boolean booleanValue()>();
+
+        if $z0 != 0 goto label89;
+
+        $r21 = new android.content.Intent;
+
+        $r5 = $r21;
+
+        specialinvoke $r21.<android.content.Intent: void <init>()>();
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent setAction(java.lang.String)>("android.intent.action.FileDownloadReceiver");
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,boolean)>("iserrorfinish", 1);
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,int)>("progress", 0);
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("textprogress", "(0/0)");
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("msg", "\u7531\u4e8e\u7f51\u7edc\u539f\u56e0\uff0c\u4e0b\u8f7d\u53d6\u6d88");
+
+        virtualinvoke r0.<com.aishukeclassmfkb.service.FileDownloadService: void sendBroadcast(android.content.Intent)>($r5);
+
+        return;
+
+     label60:
+        $r17 = r0.<com.aishukeclassmfkb.service.FileDownloadService: java.lang.Integer DownloadFileSize>;
+
+     label61:
+        $i0 = virtualinvoke $r17.<java.lang.Integer: int intValue()>();
+
+        $i1 = virtualinvoke $r2.<java.lang.Integer: int intValue()>();
+
+     label62:
+        $i0 = $i0 + $i1;
+
+     label63:
+        $r17 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+     label64:
+        r0.<com.aishukeclassmfkb.service.FileDownloadService: java.lang.Integer DownloadFileSize> = $r17;
+
+        $r18 = r0.<com.aishukeclassmfkb.service.FileDownloadService: java.io.OutputStream outputStream>;
+
+     label65:
+        $i0 = virtualinvoke $r2.<java.lang.Integer: int intValue()>();
+
+        virtualinvoke $r18.<java.io.OutputStream: void write(byte[],int,int)>($r16, 0, $i0);
+
+     label66:
+        $r21 = new android.content.Intent;
+
+        $r5 = $r21;
+
+     label67:
+        specialinvoke $r21.<android.content.Intent: void <init>()>();
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent setAction(java.lang.String)>("android.intent.action.FileDownloadReceiver");
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,boolean)>("iserrorfinish", 0);
+
+     label68:
+        $r2 = r0.<com.aishukeclassmfkb.service.FileDownloadService: java.lang.Integer DownloadFileSize>;
+
+     label69:
+        $i0 = virtualinvoke $r2.<java.lang.Integer: int intValue()>();
+
+     label70:
+        $r2 = r0.<com.aishukeclassmfkb.service.FileDownloadService: java.lang.Integer FileSize>;
+
+     label71:
+        $i1 = virtualinvoke $r2.<java.lang.Integer: int intValue()>();
+
+     label72:
+        $i0 = $i0 / $i1;
+
+     label73:
+        $r2 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+     label74:
+        $r17 = $r2;
+
+     label75:
+        $i0 = virtualinvoke $r2.<java.lang.Integer: int intValue()>();
+
+     label76:
+        if $i0 < 100 goto label79;
+
+     label77:
+        $r2 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(99);
+
+     label78:
+        $r17 = $r2;
+
+     label79:
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.io.Serializable)>("progress", $r17);
+
+     label80:
+        $r23 = new java.lang.StringBuilder;
+
+        $r12 = $r23;
+
+     label81:
+        specialinvoke $r23.<java.lang.StringBuilder: void <init>()>();
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("(");
+
+     label82:
+        $r2 = r0.<com.aishukeclassmfkb.service.FileDownloadService: java.lang.Integer DownloadFileSize>;
+
+     label83:
+        $r14 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r2);
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r14);
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/");
+
+     label84:
+        $r2 = r0.<com.aishukeclassmfkb.service.FileDownloadService: java.lang.Integer FileSize>;
+
+     label85:
+        $r14 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r2);
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r14);
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(")");
+
+        $r14 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("textprogress", $r14);
+
+        virtualinvoke $r5.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("msg", "\u6b63\u5728\u4e0b\u8f7d\u7535\u5b50\u4e66...");
+
+        virtualinvoke r0.<com.aishukeclassmfkb.service.FileDownloadService: void sendBroadcast(android.content.Intent)>($r5);
+
+     label86:
+        goto label32;
+
+     label87:
+        $r19 := @caughtexception;
+
+        $r1 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(0);
+
+        $r28 = (java.io.FileNotFoundException) $r19;
+
+        virtualinvoke $r28.<java.io.FileNotFoundException: void printStackTrace()>();
+
+        goto label59;
+
+     label88:
+        $r20 := @caughtexception;
+
+        $r1 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(0);
+
+        $r27 = (java.io.IOException) $r20;
+
+        virtualinvoke $r27.<java.io.IOException: void printStackTrace()>();
+
+        goto label59;
+
+     label89:
+        return;
+
+        catch java.net.MalformedURLException from label02 to label03 with label08;
+        catch java.net.MalformedURLException from label04 to label05 with label08;
+        catch java.net.MalformedURLException from label06 to label07 with label08;
+        catch java.io.IOException from label02 to label03 with label13;
+        catch java.io.IOException from label04 to label05 with label13;
+        catch java.io.IOException from label06 to label07 with label13;
+        catch java.net.MalformedURLException from label11 to label12 with label08;
+        catch java.io.IOException from label11 to label12 with label13;
+        catch java.io.IOException from label17 to label18 with label20;
+        catch java.io.FileNotFoundException from label23 to label24 with label87;
+        catch java.io.FileNotFoundException from label25 to label26 with label87;
+        catch java.io.FileNotFoundException from label27 to label28 with label87;
+        catch java.io.FileNotFoundException from label29 to label30 with label87;
+        catch java.io.FileNotFoundException from label31 to label32 with label87;
+        catch java.io.FileNotFoundException from label33 to label34 with label87;
+        catch java.io.FileNotFoundException from label35 to label36 with label87;
+        catch java.io.FileNotFoundException from label37 to label38 with label87;
+        catch java.io.FileNotFoundException from label40 to label41 with label87;
+        catch java.io.FileNotFoundException from label42 to label43 with label87;
+        catch java.io.FileNotFoundException from label44 to label45 with label87;
+        catch java.io.FileNotFoundException from label46 to label47 with label87;
+        catch java.io.FileNotFoundException from label48 to label49 with label87;
+        catch java.io.FileNotFoundException from label50 to label51 with label87;
+        catch java.io.FileNotFoundException from label52 to label53 with label87;
+        catch java.io.FileNotFoundException from label54 to label55 with label87;
+        catch java.io.FileNotFoundException from label56 to label57 with label87;
+        catch java.io.FileNotFoundException from label58 to label59 with label87;
+        catch java.io.IOException from label23 to label24 with label88;
+        catch java.io.IOException from label25 to label26 with label88;
+        catch java.io.IOException from label27 to label28 with label88;
+        catch java.io.IOException from label29 to label30 with label88;
+        catch java.io.IOException from label31 to label32 with label88;
+        catch java.io.IOException from label33 to label34 with label88;
+        catch java.io.IOException from label35 to label36 with label88;
+        catch java.io.IOException from label37 to label38 with label88;
+        catch java.io.IOException from label40 to label41 with label88;
+        catch java.io.IOException from label42 to label43 with label88;
+        catch java.io.IOException from label44 to label45 with label88;
+        catch java.io.IOException from label46 to label47 with label88;
+        catch java.io.IOException from label48 to label49 with label88;
+        catch java.io.IOException from label50 to label51 with label88;
+        catch java.io.IOException from label52 to label53 with label88;
+        catch java.io.IOException from label54 to label55 with label88;
+        catch java.io.IOException from label56 to label57 with label88;
+        catch java.io.IOException from label58 to label59 with label88;
+        catch java.io.FileNotFoundException from label61 to label62 with label87;
+        catch java.io.FileNotFoundException from label63 to label64 with label87;
+        catch java.io.FileNotFoundException from label65 to label66 with label87;
+        catch java.io.FileNotFoundException from label67 to label68 with label87;
+        catch java.io.FileNotFoundException from label69 to label70 with label87;
+        catch java.io.FileNotFoundException from label71 to label72 with label87;
+        catch java.io.FileNotFoundException from label73 to label74 with label87;
+        catch java.io.FileNotFoundException from label75 to label76 with label87;
+        catch java.io.FileNotFoundException from label77 to label78 with label87;
+        catch java.io.FileNotFoundException from label79 to label80 with label87;
+        catch java.io.FileNotFoundException from label81 to label82 with label87;
+        catch java.io.FileNotFoundException from label83 to label84 with label87;
+        catch java.io.FileNotFoundException from label85 to label86 with label87;
+        catch java.io.IOException from label61 to label62 with label88;
+        catch java.io.IOException from label63 to label64 with label88;
+        catch java.io.IOException from label65 to label66 with label88;
+        catch java.io.IOException from label67 to label68 with label88;
+        catch java.io.IOException from label69 to label70 with label88;
+        catch java.io.IOException from label71 to label72 with label88;
+        catch java.io.IOException from label73 to label74 with label88;
+        catch java.io.IOException from label75 to label76 with label88;
+        catch java.io.IOException from label77 to label78 with label88;
+        catch java.io.IOException from label79 to label80 with label88;
+        catch java.io.IOException from label81 to label82 with label88;
+        catch java.io.IOException from label83 to label84 with label88;
+        catch java.io.IOException from label85 to label86 with label88;
+    }
+
+    public android.os.IBinder onBind(android.content.Intent)
+    {
+        android.content.Intent parameter0;
+        com.aishukeclassmfkb.service.FileDownloadService this;
+
+        this := @this: com.aishukeclassmfkb.service.FileDownloadService;
+
+        parameter0 := @parameter0: android.content.Intent;
+
+        parameter0 = virtualinvoke this.<com.aishukeclassmfkb.service.FileDownloadService: android.content.Intent getIntent()>();
+
+        this.<com.aishukeclassmfkb.service.FileDownloadService: android.os.IBinder ipcBinder_0> = parameter0;
+
+        this.<com.aishukeclassmfkb.service.FileDownloadService: android.os.IBinder ipcBinder_0> = parameter0;
+
+        this.<com.aishukeclassmfkb.service.FileDownloadService: android.os.IBinder ipcBinder_0> = parameter0;
+
+        this.<com.aishukeclassmfkb.service.FileDownloadService: android.os.IBinder ipcBinder_0> = parameter0;
+
+        this.<com.aishukeclassmfkb.service.FileDownloadService: android.os.IBinder ipcBinder_0> = parameter0;
+
+        return parameter0;
+    }
+
+    public void onCreate()
+    {
+        java.lang.Object $r1;
+        android.app.NotificationManager $r2;
+        com.aishukeclassmfkb.service.FileDownloadService r0;
+
+        r0 := @this: com.aishukeclassmfkb.service.FileDownloadService;
+
+        specialinvoke r0.<android.app.Service: void onCreate()>();
+
+        $r1 = virtualinvoke r0.<com.aishukeclassmfkb.service.FileDownloadService: java.lang.Object getSystemService(java.lang.String)>("notification");
+
+        $r2 = (android.app.NotificationManager) $r1;
+
+        r0.<com.aishukeclassmfkb.service.FileDownloadService: android.app.NotificationManager mNotificationManager> = $r2;
+
+        return;
+    }
+
+    public void onDestroy()
+    {
+        com.aishukeclassmfkb.service.FileDownloadService r0;
+
+        r0 := @this: com.aishukeclassmfkb.service.FileDownloadService;
+
+        specialinvoke r0.<android.app.Service: void onDestroy()>();
+
+        r0.<com.aishukeclassmfkb.service.FileDownloadService: boolean cancelled> = 1;
+
+        return;
+    }
+
+    public void onStart(android.content.Intent, int)
+    {
+        com.aishukeclassmfkb.service.FileDownloadService$2 $r6;
+        android.os.Bundle $r2;
+        android.content.Intent $r1;
+        com.aishukeclassmfkb.service.FileDownloadService r0;
+        java.lang.Integer $r5;
+        com.aishukeclassmfkb.entity.FileDownloadInfo $r4;
+        java.io.Serializable $r3;
+        int $i0;
+        boolean $z0;
+
+        r0 := @this: com.aishukeclassmfkb.service.FileDownloadService;
+
+        $r1 := @parameter0: android.content.Intent;
+
+        $i0 := @parameter1: int;
+
+        $r1 = virtualinvoke r0.<com.aishukeclassmfkb.service.FileDownloadService: android.content.Intent getIntent()>();
+
+        specialinvoke r0.<android.app.Service: void onStart(android.content.Intent,int)>($r1, $i0);
+
+        if $r1 != null goto label1;
+
+        $r1 = new android.content.Intent;
+
+        specialinvoke $r1.<android.content.Intent: void <init>()>();
+
+        virtualinvoke $r1.<android.content.Intent: android.content.Intent setAction(java.lang.String)>("android.intent.action.FileDownloadReceiver");
+
+        virtualinvoke $r1.<android.content.Intent: android.content.Intent putExtra(java.lang.String,boolean)>("iserrorfinish", 1);
+
+        virtualinvoke $r1.<android.content.Intent: android.content.Intent putExtra(java.lang.String,int)>("progress", 0);
+
+        virtualinvoke $r1.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("textprogress", "(0/0)");
+
+        virtualinvoke $r1.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("msg", "\u51fa\u73b0\u9519\u8bef\uff0c\u4e0b\u8f7d\u53d6\u6d88");
+
+        virtualinvoke r0.<com.aishukeclassmfkb.service.FileDownloadService: void sendBroadcast(android.content.Intent)>($r1);
+
+        return;
+
+     label1:
+        $r2 = virtualinvoke $r1.<android.content.Intent: android.os.Bundle getExtras()>();
+
+        if $r2 == null goto label2;
+
+        $z0 = virtualinvoke $r2.<android.os.Bundle: boolean containsKey(java.lang.String)>("downinfo");
+
+        if $z0 == 0 goto label2;
+
+        $r3 = virtualinvoke $r2.<android.os.Bundle: java.io.Serializable getSerializable(java.lang.String)>("downinfo");
+
+        $r4 = (com.aishukeclassmfkb.entity.FileDownloadInfo) $r3;
+
+        r0.<com.aishukeclassmfkb.service.FileDownloadService: com.aishukeclassmfkb.entity.FileDownloadInfo bindinfo> = $r4;
+
+     label2:
+        $r5 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(0);
+
+        r0.<com.aishukeclassmfkb.service.FileDownloadService: java.lang.Integer downcontenttrytimes> = $r5;
+
+        $r6 = new com.aishukeclassmfkb.service.FileDownloadService$2;
+
+        specialinvoke $r6.<com.aishukeclassmfkb.service.FileDownloadService$2: void <init>(com.aishukeclassmfkb.service.FileDownloadService)>(r0);
+
+        virtualinvoke $r6.<com.aishukeclassmfkb.service.FileDownloadService$2: void start()>();
+
+        return;
+    }
+
+    public android.content.Intent getIntent()
+    {
+        android.content.Intent $r0;
+        com.aishukeclassmfkb.service.FileDownloadService this;
+
+        this := @this: com.aishukeclassmfkb.service.FileDownloadService;
+
+        $r0 = this.<com.aishukeclassmfkb.service.FileDownloadService: android.content.Intent ipcIntent>;
+
+        return $r0;
+    }
+}

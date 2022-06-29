@@ -1,0 +1,2205 @@
+public class proguard.classfile.editor.CodeAttributeEditor extends proguard.classfile.util.SimplifiedVisitor implements proguard.classfile.attribute.visitor.AttributeVisitor, proguard.classfile.instruction.visitor.InstructionVisitor, proguard.classfile.attribute.visitor.ExceptionInfoVisitor, proguard.classfile.attribute.preverification.visitor.StackMapFrameVisitor, proguard.classfile.attribute.preverification.visitor.VerificationTypeVisitor, proguard.classfile.attribute.visitor.LineNumberInfoVisitor, proguard.classfile.attribute.visitor.LocalVariableInfoVisitor, proguard.classfile.attribute.visitor.LocalVariableTypeInfoVisitor
+{
+    private static final boolean DEBUG;
+    private int codeLength;
+    public boolean[] deleted;
+    private int expectedStackMapFrameOffset;
+    private int[] instructionOffsetMap;
+    private final proguard.classfile.editor.InstructionWriter instructionWriter;
+    private boolean lengthIncreased;
+    private boolean modified;
+    private int newOffset;
+    public proguard.classfile.instruction.Instruction[] postInsertions;
+    public proguard.classfile.instruction.Instruction[] preInsertions;
+    public proguard.classfile.instruction.Instruction[] replacements;
+    private boolean simple;
+    private final proguard.classfile.editor.StackSizeUpdater stackSizeUpdater;
+    private boolean updateFrameSizes;
+    private final proguard.classfile.editor.VariableSizeUpdater variableSizeUpdater;
+
+    public void <init>()
+    {
+        proguard.classfile.editor.CodeAttributeEditor r0;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        specialinvoke r0.<proguard.classfile.editor.CodeAttributeEditor: void <init>(boolean)>(1);
+
+        return;
+    }
+
+    public void <init>(boolean)
+    {
+        proguard.classfile.instruction.Instruction[] $r1;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        boolean[] $r2;
+        proguard.classfile.editor.StackSizeUpdater $r4;
+        proguard.classfile.editor.VariableSizeUpdater $r5;
+        proguard.classfile.editor.InstructionWriter $r6;
+        int[] $r3;
+        boolean $z0;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $z0 := @parameter0: boolean;
+
+        specialinvoke r0.<proguard.classfile.util.SimplifiedVisitor: void <init>()>();
+
+        $r1 = newarray (proguard.classfile.instruction.Instruction)[1024];
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.instruction.Instruction[] preInsertions> = $r1;
+
+        $r1 = newarray (proguard.classfile.instruction.Instruction)[1024];
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.instruction.Instruction[] replacements> = $r1;
+
+        $r1 = newarray (proguard.classfile.instruction.Instruction)[1024];
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.instruction.Instruction[] postInsertions> = $r1;
+
+        $r2 = newarray (boolean)[1024];
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: boolean[] deleted> = $r2;
+
+        $r3 = newarray (int)[1024];
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: int[] instructionOffsetMap> = $r3;
+
+        $r4 = new proguard.classfile.editor.StackSizeUpdater;
+
+        specialinvoke $r4.<proguard.classfile.editor.StackSizeUpdater: void <init>()>();
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.editor.StackSizeUpdater stackSizeUpdater> = $r4;
+
+        $r5 = new proguard.classfile.editor.VariableSizeUpdater;
+
+        specialinvoke $r5.<proguard.classfile.editor.VariableSizeUpdater: void <init>()>();
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.editor.VariableSizeUpdater variableSizeUpdater> = $r5;
+
+        $r6 = new proguard.classfile.editor.InstructionWriter;
+
+        specialinvoke $r6.<proguard.classfile.editor.InstructionWriter: void <init>()>();
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.editor.InstructionWriter instructionWriter> = $r6;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: boolean updateFrameSizes> = 1;
+
+        return;
+    }
+
+    private boolean canPerformSimpleReplacements(proguard.classfile.attribute.CodeAttribute)
+    {
+        byte[] $r2;
+        proguard.classfile.instruction.Instruction[] $r3;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        proguard.classfile.attribute.CodeAttribute $r1;
+        proguard.classfile.instruction.Instruction $r4;
+        int $i0, $i1, $i2, $i3;
+        boolean $z0;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: proguard.classfile.attribute.CodeAttribute;
+
+        $z0 = r0.<proguard.classfile.editor.CodeAttributeEditor: boolean simple>;
+
+        if $z0 != 0 goto label1;
+
+        return 0;
+
+     label1:
+        $r2 = $r1.<proguard.classfile.attribute.CodeAttribute: byte[] code>;
+
+        $i0 = $r1.<proguard.classfile.attribute.CodeAttribute: int u4codeLength>;
+
+        $i1 = 0;
+
+     label2:
+        if $i1 >= $i0 goto label4;
+
+        $r3 = r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.instruction.Instruction[] replacements>;
+
+        $r4 = $r3[$i1];
+
+        if $r4 == null goto label3;
+
+        $i2 = virtualinvoke $r4.<proguard.classfile.instruction.Instruction: int length(int)>($i1);
+
+        $r4 = staticinvoke <proguard.classfile.instruction.InstructionFactory: proguard.classfile.instruction.Instruction create(byte[],int)>($r2, $i1);
+
+        $i3 = virtualinvoke $r4.<proguard.classfile.instruction.Instruction: int length(int)>($i1);
+
+        if $i2 == $i3 goto label3;
+
+        return 0;
+
+     label3:
+        $i1 = $i1 + 1;
+
+        goto label2;
+
+     label4:
+        return 1;
+    }
+
+    private void mapInstruction(int, proguard.classfile.instruction.Instruction)
+    {
+        proguard.classfile.instruction.Instruction[] $r3;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        boolean[] $r5;
+        proguard.classfile.instruction.Instruction $r1, $r4;
+        int[] $r2;
+        int $i0, $i1, $i2;
+        boolean $z0;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: proguard.classfile.instruction.Instruction;
+
+        $r2 = r0.<proguard.classfile.editor.CodeAttributeEditor: int[] instructionOffsetMap>;
+
+        $i1 = r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset>;
+
+        $r2[$i0] = $i1;
+
+        $r3 = r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.instruction.Instruction[] preInsertions>;
+
+        $r4 = $r3[$i0];
+
+        if $r4 == null goto label1;
+
+        $i1 = r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset>;
+
+        $i2 = r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset>;
+
+        $i2 = virtualinvoke $r4.<proguard.classfile.instruction.Instruction: int length(int)>($i2);
+
+        $i1 = $i2 + $i1;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset> = $i1;
+
+     label1:
+        $r3 = r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.instruction.Instruction[] replacements>;
+
+        $r4 = $r3[$i0];
+
+        if $r4 == null goto label3;
+
+        $i1 = r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset>;
+
+        $i2 = r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset>;
+
+        $i2 = virtualinvoke $r4.<proguard.classfile.instruction.Instruction: int length(int)>($i2);
+
+        $i1 = $i2 + $i1;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset> = $i1;
+
+     label2:
+        $r3 = r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.instruction.Instruction[] postInsertions>;
+
+        $r1 = $r3[$i0];
+
+        if $r1 == null goto label4;
+
+        $i0 = r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset>;
+
+        $i1 = r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset>;
+
+        $i1 = virtualinvoke $r1.<proguard.classfile.instruction.Instruction: int length(int)>($i1);
+
+        $i0 = $i1 + $i0;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset> = $i0;
+
+        return;
+
+     label3:
+        $r5 = r0.<proguard.classfile.editor.CodeAttributeEditor: boolean[] deleted>;
+
+        $z0 = $r5[$i0];
+
+        if $z0 != 0 goto label2;
+
+        $i1 = r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset>;
+
+        $i2 = r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset>;
+
+        $i2 = virtualinvoke $r1.<proguard.classfile.instruction.Instruction: int length(int)>($i2);
+
+        $i1 = $i1 + $i2;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset> = $i1;
+
+        goto label2;
+
+     label4:
+        return;
+    }
+
+    private int mapInstructions(byte[], int)
+    {
+        byte[] $r1;
+        proguard.classfile.instruction.Instruction $r2;
+        int[] $r3;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        int $i0, $i1, $i2;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: byte[];
+
+        $i0 := @parameter1: int;
+
+        $i1 = 0;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset> = 0;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: boolean lengthIncreased> = 0;
+
+     label1:
+        $r2 = staticinvoke <proguard.classfile.instruction.InstructionFactory: proguard.classfile.instruction.Instruction create(byte[],int)>($r1, $i1);
+
+        specialinvoke r0.<proguard.classfile.editor.CodeAttributeEditor: void mapInstruction(int,proguard.classfile.instruction.Instruction)>($i1, $r2);
+
+        $i2 = virtualinvoke $r2.<proguard.classfile.instruction.Instruction: int length(int)>($i1);
+
+        $i1 = $i1 + $i2;
+
+        $i2 = r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset>;
+
+        if $i2 <= $i1 goto label2;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: boolean lengthIncreased> = 1;
+
+     label2:
+        if $i1 < $i0 goto label1;
+
+        $r3 = r0.<proguard.classfile.editor.CodeAttributeEditor: int[] instructionOffsetMap>;
+
+        $i0 = r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset>;
+
+        $r3[$i1] = $i0;
+
+        $i0 = r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset>;
+
+        return $i0;
+    }
+
+    private void moveInstruction(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.instruction.Instruction)
+    {
+        proguard.classfile.instruction.Instruction[] $r5;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        boolean[] $r7;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.instruction.Instruction $r4, $r6;
+        int $i0;
+        proguard.classfile.Method $r2;
+        boolean $z0;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.instruction.Instruction;
+
+        $r5 = r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.instruction.Instruction[] preInsertions>;
+
+        $r6 = $r5[$i0];
+
+        if $r6 == null goto label1;
+
+        virtualinvoke $r6.<proguard.classfile.instruction.Instruction: void accept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,int,proguard.classfile.instruction.visitor.InstructionVisitor)>($r1, $r2, $r3, $i0, r0);
+
+     label1:
+        $r5 = r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.instruction.Instruction[] replacements>;
+
+        $r6 = $r5[$i0];
+
+        if $r6 == null goto label3;
+
+        virtualinvoke $r6.<proguard.classfile.instruction.Instruction: void accept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,int,proguard.classfile.instruction.visitor.InstructionVisitor)>($r1, $r2, $r3, $i0, r0);
+
+     label2:
+        $r5 = r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.instruction.Instruction[] postInsertions>;
+
+        $r4 = $r5[$i0];
+
+        if $r4 == null goto label4;
+
+        virtualinvoke $r4.<proguard.classfile.instruction.Instruction: void accept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,int,proguard.classfile.instruction.visitor.InstructionVisitor)>($r1, $r2, $r3, $i0, r0);
+
+        return;
+
+     label3:
+        $r7 = r0.<proguard.classfile.editor.CodeAttributeEditor: boolean[] deleted>;
+
+        $z0 = $r7[$i0];
+
+        if $z0 != 0 goto label2;
+
+        virtualinvoke $r4.<proguard.classfile.instruction.Instruction: void accept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,int,proguard.classfile.instruction.visitor.InstructionVisitor)>($r1, $r2, $r3, $i0, r0);
+
+        goto label2;
+
+     label4:
+        return;
+    }
+
+    private void moveInstructions(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, byte[], int)
+    {
+        byte[] $r4;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.instruction.Instruction $r5;
+        int $i0, $i1, $i2;
+        proguard.classfile.Method $r2;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 := @parameter3: byte[];
+
+        $i0 := @parameter4: int;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset> = 0;
+
+        $i1 = 0;
+
+     label1:
+        $r5 = staticinvoke <proguard.classfile.instruction.InstructionFactory: proguard.classfile.instruction.Instruction create(byte[],int)>($r4, $i1);
+
+        specialinvoke r0.<proguard.classfile.editor.CodeAttributeEditor: void moveInstruction(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,int,proguard.classfile.instruction.Instruction)>($r1, $r2, $r3, $i1, $r5);
+
+        $i2 = virtualinvoke $r5.<proguard.classfile.instruction.Instruction: int length(int)>($i1);
+
+        $i1 = $i2 + $i1;
+
+        if $i1 < $i0 goto label1;
+
+        return;
+    }
+
+    private void performSimpleReplacements(proguard.classfile.attribute.CodeAttribute)
+    {
+        proguard.classfile.attribute.CodeAttribute $r1;
+        proguard.classfile.instruction.Instruction $r3;
+        proguard.classfile.instruction.Instruction[] $r2;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        int $i0, $i1;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 = $r1.<proguard.classfile.attribute.CodeAttribute: int u4codeLength>;
+
+        $i1 = 0;
+
+     label1:
+        if $i1 >= $i0 goto label3;
+
+        $r2 = r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.instruction.Instruction[] replacements>;
+
+        $r3 = $r2[$i1];
+
+        if $r3 == null goto label2;
+
+        virtualinvoke $r3.<proguard.classfile.instruction.Instruction: void write(proguard.classfile.attribute.CodeAttribute,int)>($r1, $i1);
+
+     label2:
+        $i1 = $i1 + 1;
+
+        goto label1;
+
+     label3:
+        return;
+    }
+
+    private int remapBranchOffset(int, int)
+    {
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        int $i0, $i1;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $i0 = $i0 + $i1;
+
+        $i1 = specialinvoke r0.<proguard.classfile.editor.CodeAttributeEditor: int remapInstructionOffset(int)>($i0);
+
+        $i0 = r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset>;
+
+        $i0 = $i1 - $i0;
+
+        return $i0;
+    }
+
+    private int remapInstructionOffset(int)
+    {
+        int[] $r4;
+        java.lang.StringBuffer $r2;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        int $i0, $i1;
+        java.lang.String $r3;
+        java.lang.IllegalArgumentException $r1;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $i0 := @parameter0: int;
+
+        if $i0 < 0 goto label1;
+
+        $i1 = r0.<proguard.classfile.editor.CodeAttributeEditor: int codeLength>;
+
+        if $i0 <= $i1 goto label2;
+
+     label1:
+        $r1 = new java.lang.IllegalArgumentException;
+
+        $r2 = new java.lang.StringBuffer;
+
+        specialinvoke $r2.<java.lang.StringBuffer: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Invalid instruction offset [");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("] in code with length [");
+
+        $i0 = r0.<proguard.classfile.editor.CodeAttributeEditor: int codeLength>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke $r1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r3);
+
+        throw $r1;
+
+     label2:
+        $r4 = r0.<proguard.classfile.editor.CodeAttributeEditor: int[] instructionOffsetMap>;
+
+        $i0 = $r4[$i0];
+
+        return $i0;
+    }
+
+    private void remapJumpOffsets(int, int[])
+    {
+        int[] $r1;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        int $i0, $i1, $i2;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: int[];
+
+        $i2 = 0;
+
+     label1:
+        $i1 = lengthof $r1;
+
+        if $i2 >= $i1 goto label2;
+
+        $i1 = $r1[$i2];
+
+        $i1 = specialinvoke r0.<proguard.classfile.editor.CodeAttributeEditor: int remapBranchOffset(int,int)>($i0, $i1);
+
+        $r1[$i2] = $i1;
+
+        $i2 = $i2 + 1;
+
+        goto label1;
+
+     label2:
+        return;
+    }
+
+    private int removeEmptyExceptions(proguard.classfile.attribute.ExceptionInfo[], int)
+    {
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        proguard.classfile.attribute.ExceptionInfo[] $r1;
+        int $i0, $i1, $i2, $i3, $i4;
+        proguard.classfile.attribute.ExceptionInfo $r2;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: proguard.classfile.attribute.ExceptionInfo[];
+
+        $i0 := @parameter1: int;
+
+        $i2 = 0;
+
+        $i3 = 0;
+
+     label1:
+        if $i2 >= $i0 goto label3;
+
+        $r2 = $r1[$i2];
+
+        $i4 = $r2.<proguard.classfile.attribute.ExceptionInfo: int u2startPC>;
+
+        $i1 = $r2.<proguard.classfile.attribute.ExceptionInfo: int u2endPC>;
+
+        if $i4 >= $i1 goto label2;
+
+        $r1[$i3] = $r2;
+
+        $i3 = $i3 + 1;
+
+     label2:
+        $i2 = $i2 + 1;
+
+        goto label1;
+
+     label3:
+        return $i3;
+    }
+
+    private int removeEmptyLineNumbers(proguard.classfile.attribute.LineNumberInfo[], int, int)
+    {
+        proguard.classfile.attribute.LineNumberInfo $r2, $r3;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        proguard.classfile.attribute.LineNumberInfo[] $r1;
+        int $i0, $i1, $i2, $i3, $i4, $i5;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: proguard.classfile.attribute.LineNumberInfo[];
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $i2 = 0;
+
+        $i3 = 0;
+
+     label1:
+        if $i2 >= $i0 goto label4;
+
+        $r2 = $r1[$i2];
+
+        $i4 = $r2.<proguard.classfile.attribute.LineNumberInfo: int u2startPC>;
+
+        if $i4 >= $i1 goto label3;
+
+        if $i2 == 0 goto label2;
+
+        $i5 = $i2 - 1;
+
+        $r3 = $r1[$i5];
+
+        $i5 = $r3.<proguard.classfile.attribute.LineNumberInfo: int u2startPC>;
+
+        if $i4 <= $i5 goto label3;
+
+     label2:
+        $r1[$i3] = $r2;
+
+        $i3 = $i3 + 1;
+
+     label3:
+        $i2 = $i2 + 1;
+
+        goto label1;
+
+     label4:
+        return $i3;
+    }
+
+    private int updateInstructions(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute)
+    {
+        byte[] $r4, $r6;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        proguard.classfile.editor.InstructionWriter $r7;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int[] $r5;
+        int $i0, $i1, $i2;
+        proguard.classfile.Method $r2;
+        boolean $z0;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 = $r3.<proguard.classfile.attribute.CodeAttribute: byte[] code>;
+
+        $i0 = $r3.<proguard.classfile.attribute.CodeAttribute: int u4codeLength>;
+
+        $r5 = r0.<proguard.classfile.editor.CodeAttributeEditor: int[] instructionOffsetMap>;
+
+        $i1 = lengthof $r5;
+
+        $i2 = $i0 + 1;
+
+        if $i1 >= $i2 goto label1;
+
+        $i1 = $i0 + 1;
+
+        $r5 = newarray (int)[$i1];
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: int[] instructionOffsetMap> = $r5;
+
+     label1:
+        $i1 = specialinvoke r0.<proguard.classfile.editor.CodeAttributeEditor: int mapInstructions(byte[],int)>($r4, $i0);
+
+        $z0 = r0.<proguard.classfile.editor.CodeAttributeEditor: boolean lengthIncreased>;
+
+        if $z0 == 0 goto label2;
+
+        $r6 = newarray (byte)[$i1];
+
+        $r3.<proguard.classfile.attribute.CodeAttribute: byte[] code> = $r6;
+
+     label2:
+        $r7 = r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.editor.InstructionWriter instructionWriter>;
+
+        virtualinvoke $r7.<proguard.classfile.editor.InstructionWriter: void reset(int)>($i1);
+
+        specialinvoke r0.<proguard.classfile.editor.CodeAttributeEditor: void moveInstructions(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,byte[],int)>($r1, $r2, $r3, $r4, $i0);
+
+        return $i1;
+    }
+
+    public void deleteInstruction(int)
+    {
+        java.lang.StringBuffer $r2;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        int $i0, $i1;
+        boolean[] $r4;
+        java.lang.String $r3;
+        java.lang.IllegalArgumentException $r1;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $i0 := @parameter0: int;
+
+        if $i0 < 0 goto label1;
+
+        $i1 = r0.<proguard.classfile.editor.CodeAttributeEditor: int codeLength>;
+
+        if $i0 < $i1 goto label2;
+
+     label1:
+        $r1 = new java.lang.IllegalArgumentException;
+
+        $r2 = new java.lang.StringBuffer;
+
+        specialinvoke $r2.<java.lang.StringBuffer: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Invalid instruction offset [");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("] in code with length [");
+
+        $i0 = r0.<proguard.classfile.editor.CodeAttributeEditor: int codeLength>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke $r1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r3);
+
+        throw $r1;
+
+     label2:
+        $r4 = r0.<proguard.classfile.editor.CodeAttributeEditor: boolean[] deleted>;
+
+        $r4[$i0] = 1;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: boolean modified> = 1;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: boolean simple> = 0;
+
+        return;
+    }
+
+    public void insertAfterInstruction(int, proguard.classfile.instruction.Instruction)
+    {
+        proguard.classfile.instruction.Instruction[] $r5;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        java.lang.IllegalArgumentException $r2;
+        proguard.classfile.instruction.Instruction $r1;
+        java.lang.StringBuffer $r3;
+        int $i0, $i1;
+        java.lang.String $r4;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: proguard.classfile.instruction.Instruction;
+
+        if $i0 < 0 goto label1;
+
+        $i1 = r0.<proguard.classfile.editor.CodeAttributeEditor: int codeLength>;
+
+        if $i0 < $i1 goto label2;
+
+     label1:
+        $r2 = new java.lang.IllegalArgumentException;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Invalid instruction offset [");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("] in code with length [");
+
+        $i0 = r0.<proguard.classfile.editor.CodeAttributeEditor: int codeLength>;
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r4);
+
+        throw $r2;
+
+     label2:
+        $r5 = r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.instruction.Instruction[] postInsertions>;
+
+        $r5[$i0] = $r1;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: boolean modified> = 1;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: boolean simple> = 0;
+
+        return;
+    }
+
+    public void insertAfterInstruction(int, proguard.classfile.instruction.Instruction[])
+    {
+        proguard.classfile.instruction.Instruction[] $r1, $r5;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        java.lang.IllegalArgumentException $r2;
+        java.lang.StringBuffer $r3;
+        int $i0, $i1;
+        java.lang.String $r4;
+        proguard.classfile.editor.CodeAttributeEditor$CompositeInstruction $r6;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: proguard.classfile.instruction.Instruction[];
+
+        if $i0 < 0 goto label1;
+
+        $i1 = r0.<proguard.classfile.editor.CodeAttributeEditor: int codeLength>;
+
+        if $i0 < $i1 goto label2;
+
+     label1:
+        $r2 = new java.lang.IllegalArgumentException;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Invalid instruction offset [");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("] in code with length [");
+
+        $i0 = r0.<proguard.classfile.editor.CodeAttributeEditor: int codeLength>;
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r4);
+
+        throw $r2;
+
+     label2:
+        $r5 = r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.instruction.Instruction[] postInsertions>;
+
+        $r6 = new proguard.classfile.editor.CodeAttributeEditor$CompositeInstruction;
+
+        specialinvoke $r6.<proguard.classfile.editor.CodeAttributeEditor$CompositeInstruction: void <init>(proguard.classfile.editor.CodeAttributeEditor,proguard.classfile.instruction.Instruction[],proguard.classfile.editor.CodeAttributeEditor$1)>(r0, $r1, null);
+
+        $r5[$i0] = $r6;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: boolean modified> = 1;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: boolean simple> = 0;
+
+        return;
+    }
+
+    public void insertBeforeInstruction(int, proguard.classfile.instruction.Instruction)
+    {
+        proguard.classfile.instruction.Instruction[] $r5;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        java.lang.IllegalArgumentException $r2;
+        proguard.classfile.instruction.Instruction $r1;
+        java.lang.StringBuffer $r3;
+        int $i0, $i1;
+        java.lang.String $r4;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: proguard.classfile.instruction.Instruction;
+
+        if $i0 < 0 goto label1;
+
+        $i1 = r0.<proguard.classfile.editor.CodeAttributeEditor: int codeLength>;
+
+        if $i0 < $i1 goto label2;
+
+     label1:
+        $r2 = new java.lang.IllegalArgumentException;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Invalid instruction offset [");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("] in code with length [");
+
+        $i0 = r0.<proguard.classfile.editor.CodeAttributeEditor: int codeLength>;
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r4);
+
+        throw $r2;
+
+     label2:
+        $r5 = r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.instruction.Instruction[] preInsertions>;
+
+        $r5[$i0] = $r1;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: boolean modified> = 1;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: boolean simple> = 0;
+
+        return;
+    }
+
+    public void insertBeforeInstruction(int, proguard.classfile.instruction.Instruction[])
+    {
+        proguard.classfile.instruction.Instruction[] $r1, $r5;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        java.lang.IllegalArgumentException $r2;
+        java.lang.StringBuffer $r3;
+        int $i0, $i1;
+        java.lang.String $r4;
+        proguard.classfile.editor.CodeAttributeEditor$CompositeInstruction $r6;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: proguard.classfile.instruction.Instruction[];
+
+        if $i0 < 0 goto label1;
+
+        $i1 = r0.<proguard.classfile.editor.CodeAttributeEditor: int codeLength>;
+
+        if $i0 < $i1 goto label2;
+
+     label1:
+        $r2 = new java.lang.IllegalArgumentException;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Invalid instruction offset [");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("] in code with length [");
+
+        $i0 = r0.<proguard.classfile.editor.CodeAttributeEditor: int codeLength>;
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r4);
+
+        throw $r2;
+
+     label2:
+        $r5 = r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.instruction.Instruction[] preInsertions>;
+
+        $r6 = new proguard.classfile.editor.CodeAttributeEditor$CompositeInstruction;
+
+        specialinvoke $r6.<proguard.classfile.editor.CodeAttributeEditor$CompositeInstruction: void <init>(proguard.classfile.editor.CodeAttributeEditor,proguard.classfile.instruction.Instruction[],proguard.classfile.editor.CodeAttributeEditor$1)>(r0, $r1, null);
+
+        $r5[$i0] = $r6;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: boolean modified> = 1;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: boolean simple> = 0;
+
+        return;
+    }
+
+    public boolean isModified(int)
+    {
+        proguard.classfile.instruction.Instruction $r2;
+        proguard.classfile.instruction.Instruction[] $r1;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        int $i0;
+        boolean[] $r3;
+        boolean $z0;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $i0 := @parameter0: int;
+
+        $r1 = r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.instruction.Instruction[] preInsertions>;
+
+        $r2 = $r1[$i0];
+
+        if $r2 != null goto label1;
+
+        $r1 = r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.instruction.Instruction[] replacements>;
+
+        $r2 = $r1[$i0];
+
+        if $r2 != null goto label1;
+
+        $r1 = r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.instruction.Instruction[] postInsertions>;
+
+        $r2 = $r1[$i0];
+
+        if $r2 != null goto label1;
+
+        $r3 = r0.<proguard.classfile.editor.CodeAttributeEditor: boolean[] deleted>;
+
+        $z0 = $r3[$i0];
+
+        if $z0 == 0 goto label2;
+
+     label1:
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    public void replaceInstruction(int, proguard.classfile.instruction.Instruction)
+    {
+        proguard.classfile.instruction.Instruction[] $r5;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        java.lang.IllegalArgumentException $r2;
+        proguard.classfile.instruction.Instruction $r1;
+        java.lang.StringBuffer $r3;
+        int $i0, $i1;
+        java.lang.String $r4;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: proguard.classfile.instruction.Instruction;
+
+        if $i0 < 0 goto label1;
+
+        $i1 = r0.<proguard.classfile.editor.CodeAttributeEditor: int codeLength>;
+
+        if $i0 < $i1 goto label2;
+
+     label1:
+        $r2 = new java.lang.IllegalArgumentException;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Invalid instruction offset [");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("] in code with length [");
+
+        $i0 = r0.<proguard.classfile.editor.CodeAttributeEditor: int codeLength>;
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r4);
+
+        throw $r2;
+
+     label2:
+        $r5 = r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.instruction.Instruction[] replacements>;
+
+        $r5[$i0] = $r1;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: boolean modified> = 1;
+
+        return;
+    }
+
+    public void replaceInstruction(int, proguard.classfile.instruction.Instruction[])
+    {
+        proguard.classfile.instruction.Instruction[] $r1, $r5;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        java.lang.IllegalArgumentException $r2;
+        java.lang.StringBuffer $r3;
+        int $i0, $i1;
+        java.lang.String $r4;
+        proguard.classfile.editor.CodeAttributeEditor$CompositeInstruction $r6;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: proguard.classfile.instruction.Instruction[];
+
+        if $i0 < 0 goto label1;
+
+        $i1 = r0.<proguard.classfile.editor.CodeAttributeEditor: int codeLength>;
+
+        if $i0 < $i1 goto label2;
+
+     label1:
+        $r2 = new java.lang.IllegalArgumentException;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Invalid instruction offset [");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("] in code with length [");
+
+        $i0 = r0.<proguard.classfile.editor.CodeAttributeEditor: int codeLength>;
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r4);
+
+        throw $r2;
+
+     label2:
+        $r5 = r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.instruction.Instruction[] replacements>;
+
+        $r6 = new proguard.classfile.editor.CodeAttributeEditor$CompositeInstruction;
+
+        specialinvoke $r6.<proguard.classfile.editor.CodeAttributeEditor$CompositeInstruction: void <init>(proguard.classfile.editor.CodeAttributeEditor,proguard.classfile.instruction.Instruction[],proguard.classfile.editor.CodeAttributeEditor$1)>(r0, $r1, null);
+
+        $r5[$i0] = $r6;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: boolean modified> = 1;
+
+        return;
+    }
+
+    public void reset(int)
+    {
+        proguard.classfile.instruction.Instruction[] $r1;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        int $i0, $i1;
+        boolean[] $r2;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $i0 := @parameter0: int;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: int codeLength> = $i0;
+
+        $r1 = r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.instruction.Instruction[] preInsertions>;
+
+        $i1 = lengthof $r1;
+
+        if $i1 >= $i0 goto label2;
+
+        $r1 = newarray (proguard.classfile.instruction.Instruction)[$i0];
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.instruction.Instruction[] preInsertions> = $r1;
+
+        $r1 = newarray (proguard.classfile.instruction.Instruction)[$i0];
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.instruction.Instruction[] replacements> = $r1;
+
+        $r1 = newarray (proguard.classfile.instruction.Instruction)[$i0];
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.instruction.Instruction[] postInsertions> = $r1;
+
+        $r2 = newarray (boolean)[$i0];
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: boolean[] deleted> = $r2;
+
+     label1:
+        r0.<proguard.classfile.editor.CodeAttributeEditor: boolean modified> = 0;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: boolean simple> = 1;
+
+        return;
+
+     label2:
+        $i1 = 0;
+
+     label3:
+        if $i1 >= $i0 goto label1;
+
+        $r1 = r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.instruction.Instruction[] preInsertions>;
+
+        $r1[$i1] = null;
+
+        $r1 = r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.instruction.Instruction[] replacements>;
+
+        $r1[$i1] = null;
+
+        $r1 = r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.instruction.Instruction[] postInsertions>;
+
+        $r1[$i1] = null;
+
+        $r2 = r0.<proguard.classfile.editor.CodeAttributeEditor: boolean[] deleted>;
+
+        $r2[$i1] = 0;
+
+        $i1 = $i1 + 1;
+
+        goto label3;
+    }
+
+    public void undeleteInstruction(int)
+    {
+        java.lang.StringBuffer $r2;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        int $i0, $i1;
+        boolean[] $r4;
+        java.lang.String $r3;
+        java.lang.IllegalArgumentException $r1;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $i0 := @parameter0: int;
+
+        if $i0 < 0 goto label1;
+
+        $i1 = r0.<proguard.classfile.editor.CodeAttributeEditor: int codeLength>;
+
+        if $i0 < $i1 goto label2;
+
+     label1:
+        $r1 = new java.lang.IllegalArgumentException;
+
+        $r2 = new java.lang.StringBuffer;
+
+        specialinvoke $r2.<java.lang.StringBuffer: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Invalid instruction offset [");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("] in code with length [");
+
+        $i0 = r0.<proguard.classfile.editor.CodeAttributeEditor: int codeLength>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke $r1.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r3);
+
+        throw $r1;
+
+     label2:
+        $r4 = r0.<proguard.classfile.editor.CodeAttributeEditor: boolean[] deleted>;
+
+        $r4[$i0] = 0;
+
+        return;
+    }
+
+    public void visitAnyAttribute(proguard.classfile.Clazz, proguard.classfile.attribute.Attribute)
+    {
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.Attribute $r2;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.Attribute;
+
+        return;
+    }
+
+    public void visitAnyStackMapFrame(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.attribute.preverification.StackMapFrame)
+    {
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        proguard.classfile.attribute.preverification.StackMapFrame $r4;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int $i0, $i1, $i2;
+        proguard.classfile.Method $r2;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.attribute.preverification.StackMapFrame;
+
+        $i0 = specialinvoke r0.<proguard.classfile.editor.CodeAttributeEditor: int remapInstructionOffset(int)>($i0);
+
+        $i1 = $i0;
+
+        $i2 = r0.<proguard.classfile.editor.CodeAttributeEditor: int expectedStackMapFrameOffset>;
+
+        if $i2 < 0 goto label1;
+
+        $i1 = r0.<proguard.classfile.editor.CodeAttributeEditor: int expectedStackMapFrameOffset>;
+
+        $i1 = $i0 - $i1;
+
+        $i0 = $i0 + 1;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: int expectedStackMapFrameOffset> = $i0;
+
+     label1:
+        $r4.<proguard.classfile.attribute.preverification.StackMapFrame: int u2offsetDelta> = $i1;
+
+        return;
+    }
+
+    public void visitAnyVerificationType(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.attribute.preverification.VerificationType)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        int $i0;
+        proguard.classfile.Method $r2;
+        proguard.classfile.attribute.preverification.VerificationType $r4;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.attribute.preverification.VerificationType;
+
+        return;
+    }
+
+    public void visitBranchInstruction(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.instruction.BranchInstruction)
+    {
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        proguard.classfile.instruction.BranchInstruction $r4;
+        proguard.classfile.editor.InstructionWriter $r5;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int $i0, $i1;
+        proguard.classfile.Method $r2;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.instruction.BranchInstruction;
+
+        $i1 = $r4.<proguard.classfile.instruction.BranchInstruction: int branchOffset>;
+
+        $i0 = specialinvoke r0.<proguard.classfile.editor.CodeAttributeEditor: int remapBranchOffset(int,int)>($i0, $i1);
+
+        $r4.<proguard.classfile.instruction.BranchInstruction: int branchOffset> = $i0;
+
+        $r5 = r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.editor.InstructionWriter instructionWriter>;
+
+        $i0 = r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset>;
+
+        virtualinvoke $r5.<proguard.classfile.editor.InstructionWriter: void visitBranchInstruction(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,int,proguard.classfile.instruction.BranchInstruction)>($r1, $r2, $r3, $i0, $r4);
+
+        $i0 = r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset>;
+
+        $i1 = r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset>;
+
+        $i1 = virtualinvoke $r4.<proguard.classfile.instruction.BranchInstruction: int length(int)>($i1);
+
+        $i0 = $i0 + $i1;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset> = $i0;
+
+        return;
+    }
+
+    public void visitCodeAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute)
+    {
+        java.io.PrintStream $r5;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        java.lang.RuntimeException $r4;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        java.lang.StringBuffer $r6;
+        proguard.classfile.Method $r2;
+        java.lang.Class $r8;
+        java.lang.String $r7;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+     label1:
+        virtualinvoke r0.<proguard.classfile.editor.CodeAttributeEditor: void visitCodeAttribute0(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute)>($r1, $r2, $r3);
+
+     label2:
+        return;
+
+     label3:
+        $r4 := @caughtexception;
+
+        $r5 = <java.lang.System: java.io.PrintStream err>;
+
+        virtualinvoke $r5.<java.io.PrintStream: void println(java.lang.String)>("Unexpected error while editing code:");
+
+        $r5 = <java.lang.System: java.io.PrintStream err>;
+
+        $r6 = new java.lang.StringBuffer;
+
+        specialinvoke $r6.<java.lang.StringBuffer: void <init>()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("  Class       = [");
+
+        $r7 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getName()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r7);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        virtualinvoke $r5.<java.io.PrintStream: void println(java.lang.String)>($r7);
+
+        $r5 = <java.lang.System: java.io.PrintStream err>;
+
+        $r6 = new java.lang.StringBuffer;
+
+        specialinvoke $r6.<java.lang.StringBuffer: void <init>()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("  Method      = [");
+
+        $r7 = interfaceinvoke $r2.<proguard.classfile.Method: java.lang.String getName(proguard.classfile.Clazz)>($r1);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r7);
+
+        $r7 = interfaceinvoke $r2.<proguard.classfile.Method: java.lang.String getDescriptor(proguard.classfile.Clazz)>($r1);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r7);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        virtualinvoke $r5.<java.io.PrintStream: void println(java.lang.String)>($r7);
+
+        $r5 = <java.lang.System: java.io.PrintStream err>;
+
+        $r6 = new java.lang.StringBuffer;
+
+        specialinvoke $r6.<java.lang.StringBuffer: void <init>()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("  Exception   = [");
+
+        $r8 = virtualinvoke $r4.<java.lang.Object: java.lang.Class getClass()>();
+
+        $r7 = virtualinvoke $r8.<java.lang.Class: java.lang.String getName()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r7);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("] (");
+
+        $r7 = virtualinvoke $r4.<java.lang.RuntimeException: java.lang.String getMessage()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r7);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(")");
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        virtualinvoke $r5.<java.io.PrintStream: void println(java.lang.String)>($r7);
+
+        throw $r4;
+
+        catch java.lang.RuntimeException from label1 to label2 with label3;
+    }
+
+    public void visitCodeAttribute0(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute)
+    {
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        proguard.classfile.editor.StackSizeUpdater $r5;
+        proguard.classfile.editor.VariableSizeUpdater $r6;
+        proguard.classfile.editor.InstructionWriter $r4;
+        proguard.classfile.attribute.ExceptionInfo[] $r7;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int $i0;
+        proguard.classfile.Method $r2;
+        boolean $z0;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $z0 = r0.<proguard.classfile.editor.CodeAttributeEditor: boolean modified>;
+
+        if $z0 == 0 goto label2;
+
+        $z0 = specialinvoke r0.<proguard.classfile.editor.CodeAttributeEditor: boolean canPerformSimpleReplacements(proguard.classfile.attribute.CodeAttribute)>($r3);
+
+        if $z0 == 0 goto label3;
+
+        specialinvoke r0.<proguard.classfile.editor.CodeAttributeEditor: void performSimpleReplacements(proguard.classfile.attribute.CodeAttribute)>($r3);
+
+     label1:
+        $r4 = r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.editor.InstructionWriter instructionWriter>;
+
+        virtualinvoke $r4.<proguard.classfile.editor.InstructionWriter: void visitCodeAttribute(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute)>($r1, $r2, $r3);
+
+     label2:
+        $z0 = r0.<proguard.classfile.editor.CodeAttributeEditor: boolean updateFrameSizes>;
+
+        if $z0 == 0 goto label4;
+
+        $r5 = r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.editor.StackSizeUpdater stackSizeUpdater>;
+
+        virtualinvoke $r5.<proguard.classfile.editor.StackSizeUpdater: void visitCodeAttribute(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute)>($r1, $r2, $r3);
+
+        $r6 = r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.editor.VariableSizeUpdater variableSizeUpdater>;
+
+        virtualinvoke $r6.<proguard.classfile.editor.VariableSizeUpdater: void visitCodeAttribute(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute)>($r1, $r2, $r3);
+
+        return;
+
+     label3:
+        $i0 = specialinvoke r0.<proguard.classfile.editor.CodeAttributeEditor: int updateInstructions(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute)>($r1, $r2, $r3);
+
+        $r3.<proguard.classfile.attribute.CodeAttribute: int u4codeLength> = $i0;
+
+        virtualinvoke $r3.<proguard.classfile.attribute.CodeAttribute: void exceptionsAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.visitor.ExceptionInfoVisitor)>($r1, $r2, r0);
+
+        $r7 = $r3.<proguard.classfile.attribute.CodeAttribute: proguard.classfile.attribute.ExceptionInfo[] exceptionTable>;
+
+        $i0 = $r3.<proguard.classfile.attribute.CodeAttribute: int u2exceptionTableLength>;
+
+        $i0 = specialinvoke r0.<proguard.classfile.editor.CodeAttributeEditor: int removeEmptyExceptions(proguard.classfile.attribute.ExceptionInfo[],int)>($r7, $i0);
+
+        $r3.<proguard.classfile.attribute.CodeAttribute: int u2exceptionTableLength> = $i0;
+
+        virtualinvoke $r3.<proguard.classfile.attribute.CodeAttribute: void attributesAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.visitor.AttributeVisitor)>($r1, $r2, r0);
+
+        goto label1;
+
+     label4:
+        return;
+    }
+
+    public void visitConstantInstruction(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.instruction.ConstantInstruction)
+    {
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        proguard.classfile.editor.InstructionWriter $r5;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int $i0, $i1;
+        proguard.classfile.instruction.ConstantInstruction $r4;
+        proguard.classfile.Method $r2;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.instruction.ConstantInstruction;
+
+        $r5 = r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.editor.InstructionWriter instructionWriter>;
+
+        $i0 = r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset>;
+
+        virtualinvoke $r5.<proguard.classfile.editor.InstructionWriter: void visitConstantInstruction(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,int,proguard.classfile.instruction.ConstantInstruction)>($r1, $r2, $r3, $i0, $r4);
+
+        $i0 = r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset>;
+
+        $i1 = r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset>;
+
+        $i1 = virtualinvoke $r4.<proguard.classfile.instruction.ConstantInstruction: int length(int)>($i1);
+
+        $i0 = $i0 + $i1;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset> = $i0;
+
+        return;
+    }
+
+    public void visitExceptionInfo(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, proguard.classfile.attribute.ExceptionInfo)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        int $i0;
+        proguard.classfile.Method $r2;
+        proguard.classfile.attribute.ExceptionInfo $r4;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 := @parameter3: proguard.classfile.attribute.ExceptionInfo;
+
+        $i0 = $r4.<proguard.classfile.attribute.ExceptionInfo: int u2startPC>;
+
+        $i0 = specialinvoke r0.<proguard.classfile.editor.CodeAttributeEditor: int remapInstructionOffset(int)>($i0);
+
+        $r4.<proguard.classfile.attribute.ExceptionInfo: int u2startPC> = $i0;
+
+        $i0 = $r4.<proguard.classfile.attribute.ExceptionInfo: int u2endPC>;
+
+        $i0 = specialinvoke r0.<proguard.classfile.editor.CodeAttributeEditor: int remapInstructionOffset(int)>($i0);
+
+        $r4.<proguard.classfile.attribute.ExceptionInfo: int u2endPC> = $i0;
+
+        $i0 = $r4.<proguard.classfile.attribute.ExceptionInfo: int u2handlerPC>;
+
+        $i0 = specialinvoke r0.<proguard.classfile.editor.CodeAttributeEditor: int remapInstructionOffset(int)>($i0);
+
+        $r4.<proguard.classfile.attribute.ExceptionInfo: int u2handlerPC> = $i0;
+
+        return;
+    }
+
+    public void visitFullFrame(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.attribute.preverification.FullFrame)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        int $i0;
+        proguard.classfile.attribute.preverification.FullFrame $r4;
+        proguard.classfile.Method $r2;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.attribute.preverification.FullFrame;
+
+        virtualinvoke r0.<proguard.classfile.editor.CodeAttributeEditor: void visitAnyStackMapFrame(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,int,proguard.classfile.attribute.preverification.StackMapFrame)>($r1, $r2, $r3, $i0, $r4);
+
+        virtualinvoke $r4.<proguard.classfile.attribute.preverification.FullFrame: void variablesAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,int,proguard.classfile.attribute.preverification.visitor.VerificationTypeVisitor)>($r1, $r2, $r3, $i0, r0);
+
+        virtualinvoke $r4.<proguard.classfile.attribute.preverification.FullFrame: void stackAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,int,proguard.classfile.attribute.preverification.visitor.VerificationTypeVisitor)>($r1, $r2, $r3, $i0, r0);
+
+        return;
+    }
+
+    public void visitLineNumberInfo(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, proguard.classfile.attribute.LineNumberInfo)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.attribute.LineNumberInfo $r4;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        int $i0;
+        proguard.classfile.Method $r2;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 := @parameter3: proguard.classfile.attribute.LineNumberInfo;
+
+        $i0 = $r4.<proguard.classfile.attribute.LineNumberInfo: int u2startPC>;
+
+        $i0 = specialinvoke r0.<proguard.classfile.editor.CodeAttributeEditor: int remapInstructionOffset(int)>($i0);
+
+        $r4.<proguard.classfile.attribute.LineNumberInfo: int u2startPC> = $i0;
+
+        return;
+    }
+
+    public void visitLineNumberTableAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, proguard.classfile.attribute.LineNumberTableAttribute)
+    {
+        proguard.classfile.attribute.LineNumberTableAttribute $r4;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int $i0, $i1;
+        proguard.classfile.attribute.LineNumberInfo[] $r5;
+        proguard.classfile.Method $r2;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 := @parameter3: proguard.classfile.attribute.LineNumberTableAttribute;
+
+        virtualinvoke $r4.<proguard.classfile.attribute.LineNumberTableAttribute: void lineNumbersAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,proguard.classfile.attribute.visitor.LineNumberInfoVisitor)>($r1, $r2, $r3, r0);
+
+        $r5 = $r4.<proguard.classfile.attribute.LineNumberTableAttribute: proguard.classfile.attribute.LineNumberInfo[] lineNumberTable>;
+
+        $i0 = $r4.<proguard.classfile.attribute.LineNumberTableAttribute: int u2lineNumberTableLength>;
+
+        $i1 = $r3.<proguard.classfile.attribute.CodeAttribute: int u4codeLength>;
+
+        $i0 = specialinvoke r0.<proguard.classfile.editor.CodeAttributeEditor: int removeEmptyLineNumbers(proguard.classfile.attribute.LineNumberInfo[],int,int)>($r5, $i0, $i1);
+
+        $r4.<proguard.classfile.attribute.LineNumberTableAttribute: int u2lineNumberTableLength> = $i0;
+
+        return;
+    }
+
+    public void visitLocalVariableInfo(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, proguard.classfile.attribute.LocalVariableInfo)
+    {
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        proguard.classfile.attribute.LocalVariableInfo $r4;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int $i0, $i1, $i2;
+        proguard.classfile.Method $r2;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 := @parameter3: proguard.classfile.attribute.LocalVariableInfo;
+
+        $i1 = $r4.<proguard.classfile.attribute.LocalVariableInfo: int u2startPC>;
+
+        $i1 = specialinvoke r0.<proguard.classfile.editor.CodeAttributeEditor: int remapInstructionOffset(int)>($i1);
+
+        $i2 = $r4.<proguard.classfile.attribute.LocalVariableInfo: int u2startPC>;
+
+        $i0 = $r4.<proguard.classfile.attribute.LocalVariableInfo: int u2length>;
+
+        $i0 = $i2 + $i0;
+
+        $i0 = specialinvoke r0.<proguard.classfile.editor.CodeAttributeEditor: int remapInstructionOffset(int)>($i0);
+
+        $i0 = $i0 - $i1;
+
+        $r4.<proguard.classfile.attribute.LocalVariableInfo: int u2length> = $i0;
+
+        $r4.<proguard.classfile.attribute.LocalVariableInfo: int u2startPC> = $i1;
+
+        return;
+    }
+
+    public void visitLocalVariableTableAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, proguard.classfile.attribute.LocalVariableTableAttribute)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        proguard.classfile.Method $r2;
+        proguard.classfile.attribute.LocalVariableTableAttribute $r4;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 := @parameter3: proguard.classfile.attribute.LocalVariableTableAttribute;
+
+        virtualinvoke $r4.<proguard.classfile.attribute.LocalVariableTableAttribute: void localVariablesAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,proguard.classfile.attribute.visitor.LocalVariableInfoVisitor)>($r1, $r2, $r3, r0);
+
+        return;
+    }
+
+    public void visitLocalVariableTypeInfo(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, proguard.classfile.attribute.LocalVariableTypeInfo)
+    {
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        proguard.classfile.attribute.LocalVariableTypeInfo $r4;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int $i0, $i1, $i2;
+        proguard.classfile.Method $r2;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 := @parameter3: proguard.classfile.attribute.LocalVariableTypeInfo;
+
+        $i1 = $r4.<proguard.classfile.attribute.LocalVariableTypeInfo: int u2startPC>;
+
+        $i1 = specialinvoke r0.<proguard.classfile.editor.CodeAttributeEditor: int remapInstructionOffset(int)>($i1);
+
+        $i2 = $r4.<proguard.classfile.attribute.LocalVariableTypeInfo: int u2startPC>;
+
+        $i0 = $r4.<proguard.classfile.attribute.LocalVariableTypeInfo: int u2length>;
+
+        $i0 = $i2 + $i0;
+
+        $i0 = specialinvoke r0.<proguard.classfile.editor.CodeAttributeEditor: int remapInstructionOffset(int)>($i0);
+
+        $i0 = $i0 - $i1;
+
+        $r4.<proguard.classfile.attribute.LocalVariableTypeInfo: int u2length> = $i0;
+
+        $r4.<proguard.classfile.attribute.LocalVariableTypeInfo: int u2startPC> = $i1;
+
+        return;
+    }
+
+    public void visitLocalVariableTypeTableAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, proguard.classfile.attribute.LocalVariableTypeTableAttribute)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        proguard.classfile.Method $r2;
+        proguard.classfile.attribute.LocalVariableTypeTableAttribute $r4;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 := @parameter3: proguard.classfile.attribute.LocalVariableTypeTableAttribute;
+
+        virtualinvoke $r4.<proguard.classfile.attribute.LocalVariableTypeTableAttribute: void localVariablesAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,proguard.classfile.attribute.visitor.LocalVariableTypeInfoVisitor)>($r1, $r2, $r3, r0);
+
+        return;
+    }
+
+    public void visitLookUpSwitchInstruction(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.instruction.LookUpSwitchInstruction)
+    {
+        proguard.classfile.instruction.LookUpSwitchInstruction $r4;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        proguard.classfile.editor.InstructionWriter $r6;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int[] $r5;
+        int $i0, $i1;
+        proguard.classfile.Method $r2;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.instruction.LookUpSwitchInstruction;
+
+        $i1 = $r4.<proguard.classfile.instruction.LookUpSwitchInstruction: int defaultOffset>;
+
+        $i1 = specialinvoke r0.<proguard.classfile.editor.CodeAttributeEditor: int remapBranchOffset(int,int)>($i0, $i1);
+
+        $r4.<proguard.classfile.instruction.LookUpSwitchInstruction: int defaultOffset> = $i1;
+
+        $r5 = $r4.<proguard.classfile.instruction.LookUpSwitchInstruction: int[] jumpOffsets>;
+
+        specialinvoke r0.<proguard.classfile.editor.CodeAttributeEditor: void remapJumpOffsets(int,int[])>($i0, $r5);
+
+        $r6 = r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.editor.InstructionWriter instructionWriter>;
+
+        $i0 = r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset>;
+
+        virtualinvoke $r6.<proguard.classfile.editor.InstructionWriter: void visitLookUpSwitchInstruction(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,int,proguard.classfile.instruction.LookUpSwitchInstruction)>($r1, $r2, $r3, $i0, $r4);
+
+        $i0 = r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset>;
+
+        $i1 = r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset>;
+
+        $i1 = virtualinvoke $r4.<proguard.classfile.instruction.LookUpSwitchInstruction: int length(int)>($i1);
+
+        $i0 = $i0 + $i1;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset> = $i0;
+
+        return;
+    }
+
+    public void visitMoreZeroFrame(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.attribute.preverification.MoreZeroFrame)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        int $i0;
+        proguard.classfile.Method $r2;
+        proguard.classfile.attribute.preverification.MoreZeroFrame $r4;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.attribute.preverification.MoreZeroFrame;
+
+        virtualinvoke r0.<proguard.classfile.editor.CodeAttributeEditor: void visitAnyStackMapFrame(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,int,proguard.classfile.attribute.preverification.StackMapFrame)>($r1, $r2, $r3, $i0, $r4);
+
+        virtualinvoke $r4.<proguard.classfile.attribute.preverification.MoreZeroFrame: void additionalVariablesAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,int,proguard.classfile.attribute.preverification.visitor.VerificationTypeVisitor)>($r1, $r2, $r3, $i0, r0);
+
+        return;
+    }
+
+    public void visitSameOneFrame(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.attribute.preverification.SameOneFrame)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.attribute.preverification.SameOneFrame $r4;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        int $i0;
+        proguard.classfile.Method $r2;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.attribute.preverification.SameOneFrame;
+
+        virtualinvoke r0.<proguard.classfile.editor.CodeAttributeEditor: void visitAnyStackMapFrame(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,int,proguard.classfile.attribute.preverification.StackMapFrame)>($r1, $r2, $r3, $i0, $r4);
+
+        virtualinvoke $r4.<proguard.classfile.attribute.preverification.SameOneFrame: void stackItemAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,int,proguard.classfile.attribute.preverification.visitor.VerificationTypeVisitor)>($r1, $r2, $r3, $i0, r0);
+
+        return;
+    }
+
+    public void visitSimpleInstruction(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.instruction.SimpleInstruction)
+    {
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        proguard.classfile.instruction.SimpleInstruction $r4;
+        proguard.classfile.editor.InstructionWriter $r5;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int $i0, $i1;
+        proguard.classfile.Method $r2;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.instruction.SimpleInstruction;
+
+        $r5 = r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.editor.InstructionWriter instructionWriter>;
+
+        $i0 = r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset>;
+
+        virtualinvoke $r5.<proguard.classfile.editor.InstructionWriter: void visitSimpleInstruction(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,int,proguard.classfile.instruction.SimpleInstruction)>($r1, $r2, $r3, $i0, $r4);
+
+        $i0 = r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset>;
+
+        $i1 = r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset>;
+
+        $i1 = virtualinvoke $r4.<proguard.classfile.instruction.SimpleInstruction: int length(int)>($i1);
+
+        $i0 = $i0 + $i1;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset> = $i0;
+
+        return;
+    }
+
+    public void visitStackMapAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, proguard.classfile.attribute.preverification.StackMapAttribute)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.attribute.preverification.StackMapAttribute $r4;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        proguard.classfile.Method $r2;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 := @parameter3: proguard.classfile.attribute.preverification.StackMapAttribute;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: int expectedStackMapFrameOffset> = -1;
+
+        virtualinvoke $r4.<proguard.classfile.attribute.preverification.StackMapAttribute: void stackMapFramesAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,proguard.classfile.attribute.preverification.visitor.StackMapFrameVisitor)>($r1, $r2, $r3, r0);
+
+        return;
+    }
+
+    public void visitStackMapTableAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, proguard.classfile.attribute.preverification.StackMapTableAttribute)
+    {
+        proguard.classfile.attribute.preverification.StackMapTableAttribute $r4;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        proguard.classfile.Method $r2;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 := @parameter3: proguard.classfile.attribute.preverification.StackMapTableAttribute;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: int expectedStackMapFrameOffset> = 0;
+
+        virtualinvoke $r4.<proguard.classfile.attribute.preverification.StackMapTableAttribute: void stackMapFramesAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,proguard.classfile.attribute.preverification.visitor.StackMapFrameVisitor)>($r1, $r2, $r3, r0);
+
+        return;
+    }
+
+    public void visitTableSwitchInstruction(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.instruction.TableSwitchInstruction)
+    {
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        proguard.classfile.editor.InstructionWriter $r6;
+        proguard.classfile.instruction.TableSwitchInstruction $r4;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int[] $r5;
+        int $i0, $i1;
+        proguard.classfile.Method $r2;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.instruction.TableSwitchInstruction;
+
+        $i1 = $r4.<proguard.classfile.instruction.TableSwitchInstruction: int defaultOffset>;
+
+        $i1 = specialinvoke r0.<proguard.classfile.editor.CodeAttributeEditor: int remapBranchOffset(int,int)>($i0, $i1);
+
+        $r4.<proguard.classfile.instruction.TableSwitchInstruction: int defaultOffset> = $i1;
+
+        $r5 = $r4.<proguard.classfile.instruction.TableSwitchInstruction: int[] jumpOffsets>;
+
+        specialinvoke r0.<proguard.classfile.editor.CodeAttributeEditor: void remapJumpOffsets(int,int[])>($i0, $r5);
+
+        $r6 = r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.editor.InstructionWriter instructionWriter>;
+
+        $i0 = r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset>;
+
+        virtualinvoke $r6.<proguard.classfile.editor.InstructionWriter: void visitTableSwitchInstruction(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,int,proguard.classfile.instruction.TableSwitchInstruction)>($r1, $r2, $r3, $i0, $r4);
+
+        $i0 = r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset>;
+
+        $i1 = r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset>;
+
+        $i1 = virtualinvoke $r4.<proguard.classfile.instruction.TableSwitchInstruction: int length(int)>($i1);
+
+        $i0 = $i0 + $i1;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset> = $i0;
+
+        return;
+    }
+
+    public void visitUninitializedType(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.attribute.preverification.UninitializedType)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        int $i0;
+        proguard.classfile.Method $r2;
+        proguard.classfile.attribute.preverification.UninitializedType $r4;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.attribute.preverification.UninitializedType;
+
+        $i0 = $r4.<proguard.classfile.attribute.preverification.UninitializedType: int u2newInstructionOffset>;
+
+        $i0 = specialinvoke r0.<proguard.classfile.editor.CodeAttributeEditor: int remapInstructionOffset(int)>($i0);
+
+        $r4.<proguard.classfile.attribute.preverification.UninitializedType: int u2newInstructionOffset> = $i0;
+
+        return;
+    }
+
+    public void visitVariableInstruction(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.instruction.VariableInstruction)
+    {
+        proguard.classfile.editor.CodeAttributeEditor r0;
+        proguard.classfile.instruction.VariableInstruction $r4;
+        proguard.classfile.editor.InstructionWriter $r5;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int $i0, $i1;
+        proguard.classfile.Method $r2;
+
+        r0 := @this: proguard.classfile.editor.CodeAttributeEditor;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.instruction.VariableInstruction;
+
+        $r5 = r0.<proguard.classfile.editor.CodeAttributeEditor: proguard.classfile.editor.InstructionWriter instructionWriter>;
+
+        $i0 = r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset>;
+
+        virtualinvoke $r5.<proguard.classfile.editor.InstructionWriter: void visitVariableInstruction(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,int,proguard.classfile.instruction.VariableInstruction)>($r1, $r2, $r3, $i0, $r4);
+
+        $i0 = r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset>;
+
+        $i1 = r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset>;
+
+        $i1 = virtualinvoke $r4.<proguard.classfile.instruction.VariableInstruction: int length(int)>($i1);
+
+        $i0 = $i0 + $i1;
+
+        r0.<proguard.classfile.editor.CodeAttributeEditor: int newOffset> = $i0;
+
+        return;
+    }
+}

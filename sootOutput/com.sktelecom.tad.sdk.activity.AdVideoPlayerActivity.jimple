@@ -1,0 +1,853 @@
+public class com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity extends java.lang.Object implements com.sktelecom.tad.sdk.activity.AdActivity
+{
+    private static final java.lang.String GATEWAY_VIDEO_URL;
+    public static final java.lang.String MSG_BUFFERING;
+    public static final java.lang.String MSG_DETECT;
+    public static final java.lang.String MSG_ERROR_MSG;
+    public static final java.lang.String MSG_ERROR_TITLE;
+    public static final java.lang.String MSG_HI_BAND;
+    public static final java.lang.String MSG_INIT;
+    public static final java.lang.String MSG_LOADING;
+    public static final java.lang.String MSG_LO_BAND;
+    public static final java.lang.String MSG_PLAYLIST;
+    public static final java.lang.String MSG_TOKEN;
+    public static final java.lang.String SCHEME_FILE_VIDEO;
+    public static final java.lang.String SCHEME_GOOGLE_VIDEO;
+    public static final java.lang.String SCHEME_HTTP_VIDEO;
+    public static final java.lang.String SCHEME_RTSP_VIDEO;
+    public static final java.lang.String SCHEME_YOUTUBE_PLAYLIST;
+    public static final java.lang.String SCHEME_YOUTUBE_VIDEO;
+    private static final java.lang.String TAG_WAKELOCK;
+    private static final java.lang.String YOUTUBE_PLAYLIST_ATOM_FEED_URL;
+    android.app.Activity mActivity;
+    protected android.widget.MediaController mMediaController;
+    protected java.lang.String mMsgBuffering;
+    protected java.lang.String mMsgDetect;
+    protected java.lang.String mMsgError;
+    protected java.lang.String mMsgErrorTitle;
+    protected java.lang.String mMsgHiBand;
+    protected java.lang.String mMsgInit;
+    protected java.lang.String mMsgLoading;
+    protected java.lang.String mMsgLowBand;
+    protected java.lang.String mMsgPlaylist;
+    protected java.lang.String mMsgToken;
+    protected java.lang.String mMsgToken2;
+    protected java.lang.String mMsgToken8;
+    protected java.lang.String mMsgToken9;
+    protected android.widget.ProgressBar mProgressBar;
+    protected android.widget.TextView mProgressMessage;
+    protected com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryGoogleTask mQueryGoogleTask;
+    protected com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryStreamTask mQueryStreamTask;
+    protected com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryYouTubeTask mQueryYouTubeTask;
+    protected android.widget.VideoView mVideoView;
+    protected android.os.PowerManager$WakeLock mWakeLock;
+
+    public void <init>(android.app.Activity)
+    {
+        com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity r0;
+        android.app.Activity $r1;
+
+        r0 := @this: com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity;
+
+        $r1 := @parameter0: android.app.Activity;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String mMsgInit> = "Initializing";
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String mMsgDetect> = "Detecting Bandwidth";
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String mMsgPlaylist> = "Determining Latest Video in YouTube Playlist";
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String mMsgToken> = "Retrieving YouTube Video Token";
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String mMsgToken2> = "Retrieving Google Video Token";
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String mMsgToken8> = "Retrieving Media Video Token";
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String mMsgToken9> = "Retrieving Server Video Token";
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String mMsgBuffering> = "Buffering Video....";
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String mMsgLoading> = "Loading Video....";
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String mMsgLowBand> = "Buffering Low-bandwidth Video";
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String mMsgHiBand> = "Buffering High-bandwidth Video";
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String mMsgErrorTitle> = "Communications Error";
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String mMsgError> = "An error occurred during the retrieval of the video.  This could be due to network issues or YouTube protocols.  Please try again later.";
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.app.Activity mActivity> = $r1;
+
+        return;
+    }
+
+    private void extractMessages()
+    {
+        com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity r0;
+        android.content.Intent $r2;
+        java.lang.String $r3;
+        android.app.Activity $r1;
+
+        r0 := @this: com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity;
+
+        $r1 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.app.Activity mActivity>;
+
+        $r2 = virtualinvoke $r1.<android.app.Activity: android.content.Intent getIntent()>();
+
+        $r3 = virtualinvoke $r2.<android.content.Intent: java.lang.String getStringExtra(java.lang.String)>("com.keyes.video.msg.init");
+
+        if $r3 == null goto label01;
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String mMsgInit> = $r3;
+
+     label01:
+        $r3 = virtualinvoke $r2.<android.content.Intent: java.lang.String getStringExtra(java.lang.String)>("com.keyes.video.msg.detect");
+
+        if $r3 == null goto label02;
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String mMsgDetect> = $r3;
+
+     label02:
+        $r3 = virtualinvoke $r2.<android.content.Intent: java.lang.String getStringExtra(java.lang.String)>("com.keyes.video.msg.playlist");
+
+        if $r3 == null goto label03;
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String mMsgPlaylist> = $r3;
+
+     label03:
+        $r3 = virtualinvoke $r2.<android.content.Intent: java.lang.String getStringExtra(java.lang.String)>("com.keyes.video.msg.token");
+
+        if $r3 == null goto label04;
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String mMsgToken> = $r3;
+
+     label04:
+        $r3 = virtualinvoke $r2.<android.content.Intent: java.lang.String getStringExtra(java.lang.String)>("com.keyes.video.msg.buffering");
+
+        if $r3 == null goto label05;
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String mMsgBuffering> = $r3;
+
+     label05:
+        $r3 = virtualinvoke $r2.<android.content.Intent: java.lang.String getStringExtra(java.lang.String)>("com.keyes.video.msg.buffer");
+
+        if $r3 == null goto label06;
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String mMsgLoading> = $r3;
+
+     label06:
+        $r3 = virtualinvoke $r2.<android.content.Intent: java.lang.String getStringExtra(java.lang.String)>("com.keyes.video.msg.loband");
+
+        if $r3 == null goto label07;
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String mMsgLowBand> = $r3;
+
+     label07:
+        $r3 = virtualinvoke $r2.<android.content.Intent: java.lang.String getStringExtra(java.lang.String)>("com.keyes.video.msg.hiband");
+
+        if $r3 == null goto label08;
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String mMsgHiBand> = $r3;
+
+     label08:
+        $r3 = virtualinvoke $r2.<android.content.Intent: java.lang.String getStringExtra(java.lang.String)>("com.keyes.video.msg.error.title");
+
+        if $r3 == null goto label09;
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String mMsgErrorTitle> = $r3;
+
+     label09:
+        $r3 = virtualinvoke $r2.<android.content.Intent: java.lang.String getStringExtra(java.lang.String)>("com.keyes.video.msg.error.msg");
+
+        if $r3 == null goto label10;
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String mMsgError> = $r3;
+
+     label10:
+        return;
+    }
+
+    private void setupView()
+    {
+        com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity r0;
+        android.widget.LinearLayout r1, $r8;
+        android.widget.ProgressBar $r6, $r13;
+        android.widget.RelativeLayout$LayoutParams r2, $r11;
+        android.widget.TextView $r7, $r14;
+        android.widget.RelativeLayout r3, $r10;
+        android.widget.LinearLayout$LayoutParams $r9;
+        android.app.Activity $r4;
+        android.widget.VideoView $r5, $r12;
+
+        r0 := @this: com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity;
+
+        $r8 = new android.widget.LinearLayout;
+
+        r1 = $r8;
+
+        $r4 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.app.Activity mActivity>;
+
+        specialinvoke $r8.<android.widget.LinearLayout: void <init>(android.content.Context)>($r4);
+
+        virtualinvoke r1.<android.widget.LinearLayout: void setId(int)>(1);
+
+        virtualinvoke r1.<android.widget.LinearLayout: void setOrientation(int)>(1);
+
+        virtualinvoke r1.<android.widget.LinearLayout: void setGravity(int)>(17);
+
+        virtualinvoke r1.<android.widget.LinearLayout: void setBackgroundColor(int)>(-16777216);
+
+        $r9 = new android.widget.LinearLayout$LayoutParams;
+
+        specialinvoke $r9.<android.widget.LinearLayout$LayoutParams: void <init>(int,int)>(-1, -1);
+
+        virtualinvoke r1.<android.widget.LinearLayout: void setLayoutParams(android.view.ViewGroup$LayoutParams)>($r9);
+
+        $r10 = new android.widget.RelativeLayout;
+
+        r3 = $r10;
+
+        $r4 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.app.Activity mActivity>;
+
+        specialinvoke $r10.<android.widget.RelativeLayout: void <init>(android.content.Context)>($r4);
+
+        virtualinvoke r3.<android.widget.RelativeLayout: void setId(int)>(2);
+
+        virtualinvoke r3.<android.widget.RelativeLayout: void setGravity(int)>(17);
+
+        virtualinvoke r3.<android.widget.RelativeLayout: void setBackgroundColor(int)>(-16777216);
+
+        $r11 = new android.widget.RelativeLayout$LayoutParams;
+
+        specialinvoke $r11.<android.widget.RelativeLayout$LayoutParams: void <init>(int,int)>(-1, -1);
+
+        virtualinvoke r3.<android.widget.RelativeLayout: void setLayoutParams(android.view.ViewGroup$LayoutParams)>($r11);
+
+        virtualinvoke r1.<android.widget.LinearLayout: void addView(android.view.View)>(r3);
+
+        $r12 = new android.widget.VideoView;
+
+        $r4 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.app.Activity mActivity>;
+
+        specialinvoke $r12.<android.widget.VideoView: void <init>(android.content.Context)>($r4);
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.widget.VideoView mVideoView> = $r12;
+
+        $r5 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.widget.VideoView mVideoView>;
+
+        virtualinvoke $r5.<android.widget.VideoView: void setId(int)>(3);
+
+        $r11 = new android.widget.RelativeLayout$LayoutParams;
+
+        r2 = $r11;
+
+        specialinvoke $r11.<android.widget.RelativeLayout$LayoutParams: void <init>(int,int)>(-2, -2);
+
+        virtualinvoke r2.<android.widget.RelativeLayout$LayoutParams: void addRule(int)>(13);
+
+        $r5 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.widget.VideoView mVideoView>;
+
+        virtualinvoke $r5.<android.widget.VideoView: void setLayoutParams(android.view.ViewGroup$LayoutParams)>(r2);
+
+        $r5 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.widget.VideoView mVideoView>;
+
+        virtualinvoke r3.<android.widget.RelativeLayout: void addView(android.view.View)>($r5);
+
+        $r13 = new android.widget.ProgressBar;
+
+        $r4 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.app.Activity mActivity>;
+
+        specialinvoke $r13.<android.widget.ProgressBar: void <init>(android.content.Context)>($r4);
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.widget.ProgressBar mProgressBar> = $r13;
+
+        $r6 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.widget.ProgressBar mProgressBar>;
+
+        virtualinvoke $r6.<android.widget.ProgressBar: void setId(int)>(4);
+
+        $r11 = new android.widget.RelativeLayout$LayoutParams;
+
+        r2 = $r11;
+
+        specialinvoke $r11.<android.widget.RelativeLayout$LayoutParams: void <init>(int,int)>(-2, -2);
+
+        virtualinvoke r2.<android.widget.RelativeLayout$LayoutParams: void addRule(int)>(13);
+
+        $r6 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.widget.ProgressBar mProgressBar>;
+
+        virtualinvoke $r6.<android.widget.ProgressBar: void setLayoutParams(android.view.ViewGroup$LayoutParams)>(r2);
+
+        $r6 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.widget.ProgressBar mProgressBar>;
+
+        virtualinvoke r3.<android.widget.RelativeLayout: void addView(android.view.View)>($r6);
+
+        $r14 = new android.widget.TextView;
+
+        $r4 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.app.Activity mActivity>;
+
+        specialinvoke $r14.<android.widget.TextView: void <init>(android.content.Context)>($r4);
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.widget.TextView mProgressMessage> = $r14;
+
+        $r7 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.widget.TextView mProgressMessage>;
+
+        virtualinvoke $r7.<android.widget.TextView: void setId(int)>(5);
+
+        $r11 = new android.widget.RelativeLayout$LayoutParams;
+
+        r2 = $r11;
+
+        specialinvoke $r11.<android.widget.RelativeLayout$LayoutParams: void <init>(int,int)>(-2, -2);
+
+        virtualinvoke r2.<android.widget.RelativeLayout$LayoutParams: void addRule(int)>(14);
+
+        virtualinvoke r2.<android.widget.RelativeLayout$LayoutParams: void addRule(int,int)>(3, 4);
+
+        $r7 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.widget.TextView mProgressMessage>;
+
+        virtualinvoke $r7.<android.widget.TextView: void setLayoutParams(android.view.ViewGroup$LayoutParams)>(r2);
+
+        $r7 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.widget.TextView mProgressMessage>;
+
+        virtualinvoke $r7.<android.widget.TextView: void setTextColor(int)>(-3355444);
+
+        $r7 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.widget.TextView mProgressMessage>;
+
+        virtualinvoke $r7.<android.widget.TextView: void setTextSize(int,float)>(3, 8.0F);
+
+        $r7 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.widget.TextView mProgressMessage>;
+
+        virtualinvoke $r7.<android.widget.TextView: void setText(java.lang.CharSequence)>("...");
+
+        $r7 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.widget.TextView mProgressMessage>;
+
+        virtualinvoke r3.<android.widget.RelativeLayout: void addView(android.view.View)>($r7);
+
+        $r4 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.app.Activity mActivity>;
+
+        virtualinvoke $r4.<android.app.Activity: void setContentView(android.view.View)>(r1);
+
+        return;
+    }
+
+    public void onConfigurationChanged(android.content.res.Configuration)
+    {
+        com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity r0;
+        android.content.res.Configuration $r1;
+
+        r0 := @this: com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity;
+
+        $r1 := @parameter0: android.content.res.Configuration;
+
+        return;
+    }
+
+    public void onCreate(android.os.Bundle)
+    {
+        android.os.Bundle r1;
+        android.net.Uri $r10;
+        android.content.Intent $r9;
+        java.lang.String[] $r22;
+        com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$VideoId r18;
+        android.os.PowerManager r5;
+        int $i0;
+        java.lang.String $r8, $r11, $r12;
+        com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryStreamTask $r21;
+        boolean $z0;
+        com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity r0;
+        android.os.AsyncTask $r16;
+        android.os.PowerManager$WakeLock $r6;
+        com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryGoogleTask $r19;
+        com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$YouTubePlayListId r13;
+        android.widget.TextView $r7;
+        com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$YouTubeId r17;
+        com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$VideoId[] $r15;
+        java.lang.Object $r4;
+        java.lang.StringBuilder $r20;
+        android.app.Activity $r2;
+        android.view.Window $r3;
+        com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryYouTubeTask $r14;
+
+        r0 := @this: com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity;
+
+        r1 := @parameter0: android.os.Bundle;
+
+        $r2 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.app.Activity mActivity>;
+
+        virtualinvoke $r2.<android.app.Activity: boolean requestWindowFeature(int)>(1);
+
+        $r2 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.app.Activity mActivity>;
+
+        $r3 = virtualinvoke $r2.<android.app.Activity: android.view.Window getWindow()>();
+
+        virtualinvoke $r3.<android.view.Window: void setFlags(int,int)>(1024, 1024);
+
+        specialinvoke r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: void setupView()>();
+
+        specialinvoke r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: void extractMessages()>();
+
+        $r2 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.app.Activity mActivity>;
+
+        $r4 = virtualinvoke $r2.<android.app.Activity: java.lang.Object getSystemService(java.lang.String)>("power");
+
+        r5 = (android.os.PowerManager) $r4;
+
+        $r6 = virtualinvoke r5.<android.os.PowerManager: android.os.PowerManager$WakeLock newWakeLock(int,java.lang.String)>(10, "introVideo");
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.os.PowerManager$WakeLock mWakeLock> = $r6;
+
+        $r6 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.os.PowerManager$WakeLock mWakeLock>;
+
+        virtualinvoke $r6.<android.os.PowerManager$WakeLock: void acquire()>();
+
+        $r7 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.widget.TextView mProgressMessage>;
+
+        $r8 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String mMsgInit>;
+
+        virtualinvoke $r7.<android.widget.TextView: void setText(java.lang.CharSequence)>($r8);
+
+        $r2 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.app.Activity mActivity>;
+
+        $r9 = virtualinvoke $r2.<android.app.Activity: android.content.Intent getIntent()>();
+
+        $r10 = virtualinvoke $r9.<android.content.Intent: android.net.Uri getData()>();
+
+        if $r10 != null goto label01;
+
+        staticinvoke <com.sktelecom.tad.sdk.AdLog: void println(java.lang.String)>("No video ID was specified in the intent.  Closing video activity.");
+
+        $r2 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.app.Activity mActivity>;
+
+        virtualinvoke $r2.<android.app.Activity: void finish()>();
+
+     label01:
+        $r11 = virtualinvoke $r10.<android.net.Uri: java.lang.String getScheme()>();
+
+        $r12 = virtualinvoke $r10.<android.net.Uri: java.lang.String getEncodedSchemeSpecificPart()>();
+
+        $r8 = $r12;
+
+        if $r12 != null goto label02;
+
+        staticinvoke <com.sktelecom.tad.sdk.AdLog: void println(java.lang.String)>("No video ID was specified in the intent.  Closing video activity.");
+
+        $r2 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.app.Activity mActivity>;
+
+        virtualinvoke $r2.<android.app.Activity: void finish()>();
+
+     label02:
+        $z0 = virtualinvoke $r12.<java.lang.String: boolean startsWith(java.lang.String)>("//");
+
+        if $z0 == 0 goto label03;
+
+        $i0 = virtualinvoke $r12.<java.lang.String: int length()>();
+
+        if $i0 <= 2 goto label05;
+
+        $r8 = virtualinvoke $r12.<java.lang.String: java.lang.String substring(int)>(2);
+
+     label03:
+        if $r11 == null goto label14;
+
+        $z0 = virtualinvoke $r11.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("ytpl");
+
+        if $z0 == 0 goto label07;
+
+        $i0 = virtualinvoke $r8.<java.lang.String: int indexOf(java.lang.String)>("/");
+
+        if $i0 <= 0 goto label06;
+
+        $r11 = virtualinvoke $r8.<java.lang.String: java.lang.String substring(int,int)>(0, $i0);
+
+        $i0 = $i0 + 1;
+
+        $r8 = virtualinvoke $r8.<java.lang.String: java.lang.String substring(int)>($i0);
+
+        r13 = new com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$YouTubePlayListId;
+
+        specialinvoke r13.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$YouTubePlayListId: void <init>(com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity,java.lang.String,java.lang.String)>(r0, $r11, $r8);
+
+     label04:
+        $r14 = new com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryYouTubeTask;
+
+        specialinvoke $r14.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryYouTubeTask: void <init>(com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity,com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryYouTubeTask)>(r0, null);
+
+        $r15 = newarray (com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$VideoId)[1];
+
+        $r15[0] = r13;
+
+        $r16 = virtualinvoke $r14.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryYouTubeTask: android.os.AsyncTask execute(java.lang.Object[])>($r15);
+
+        $r14 = (com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryYouTubeTask) $r16;
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryYouTubeTask mQueryYouTubeTask> = $r14;
+
+        return;
+
+     label05:
+        staticinvoke <com.sktelecom.tad.sdk.AdLog: void println(java.lang.String)>("No video ID was specified in the intent.  Closing video activity.");
+
+        $r2 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.app.Activity mActivity>;
+
+        virtualinvoke $r2.<android.app.Activity: void finish()>();
+
+        goto label03;
+
+     label06:
+        r13 = new com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$YouTubePlayListId;
+
+        specialinvoke r13.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$YouTubePlayListId: void <init>(com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity,java.lang.String)>(r0, $r8);
+
+        goto label04;
+
+     label07:
+        if $r11 == null goto label14;
+
+        $z0 = virtualinvoke $r11.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("ytv");
+
+        if $z0 == 0 goto label10;
+
+        $i0 = virtualinvoke $r8.<java.lang.String: int indexOf(java.lang.String)>("/");
+
+        if $i0 <= 0 goto label09;
+
+        $r11 = virtualinvoke $r8.<java.lang.String: java.lang.String substring(int,int)>(0, $i0);
+
+        $i0 = $i0 + 1;
+
+        $r8 = virtualinvoke $r8.<java.lang.String: java.lang.String substring(int)>($i0);
+
+        r17 = new com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$YouTubeId;
+
+        specialinvoke r17.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$YouTubeId: void <init>(com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity,java.lang.String,java.lang.String)>(r0, $r11, $r8);
+
+     label08:
+        $r14 = new com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryYouTubeTask;
+
+        specialinvoke $r14.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryYouTubeTask: void <init>(com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity,com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryYouTubeTask)>(r0, null);
+
+        $r15 = newarray (com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$VideoId)[1];
+
+        $r15[0] = r17;
+
+        $r16 = virtualinvoke $r14.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryYouTubeTask: android.os.AsyncTask execute(java.lang.Object[])>($r15);
+
+        $r14 = (com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryYouTubeTask) $r16;
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryYouTubeTask mQueryYouTubeTask> = $r14;
+
+        return;
+
+     label09:
+        r17 = new com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$YouTubeId;
+
+        specialinvoke r17.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$YouTubeId: void <init>(com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity,java.lang.String)>(r0, $r8);
+
+        goto label08;
+
+     label10:
+        if $r11 == null goto label14;
+
+        $z0 = virtualinvoke $r11.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("ggv");
+
+        if $z0 == 0 goto label11;
+
+        r18 = new com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$VideoId;
+
+        specialinvoke r18.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$VideoId: void <init>(com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity,java.lang.String)>(r0, $r8);
+
+        $r19 = new com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryGoogleTask;
+
+        specialinvoke $r19.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryGoogleTask: void <init>(com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity,com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryGoogleTask)>(r0, null);
+
+        $r15 = newarray (com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$VideoId)[1];
+
+        $r15[0] = r18;
+
+        $r16 = virtualinvoke $r19.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryGoogleTask: android.os.AsyncTask execute(java.lang.Object[])>($r15);
+
+        $r19 = (com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryGoogleTask) $r16;
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryGoogleTask mQueryGoogleTask> = $r19;
+
+        return;
+
+     label11:
+        if $r11 == null goto label14;
+
+        $z0 = virtualinvoke $r11.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("http");
+
+        if $z0 != 0 goto label12;
+
+        $z0 = virtualinvoke $r11.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("rtsp");
+
+        if $z0 == 0 goto label13;
+
+     label12:
+        $r20 = new java.lang.StringBuilder;
+
+        $r11 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r11);
+
+        specialinvoke $r20.<java.lang.StringBuilder: void <init>(java.lang.String)>($r11);
+
+        $r20 = virtualinvoke $r20.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("://");
+
+        $r20 = virtualinvoke $r20.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r8 = virtualinvoke $r20.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r21 = new com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryStreamTask;
+
+        specialinvoke $r21.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryStreamTask: void <init>(com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity,com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryStreamTask)>(r0, null);
+
+        $r22 = newarray (java.lang.String)[1];
+
+        $r22[0] = $r8;
+
+        $r16 = virtualinvoke $r21.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryStreamTask: android.os.AsyncTask execute(java.lang.Object[])>($r22);
+
+        $r21 = (com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryStreamTask) $r16;
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryStreamTask mQueryStreamTask> = $r21;
+
+        return;
+
+     label13:
+        if $r11 == null goto label14;
+
+        $z0 = virtualinvoke $r11.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("file");
+
+        if $z0 == 0 goto label14;
+
+        $r21 = new com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryStreamTask;
+
+        specialinvoke $r21.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryStreamTask: void <init>(com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity,com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryStreamTask)>(r0, null);
+
+        $r22 = newarray (java.lang.String)[1];
+
+        $r22[0] = $r8;
+
+        $r16 = virtualinvoke $r21.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryStreamTask: android.os.AsyncTask execute(java.lang.Object[])>($r22);
+
+        $r21 = (com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryStreamTask) $r16;
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryStreamTask mQueryStreamTask> = $r21;
+
+        return;
+
+     label14:
+        staticinvoke <com.sktelecom.tad.sdk.AdLog: void println(java.lang.String)>("Unable to extract video ID or Url from the intent.  Closing video activity.");
+
+        $r2 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.app.Activity mActivity>;
+
+        virtualinvoke $r2.<android.app.Activity: void finish()>();
+
+        return;
+    }
+
+    public void onDestroy()
+    {
+        com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity r0;
+        android.os.PowerManager$WakeLock $r1;
+
+        r0 := @this: com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity;
+
+        $r1 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.os.PowerManager$WakeLock mWakeLock>;
+
+        if $r1 == null goto label1;
+
+        $r1 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.os.PowerManager$WakeLock mWakeLock>;
+
+        virtualinvoke $r1.<android.os.PowerManager$WakeLock: void release()>();
+
+     label1:
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryStreamTask mQueryStreamTask> = null;
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryGoogleTask mQueryGoogleTask> = null;
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity$QueryYouTubeTask mQueryYouTubeTask> = null;
+
+        r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.widget.VideoView mVideoView> = null;
+
+        return;
+    }
+
+    public boolean onKeyDown(int, android.view.KeyEvent)
+    {
+        com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity r0;
+        android.view.KeyEvent $r1;
+        int $i0;
+        android.widget.MediaController $r2;
+        android.app.Activity $r3;
+        boolean $z0;
+
+        r0 := @this: com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: android.view.KeyEvent;
+
+        lookupswitch($i0)
+        {
+            case 4: goto label2;
+            default: goto label1;
+        };
+
+     label1:
+        return 0;
+
+     label2:
+        $r2 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.widget.MediaController mMediaController>;
+
+        if $r2 == null goto label3;
+
+        $r2 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.widget.MediaController mMediaController>;
+
+        $z0 = virtualinvoke $r2.<android.widget.MediaController: boolean isShowing()>();
+
+        if $z0 == 0 goto label4;
+
+        $r2 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.widget.MediaController mMediaController>;
+
+        virtualinvoke $r2.<android.widget.MediaController: void hide()>();
+
+     label3:
+        return 1;
+
+     label4:
+        $r3 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.app.Activity mActivity>;
+
+        virtualinvoke $r3.<android.app.Activity: void finish()>();
+
+        goto label3;
+    }
+
+    public boolean onKeyUp(int, android.view.KeyEvent)
+    {
+        int $i0;
+        com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity r0;
+        android.view.KeyEvent $r1;
+
+        r0 := @this: com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: android.view.KeyEvent;
+
+        return 0;
+    }
+
+    public void onPause()
+    {
+        com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity r0;
+
+        r0 := @this: com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity;
+
+        return;
+    }
+
+    public void onResume()
+    {
+        com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity r0;
+
+        r0 := @this: com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity;
+
+        return;
+    }
+
+    public void onStop()
+    {
+        com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity r0;
+
+        r0 := @this: com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity;
+
+        return;
+    }
+
+    public boolean onTouchEvent(android.view.MotionEvent)
+    {
+        com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity r0;
+        android.view.MotionEvent $r1;
+
+        r0 := @this: com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity;
+
+        $r1 := @parameter0: android.view.MotionEvent;
+
+        return 1;
+    }
+
+    public void updateProgress(java.lang.String)
+    {
+        com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity r0;
+        android.widget.TextView $r2;
+        java.lang.String $r1;
+        java.lang.Exception $r3;
+
+        r0 := @this: com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity;
+
+        $r1 := @parameter0: java.lang.String;
+
+     label1:
+        $r2 = r0.<com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: android.widget.TextView mProgressMessage>;
+
+        virtualinvoke $r2.<android.widget.TextView: void setText(java.lang.CharSequence)>($r1);
+
+     label2:
+        return;
+
+     label3:
+        $r3 := @caughtexception;
+
+        staticinvoke <com.sktelecom.tad.sdk.AdLog: void println(java.lang.String,java.lang.Throwable)>("Error updating video status!", $r3);
+
+        return;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+    }
+
+    public static void <clinit>()
+    {
+        <com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String YOUTUBE_PLAYLIST_ATOM_FEED_URL> = "http://gdata.youtube.com/feeds/api/playlists/";
+
+        <com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String TAG_WAKELOCK> = "introVideo";
+
+        <com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String SCHEME_YOUTUBE_VIDEO> = "ytv";
+
+        <com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String SCHEME_YOUTUBE_PLAYLIST> = "ytpl";
+
+        <com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String SCHEME_RTSP_VIDEO> = "rtsp";
+
+        <com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String SCHEME_HTTP_VIDEO> = "http";
+
+        <com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String SCHEME_GOOGLE_VIDEO> = "ggv";
+
+        <com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String SCHEME_FILE_VIDEO> = "file";
+
+        <com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String MSG_TOKEN> = "com.keyes.video.msg.token";
+
+        <com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String MSG_PLAYLIST> = "com.keyes.video.msg.playlist";
+
+        <com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String MSG_LO_BAND> = "com.keyes.video.msg.loband";
+
+        <com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String MSG_LOADING> = "com.keyes.video.msg.buffer";
+
+        <com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String MSG_INIT> = "com.keyes.video.msg.init";
+
+        <com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String MSG_HI_BAND> = "com.keyes.video.msg.hiband";
+
+        <com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String MSG_ERROR_TITLE> = "com.keyes.video.msg.error.title";
+
+        <com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String MSG_ERROR_MSG> = "com.keyes.video.msg.error.msg";
+
+        <com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String MSG_DETECT> = "com.keyes.video.msg.detect";
+
+        <com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String MSG_BUFFERING> = "com.keyes.video.msg.buffering";
+
+        <com.sktelecom.tad.sdk.activity.AdVideoPlayerActivity: java.lang.String GATEWAY_VIDEO_URL> = "http://211.63.6.91/test/youtube/vd.php?";
+
+        return;
+    }
+}

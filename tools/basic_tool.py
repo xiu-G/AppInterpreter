@@ -1,4 +1,5 @@
 import os
+import subprocess
 import sys
 import codecs
 import json
@@ -68,6 +69,12 @@ def writeContentLists_mode(filePath, contents, mode):
             new_contents.append(contents[i])
     with codecs.open(filePath, mode, "utf8") as w:
         w.writelines(new_contents)
+
+def writeContex_mode(filePath, text, mode):
+    if not text.endswith('\n'):
+        text += "\n"
+    with codecs.open(filePath, mode, "utf8") as w:
+        w.write(text)
 
 def readContentLists_withoutbr(filePath):
     with codecs.open(filePath) as r:
@@ -187,3 +194,12 @@ class NpEncoder(json.JSONEncoder):
             return obj.tolist()
         else:
             return super(NpEncoder, self).default(obj)
+
+def run_cmd(time_out, cmd, output):
+    if time_out == 0:
+        return subprocess.run(cmd, stdout=output, stderr=output)
+    else:
+        try:
+            return subprocess.run(cmd, stdout=output, stderr=output, timeout=time_out)
+        except subprocess.TimeoutExpired:
+            return -50

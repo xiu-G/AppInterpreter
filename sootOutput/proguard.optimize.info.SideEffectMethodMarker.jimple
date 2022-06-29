@@ -1,0 +1,248 @@
+public class proguard.optimize.info.SideEffectMethodMarker extends proguard.classfile.util.SimplifiedVisitor implements proguard.classfile.visitor.ClassPoolVisitor, proguard.classfile.visitor.ClassVisitor, proguard.classfile.visitor.MemberVisitor, proguard.classfile.attribute.visitor.AttributeVisitor
+{
+    private boolean hasSideEffects;
+    private int newSideEffectCount;
+    private final proguard.optimize.info.SideEffectInstructionChecker sideEffectInstructionChecker;
+
+    public void <init>()
+    {
+        proguard.optimize.info.SideEffectMethodMarker r0;
+        proguard.optimize.info.SideEffectInstructionChecker $r1;
+
+        r0 := @this: proguard.optimize.info.SideEffectMethodMarker;
+
+        specialinvoke r0.<proguard.classfile.util.SimplifiedVisitor: void <init>()>();
+
+        $r1 = new proguard.optimize.info.SideEffectInstructionChecker;
+
+        specialinvoke $r1.<proguard.optimize.info.SideEffectInstructionChecker: void <init>(boolean)>(0);
+
+        r0.<proguard.optimize.info.SideEffectMethodMarker: proguard.optimize.info.SideEffectInstructionChecker sideEffectInstructionChecker> = $r1;
+
+        return;
+    }
+
+    private boolean hasSideEffects(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute)
+    {
+        byte[] $r4;
+        proguard.optimize.info.SideEffectInstructionChecker $r6;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.instruction.Instruction $r5;
+        proguard.optimize.info.SideEffectMethodMarker r0;
+        int $i0, $i1, $i2;
+        proguard.classfile.Method $r2;
+        boolean $z0;
+
+        r0 := @this: proguard.optimize.info.SideEffectMethodMarker;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 = $r3.<proguard.classfile.attribute.CodeAttribute: byte[] code>;
+
+        $i0 = $r3.<proguard.classfile.attribute.CodeAttribute: int u4codeLength>;
+
+        $i1 = 0;
+
+     label1:
+        $r5 = staticinvoke <proguard.classfile.instruction.InstructionFactory: proguard.classfile.instruction.Instruction create(byte[],int)>($r4, $i1);
+
+        $r6 = r0.<proguard.optimize.info.SideEffectMethodMarker: proguard.optimize.info.SideEffectInstructionChecker sideEffectInstructionChecker>;
+
+        $z0 = virtualinvoke $r6.<proguard.optimize.info.SideEffectInstructionChecker: boolean hasSideEffects(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,int,proguard.classfile.instruction.Instruction)>($r1, $r2, $r3, $i1, $r5);
+
+        if $z0 == 0 goto label2;
+
+        return 1;
+
+     label2:
+        $i2 = virtualinvoke $r5.<proguard.classfile.instruction.Instruction: int length(int)>($i1);
+
+        $i1 = $i2 + $i1;
+
+        if $i1 < $i0 goto label1;
+
+        return 0;
+    }
+
+    public static boolean hasSideEffects(proguard.classfile.Method)
+    {
+        proguard.classfile.Method $r0;
+        proguard.optimize.info.MethodOptimizationInfo $r1;
+        boolean $z0;
+
+        $r0 := @parameter0: proguard.classfile.Method;
+
+        $r1 = staticinvoke <proguard.optimize.info.MethodOptimizationInfo: proguard.optimize.info.MethodOptimizationInfo getMethodOptimizationInfo(proguard.classfile.Method)>($r0);
+
+        if $r1 == null goto label1;
+
+        $z0 = virtualinvoke $r1.<proguard.optimize.info.MethodOptimizationInfo: boolean hasSideEffects()>();
+
+        if $z0 == 0 goto label2;
+
+     label1:
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    private static void markSideEffects(proguard.classfile.Method)
+    {
+        proguard.classfile.Method $r0;
+        proguard.optimize.info.MethodOptimizationInfo $r1;
+
+        $r0 := @parameter0: proguard.classfile.Method;
+
+        $r1 = staticinvoke <proguard.optimize.info.MethodOptimizationInfo: proguard.optimize.info.MethodOptimizationInfo getMethodOptimizationInfo(proguard.classfile.Method)>($r0);
+
+        if $r1 == null goto label1;
+
+        virtualinvoke $r1.<proguard.optimize.info.MethodOptimizationInfo: void setSideEffects()>();
+
+     label1:
+        return;
+    }
+
+    public void visitAnyAttribute(proguard.classfile.Clazz, proguard.classfile.attribute.Attribute)
+    {
+        proguard.optimize.info.SideEffectMethodMarker r0;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.Attribute $r2;
+
+        r0 := @this: proguard.optimize.info.SideEffectMethodMarker;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.Attribute;
+
+        return;
+    }
+
+    public void visitClassPool(proguard.classfile.ClassPool)
+    {
+        proguard.optimize.info.SideEffectMethodMarker r0;
+        proguard.classfile.ClassPool $r1;
+        int $i0;
+
+        r0 := @this: proguard.optimize.info.SideEffectMethodMarker;
+
+        $r1 := @parameter0: proguard.classfile.ClassPool;
+
+     label1:
+        r0.<proguard.optimize.info.SideEffectMethodMarker: int newSideEffectCount> = 0;
+
+        virtualinvoke $r1.<proguard.classfile.ClassPool: void classesAccept(proguard.classfile.visitor.ClassVisitor)>(r0);
+
+        $i0 = r0.<proguard.optimize.info.SideEffectMethodMarker: int newSideEffectCount>;
+
+        if $i0 > 0 goto label1;
+
+        return;
+    }
+
+    public void visitCodeAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.optimize.info.SideEffectMethodMarker r0;
+        proguard.classfile.Method $r2;
+        boolean $z0;
+
+        r0 := @this: proguard.optimize.info.SideEffectMethodMarker;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $z0 = specialinvoke r0.<proguard.optimize.info.SideEffectMethodMarker: boolean hasSideEffects(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute)>($r1, $r2, $r3);
+
+        r0.<proguard.optimize.info.SideEffectMethodMarker: boolean hasSideEffects> = $z0;
+
+        return;
+    }
+
+    public void visitProgramClass(proguard.classfile.ProgramClass)
+    {
+        proguard.optimize.info.SideEffectMethodMarker r0;
+        proguard.classfile.ProgramClass $r1;
+
+        r0 := @this: proguard.optimize.info.SideEffectMethodMarker;
+
+        $r1 := @parameter0: proguard.classfile.ProgramClass;
+
+        virtualinvoke $r1.<proguard.classfile.ProgramClass: void methodsAccept(proguard.classfile.visitor.MemberVisitor)>(r0);
+
+        return;
+    }
+
+    public void visitProgramMethod(proguard.classfile.ProgramClass, proguard.classfile.ProgramMethod)
+    {
+        proguard.classfile.ProgramMethod $r2;
+        proguard.optimize.info.SideEffectMethodMarker r0;
+        int $i0;
+        proguard.classfile.ProgramClass $r1;
+        boolean $z0;
+
+        r0 := @this: proguard.optimize.info.SideEffectMethodMarker;
+
+        $r1 := @parameter0: proguard.classfile.ProgramClass;
+
+        $r2 := @parameter1: proguard.classfile.ProgramMethod;
+
+        $z0 = staticinvoke <proguard.optimize.info.SideEffectMethodMarker: boolean hasSideEffects(proguard.classfile.Method)>($r2);
+
+        if $z0 != 0 goto label4;
+
+        $z0 = staticinvoke <proguard.optimize.info.NoSideEffectMethodMarker: boolean hasNoSideEffects(proguard.classfile.Method)>($r2);
+
+        if $z0 != 0 goto label4;
+
+        $i0 = virtualinvoke $r2.<proguard.classfile.ProgramMethod: int getAccessFlags()>();
+
+        $i0 = $i0 & 288;
+
+        if $i0 == 0 goto label3;
+
+        $z0 = 1;
+
+     label1:
+        r0.<proguard.optimize.info.SideEffectMethodMarker: boolean hasSideEffects> = $z0;
+
+        $z0 = r0.<proguard.optimize.info.SideEffectMethodMarker: boolean hasSideEffects>;
+
+        if $z0 != 0 goto label2;
+
+        virtualinvoke $r2.<proguard.classfile.ProgramMethod: void attributesAccept(proguard.classfile.ProgramClass,proguard.classfile.attribute.visitor.AttributeVisitor)>($r1, r0);
+
+     label2:
+        $z0 = r0.<proguard.optimize.info.SideEffectMethodMarker: boolean hasSideEffects>;
+
+        if $z0 == 0 goto label4;
+
+        staticinvoke <proguard.optimize.info.SideEffectMethodMarker: void markSideEffects(proguard.classfile.Method)>($r2);
+
+        $i0 = r0.<proguard.optimize.info.SideEffectMethodMarker: int newSideEffectCount>;
+
+        $i0 = $i0 + 1;
+
+        r0.<proguard.optimize.info.SideEffectMethodMarker: int newSideEffectCount> = $i0;
+
+        return;
+
+     label3:
+        $z0 = 0;
+
+        goto label1;
+
+     label4:
+        return;
+    }
+}

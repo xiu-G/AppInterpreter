@@ -1,0 +1,198 @@
+public class cn.trinea.android.common.util.AssetDatabaseOpenHelper extends java.lang.Object
+{
+    private android.content.Context context;
+    private java.lang.String databaseName;
+
+    public void <init>(android.content.Context, java.lang.String)
+    {
+        android.content.Context $r1;
+        java.lang.String $r2;
+        cn.trinea.android.common.util.AssetDatabaseOpenHelper r0;
+
+        r0 := @this: cn.trinea.android.common.util.AssetDatabaseOpenHelper;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<cn.trinea.android.common.util.AssetDatabaseOpenHelper: android.content.Context context> = $r1;
+
+        r0.<cn.trinea.android.common.util.AssetDatabaseOpenHelper: java.lang.String databaseName> = $r2;
+
+        return;
+    }
+
+    private void copyDatabase(java.io.File)
+    {
+        android.content.Context $r3;
+        cn.trinea.android.common.util.AssetDatabaseOpenHelper r0;
+        android.content.res.AssetManager $r4;
+        java.lang.String $r2;
+        java.io.File $r1;
+        java.io.InputStream $r5;
+
+        r0 := @this: cn.trinea.android.common.util.AssetDatabaseOpenHelper;
+
+        $r1 := @parameter0: java.io.File;
+
+        $r3 = r0.<cn.trinea.android.common.util.AssetDatabaseOpenHelper: android.content.Context context>;
+
+        $r4 = virtualinvoke $r3.<android.content.Context: android.content.res.AssetManager getAssets()>();
+
+        $r2 = r0.<cn.trinea.android.common.util.AssetDatabaseOpenHelper: java.lang.String databaseName>;
+
+        $r5 = virtualinvoke $r4.<android.content.res.AssetManager: java.io.InputStream open(java.lang.String)>($r2);
+
+        staticinvoke <cn.trinea.android.common.util.FileUtils: boolean writeFile(java.io.File,java.io.InputStream)>($r1, $r5);
+
+        virtualinvoke $r5.<java.io.InputStream: void close()>();
+
+        return;
+    }
+
+    public java.lang.String getDatabaseName()
+    {
+        java.lang.String r1;
+        cn.trinea.android.common.util.AssetDatabaseOpenHelper r0;
+
+        r0 := @this: cn.trinea.android.common.util.AssetDatabaseOpenHelper;
+
+        r1 = r0.<cn.trinea.android.common.util.AssetDatabaseOpenHelper: java.lang.String databaseName>;
+
+        return r1;
+    }
+
+    public android.database.sqlite.SQLiteDatabase getReadableDatabase()
+    {
+        java.lang.Throwable $r5, $r7;
+        android.content.Context $r1;
+        java.lang.RuntimeException $r6;
+        java.io.File $r3;
+        android.database.sqlite.SQLiteDatabase $r4;
+        cn.trinea.android.common.util.AssetDatabaseOpenHelper r0;
+        java.lang.String $r2;
+        boolean $z0;
+
+        r0 := @this: cn.trinea.android.common.util.AssetDatabaseOpenHelper;
+
+        entermonitor r0;
+
+     label1:
+        $r1 = r0.<cn.trinea.android.common.util.AssetDatabaseOpenHelper: android.content.Context context>;
+
+        $r2 = r0.<cn.trinea.android.common.util.AssetDatabaseOpenHelper: java.lang.String databaseName>;
+
+        $r3 = virtualinvoke $r1.<android.content.Context: java.io.File getDatabasePath(java.lang.String)>($r2);
+
+        if $r3 == null goto label4;
+
+        $z0 = virtualinvoke $r3.<java.io.File: boolean exists()>();
+
+     label2:
+        if $z0 != 0 goto label4;
+
+     label3:
+        specialinvoke r0.<cn.trinea.android.common.util.AssetDatabaseOpenHelper: void copyDatabase(java.io.File)>($r3);
+
+     label4:
+        $r2 = virtualinvoke $r3.<java.io.File: java.lang.String getPath()>();
+
+        $r4 = staticinvoke <android.database.sqlite.SQLiteDatabase: android.database.sqlite.SQLiteDatabase openDatabase(java.lang.String,android.database.sqlite.SQLiteDatabase$CursorFactory,int)>($r2, null, 1);
+
+     label5:
+        exitmonitor r0;
+
+        return $r4;
+
+     label6:
+        $r5 := @caughtexception;
+
+     label7:
+        $r6 = new java.lang.RuntimeException;
+
+        specialinvoke $r6.<java.lang.RuntimeException: void <init>(java.lang.String,java.lang.Throwable)>("Error creating source database", $r5);
+
+        throw $r6;
+
+     label8:
+        $r7 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r7;
+
+        catch java.lang.Throwable from label1 to label2 with label8;
+        catch java.io.IOException from label3 to label4 with label6;
+        catch java.lang.Throwable from label3 to label4 with label8;
+        catch java.lang.Throwable from label4 to label5 with label8;
+        catch java.lang.Throwable from label7 to label8 with label8;
+    }
+
+    public android.database.sqlite.SQLiteDatabase getWritableDatabase()
+    {
+        java.lang.Throwable $r5, $r7;
+        android.content.Context $r1;
+        java.lang.RuntimeException $r6;
+        java.io.File $r3;
+        android.database.sqlite.SQLiteDatabase $r4;
+        cn.trinea.android.common.util.AssetDatabaseOpenHelper r0;
+        java.lang.String $r2;
+        boolean $z0;
+
+        r0 := @this: cn.trinea.android.common.util.AssetDatabaseOpenHelper;
+
+        entermonitor r0;
+
+     label1:
+        $r1 = r0.<cn.trinea.android.common.util.AssetDatabaseOpenHelper: android.content.Context context>;
+
+        $r2 = r0.<cn.trinea.android.common.util.AssetDatabaseOpenHelper: java.lang.String databaseName>;
+
+        $r3 = virtualinvoke $r1.<android.content.Context: java.io.File getDatabasePath(java.lang.String)>($r2);
+
+        if $r3 == null goto label4;
+
+        $z0 = virtualinvoke $r3.<java.io.File: boolean exists()>();
+
+     label2:
+        if $z0 != 0 goto label4;
+
+     label3:
+        specialinvoke r0.<cn.trinea.android.common.util.AssetDatabaseOpenHelper: void copyDatabase(java.io.File)>($r3);
+
+     label4:
+        $r2 = virtualinvoke $r3.<java.io.File: java.lang.String getPath()>();
+
+        $r4 = staticinvoke <android.database.sqlite.SQLiteDatabase: android.database.sqlite.SQLiteDatabase openDatabase(java.lang.String,android.database.sqlite.SQLiteDatabase$CursorFactory,int)>($r2, null, 0);
+
+     label5:
+        exitmonitor r0;
+
+        return $r4;
+
+     label6:
+        $r5 := @caughtexception;
+
+     label7:
+        $r6 = new java.lang.RuntimeException;
+
+        specialinvoke $r6.<java.lang.RuntimeException: void <init>(java.lang.String,java.lang.Throwable)>("Error creating source database", $r5);
+
+        throw $r6;
+
+     label8:
+        $r7 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r7;
+
+        catch java.lang.Throwable from label1 to label2 with label8;
+        catch java.io.IOException from label3 to label4 with label6;
+        catch java.lang.Throwable from label3 to label4 with label8;
+        catch java.lang.Throwable from label4 to label5 with label8;
+        catch java.lang.Throwable from label7 to label8 with label8;
+    }
+}

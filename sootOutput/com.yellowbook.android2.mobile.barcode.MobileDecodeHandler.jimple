@@ -1,0 +1,248 @@
+final class com.yellowbook.android2.mobile.barcode.MobileDecodeHandler extends android.os.Handler
+{
+    private static final java.lang.String TAG;
+    private final com.yellowbook.android2.mobile.barcode.MobileBarcodeActivity activity;
+    private final com.google.zxing.MultiFormatReader multiFormatReader;
+
+    static void <clinit>()
+    {
+        java.lang.Class $r1;
+        java.lang.String $r0;
+
+        $r1 = class "Lcom/yellowbook/android2/mobile/barcode/MobileDecodeHandler;";
+
+        $r0 = virtualinvoke $r1.<java.lang.Class: java.lang.String getSimpleName()>();
+
+        <com.yellowbook.android2.mobile.barcode.MobileDecodeHandler: java.lang.String TAG> = $r0;
+
+        return;
+    }
+
+    void <init>(com.yellowbook.android2.mobile.barcode.MobileBarcodeActivity, java.util.Hashtable)
+    {
+        com.google.zxing.MultiFormatReader $r3;
+        com.yellowbook.android2.mobile.barcode.MobileDecodeHandler r0;
+        java.util.Hashtable r2;
+        com.yellowbook.android2.mobile.barcode.MobileBarcodeActivity $r1;
+
+        r0 := @this: com.yellowbook.android2.mobile.barcode.MobileDecodeHandler;
+
+        $r1 := @parameter0: com.yellowbook.android2.mobile.barcode.MobileBarcodeActivity;
+
+        r2 := @parameter1: java.util.Hashtable;
+
+        specialinvoke r0.<android.os.Handler: void <init>()>();
+
+        $r3 = new com.google.zxing.MultiFormatReader;
+
+        specialinvoke $r3.<com.google.zxing.MultiFormatReader: void <init>()>();
+
+        r0.<com.yellowbook.android2.mobile.barcode.MobileDecodeHandler: com.google.zxing.MultiFormatReader multiFormatReader> = $r3;
+
+        $r3 = r0.<com.yellowbook.android2.mobile.barcode.MobileDecodeHandler: com.google.zxing.MultiFormatReader multiFormatReader>;
+
+        virtualinvoke $r3.<com.google.zxing.MultiFormatReader: void setHints(java.util.Hashtable)>(r2);
+
+        r0.<com.yellowbook.android2.mobile.barcode.MobileDecodeHandler: com.yellowbook.android2.mobile.barcode.MobileBarcodeActivity activity> = $r1;
+
+        return;
+    }
+
+    private void decode(byte[], int, int)
+    {
+        com.google.zxing.Result r4, $r9;
+        java.lang.Throwable $r18;
+        byte[] $r1;
+        android.os.Bundle r3;
+        com.google.zxing.MultiFormatReader $r8;
+        long $l2, $l3;
+        com.yellowbook.android2.mobile.barcode.MobileBarcodeActivity $r13;
+        com.yellowbook.android2.mobile.barcode.MobilePlanarYUVLuminanceSource $r6;
+        com.yellowbook.android2.mobile.barcode.MobileDecodeHandler r0;
+        android.os.Handler $r14;
+        int $i0, $i1;
+        java.lang.String $r10, $r12;
+        com.yellowbook.android2.mobile.barcode.MobileCameraManager $r5;
+        com.google.zxing.common.HybridBinarizer $r7;
+        android.os.Message $r15;
+        android.graphics.Bitmap $r16;
+        com.google.zxing.BinaryBitmap r2;
+        java.lang.StringBuilder $r11;
+        com.google.zxing.ReaderException $r17;
+
+        r0 := @this: com.yellowbook.android2.mobile.barcode.MobileDecodeHandler;
+
+        $r1 := @parameter0: byte[];
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $l2 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        r4 = null;
+
+        $r5 = staticinvoke <com.yellowbook.android2.mobile.barcode.MobileCameraManager: com.yellowbook.android2.mobile.barcode.MobileCameraManager get()>();
+
+        $r6 = virtualinvoke $r5.<com.yellowbook.android2.mobile.barcode.MobileCameraManager: com.yellowbook.android2.mobile.barcode.MobilePlanarYUVLuminanceSource buildLuminanceSource(byte[],int,int)>($r1, $i0, $i1);
+
+        r2 = new com.google.zxing.BinaryBitmap;
+
+        $r7 = new com.google.zxing.common.HybridBinarizer;
+
+        specialinvoke $r7.<com.google.zxing.common.HybridBinarizer: void <init>(com.google.zxing.LuminanceSource)>($r6);
+
+        specialinvoke r2.<com.google.zxing.BinaryBitmap: void <init>(com.google.zxing.Binarizer)>($r7);
+
+     label1:
+        $r8 = r0.<com.yellowbook.android2.mobile.barcode.MobileDecodeHandler: com.google.zxing.MultiFormatReader multiFormatReader>;
+
+     label2:
+        $r9 = virtualinvoke $r8.<com.google.zxing.MultiFormatReader: com.google.zxing.Result decodeWithState(com.google.zxing.BinaryBitmap)>(r2);
+
+     label3:
+        r4 = $r9;
+
+        $r8 = r0.<com.yellowbook.android2.mobile.barcode.MobileDecodeHandler: com.google.zxing.MultiFormatReader multiFormatReader>;
+
+        virtualinvoke $r8.<com.google.zxing.MultiFormatReader: void reset()>();
+
+     label4:
+        if r4 == null goto label7;
+
+        $l3 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $r10 = <com.yellowbook.android2.mobile.barcode.MobileDecodeHandler: java.lang.String TAG>;
+
+        $r11 = new java.lang.StringBuilder;
+
+        specialinvoke $r11.<java.lang.StringBuilder: void <init>()>();
+
+        $r11 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Found barcode (");
+
+        $l2 = $l3 - $l2;
+
+        $r11 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l2);
+
+        $r11 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" ms):\n");
+
+        $r12 = virtualinvoke r4.<com.google.zxing.Result: java.lang.String toString()>();
+
+        $r11 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r12);
+
+        $r12 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>($r10, $r12);
+
+        $r13 = r0.<com.yellowbook.android2.mobile.barcode.MobileDecodeHandler: com.yellowbook.android2.mobile.barcode.MobileBarcodeActivity activity>;
+
+        $r14 = virtualinvoke $r13.<com.yellowbook.android2.mobile.barcode.MobileBarcodeActivity: android.os.Handler getHandler()>();
+
+        $r15 = staticinvoke <android.os.Message: android.os.Message obtain(android.os.Handler,int,java.lang.Object)>($r14, 2131361795, r4);
+
+        r3 = new android.os.Bundle;
+
+        specialinvoke r3.<android.os.Bundle: void <init>()>();
+
+        $r16 = virtualinvoke $r6.<com.yellowbook.android2.mobile.barcode.MobilePlanarYUVLuminanceSource: android.graphics.Bitmap renderCroppedGreyscaleBitmap()>();
+
+        virtualinvoke r3.<android.os.Bundle: void putParcelable(java.lang.String,android.os.Parcelable)>("barcode_bitmap", $r16);
+
+        virtualinvoke $r15.<android.os.Message: void setData(android.os.Bundle)>(r3);
+
+        virtualinvoke $r15.<android.os.Message: void sendToTarget()>();
+
+        return;
+
+     label5:
+        $r17 := @caughtexception;
+
+        $r8 = r0.<com.yellowbook.android2.mobile.barcode.MobileDecodeHandler: com.google.zxing.MultiFormatReader multiFormatReader>;
+
+        virtualinvoke $r8.<com.google.zxing.MultiFormatReader: void reset()>();
+
+        goto label4;
+
+     label6:
+        $r18 := @caughtexception;
+
+        $r8 = r0.<com.yellowbook.android2.mobile.barcode.MobileDecodeHandler: com.google.zxing.MultiFormatReader multiFormatReader>;
+
+        virtualinvoke $r8.<com.google.zxing.MultiFormatReader: void reset()>();
+
+        throw $r18;
+
+     label7:
+        $r13 = r0.<com.yellowbook.android2.mobile.barcode.MobileDecodeHandler: com.yellowbook.android2.mobile.barcode.MobileBarcodeActivity activity>;
+
+        $r14 = virtualinvoke $r13.<com.yellowbook.android2.mobile.barcode.MobileBarcodeActivity: android.os.Handler getHandler()>();
+
+        $r15 = staticinvoke <android.os.Message: android.os.Message obtain(android.os.Handler,int)>($r14, 2131361794);
+
+        virtualinvoke $r15.<android.os.Message: void sendToTarget()>();
+
+        return;
+
+        catch com.google.zxing.ReaderException from label2 to label3 with label5;
+        catch java.lang.Throwable from label1 to label3 with label6;
+    }
+
+    public void handleMessage(android.os.Message)
+    {
+        byte[] $r4;
+        java.lang.Exception $r5;
+        android.os.Message $r1;
+        com.yellowbook.android2.mobile.barcode.MobileDecodeHandler r0;
+        android.os.Looper $r2;
+        int $i0, $i1;
+        java.lang.Object $r3;
+
+        r0 := @this: com.yellowbook.android2.mobile.barcode.MobileDecodeHandler;
+
+        $r1 := @parameter0: android.os.Message;
+
+        $i0 = $r1.<android.os.Message: int what>;
+
+        lookupswitch($i0)
+        {
+            case 2131361793: goto label2;
+            case 2131361798: goto label6;
+            default: goto label1;
+        };
+
+     label1:
+        return;
+
+     label2:
+        $r3 = $r1.<android.os.Message: java.lang.Object obj>;
+
+        $r4 = (byte[]) $r3;
+
+     label3:
+        $i0 = $r1.<android.os.Message: int arg1>;
+
+        $i1 = $r1.<android.os.Message: int arg2>;
+
+        specialinvoke r0.<com.yellowbook.android2.mobile.barcode.MobileDecodeHandler: void decode(byte[],int,int)>($r4, $i0, $i1);
+
+     label4:
+        return;
+
+     label5:
+        $r5 := @caughtexception;
+
+        virtualinvoke $r5.<java.lang.Exception: void printStackTrace()>();
+
+        return;
+
+     label6:
+        $r2 = staticinvoke <android.os.Looper: android.os.Looper myLooper()>();
+
+        virtualinvoke $r2.<android.os.Looper: void quit()>();
+
+        return;
+
+        catch java.lang.Exception from label2 to label3 with label5;
+        catch java.lang.Exception from label3 to label4 with label5;
+    }
+}

@@ -1,0 +1,1285 @@
+public class com.shwy.bestjoy.groupsms.MyEditMemberActivity extends android.app.Activity implements android.view.View$OnClickListener, android.widget.AdapterView$OnItemSelectedListener
+{
+    private static final int COL_CUSTOM_RINGTONE;
+    private static final java.lang.String[] CONTACT_PROJECTION;
+    private static final android.net.Uri CONTACT_URI;
+    private static final java.lang.String CONTACT_WHERE;
+    private static final java.lang.String[] GROUP_PROJECTION;
+    private static android.net.Uri GROUP_URI;
+    private static final java.lang.String GROUP_WHERE;
+    private static final int RINGTONE_PICKED;
+    private static final java.lang.String TAG;
+    private static final java.lang.String TEL_ORDER_BY;
+    private static final java.lang.String[] TEL_PROJECTION;
+    private static final java.lang.String TEL_WHERE;
+    private static final android.net.Uri URI;
+    private boolean change;
+    private int deleted;
+    private long groupId;
+    private boolean isTelFlag;
+    private long mContactId;
+    private com.shwy.bestjoy.groupsms.ContactManager mContactManager;
+    private java.lang.String mCustomRingtone;
+    private java.lang.String mGroupName;
+    private java.util.LinkedList mGroups;
+    private java.util.LinkedList mGroupsId;
+    private android.widget.Spinner mMemberGroup;
+    private android.widget.Spinner mMemberTels;
+    private java.util.LinkedList mMembersTels;
+    private java.lang.String mName;
+    private long mRawContactId;
+    private android.widget.TextView mRingtoneTitle;
+    private java.lang.String mSystemId;
+    private java.lang.String mTel;
+    private android.widget.TextView mTelCount;
+    private java.util.LinkedList mTelDataId;
+    private int position;
+    private int update;
+
+    static void <clinit>()
+    {
+        android.net.Uri $r0;
+        java.lang.String[] $r1;
+
+        <com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String TEL_WHERE> = "mimetype=\'vnd.android.cursor.item/phone_v2\' and raw_contact_id=?";
+
+        <com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String TEL_ORDER_BY> = "_id desc";
+
+        <com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String TAG> = "MyEditMemberActivity";
+
+        <com.shwy.bestjoy.groupsms.MyEditMemberActivity: int RINGTONE_PICKED> = 3023;
+
+        <com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String GROUP_WHERE> = "deleted=0";
+
+        <com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String CONTACT_WHERE> = "_id=?";
+
+        <com.shwy.bestjoy.groupsms.MyEditMemberActivity: int COL_CUSTOM_RINGTONE> = 0;
+
+        $r0 = <android.provider.ContactsContract$Data: android.net.Uri CONTENT_URI>;
+
+        <com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.net.Uri URI> = $r0;
+
+        $r0 = <android.provider.ContactsContract$Contacts: android.net.Uri CONTENT_URI>;
+
+        <com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.net.Uri CONTACT_URI> = $r0;
+
+        $r0 = <android.provider.ContactsContract$Groups: android.net.Uri CONTENT_URI>;
+
+        <com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.net.Uri GROUP_URI> = $r0;
+
+        $r1 = newarray (java.lang.String)[2];
+
+        $r1[0] = "_id";
+
+        $r1[1] = "title";
+
+        <com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String[] GROUP_PROJECTION> = $r1;
+
+        $r1 = newarray (java.lang.String)[2];
+
+        $r1[0] = "data1";
+
+        $r1[1] = "_id";
+
+        <com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String[] TEL_PROJECTION> = $r1;
+
+        $r1 = newarray (java.lang.String)[1];
+
+        $r1[0] = "custom_ringtone";
+
+        <com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String[] CONTACT_PROJECTION> = $r1;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        com.shwy.bestjoy.groupsms.MyEditMemberActivity r0;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.MyEditMemberActivity;
+
+        specialinvoke r0.<android.app.Activity: void <init>()>();
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: int deleted> = 0;
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: int update> = 0;
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: boolean change> = 0;
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: boolean isTelFlag> = 0;
+
+        return;
+    }
+
+    private void doPickRingtone()
+    {
+        com.shwy.bestjoy.groupsms.MyEditMemberActivity r0;
+        android.net.Uri $r3;
+        android.content.Intent r1;
+        java.lang.String $r2;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.MyEditMemberActivity;
+
+        r1 = new android.content.Intent;
+
+        specialinvoke r1.<android.content.Intent: void <init>(java.lang.String)>("android.intent.action.RINGTONE_PICKER");
+
+        virtualinvoke r1.<android.content.Intent: android.content.Intent putExtra(java.lang.String,boolean)>("android.intent.extra.ringtone.SHOW_DEFAULT", 1);
+
+        virtualinvoke r1.<android.content.Intent: android.content.Intent putExtra(java.lang.String,int)>("android.intent.extra.ringtone.TYPE", 1);
+
+        virtualinvoke r1.<android.content.Intent: android.content.Intent putExtra(java.lang.String,boolean)>("android.intent.extra.ringtone.SHOW_SILENT", 0);
+
+        $r2 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String mCustomRingtone>;
+
+        if $r2 == null goto label2;
+
+        $r2 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String mCustomRingtone>;
+
+        $r3 = staticinvoke <android.net.Uri: android.net.Uri parse(java.lang.String)>($r2);
+
+     label1:
+        virtualinvoke r1.<android.content.Intent: android.content.Intent putExtra(java.lang.String,android.os.Parcelable)>("android.intent.extra.ringtone.EXISTING_URI", $r3);
+
+        virtualinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: void startActivityForResult(android.content.Intent,int)>(r1, 3023);
+
+        return;
+
+     label2:
+        $r3 = staticinvoke <android.media.RingtoneManager: android.net.Uri getDefaultUri(int)>(1);
+
+        goto label1;
+    }
+
+    private void goBack()
+    {
+        com.shwy.bestjoy.groupsms.MyEditMemberActivity r0;
+        int $i0;
+        android.content.Intent r1, $r3;
+        java.lang.String $r2;
+        boolean $z0;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.MyEditMemberActivity;
+
+        $z0 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: boolean change>;
+
+        if $z0 == 0 goto label1;
+
+        $r3 = new android.content.Intent;
+
+        r1 = $r3;
+
+        specialinvoke $r3.<android.content.Intent: void <init>()>();
+
+        $i0 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: int position>;
+
+        virtualinvoke r1.<android.content.Intent: android.content.Intent putExtra(java.lang.String,int)>("position", $i0);
+
+        $i0 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: int deleted>;
+
+        virtualinvoke r1.<android.content.Intent: android.content.Intent putExtra(java.lang.String,int)>("operation1", $i0);
+
+        $i0 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: int update>;
+
+        virtualinvoke r1.<android.content.Intent: android.content.Intent putExtra(java.lang.String,int)>("operation2", $i0);
+
+        $r2 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String mTel>;
+
+        virtualinvoke r1.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("tel", $r2);
+
+        $i0 = -1;
+
+        virtualinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: void setResult(int,android.content.Intent)>($i0, r1);
+
+     label1:
+        virtualinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: void finish()>();
+
+        return;
+    }
+
+    private void handleRingtonePicked(android.net.Uri)
+    {
+        com.shwy.bestjoy.groupsms.MyEditMemberActivity r0;
+        android.net.Uri $r1;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r3;
+        boolean $z0;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.MyEditMemberActivity;
+
+        $r1 := @parameter0: android.net.Uri;
+
+        if $r1 == null goto label1;
+
+        $z0 = staticinvoke <android.media.RingtoneManager: boolean isDefault(android.net.Uri)>($r1);
+
+        if $z0 == 0 goto label3;
+
+     label1:
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("pickedUri:");
+
+        $r3 = virtualinvoke $r1.<android.net.Uri: java.lang.String toString()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("MyEditMemberActivity", $r3);
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String mCustomRingtone> = null;
+
+     label2:
+        specialinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: void saveData()>();
+
+        specialinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: void updateView()>();
+
+        return;
+
+     label3:
+        $r3 = virtualinvoke $r1.<android.net.Uri: java.lang.String toString()>();
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String mCustomRingtone> = $r3;
+
+        goto label2;
+    }
+
+    private void initView()
+    {
+        android.widget.TextView $r4;
+        com.shwy.bestjoy.groupsms.MyEditMemberActivity r0;
+        android.view.View $r2;
+        java.lang.String $r1;
+        android.widget.Spinner $r3;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.MyEditMemberActivity;
+
+        $r2 = virtualinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.view.View findViewById(int)>(2131493023);
+
+        virtualinvoke $r2.<android.view.View: void setOnClickListener(android.view.View$OnClickListener)>(r0);
+
+        $r2 = virtualinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.view.View findViewById(int)>(2131493025);
+
+        virtualinvoke $r2.<android.view.View: void setOnClickListener(android.view.View$OnClickListener)>(r0);
+
+        $r2 = virtualinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.view.View findViewById(int)>(2131493027);
+
+        virtualinvoke $r2.<android.view.View: void setOnClickListener(android.view.View$OnClickListener)>(r0);
+
+        $r2 = virtualinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.view.View findViewById(int)>(2131493026);
+
+        $r3 = (android.widget.Spinner) $r2;
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.widget.Spinner mMemberGroup> = $r3;
+
+        $r2 = virtualinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.view.View findViewById(int)>(2131493029);
+
+        $r3 = (android.widget.Spinner) $r2;
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.widget.Spinner mMemberTels> = $r3;
+
+        $r2 = virtualinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.view.View findViewById(int)>(2131493030);
+
+        $r4 = (android.widget.TextView) $r2;
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.widget.TextView mTelCount> = $r4;
+
+        $r2 = virtualinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.view.View findViewById(int)>(2131492984);
+
+        virtualinvoke $r2.<android.view.View: void setOnClickListener(android.view.View$OnClickListener)>(r0);
+
+        $r2 = virtualinvoke $r2.<android.view.View: android.view.View findViewById(int)>(2131492950);
+
+        $r4 = (android.widget.TextView) $r2;
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.widget.TextView mRingtoneTitle> = $r4;
+
+        $r2 = virtualinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.view.View findViewById(int)>(2131493031);
+
+        virtualinvoke $r2.<android.view.View: void setOnClickListener(android.view.View$OnClickListener)>(r0);
+
+        $r2 = virtualinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.view.View findViewById(int)>(2131493032);
+
+        virtualinvoke $r2.<android.view.View: void setOnClickListener(android.view.View$OnClickListener)>(r0);
+
+        $r2 = virtualinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.view.View findViewById(int)>(2131493028);
+
+        virtualinvoke $r2.<android.view.View: void setOnClickListener(android.view.View$OnClickListener)>(r0);
+
+        $r2 = virtualinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.view.View findViewById(int)>(2131493024);
+
+        $r4 = (android.widget.TextView) $r2;
+
+        $r1 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String mName>;
+
+        virtualinvoke $r4.<android.widget.TextView: void setText(java.lang.CharSequence)>($r1);
+
+        return;
+    }
+
+    private boolean loadData()
+    {
+        com.shwy.bestjoy.groupsms.MyEditMemberActivity r0;
+        android.net.Uri $r2;
+        java.lang.String[] $r3, $r4;
+        long $l0;
+        android.content.ContentResolver $r1;
+        java.lang.Long $r8;
+        java.lang.String $r5;
+        java.util.LinkedList $r7;
+        android.database.Cursor $r6;
+        boolean $z0;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.MyEditMemberActivity;
+
+        $r1 = virtualinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.content.ContentResolver getContentResolver()>();
+
+        $r2 = <com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.net.Uri CONTACT_URI>;
+
+        $r3 = <com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String[] CONTACT_PROJECTION>;
+
+        $r4 = newarray (java.lang.String)[1];
+
+        $l0 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: long mContactId>;
+
+        $r5 = staticinvoke <java.lang.String: java.lang.String valueOf(long)>($l0);
+
+        $r4[0] = $r5;
+
+        $r6 = virtualinvoke $r1.<android.content.ContentResolver: android.database.Cursor query(android.net.Uri,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String)>($r2, $r3, "_id=?", $r4, null);
+
+        $z0 = interfaceinvoke $r6.<android.database.Cursor: boolean moveToFirst()>();
+
+        if $z0 != 0 goto label1;
+
+        return 0;
+
+     label1:
+        $r5 = interfaceinvoke $r6.<android.database.Cursor: java.lang.String getString(int)>(0);
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String mCustomRingtone> = $r5;
+
+        interfaceinvoke $r6.<android.database.Cursor: void close()>();
+
+        $r2 = <com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.net.Uri GROUP_URI>;
+
+        $r3 = <com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String[] GROUP_PROJECTION>;
+
+        $r6 = virtualinvoke $r1.<android.content.ContentResolver: android.database.Cursor query(android.net.Uri,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String)>($r2, $r3, "deleted=0", null, null);
+
+     label2:
+        $z0 = interfaceinvoke $r6.<android.database.Cursor: boolean moveToNext()>();
+
+        if $z0 != 0 goto label4;
+
+        interfaceinvoke $r6.<android.database.Cursor: void close()>();
+
+        $r2 = <com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.net.Uri URI>;
+
+        $r3 = <com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String[] TEL_PROJECTION>;
+
+        $r4 = newarray (java.lang.String)[1];
+
+        $l0 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: long mRawContactId>;
+
+        $r5 = staticinvoke <java.lang.String: java.lang.String valueOf(long)>($l0);
+
+        $r4[0] = $r5;
+
+        $r6 = virtualinvoke $r1.<android.content.ContentResolver: android.database.Cursor query(android.net.Uri,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String)>($r2, $r3, "mimetype=\'vnd.android.cursor.item/phone_v2\' and raw_contact_id=?", $r4, "_id desc");
+
+        $r5 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String mTel>;
+
+        $z0 = virtualinvoke $r5.<java.lang.String: boolean equals(java.lang.Object)>("---");
+
+        if $z0 == 0 goto label5;
+
+        $r7 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.util.LinkedList mMembersTels>;
+
+        virtualinvoke $r7.<java.util.LinkedList: boolean add(java.lang.Object)>("---");
+
+        $r7 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.util.LinkedList mTelDataId>;
+
+        $r8 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>(0L);
+
+        virtualinvoke $r7.<java.util.LinkedList: boolean add(java.lang.Object)>($r8);
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: boolean isTelFlag> = 0;
+
+     label3:
+        $z0 = interfaceinvoke $r6.<android.database.Cursor: boolean moveToNext()>();
+
+        if $z0 != 0 goto label6;
+
+        interfaceinvoke $r6.<android.database.Cursor: void close()>();
+
+        return 1;
+
+     label4:
+        $r7 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.util.LinkedList mGroups>;
+
+        $r5 = interfaceinvoke $r6.<android.database.Cursor: java.lang.String getString(int)>(1);
+
+        virtualinvoke $r7.<java.util.LinkedList: boolean add(java.lang.Object)>($r5);
+
+        $r7 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.util.LinkedList mGroupsId>;
+
+        $l0 = interfaceinvoke $r6.<android.database.Cursor: long getLong(int)>(0);
+
+        $r8 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l0);
+
+        virtualinvoke $r7.<java.util.LinkedList: boolean add(java.lang.Object)>($r8);
+
+        goto label2;
+
+     label5:
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: boolean isTelFlag> = 1;
+
+        goto label3;
+
+     label6:
+        $r7 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.util.LinkedList mMembersTels>;
+
+        $r5 = interfaceinvoke $r6.<android.database.Cursor: java.lang.String getString(int)>(0);
+
+        virtualinvoke $r7.<java.util.LinkedList: boolean add(java.lang.Object)>($r5);
+
+        $r7 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.util.LinkedList mTelDataId>;
+
+        $l0 = interfaceinvoke $r6.<android.database.Cursor: long getLong(int)>(1);
+
+        $r8 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l0);
+
+        virtualinvoke $r7.<java.util.LinkedList: boolean add(java.lang.Object)>($r8);
+
+        goto label3;
+    }
+
+    private void saveData()
+    {
+        com.shwy.bestjoy.groupsms.ContactManager $r3;
+        com.shwy.bestjoy.groupsms.MyEditMemberActivity r0;
+        java.lang.StringBuilder $r1;
+        java.lang.String $r2;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.MyEditMemberActivity;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>(java.lang.String)>("saveData ");
+
+        $r2 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String mCustomRingtone>;
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("MyEditMemberActivity", $r2);
+
+        $r3 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: com.shwy.bestjoy.groupsms.ContactManager mContactManager>;
+
+        $r2 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String mCustomRingtone>;
+
+        virtualinvoke $r3.<com.shwy.bestjoy.groupsms.ContactManager: void setRingUriString(java.lang.String)>($r2);
+
+        specialinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: void setMemberRingTong()>();
+
+        return;
+    }
+
+    private void setMemberRingTong()
+    {
+        com.shwy.bestjoy.groupsms.MyEditMemberActivity r0;
+        com.shwy.bestjoy.groupsms.ContactManager $r1;
+        long $l0;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.MyEditMemberActivity;
+
+        $r1 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: com.shwy.bestjoy.groupsms.ContactManager mContactManager>;
+
+        $l0 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: long mContactId>;
+
+        virtualinvoke $r1.<com.shwy.bestjoy.groupsms.ContactManager: void setCustomRing(long)>($l0);
+
+        return;
+    }
+
+    private void showMessage(int)
+    {
+        com.shwy.bestjoy.groupsms.MyEditMemberActivity r0;
+        int $i0;
+        android.widget.Toast $r1;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.MyEditMemberActivity;
+
+        $i0 := @parameter0: int;
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("MyEditMemberActivity", "showMessage");
+
+        $r1 = staticinvoke <android.widget.Toast: android.widget.Toast makeText(android.content.Context,int,int)>(r0, $i0, 0);
+
+        virtualinvoke $r1.<android.widget.Toast: void show()>();
+
+        return;
+    }
+
+    private void updateView()
+    {
+        android.media.Ringtone $r11;
+        com.shwy.bestjoy.groupsms.MyEditMemberActivity r0;
+        android.net.Uri $r10;
+        java.lang.String[] r2;
+        long $l1;
+        java.lang.Long $r9;
+        int $i0, $i2, i3;
+        java.lang.String $r4;
+        java.util.LinkedList $r6;
+        boolean $z0;
+        java.util.Iterator $r7;
+        android.widget.Spinner $r8;
+        android.widget.ArrayAdapter r1, $r14;
+        android.widget.TextView $r5;
+        java.lang.StringBuilder $r3, $r13;
+        java.lang.Object $r12;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.MyEditMemberActivity;
+
+        $r13 = new java.lang.StringBuilder;
+
+        specialinvoke $r13.<java.lang.StringBuilder: void <init>(java.lang.String)>("updateView ");
+
+        $r4 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String mCustomRingtone>;
+
+        $r3 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>("MyEditMemberActivity", $r4);
+
+        $r4 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String mCustomRingtone>;
+
+        if $r4 != null goto label5;
+
+        $r5 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.widget.TextView mRingtoneTitle>;
+
+        $r4 = virtualinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String getString(int)>(2131165262);
+
+        virtualinvoke $r5.<android.widget.TextView: void setText(java.lang.CharSequence)>($r4);
+
+     label1:
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("MyEditMemberActivity", "updateView init groups");
+
+        $r6 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.util.LinkedList mGroups>;
+
+        $i0 = virtualinvoke $r6.<java.util.LinkedList: int size()>();
+
+        r2 = newarray (java.lang.String)[$i0];
+
+        $r13 = new java.lang.StringBuilder;
+
+        specialinvoke $r13.<java.lang.StringBuilder: void <init>(java.lang.String)>("group count ");
+
+        $r3 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("MyEditMemberActivity", $r4);
+
+        $i0 = 0;
+
+        $r6 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.util.LinkedList mGroups>;
+
+        $r7 = virtualinvoke $r6.<java.util.LinkedList: java.util.Iterator iterator()>();
+
+     label2:
+        $z0 = interfaceinvoke $r7.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 != 0 goto label7;
+
+        $i0 = 0;
+
+        $r14 = new android.widget.ArrayAdapter;
+
+        r1 = $r14;
+
+        specialinvoke $r14.<android.widget.ArrayAdapter: void <init>(android.content.Context,int,java.lang.Object[])>(r0, 17367048, r2);
+
+        virtualinvoke r1.<android.widget.ArrayAdapter: void setDropDownViewResource(int)>(17367049);
+
+        $r8 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.widget.Spinner mMemberGroup>;
+
+        virtualinvoke $r8.<android.widget.Spinner: void setAdapter(android.widget.SpinnerAdapter)>(r1);
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("MyEditMemberActivity", "mMemberGroup setSelection");
+
+        $r8 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.widget.Spinner mMemberGroup>;
+
+        $r6 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.util.LinkedList mGroupsId>;
+
+        $l1 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: long groupId>;
+
+        $r9 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l1);
+
+        $i2 = virtualinvoke $r6.<java.util.LinkedList: int indexOf(java.lang.Object)>($r9);
+
+        virtualinvoke $r8.<android.widget.Spinner: void setSelection(int)>($i2);
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("MyEditMemberActivity", "updateView end groups");
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("MyEditMemberActivity", "updateView init tels");
+
+        $r6 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.util.LinkedList mMembersTels>;
+
+        $i2 = virtualinvoke $r6.<java.util.LinkedList: int size()>();
+
+        i3 = $i2;
+
+        r2 = newarray (java.lang.String)[$i2];
+
+        r2 = newarray (java.lang.String)[$i2];
+
+        $r6 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.util.LinkedList mMembersTels>;
+
+        $r7 = virtualinvoke $r6.<java.util.LinkedList: java.util.Iterator iterator()>();
+
+     label3:
+        $z0 = interfaceinvoke $r7.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 != 0 goto label8;
+
+        $z0 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: boolean isTelFlag>;
+
+        if $z0 != 0 goto label4;
+
+        $i0 = -1;
+
+        i3 = $i2 + $i0;
+
+     label4:
+        $r14 = new android.widget.ArrayAdapter;
+
+        r1 = $r14;
+
+        specialinvoke $r14.<android.widget.ArrayAdapter: void <init>(android.content.Context,int,java.lang.Object[])>(r0, 17367048, r2);
+
+        virtualinvoke r1.<android.widget.ArrayAdapter: void setDropDownViewResource(int)>(17367049);
+
+        $r8 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.widget.Spinner mMemberTels>;
+
+        virtualinvoke $r8.<android.widget.Spinner: void setAdapter(android.widget.SpinnerAdapter)>(r1);
+
+        $r8 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.widget.Spinner mMemberTels>;
+
+        $r6 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.util.LinkedList mMembersTels>;
+
+        $r4 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String mTel>;
+
+        $i0 = virtualinvoke $r6.<java.util.LinkedList: int indexOf(java.lang.Object)>($r4);
+
+        virtualinvoke $r8.<android.widget.Spinner: void setSelection(int)>($i0);
+
+        $r5 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.widget.TextView mTelCount>;
+
+        $r13 = new java.lang.StringBuilder;
+
+        specialinvoke $r13.<java.lang.StringBuilder: void <init>(java.lang.String)>("(");
+
+        $r3 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>(i3);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(")");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r5.<android.widget.TextView: void setText(java.lang.CharSequence)>($r4);
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("MyEditMemberActivity", "updateView end tels");
+
+        return;
+
+     label5:
+        $r4 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String mCustomRingtone>;
+
+        $r10 = staticinvoke <android.net.Uri: android.net.Uri parse(java.lang.String)>($r4);
+
+        $r13 = new java.lang.StringBuilder;
+
+        specialinvoke $r13.<java.lang.StringBuilder: void <init>(java.lang.String)>("ringtone\'s URI is ");
+
+        $r4 = virtualinvoke $r10.<android.net.Uri: java.lang.String toString()>();
+
+        $r3 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("MyEditMemberActivity", $r4);
+
+        $r11 = staticinvoke <android.media.RingtoneManager: android.media.Ringtone getRingtone(android.content.Context,android.net.Uri)>(r0, $r10);
+
+        if $r11 != null goto label6;
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>("MyEditMemberActivity", "ringtone\'s URI doesn\'t resolve to a Ringtone");
+
+        $r5 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.widget.TextView mRingtoneTitle>;
+
+        $r4 = virtualinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String getString(int)>(2131165262);
+
+        virtualinvoke $r5.<android.widget.TextView: void setText(java.lang.CharSequence)>($r4);
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String mCustomRingtone> = null;
+
+        return;
+
+     label6:
+        $r5 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.widget.TextView mRingtoneTitle>;
+
+        $r4 = virtualinvoke $r11.<android.media.Ringtone: java.lang.String getTitle(android.content.Context)>(r0);
+
+        virtualinvoke $r5.<android.widget.TextView: void setText(java.lang.CharSequence)>($r4);
+
+        goto label1;
+
+     label7:
+        $r12 = interfaceinvoke $r7.<java.util.Iterator: java.lang.Object next()>();
+
+        $r4 = (java.lang.String) $r12;
+
+        r2[$i0] = $r4;
+
+        $r13 = new java.lang.StringBuilder;
+
+        specialinvoke $r13.<java.lang.StringBuilder: void <init>(java.lang.String)>("group title ");
+
+        $r3 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("MyEditMemberActivity", $r4);
+
+        $i0 = $i0 + 1;
+
+        goto label2;
+
+     label8:
+        $r12 = interfaceinvoke $r7.<java.util.Iterator: java.lang.Object next()>();
+
+        $r4 = (java.lang.String) $r12;
+
+        r2[$i0] = $r4;
+
+        $i0 = $i0 + 1;
+
+        goto label3;
+    }
+
+    protected void onActivityResult(int, int, android.content.Intent)
+    {
+        android.os.Parcelable $r2;
+        com.shwy.bestjoy.groupsms.MyEditMemberActivity r0;
+        int $i0, $i1, $i2;
+        android.net.Uri r3;
+        android.content.Intent $r1;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.MyEditMemberActivity;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $r1 := @parameter2: android.content.Intent;
+
+        $i2 = -1;
+
+        if $i1 == $i2 goto label1;
+
+        return;
+
+     label1:
+        lookupswitch($i0)
+        {
+            case 3023: goto label3;
+            default: goto label2;
+        };
+
+     label2:
+        return;
+
+     label3:
+        $r2 = virtualinvoke $r1.<android.content.Intent: android.os.Parcelable getParcelableExtra(java.lang.String)>("android.intent.extra.ringtone.PICKED_URI");
+
+        r3 = (android.net.Uri) $r2;
+
+        specialinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: void handleRingtonePicked(android.net.Uri)>(r3);
+
+        return;
+    }
+
+    public void onClick(android.view.View)
+    {
+        com.shwy.bestjoy.groupsms.ContactManager $r3;
+        com.shwy.bestjoy.groupsms.MyEditMemberActivity r0;
+        android.net.Uri $r4;
+        android.content.Intent r2;
+        long $l1;
+        int $i0;
+        android.view.View $r1;
+        java.lang.StringBuilder $r6;
+        java.lang.String $r5;
+        boolean $z0;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.MyEditMemberActivity;
+
+        $r1 := @parameter0: android.view.View;
+
+        $i0 = virtualinvoke $r1.<android.view.View: int getId()>();
+
+        lookupswitch($i0)
+        {
+            case 2131492984: goto label9;
+            case 2131493023: goto label2;
+            case 2131493025: goto label3;
+            case 2131493027: goto label6;
+            case 2131493031: goto label7;
+            case 2131493032: goto label1;
+            default: goto label1;
+        };
+
+     label1:
+        return;
+
+     label2:
+        specialinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: void goBack()>();
+
+        return;
+
+     label3:
+        $r3 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: com.shwy.bestjoy.groupsms.ContactManager mContactManager>;
+
+        $l1 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: long mRawContactId>;
+
+        $i0 = virtualinvoke $r3.<com.shwy.bestjoy.groupsms.ContactManager: int deleteRawContact(long)>($l1);
+
+        if $i0 <= 0 goto label5;
+
+        specialinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: void showMessage(int)>(2131165263);
+
+     label4:
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: boolean change> = 1;
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: int deleted> = 1;
+
+        specialinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: void goBack()>();
+
+        return;
+
+     label5:
+        specialinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: void showMessage(int)>(2131165264);
+
+        goto label4;
+
+     label6:
+        r2 = new android.content.Intent;
+
+        specialinvoke r2.<android.content.Intent: void <init>(java.lang.String)>("android.intent.action.EDIT");
+
+        $r4 = <com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.net.Uri CONTACT_URI>;
+
+        $l1 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: long mContactId>;
+
+        $r4 = staticinvoke <android.content.ContentUris: android.net.Uri withAppendedId(android.net.Uri,long)>($r4, $l1);
+
+        virtualinvoke r2.<android.content.Intent: android.content.Intent setData(android.net.Uri)>($r4);
+
+        virtualinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: void startActivity(android.content.Intent)>(r2);
+
+        return;
+
+     label7:
+        $r5 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String mTel>;
+
+        $z0 = virtualinvoke $r5.<java.lang.String: boolean equals(java.lang.Object)>("---");
+
+        if $z0 != 0 goto label8;
+
+        r2 = new android.content.Intent;
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>(java.lang.String)>("sms:");
+
+        $r5 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String mTel>;
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r4 = staticinvoke <android.net.Uri: android.net.Uri parse(java.lang.String)>($r5);
+
+        specialinvoke r2.<android.content.Intent: void <init>(java.lang.String,android.net.Uri)>("android.intent.action.SENDTO", $r4);
+
+        virtualinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: void startActivity(android.content.Intent)>(r2);
+
+        return;
+
+     label8:
+        specialinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: void showMessage(int)>(2131165265);
+
+        return;
+
+     label9:
+        specialinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: void doPickRingtone()>();
+
+        return;
+    }
+
+    public void onCreate(android.os.Bundle)
+    {
+        com.shwy.bestjoy.groupsms.ContactManager $r7;
+        android.os.Bundle $r1;
+        com.shwy.bestjoy.groupsms.MyEditMemberActivity r0;
+        android.content.Intent $r3;
+        long $l0;
+        java.io.File r2;
+        android.widget.Spinner $r8;
+        int $i1;
+        java.lang.StringBuilder $r5;
+        java.lang.String $r4;
+        java.util.LinkedList $r6;
+        boolean $z0;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.MyEditMemberActivity;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke r0.<android.app.Activity: void onCreate(android.os.Bundle)>($r1);
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("MyEditMemberActivity", "onCreate");
+
+        virtualinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: void setContentView(int)>(2130903062);
+
+        $r3 = virtualinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.content.Intent getIntent()>();
+
+        $r4 = virtualinvoke $r3.<android.content.Intent: java.lang.String getStringExtra(java.lang.String)>("group_name");
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String mGroupName> = $r4;
+
+        $l0 = virtualinvoke $r3.<android.content.Intent: long getLongExtra(java.lang.String,long)>("group_id", 0L);
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: long groupId> = $l0;
+
+        $r4 = virtualinvoke $r3.<android.content.Intent: java.lang.String getStringExtra(java.lang.String)>("system_id");
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String mSystemId> = $r4;
+
+        $l0 = virtualinvoke $r3.<android.content.Intent: long getLongExtra(java.lang.String,long)>("raw_contact_id", 0L);
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: long mRawContactId> = $l0;
+
+        $l0 = virtualinvoke $r3.<android.content.Intent: long getLongExtra(java.lang.String,long)>("contact_id", 0L);
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: long mContactId> = $l0;
+
+        $r4 = virtualinvoke $r3.<android.content.Intent: java.lang.String getStringExtra(java.lang.String)>("name");
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String mName> = $r4;
+
+        $r4 = virtualinvoke $r3.<android.content.Intent: java.lang.String getStringExtra(java.lang.String)>("tel");
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String mTel> = $r4;
+
+        $i1 = virtualinvoke $r3.<android.content.Intent: int getIntExtra(java.lang.String,int)>("position", 0);
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: int position> = $i1;
+
+        specialinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: void initView()>();
+
+        r2 = new java.io.File;
+
+        specialinvoke r2.<java.io.File: void <init>(java.lang.String)>("/sdcard/media/audio/ringtones");
+
+        $z0 = virtualinvoke r2.<java.io.File: boolean exists()>();
+
+        if $z0 != 0 goto label1;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>(java.lang.String)>("mkdirs ");
+
+        $z0 = virtualinvoke r2.<java.io.File: boolean mkdirs()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(boolean)>($z0);
+
+        $r4 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("MyEditMemberActivity", $r4);
+
+     label1:
+        $r6 = new java.util.LinkedList;
+
+        specialinvoke $r6.<java.util.LinkedList: void <init>()>();
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.util.LinkedList mMembersTels> = $r6;
+
+        $r6 = new java.util.LinkedList;
+
+        specialinvoke $r6.<java.util.LinkedList: void <init>()>();
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.util.LinkedList mGroupsId> = $r6;
+
+        $r6 = new java.util.LinkedList;
+
+        specialinvoke $r6.<java.util.LinkedList: void <init>()>();
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.util.LinkedList mGroups> = $r6;
+
+        $r6 = new java.util.LinkedList;
+
+        specialinvoke $r6.<java.util.LinkedList: void <init>()>();
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.util.LinkedList mTelDataId> = $r6;
+
+        $r7 = new com.shwy.bestjoy.groupsms.ContactManager;
+
+        specialinvoke $r7.<com.shwy.bestjoy.groupsms.ContactManager: void <init>(android.content.Context)>(r0);
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: com.shwy.bestjoy.groupsms.ContactManager mContactManager> = $r7;
+
+        $z0 = specialinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: boolean loadData()>();
+
+        if $z0 != 0 goto label2;
+
+        virtualinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: void finish()>();
+
+     label2:
+        specialinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: void updateView()>();
+
+        $r8 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.widget.Spinner mMemberGroup>;
+
+        virtualinvoke $r8.<android.widget.Spinner: void setOnItemSelectedListener(android.widget.AdapterView$OnItemSelectedListener)>(r0);
+
+        $r8 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: android.widget.Spinner mMemberTels>;
+
+        virtualinvoke $r8.<android.widget.Spinner: void setOnItemSelectedListener(android.widget.AdapterView$OnItemSelectedListener)>(r0);
+
+        return;
+    }
+
+    public void onItemSelected(android.widget.AdapterView, android.view.View, int, long)
+    {
+        com.shwy.bestjoy.groupsms.MyEditMemberActivity r0;
+        long $l1, $l2, $l3, $l6;
+        java.lang.Integer $r11;
+        byte $b5;
+        java.lang.Long r6;
+        int $i0, $i4;
+        android.view.View $r1;
+        android.widget.AdapterView r3;
+        java.lang.String r8, $r10;
+        java.util.LinkedList $r4;
+        boolean $z0;
+        com.shwy.bestjoy.groupsms.ContactManager $r7;
+        java.lang.Object $r5;
+        java.lang.StringBuilder $r9;
+        android.content.ContentValues r2;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.MyEditMemberActivity;
+
+        r3 := @parameter0: android.widget.AdapterView;
+
+        $r1 := @parameter1: android.view.View;
+
+        $i0 := @parameter2: int;
+
+        $l1 := @parameter3: long;
+
+        $i4 = virtualinvoke r3.<android.widget.AdapterView: int getId()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("MyEditMemberActivity", "onItemSelected");
+
+        lookupswitch($i4)
+        {
+            case 2131493026: goto label2;
+            case 2131493027: goto label1;
+            case 2131493028: goto label1;
+            case 2131493029: goto label3;
+            default: goto label1;
+        };
+
+     label1:
+        return;
+
+     label2:
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("MyEditMemberActivity", "onItemSelected member_modify_group");
+
+        $r4 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.util.LinkedList mGroupsId>;
+
+        $r5 = virtualinvoke $r4.<java.util.LinkedList: java.lang.Object get(int)>($i0);
+
+        r6 = (java.lang.Long) $r5;
+
+        $l1 = virtualinvoke r6.<java.lang.Long: long longValue()>();
+
+        $l2 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: long groupId>;
+
+        $b5 = $l1 cmp $l2;
+
+        if $b5 == 0 goto label5;
+
+        $r7 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: com.shwy.bestjoy.groupsms.ContactManager mContactManager>;
+
+        $l6 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: long mRawContactId>;
+
+        $l2 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: long mContactId>;
+
+        $l3 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: long groupId>;
+
+        $z0 = virtualinvoke $r7.<com.shwy.bestjoy.groupsms.ContactManager: boolean changeMemberShip(long,long,long,long)>($l6, $l2, $l3, $l1);
+
+        if $z0 == 0 goto label5;
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: int deleted> = 1;
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: boolean change> = 1;
+
+        specialinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: void showMessage(int)>(2131165263);
+
+        return;
+
+     label3:
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("MyEditMemberActivity", "onItemSelected member_tels");
+
+        $r4 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.util.LinkedList mMembersTels>;
+
+        $r5 = virtualinvoke $r4.<java.util.LinkedList: java.lang.Object get(int)>($i0);
+
+        r8 = (java.lang.String) $r5;
+
+        $r9 = new java.lang.StringBuilder;
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>(java.lang.String)>("newTel ");
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(r8);
+
+        $r10 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("MyEditMemberActivity", $r10);
+
+        $r9 = new java.lang.StringBuilder;
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>(java.lang.String)>("oldTel ");
+
+        $r10 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String mTel>;
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r10);
+
+        $r10 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("MyEditMemberActivity", $r10);
+
+        $z0 = virtualinvoke r8.<java.lang.String: boolean equals(java.lang.Object)>("---");
+
+        if $z0 != 0 goto label5;
+
+        $r10 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String mTel>;
+
+        $z0 = virtualinvoke r8.<java.lang.String: boolean equals(java.lang.Object)>($r10);
+
+        if $z0 != 0 goto label5;
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.lang.String mTel> = r8;
+
+        r2 = new android.content.ContentValues;
+
+        specialinvoke r2.<android.content.ContentValues: void <init>()>();
+
+        $r11 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(2);
+
+        virtualinvoke r2.<android.content.ContentValues: void put(java.lang.String,java.lang.Integer)>("data2", $r11);
+
+        $r7 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: com.shwy.bestjoy.groupsms.ContactManager mContactManager>;
+
+        $r4 = r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: java.util.LinkedList mTelDataId>;
+
+        $r5 = virtualinvoke $r4.<java.util.LinkedList: java.lang.Object get(int)>($i0);
+
+        r6 = (java.lang.Long) $r5;
+
+        $l1 = virtualinvoke r6.<java.lang.Long: long longValue()>();
+
+        $i0 = virtualinvoke $r7.<com.shwy.bestjoy.groupsms.ContactManager: int updateMemberData(android.content.ContentValues,long)>(r2, $l1);
+
+        $r9 = new java.lang.StringBuilder;
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>(java.lang.String)>("updateMemberData ");
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        r8 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("MyEditMemberActivity", r8);
+
+        if $i0 <= 0 goto label4;
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: int update> = 1;
+
+        r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: boolean change> = 1;
+
+        specialinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: void showMessage(int)>(2131165263);
+
+        return;
+
+     label4:
+        specialinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: void showMessage(int)>(2131165264);
+
+     label5:
+        return;
+    }
+
+    public boolean onKeyDown(int, android.view.KeyEvent)
+    {
+        android.view.KeyEvent $r1;
+        com.shwy.bestjoy.groupsms.MyEditMemberActivity r0;
+        int $i0;
+        boolean $z0;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.MyEditMemberActivity;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: android.view.KeyEvent;
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("MyEditMemberActivity", "onKeyDown");
+
+        if $i0 != 4 goto label1;
+
+        specialinvoke r0.<com.shwy.bestjoy.groupsms.MyEditMemberActivity: void goBack()>();
+
+     label1:
+        $z0 = specialinvoke r0.<android.app.Activity: boolean onKeyDown(int,android.view.KeyEvent)>($i0, $r1);
+
+        return $z0;
+    }
+
+    public void onNothingSelected(android.widget.AdapterView)
+    {
+        com.shwy.bestjoy.groupsms.MyEditMemberActivity r0;
+        android.widget.AdapterView r1;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.MyEditMemberActivity;
+
+        r1 := @parameter0: android.widget.AdapterView;
+
+        return;
+    }
+
+    protected void onResume()
+    {
+        com.shwy.bestjoy.groupsms.MyEditMemberActivity r0;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.MyEditMemberActivity;
+
+        specialinvoke r0.<android.app.Activity: void onResume()>();
+
+        return;
+    }
+}

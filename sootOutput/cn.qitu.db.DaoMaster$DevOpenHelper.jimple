@@ -1,0 +1,99 @@
+public class cn.qitu.db.DaoMaster$DevOpenHelper extends cn.qitu.db.DaoMaster$OpenHelper
+{
+
+    public void <init>(android.content.Context, java.lang.String, android.database.sqlite.SQLiteDatabase$CursorFactory)
+    {
+        android.content.Context $r1;
+        android.database.sqlite.SQLiteDatabase$CursorFactory $r3;
+        cn.qitu.db.DaoMaster$DevOpenHelper r0;
+        java.lang.String $r2;
+
+        r0 := @this: cn.qitu.db.DaoMaster$DevOpenHelper;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: android.database.sqlite.SQLiteDatabase$CursorFactory;
+
+        specialinvoke r0.<cn.qitu.db.DaoMaster$OpenHelper: void <init>(android.content.Context,java.lang.String,android.database.sqlite.SQLiteDatabase$CursorFactory)>($r1, $r2, null);
+
+        return;
+    }
+
+    public void onUpgrade(android.database.sqlite.SQLiteDatabase, int, int)
+    {
+        java.io.PrintStream $r4;
+        android.database.sqlite.SQLiteDatabase $r1;
+        cn.qitu.db.DaoMaster$DevOpenHelper r0;
+        int $i0, $i1;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r3;
+
+        r0 := @this: cn.qitu.db.DaoMaster$DevOpenHelper;
+
+        $r1 := @parameter0: android.database.sqlite.SQLiteDatabase;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("Upgrading schema from version ");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" to ");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" by dropping all tables");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("greenDAO", $r3);
+
+        $r3 = virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: java.lang.String getPath()>();
+
+        $r4 = <java.lang.System: java.io.PrintStream out>;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("=========\u5f00\u59cb\u5347\u7ea7===============");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r4.<java.io.PrintStream: void println(java.lang.String)>($r3);
+
+        lookupswitch($i1)
+        {
+            case 2: goto label2;
+            default: goto label1;
+        };
+
+     label1:
+        return;
+
+     label2:
+        $r4 = <java.lang.System: java.io.PrintStream out>;
+
+        virtualinvoke $r4.<java.io.PrintStream: void println(java.lang.String)>("=========case 2===============");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("alter table CONTACT_PEOPLE rename to _temp_user");
+
+        staticinvoke <cn.qitu.db.ContactPeopleNewDao: void createTable(android.database.sqlite.SQLiteDatabase,boolean)>($r1, 0);
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("insert into CONTACT_PEOPLE_NEW(ID,DISPLAY_NAME)  select ID,DISPLAY_NAME from _temp_user");
+
+        staticinvoke <cn.qitu.db.ContactPhoneDao: void createTable(android.database.sqlite.SQLiteDatabase,boolean)>($r1, 0);
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("insert into CONTACT_PHONE (ID,PHONENUMBER) select ID,PHONES_NUMBER from _temp_user");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("drop table _temp_user");
+
+        return;
+    }
+}

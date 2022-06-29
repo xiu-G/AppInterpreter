@@ -1,0 +1,2543 @@
+public class de.madvertise.android.sdk.MadvertiseView extends android.widget.FrameLayout
+{
+    private static final boolean ADLAYOUT_SDK;
+    private static final int ANIMATION_COMPLETE;
+    public static final java.lang.String GENDER_FEMALE;
+    public static final java.lang.String GENDER_MALE;
+    private static final boolean IS_TESTMODE_DEFAULT;
+    public static final int MAKE_VISIBLE;
+    private static boolean reportLauch;
+    private static java.lang.String sAge;
+    private static java.util.List sCachedAds;
+    private static java.lang.String sGender;
+    private static int sNextCachedAdCounter;
+    private static android.graphics.drawable.BitmapDrawable sTextBannerBackground;
+    private final double GRADIENT_STOP;
+    private final int GRADIENT_TOP_ALPHA;
+    private java.util.Timer mAdTimer;
+    private de.madvertise.android.sdk.MadvertiseView$AnimationEndListener mAnimationListener;
+    private java.lang.String mAnimationType;
+    private int mBackgroundColor;
+    private int mBannerHeight;
+    private int mBannerHeightDp;
+    private java.lang.String mBannerType;
+    private int mBannerWidth;
+    private int mBannerWidthDp;
+    private de.madvertise.android.sdk.MadvertiseView$MadvertiseViewCallbackListener mCallbackListener;
+    private de.madvertise.android.sdk.MadvertiseAd mCurrentAd;
+    private boolean mDeliverOnlyText;
+    private float mDp;
+    private boolean mFetchAdsEnabled;
+    private final android.os.Handler mHandler;
+    private android.graphics.drawable.Drawable mInitialBackground;
+    private boolean mIsMraid;
+    private de.madvertise.android.sdk.MadvertiseMraidView mMraidView;
+    private java.util.List mOldViews;
+    private int mParentHeight;
+    private int mParentWidth;
+    private int mPlacementType;
+    private java.lang.Thread mRequestThread;
+    private int mSecondsToRefreshAd;
+    private boolean mTestMode;
+    private int mTextColor;
+    private int mTextSize;
+    private final java.lang.Runnable mUpdateResults;
+
+    static void <clinit>()
+    {
+        java.util.ArrayList $r0;
+
+        <de.madvertise.android.sdk.MadvertiseView: java.lang.String GENDER_MALE> = "M";
+
+        <de.madvertise.android.sdk.MadvertiseView: java.lang.String GENDER_FEMALE> = "F";
+
+        <de.madvertise.android.sdk.MadvertiseView: int ANIMATION_COMPLETE> = 2;
+
+        <de.madvertise.android.sdk.MadvertiseView: boolean ADLAYOUT_SDK> = 1;
+
+        <de.madvertise.android.sdk.MadvertiseView: java.lang.String sGender> = "";
+
+        <de.madvertise.android.sdk.MadvertiseView: java.lang.String sAge> = "";
+
+        $r0 = new java.util.ArrayList;
+
+        specialinvoke $r0.<java.util.ArrayList: void <init>()>();
+
+        <de.madvertise.android.sdk.MadvertiseView: java.util.List sCachedAds> = $r0;
+
+        <de.madvertise.android.sdk.MadvertiseView: boolean reportLauch> = 1;
+
+        <de.madvertise.android.sdk.MadvertiseView: int sNextCachedAdCounter> = -1;
+
+        return;
+    }
+
+    public void <init>(android.content.Context)
+    {
+        android.content.Context $r1;
+        de.madvertise.android.sdk.MadvertiseView r0;
+
+        r0 := @this: de.madvertise.android.sdk.MadvertiseView;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void <init>(android.content.Context,android.util.AttributeSet)>($r1, null);
+
+        return;
+    }
+
+    public void <init>(android.content.Context, android.util.AttributeSet)
+    {
+        android.content.Context $r1, $r4;
+        android.graphics.Rect $r18;
+        android.graphics.drawable.Drawable $r9;
+        java.util.ArrayList $r13;
+        android.util.AttributeSet $r2;
+        java.lang.Thread $r11;
+        int $i0, $i1;
+        de.madvertise.android.sdk.MadvertiseView r0;
+        java.lang.String $r8;
+        boolean $z0;
+        de.madvertise.android.sdk.MadvertiseTracker $r3;
+        android.graphics.drawable.BitmapDrawable $r10;
+        java.lang.IllegalArgumentException $r16;
+        android.util.DisplayMetrics $r6;
+        de.madvertise.android.sdk.MadvertiseView$3 $r15;
+        java.lang.StringBuilder $r7, $r17;
+        de.madvertise.android.sdk.MadvertiseView$2 $r14;
+        android.content.res.Resources $r5;
+        de.madvertise.android.sdk.MadvertiseView$1 $r12;
+
+        r0 := @this: de.madvertise.android.sdk.MadvertiseView;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.util.AttributeSet;
+
+        specialinvoke r0.<android.widget.FrameLayout: void <init>(android.content.Context,android.util.AttributeSet)>($r1, null);
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int GRADIENT_TOP_ALPHA> = 127;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: double GRADIENT_STOP> = 0.7375;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mTextColor> = -1;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBackgroundColor> = 0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mSecondsToRefreshAd> = 45;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: boolean mTestMode> = 0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mBannerType> = "mma";
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mAnimationType> = "fade";
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: boolean mDeliverOnlyText> = 0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mTextSize> = 18;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeight> = 53;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidth> = 320;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeightDp> = 53;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidthDp> = 320;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mParentWidth> = 0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mParentHeight> = 0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseView$MadvertiseViewCallbackListener mCallbackListener> = null;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: java.util.Timer mAdTimer> = null;
+
+        $r12 = new de.madvertise.android.sdk.MadvertiseView$1;
+
+        specialinvoke $r12.<de.madvertise.android.sdk.MadvertiseView$1: void <init>(de.madvertise.android.sdk.MadvertiseView)>(r0);
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: android.os.Handler mHandler> = $r12;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: android.graphics.drawable.Drawable mInitialBackground> = null;
+
+        $r13 = new java.util.ArrayList;
+
+        specialinvoke $r13.<java.util.ArrayList: void <init>()>();
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: java.util.List mOldViews> = $r13;
+
+        $r14 = new de.madvertise.android.sdk.MadvertiseView$2;
+
+        specialinvoke $r14.<de.madvertise.android.sdk.MadvertiseView$2: void <init>(de.madvertise.android.sdk.MadvertiseView)>(r0);
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseView$AnimationEndListener mAnimationListener> = $r14;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: boolean mFetchAdsEnabled> = 1;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mPlacementType> = 0;
+
+        $r15 = new de.madvertise.android.sdk.MadvertiseView$3;
+
+        specialinvoke $r15.<de.madvertise.android.sdk.MadvertiseView$3: void <init>(de.madvertise.android.sdk.MadvertiseView)>(r0);
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.Runnable mUpdateResults> = $r15;
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, "** Constructor for mad view called **");
+
+        $z0 = <de.madvertise.android.sdk.MadvertiseView: boolean reportLauch>;
+
+        if $z0 == 0 goto label1;
+
+        $r3 = staticinvoke <de.madvertise.android.sdk.MadvertiseTracker: de.madvertise.android.sdk.MadvertiseTracker getInstance(android.content.Context)>($r1);
+
+        virtualinvoke $r3.<de.madvertise.android.sdk.MadvertiseTracker: void reportLaunch()>();
+
+        <de.madvertise.android.sdk.MadvertiseView: boolean reportLauch> = 0;
+
+     label1:
+        virtualinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void setVisibility(int)>(8);
+
+        $z0 = staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: boolean checkPermissionGranted(java.lang.String,android.content.Context)>("android.permission.INTERNET", $r1);
+
+        if $z0 != 0 goto label2;
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, " *** ----------------------------- *** ");
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, " *** Missing internet permissions! *** ");
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, " *** ----------------------------- *** ");
+
+        $r16 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r16.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Missing internet permission!");
+
+        throw $r16;
+
+     label2:
+        $r4 = virtualinvoke r0.<de.madvertise.android.sdk.MadvertiseView: android.content.Context getContext()>();
+
+        $z0 = staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: boolean checkForBrowserDeclaration(android.content.Context)>($r4);
+
+        if $z0 != 0 goto label3;
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, " *** ----------------------------- *** ");
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, " *** You must declare the activity de.madvertise.android.sdk.MadvertiseActivity in your manifest! *** ");
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, " *** ----------------------------- *** ");
+
+        $r16 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r16.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Missing Activity declaration!");
+
+        throw $r16;
+
+     label3:
+        specialinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void initParameters(android.util.AttributeSet)>(null);
+
+        $r1 = virtualinvoke $r1.<android.content.Context: android.content.Context getApplicationContext()>();
+
+        $r5 = virtualinvoke $r1.<android.content.Context: android.content.res.Resources getResources()>();
+
+        $r6 = virtualinvoke $r5.<android.content.res.Resources: android.util.DisplayMetrics getDisplayMetrics()>();
+
+        $r17 = new java.lang.StringBuilder;
+
+        specialinvoke $r17.<java.lang.StringBuilder: void <init>(java.lang.String)>("Display values: Width = ");
+
+        $i0 = $r6.<android.util.DisplayMetrics: int widthPixels>;
+
+        $r7 = virtualinvoke $r17.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" ; Height = ");
+
+        $i0 = $r6.<android.util.DisplayMetrics: int heightPixels>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r8 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, $r8);
+
+        $r9 = virtualinvoke r0.<de.madvertise.android.sdk.MadvertiseView: android.graphics.drawable.Drawable getBackground()>();
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: android.graphics.drawable.Drawable mInitialBackground> = $r9;
+
+        $r18 = new android.graphics.Rect;
+
+        $i0 = $r6.<android.util.DisplayMetrics: int widthPixels>;
+
+        $i1 = $r6.<android.util.DisplayMetrics: int heightPixels>;
+
+        specialinvoke $r18.<android.graphics.Rect: void <init>(int,int,int,int)>(0, 0, $i0, $i1);
+
+        $r10 = <de.madvertise.android.sdk.MadvertiseView: android.graphics.drawable.BitmapDrawable sTextBannerBackground>;
+
+        if $r10 != null goto label4;
+
+        $i0 = r0.<de.madvertise.android.sdk.MadvertiseView: int mBackgroundColor>;
+
+        $r10 = specialinvoke r0.<de.madvertise.android.sdk.MadvertiseView: android.graphics.drawable.BitmapDrawable generateBackgroundDrawable(android.graphics.Rect,int,int)>($r18, $i0, 16777215);
+
+        <de.madvertise.android.sdk.MadvertiseView: android.graphics.drawable.BitmapDrawable sTextBannerBackground> = $r10;
+
+     label4:
+        virtualinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void setClickable(boolean)>(1);
+
+        virtualinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void setFocusable(boolean)>(1);
+
+        virtualinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void setDescendantFocusability(int)>(131072);
+
+        $r11 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.Thread mRequestThread>;
+
+        if $r11 == null goto label5;
+
+        $r11 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.Thread mRequestThread>;
+
+        $z0 = virtualinvoke $r11.<java.lang.Thread: boolean isAlive()>();
+
+        if $z0 != 0 goto label6;
+
+     label5:
+        specialinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void requestNewAd(boolean)>(0);
+
+     label6:
+        $r8 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mBannerType>;
+
+        $z0 = virtualinvoke $r8.<java.lang.String: boolean contains(java.lang.CharSequence)>("rich_media");
+
+        if $z0 != 0 goto label7;
+
+        $r8 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mBannerType>;
+
+        $z0 = virtualinvoke $r8.<java.lang.String: boolean contains(java.lang.CharSequence)>("rm");
+
+        if $z0 == 0 goto label8;
+
+     label7:
+        virtualinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void setFetchingAdsEnabled(boolean)>(0);
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, "No ad reloading, since banner_type=[rich_media|rm] was requested");
+
+     label8:
+        return;
+    }
+
+    static void access$0(de.madvertise.android.sdk.MadvertiseView)
+    {
+        de.madvertise.android.sdk.MadvertiseView $r0;
+
+        $r0 := @parameter0: de.madvertise.android.sdk.MadvertiseView;
+
+        specialinvoke $r0.<de.madvertise.android.sdk.MadvertiseView: void removeOldViews()>();
+
+        return;
+    }
+
+    static android.os.Handler access$1(de.madvertise.android.sdk.MadvertiseView)
+    {
+        de.madvertise.android.sdk.MadvertiseView $r0;
+        android.os.Handler r1;
+
+        $r0 := @parameter0: de.madvertise.android.sdk.MadvertiseView;
+
+        r1 = $r0.<de.madvertise.android.sdk.MadvertiseView: android.os.Handler mHandler>;
+
+        return r1;
+    }
+
+    static int access$10(de.madvertise.android.sdk.MadvertiseView)
+    {
+        int i0;
+        de.madvertise.android.sdk.MadvertiseView $r0;
+
+        $r0 := @parameter0: de.madvertise.android.sdk.MadvertiseView;
+
+        i0 = $r0.<de.madvertise.android.sdk.MadvertiseView: int mParentWidth>;
+
+        return i0;
+    }
+
+    static int access$11(de.madvertise.android.sdk.MadvertiseView)
+    {
+        int i0;
+        de.madvertise.android.sdk.MadvertiseView $r0;
+
+        $r0 := @parameter0: de.madvertise.android.sdk.MadvertiseView;
+
+        i0 = $r0.<de.madvertise.android.sdk.MadvertiseView: int mParentHeight>;
+
+        return i0;
+    }
+
+    static void access$12(de.madvertise.android.sdk.MadvertiseView, int)
+    {
+        int $i0;
+        de.madvertise.android.sdk.MadvertiseView $r0;
+
+        $r0 := @parameter0: de.madvertise.android.sdk.MadvertiseView;
+
+        $i0 := @parameter1: int;
+
+        $r0.<de.madvertise.android.sdk.MadvertiseView: int mParentWidth> = $i0;
+
+        return;
+    }
+
+    static void access$13(de.madvertise.android.sdk.MadvertiseView, int)
+    {
+        int $i0;
+        de.madvertise.android.sdk.MadvertiseView $r0;
+
+        $r0 := @parameter0: de.madvertise.android.sdk.MadvertiseView;
+
+        $i0 := @parameter1: int;
+
+        $r0.<de.madvertise.android.sdk.MadvertiseView: int mParentHeight> = $i0;
+
+        return;
+    }
+
+    static void access$14(de.madvertise.android.sdk.MadvertiseView, de.madvertise.android.sdk.MadvertiseAd)
+    {
+        de.madvertise.android.sdk.MadvertiseView $r0;
+        de.madvertise.android.sdk.MadvertiseAd $r1;
+
+        $r0 := @parameter0: de.madvertise.android.sdk.MadvertiseView;
+
+        $r1 := @parameter1: de.madvertise.android.sdk.MadvertiseAd;
+
+        $r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseAd mCurrentAd> = $r1;
+
+        return;
+    }
+
+    static void access$15(de.madvertise.android.sdk.MadvertiseView) throws org.json.JSONException
+    {
+        de.madvertise.android.sdk.MadvertiseView $r0;
+
+        $r0 := @parameter0: de.madvertise.android.sdk.MadvertiseView;
+
+        specialinvoke $r0.<de.madvertise.android.sdk.MadvertiseView: void calculateBannerDimensions()>();
+
+        return;
+    }
+
+    static java.lang.Runnable access$16(de.madvertise.android.sdk.MadvertiseView)
+    {
+        de.madvertise.android.sdk.MadvertiseView $r0;
+        java.lang.Runnable r1;
+
+        $r0 := @parameter0: de.madvertise.android.sdk.MadvertiseView;
+
+        r1 = $r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.Runnable mUpdateResults>;
+
+        return r1;
+    }
+
+    static void access$2(de.madvertise.android.sdk.MadvertiseView)
+    {
+        de.madvertise.android.sdk.MadvertiseView $r0;
+
+        $r0 := @parameter0: de.madvertise.android.sdk.MadvertiseView;
+
+        specialinvoke $r0.<de.madvertise.android.sdk.MadvertiseView: void refreshView()>();
+
+        return;
+    }
+
+    static de.madvertise.android.sdk.MadvertiseView$MadvertiseViewCallbackListener access$3(de.madvertise.android.sdk.MadvertiseView)
+    {
+        de.madvertise.android.sdk.MadvertiseView $r0;
+        de.madvertise.android.sdk.MadvertiseView$MadvertiseViewCallbackListener r1;
+
+        $r0 := @parameter0: de.madvertise.android.sdk.MadvertiseView;
+
+        r1 = $r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseView$MadvertiseViewCallbackListener mCallbackListener>;
+
+        return r1;
+    }
+
+    static boolean access$4(de.madvertise.android.sdk.MadvertiseView)
+    {
+        de.madvertise.android.sdk.MadvertiseView $r0;
+        boolean z0;
+
+        $r0 := @parameter0: de.madvertise.android.sdk.MadvertiseView;
+
+        z0 = $r0.<de.madvertise.android.sdk.MadvertiseView: boolean mTestMode>;
+
+        return z0;
+    }
+
+    static java.lang.String access$5(de.madvertise.android.sdk.MadvertiseView)
+    {
+        de.madvertise.android.sdk.MadvertiseView $r0;
+        java.lang.String r1;
+
+        $r0 := @parameter0: de.madvertise.android.sdk.MadvertiseView;
+
+        r1 = $r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mBannerType>;
+
+        return r1;
+    }
+
+    static boolean access$6(de.madvertise.android.sdk.MadvertiseView)
+    {
+        de.madvertise.android.sdk.MadvertiseView $r0;
+        boolean z0;
+
+        $r0 := @parameter0: de.madvertise.android.sdk.MadvertiseView;
+
+        z0 = $r0.<de.madvertise.android.sdk.MadvertiseView: boolean mDeliverOnlyText>;
+
+        return z0;
+    }
+
+    static java.lang.String access$7()
+    {
+        java.lang.String r0;
+
+        r0 = <de.madvertise.android.sdk.MadvertiseView: java.lang.String sAge>;
+
+        return r0;
+    }
+
+    static boolean access$8(de.madvertise.android.sdk.MadvertiseView)
+    {
+        de.madvertise.android.sdk.MadvertiseView $r0;
+        boolean z0;
+
+        $r0 := @parameter0: de.madvertise.android.sdk.MadvertiseView;
+
+        z0 = $r0.<de.madvertise.android.sdk.MadvertiseView: boolean mIsMraid>;
+
+        return z0;
+    }
+
+    static java.lang.String access$9()
+    {
+        java.lang.String r0;
+
+        r0 = <de.madvertise.android.sdk.MadvertiseView: java.lang.String sGender>;
+
+        return r0;
+    }
+
+    private void animateOldViews()
+    {
+        java.util.List $r3;
+        int $i0, i1;
+        android.view.View $r2;
+        de.madvertise.android.sdk.MadvertiseView r0;
+        android.view.animation.Animation $r1;
+
+        r0 := @this: de.madvertise.android.sdk.MadvertiseView;
+
+        $i0 = virtualinvoke r0.<de.madvertise.android.sdk.MadvertiseView: int getChildCount()>();
+
+        if $i0 <= 0 goto label4;
+
+        $r1 = specialinvoke r0.<de.madvertise.android.sdk.MadvertiseView: android.view.animation.Animation createAnimation(boolean)>(1);
+
+        i1 = 0;
+
+     label1:
+        if i1 < $i0 goto label2;
+
+        return;
+
+     label2:
+        if $r1 == null goto label3;
+
+        $r2 = virtualinvoke r0.<de.madvertise.android.sdk.MadvertiseView: android.view.View getChildAt(int)>(i1);
+
+        if $r2 == null goto label3;
+
+        $r2 = virtualinvoke r0.<de.madvertise.android.sdk.MadvertiseView: android.view.View getChildAt(int)>(i1);
+
+        virtualinvoke $r2.<android.view.View: void setAnimation(android.view.animation.Animation)>($r1);
+
+        $r3 = r0.<de.madvertise.android.sdk.MadvertiseView: java.util.List mOldViews>;
+
+        $r2 = virtualinvoke r0.<de.madvertise.android.sdk.MadvertiseView: android.view.View getChildAt(int)>(i1);
+
+        interfaceinvoke $r3.<java.util.List: boolean add(java.lang.Object)>($r2);
+
+     label3:
+        i1 = i1 + 1;
+
+        goto label1;
+
+     label4:
+        return;
+    }
+
+    private void cacheAd(de.madvertise.android.sdk.MadvertiseAd)
+    {
+        java.util.List $r2;
+        int $i0;
+        de.madvertise.android.sdk.MadvertiseView r0;
+        java.lang.ref.SoftReference $r3;
+        de.madvertise.android.sdk.MadvertiseAd $r1;
+
+        r0 := @this: de.madvertise.android.sdk.MadvertiseView;
+
+        $r1 := @parameter0: de.madvertise.android.sdk.MadvertiseAd;
+
+        if $r1 == null goto label2;
+
+        $r2 = <de.madvertise.android.sdk.MadvertiseView: java.util.List sCachedAds>;
+
+        $i0 = interfaceinvoke $r2.<java.util.List: int size()>();
+
+        if $i0 < 4 goto label1;
+
+        $r2 = <de.madvertise.android.sdk.MadvertiseView: java.util.List sCachedAds>;
+
+        interfaceinvoke $r2.<java.util.List: java.lang.Object remove(int)>(0);
+
+     label1:
+        $r2 = <de.madvertise.android.sdk.MadvertiseView: java.util.List sCachedAds>;
+
+        $r3 = new java.lang.ref.SoftReference;
+
+        specialinvoke $r3.<java.lang.ref.SoftReference: void <init>(java.lang.Object)>($r1);
+
+        interfaceinvoke $r2.<java.util.List: boolean add(java.lang.Object)>($r3);
+
+     label2:
+        return;
+    }
+
+    private void calculateBannerDimensions() throws org.json.JSONException
+    {
+        android.content.Context $r3;
+        de.madvertise.android.sdk.MadvertiseAd $r1;
+        android.util.DisplayMetrics $r5;
+        byte $b4;
+        int $i0, i1, $i2, $i3;
+        float f0, f1, $f2;
+        de.madvertise.android.sdk.MadvertiseView r0;
+        java.lang.String $r2;
+        boolean $z0;
+        android.content.res.Resources $r4;
+
+        r0 := @this: de.madvertise.android.sdk.MadvertiseView;
+
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseAd mCurrentAd>;
+
+        if $r1 == null goto label01;
+
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseAd mCurrentAd>;
+
+        $r2 = virtualinvoke $r1.<de.madvertise.android.sdk.MadvertiseAd: java.lang.String getBannerType()>();
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mBannerType> = $r2;
+
+     label01:
+        $r2 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mBannerType>;
+
+        if $r2 == null goto label02;
+
+        $r2 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mBannerType>;
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean contains(java.lang.CharSequence)>("medium_rectangle");
+
+        if $z0 == 0 goto label05;
+
+        f0 = r0.<de.madvertise.android.sdk.MadvertiseView: float mDp>;
+
+        f0 = f0 * 250.0F;
+
+        f0 = f0 + 0.5F;
+
+        $i0 = (int) f0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeight> = $i0;
+
+        f0 = r0.<de.madvertise.android.sdk.MadvertiseView: float mDp>;
+
+        f0 = f0 * 300.0F;
+
+        f0 = f0 + 0.5F;
+
+        $i0 = (int) f0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidth> = $i0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeightDp> = 250;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidthDp> = 300;
+
+     label02:
+        $r3 = virtualinvoke r0.<de.madvertise.android.sdk.MadvertiseView: android.content.Context getContext()>();
+
+        $r3 = virtualinvoke $r3.<android.content.Context: android.content.Context getApplicationContext()>();
+
+        $r4 = virtualinvoke $r3.<android.content.Context: android.content.res.Resources getResources()>();
+
+        $r5 = virtualinvoke $r4.<android.content.res.Resources: android.util.DisplayMetrics getDisplayMetrics()>();
+
+        $i0 = r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeight>;
+
+        i1 = r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidth>;
+
+        $i2 = $r5.<android.util.DisplayMetrics: int heightPixels>;
+
+        $i3 = r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeight>;
+
+        if $i2 >= $i3 goto label03;
+
+        $i0 = $r5.<android.util.DisplayMetrics: int heightPixels>;
+
+     label03:
+        $i2 = $r5.<android.util.DisplayMetrics: int widthPixels>;
+
+        $i3 = r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidth>;
+
+        if $i2 >= $i3 goto label04;
+
+        i1 = $r5.<android.util.DisplayMetrics: int widthPixels>;
+
+     label04:
+        $r2 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mBannerType>;
+
+        if $r2 == null goto label13;
+
+        $r2 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mBannerType>;
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>("fullscreen");
+
+        if $z0 == 0 goto label13;
+
+        if $i0 >= i1 goto label12;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidth> = $i0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeight> = $i0;
+
+        f0 = (float) $i0;
+
+        f1 = r0.<de.madvertise.android.sdk.MadvertiseView: float mDp>;
+
+        f0 = f0 / f1;
+
+        i1 = (int) f0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidthDp> = i1;
+
+        f0 = (float) $i0;
+
+        f1 = r0.<de.madvertise.android.sdk.MadvertiseView: float mDp>;
+
+        f0 = f0 / f1;
+
+        $i0 = (int) f0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeightDp> = $i0;
+
+        return;
+
+     label05:
+        $r2 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mBannerType>;
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean contains(java.lang.CharSequence)>("mma");
+
+        if $z0 == 0 goto label06;
+
+        f0 = r0.<de.madvertise.android.sdk.MadvertiseView: float mDp>;
+
+        f0 = f0 * 53.0F;
+
+        f0 = f0 + 0.5F;
+
+        $i0 = (int) f0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeight> = $i0;
+
+        f0 = r0.<de.madvertise.android.sdk.MadvertiseView: float mDp>;
+
+        f0 = f0 * 320.0F;
+
+        f0 = f0 + 0.5F;
+
+        $i0 = (int) f0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidth> = $i0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeightDp> = 53;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidthDp> = 320;
+
+        goto label02;
+
+     label06:
+        $r2 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mBannerType>;
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean contains(java.lang.CharSequence)>("fullscreen");
+
+        if $z0 == 0 goto label07;
+
+        f0 = r0.<de.madvertise.android.sdk.MadvertiseView: float mDp>;
+
+        f0 = f0 * 768.0F;
+
+        f0 = f0 + 0.5F;
+
+        $i0 = (int) f0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeight> = $i0;
+
+        f0 = r0.<de.madvertise.android.sdk.MadvertiseView: float mDp>;
+
+        f0 = f0 * 768.0F;
+
+        f0 = f0 + 0.5F;
+
+        $i0 = (int) f0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidth> = $i0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeightDp> = 768;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidthDp> = 768;
+
+        goto label02;
+
+     label07:
+        $r2 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mBannerType>;
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean contains(java.lang.CharSequence)>("landscape");
+
+        if $z0 == 0 goto label08;
+
+        f0 = r0.<de.madvertise.android.sdk.MadvertiseView: float mDp>;
+
+        f0 = f0 * 66.0F;
+
+        f0 = f0 + 0.5F;
+
+        $i0 = (int) f0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeight> = $i0;
+
+        f0 = r0.<de.madvertise.android.sdk.MadvertiseView: float mDp>;
+
+        f0 = f0 * 1024.0F;
+
+        f0 = f0 + 0.5F;
+
+        $i0 = (int) f0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidth> = $i0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeightDp> = 66;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidthDp> = 1024;
+
+        goto label02;
+
+     label08:
+        $r2 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mBannerType>;
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean contains(java.lang.CharSequence)>("leaderboard");
+
+        if $z0 == 0 goto label09;
+
+        f0 = r0.<de.madvertise.android.sdk.MadvertiseView: float mDp>;
+
+        f0 = f0 * 90.0F;
+
+        f0 = f0 + 0.5F;
+
+        $i0 = (int) f0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeight> = $i0;
+
+        f0 = r0.<de.madvertise.android.sdk.MadvertiseView: float mDp>;
+
+        f0 = f0 * 728.0F;
+
+        f0 = f0 + 0.5F;
+
+        $i0 = (int) f0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidth> = $i0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeightDp> = 90;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidthDp> = 728;
+
+        goto label02;
+
+     label09:
+        $r2 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mBannerType>;
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean contains(java.lang.CharSequence)>("portrait");
+
+        if $z0 == 0 goto label10;
+
+        f0 = r0.<de.madvertise.android.sdk.MadvertiseView: float mDp>;
+
+        f0 = f0 * 66.0F;
+
+        f0 = f0 + 0.5F;
+
+        $i0 = (int) f0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeight> = $i0;
+
+        f0 = r0.<de.madvertise.android.sdk.MadvertiseView: float mDp>;
+
+        f0 = f0 * 766.0F;
+
+        f0 = f0 + 0.5F;
+
+        $i0 = (int) f0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidth> = $i0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeightDp> = 66;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidthDp> = 766;
+
+        goto label02;
+
+     label10:
+        $r2 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mBannerType>;
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean contains(java.lang.CharSequence)>("rich_media");
+
+        if $z0 == 0 goto label11;
+
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseAd mCurrentAd>;
+
+        if $r1 == null goto label11;
+
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseAd mCurrentAd>;
+
+        $z0 = virtualinvoke $r1.<de.madvertise.android.sdk.MadvertiseAd: boolean isMraid()>();
+
+        if $z0 == 0 goto label11;
+
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseAd mCurrentAd>;
+
+        $i0 = virtualinvoke $r1.<de.madvertise.android.sdk.MadvertiseAd: int getBannerHeight()>();
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeightDp> = $i0;
+
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseAd mCurrentAd>;
+
+        $i0 = virtualinvoke $r1.<de.madvertise.android.sdk.MadvertiseAd: int getBannerWidth()>();
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidthDp> = $i0;
+
+        f0 = r0.<de.madvertise.android.sdk.MadvertiseView: float mDp>;
+
+        $i0 = r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeightDp>;
+
+        f1 = (float) $i0;
+
+        f0 = f0 * f1;
+
+        f0 = f0 + 0.5F;
+
+        $i0 = (int) f0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeight> = $i0;
+
+        f0 = r0.<de.madvertise.android.sdk.MadvertiseView: float mDp>;
+
+        $i0 = r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidthDp>;
+
+        f1 = (float) $i0;
+
+        f0 = f0 * f1;
+
+        f0 = f0 + 0.5F;
+
+        $i0 = (int) f0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidth> = $i0;
+
+        goto label02;
+
+     label11:
+        $r2 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mBannerType>;
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean contains(java.lang.CharSequence)>("rich_media");
+
+        if $z0 == 0 goto label02;
+
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseAd mCurrentAd>;
+
+        if $r1 == null goto label02;
+
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseAd mCurrentAd>;
+
+        $z0 = virtualinvoke $r1.<de.madvertise.android.sdk.MadvertiseAd: boolean isMraid()>();
+
+        if $z0 != 0 goto label02;
+
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseAd mCurrentAd>;
+
+        $i0 = virtualinvoke $r1.<de.madvertise.android.sdk.MadvertiseAd: int getBannerHeight()>();
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeightDp> = $i0;
+
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseAd mCurrentAd>;
+
+        $i0 = virtualinvoke $r1.<de.madvertise.android.sdk.MadvertiseAd: int getBannerWidth()>();
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidthDp> = $i0;
+
+        f0 = r0.<de.madvertise.android.sdk.MadvertiseView: float mDp>;
+
+        $i0 = r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeightDp>;
+
+        f1 = (float) $i0;
+
+        f0 = f0 * f1;
+
+        f0 = f0 + 0.5F;
+
+        $i0 = (int) f0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeight> = $i0;
+
+        f0 = r0.<de.madvertise.android.sdk.MadvertiseView: float mDp>;
+
+        $i0 = r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidthDp>;
+
+        f1 = (float) $i0;
+
+        f0 = f0 * f1;
+
+        f0 = f0 + 0.5F;
+
+        $i0 = (int) f0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidth> = $i0;
+
+        goto label02;
+
+     label12:
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidth> = i1;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeight> = i1;
+
+        f0 = (float) i1;
+
+        f1 = r0.<de.madvertise.android.sdk.MadvertiseView: float mDp>;
+
+        f0 = f0 / f1;
+
+        $i0 = (int) f0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidthDp> = $i0;
+
+        f0 = (float) i1;
+
+        f1 = r0.<de.madvertise.android.sdk.MadvertiseView: float mDp>;
+
+        f0 = f0 / f1;
+
+        $i0 = (int) f0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeightDp> = $i0;
+
+        return;
+
+     label13:
+        $i2 = r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeight>;
+
+        f0 = (float) $i2;
+
+        f1 = (float) $i0;
+
+        f0 = f0 / f1;
+
+        $i2 = r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidth>;
+
+        f1 = (float) $i2;
+
+        $f2 = (float) i1;
+
+        f1 = f1 / $f2;
+
+        $b4 = f0 cmpl f1;
+
+        $i2 = (int) $b4;
+
+        if $i2 <= 0 goto label14;
+
+        i1 = r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidth>;
+
+        f1 = (float) i1;
+
+        f0 = f1 / f0;
+
+        i1 = (int) f0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidth> = i1;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeight> = $i0;
+
+        i1 = r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidth>;
+
+        f0 = (float) i1;
+
+        f1 = r0.<de.madvertise.android.sdk.MadvertiseView: float mDp>;
+
+        f0 = f0 / f1;
+
+        i1 = (int) f0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidthDp> = i1;
+
+        f0 = (float) $i0;
+
+        f1 = r0.<de.madvertise.android.sdk.MadvertiseView: float mDp>;
+
+        f0 = f0 / f1;
+
+        $i0 = (int) f0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeightDp> = $i0;
+
+        return;
+
+     label14:
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidth> = i1;
+
+        $i0 = r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeight>;
+
+        f0 = (float) $i0;
+
+        f0 = f0 / f1;
+
+        $i0 = (int) f0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeight> = $i0;
+
+        f0 = (float) i1;
+
+        f1 = r0.<de.madvertise.android.sdk.MadvertiseView: float mDp>;
+
+        f0 = f0 / f1;
+
+        $i0 = (int) f0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidthDp> = $i0;
+
+        $i0 = r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeight>;
+
+        f0 = (float) $i0;
+
+        f1 = r0.<de.madvertise.android.sdk.MadvertiseView: float mDp>;
+
+        f0 = f0 / f1;
+
+        $i0 = (int) f0;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeightDp> = $i0;
+
+        return;
+    }
+
+    private android.view.animation.Animation createAnimation(boolean)
+    {
+        android.view.animation.TranslateAnimation r3;
+        de.madvertise.android.sdk.MadvertiseView r0;
+        java.lang.String $r1;
+        android.view.animation.AlphaAnimation r2;
+        android.view.animation.AccelerateInterpolator $r4;
+        boolean $z0;
+
+        r0 := @this: de.madvertise.android.sdk.MadvertiseView;
+
+        $z0 := @parameter0: boolean;
+
+        if $z0 == 0 goto label3;
+
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mAnimationType>;
+
+        if $r1 == null goto label1;
+
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mAnimationType>;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>("fade");
+
+        if $z0 == 0 goto label1;
+
+        r2 = new android.view.animation.AlphaAnimation;
+
+        specialinvoke r2.<android.view.animation.AlphaAnimation: void <init>(float,float)>(1.0F, 0.0F);
+
+        virtualinvoke r2.<android.view.animation.Animation: void setDuration(long)>(700L);
+
+        return r2;
+
+     label1:
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mAnimationType>;
+
+        if $r1 == null goto label2;
+
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mAnimationType>;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>("left_to_right");
+
+        if $z0 == 0 goto label2;
+
+        r3 = new android.view.animation.TranslateAnimation;
+
+        specialinvoke r3.<android.view.animation.TranslateAnimation: void <init>(int,float,int,float,int,float,int,float)>(2, 0.0F, 2, 1.0F, 2, 0.0F, 2, 0.0F);
+
+        virtualinvoke r3.<android.view.animation.Animation: void setDuration(long)>(900L);
+
+        $r4 = new android.view.animation.AccelerateInterpolator;
+
+        specialinvoke $r4.<android.view.animation.AccelerateInterpolator: void <init>()>();
+
+        virtualinvoke r3.<android.view.animation.Animation: void setInterpolator(android.view.animation.Interpolator)>($r4);
+
+        return r3;
+
+     label2:
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mAnimationType>;
+
+        if $r1 == null goto label6;
+
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mAnimationType>;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>("top_down");
+
+        if $z0 == 0 goto label6;
+
+        r3 = new android.view.animation.TranslateAnimation;
+
+        specialinvoke r3.<android.view.animation.TranslateAnimation: void <init>(int,float,int,float,int,float,int,float)>(2, 0.0F, 2, 0.0F, 2, 0.0F, 2, 1.0F);
+
+        virtualinvoke r3.<android.view.animation.Animation: void setDuration(long)>(900L);
+
+        $r4 = new android.view.animation.AccelerateInterpolator;
+
+        specialinvoke $r4.<android.view.animation.AccelerateInterpolator: void <init>()>();
+
+        virtualinvoke r3.<android.view.animation.Animation: void setInterpolator(android.view.animation.Interpolator)>($r4);
+
+        return r3;
+
+     label3:
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mAnimationType>;
+
+        if $r1 == null goto label4;
+
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mAnimationType>;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>("fade");
+
+        if $z0 == 0 goto label4;
+
+        r2 = new android.view.animation.AlphaAnimation;
+
+        specialinvoke r2.<android.view.animation.AlphaAnimation: void <init>(float,float)>(0.0F, 1.0F);
+
+        virtualinvoke r2.<android.view.animation.Animation: void setDuration(long)>(1200L);
+
+        return r2;
+
+     label4:
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mAnimationType>;
+
+        if $r1 == null goto label5;
+
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mAnimationType>;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>("left_to_right");
+
+        if $z0 == 0 goto label5;
+
+        r3 = new android.view.animation.TranslateAnimation;
+
+        specialinvoke r3.<android.view.animation.TranslateAnimation: void <init>(int,float,int,float,int,float,int,float)>(2, -1.0F, 2, 0.0F, 2, 0.0F, 2, 0.0F);
+
+        virtualinvoke r3.<android.view.animation.Animation: void setDuration(long)>(900L);
+
+        $r4 = new android.view.animation.AccelerateInterpolator;
+
+        specialinvoke $r4.<android.view.animation.AccelerateInterpolator: void <init>()>();
+
+        virtualinvoke r3.<android.view.animation.Animation: void setInterpolator(android.view.animation.Interpolator)>($r4);
+
+        return r3;
+
+     label5:
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mAnimationType>;
+
+        if $r1 == null goto label6;
+
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mAnimationType>;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>("top_down");
+
+        if $z0 == 0 goto label6;
+
+        r3 = new android.view.animation.TranslateAnimation;
+
+        specialinvoke r3.<android.view.animation.TranslateAnimation: void <init>(int,float,int,float,int,float,int,float)>(2, 0.0F, 2, 0.0F, 2, -1.0F, 2, 0.0F);
+
+        virtualinvoke r3.<android.view.animation.Animation: void setDuration(long)>(900L);
+
+        $r4 = new android.view.animation.AccelerateInterpolator;
+
+        specialinvoke $r4.<android.view.animation.AccelerateInterpolator: void <init>()>();
+
+        virtualinvoke r3.<android.view.animation.Animation: void setInterpolator(android.view.animation.Interpolator)>($r4);
+
+        return r3;
+
+     label6:
+        return null;
+    }
+
+    private void drawTextBannerBackground(android.graphics.Canvas, android.graphics.Rect, int, int)
+    {
+        android.graphics.Rect $r2, r6;
+        android.graphics.drawable.GradientDrawable$Orientation $r7;
+        int[] r3;
+        android.graphics.drawable.GradientDrawable r4;
+        int $i0, $i1, $i2, $i3, $i4;
+        android.graphics.Canvas $r1;
+        android.graphics.Paint r5;
+        de.madvertise.android.sdk.MadvertiseView r0;
+        double $d0;
+
+        r0 := @this: de.madvertise.android.sdk.MadvertiseView;
+
+        $r1 := @parameter0: android.graphics.Canvas;
+
+        $r2 := @parameter1: android.graphics.Rect;
+
+        $i0 := @parameter2: int;
+
+        $i1 := @parameter3: int;
+
+        r5 = new android.graphics.Paint;
+
+        specialinvoke r5.<android.graphics.Paint: void <init>()>();
+
+        virtualinvoke r5.<android.graphics.Paint: void setColor(int)>($i0);
+
+        virtualinvoke r5.<android.graphics.Paint: void setAntiAlias(boolean)>(1);
+
+        virtualinvoke $r1.<android.graphics.Canvas: void drawRect(android.graphics.Rect,android.graphics.Paint)>($r2, r5);
+
+        $i0 = staticinvoke <android.graphics.Color: int red(int)>(16777215);
+
+        $i2 = staticinvoke <android.graphics.Color: int green(int)>(16777215);
+
+        $i3 = staticinvoke <android.graphics.Color: int blue(int)>(16777215);
+
+        $i0 = staticinvoke <android.graphics.Color: int argb(int,int,int,int)>(127, $i0, $i2, $i3);
+
+        r3 = newarray (int)[2];
+
+        r3[0] = $i0;
+
+        r3[1] = 16777215;
+
+        r4 = new android.graphics.drawable.GradientDrawable;
+
+        $r7 = <android.graphics.drawable.GradientDrawable$Orientation: android.graphics.drawable.GradientDrawable$Orientation TOP_BOTTOM>;
+
+        specialinvoke r4.<android.graphics.drawable.GradientDrawable: void <init>(android.graphics.drawable.GradientDrawable$Orientation,int[])>($r7, r3);
+
+        $i0 = virtualinvoke $r2.<android.graphics.Rect: int height()>();
+
+        $d0 = (double) $i0;
+
+        $d0 = $d0 * 0.7375;
+
+        $i0 = (int) $d0;
+
+        $i2 = $r2.<android.graphics.Rect: int top>;
+
+        $i0 = $i0 + $i2;
+
+        $i2 = $r2.<android.graphics.Rect: int left>;
+
+        $i3 = $r2.<android.graphics.Rect: int top>;
+
+        $i4 = $r2.<android.graphics.Rect: int right>;
+
+        virtualinvoke r4.<android.graphics.drawable.GradientDrawable: void setBounds(int,int,int,int)>($i2, $i3, $i4, $i0);
+
+        virtualinvoke r4.<android.graphics.drawable.GradientDrawable: void draw(android.graphics.Canvas)>($r1);
+
+        r6 = new android.graphics.Rect;
+
+        $i2 = $r2.<android.graphics.Rect: int left>;
+
+        $i3 = $r2.<android.graphics.Rect: int right>;
+
+        $i4 = $r2.<android.graphics.Rect: int bottom>;
+
+        specialinvoke r6.<android.graphics.Rect: void <init>(int,int,int,int)>($i2, $i0, $i3, $i4);
+
+        r5 = new android.graphics.Paint;
+
+        specialinvoke r5.<android.graphics.Paint: void <init>()>();
+
+        virtualinvoke r5.<android.graphics.Paint: void setColor(int)>(16777215);
+
+        virtualinvoke $r1.<android.graphics.Canvas: void drawRect(android.graphics.Rect,android.graphics.Paint)>(r6, r5);
+
+        return;
+    }
+
+    private android.graphics.drawable.BitmapDrawable generateBackgroundDrawable(android.graphics.Rect, int, int)
+    {
+        java.lang.Throwable r3;
+        android.graphics.Rect $r1;
+        android.graphics.drawable.BitmapDrawable $r6;
+        android.graphics.Bitmap$Config $r4;
+        android.graphics.Bitmap $r5;
+        int $i0, $i1, $i2, $i3;
+        android.graphics.Canvas r2;
+        de.madvertise.android.sdk.MadvertiseView r0;
+
+        r0 := @this: de.madvertise.android.sdk.MadvertiseView;
+
+        $r1 := @parameter0: android.graphics.Rect;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+     label1:
+        $i2 = virtualinvoke $r1.<android.graphics.Rect: int width()>();
+
+        $i3 = virtualinvoke $r1.<android.graphics.Rect: int height()>();
+
+        $r4 = <android.graphics.Bitmap$Config: android.graphics.Bitmap$Config ARGB_8888>;
+
+        $r5 = staticinvoke <android.graphics.Bitmap: android.graphics.Bitmap createBitmap(int,int,android.graphics.Bitmap$Config)>($i2, $i3, $r4);
+
+        r2 = new android.graphics.Canvas;
+
+        specialinvoke r2.<android.graphics.Canvas: void <init>(android.graphics.Bitmap)>($r5);
+
+        specialinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void drawTextBannerBackground(android.graphics.Canvas,android.graphics.Rect,int,int)>(r2, $r1, $i0, 16777215);
+
+        $r6 = new android.graphics.drawable.BitmapDrawable;
+
+        specialinvoke $r6.<android.graphics.drawable.BitmapDrawable: void <init>(android.graphics.Bitmap)>($r5);
+
+     label2:
+        return $r6;
+
+     label3:
+        r3 := @caughtexception;
+
+        return null;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    private de.madvertise.android.sdk.MadvertiseAd getCachedAd()
+    {
+        de.madvertise.android.sdk.MadvertiseAd $r5;
+        java.util.List $r2;
+        int i0, $i1;
+        java.lang.Object $r3;
+        de.madvertise.android.sdk.MadvertiseView r0;
+        java.lang.String $r1, $r6;
+        java.lang.ref.SoftReference r4;
+        boolean $z0;
+
+        r0 := @this: de.madvertise.android.sdk.MadvertiseView;
+
+        i0 = 0;
+
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mBannerType>;
+
+        if $r1 == null goto label3;
+
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mBannerType>;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>("all");
+
+        if $z0 == 0 goto label3;
+
+        $r2 = <de.madvertise.android.sdk.MadvertiseView: java.util.List sCachedAds>;
+
+        $i1 = interfaceinvoke $r2.<java.util.List: int size()>();
+
+        if $i1 <= 0 goto label3;
+
+        specialinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void increaseCacheCounter()>();
+
+        $r2 = <de.madvertise.android.sdk.MadvertiseView: java.util.List sCachedAds>;
+
+        i0 = <de.madvertise.android.sdk.MadvertiseView: int sNextCachedAdCounter>;
+
+        $r3 = interfaceinvoke $r2.<java.util.List: java.lang.Object get(int)>(i0);
+
+        r4 = (java.lang.ref.SoftReference) $r3;
+
+        if r4 == null goto label4;
+
+        $r3 = virtualinvoke r4.<java.lang.ref.SoftReference: java.lang.Object get()>();
+
+        $r5 = (de.madvertise.android.sdk.MadvertiseAd) $r3;
+
+        $r1 = virtualinvoke $r5.<de.madvertise.android.sdk.MadvertiseAd: java.lang.String getBannerType()>();
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mBannerType> = $r1;
+
+        $r3 = virtualinvoke r4.<java.lang.ref.SoftReference: java.lang.Object get()>();
+
+        $r5 = (de.madvertise.android.sdk.MadvertiseAd) $r3;
+
+        return $r5;
+
+     label1:
+        specialinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void increaseCacheCounter()>();
+
+        $r2 = <de.madvertise.android.sdk.MadvertiseView: java.util.List sCachedAds>;
+
+        $i1 = <de.madvertise.android.sdk.MadvertiseView: int sNextCachedAdCounter>;
+
+        $r3 = interfaceinvoke $r2.<java.util.List: java.lang.Object get(int)>($i1);
+
+        r4 = (java.lang.ref.SoftReference) $r3;
+
+        if r4 == null goto label2;
+
+        $r3 = virtualinvoke r4.<java.lang.ref.SoftReference: java.lang.Object get()>();
+
+        if $r3 == null goto label2;
+
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mBannerType>;
+
+        if $r1 == null goto label2;
+
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mBannerType>;
+
+        $r3 = virtualinvoke r4.<java.lang.ref.SoftReference: java.lang.Object get()>();
+
+        $r5 = (de.madvertise.android.sdk.MadvertiseAd) $r3;
+
+        $r6 = virtualinvoke $r5.<de.madvertise.android.sdk.MadvertiseAd: java.lang.String getBannerType()>();
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean contains(java.lang.CharSequence)>($r6);
+
+        if $z0 == 0 goto label2;
+
+        $r3 = virtualinvoke r4.<java.lang.ref.SoftReference: java.lang.Object get()>();
+
+        $r5 = (de.madvertise.android.sdk.MadvertiseAd) $r3;
+
+        $r1 = virtualinvoke $r5.<de.madvertise.android.sdk.MadvertiseAd: java.lang.String getBannerType()>();
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mBannerType> = $r1;
+
+        $r3 = virtualinvoke r4.<java.lang.ref.SoftReference: java.lang.Object get()>();
+
+        $r5 = (de.madvertise.android.sdk.MadvertiseAd) $r3;
+
+        return $r5;
+
+     label2:
+        i0 = i0 + 1;
+
+     label3:
+        $r2 = <de.madvertise.android.sdk.MadvertiseView: java.util.List sCachedAds>;
+
+        $i1 = interfaceinvoke $r2.<java.util.List: int size()>();
+
+        if i0 < $i1 goto label1;
+
+     label4:
+        return null;
+    }
+
+    private void increaseCacheCounter()
+    {
+        java.util.List $r1;
+        int $i0, $i1;
+        de.madvertise.android.sdk.MadvertiseView r0;
+
+        r0 := @this: de.madvertise.android.sdk.MadvertiseView;
+
+        $i0 = <de.madvertise.android.sdk.MadvertiseView: int sNextCachedAdCounter>;
+
+        $i0 = $i0 + 1;
+
+        <de.madvertise.android.sdk.MadvertiseView: int sNextCachedAdCounter> = $i0;
+
+        $i1 = <de.madvertise.android.sdk.MadvertiseView: int sNextCachedAdCounter>;
+
+        $r1 = <de.madvertise.android.sdk.MadvertiseView: java.util.List sCachedAds>;
+
+        $i0 = interfaceinvoke $r1.<java.util.List: int size()>();
+
+        if $i1 != $i0 goto label1;
+
+        <de.madvertise.android.sdk.MadvertiseView: int sNextCachedAdCounter> = 0;
+
+     label1:
+        return;
+    }
+
+    private void initParameters(android.util.AttributeSet)
+    {
+        android.content.Context $r3;
+        android.util.DisplayMetrics $r5;
+        org.json.JSONException r2;
+        android.util.AttributeSet $r1;
+        int $i0;
+        float $f0;
+        java.lang.StringBuilder $r6, $r9;
+        de.madvertise.android.sdk.MadvertiseView r0;
+        java.lang.String $r7;
+        android.content.res.Resources $r4;
+        boolean $z0;
+
+        r0 := @this: de.madvertise.android.sdk.MadvertiseView;
+
+        $r1 := @parameter0: android.util.AttributeSet;
+
+        $r3 = virtualinvoke r0.<de.madvertise.android.sdk.MadvertiseView: android.content.Context getContext()>();
+
+        $r3 = virtualinvoke $r3.<android.content.Context: android.content.Context getApplicationContext()>();
+
+        $r4 = virtualinvoke $r3.<android.content.Context: android.content.res.Resources getResources()>();
+
+        $r5 = virtualinvoke $r4.<android.content.res.Resources: android.util.DisplayMetrics getDisplayMetrics()>();
+
+        $f0 = $r5.<android.util.DisplayMetrics: float density>;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: float mDp> = $f0;
+
+        goto label4;
+
+     label1:
+        $i0 = r0.<de.madvertise.android.sdk.MadvertiseView: int mSecondsToRefreshAd>;
+
+        if $i0 == 0 goto label2;
+
+        $i0 = r0.<de.madvertise.android.sdk.MadvertiseView: int mSecondsToRefreshAd>;
+
+        if $i0 >= 30 goto label2;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mSecondsToRefreshAd> = 45;
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, "Refresh intervall must be higher than 60");
+
+     label2:
+        specialinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void calculateBannerDimensions()>();
+
+     label3:
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, "Using following attributes values:");
+
+        $r9 = new java.lang.StringBuilder;
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>(java.lang.String)>(" testMode = ");
+
+        $z0 = r0.<de.madvertise.android.sdk.MadvertiseView: boolean mTestMode>;
+
+        $r6 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(boolean)>($z0);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, $r7);
+
+        $r9 = new java.lang.StringBuilder;
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>(java.lang.String)>(" textColor = ");
+
+        $i0 = r0.<de.madvertise.android.sdk.MadvertiseView: int mTextColor>;
+
+        $r6 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, $r7);
+
+        $r9 = new java.lang.StringBuilder;
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>(java.lang.String)>(" backgroundColor = ");
+
+        $i0 = r0.<de.madvertise.android.sdk.MadvertiseView: int mBackgroundColor>;
+
+        $r6 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, $r7);
+
+        $r9 = new java.lang.StringBuilder;
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>(java.lang.String)>(" secondsToRefreshAd = ");
+
+        $i0 = r0.<de.madvertise.android.sdk.MadvertiseView: int mSecondsToRefreshAd>;
+
+        $r6 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, $r7);
+
+        $r9 = new java.lang.StringBuilder;
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>(java.lang.String)>(" bannerType = ");
+
+        $r7 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mBannerType>;
+
+        $r6 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, $r7);
+
+        $r9 = new java.lang.StringBuilder;
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>(java.lang.String)>(" animationType = ");
+
+        $r7 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.String mAnimationType>;
+
+        $r6 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, $r7);
+
+        $r9 = new java.lang.StringBuilder;
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>(java.lang.String)>(" deliverOnlyText = ");
+
+        $z0 = r0.<de.madvertise.android.sdk.MadvertiseView: boolean mDeliverOnlyText>;
+
+        $r6 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(boolean)>($z0);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, $r7);
+
+        $r9 = new java.lang.StringBuilder;
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>(java.lang.String)>(" textSize = ");
+
+        $i0 = r0.<de.madvertise.android.sdk.MadvertiseView: int mTextSize>;
+
+        $r6 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, $r7);
+
+        $r9 = new java.lang.StringBuilder;
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>(java.lang.String)>(" isMraid = ");
+
+        $z0 = r0.<de.madvertise.android.sdk.MadvertiseView: boolean mIsMraid>;
+
+        $r6 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(boolean)>($z0);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, $r7);
+
+        $r9 = new java.lang.StringBuilder;
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>(java.lang.String)>(" placementType = ");
+
+        $i0 = r0.<de.madvertise.android.sdk.MadvertiseView: int mPlacementType>;
+
+        $r6 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, $r7);
+
+        $r9 = new java.lang.StringBuilder;
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>(java.lang.String)>(" bannerWidth = ");
+
+        $i0 = r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidth>;
+
+        $r6 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, $r7);
+
+        $r9 = new java.lang.StringBuilder;
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>(java.lang.String)>(" bannerHeight = ");
+
+        $i0 = r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeight>;
+
+        $r6 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, $r7);
+
+        $r9 = new java.lang.StringBuilder;
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>(java.lang.String)>(" bannerWidthDp = ");
+
+        $i0 = r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidthDp>;
+
+        $r6 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, $r7);
+
+        $r9 = new java.lang.StringBuilder;
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>(java.lang.String)>(" bannerHeightDp = ");
+
+        $i0 = r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeightDp>;
+
+        $r6 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, $r7);
+
+        return;
+
+     label4:
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, "AttributeSet is null. Using default parameters");
+
+        goto label1;
+
+     label5:
+        r2 := @caughtexception;
+
+        virtualinvoke r2.<org.json.JSONException: void printStackTrace()>();
+
+        goto label3;
+
+        catch org.json.JSONException from label2 to label3 with label5;
+    }
+
+    private void notifyListener(boolean)
+    {
+        de.madvertise.android.sdk.MadvertiseView r0;
+        de.madvertise.android.sdk.MadvertiseView$MadvertiseViewCallbackListener $r1;
+        boolean $z0;
+
+        r0 := @this: de.madvertise.android.sdk.MadvertiseView;
+
+        $z0 := @parameter0: boolean;
+
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseView$MadvertiseViewCallbackListener mCallbackListener>;
+
+        if $r1 == null goto label1;
+
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseView$MadvertiseViewCallbackListener mCallbackListener>;
+
+        interfaceinvoke $r1.<de.madvertise.android.sdk.MadvertiseView$MadvertiseViewCallbackListener: void onLoaded(boolean,de.madvertise.android.sdk.MadvertiseView)>($z0, r0);
+
+        return;
+
+     label1:
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, "Callback Listener not set");
+
+        return;
+    }
+
+    private void onViewCallback(boolean)
+    {
+        java.lang.Throwable $r1;
+        de.madvertise.android.sdk.MadvertiseView r0;
+        boolean $z0;
+
+        r0 := @this: de.madvertise.android.sdk.MadvertiseView;
+
+        $z0 := @parameter0: boolean;
+
+        entermonitor r0;
+
+     label1:
+        exitmonitor r0;
+
+     label2:
+        return;
+
+     label3:
+        $r1 := @caughtexception;
+
+        exitmonitor r0;
+
+     label4:
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+        catch java.lang.Throwable from label3 to label4 with label3;
+    }
+
+    private void refreshView()
+    {
+        de.madvertise.android.sdk.MadvertiseView r0;
+        android.graphics.drawable.Drawable $r1;
+        de.madvertise.android.sdk.MadvertiseAd $r2;
+        boolean $z0;
+
+        r0 := @this: de.madvertise.android.sdk.MadvertiseView;
+
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: android.graphics.drawable.Drawable mInitialBackground>;
+
+        virtualinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void setBackgroundDrawable(android.graphics.drawable.Drawable)>($r1);
+
+        $r2 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseAd mCurrentAd>;
+
+        if $r2 == null goto label4;
+
+        $r2 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseAd mCurrentAd>;
+
+        $z0 = virtualinvoke $r2.<de.madvertise.android.sdk.MadvertiseAd: boolean hasBanner()>();
+
+        if $z0 == 0 goto label3;
+
+        $z0 = r0.<de.madvertise.android.sdk.MadvertiseView: boolean mDeliverOnlyText>;
+
+        if $z0 != 0 goto label3;
+
+        $r2 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseAd mCurrentAd>;
+
+        $z0 = virtualinvoke $r2.<de.madvertise.android.sdk.MadvertiseAd: boolean isMraid()>();
+
+        if $z0 == 0 goto label2;
+
+        specialinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void showMraidView()>();
+
+     label1:
+        specialinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void notifyListener(boolean)>(1);
+
+        return;
+
+     label2:
+        specialinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void showImageView()>();
+
+        goto label1;
+
+     label3:
+        specialinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void showTextView()>();
+
+        virtualinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void setVisibility(int)>(0);
+
+        goto label1;
+
+     label4:
+        virtualinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void removeAllViews()>();
+
+        specialinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void notifyListener(boolean)>(0);
+
+        virtualinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void setVisibility(int)>(8);
+
+        return;
+    }
+
+    private void removeOldViews()
+    {
+        java.util.List $r1;
+        java.util.Iterator $r2;
+        android.view.View r4;
+        java.lang.Object $r3;
+        de.madvertise.android.sdk.MadvertiseView r0;
+        boolean $z0;
+
+        r0 := @this: de.madvertise.android.sdk.MadvertiseView;
+
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: java.util.List mOldViews>;
+
+        $r2 = interfaceinvoke $r1.<java.util.List: java.util.Iterator iterator()>();
+
+     label1:
+        $z0 = interfaceinvoke $r2.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 != 0 goto label2;
+
+        return;
+
+     label2:
+        $r3 = interfaceinvoke $r2.<java.util.Iterator: java.lang.Object next()>();
+
+        r4 = (android.view.View) $r3;
+
+        virtualinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void removeView(android.view.View)>(r4);
+
+        goto label1;
+    }
+
+    private void requestNewAd(boolean)
+    {
+        java.lang.Runnable $r4;
+        de.madvertise.android.sdk.MadvertiseAd $r2;
+        de.madvertise.android.sdk.MadvertiseView$4 $r6;
+        org.json.JSONException r1;
+        android.os.Handler $r3;
+        java.lang.Thread $r5;
+        de.madvertise.android.sdk.MadvertiseView r0;
+        boolean $z0, $z1;
+
+        r0 := @this: de.madvertise.android.sdk.MadvertiseView;
+
+        $z0 := @parameter0: boolean;
+
+        $z1 = r0.<de.madvertise.android.sdk.MadvertiseView: boolean mFetchAdsEnabled>;
+
+        if $z1 != 0 goto label1;
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, "Fetching ads is disabled");
+
+        return;
+
+     label1:
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, "Trying to fetch a new ad");
+
+        $r2 = specialinvoke r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseAd getCachedAd()>();
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseAd mCurrentAd> = $r2;
+
+     label2:
+        specialinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void calculateBannerDimensions()>();
+
+     label3:
+        $r2 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseAd mCurrentAd>;
+
+        if $r2 == null goto label5;
+
+        $r3 = r0.<de.madvertise.android.sdk.MadvertiseView: android.os.Handler mHandler>;
+
+        $r4 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.Runnable mUpdateResults>;
+
+        virtualinvoke $r3.<android.os.Handler: boolean post(java.lang.Runnable)>($r4);
+
+        return;
+
+     label4:
+        r1 := @caughtexception;
+
+        virtualinvoke r1.<org.json.JSONException: void printStackTrace()>();
+
+        goto label3;
+
+     label5:
+        $r5 = new java.lang.Thread;
+
+        $r6 = new de.madvertise.android.sdk.MadvertiseView$4;
+
+        specialinvoke $r6.<de.madvertise.android.sdk.MadvertiseView$4: void <init>(de.madvertise.android.sdk.MadvertiseView)>(r0);
+
+        specialinvoke $r5.<java.lang.Thread: void <init>(java.lang.Runnable,java.lang.String)>($r6, "MadvertiseRequestThread");
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.Thread mRequestThread> = $r5;
+
+        $r5 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.Thread mRequestThread>;
+
+        virtualinvoke $r5.<java.lang.Thread: void start()>();
+
+        return;
+
+        catch org.json.JSONException from label2 to label3 with label4;
+    }
+
+    public static void setAge(java.lang.String)
+    {
+        java.lang.String $r0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        <de.madvertise.android.sdk.MadvertiseView: java.lang.String sAge> = $r0;
+
+        return;
+    }
+
+    public static void setGender(java.lang.String)
+    {
+        java.lang.String $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $z0 = virtualinvoke $r0.<java.lang.String: boolean equals(java.lang.Object)>("F");
+
+        if $z0 != 0 goto label1;
+
+        $z0 = virtualinvoke $r0.<java.lang.String: boolean equals(java.lang.Object)>("M");
+
+        if $z0 == 0 goto label2;
+
+     label1:
+        <de.madvertise.android.sdk.MadvertiseView: java.lang.String sGender> = $r0;
+
+        return;
+
+     label2:
+        <de.madvertise.android.sdk.MadvertiseView: java.lang.String sGender> = "";
+
+        return;
+    }
+
+    private void showImageView()
+    {
+        android.content.Context $r5;
+        de.madvertise.android.sdk.MadvertiseView$AnimationEndListener $r4;
+        de.madvertise.android.sdk.MadvertiseAd $r2;
+        android.os.Handler $r3;
+        int $i0, $i1;
+        de.madvertise.android.sdk.MadvertiseView r0;
+        android.view.animation.Animation $r6;
+        de.madvertise.android.sdk.MadvertiseImageView r1;
+
+        r0 := @this: de.madvertise.android.sdk.MadvertiseView;
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, "Add image banner");
+
+        r1 = new de.madvertise.android.sdk.MadvertiseImageView;
+
+        $r5 = virtualinvoke r0.<de.madvertise.android.sdk.MadvertiseView: android.content.Context getContext()>();
+
+        $r5 = virtualinvoke $r5.<android.content.Context: android.content.Context getApplicationContext()>();
+
+        $i0 = r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidthDp>;
+
+        $i1 = r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeightDp>;
+
+        $r2 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseAd mCurrentAd>;
+
+        $r3 = r0.<de.madvertise.android.sdk.MadvertiseView: android.os.Handler mHandler>;
+
+        $r4 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseView$AnimationEndListener mAnimationListener>;
+
+        specialinvoke r1.<de.madvertise.android.sdk.MadvertiseImageView: void <init>(android.content.Context,int,int,de.madvertise.android.sdk.MadvertiseAd,android.os.Handler,de.madvertise.android.sdk.MadvertiseView$AnimationEndListener)>($r5, $i0, $i1, $r2, $r3, $r4);
+
+        specialinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void animateOldViews()>();
+
+        virtualinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void addView(android.view.View)>(r1);
+
+        $r6 = specialinvoke r0.<de.madvertise.android.sdk.MadvertiseView: android.view.animation.Animation createAnimation(boolean)>(0);
+
+        if $r6 == null goto label1;
+
+        virtualinvoke r1.<de.madvertise.android.sdk.MadvertiseImageView: void startAnimation(android.view.animation.Animation)>($r6);
+
+     label1:
+        return;
+    }
+
+    private void showMraidView()
+    {
+        android.content.Context $r4;
+        de.madvertise.android.sdk.MadvertiseView$AnimationEndListener $r1;
+        de.madvertise.android.sdk.MadvertiseView$MadvertiseViewCallbackListener $r5;
+        de.madvertise.android.sdk.MadvertiseMraidView $r3;
+        de.madvertise.android.sdk.MadvertiseAd $r6;
+        android.os.Handler $r2;
+        int $i0;
+        de.madvertise.android.sdk.MadvertiseView r0;
+        android.view.animation.Animation $r7;
+
+        r0 := @this: de.madvertise.android.sdk.MadvertiseView;
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, "Add rich media banner");
+
+        $r3 = new de.madvertise.android.sdk.MadvertiseMraidView;
+
+        $r4 = virtualinvoke r0.<de.madvertise.android.sdk.MadvertiseView: android.content.Context getContext()>();
+
+        $r4 = virtualinvoke $r4.<android.content.Context: android.content.Context getApplicationContext()>();
+
+        $r5 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseView$MadvertiseViewCallbackListener mCallbackListener>;
+
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseView$AnimationEndListener mAnimationListener>;
+
+        $r2 = r0.<de.madvertise.android.sdk.MadvertiseView: android.os.Handler mHandler>;
+
+        specialinvoke $r3.<de.madvertise.android.sdk.MadvertiseMraidView: void <init>(android.content.Context,de.madvertise.android.sdk.MadvertiseView$MadvertiseViewCallbackListener,de.madvertise.android.sdk.MadvertiseView$AnimationEndListener,android.os.Handler,de.madvertise.android.sdk.MadvertiseView)>($r4, $r5, $r1, $r2, r0);
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseMraidView mMraidView> = $r3;
+
+        $r3 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseMraidView mMraidView>;
+
+        $i0 = r0.<de.madvertise.android.sdk.MadvertiseView: int mPlacementType>;
+
+        virtualinvoke $r3.<de.madvertise.android.sdk.MadvertiseMraidView: void setPlacementType(int)>($i0);
+
+        $r3 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseMraidView mMraidView>;
+
+        $r6 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseAd mCurrentAd>;
+
+        virtualinvoke $r3.<de.madvertise.android.sdk.MadvertiseMraidView: void loadAd(de.madvertise.android.sdk.MadvertiseAd)>($r6);
+
+        specialinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void animateOldViews()>();
+
+        $r3 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseMraidView mMraidView>;
+
+        virtualinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void addView(android.view.View)>($r3);
+
+        $r7 = specialinvoke r0.<de.madvertise.android.sdk.MadvertiseView: android.view.animation.Animation createAnimation(boolean)>(0);
+
+        if $r7 == null goto label1;
+
+        $r3 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseMraidView mMraidView>;
+
+        virtualinvoke $r3.<de.madvertise.android.sdk.MadvertiseMraidView: void startAnimation(android.view.animation.Animation)>($r7);
+
+     label1:
+        return;
+    }
+
+    private void showTextView()
+    {
+        android.content.Context $r4;
+        de.madvertise.android.sdk.MadvertiseView$AnimationEndListener $r2;
+        android.graphics.drawable.BitmapDrawable $r3;
+        de.madvertise.android.sdk.MadvertiseAd $r5;
+        de.madvertise.android.sdk.MadvertiseTextView r1;
+        int $i0, $i1;
+        de.madvertise.android.sdk.MadvertiseView r0;
+        java.lang.String $r6;
+        android.view.animation.Animation $r7;
+
+        r0 := @this: de.madvertise.android.sdk.MadvertiseView;
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, "Add text banner");
+
+        $r3 = <de.madvertise.android.sdk.MadvertiseView: android.graphics.drawable.BitmapDrawable sTextBannerBackground>;
+
+        virtualinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void setBackgroundDrawable(android.graphics.drawable.Drawable)>($r3);
+
+        r1 = new de.madvertise.android.sdk.MadvertiseTextView;
+
+        $r4 = virtualinvoke r0.<de.madvertise.android.sdk.MadvertiseView: android.content.Context getContext()>();
+
+        $r4 = virtualinvoke $r4.<android.content.Context: android.content.Context getApplicationContext()>();
+
+        $r5 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseAd mCurrentAd>;
+
+        $r6 = virtualinvoke $r5.<de.madvertise.android.sdk.MadvertiseAd: java.lang.String getText()>();
+
+        $i1 = r0.<de.madvertise.android.sdk.MadvertiseView: int mTextSize>;
+
+        $i0 = r0.<de.madvertise.android.sdk.MadvertiseView: int mTextColor>;
+
+        $r2 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseView$AnimationEndListener mAnimationListener>;
+
+        specialinvoke r1.<de.madvertise.android.sdk.MadvertiseTextView: void <init>(android.content.Context,java.lang.String,int,int,de.madvertise.android.sdk.MadvertiseView$AnimationEndListener)>($r4, $r6, $i1, $i0, $r2);
+
+        specialinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void animateOldViews()>();
+
+        virtualinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void addView(android.view.View)>(r1);
+
+        $r7 = specialinvoke r0.<de.madvertise.android.sdk.MadvertiseView: android.view.animation.Animation createAnimation(boolean)>(0);
+
+        if $r7 == null goto label1;
+
+        virtualinvoke r1.<de.madvertise.android.sdk.MadvertiseTextView: void startAnimation(android.view.animation.Animation)>($r7);
+
+     label1:
+        return;
+    }
+
+    de.madvertise.android.sdk.MadvertiseView$MadvertiseViewCallbackListener getCallbackListener()
+    {
+        de.madvertise.android.sdk.MadvertiseView r0;
+        de.madvertise.android.sdk.MadvertiseView$MadvertiseViewCallbackListener r1;
+
+        r0 := @this: de.madvertise.android.sdk.MadvertiseView;
+
+        r1 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseView$MadvertiseViewCallbackListener mCallbackListener>;
+
+        return r1;
+    }
+
+    protected void onAttachedToWindow()
+    {
+        de.madvertise.android.sdk.MadvertiseView r0;
+
+        r0 := @this: de.madvertise.android.sdk.MadvertiseView;
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, "#### onAttachedToWindow fired ####");
+
+        specialinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void onViewCallback(boolean)>(1);
+
+        specialinvoke r0.<android.widget.FrameLayout: void onAttachedToWindow()>();
+
+        return;
+    }
+
+    protected void onDetachedFromWindow()
+    {
+        de.madvertise.android.sdk.MadvertiseView r0;
+
+        r0 := @this: de.madvertise.android.sdk.MadvertiseView;
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, "#### onDetachedFromWindow fired ####");
+
+        specialinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void onViewCallback(boolean)>(0);
+
+        specialinvoke r0.<android.widget.FrameLayout: void onDetachedFromWindow()>();
+
+        return;
+    }
+
+    protected void onMeasure(int, int)
+    {
+        int $i0, $i1;
+        de.madvertise.android.sdk.MadvertiseView r0;
+
+        r0 := @this: de.madvertise.android.sdk.MadvertiseView;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        specialinvoke r0.<android.widget.FrameLayout: void onMeasure(int,int)>($i0, $i1);
+
+        $i0 = staticinvoke <android.view.View$MeasureSpec: int getSize(int)>($i0);
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mParentWidth> = $i0;
+
+        $i0 = staticinvoke <android.view.View$MeasureSpec: int getSize(int)>($i1);
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: int mParentHeight> = $i0;
+
+        $i1 = r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerWidth>;
+
+        $i0 = r0.<de.madvertise.android.sdk.MadvertiseView: int mBannerHeight>;
+
+        virtualinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void setMeasuredDimension(int,int)>($i1, $i0);
+
+        return;
+    }
+
+    public boolean onTouchEvent(android.view.MotionEvent)
+    {
+        de.madvertise.android.sdk.MadvertiseView r0;
+        android.view.MotionEvent $r1;
+        de.madvertise.android.sdk.MadvertiseAd $r2;
+
+        r0 := @this: de.madvertise.android.sdk.MadvertiseView;
+
+        $r1 := @parameter0: android.view.MotionEvent;
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, "onTouchEvent(MotionEvent event) fired");
+
+        $r2 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseAd mCurrentAd>;
+
+        if $r2 == null goto label1;
+
+        $r2 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseAd mCurrentAd>;
+
+        virtualinvoke $r2.<de.madvertise.android.sdk.MadvertiseAd: void handleClick()>();
+
+     label1:
+        return 1;
+    }
+
+    public void onWindowFocusChanged(boolean)
+    {
+        de.madvertise.android.sdk.MadvertiseView r0;
+        boolean $z0;
+
+        r0 := @this: de.madvertise.android.sdk.MadvertiseView;
+
+        $z0 := @parameter0: boolean;
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, "#### onWindowFocusChanged fired ####");
+
+        specialinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void onViewCallback(boolean)>($z0);
+
+        specialinvoke r0.<android.widget.FrameLayout: void onWindowFocusChanged(boolean)>($z0);
+
+        virtualinvoke r0.<de.madvertise.android.sdk.MadvertiseView: android.view.ViewParent getParent()>();
+
+        return;
+    }
+
+    public void removeMadViewCallbackListener()
+    {
+        de.madvertise.android.sdk.MadvertiseView r0;
+
+        r0 := @this: de.madvertise.android.sdk.MadvertiseView;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseView$MadvertiseViewCallbackListener mCallbackListener> = null;
+
+        return;
+    }
+
+    public void setFetchingAdsEnabled(boolean)
+    {
+        java.lang.StringBuilder $r1;
+        java.util.Timer $r3;
+        de.madvertise.android.sdk.MadvertiseView r0;
+        java.lang.String $r2;
+        boolean $z0;
+
+        r0 := @this: de.madvertise.android.sdk.MadvertiseView;
+
+        $z0 := @parameter0: boolean;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: boolean mFetchAdsEnabled> = $z0;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>(java.lang.String)>("Set Fetching Ads to ");
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(boolean)>($z0);
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <de.madvertise.android.sdk.MadvertiseUtil: void logMessage(java.lang.String,int,java.lang.String)>(null, 3, $r2);
+
+        if $z0 != 0 goto label1;
+
+        virtualinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void stopRequestThread()>();
+
+        $r3 = r0.<de.madvertise.android.sdk.MadvertiseView: java.util.Timer mAdTimer>;
+
+        if $r3 == null goto label2;
+
+        $r3 = r0.<de.madvertise.android.sdk.MadvertiseView: java.util.Timer mAdTimer>;
+
+        virtualinvoke $r3.<java.util.Timer: void cancel()>();
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: java.util.Timer mAdTimer> = null;
+
+        return;
+
+     label1:
+        specialinvoke r0.<de.madvertise.android.sdk.MadvertiseView: void onViewCallback(boolean)>(1);
+
+     label2:
+        return;
+    }
+
+    public void setMadvertiseViewCallbackListener(de.madvertise.android.sdk.MadvertiseView$MadvertiseViewCallbackListener)
+    {
+        de.madvertise.android.sdk.MadvertiseView r0;
+        de.madvertise.android.sdk.MadvertiseView$MadvertiseViewCallbackListener $r1;
+
+        r0 := @this: de.madvertise.android.sdk.MadvertiseView;
+
+        $r1 := @parameter0: de.madvertise.android.sdk.MadvertiseView$MadvertiseViewCallbackListener;
+
+        r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseView$MadvertiseViewCallbackListener mCallbackListener> = $r1;
+
+        return;
+    }
+
+    public void setPlacementType(int)
+    {
+        int $i0;
+        de.madvertise.android.sdk.MadvertiseView r0;
+        de.madvertise.android.sdk.MadvertiseMraidView $r1;
+
+        r0 := @this: de.madvertise.android.sdk.MadvertiseView;
+
+        $i0 := @parameter0: int;
+
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseMraidView mMraidView>;
+
+        if $r1 == null goto label1;
+
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: de.madvertise.android.sdk.MadvertiseMraidView mMraidView>;
+
+        virtualinvoke $r1.<de.madvertise.android.sdk.MadvertiseMraidView: void setPlacementType(int)>($i0);
+
+     label1:
+        return;
+    }
+
+    public void setVisibility(int)
+    {
+        java.lang.Throwable $r1;
+        int $i0, $i1, i2;
+        android.view.View $r2;
+        de.madvertise.android.sdk.MadvertiseView r0;
+
+        r0 := @this: de.madvertise.android.sdk.MadvertiseView;
+
+        $i0 := @parameter0: int;
+
+        $i1 = specialinvoke r0.<android.widget.FrameLayout: int getVisibility()>();
+
+        if $i1 == $i0 goto label7;
+
+        entermonitor r0;
+
+     label1:
+        $i1 = virtualinvoke r0.<de.madvertise.android.sdk.MadvertiseView: int getChildCount()>();
+
+        i2 = 0;
+
+     label2:
+        if i2 < $i1 goto label4;
+
+        specialinvoke r0.<android.widget.FrameLayout: void setVisibility(int)>($i0);
+
+        exitmonitor r0;
+
+     label3:
+        return;
+
+     label4:
+        $r2 = virtualinvoke r0.<de.madvertise.android.sdk.MadvertiseView: android.view.View getChildAt(int)>(i2);
+
+        virtualinvoke $r2.<android.view.View: void setVisibility(int)>($i0);
+
+        i2 = i2 + 1;
+
+        goto label2;
+
+     label5:
+        $r1 := @caughtexception;
+
+        exitmonitor r0;
+
+     label6:
+        throw $r1;
+
+     label7:
+        return;
+
+        catch java.lang.Throwable from label1 to label3 with label5;
+        catch java.lang.Throwable from label4 to label6 with label5;
+    }
+
+    public void stopRequestThread()
+    {
+        de.madvertise.android.sdk.MadvertiseView r0;
+        boolean $z0;
+        java.lang.Thread $r1;
+
+        r0 := @this: de.madvertise.android.sdk.MadvertiseView;
+
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.Thread mRequestThread>;
+
+        if $r1 == null goto label1;
+
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.Thread mRequestThread>;
+
+        $z0 = virtualinvoke $r1.<java.lang.Thread: boolean isAlive()>();
+
+        if $z0 == 0 goto label1;
+
+        $r1 = r0.<de.madvertise.android.sdk.MadvertiseView: java.lang.Thread mRequestThread>;
+
+        virtualinvoke $r1.<java.lang.Thread: void interrupt()>();
+
+     label1:
+        return;
+    }
+}

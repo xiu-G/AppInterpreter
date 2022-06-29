@@ -1,0 +1,1163 @@
+public class com.baidu.appsearch.patchupdate.GDiffPatcher extends java.lang.Object
+{
+    private static final int BUF_SIZE;
+    public static final int CHUNK_SIZE;
+    public static final int COPY_INT_INT;
+    public static final int COPY_INT_UBYTE;
+    public static final int COPY_INT_USHORT;
+    public static final int COPY_LONG_INT;
+    public static final int COPY_UBYTE_INT;
+    public static final int COPY_UBYTE_UBYTE;
+    public static final int COPY_UBYTE_USHORT;
+    public static final int COPY_USHORT_INT;
+    public static final int COPY_USHORT_UBYTE;
+    public static final int COPY_USHORT_USHORT;
+    public static final int DATA_INT;
+    public static final int DATA_MAX;
+    public static final int DATA_USHORT;
+    private static final boolean DEBUG;
+    public static final int DEFAULT_ZERO_MIN_BLOCK;
+    public static final double DEFAULT_ZERO_RATIO;
+    public static final byte EOF;
+    public static final int HALF_MB;
+    public static final int ONE_MB;
+    private static final java.lang.String TAG;
+    private java.nio.ByteBuffer buf;
+    private byte[] buf2;
+    private long currentOffset;
+    private int dataMax;
+    private int datalength;
+    private boolean differential;
+    private byte[] mDatas;
+    public long totalLength;
+
+    public void <init>()
+    {
+        byte[] $r2;
+        com.baidu.appsearch.patchupdate.GDiffPatcher r0;
+        java.nio.ByteBuffer $r1;
+
+        r0 := @this: com.baidu.appsearch.patchupdate.GDiffPatcher;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        $r1 = staticinvoke <java.nio.ByteBuffer: java.nio.ByteBuffer allocate(int)>(5120);
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: java.nio.ByteBuffer buf> = $r1;
+
+        $r1 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: java.nio.ByteBuffer buf>;
+
+        $r2 = virtualinvoke $r1.<java.nio.ByteBuffer: byte[] array()>();
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: byte[] buf2> = $r2;
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: boolean differential> = 0;
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long currentOffset> = 0L;
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: int dataMax> = 246;
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long totalLength> = 0L;
+
+        $r2 = newarray (byte)[1048576];
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: byte[] mDatas> = $r2;
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: int datalength> = 0;
+
+        return;
+    }
+
+    public static void unGZip(java.lang.String, java.lang.String)
+    {
+        byte[] $r7;
+        java.util.zip.GZIPInputStream $r6, $r13;
+        java.io.BufferedInputStream $r2, $r14;
+        java.io.BufferedOutputStream $r9, $r16;
+        int $i0;
+        java.lang.String $r0, $r1;
+        boolean $z0;
+        java.io.FileOutputStream $r8, $r15;
+        java.io.FileInputStream $r5, $r12;
+        java.io.File $r3, $r4, $r11;
+        java.lang.Exception $r10;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: java.lang.String;
+
+        staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        if $r0 == null goto label17;
+
+        $z0 = virtualinvoke $r0.<java.lang.String: boolean equals(java.lang.Object)>("");
+
+        if $z0 != 0 goto label17;
+
+        if $r1 == null goto label17;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>("");
+
+        if $z0 == 0 goto label01;
+
+        return;
+
+     label01:
+        $r4 = new java.io.File;
+
+        $r3 = $r4;
+
+        specialinvoke $r4.<java.io.File: void <init>(java.lang.String)>($r0);
+
+        $r11 = new java.io.File;
+
+        $r4 = $r11;
+
+        specialinvoke $r11.<java.io.File: void <init>(java.lang.String)>($r1);
+
+        $z0 = virtualinvoke $r3.<java.io.File: boolean exists()>();
+
+        if $z0 == 0 goto label17;
+
+        $r12 = new java.io.FileInputStream;
+
+        $r5 = $r12;
+
+     label02:
+        specialinvoke $r12.<java.io.FileInputStream: void <init>(java.io.File)>($r3);
+
+     label03:
+        $r13 = new java.util.zip.GZIPInputStream;
+
+        $r6 = $r13;
+
+     label04:
+        specialinvoke $r13.<java.util.zip.GZIPInputStream: void <init>(java.io.InputStream)>($r5);
+
+     label05:
+        $r14 = new java.io.BufferedInputStream;
+
+        $r2 = $r14;
+
+     label06:
+        specialinvoke $r14.<java.io.BufferedInputStream: void <init>(java.io.InputStream)>($r6);
+
+     label07:
+        $r7 = newarray (byte)[10240];
+
+        $r15 = new java.io.FileOutputStream;
+
+        $r8 = $r15;
+
+     label08:
+        specialinvoke $r15.<java.io.FileOutputStream: void <init>(java.io.File)>($r4);
+
+     label09:
+        $r16 = new java.io.BufferedOutputStream;
+
+        $r9 = $r16;
+
+     label10:
+        specialinvoke $r16.<java.io.BufferedOutputStream: void <init>(java.io.OutputStream)>($r8);
+
+     label11:
+        $i0 = lengthof $r7;
+
+        $i0 = virtualinvoke $r2.<java.io.BufferedInputStream: int read(byte[],int,int)>($r7, 0, $i0);
+
+     label12:
+        if $i0 == -1 goto label16;
+
+     label13:
+        virtualinvoke $r9.<java.io.BufferedOutputStream: void write(byte[],int,int)>($r7, 0, $i0);
+
+     label14:
+        goto label11;
+
+     label15:
+        $r10 := @caughtexception;
+
+        virtualinvoke $r10.<java.lang.Exception: void printStackTrace()>();
+
+        return;
+
+     label16:
+        virtualinvoke $r9.<java.io.BufferedOutputStream: void flush()>();
+
+        virtualinvoke $r9.<java.io.BufferedOutputStream: void close()>();
+
+        virtualinvoke $r5.<java.io.FileInputStream: void close()>();
+
+        virtualinvoke $r2.<java.io.BufferedInputStream: void close()>();
+
+     label17:
+        return;
+
+        catch java.lang.Exception from label02 to label03 with label15;
+        catch java.lang.Exception from label04 to label05 with label15;
+        catch java.lang.Exception from label06 to label07 with label15;
+        catch java.lang.Exception from label08 to label09 with label15;
+        catch java.lang.Exception from label10 to label12 with label15;
+        catch java.lang.Exception from label13 to label14 with label15;
+        catch java.lang.Exception from label16 to label17 with label15;
+    }
+
+    private void writeToBuffer(byte[], int, int, java.io.OutputStream)
+    {
+        java.io.OutputStream $r2;
+        java.lang.Throwable $r4;
+        byte[] $r1, $r3;
+        java.io.IOException $r5;
+        int $i0, $i1, $i2;
+        com.baidu.appsearch.patchupdate.GDiffPatcher r0;
+
+        r0 := @this: com.baidu.appsearch.patchupdate.GDiffPatcher;
+
+        $r1 := @parameter0: byte[];
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $r2 := @parameter3: java.io.OutputStream;
+
+        $i0 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: int datalength>;
+
+        $i0 = $i0 + $i1;
+
+        $r3 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: byte[] mDatas>;
+
+        $i2 = lengthof $r3;
+
+        if $i0 < $i2 goto label05;
+
+        $r3 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: byte[] mDatas>;
+
+        $i0 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: int datalength>;
+
+     label01:
+        virtualinvoke $r2.<java.io.OutputStream: void write(byte[],int,int)>($r3, 0, $i0);
+
+     label02:
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: int datalength> = 0;
+
+        $r3 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: byte[] mDatas>;
+
+     label03:
+        staticinvoke <java.lang.System: void arraycopy(java.lang.Object,int,java.lang.Object,int,int)>($r1, 0, $r3, 0, $i1);
+
+     label04:
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: int datalength> = $i1;
+
+        return;
+
+     label05:
+        $i0 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: int datalength>;
+
+        if $i0 != 0 goto label09;
+
+        $r3 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: byte[] mDatas>;
+
+     label06:
+        staticinvoke <java.lang.System: void arraycopy(java.lang.Object,int,java.lang.Object,int,int)>($r1, 0, $r3, 0, $i1);
+
+     label07:
+        $i0 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: int datalength>;
+
+        $i0 = $i0 + $i1;
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: int datalength> = $i0;
+
+        return;
+
+     label08:
+        $r4 := @caughtexception;
+
+        $r5 = (java.io.IOException) $r4;
+
+        virtualinvoke $r5.<java.io.IOException: void printStackTrace()>();
+
+        return;
+
+     label09:
+        $r3 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: byte[] mDatas>;
+
+        $i0 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: int datalength>;
+
+     label10:
+        staticinvoke <java.lang.System: void arraycopy(java.lang.Object,int,java.lang.Object,int,int)>($r1, 0, $r3, $i0, $i1);
+
+     label11:
+        goto label07;
+
+        catch java.io.IOException from label01 to label02 with label08;
+        catch java.io.IOException from label03 to label04 with label08;
+        catch java.io.IOException from label06 to label07 with label08;
+        catch java.io.IOException from label10 to label11 with label08;
+    }
+
+    void append(int, java.io.InputStream, java.io.OutputStream) throws java.io.IOException
+    {
+        java.io.OutputStream $r2;
+        byte[] $r3;
+        java.io.EOFException $r7;
+        int $i0, $i1;
+        java.lang.StringBuilder $r4, $r6;
+        java.lang.String $r5;
+        com.baidu.appsearch.patchupdate.GDiffPatcher r0;
+        java.io.InputStream $r1;
+
+        r0 := @this: com.baidu.appsearch.patchupdate.GDiffPatcher;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: java.io.InputStream;
+
+        $r2 := @parameter2: java.io.OutputStream;
+
+     label1:
+        if $i0 <= 0 goto label3;
+
+        $r3 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: byte[] buf2>;
+
+        $i1 = lengthof $r3;
+
+        $i1 = staticinvoke <java.lang.Math: int min(int,int)>($i1, $i0);
+
+        $r3 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: byte[] buf2>;
+
+        $i1 = virtualinvoke $r1.<java.io.InputStream: int read(byte[],int,int)>($r3, 0, $i1);
+
+        if $i1 != -1 goto label2;
+
+        $r7 = new java.io.EOFException;
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("cannot read ");
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r7.<java.io.EOFException: void <init>(java.lang.String)>($r5);
+
+        throw $r7;
+
+     label2:
+        $r3 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: byte[] buf2>;
+
+        specialinvoke r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: void writeToBuffer(byte[],int,int,java.io.OutputStream)>($r3, 0, $i1, $r2);
+
+        $i0 = $i0 - $i1;
+
+        goto label1;
+
+     label3:
+        return;
+    }
+
+    void copy(long, int, com.baidu.appsearch.patchupdate.patch.SeekableSource, java.io.OutputStream) throws java.io.IOException
+    {
+        java.io.OutputStream $r2;
+        byte[] $r7;
+        long $l0;
+        java.io.EOFException $r9;
+        java.nio.ByteBuffer $r3;
+        java.nio.Buffer $r4;
+        int $i1, $i2;
+        java.lang.StringBuilder $r5, $r8;
+        java.lang.String $r6;
+        com.baidu.appsearch.patchupdate.GDiffPatcher r0;
+        com.baidu.appsearch.patchupdate.patch.SeekableSource $r1;
+
+        r0 := @this: com.baidu.appsearch.patchupdate.GDiffPatcher;
+
+        $l0 := @parameter0: long;
+
+        $i1 := @parameter1: int;
+
+        $r1 := @parameter2: com.baidu.appsearch.patchupdate.patch.SeekableSource;
+
+        $r2 := @parameter3: java.io.OutputStream;
+
+        interfaceinvoke $r1.<com.baidu.appsearch.patchupdate.patch.SeekableSource: void seek(long)>($l0);
+
+     label1:
+        if $i1 <= 0 goto label3;
+
+        $r3 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: java.nio.ByteBuffer buf>;
+
+        $i2 = virtualinvoke $r3.<java.nio.ByteBuffer: int capacity()>();
+
+        $i2 = staticinvoke <java.lang.Math: int min(int,int)>($i2, $i1);
+
+        $r3 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: java.nio.ByteBuffer buf>;
+
+        $r4 = virtualinvoke $r3.<java.nio.ByteBuffer: java.nio.Buffer clear()>();
+
+        virtualinvoke $r4.<java.nio.Buffer: java.nio.Buffer limit(int)>($i2);
+
+        $r3 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: java.nio.ByteBuffer buf>;
+
+        $i2 = interfaceinvoke $r1.<com.baidu.appsearch.patchupdate.patch.SeekableSource: int read(java.nio.ByteBuffer)>($r3);
+
+        if $i2 != -1 goto label2;
+
+        $r9 = new java.io.EOFException;
+
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>()>();
+
+        $r5 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("in copy ");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" ");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1);
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r9.<java.io.EOFException: void <init>(java.lang.String)>($r6);
+
+        throw $r9;
+
+     label2:
+        $r3 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: java.nio.ByteBuffer buf>;
+
+        $r7 = virtualinvoke $r3.<java.nio.ByteBuffer: byte[] array()>();
+
+        specialinvoke r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: void writeToBuffer(byte[],int,int,java.io.OutputStream)>($r7, 0, $i2, $r2);
+
+        $i1 = $i1 - $i2;
+
+        goto label1;
+
+     label3:
+        return;
+    }
+
+    void flush(java.io.OutputStream) throws java.io.IOException
+    {
+        java.io.OutputStream $r1;
+        byte[] $r2;
+        int $i0;
+        com.baidu.appsearch.patchupdate.GDiffPatcher r0;
+
+        r0 := @this: com.baidu.appsearch.patchupdate.GDiffPatcher;
+
+        $r1 := @parameter0: java.io.OutputStream;
+
+        $i0 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: int datalength>;
+
+        if $i0 <= 0 goto label1;
+
+        $r2 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: byte[] mDatas>;
+
+        $i0 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: int datalength>;
+
+        virtualinvoke $r1.<java.io.OutputStream: void write(byte[],int,int)>($r2, 0, $i0);
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: int datalength> = 0;
+
+     label1:
+        virtualinvoke $r1.<java.io.OutputStream: void flush()>();
+
+        return;
+    }
+
+    public void patch(com.baidu.appsearch.patchupdate.patch.SeekableSource, java.io.InputStream, java.io.OutputStream) throws java.io.IOException
+    {
+        java.io.DataInputStream $r5;
+        java.lang.IllegalStateException $r8;
+        java.io.BufferedInputStream $r6;
+        long $l2, $l3;
+        short $s4;
+        java.io.DataOutputStream $r4;
+        byte $b5;
+        int $i0, $i1;
+        java.lang.String $r10;
+        boolean $z0;
+        java.io.OutputStream $r3;
+        java.lang.StringBuilder $r9;
+        com.baidu.appsearch.patchupdate.GDiffPatcher r0;
+        com.baidu.appsearch.patchupdate.patch.SeekableSource $r1;
+        java.io.InputStream $r2;
+        com.baidu.appsearch.patchupdate.patch.PatchException $r7;
+
+        r0 := @this: com.baidu.appsearch.patchupdate.GDiffPatcher;
+
+        $r1 := @parameter0: com.baidu.appsearch.patchupdate.patch.SeekableSource;
+
+        $r2 := @parameter1: java.io.InputStream;
+
+        $r3 := @parameter2: java.io.OutputStream;
+
+        $r4 = new java.io.DataOutputStream;
+
+        specialinvoke $r4.<java.io.DataOutputStream: void <init>(java.io.OutputStream)>($r3);
+
+        $r5 = new java.io.DataInputStream;
+
+        $r6 = new java.io.BufferedInputStream;
+
+        specialinvoke $r6.<java.io.BufferedInputStream: void <init>(java.io.InputStream,int)>($r2, 5120000);
+
+        specialinvoke $r5.<java.io.DataInputStream: void <init>(java.io.InputStream)>($r6);
+
+        $i0 = virtualinvoke $r5.<java.io.DataInputStream: int readUnsignedByte()>();
+
+        if $i0 != 209 goto label01;
+
+        $i0 = virtualinvoke $r5.<java.io.DataInputStream: int readUnsignedByte()>();
+
+        if $i0 != 255 goto label01;
+
+        $i0 = virtualinvoke $r5.<java.io.DataInputStream: int readUnsignedByte()>();
+
+        if $i0 != 209 goto label01;
+
+        $i0 = virtualinvoke $r5.<java.io.DataInputStream: int readUnsignedByte()>();
+
+        if $i0 == 255 goto label02;
+
+     label01:
+        $r7 = new com.baidu.appsearch.patchupdate.patch.PatchException;
+
+        specialinvoke $r7.<com.baidu.appsearch.patchupdate.patch.PatchException: void <init>(java.lang.String)>("magic string not found, aborting!");
+
+        throw $r7;
+
+     label02:
+        $i0 = virtualinvoke $r5.<java.io.DataInputStream: int readUnsignedByte()>();
+
+        if $i0 != 5 goto label05;
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: boolean differential> = 1;
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: int dataMax> = 243;
+
+     label03:
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long totalLength> = 0L;
+
+     label04:
+        $i0 = virtualinvoke $r5.<java.io.DataInputStream: int readUnsignedByte()>();
+
+        if $i0 != 0 goto label06;
+
+        virtualinvoke r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: void flush(java.io.OutputStream)>($r4);
+
+        return;
+
+     label05:
+        if $i0 == 4 goto label03;
+
+        $r7 = new com.baidu.appsearch.patchupdate.patch.PatchException;
+
+        specialinvoke $r7.<com.baidu.appsearch.patchupdate.patch.PatchException: void <init>(java.lang.String)>("magic string not found, aborting!");
+
+        throw $r7;
+
+     label06:
+        $i1 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: int dataMax>;
+
+        if $i0 > $i1 goto label07;
+
+        virtualinvoke r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: void append(int,java.io.InputStream,java.io.OutputStream)>($i0, $r5, $r4);
+
+        $l2 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long totalLength>;
+
+        $l3 = (long) $i0;
+
+        $l2 = $l2 + $l3;
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long totalLength> = $l2;
+
+        goto label04;
+
+     label07:
+        lookupswitch($i0)
+        {
+            case 244: goto label20;
+            case 245: goto label23;
+            case 246: goto label26;
+            case 247: goto label09;
+            case 248: goto label10;
+            case 249: goto label11;
+            case 250: goto label14;
+            case 251: goto label17;
+            case 252: goto label29;
+            case 253: goto label31;
+            case 254: goto label33;
+            case 255: goto label35;
+            default: goto label08;
+        };
+
+     label08:
+        $r8 = new java.lang.IllegalStateException;
+
+        $r9 = new java.lang.StringBuilder;
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>()>();
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("command ");
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r10 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r8.<java.lang.IllegalStateException: void <init>(java.lang.String)>($r10);
+
+        throw $r8;
+
+     label09:
+        $i0 = virtualinvoke $r5.<java.io.DataInputStream: int readUnsignedShort()>();
+
+        virtualinvoke r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: void append(int,java.io.InputStream,java.io.OutputStream)>($i0, $r5, $r4);
+
+        $l2 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long totalLength>;
+
+        $l3 = (long) $i0;
+
+        $l2 = $l2 + $l3;
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long totalLength> = $l2;
+
+        goto label04;
+
+     label10:
+        $i0 = virtualinvoke $r5.<java.io.DataInputStream: int readInt()>();
+
+        virtualinvoke r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: void append(int,java.io.InputStream,java.io.OutputStream)>($i0, $r5, $r4);
+
+        $l2 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long totalLength>;
+
+        $l3 = (long) $i0;
+
+        $l2 = $l2 + $l3;
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long totalLength> = $l2;
+
+        goto label04;
+
+     label11:
+        $z0 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: boolean differential>;
+
+        if $z0 == 0 goto label13;
+
+        $s4 = virtualinvoke $r5.<java.io.DataInputStream: short readShort()>();
+
+        $l2 = (long) $s4;
+
+        $l3 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long currentOffset>;
+
+        $l2 = $l2 + $l3;
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long currentOffset> = $l2;
+
+     label12:
+        $i0 = virtualinvoke $r5.<java.io.DataInputStream: int readUnsignedByte()>();
+
+        virtualinvoke r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: void copy(long,int,com.baidu.appsearch.patchupdate.patch.SeekableSource,java.io.OutputStream)>($l2, $i0, $r1, $r4);
+
+        $l2 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long totalLength>;
+
+        $l3 = (long) $i0;
+
+        $l2 = $l2 + $l3;
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long totalLength> = $l2;
+
+        goto label04;
+
+     label13:
+        $i0 = virtualinvoke $r5.<java.io.DataInputStream: int readUnsignedShort()>();
+
+        $l2 = (long) $i0;
+
+        goto label12;
+
+     label14:
+        $z0 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: boolean differential>;
+
+        if $z0 == 0 goto label16;
+
+        $s4 = virtualinvoke $r5.<java.io.DataInputStream: short readShort()>();
+
+        $l2 = (long) $s4;
+
+        $l3 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long currentOffset>;
+
+        $l2 = $l2 + $l3;
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long currentOffset> = $l2;
+
+     label15:
+        $i0 = virtualinvoke $r5.<java.io.DataInputStream: int readUnsignedShort()>();
+
+        virtualinvoke r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: void copy(long,int,com.baidu.appsearch.patchupdate.patch.SeekableSource,java.io.OutputStream)>($l2, $i0, $r1, $r4);
+
+        $l2 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long totalLength>;
+
+        $l3 = (long) $i0;
+
+        $l2 = $l2 + $l3;
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long totalLength> = $l2;
+
+        goto label04;
+
+     label16:
+        $i0 = virtualinvoke $r5.<java.io.DataInputStream: int readUnsignedShort()>();
+
+        $l2 = (long) $i0;
+
+        goto label15;
+
+     label17:
+        $z0 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: boolean differential>;
+
+        if $z0 == 0 goto label19;
+
+        $s4 = virtualinvoke $r5.<java.io.DataInputStream: short readShort()>();
+
+        $l2 = (long) $s4;
+
+        $l3 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long currentOffset>;
+
+        $l2 = $l2 + $l3;
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long currentOffset> = $l2;
+
+     label18:
+        $i0 = virtualinvoke $r5.<java.io.DataInputStream: int readInt()>();
+
+        virtualinvoke r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: void copy(long,int,com.baidu.appsearch.patchupdate.patch.SeekableSource,java.io.OutputStream)>($l2, $i0, $r1, $r4);
+
+        $l2 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long totalLength>;
+
+        $l3 = (long) $i0;
+
+        $l2 = $l2 + $l3;
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long totalLength> = $l2;
+
+        goto label04;
+
+     label19:
+        $i0 = virtualinvoke $r5.<java.io.DataInputStream: int readUnsignedShort()>();
+
+        $l2 = (long) $i0;
+
+        goto label18;
+
+     label20:
+        $z0 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: boolean differential>;
+
+        if $z0 == 0 goto label22;
+
+        $b5 = virtualinvoke $r5.<java.io.DataInputStream: byte readByte()>();
+
+        $l2 = (long) $b5;
+
+        $l3 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long currentOffset>;
+
+        $l2 = $l2 + $l3;
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long currentOffset> = $l2;
+
+     label21:
+        $i0 = virtualinvoke $r5.<java.io.DataInputStream: int readUnsignedByte()>();
+
+        virtualinvoke r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: void copy(long,int,com.baidu.appsearch.patchupdate.patch.SeekableSource,java.io.OutputStream)>($l2, $i0, $r1, $r4);
+
+        $l2 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long totalLength>;
+
+        $l3 = (long) $i0;
+
+        $l2 = $l2 + $l3;
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long totalLength> = $l2;
+
+        goto label04;
+
+     label22:
+        $i0 = virtualinvoke $r5.<java.io.DataInputStream: int readUnsignedByte()>();
+
+        $l2 = (long) $i0;
+
+        goto label21;
+
+     label23:
+        $z0 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: boolean differential>;
+
+        if $z0 == 0 goto label25;
+
+        $b5 = virtualinvoke $r5.<java.io.DataInputStream: byte readByte()>();
+
+        $l2 = (long) $b5;
+
+        $l3 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long currentOffset>;
+
+        $l2 = $l2 + $l3;
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long currentOffset> = $l2;
+
+     label24:
+        $i0 = virtualinvoke $r5.<java.io.DataInputStream: int readUnsignedShort()>();
+
+        virtualinvoke r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: void copy(long,int,com.baidu.appsearch.patchupdate.patch.SeekableSource,java.io.OutputStream)>($l2, $i0, $r1, $r4);
+
+        $l2 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long totalLength>;
+
+        $l3 = (long) $i0;
+
+        $l2 = $l2 + $l3;
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long totalLength> = $l2;
+
+        goto label04;
+
+     label25:
+        $i0 = virtualinvoke $r5.<java.io.DataInputStream: int readUnsignedByte()>();
+
+        $l2 = (long) $i0;
+
+        goto label24;
+
+     label26:
+        $z0 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: boolean differential>;
+
+        if $z0 == 0 goto label28;
+
+        $b5 = virtualinvoke $r5.<java.io.DataInputStream: byte readByte()>();
+
+        $l2 = (long) $b5;
+
+        $l3 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long currentOffset>;
+
+        $l2 = $l2 + $l3;
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long currentOffset> = $l2;
+
+     label27:
+        $i0 = virtualinvoke $r5.<java.io.DataInputStream: int readInt()>();
+
+        virtualinvoke r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: void copy(long,int,com.baidu.appsearch.patchupdate.patch.SeekableSource,java.io.OutputStream)>($l2, $i0, $r1, $r4);
+
+        $l2 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long totalLength>;
+
+        $l3 = (long) $i0;
+
+        $l2 = $l2 + $l3;
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long totalLength> = $l2;
+
+        goto label04;
+
+     label28:
+        $i0 = virtualinvoke $r5.<java.io.DataInputStream: int readUnsignedByte()>();
+
+        $l2 = (long) $i0;
+
+        goto label27;
+
+     label29:
+        $i0 = virtualinvoke $r5.<java.io.DataInputStream: int readInt()>();
+
+        $l2 = (long) $i0;
+
+        $z0 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: boolean differential>;
+
+        if $z0 == 0 goto label30;
+
+        $l3 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long currentOffset>;
+
+        $l2 = $l2 + $l3;
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long currentOffset> = $l2;
+
+     label30:
+        $i0 = virtualinvoke $r5.<java.io.DataInputStream: int readUnsignedByte()>();
+
+        virtualinvoke r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: void copy(long,int,com.baidu.appsearch.patchupdate.patch.SeekableSource,java.io.OutputStream)>($l2, $i0, $r1, $r4);
+
+        $l2 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long totalLength>;
+
+        $l3 = (long) $i0;
+
+        $l2 = $l2 + $l3;
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long totalLength> = $l2;
+
+        goto label04;
+
+     label31:
+        $i0 = virtualinvoke $r5.<java.io.DataInputStream: int readInt()>();
+
+        $l2 = (long) $i0;
+
+        $z0 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: boolean differential>;
+
+        if $z0 == 0 goto label32;
+
+        $l3 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long currentOffset>;
+
+        $l2 = $l2 + $l3;
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long currentOffset> = $l2;
+
+     label32:
+        $i0 = virtualinvoke $r5.<java.io.DataInputStream: int readUnsignedShort()>();
+
+        virtualinvoke r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: void copy(long,int,com.baidu.appsearch.patchupdate.patch.SeekableSource,java.io.OutputStream)>($l2, $i0, $r1, $r4);
+
+        $l2 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long totalLength>;
+
+        $l3 = (long) $i0;
+
+        $l2 = $l2 + $l3;
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long totalLength> = $l2;
+
+        goto label04;
+
+     label33:
+        $i0 = virtualinvoke $r5.<java.io.DataInputStream: int readInt()>();
+
+        $l2 = (long) $i0;
+
+        $z0 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: boolean differential>;
+
+        if $z0 == 0 goto label34;
+
+        $l3 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long currentOffset>;
+
+        $l2 = $l2 + $l3;
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long currentOffset> = $l2;
+
+     label34:
+        $i0 = virtualinvoke $r5.<java.io.DataInputStream: int readInt()>();
+
+        virtualinvoke r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: void copy(long,int,com.baidu.appsearch.patchupdate.patch.SeekableSource,java.io.OutputStream)>($l2, $i0, $r1, $r4);
+
+        $l2 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long totalLength>;
+
+        $l3 = (long) $i0;
+
+        $l2 = $l2 + $l3;
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long totalLength> = $l2;
+
+        goto label04;
+
+     label35:
+        $l2 = virtualinvoke $r5.<java.io.DataInputStream: long readLong()>();
+
+        $l3 = $l2;
+
+        $z0 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: boolean differential>;
+
+        if $z0 == 0 goto label36;
+
+        $l3 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long currentOffset>;
+
+        $l3 = $l2 + $l3;
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long currentOffset> = $l3;
+
+     label36:
+        $i0 = virtualinvoke $r5.<java.io.DataInputStream: int readInt()>();
+
+        virtualinvoke r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: void copy(long,int,com.baidu.appsearch.patchupdate.patch.SeekableSource,java.io.OutputStream)>($l3, $i0, $r1, $r4);
+
+        $l2 = r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long totalLength>;
+
+        $l3 = (long) $i0;
+
+        $l2 = $l2 + $l3;
+
+        r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: long totalLength> = $l2;
+
+        goto label04;
+    }
+
+    public void patch(java.io.File, java.io.File, java.io.File) throws java.io.IOException
+    {
+        java.lang.Throwable $r8, $r9;
+        java.io.RandomAccessFile $r6;
+        java.io.FileOutputStream $r5;
+        java.io.FileInputStream $r7;
+        java.io.File $r1, $r2, $r3;
+        com.baidu.appsearch.patchupdate.patch.RandomAccessFileSeekableSource $r4;
+        com.baidu.appsearch.patchupdate.GDiffPatcher r0;
+
+        r0 := @this: com.baidu.appsearch.patchupdate.GDiffPatcher;
+
+        $r1 := @parameter0: java.io.File;
+
+        $r2 := @parameter1: java.io.File;
+
+        $r3 := @parameter2: java.io.File;
+
+        $r4 = new com.baidu.appsearch.patchupdate.patch.RandomAccessFileSeekableSource;
+
+        $r6 = new java.io.RandomAccessFile;
+
+        specialinvoke $r6.<java.io.RandomAccessFile: void <init>(java.io.File,java.lang.String)>($r1, "r");
+
+        specialinvoke $r4.<com.baidu.appsearch.patchupdate.patch.RandomAccessFileSeekableSource: void <init>(java.io.RandomAccessFile)>($r6);
+
+        $r7 = new java.io.FileInputStream;
+
+        specialinvoke $r7.<java.io.FileInputStream: void <init>(java.io.File)>($r2);
+
+        $r5 = new java.io.FileOutputStream;
+
+        specialinvoke $r5.<java.io.FileOutputStream: void <init>(java.io.File)>($r3);
+
+     label1:
+        virtualinvoke r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: void patch(com.baidu.appsearch.patchupdate.patch.SeekableSource,java.io.InputStream,java.io.OutputStream)>($r4, $r7, $r5);
+
+     label2:
+        virtualinvoke $r4.<com.baidu.appsearch.patchupdate.patch.RandomAccessFileSeekableSource: void close()>();
+
+        virtualinvoke $r7.<java.io.InputStream: void close()>();
+
+        virtualinvoke $r5.<java.io.OutputStream: void close()>();
+
+        virtualinvoke $r3.<java.io.File: long length()>();
+
+        return;
+
+     label3:
+        $r8 := @caughtexception;
+
+     label4:
+        throw $r8;
+
+     label5:
+        $r9 := @caughtexception;
+
+        virtualinvoke $r4.<com.baidu.appsearch.patchupdate.patch.RandomAccessFileSeekableSource: void close()>();
+
+        virtualinvoke $r7.<java.io.InputStream: void close()>();
+
+        virtualinvoke $r5.<java.io.OutputStream: void close()>();
+
+        virtualinvoke $r3.<java.io.File: long length()>();
+
+        throw $r9;
+
+        catch java.io.IOException from label1 to label2 with label3;
+        catch java.lang.Throwable from label1 to label2 with label5;
+        catch java.lang.Throwable from label4 to label5 with label5;
+    }
+
+    public void patch(byte[], java.io.InputStream, java.io.OutputStream) throws java.io.IOException
+    {
+        java.io.OutputStream $r3;
+        byte[] $r1;
+        com.baidu.appsearch.patchupdate.patch.ByteBufferSeekableSource $r4;
+        com.baidu.appsearch.patchupdate.GDiffPatcher r0;
+        java.io.InputStream $r2;
+
+        r0 := @this: com.baidu.appsearch.patchupdate.GDiffPatcher;
+
+        $r1 := @parameter0: byte[];
+
+        $r2 := @parameter1: java.io.InputStream;
+
+        $r3 := @parameter2: java.io.OutputStream;
+
+        $r4 = new com.baidu.appsearch.patchupdate.patch.ByteBufferSeekableSource;
+
+        specialinvoke $r4.<com.baidu.appsearch.patchupdate.patch.ByteBufferSeekableSource: void <init>(byte[])>($r1);
+
+        virtualinvoke r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: void patch(com.baidu.appsearch.patchupdate.patch.SeekableSource,java.io.InputStream,java.io.OutputStream)>($r4, $r2, $r3);
+
+        return;
+    }
+
+    public byte[] patch(byte[], byte[]) throws java.io.IOException
+    {
+        byte[] $r1, $r2;
+        java.io.ByteArrayInputStream $r3;
+        java.io.ByteArrayOutputStream $r4;
+        com.baidu.appsearch.patchupdate.GDiffPatcher r0;
+
+        r0 := @this: com.baidu.appsearch.patchupdate.GDiffPatcher;
+
+        $r1 := @parameter0: byte[];
+
+        $r2 := @parameter1: byte[];
+
+        $r4 = new java.io.ByteArrayOutputStream;
+
+        specialinvoke $r4.<java.io.ByteArrayOutputStream: void <init>()>();
+
+        $r3 = new java.io.ByteArrayInputStream;
+
+        specialinvoke $r3.<java.io.ByteArrayInputStream: void <init>(byte[])>($r2);
+
+        virtualinvoke r0.<com.baidu.appsearch.patchupdate.GDiffPatcher: void patch(byte[],java.io.InputStream,java.io.OutputStream)>($r1, $r3, $r4);
+
+        $r1 = virtualinvoke $r4.<java.io.ByteArrayOutputStream: byte[] toByteArray()>();
+
+        return $r1;
+    }
+
+    public static void <clinit>()
+    {
+        <com.baidu.appsearch.patchupdate.GDiffPatcher: java.lang.String TAG> = "GDiffPatcher";
+
+        <com.baidu.appsearch.patchupdate.GDiffPatcher: int ONE_MB> = 1048576;
+
+        <com.baidu.appsearch.patchupdate.GDiffPatcher: int HALF_MB> = 5120000;
+
+        <com.baidu.appsearch.patchupdate.GDiffPatcher: byte EOF> = 0;
+
+        <com.baidu.appsearch.patchupdate.GDiffPatcher: double DEFAULT_ZERO_RATIO> = 0.9;
+
+        <com.baidu.appsearch.patchupdate.GDiffPatcher: int DEFAULT_ZERO_MIN_BLOCK> = 10;
+
+        <com.baidu.appsearch.patchupdate.GDiffPatcher: boolean DEBUG> = 0;
+
+        <com.baidu.appsearch.patchupdate.GDiffPatcher: int DATA_USHORT> = 247;
+
+        <com.baidu.appsearch.patchupdate.GDiffPatcher: int DATA_MAX> = 246;
+
+        <com.baidu.appsearch.patchupdate.GDiffPatcher: int DATA_INT> = 248;
+
+        <com.baidu.appsearch.patchupdate.GDiffPatcher: int COPY_USHORT_USHORT> = 250;
+
+        <com.baidu.appsearch.patchupdate.GDiffPatcher: int COPY_USHORT_UBYTE> = 249;
+
+        <com.baidu.appsearch.patchupdate.GDiffPatcher: int COPY_USHORT_INT> = 251;
+
+        <com.baidu.appsearch.patchupdate.GDiffPatcher: int COPY_UBYTE_USHORT> = 245;
+
+        <com.baidu.appsearch.patchupdate.GDiffPatcher: int COPY_UBYTE_UBYTE> = 244;
+
+        <com.baidu.appsearch.patchupdate.GDiffPatcher: int COPY_UBYTE_INT> = 246;
+
+        <com.baidu.appsearch.patchupdate.GDiffPatcher: int COPY_LONG_INT> = 255;
+
+        <com.baidu.appsearch.patchupdate.GDiffPatcher: int COPY_INT_USHORT> = 253;
+
+        <com.baidu.appsearch.patchupdate.GDiffPatcher: int COPY_INT_UBYTE> = 252;
+
+        <com.baidu.appsearch.patchupdate.GDiffPatcher: int COPY_INT_INT> = 254;
+
+        <com.baidu.appsearch.patchupdate.GDiffPatcher: int CHUNK_SIZE> = 32767;
+
+        <com.baidu.appsearch.patchupdate.GDiffPatcher: int BUF_SIZE> = 5120;
+
+        return;
+    }
+}

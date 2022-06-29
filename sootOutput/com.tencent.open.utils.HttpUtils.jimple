@@ -1,0 +1,2180 @@
+public class com.tencent.open.utils.HttpUtils extends java.lang.Object
+{
+    private static final java.lang.String a;
+
+    static void <clinit>()
+    {
+        java.lang.Class $r1;
+        java.lang.String $r0;
+
+        $r1 = class "Lcom/tencent/open/utils/HttpUtils;";
+
+        $r0 = virtualinvoke $r1.<java.lang.Class: java.lang.String getName()>();
+
+        <com.tencent.open.utils.HttpUtils: java.lang.String a> = $r0;
+
+        return;
+    }
+
+    private void <init>()
+    {
+        com.tencent.open.utils.HttpUtils r0;
+
+        r0 := @this: com.tencent.open.utils.HttpUtils;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    private static int a(android.content.Context)
+    {
+        java.lang.Throwable $r2;
+        android.content.Context $r0;
+        int $i0;
+        java.lang.String $r1;
+        boolean $z0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $i0 = <android.os.Build$VERSION: int SDK_INT>;
+
+        if $i0 >= 11 goto label2;
+
+        if $r0 == null goto label1;
+
+        $i0 = staticinvoke <android.net.Proxy: int getPort(android.content.Context)>($r0);
+
+        if $i0 >= 0 goto label6;
+
+        $i0 = staticinvoke <android.net.Proxy: int getDefaultPort()>();
+
+        return $i0;
+
+     label1:
+        $i0 = staticinvoke <android.net.Proxy: int getDefaultPort()>();
+
+        return $i0;
+
+     label2:
+        $r1 = staticinvoke <java.lang.System: java.lang.String getProperty(java.lang.String)>("http.proxyPort");
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r1);
+
+        if $z0 != 0 goto label7;
+
+     label3:
+        $i0 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String)>($r1);
+
+     label4:
+        return $i0;
+
+     label5:
+        $r2 := @caughtexception;
+
+        $i0 = -1;
+
+     label6:
+        return $i0;
+
+     label7:
+        return -1;
+
+        catch java.lang.NumberFormatException from label3 to label4 with label5;
+    }
+
+    private static java.lang.String a(org.apache.http.HttpResponse) throws java.lang.IllegalStateException, java.io.IOException
+    {
+        byte[] $r7;
+        java.util.zip.GZIPInputStream $r9;
+        java.io.ByteArrayOutputStream $r3, $r8;
+        org.apache.http.HttpEntity $r1;
+        org.apache.http.Header $r4;
+        int $i0;
+        org.apache.http.HttpResponse $r0;
+        java.lang.Object $r6;
+        java.lang.String $r5, $r10;
+        java.io.InputStream $r2;
+
+        $r0 := @parameter0: org.apache.http.HttpResponse;
+
+        $r1 = interfaceinvoke $r0.<org.apache.http.HttpResponse: org.apache.http.HttpEntity getEntity()>();
+
+        $r2 = interfaceinvoke $r1.<org.apache.http.HttpEntity: java.io.InputStream getContent()>();
+
+        $r8 = new java.io.ByteArrayOutputStream;
+
+        $r3 = $r8;
+
+        specialinvoke $r8.<java.io.ByteArrayOutputStream: void <init>()>();
+
+        $r4 = interfaceinvoke $r0.<org.apache.http.HttpResponse: org.apache.http.Header getFirstHeader(java.lang.String)>("Content-Encoding");
+
+        if $r4 == null goto label4;
+
+        $r5 = interfaceinvoke $r4.<org.apache.http.Header: java.lang.String getValue()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.String: java.lang.String toLowerCase()>();
+
+        $i0 = virtualinvoke $r5.<java.lang.String: int indexOf(java.lang.String)>("gzip");
+
+        if $i0 <= -1 goto label4;
+
+        $r9 = new java.util.zip.GZIPInputStream;
+
+        $r6 = $r9;
+
+        specialinvoke $r9.<java.util.zip.GZIPInputStream: void <init>(java.io.InputStream)>($r2);
+
+     label1:
+        $r7 = newarray (byte)[512];
+
+     label2:
+        $r2 = (java.io.InputStream) $r6;
+
+        $i0 = virtualinvoke $r2.<java.io.InputStream: int read(byte[])>($r7);
+
+        if $i0 == -1 goto label3;
+
+        virtualinvoke $r3.<java.io.ByteArrayOutputStream: void write(byte[],int,int)>($r7, 0, $i0);
+
+        goto label2;
+
+     label3:
+        $r10 = new java.lang.String;
+
+        $r7 = virtualinvoke $r3.<java.io.ByteArrayOutputStream: byte[] toByteArray()>();
+
+        specialinvoke $r10.<java.lang.String: void <init>(byte[],java.lang.String)>($r7, "UTF-8");
+
+        return $r10;
+
+     label4:
+        $r6 = $r2;
+
+        goto label1;
+    }
+
+    private static void a(android.content.Context, com.tencent.connect.auth.QQToken, java.lang.String)
+    {
+        android.content.Context $r0;
+        int $i0;
+        com.tencent.connect.auth.QQToken $r1;
+        java.lang.String[] $r3;
+        java.lang.String $r2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: com.tencent.connect.auth.QQToken;
+
+        $r2 := @parameter2: java.lang.String;
+
+        $i0 = virtualinvoke $r2.<java.lang.String: int indexOf(java.lang.String)>("add_share");
+
+        if $i0 > -1 goto label1;
+
+        $i0 = virtualinvoke $r2.<java.lang.String: int indexOf(java.lang.String)>("upload_pic");
+
+        if $i0 > -1 goto label1;
+
+        $i0 = virtualinvoke $r2.<java.lang.String: int indexOf(java.lang.String)>("add_topic");
+
+        if $i0 > -1 goto label1;
+
+        $i0 = virtualinvoke $r2.<java.lang.String: int indexOf(java.lang.String)>("set_user_face");
+
+        if $i0 > -1 goto label1;
+
+        $i0 = virtualinvoke $r2.<java.lang.String: int indexOf(java.lang.String)>("add_t");
+
+        if $i0 > -1 goto label1;
+
+        $i0 = virtualinvoke $r2.<java.lang.String: int indexOf(java.lang.String)>("add_pic_t");
+
+        if $i0 > -1 goto label1;
+
+        $i0 = virtualinvoke $r2.<java.lang.String: int indexOf(java.lang.String)>("add_pic_url");
+
+        if $i0 > -1 goto label1;
+
+        $i0 = virtualinvoke $r2.<java.lang.String: int indexOf(java.lang.String)>("add_video");
+
+        if $i0 <= -1 goto label2;
+
+     label1:
+        $r3 = newarray (java.lang.String)[1];
+
+        $r3[0] = $r2;
+
+        staticinvoke <com.tencent.connect.a.a: void a(android.content.Context,com.tencent.connect.auth.QQToken,java.lang.String,java.lang.String[])>($r0, $r1, "requireApi", $r3);
+
+     label2:
+        return;
+    }
+
+    private static java.lang.String b(android.content.Context)
+    {
+        android.content.Context $r0;
+        int $i0;
+        java.lang.String $r1;
+        boolean $z0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $i0 = <android.os.Build$VERSION: int SDK_INT>;
+
+        if $i0 >= 11 goto label2;
+
+        if $r0 == null goto label1;
+
+        $r1 = staticinvoke <android.net.Proxy: java.lang.String getHost(android.content.Context)>($r0);
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r1);
+
+        if $z0 == 0 goto label3;
+
+        $r1 = staticinvoke <android.net.Proxy: java.lang.String getDefaultHost()>();
+
+        return $r1;
+
+     label1:
+        $r1 = staticinvoke <android.net.Proxy: java.lang.String getDefaultHost()>();
+
+        return $r1;
+
+     label2:
+        $r1 = staticinvoke <java.lang.System: java.lang.String getProperty(java.lang.String)>("http.proxyHost");
+
+     label3:
+        return $r1;
+    }
+
+    public static java.lang.String encodePostBody(android.os.Bundle, java.lang.String)
+    {
+        android.os.Bundle $r0;
+        java.util.Iterator $r4;
+        java.util.Set $r3;
+        int $i0, $i1, $i2;
+        java.lang.StringBuilder $r2, $r7, $r8;
+        java.lang.Object $r5;
+        java.lang.String $r1, $r6;
+        boolean $z0;
+
+        $r0 := @parameter0: android.os.Bundle;
+
+        $r1 := @parameter1: java.lang.String;
+
+        if $r0 != null goto label1;
+
+        return "";
+
+     label1:
+        $r7 = new java.lang.StringBuilder;
+
+        $r2 = $r7;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>()>();
+
+        $i1 = virtualinvoke $r0.<android.os.Bundle: int size()>();
+
+        $r3 = virtualinvoke $r0.<android.os.Bundle: java.util.Set keySet()>();
+
+        $r4 = interfaceinvoke $r3.<java.util.Set: java.util.Iterator iterator()>();
+
+        $i0 = -1;
+
+     label2:
+        $z0 = interfaceinvoke $r4.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label3;
+
+        $r5 = interfaceinvoke $r4.<java.util.Iterator: java.lang.Object next()>();
+
+        $r6 = (java.lang.String) $r5;
+
+        $i0 = $i0 + 1;
+
+        $r5 = virtualinvoke $r0.<android.os.Bundle: java.lang.Object get(java.lang.String)>($r6);
+
+        $z0 = $r5 instanceof java.lang.String;
+
+        if $z0 == 0 goto label2;
+
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>()>();
+
+        $r7 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Content-Disposition: form-data; name=\"");
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\"");
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\r\n");
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\r\n");
+
+        $r6 = (java.lang.String) $r5;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r6 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $i2 = $i1 + -1;
+
+        if $i0 >= $i2 goto label2;
+
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>()>();
+
+        $r7 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\r\n--");
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f");
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\r\n");
+
+        $r6 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        goto label2;
+
+     label3:
+        $r1 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r1;
+    }
+
+    public static java.lang.String encodeUrl(android.os.Bundle)
+    {
+        android.os.Bundle $r0;
+        java.util.Iterator $r3;
+        java.util.Set $r2;
+        java.lang.String[] $r8;
+        int $i0, $i1;
+        java.lang.StringBuilder $r1, $r6;
+        java.lang.Object $r4;
+        java.lang.String $r5, $r7;
+        boolean $z0, $z1;
+
+        $r0 := @parameter0: android.os.Bundle;
+
+        if $r0 != null goto label01;
+
+        return "";
+
+     label01:
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = virtualinvoke $r0.<android.os.Bundle: java.util.Set keySet()>();
+
+        $r3 = interfaceinvoke $r2.<java.util.Set: java.util.Iterator iterator()>();
+
+        $z0 = 1;
+
+     label02:
+        $z1 = interfaceinvoke $r3.<java.util.Iterator: boolean hasNext()>();
+
+        if $z1 == 0 goto label12;
+
+        $r4 = interfaceinvoke $r3.<java.util.Iterator: java.lang.Object next()>();
+
+        $r5 = (java.lang.String) $r4;
+
+        $r4 = virtualinvoke $r0.<android.os.Bundle: java.lang.Object get(java.lang.String)>($r5);
+
+        $z1 = $r4 instanceof java.lang.String;
+
+        if $z1 != 0 goto label03;
+
+        $z1 = $r4 instanceof java.lang.String[];
+
+        if $z1 == 0 goto label02;
+
+     label03:
+        $z1 = $r4 instanceof java.lang.String[];
+
+        if $z1 == 0 goto label09;
+
+        if $z0 == 0 goto label07;
+
+        $z0 = 0;
+
+     label04:
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+        $r7 = staticinvoke <java.net.URLEncoder: java.lang.String encode(java.lang.String)>($r5);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("=");
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $r8 = virtualinvoke $r0.<android.os.Bundle: java.lang.String[] getStringArray(java.lang.String)>($r5);
+
+        if $r8 == null goto label02;
+
+        $i0 = 0;
+
+     label05:
+        $i1 = lengthof $r8;
+
+        if $i0 >= $i1 goto label02;
+
+        if $i0 != 0 goto label08;
+
+        $r5 = $r8[$i0];
+
+        $r5 = staticinvoke <java.net.URLEncoder: java.lang.String encode(java.lang.String)>($r5);
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+     label06:
+        $i0 = $i0 + 1;
+
+        goto label05;
+
+     label07:
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("&");
+
+        goto label04;
+
+     label08:
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(",");
+
+        $r5 = $r8[$i0];
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r5 = staticinvoke <java.net.URLEncoder: java.lang.String encode(java.lang.String)>($r5);
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        goto label06;
+
+     label09:
+        if $z0 == 0 goto label11;
+
+        $z0 = 0;
+
+     label10:
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+        $r7 = staticinvoke <java.net.URLEncoder: java.lang.String encode(java.lang.String)>($r5);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("=");
+
+        $r5 = virtualinvoke $r0.<android.os.Bundle: java.lang.String getString(java.lang.String)>($r5);
+
+        $r5 = staticinvoke <java.net.URLEncoder: java.lang.String encode(java.lang.String)>($r5);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        goto label02;
+
+     label11:
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("&");
+
+        goto label10;
+
+     label12:
+        $r5 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r5;
+    }
+
+    public static int getErrorCodeFromException(java.io.IOException)
+    {
+        java.io.IOException $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: java.io.IOException;
+
+        $z0 = $r0 instanceof java.io.CharConversionException;
+
+        if $z0 == 0 goto label01;
+
+        return -20;
+
+     label01:
+        $z0 = $r0 instanceof java.nio.charset.MalformedInputException;
+
+        if $z0 == 0 goto label02;
+
+        return -21;
+
+     label02:
+        $z0 = $r0 instanceof java.nio.charset.UnmappableCharacterException;
+
+        if $z0 == 0 goto label03;
+
+        return -22;
+
+     label03:
+        $z0 = $r0 instanceof org.apache.http.client.HttpResponseException;
+
+        if $z0 == 0 goto label04;
+
+        return -23;
+
+     label04:
+        $z0 = $r0 instanceof java.nio.channels.ClosedChannelException;
+
+        if $z0 == 0 goto label05;
+
+        return -24;
+
+     label05:
+        $z0 = $r0 instanceof org.apache.http.ConnectionClosedException;
+
+        if $z0 == 0 goto label06;
+
+        return -25;
+
+     label06:
+        $z0 = $r0 instanceof java.io.EOFException;
+
+        if $z0 == 0 goto label07;
+
+        return -26;
+
+     label07:
+        $z0 = $r0 instanceof java.nio.channels.FileLockInterruptionException;
+
+        if $z0 == 0 goto label08;
+
+        return -27;
+
+     label08:
+        $z0 = $r0 instanceof java.io.FileNotFoundException;
+
+        if $z0 == 0 goto label09;
+
+        return -28;
+
+     label09:
+        $z0 = $r0 instanceof java.net.HttpRetryException;
+
+        if $z0 == 0 goto label10;
+
+        return -29;
+
+     label10:
+        $z0 = $r0 instanceof org.apache.http.conn.ConnectTimeoutException;
+
+        if $z0 == 0 goto label11;
+
+        return -7;
+
+     label11:
+        $z0 = $r0 instanceof java.net.SocketTimeoutException;
+
+        if $z0 == 0 goto label12;
+
+        return -8;
+
+     label12:
+        $z0 = $r0 instanceof java.util.InvalidPropertiesFormatException;
+
+        if $z0 == 0 goto label13;
+
+        return -30;
+
+     label13:
+        $z0 = $r0 instanceof org.apache.http.MalformedChunkCodingException;
+
+        if $z0 == 0 goto label14;
+
+        return -31;
+
+     label14:
+        $z0 = $r0 instanceof java.net.MalformedURLException;
+
+        if $z0 == 0 goto label15;
+
+        return -3;
+
+     label15:
+        $z0 = $r0 instanceof org.apache.http.NoHttpResponseException;
+
+        if $z0 == 0 goto label16;
+
+        return -32;
+
+     label16:
+        $z0 = $r0 instanceof java.io.InvalidClassException;
+
+        if $z0 == 0 goto label17;
+
+        return -33;
+
+     label17:
+        $z0 = $r0 instanceof java.io.InvalidObjectException;
+
+        if $z0 == 0 goto label18;
+
+        return -34;
+
+     label18:
+        $z0 = $r0 instanceof java.io.NotActiveException;
+
+        if $z0 == 0 goto label19;
+
+        return -35;
+
+     label19:
+        $z0 = $r0 instanceof java.io.NotSerializableException;
+
+        if $z0 == 0 goto label20;
+
+        return -36;
+
+     label20:
+        $z0 = $r0 instanceof java.io.OptionalDataException;
+
+        if $z0 == 0 goto label21;
+
+        return -37;
+
+     label21:
+        $z0 = $r0 instanceof java.io.StreamCorruptedException;
+
+        if $z0 == 0 goto label22;
+
+        return -38;
+
+     label22:
+        $z0 = $r0 instanceof java.io.WriteAbortedException;
+
+        if $z0 == 0 goto label23;
+
+        return -39;
+
+     label23:
+        $z0 = $r0 instanceof java.net.ProtocolException;
+
+        if $z0 == 0 goto label24;
+
+        return -40;
+
+     label24:
+        $z0 = $r0 instanceof javax.net.ssl.SSLHandshakeException;
+
+        if $z0 == 0 goto label25;
+
+        return -41;
+
+     label25:
+        $z0 = $r0 instanceof javax.net.ssl.SSLKeyException;
+
+        if $z0 == 0 goto label26;
+
+        return -42;
+
+     label26:
+        $z0 = $r0 instanceof javax.net.ssl.SSLPeerUnverifiedException;
+
+        if $z0 == 0 goto label27;
+
+        return -43;
+
+     label27:
+        $z0 = $r0 instanceof javax.net.ssl.SSLProtocolException;
+
+        if $z0 == 0 goto label28;
+
+        return -44;
+
+     label28:
+        $z0 = $r0 instanceof java.net.BindException;
+
+        if $z0 == 0 goto label29;
+
+        return -45;
+
+     label29:
+        $z0 = $r0 instanceof java.net.ConnectException;
+
+        if $z0 == 0 goto label30;
+
+        return -46;
+
+     label30:
+        $z0 = $r0 instanceof java.net.NoRouteToHostException;
+
+        if $z0 == 0 goto label31;
+
+        return -47;
+
+     label31:
+        $z0 = $r0 instanceof java.net.PortUnreachableException;
+
+        if $z0 == 0 goto label32;
+
+        return -48;
+
+     label32:
+        $z0 = $r0 instanceof java.io.SyncFailedException;
+
+        if $z0 == 0 goto label33;
+
+        return -49;
+
+     label33:
+        $z0 = $r0 instanceof java.io.UTFDataFormatException;
+
+        if $z0 == 0 goto label34;
+
+        return -50;
+
+     label34:
+        $z0 = $r0 instanceof java.net.UnknownHostException;
+
+        if $z0 == 0 goto label35;
+
+        return -51;
+
+     label35:
+        $z0 = $r0 instanceof java.net.UnknownServiceException;
+
+        if $z0 == 0 goto label36;
+
+        return -52;
+
+     label36:
+        $z0 = $r0 instanceof java.io.UnsupportedEncodingException;
+
+        if $z0 == 0 goto label37;
+
+        return -53;
+
+     label37:
+        $z0 = $r0 instanceof java.util.zip.ZipException;
+
+        if $z0 == 0 goto label38;
+
+        return -54;
+
+     label38:
+        return -2;
+    }
+
+    public static org.apache.http.client.HttpClient getHttpClient(android.content.Context, java.lang.String, java.lang.String)
+    {
+        org.apache.http.conn.scheme.PlainSocketFactory $r5;
+        org.apache.http.HttpVersion $r11;
+        org.apache.http.impl.client.DefaultHttpClient $r14;
+        android.content.Context $r0;
+        org.apache.http.params.BasicHttpParams $r9;
+        com.tencent.open.utils.HttpUtils$CustomSSLSocketFactory $r7;
+        org.apache.http.conn.ssl.X509HostnameVerifier $r8;
+        org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager $r13;
+        int $i0, $i1;
+        org.apache.http.conn.ssl.SSLSocketFactory $r19;
+        java.lang.String $r1, $r2;
+        org.apache.http.conn.scheme.SchemeRegistry $r3;
+        java.security.KeyStore $r6;
+        java.lang.Exception $r18;
+        com.tencent.open.utils.HttpUtils$NetworkProxy $r15;
+        org.apache.http.conn.scheme.Scheme $r4;
+        org.apache.http.params.HttpParams $r17;
+        com.tencent.open.utils.OpenConfig $r10;
+        java.lang.StringBuilder $r12;
+        org.apache.http.HttpHost $r16;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 := @parameter2: java.lang.String;
+
+        $i0 = 0;
+
+        $r3 = new org.apache.http.conn.scheme.SchemeRegistry;
+
+        specialinvoke $r3.<org.apache.http.conn.scheme.SchemeRegistry: void <init>()>();
+
+        $r4 = new org.apache.http.conn.scheme.Scheme;
+
+        $r5 = staticinvoke <org.apache.http.conn.scheme.PlainSocketFactory: org.apache.http.conn.scheme.PlainSocketFactory getSocketFactory()>();
+
+        specialinvoke $r4.<org.apache.http.conn.scheme.Scheme: void <init>(java.lang.String,org.apache.http.conn.scheme.SocketFactory,int)>("http", $r5, 80);
+
+        virtualinvoke $r3.<org.apache.http.conn.scheme.SchemeRegistry: org.apache.http.conn.scheme.Scheme register(org.apache.http.conn.scheme.Scheme)>($r4);
+
+        $i1 = <android.os.Build$VERSION: int SDK_INT>;
+
+        if $i1 >= 16 goto label14;
+
+     label01:
+        $r2 = staticinvoke <java.security.KeyStore: java.lang.String getDefaultType()>();
+
+        $r6 = staticinvoke <java.security.KeyStore: java.security.KeyStore getInstance(java.lang.String)>($r2);
+
+        virtualinvoke $r6.<java.security.KeyStore: void load(java.io.InputStream,char[])>(null, null);
+
+     label02:
+        $r7 = new com.tencent.open.utils.HttpUtils$CustomSSLSocketFactory;
+
+     label03:
+        specialinvoke $r7.<com.tencent.open.utils.HttpUtils$CustomSSLSocketFactory: void <init>(java.security.KeyStore)>($r6);
+
+     label04:
+        $r8 = <org.apache.http.conn.ssl.SSLSocketFactory: org.apache.http.conn.ssl.X509HostnameVerifier STRICT_HOSTNAME_VERIFIER>;
+
+     label05:
+        virtualinvoke $r7.<org.apache.http.conn.ssl.SSLSocketFactory: void setHostnameVerifier(org.apache.http.conn.ssl.X509HostnameVerifier)>($r8);
+
+     label06:
+        $r4 = new org.apache.http.conn.scheme.Scheme;
+
+     label07:
+        specialinvoke $r4.<org.apache.http.conn.scheme.Scheme: void <init>(java.lang.String,org.apache.http.conn.scheme.SocketFactory,int)>("https", $r7, 443);
+
+        virtualinvoke $r3.<org.apache.http.conn.scheme.SchemeRegistry: org.apache.http.conn.scheme.Scheme register(org.apache.http.conn.scheme.Scheme)>($r4);
+
+     label08:
+        $r9 = new org.apache.http.params.BasicHttpParams;
+
+        specialinvoke $r9.<org.apache.http.params.BasicHttpParams: void <init>()>();
+
+        if $r0 == null goto label16;
+
+        $r10 = staticinvoke <com.tencent.open.utils.OpenConfig: com.tencent.open.utils.OpenConfig getInstance(android.content.Context,java.lang.String)>($r0, $r1);
+
+     label09:
+        if $r10 == null goto label15;
+
+        $i1 = virtualinvoke $r10.<com.tencent.open.utils.OpenConfig: int getInt(java.lang.String)>("Common_HttpConnectionTimeout");
+
+        $i0 = virtualinvoke $r10.<com.tencent.open.utils.OpenConfig: int getInt(java.lang.String)>("Common_SocketConnectionTimeout");
+
+     label10:
+        if $i1 != 0 goto label11;
+
+        $i1 = 15000;
+
+     label11:
+        if $i0 != 0 goto label12;
+
+        $i0 = 30000;
+
+     label12:
+        staticinvoke <org.apache.http.params.HttpConnectionParams: void setConnectionTimeout(org.apache.http.params.HttpParams,int)>($r9, $i1);
+
+        staticinvoke <org.apache.http.params.HttpConnectionParams: void setSoTimeout(org.apache.http.params.HttpParams,int)>($r9, $i0);
+
+        $r11 = <org.apache.http.HttpVersion: org.apache.http.HttpVersion HTTP_1_1>;
+
+        staticinvoke <org.apache.http.params.HttpProtocolParams: void setVersion(org.apache.http.params.HttpParams,org.apache.http.ProtocolVersion)>($r9, $r11);
+
+        staticinvoke <org.apache.http.params.HttpProtocolParams: void setContentCharset(org.apache.http.params.HttpParams,java.lang.String)>($r9, "UTF-8");
+
+        $r12 = new java.lang.StringBuilder;
+
+        specialinvoke $r12.<java.lang.StringBuilder: void <init>()>();
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("AndroidSDK_");
+
+        $r1 = <android.os.Build$VERSION: java.lang.String SDK>;
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("_");
+
+        $r1 = <android.os.Build: java.lang.String DEVICE>;
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("_");
+
+        $r1 = <android.os.Build$VERSION: java.lang.String RELEASE>;
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <org.apache.http.params.HttpProtocolParams: void setUserAgent(org.apache.http.params.HttpParams,java.lang.String)>($r9, $r1);
+
+        $r13 = new org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+
+        specialinvoke $r13.<org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager: void <init>(org.apache.http.params.HttpParams,org.apache.http.conn.scheme.SchemeRegistry)>($r9, $r3);
+
+        $r14 = new org.apache.http.impl.client.DefaultHttpClient;
+
+        specialinvoke $r14.<org.apache.http.impl.client.DefaultHttpClient: void <init>(org.apache.http.conn.ClientConnectionManager,org.apache.http.params.HttpParams)>($r13, $r9);
+
+        $r15 = staticinvoke <com.tencent.open.utils.HttpUtils: com.tencent.open.utils.HttpUtils$NetworkProxy getProxy(android.content.Context)>($r0);
+
+        if $r15 == null goto label17;
+
+        $r16 = new org.apache.http.HttpHost;
+
+        $r1 = $r15.<com.tencent.open.utils.HttpUtils$NetworkProxy: java.lang.String host>;
+
+        $i0 = $r15.<com.tencent.open.utils.HttpUtils$NetworkProxy: int port>;
+
+        specialinvoke $r16.<org.apache.http.HttpHost: void <init>(java.lang.String,int)>($r1, $i0);
+
+        $r17 = interfaceinvoke $r14.<org.apache.http.client.HttpClient: org.apache.http.params.HttpParams getParams()>();
+
+        interfaceinvoke $r17.<org.apache.http.params.HttpParams: org.apache.http.params.HttpParams setParameter(java.lang.String,java.lang.Object)>("http.route.default-proxy", $r16);
+
+        return $r14;
+
+     label13:
+        $r18 := @caughtexception;
+
+        $r4 = new org.apache.http.conn.scheme.Scheme;
+
+        $r19 = staticinvoke <org.apache.http.conn.ssl.SSLSocketFactory: org.apache.http.conn.ssl.SSLSocketFactory getSocketFactory()>();
+
+        specialinvoke $r4.<org.apache.http.conn.scheme.Scheme: void <init>(java.lang.String,org.apache.http.conn.scheme.SocketFactory,int)>("https", $r19, 443);
+
+        virtualinvoke $r3.<org.apache.http.conn.scheme.SchemeRegistry: org.apache.http.conn.scheme.Scheme register(org.apache.http.conn.scheme.Scheme)>($r4);
+
+        goto label08;
+
+     label14:
+        $r4 = new org.apache.http.conn.scheme.Scheme;
+
+        $r19 = staticinvoke <org.apache.http.conn.ssl.SSLSocketFactory: org.apache.http.conn.ssl.SSLSocketFactory getSocketFactory()>();
+
+        specialinvoke $r4.<org.apache.http.conn.scheme.Scheme: void <init>(java.lang.String,org.apache.http.conn.scheme.SocketFactory,int)>("https", $r19, 443);
+
+        virtualinvoke $r3.<org.apache.http.conn.scheme.SchemeRegistry: org.apache.http.conn.scheme.Scheme register(org.apache.http.conn.scheme.Scheme)>($r4);
+
+        goto label08;
+
+     label15:
+        $i1 = 0;
+
+        goto label10;
+
+     label16:
+        $r10 = null;
+
+        goto label09;
+
+     label17:
+        return $r14;
+
+        catch java.lang.Exception from label01 to label02 with label13;
+        catch java.lang.Exception from label03 to label04 with label13;
+        catch java.lang.Exception from label05 to label06 with label13;
+        catch java.lang.Exception from label07 to label08 with label13;
+    }
+
+    public static com.tencent.open.utils.HttpUtils$NetworkProxy getProxy(android.content.Context)
+    {
+        android.net.ConnectivityManager $r2;
+        android.content.Context $r0;
+        android.net.NetworkInfo $r3;
+        com.tencent.open.utils.HttpUtils$NetworkProxy $r5;
+        int $i0;
+        java.lang.Object $r1;
+        java.lang.String $r4;
+        boolean $z0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        if $r0 != null goto label1;
+
+        return null;
+
+     label1:
+        $r1 = virtualinvoke $r0.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("connectivity");
+
+        $r2 = (android.net.ConnectivityManager) $r1;
+
+        if $r2 != null goto label2;
+
+        return null;
+
+     label2:
+        $r3 = virtualinvoke $r2.<android.net.ConnectivityManager: android.net.NetworkInfo getActiveNetworkInfo()>();
+
+        if $r3 != null goto label3;
+
+        return null;
+
+     label3:
+        $i0 = virtualinvoke $r3.<android.net.NetworkInfo: int getType()>();
+
+        if $i0 != 0 goto label4;
+
+        $r4 = staticinvoke <com.tencent.open.utils.HttpUtils: java.lang.String b(android.content.Context)>($r0);
+
+        $i0 = staticinvoke <com.tencent.open.utils.HttpUtils: int a(android.content.Context)>($r0);
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r4);
+
+        if $z0 != 0 goto label4;
+
+        if $i0 < 0 goto label4;
+
+        $r5 = new com.tencent.open.utils.HttpUtils$NetworkProxy;
+
+        specialinvoke $r5.<com.tencent.open.utils.HttpUtils$NetworkProxy: void <init>(java.lang.String,int,com.tencent.open.utils.HttpUtils$1)>($r4, $i0, null);
+
+        return $r5;
+
+     label4:
+        return null;
+    }
+
+    public static com.tencent.open.utils.Util$Statistic openUrl2(android.content.Context, java.lang.String, java.lang.String, android.os.Bundle) throws java.net.MalformedURLException, java.io.IOException, com.tencent.open.utils.HttpUtils$NetworkUnavailableException, com.tencent.open.utils.HttpUtils$HttpStatusException
+    {
+        org.apache.http.client.methods.HttpPost $r15, $r25;
+        byte[] $r18;
+        android.os.Bundle $r3, $r7, $r21;
+        org.apache.http.StatusLine $r14;
+        boolean $z0;
+        android.net.ConnectivityManager $r5;
+        android.net.NetworkInfo $r6;
+        java.util.Set $r16;
+        org.apache.http.client.methods.HttpGet $r12, $r23;
+        java.lang.StringBuilder $r10, $r22;
+        android.content.Context $r0;
+        com.tencent.open.utils.Util$Statistic $r24;
+        java.io.ByteArrayOutputStream $r19, $r26;
+        org.apache.http.client.methods.HttpUriRequest $r29;
+        org.apache.http.entity.ByteArrayEntity $r27;
+        com.tencent.open.utils.HttpUtils$NetworkUnavailableException $r20;
+        org.apache.http.client.HttpClient $r9;
+        int $i0, $i1, $i2;
+        java.lang.String $r1, $r2, $r8, $r11;
+        java.util.Iterator $r17;
+        org.apache.http.HttpResponse $r13;
+        java.lang.Object $r4;
+        com.tencent.open.utils.HttpUtils$HttpStatusException $r28;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 := @parameter2: java.lang.String;
+
+        $r3 := @parameter3: android.os.Bundle;
+
+        if $r0 == null goto label02;
+
+        $r4 = virtualinvoke $r0.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("connectivity");
+
+        $r5 = (android.net.ConnectivityManager) $r4;
+
+        if $r5 == null goto label02;
+
+        $r6 = virtualinvoke $r5.<android.net.ConnectivityManager: android.net.NetworkInfo getActiveNetworkInfo()>();
+
+        if $r6 == null goto label01;
+
+        $z0 = virtualinvoke $r6.<android.net.NetworkInfo: boolean isAvailable()>();
+
+        if $z0 != 0 goto label02;
+
+     label01:
+        $r20 = new com.tencent.open.utils.HttpUtils$NetworkUnavailableException;
+
+        specialinvoke $r20.<com.tencent.open.utils.HttpUtils$NetworkUnavailableException: void <init>(java.lang.String)>("network unavailable");
+
+        throw $r20;
+
+     label02:
+        if $r3 == null goto label06;
+
+        $r21 = new android.os.Bundle;
+
+        specialinvoke $r21.<android.os.Bundle: void <init>(android.os.Bundle)>($r3);
+
+        $r7 = $r21;
+
+     label03:
+        $r8 = virtualinvoke $r7.<android.os.Bundle: java.lang.String getString(java.lang.String)>("appid_for_getting_config");
+
+        virtualinvoke $r7.<android.os.Bundle: void remove(java.lang.String)>("appid_for_getting_config");
+
+        $r9 = staticinvoke <com.tencent.open.utils.HttpUtils: org.apache.http.client.HttpClient getHttpClient(android.content.Context,java.lang.String,java.lang.String)>($r0, $r8, $r1);
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>("GET");
+
+        if $z0 == 0 goto label08;
+
+        $r2 = staticinvoke <com.tencent.open.utils.HttpUtils: java.lang.String encodeUrl(android.os.Bundle)>($r7);
+
+        $i0 = virtualinvoke $r2.<java.lang.String: int length()>();
+
+        $r8 = <com.tencent.open.utils.HttpUtils: java.lang.String a>;
+
+        $r22 = new java.lang.StringBuilder;
+
+        specialinvoke $r22.<java.lang.StringBuilder: void <init>()>();
+
+        $r10 = virtualinvoke $r22.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("-->openUrl2 before url =");
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r11 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.tencent.open.a.b: void b(java.lang.String,java.lang.String)>($r8, $r11);
+
+        $i1 = virtualinvoke $r1.<java.lang.String: int indexOf(java.lang.String)>("?");
+
+        if $i1 != -1 goto label07;
+
+        $r22 = new java.lang.StringBuilder;
+
+        specialinvoke $r22.<java.lang.StringBuilder: void <init>()>();
+
+        $r10 = virtualinvoke $r22.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("?");
+
+        $r1 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label04:
+        $r8 = <com.tencent.open.utils.HttpUtils: java.lang.String a>;
+
+        $r22 = new java.lang.StringBuilder;
+
+        specialinvoke $r22.<java.lang.StringBuilder: void <init>()>();
+
+        $r10 = virtualinvoke $r22.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("-->openUrl2 encodedParam =");
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" -- url = ");
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r11 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.tencent.open.a.b: void b(java.lang.String,java.lang.String)>($r8, $r11);
+
+        $r22 = new java.lang.StringBuilder;
+
+        specialinvoke $r22.<java.lang.StringBuilder: void <init>()>();
+
+        $r10 = virtualinvoke $r22.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r1 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r23 = new org.apache.http.client.methods.HttpGet;
+
+        $r12 = $r23;
+
+        specialinvoke $r23.<org.apache.http.client.methods.HttpGet: void <init>(java.lang.String)>($r1);
+
+        interfaceinvoke $r12.<org.apache.http.client.methods.HttpUriRequest: void addHeader(java.lang.String,java.lang.String)>("Accept-Encoding", "gzip");
+
+        $r4 = $r12;
+
+     label05:
+        $r29 = (org.apache.http.client.methods.HttpUriRequest) $r4;
+
+        $r13 = interfaceinvoke $r9.<org.apache.http.client.HttpClient: org.apache.http.HttpResponse execute(org.apache.http.client.methods.HttpUriRequest)>($r29);
+
+        $r14 = interfaceinvoke $r13.<org.apache.http.HttpResponse: org.apache.http.StatusLine getStatusLine()>();
+
+        $i1 = interfaceinvoke $r14.<org.apache.http.StatusLine: int getStatusCode()>();
+
+        if $i1 != 200 goto label15;
+
+        $r1 = staticinvoke <com.tencent.open.utils.HttpUtils: java.lang.String a(org.apache.http.HttpResponse)>($r13);
+
+        $r24 = new com.tencent.open.utils.Util$Statistic;
+
+        specialinvoke $r24.<com.tencent.open.utils.Util$Statistic: void <init>(java.lang.String,int)>($r1, $i0);
+
+        return $r24;
+
+     label06:
+        $r7 = new android.os.Bundle;
+
+        specialinvoke $r7.<android.os.Bundle: void <init>()>();
+
+        goto label03;
+
+     label07:
+        $r22 = new java.lang.StringBuilder;
+
+        specialinvoke $r22.<java.lang.StringBuilder: void <init>()>();
+
+        $r10 = virtualinvoke $r22.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("&");
+
+        $r1 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        goto label04;
+
+     label08:
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>("POST");
+
+        if $z0 == 0 goto label16;
+
+        $r25 = new org.apache.http.client.methods.HttpPost;
+
+        $r15 = $r25;
+
+        specialinvoke $r25.<org.apache.http.client.methods.HttpPost: void <init>(java.lang.String)>($r1);
+
+        virtualinvoke $r15.<org.apache.http.client.methods.HttpPost: void addHeader(java.lang.String,java.lang.String)>("Accept-Encoding", "gzip");
+
+        $r21 = new android.os.Bundle;
+
+        $r3 = $r21;
+
+        specialinvoke $r21.<android.os.Bundle: void <init>()>();
+
+        $r16 = virtualinvoke $r7.<android.os.Bundle: java.util.Set keySet()>();
+
+        $r17 = interfaceinvoke $r16.<java.util.Set: java.util.Iterator iterator()>();
+
+     label09:
+        $z0 = interfaceinvoke $r17.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label10;
+
+        $r4 = interfaceinvoke $r17.<java.util.Iterator: java.lang.Object next()>();
+
+        $r1 = (java.lang.String) $r4;
+
+        $r4 = virtualinvoke $r7.<android.os.Bundle: java.lang.Object get(java.lang.String)>($r1);
+
+        $z0 = $r4 instanceof byte[];
+
+        if $z0 == 0 goto label09;
+
+        $r18 = (byte[]) $r4;
+
+        virtualinvoke $r3.<android.os.Bundle: void putByteArray(java.lang.String,byte[])>($r1, $r18);
+
+        goto label09;
+
+     label10:
+        $z0 = virtualinvoke $r7.<android.os.Bundle: boolean containsKey(java.lang.String)>("method");
+
+        if $z0 != 0 goto label11;
+
+        virtualinvoke $r7.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("method", $r2);
+
+     label11:
+        virtualinvoke $r15.<org.apache.http.client.methods.HttpPost: void setHeader(java.lang.String,java.lang.String)>("Content-Type", "multipart/form-data; boundary=3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f");
+
+        virtualinvoke $r15.<org.apache.http.client.methods.HttpPost: void setHeader(java.lang.String,java.lang.String)>("Connection", "Keep-Alive");
+
+        $r26 = new java.io.ByteArrayOutputStream;
+
+        $r19 = $r26;
+
+        specialinvoke $r26.<java.io.ByteArrayOutputStream: void <init>()>();
+
+        $r18 = staticinvoke <com.tencent.open.utils.Util: byte[] getBytesUTF8(java.lang.String)>("--3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f\r\n");
+
+        virtualinvoke $r19.<java.io.ByteArrayOutputStream: void write(byte[])>($r18);
+
+        $r1 = staticinvoke <com.tencent.open.utils.HttpUtils: java.lang.String encodePostBody(android.os.Bundle,java.lang.String)>($r7, "3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f");
+
+        $r18 = staticinvoke <com.tencent.open.utils.Util: byte[] getBytesUTF8(java.lang.String)>($r1);
+
+        virtualinvoke $r19.<java.io.ByteArrayOutputStream: void write(byte[])>($r18);
+
+        $z0 = virtualinvoke $r3.<android.os.Bundle: boolean isEmpty()>();
+
+        if $z0 != 0 goto label14;
+
+        $i0 = virtualinvoke $r3.<android.os.Bundle: int size()>();
+
+        $r18 = staticinvoke <com.tencent.open.utils.Util: byte[] getBytesUTF8(java.lang.String)>("\r\n--3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f\r\n");
+
+        virtualinvoke $r19.<java.io.ByteArrayOutputStream: void write(byte[])>($r18);
+
+        $r16 = virtualinvoke $r3.<android.os.Bundle: java.util.Set keySet()>();
+
+        $r17 = interfaceinvoke $r16.<java.util.Set: java.util.Iterator iterator()>();
+
+        $i1 = -1;
+
+     label12:
+        $z0 = interfaceinvoke $r17.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label14;
+
+        $r4 = interfaceinvoke $r17.<java.util.Iterator: java.lang.Object next()>();
+
+        $r1 = (java.lang.String) $r4;
+
+        $i1 = $i1 + 1;
+
+        $r22 = new java.lang.StringBuilder;
+
+        specialinvoke $r22.<java.lang.StringBuilder: void <init>()>();
+
+        $r10 = virtualinvoke $r22.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Content-Disposition: form-data; name=\"");
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\"; filename=\"");
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\"");
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\r\n");
+
+        $r2 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r18 = staticinvoke <com.tencent.open.utils.Util: byte[] getBytesUTF8(java.lang.String)>($r2);
+
+        virtualinvoke $r19.<java.io.ByteArrayOutputStream: void write(byte[])>($r18);
+
+        $r18 = staticinvoke <com.tencent.open.utils.Util: byte[] getBytesUTF8(java.lang.String)>("Content-Type: content/unknown\r\n\r\n");
+
+        virtualinvoke $r19.<java.io.ByteArrayOutputStream: void write(byte[])>($r18);
+
+        $r18 = virtualinvoke $r3.<android.os.Bundle: byte[] getByteArray(java.lang.String)>($r1);
+
+        if $r18 == null goto label13;
+
+        virtualinvoke $r19.<java.io.ByteArrayOutputStream: void write(byte[])>($r18);
+
+     label13:
+        $i2 = $i0 + -1;
+
+        if $i1 >= $i2 goto label12;
+
+        $r18 = staticinvoke <com.tencent.open.utils.Util: byte[] getBytesUTF8(java.lang.String)>("\r\n--3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f\r\n");
+
+        virtualinvoke $r19.<java.io.ByteArrayOutputStream: void write(byte[])>($r18);
+
+        goto label12;
+
+     label14:
+        $r18 = staticinvoke <com.tencent.open.utils.Util: byte[] getBytesUTF8(java.lang.String)>("\r\n--3i2ndDfv2rTHiSisAbouNdArYfORhtTPEefj3q2f--\r\n");
+
+        virtualinvoke $r19.<java.io.ByteArrayOutputStream: void write(byte[])>($r18);
+
+        $r18 = virtualinvoke $r19.<java.io.ByteArrayOutputStream: byte[] toByteArray()>();
+
+        $i0 = lengthof $r18;
+
+        virtualinvoke $r19.<java.io.ByteArrayOutputStream: void close()>();
+
+        $r27 = new org.apache.http.entity.ByteArrayEntity;
+
+        specialinvoke $r27.<org.apache.http.entity.ByteArrayEntity: void <init>(byte[])>($r18);
+
+        virtualinvoke $r15.<org.apache.http.client.methods.HttpPost: void setEntity(org.apache.http.HttpEntity)>($r27);
+
+        $r4 = $r15;
+
+        goto label05;
+
+     label15:
+        $r28 = new com.tencent.open.utils.HttpUtils$HttpStatusException;
+
+        $r22 = new java.lang.StringBuilder;
+
+        specialinvoke $r22.<java.lang.StringBuilder: void <init>()>();
+
+        $r10 = virtualinvoke $r22.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("http status code error:");
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1);
+
+        $r1 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r28.<com.tencent.open.utils.HttpUtils$HttpStatusException: void <init>(java.lang.String)>($r1);
+
+        throw $r28;
+
+     label16:
+        $r4 = null;
+
+        $i0 = 0;
+
+        goto label05;
+    }
+
+    public static org.json.JSONObject request(com.tencent.connect.auth.QQToken, android.content.Context, java.lang.String, android.os.Bundle, java.lang.String) throws java.io.IOException, org.json.JSONException, com.tencent.open.utils.HttpUtils$NetworkUnavailableException, com.tencent.open.utils.HttpUtils$HttpStatusException
+    {
+        com.tencent.open.utils.ServerSetting $r7;
+        android.os.Bundle $r3;
+        org.json.JSONException $r14, $r22;
+        org.json.JSONObject $r10, $r12;
+        boolean $z0;
+        java.lang.Exception $r18;
+        com.tencent.open.utils.OpenConfig $r9;
+        java.lang.StringBuilder $r6, $r25;
+        java.lang.Throwable $r15, $r16, $r20, $r21, $r23, $r24;
+        android.content.Context $r1;
+        com.tencent.open.utils.Util$Statistic $r11;
+        com.tencent.open.c.c $r13;
+        long $l1, $l3, $l5;
+        com.tencent.open.utils.HttpUtils$NetworkUnavailableException $r19;
+        org.apache.http.conn.ConnectTimeoutException $r26;
+        java.net.SocketTimeoutException $r27;
+        int $i0, $i2, $i4;
+        com.tencent.connect.auth.QQToken $r0;
+        java.lang.String $r2, $r4, $r5, $r8;
+        java.net.MalformedURLException $r28;
+        java.io.IOException $r29;
+        com.tencent.open.utils.HttpUtils$HttpStatusException $r17;
+
+        $r0 := @parameter0: com.tencent.connect.auth.QQToken;
+
+        $r1 := @parameter1: android.content.Context;
+
+        $r2 := @parameter2: java.lang.String;
+
+        $r3 := @parameter3: android.os.Bundle;
+
+        $r4 := @parameter4: java.lang.String;
+
+        $r5 = <com.tencent.open.a.b: java.lang.String d>;
+
+        staticinvoke <com.tencent.open.a.b: void a(java.lang.String,java.lang.String)>($r5, "OpenApi request");
+
+        $r5 = virtualinvoke $r2.<java.lang.String: java.lang.String toLowerCase()>();
+
+        $z0 = virtualinvoke $r5.<java.lang.String: boolean startsWith(java.lang.String)>("http");
+
+        if $z0 != 0 goto label28;
+
+        $r25 = new java.lang.StringBuilder;
+
+        specialinvoke $r25.<java.lang.StringBuilder: void <init>()>();
+
+        $r7 = staticinvoke <com.tencent.open.utils.ServerSetting: com.tencent.open.utils.ServerSetting getInstance()>();
+
+        $r5 = virtualinvoke $r7.<com.tencent.open.utils.ServerSetting: java.lang.String getEnvUrl(android.content.Context,java.lang.String)>($r1, "https://openmobile.qq.com/");
+
+        $r6 = virtualinvoke $r25.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r5 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r25 = new java.lang.StringBuilder;
+
+        specialinvoke $r25.<java.lang.StringBuilder: void <init>()>();
+
+        $r7 = staticinvoke <com.tencent.open.utils.ServerSetting: com.tencent.open.utils.ServerSetting getInstance()>();
+
+        $r8 = virtualinvoke $r7.<com.tencent.open.utils.ServerSetting: java.lang.String getEnvUrl(android.content.Context,java.lang.String)>($r1, "https://openmobile.qq.com/");
+
+        $r6 = virtualinvoke $r25.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r8 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label01:
+        staticinvoke <com.tencent.open.utils.HttpUtils: void a(android.content.Context,com.tencent.connect.auth.QQToken,java.lang.String)>($r1, $r0, $r2);
+
+        $l1 = staticinvoke <android.os.SystemClock: long elapsedRealtime()>();
+
+        $r2 = virtualinvoke $r0.<com.tencent.connect.auth.QQToken: java.lang.String getAppId()>();
+
+        $r9 = staticinvoke <com.tencent.open.utils.OpenConfig: com.tencent.open.utils.OpenConfig getInstance(android.content.Context,java.lang.String)>($r1, $r2);
+
+        $i2 = virtualinvoke $r9.<com.tencent.open.utils.OpenConfig: int getInt(java.lang.String)>("Common_HttpRetryCount");
+
+        $r25 = new java.lang.StringBuilder;
+
+        specialinvoke $r25.<java.lang.StringBuilder: void <init>()>();
+
+        $r6 = virtualinvoke $r25.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("config 1:Common_HttpRetryCount            config_value:");
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i2);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("   appid:");
+
+        $r2 = virtualinvoke $r0.<com.tencent.connect.auth.QQToken: java.lang.String getAppId()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("     url:");
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r2 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.tencent.open.a.b: void b(java.lang.String,java.lang.String)>("OpenConfig_test", $r2);
+
+        if $i2 != 0 goto label02;
+
+        $i2 = 3;
+
+     label02:
+        $r25 = new java.lang.StringBuilder;
+
+        specialinvoke $r25.<java.lang.StringBuilder: void <init>()>();
+
+        $r6 = virtualinvoke $r25.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("config 1:Common_HttpRetryCount            result_value:");
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i2);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("   appid:");
+
+        $r2 = virtualinvoke $r0.<com.tencent.connect.auth.QQToken: java.lang.String getAppId()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("     url:");
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r2 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.tencent.open.a.b: void b(java.lang.String,java.lang.String)>("OpenConfig_test", $r2);
+
+        $l3 = $l1;
+
+        $i0 = 0;
+
+        $r10 = null;
+
+     label03:
+        $i0 = $i0 + 1;
+
+     label04:
+        $r11 = staticinvoke <com.tencent.open.utils.HttpUtils: com.tencent.open.utils.Util$Statistic openUrl2(android.content.Context,java.lang.String,java.lang.String,android.os.Bundle)>($r1, $r5, $r4, $r3);
+
+     label05:
+        $r2 = $r11.<com.tencent.open.utils.Util$Statistic: java.lang.String response>;
+
+     label06:
+        $r12 = staticinvoke <com.tencent.open.utils.Util: org.json.JSONObject parseJson(java.lang.String)>($r2);
+
+     label07:
+        $i4 = virtualinvoke $r12.<org.json.JSONObject: int getInt(java.lang.String)>("ret");
+
+     label08:
+        $l5 = $r11.<com.tencent.open.utils.Util$Statistic: long reqSize>;
+
+        $l1 = $r11.<com.tencent.open.utils.Util$Statistic: long rspSize>;
+
+        $r10 = $r12;
+
+     label09:
+        $r13 = staticinvoke <com.tencent.open.c.c: com.tencent.open.c.c a()>();
+
+        virtualinvoke $r13.<com.tencent.open.c.c: void a(java.lang.String,long,long,long,int)>($r8, $l3, $l5, $l1, $i4);
+
+        return $r10;
+
+     label10:
+        $r14 := @caughtexception;
+
+        $i4 = -4;
+
+        goto label08;
+
+     label11:
+        $r15 := @caughtexception;
+
+        $r10 = $r12;
+
+     label12:
+        $r26 = (org.apache.http.conn.ConnectTimeoutException) $r15;
+
+        virtualinvoke $r26.<org.apache.http.conn.ConnectTimeoutException: void printStackTrace()>();
+
+        $i4 = -7;
+
+        $l1 = 0L;
+
+        if $i0 >= $i2 goto label14;
+
+        $l3 = staticinvoke <android.os.SystemClock: long elapsedRealtime()>();
+
+     label13:
+        if $i0 < $i2 goto label03;
+
+        $l5 = 0L;
+
+        goto label09;
+
+     label14:
+        $r13 = staticinvoke <com.tencent.open.c.c: com.tencent.open.c.c a()>();
+
+        virtualinvoke $r13.<com.tencent.open.c.c: void a(java.lang.String,long,long,long,int)>($r8, $l3, 0L, 0L, -7);
+
+        throw $r15;
+
+     label15:
+        $r16 := @caughtexception;
+
+        $r10 = $r12;
+
+        $r15 = $r16;
+
+     label16:
+        $r27 = (java.net.SocketTimeoutException) $r15;
+
+        virtualinvoke $r27.<java.net.SocketTimeoutException: void printStackTrace()>();
+
+        $i4 = -8;
+
+        $l1 = 0L;
+
+        if $i0 >= $i2 goto label17;
+
+        $l3 = staticinvoke <android.os.SystemClock: long elapsedRealtime()>();
+
+        goto label13;
+
+     label17:
+        $r13 = staticinvoke <com.tencent.open.c.c: com.tencent.open.c.c a()>();
+
+        virtualinvoke $r13.<com.tencent.open.c.c: void a(java.lang.String,long,long,long,int)>($r8, $l3, 0L, 0L, -8);
+
+        throw $r15;
+
+     label18:
+        $r17 := @caughtexception;
+
+        virtualinvoke $r17.<com.tencent.open.utils.HttpUtils$HttpStatusException: void printStackTrace()>();
+
+        $r2 = virtualinvoke $r17.<com.tencent.open.utils.HttpUtils$HttpStatusException: java.lang.String getMessage()>();
+
+     label19:
+        $r2 = virtualinvoke $r2.<java.lang.String: java.lang.String replace(java.lang.CharSequence,java.lang.CharSequence)>("http status code error:", "");
+
+        $i2 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String)>($r2);
+
+     label20:
+        $r13 = staticinvoke <com.tencent.open.c.c: com.tencent.open.c.c a()>();
+
+        virtualinvoke $r13.<com.tencent.open.c.c: void a(java.lang.String,long,long,long,int)>($r8, $l3, 0L, 0L, $i2);
+
+        throw $r17;
+
+     label21:
+        $r18 := @caughtexception;
+
+        virtualinvoke $r18.<java.lang.Exception: void printStackTrace()>();
+
+        $i2 = -9;
+
+        goto label20;
+
+     label22:
+        $r19 := @caughtexception;
+
+        virtualinvoke $r19.<com.tencent.open.utils.HttpUtils$NetworkUnavailableException: void printStackTrace()>();
+
+        throw $r19;
+
+     label23:
+        $r20 := @caughtexception;
+
+        $r28 = (java.net.MalformedURLException) $r20;
+
+        virtualinvoke $r28.<java.net.MalformedURLException: void printStackTrace()>();
+
+        $r13 = staticinvoke <com.tencent.open.c.c: com.tencent.open.c.c a()>();
+
+        virtualinvoke $r13.<com.tencent.open.c.c: void a(java.lang.String,long,long,long,int)>($r8, $l3, 0L, 0L, -3);
+
+        throw $r20;
+
+     label24:
+        $r21 := @caughtexception;
+
+        $r29 = (java.io.IOException) $r21;
+
+        virtualinvoke $r29.<java.io.IOException: void printStackTrace()>();
+
+        $r29 = (java.io.IOException) $r21;
+
+        $i2 = staticinvoke <com.tencent.open.utils.HttpUtils: int getErrorCodeFromException(java.io.IOException)>($r29);
+
+        $r13 = staticinvoke <com.tencent.open.c.c: com.tencent.open.c.c a()>();
+
+        virtualinvoke $r13.<com.tencent.open.c.c: void a(java.lang.String,long,long,long,int)>($r8, $l3, 0L, 0L, $i2);
+
+        throw $r21;
+
+     label25:
+        $r22 := @caughtexception;
+
+        virtualinvoke $r22.<org.json.JSONException: void printStackTrace()>();
+
+        $r13 = staticinvoke <com.tencent.open.c.c: com.tencent.open.c.c a()>();
+
+        virtualinvoke $r13.<com.tencent.open.c.c: void a(java.lang.String,long,long,long,int)>($r8, $l3, 0L, 0L, -4);
+
+        throw $r22;
+
+     label26:
+        $r23 := @caughtexception;
+
+        $r15 = $r23;
+
+        goto label16;
+
+     label27:
+        $r24 := @caughtexception;
+
+        $r15 = $r24;
+
+        goto label12;
+
+     label28:
+        $r8 = $r2;
+
+        $r5 = $r2;
+
+        goto label01;
+
+        catch org.apache.http.conn.ConnectTimeoutException from label04 to label05 with label27;
+        catch org.apache.http.conn.ConnectTimeoutException from label06 to label07 with label27;
+        catch java.net.SocketTimeoutException from label04 to label05 with label26;
+        catch java.net.SocketTimeoutException from label06 to label07 with label26;
+        catch com.tencent.open.utils.HttpUtils$HttpStatusException from label04 to label05 with label18;
+        catch com.tencent.open.utils.HttpUtils$HttpStatusException from label06 to label07 with label18;
+        catch com.tencent.open.utils.HttpUtils$NetworkUnavailableException from label04 to label05 with label22;
+        catch com.tencent.open.utils.HttpUtils$NetworkUnavailableException from label06 to label07 with label22;
+        catch java.net.MalformedURLException from label04 to label05 with label23;
+        catch java.net.MalformedURLException from label06 to label07 with label23;
+        catch java.io.IOException from label04 to label05 with label24;
+        catch java.io.IOException from label06 to label07 with label24;
+        catch org.json.JSONException from label04 to label05 with label25;
+        catch org.json.JSONException from label06 to label07 with label25;
+        catch org.json.JSONException from label07 to label08 with label10;
+        catch org.apache.http.conn.ConnectTimeoutException from label07 to label08 with label11;
+        catch java.net.SocketTimeoutException from label07 to label08 with label15;
+        catch com.tencent.open.utils.HttpUtils$HttpStatusException from label07 to label08 with label18;
+        catch com.tencent.open.utils.HttpUtils$NetworkUnavailableException from label07 to label08 with label22;
+        catch java.net.MalformedURLException from label07 to label08 with label23;
+        catch java.io.IOException from label07 to label08 with label24;
+        catch java.lang.Exception from label19 to label20 with label21;
+    }
+
+    public static void requestAsync(com.tencent.connect.auth.QQToken, android.content.Context, java.lang.String, android.os.Bundle, java.lang.String, com.tencent.tauth.IRequestListener)
+    {
+        android.content.Context $r1;
+        android.os.Bundle $r3;
+        com.tencent.open.utils.HttpUtils$1 $r7;
+        com.tencent.connect.auth.QQToken $r0;
+        com.tencent.tauth.IRequestListener $r5;
+        java.lang.String $r2, $r4, $r6;
+
+        $r0 := @parameter0: com.tencent.connect.auth.QQToken;
+
+        $r1 := @parameter1: android.content.Context;
+
+        $r2 := @parameter2: java.lang.String;
+
+        $r3 := @parameter3: android.os.Bundle;
+
+        $r4 := @parameter4: java.lang.String;
+
+        $r5 := @parameter5: com.tencent.tauth.IRequestListener;
+
+        $r6 = <com.tencent.open.a.b: java.lang.String d>;
+
+        staticinvoke <com.tencent.open.a.b: void a(java.lang.String,java.lang.String)>($r6, "OpenApi requestAsync");
+
+        $r7 = new com.tencent.open.utils.HttpUtils$1;
+
+        specialinvoke $r7.<com.tencent.open.utils.HttpUtils$1: void <init>(com.tencent.connect.auth.QQToken,android.content.Context,java.lang.String,android.os.Bundle,java.lang.String,com.tencent.tauth.IRequestListener)>($r0, $r1, $r2, $r3, $r4, $r5);
+
+        virtualinvoke $r7.<com.tencent.open.utils.HttpUtils$1: void start()>();
+
+        return;
+    }
+
+    public static org.json.JSONObject upload(com.tencent.connect.auth.QQToken, android.content.Context, java.lang.String, android.os.Bundle) throws java.io.IOException, org.json.JSONException, com.tencent.open.utils.HttpUtils$NetworkUnavailableException, com.tencent.open.utils.HttpUtils$HttpStatusException
+    {
+        com.tencent.open.utils.ServerSetting $r6;
+        android.os.Bundle $r3;
+        org.json.JSONException $r13, $r21;
+        org.json.JSONObject $r9, $r11;
+        boolean $z0;
+        java.lang.Exception $r17;
+        com.tencent.open.utils.OpenConfig $r8;
+        java.lang.StringBuilder $r5, $r24;
+        java.lang.Throwable $r14, $r15, $r19, $r20, $r22, $r23;
+        android.content.Context $r1;
+        com.tencent.open.utils.Util$Statistic $r10;
+        com.tencent.open.c.c $r12;
+        long $l1, $l3, $l5;
+        com.tencent.open.utils.HttpUtils$NetworkUnavailableException $r18;
+        org.apache.http.conn.ConnectTimeoutException $r25;
+        java.net.SocketTimeoutException $r26;
+        int $i0, $i2, $i4;
+        com.tencent.connect.auth.QQToken $r0;
+        java.lang.String $r2, $r4, $r7;
+        java.net.MalformedURLException $r27;
+        java.io.IOException $r28;
+        com.tencent.open.utils.HttpUtils$HttpStatusException $r16;
+
+        $r0 := @parameter0: com.tencent.connect.auth.QQToken;
+
+        $r1 := @parameter1: android.content.Context;
+
+        $r2 := @parameter2: java.lang.String;
+
+        $r3 := @parameter3: android.os.Bundle;
+
+        $r4 = virtualinvoke $r2.<java.lang.String: java.lang.String toLowerCase()>();
+
+        $z0 = virtualinvoke $r4.<java.lang.String: boolean startsWith(java.lang.String)>("http");
+
+        if $z0 != 0 goto label30;
+
+        $r24 = new java.lang.StringBuilder;
+
+        specialinvoke $r24.<java.lang.StringBuilder: void <init>()>();
+
+        $r6 = staticinvoke <com.tencent.open.utils.ServerSetting: com.tencent.open.utils.ServerSetting getInstance()>();
+
+        $r4 = virtualinvoke $r6.<com.tencent.open.utils.ServerSetting: java.lang.String getEnvUrl(android.content.Context,java.lang.String)>($r1, "https://openmobile.qq.com/");
+
+        $r5 = virtualinvoke $r24.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r4 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r24 = new java.lang.StringBuilder;
+
+        specialinvoke $r24.<java.lang.StringBuilder: void <init>()>();
+
+        $r6 = staticinvoke <com.tencent.open.utils.ServerSetting: com.tencent.open.utils.ServerSetting getInstance()>();
+
+        $r7 = virtualinvoke $r6.<com.tencent.open.utils.ServerSetting: java.lang.String getEnvUrl(android.content.Context,java.lang.String)>($r1, "https://openmobile.qq.com/");
+
+        $r5 = virtualinvoke $r24.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r7 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label01:
+        staticinvoke <com.tencent.open.utils.HttpUtils: void a(android.content.Context,com.tencent.connect.auth.QQToken,java.lang.String)>($r1, $r0, $r2);
+
+        $l1 = staticinvoke <android.os.SystemClock: long elapsedRealtime()>();
+
+        $r2 = virtualinvoke $r0.<com.tencent.connect.auth.QQToken: java.lang.String getAppId()>();
+
+        $r8 = staticinvoke <com.tencent.open.utils.OpenConfig: com.tencent.open.utils.OpenConfig getInstance(android.content.Context,java.lang.String)>($r1, $r2);
+
+        $i2 = virtualinvoke $r8.<com.tencent.open.utils.OpenConfig: int getInt(java.lang.String)>("Common_HttpRetryCount");
+
+        $r24 = new java.lang.StringBuilder;
+
+        specialinvoke $r24.<java.lang.StringBuilder: void <init>()>();
+
+        $r5 = virtualinvoke $r24.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("config 1:Common_HttpRetryCount            config_value:");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i2);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("   appid:");
+
+        $r2 = virtualinvoke $r0.<com.tencent.connect.auth.QQToken: java.lang.String getAppId()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("     url:");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $r2 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.tencent.open.a.b: void b(java.lang.String,java.lang.String)>("OpenConfig_test", $r2);
+
+        if $i2 != 0 goto label10;
+
+        $i2 = 3;
+
+     label02:
+        $r24 = new java.lang.StringBuilder;
+
+        specialinvoke $r24.<java.lang.StringBuilder: void <init>()>();
+
+        $r5 = virtualinvoke $r24.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("config 1:Common_HttpRetryCount            result_value:");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i2);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("   appid:");
+
+        $r2 = virtualinvoke $r0.<com.tencent.connect.auth.QQToken: java.lang.String getAppId()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("     url:");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $r2 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.tencent.open.a.b: void b(java.lang.String,java.lang.String)>("OpenConfig_test", $r2);
+
+        $l3 = $l1;
+
+        $i0 = 0;
+
+        $r9 = null;
+
+     label03:
+        $i0 = $i0 + 1;
+
+     label04:
+        $r10 = staticinvoke <com.tencent.open.utils.Util: com.tencent.open.utils.Util$Statistic upload(android.content.Context,java.lang.String,android.os.Bundle)>($r1, $r4, $r3);
+
+     label05:
+        $r2 = $r10.<com.tencent.open.utils.Util$Statistic: java.lang.String response>;
+
+     label06:
+        $r11 = staticinvoke <com.tencent.open.utils.Util: org.json.JSONObject parseJson(java.lang.String)>($r2);
+
+     label07:
+        $i4 = virtualinvoke $r11.<org.json.JSONObject: int getInt(java.lang.String)>("ret");
+
+     label08:
+        $l5 = $r10.<com.tencent.open.utils.Util$Statistic: long reqSize>;
+
+        $l1 = $r10.<com.tencent.open.utils.Util$Statistic: long rspSize>;
+
+        $r9 = $r11;
+
+     label09:
+        $r12 = staticinvoke <com.tencent.open.c.c: com.tencent.open.c.c a()>();
+
+        virtualinvoke $r12.<com.tencent.open.c.c: void a(java.lang.String,long,long,long,int)>($r7, $l3, $l5, $l1, $i4);
+
+        return $r9;
+
+     label10:
+        goto label02;
+
+     label11:
+        $r13 := @caughtexception;
+
+        $i4 = -4;
+
+        goto label08;
+
+     label12:
+        $r14 := @caughtexception;
+
+        $r9 = $r11;
+
+     label13:
+        $r25 = (org.apache.http.conn.ConnectTimeoutException) $r14;
+
+        virtualinvoke $r25.<org.apache.http.conn.ConnectTimeoutException: void printStackTrace()>();
+
+        $i4 = -7;
+
+        $l1 = 0L;
+
+        if $i0 >= $i2 goto label15;
+
+        $l3 = staticinvoke <android.os.SystemClock: long elapsedRealtime()>();
+
+     label14:
+        if $i0 < $i2 goto label29;
+
+        $l5 = 0L;
+
+        goto label09;
+
+     label15:
+        $r12 = staticinvoke <com.tencent.open.c.c: com.tencent.open.c.c a()>();
+
+        $i2 = -7;
+
+        virtualinvoke $r12.<com.tencent.open.c.c: void a(java.lang.String,long,long,long,int)>($r7, $l3, 0L, 0L, $i2);
+
+        throw $r14;
+
+     label16:
+        $r15 := @caughtexception;
+
+        $r9 = $r11;
+
+        $r14 = $r15;
+
+     label17:
+        $r26 = (java.net.SocketTimeoutException) $r14;
+
+        virtualinvoke $r26.<java.net.SocketTimeoutException: void printStackTrace()>();
+
+        $i4 = -8;
+
+        $l1 = 0L;
+
+        if $i0 >= $i2 goto label18;
+
+        $l3 = staticinvoke <android.os.SystemClock: long elapsedRealtime()>();
+
+        goto label14;
+
+     label18:
+        $r12 = staticinvoke <com.tencent.open.c.c: com.tencent.open.c.c a()>();
+
+        $i2 = -8;
+
+        virtualinvoke $r12.<com.tencent.open.c.c: void a(java.lang.String,long,long,long,int)>($r7, $l3, 0L, 0L, $i2);
+
+        throw $r14;
+
+     label19:
+        $r16 := @caughtexception;
+
+        virtualinvoke $r16.<com.tencent.open.utils.HttpUtils$HttpStatusException: void printStackTrace()>();
+
+        $r2 = virtualinvoke $r16.<com.tencent.open.utils.HttpUtils$HttpStatusException: java.lang.String getMessage()>();
+
+     label20:
+        $r2 = virtualinvoke $r2.<java.lang.String: java.lang.String replace(java.lang.CharSequence,java.lang.CharSequence)>("http status code error:", "");
+
+        $i2 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String)>($r2);
+
+     label21:
+        $r12 = staticinvoke <com.tencent.open.c.c: com.tencent.open.c.c a()>();
+
+        virtualinvoke $r12.<com.tencent.open.c.c: void a(java.lang.String,long,long,long,int)>($r7, $l3, 0L, 0L, $i2);
+
+        throw $r16;
+
+     label22:
+        $r17 := @caughtexception;
+
+        virtualinvoke $r17.<java.lang.Exception: void printStackTrace()>();
+
+        $i2 = -9;
+
+        goto label21;
+
+     label23:
+        $r18 := @caughtexception;
+
+        virtualinvoke $r18.<com.tencent.open.utils.HttpUtils$NetworkUnavailableException: void printStackTrace()>();
+
+        throw $r18;
+
+     label24:
+        $r19 := @caughtexception;
+
+        $r27 = (java.net.MalformedURLException) $r19;
+
+        virtualinvoke $r27.<java.net.MalformedURLException: void printStackTrace()>();
+
+        $r12 = staticinvoke <com.tencent.open.c.c: com.tencent.open.c.c a()>();
+
+        $i2 = -3;
+
+        virtualinvoke $r12.<com.tencent.open.c.c: void a(java.lang.String,long,long,long,int)>($r7, $l3, 0L, 0L, $i2);
+
+        throw $r19;
+
+     label25:
+        $r20 := @caughtexception;
+
+        $r28 = (java.io.IOException) $r20;
+
+        virtualinvoke $r28.<java.io.IOException: void printStackTrace()>();
+
+        $r28 = (java.io.IOException) $r20;
+
+        $i2 = staticinvoke <com.tencent.open.utils.HttpUtils: int getErrorCodeFromException(java.io.IOException)>($r28);
+
+        $r12 = staticinvoke <com.tencent.open.c.c: com.tencent.open.c.c a()>();
+
+        virtualinvoke $r12.<com.tencent.open.c.c: void a(java.lang.String,long,long,long,int)>($r7, $l3, 0L, 0L, $i2);
+
+        throw $r20;
+
+     label26:
+        $r21 := @caughtexception;
+
+        virtualinvoke $r21.<org.json.JSONException: void printStackTrace()>();
+
+        $r12 = staticinvoke <com.tencent.open.c.c: com.tencent.open.c.c a()>();
+
+        $i2 = -4;
+
+        virtualinvoke $r12.<com.tencent.open.c.c: void a(java.lang.String,long,long,long,int)>($r7, $l3, 0L, 0L, $i2);
+
+        throw $r21;
+
+     label27:
+        $r22 := @caughtexception;
+
+        $r14 = $r22;
+
+        goto label17;
+
+     label28:
+        $r23 := @caughtexception;
+
+        $r14 = $r23;
+
+        goto label13;
+
+     label29:
+        goto label03;
+
+     label30:
+        $r7 = $r2;
+
+        $r4 = $r2;
+
+        goto label01;
+
+        catch org.apache.http.conn.ConnectTimeoutException from label04 to label05 with label28;
+        catch org.apache.http.conn.ConnectTimeoutException from label06 to label07 with label28;
+        catch java.net.SocketTimeoutException from label04 to label05 with label27;
+        catch java.net.SocketTimeoutException from label06 to label07 with label27;
+        catch com.tencent.open.utils.HttpUtils$HttpStatusException from label04 to label05 with label19;
+        catch com.tencent.open.utils.HttpUtils$HttpStatusException from label06 to label07 with label19;
+        catch com.tencent.open.utils.HttpUtils$NetworkUnavailableException from label04 to label05 with label23;
+        catch com.tencent.open.utils.HttpUtils$NetworkUnavailableException from label06 to label07 with label23;
+        catch java.net.MalformedURLException from label04 to label05 with label24;
+        catch java.net.MalformedURLException from label06 to label07 with label24;
+        catch java.io.IOException from label04 to label05 with label25;
+        catch java.io.IOException from label06 to label07 with label25;
+        catch org.json.JSONException from label04 to label05 with label26;
+        catch org.json.JSONException from label06 to label07 with label26;
+        catch org.json.JSONException from label07 to label08 with label11;
+        catch org.apache.http.conn.ConnectTimeoutException from label07 to label08 with label12;
+        catch java.net.SocketTimeoutException from label07 to label08 with label16;
+        catch com.tencent.open.utils.HttpUtils$HttpStatusException from label07 to label08 with label19;
+        catch com.tencent.open.utils.HttpUtils$NetworkUnavailableException from label07 to label08 with label23;
+        catch java.net.MalformedURLException from label07 to label08 with label24;
+        catch java.io.IOException from label07 to label08 with label25;
+        catch java.lang.Exception from label20 to label21 with label22;
+    }
+}

@@ -1,0 +1,227 @@
+public class com.facebook.ads.internal.AdWebViewUtils extends java.lang.Object
+{
+    public static final long DEFAULT_IMPRESSION_DELAY_MS;
+    public static final java.lang.String FBAD_SCHEME;
+    public static final java.lang.String WEBVIEW_BASE_URL;
+    private static java.lang.String browserUserAgentString;
+
+    static void <clinit>()
+    {
+        <com.facebook.ads.internal.AdWebViewUtils: java.lang.String WEBVIEW_BASE_URL> = "https://www.facebook.com/";
+
+        <com.facebook.ads.internal.AdWebViewUtils: java.lang.String FBAD_SCHEME> = "fbad";
+
+        <com.facebook.ads.internal.AdWebViewUtils: long DEFAULT_IMPRESSION_DELAY_MS> = 1000L;
+
+        <com.facebook.ads.internal.AdWebViewUtils: java.lang.String browserUserAgentString> = null;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        com.facebook.ads.internal.AdWebViewUtils r0;
+
+        r0 := @this: com.facebook.ads.internal.AdWebViewUtils;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    public static void config(android.webkit.WebView, android.webkit.WebViewClient, com.facebook.ads.internal.AdWebViewInterface)
+    {
+        android.webkit.WebSettings $r3;
+        android.webkit.WebViewClient $r1;
+        com.facebook.ads.internal.AdWebViewInterface $r2;
+        android.webkit.WebView $r0;
+
+        $r0 := @parameter0: android.webkit.WebView;
+
+        $r1 := @parameter1: android.webkit.WebViewClient;
+
+        $r2 := @parameter2: com.facebook.ads.internal.AdWebViewInterface;
+
+        $r3 = virtualinvoke $r0.<android.webkit.WebView: android.webkit.WebSettings getSettings()>();
+
+        virtualinvoke $r3.<android.webkit.WebSettings: void setJavaScriptEnabled(boolean)>(1);
+
+        $r3 = virtualinvoke $r0.<android.webkit.WebView: android.webkit.WebSettings getSettings()>();
+
+        virtualinvoke $r3.<android.webkit.WebSettings: void setSupportZoom(boolean)>(0);
+
+        virtualinvoke $r0.<android.webkit.WebView: void setHorizontalScrollBarEnabled(boolean)>(0);
+
+        virtualinvoke $r0.<android.webkit.WebView: void setHorizontalScrollbarOverlay(boolean)>(0);
+
+        virtualinvoke $r0.<android.webkit.WebView: void setVerticalScrollBarEnabled(boolean)>(0);
+
+        virtualinvoke $r0.<android.webkit.WebView: void setVerticalScrollbarOverlay(boolean)>(0);
+
+        virtualinvoke $r0.<android.webkit.WebView: void addJavascriptInterface(java.lang.Object,java.lang.String)>($r2, "AdControl");
+
+        virtualinvoke $r0.<android.webkit.WebView: void setWebViewClient(android.webkit.WebViewClient)>($r1);
+
+        return;
+    }
+
+    private static java.lang.String getDefaultUserAgentL17(android.content.Context)
+    {
+        android.content.Context $r0;
+        java.lang.String $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = staticinvoke <android.webkit.WebSettings: java.lang.String getDefaultUserAgent(android.content.Context)>($r0);
+
+        return $r1;
+    }
+
+    public static java.lang.String getUserAgentString(android.content.Context, com.facebook.ads.internal.AdType)
+    {
+        android.content.Context $r0;
+        java.lang.Exception $r4, $r5;
+        com.facebook.ads.internal.AdType $r1, $r2;
+        android.webkit.WebSettings $r7;
+        int $i0;
+        java.lang.String $r3;
+        android.webkit.WebView $r6;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: com.facebook.ads.internal.AdType;
+
+        $r2 = <com.facebook.ads.internal.AdType: com.facebook.ads.internal.AdType NATIVE>;
+
+        if $r2 != $r1 goto label1;
+
+        $r3 = staticinvoke <java.lang.System: java.lang.String getProperty(java.lang.String)>("http.agent");
+
+        return $r3;
+
+     label1:
+        $r3 = <com.facebook.ads.internal.AdWebViewUtils: java.lang.String browserUserAgentString>;
+
+        if $r3 != null goto label2;
+
+        $i0 = <android.os.Build$VERSION: int SDK_INT>;
+
+        if $i0 < 17 goto label3;
+
+        $r3 = staticinvoke <com.facebook.ads.internal.AdWebViewUtils: java.lang.String getDefaultUserAgentL17(android.content.Context)>($r0);
+
+        <com.facebook.ads.internal.AdWebViewUtils: java.lang.String browserUserAgentString> = $r3;
+
+     label2:
+        $r3 = <com.facebook.ads.internal.AdWebViewUtils: java.lang.String browserUserAgentString>;
+
+        return $r3;
+
+     label3:
+        $r3 = staticinvoke <com.facebook.ads.internal.AdWebViewUtils: java.lang.String getUserAgentStringByReflection(android.content.Context,java.lang.String,java.lang.String)>($r0, "android.webkit.WebSettings", "android.webkit.WebView");
+
+     label4:
+        <com.facebook.ads.internal.AdWebViewUtils: java.lang.String browserUserAgentString> = $r3;
+
+        goto label2;
+
+     label5:
+        $r4 := @caughtexception;
+
+     label6:
+        $r3 = staticinvoke <com.facebook.ads.internal.AdWebViewUtils: java.lang.String getUserAgentStringByReflection(android.content.Context,java.lang.String,java.lang.String)>($r0, "android.webkit.WebSettingsClassic", "android.webkit.WebViewClassic");
+
+     label7:
+        <com.facebook.ads.internal.AdWebViewUtils: java.lang.String browserUserAgentString> = $r3;
+
+        goto label2;
+
+     label8:
+        $r5 := @caughtexception;
+
+        $r6 = new android.webkit.WebView;
+
+        $r0 = virtualinvoke $r0.<android.content.Context: android.content.Context getApplicationContext()>();
+
+        specialinvoke $r6.<android.webkit.WebView: void <init>(android.content.Context)>($r0);
+
+        $r7 = virtualinvoke $r6.<android.webkit.WebView: android.webkit.WebSettings getSettings()>();
+
+        $r3 = virtualinvoke $r7.<android.webkit.WebSettings: java.lang.String getUserAgentString()>();
+
+        <com.facebook.ads.internal.AdWebViewUtils: java.lang.String browserUserAgentString> = $r3;
+
+        virtualinvoke $r6.<android.webkit.WebView: void destroy()>();
+
+        goto label2;
+
+        catch java.lang.Exception from label3 to label4 with label5;
+        catch java.lang.Exception from label6 to label7 with label8;
+    }
+
+    private static java.lang.String getUserAgentStringByReflection(android.content.Context, java.lang.String, java.lang.String)
+    {
+        java.lang.Throwable $r10;
+        android.content.Context $r0;
+        java.lang.Object[] $r8;
+        java.lang.Class[] $r4;
+        java.lang.reflect.Constructor $r6;
+        java.lang.Class $r3, $r5;
+        java.lang.Object $r9;
+        java.lang.String $r1, $r2;
+        java.lang.reflect.Method $r7;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 := @parameter2: java.lang.String;
+
+        $r3 = staticinvoke <java.lang.Class: java.lang.Class forName(java.lang.String)>($r1);
+
+        $r4 = newarray (java.lang.Class)[2];
+
+        $r4[0] = class "Landroid/content/Context;";
+
+        $r5 = staticinvoke <java.lang.Class: java.lang.Class forName(java.lang.String)>($r2);
+
+        $r4[1] = $r5;
+
+        $r6 = virtualinvoke $r3.<java.lang.Class: java.lang.reflect.Constructor getDeclaredConstructor(java.lang.Class[])>($r4);
+
+        virtualinvoke $r6.<java.lang.reflect.Constructor: void setAccessible(boolean)>(1);
+
+        $r4 = newarray (java.lang.Class)[0];
+
+        $r7 = virtualinvoke $r3.<java.lang.Class: java.lang.reflect.Method getMethod(java.lang.String,java.lang.Class[])>("getUserAgentString", $r4);
+
+     label1:
+        $r8 = newarray (java.lang.Object)[2];
+
+        $r8[0] = $r0;
+
+        $r8[1] = null;
+
+        $r9 = virtualinvoke $r6.<java.lang.reflect.Constructor: java.lang.Object newInstance(java.lang.Object[])>($r8);
+
+        $r8 = newarray (java.lang.Object)[0];
+
+        $r9 = virtualinvoke $r7.<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>($r9, $r8);
+
+        $r1 = (java.lang.String) $r9;
+
+     label2:
+        virtualinvoke $r6.<java.lang.reflect.Constructor: void setAccessible(boolean)>(0);
+
+        return $r1;
+
+     label3:
+        $r10 := @caughtexception;
+
+        virtualinvoke $r6.<java.lang.reflect.Constructor: void setAccessible(boolean)>(0);
+
+        throw $r10;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+}

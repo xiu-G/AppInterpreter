@@ -1,0 +1,365 @@
+public class proguard.io.JarWriter extends java.lang.Object implements proguard.io.DataEntryWriter, proguard.io.Finisher
+{
+    private final java.lang.String comment;
+    private proguard.io.DataEntry currentDataEntry;
+    private proguard.io.Finisher currentFinisher;
+    private java.util.zip.ZipOutputStream currentJarOutputStream;
+    private java.io.OutputStream currentParentOutputStream;
+    private final proguard.io.DataEntryWriter dataEntryWriter;
+    private final java.util.Set jarEntryNames;
+    private final java.util.jar.Manifest manifest;
+
+    public void <init>(proguard.io.DataEntryWriter)
+    {
+        proguard.io.JarWriter r0;
+        proguard.io.DataEntryWriter $r1;
+
+        r0 := @this: proguard.io.JarWriter;
+
+        $r1 := @parameter0: proguard.io.DataEntryWriter;
+
+        specialinvoke r0.<proguard.io.JarWriter: void <init>(proguard.io.DataEntryWriter,java.util.jar.Manifest,java.lang.String)>($r1, null, null);
+
+        return;
+    }
+
+    public void <init>(proguard.io.DataEntryWriter, java.util.jar.Manifest, java.lang.String)
+    {
+        java.util.jar.Manifest $r2;
+        java.util.HashSet $r4;
+        java.lang.String $r3;
+        proguard.io.JarWriter r0;
+        proguard.io.DataEntryWriter $r1;
+
+        r0 := @this: proguard.io.JarWriter;
+
+        $r1 := @parameter0: proguard.io.DataEntryWriter;
+
+        $r2 := @parameter1: java.util.jar.Manifest;
+
+        $r3 := @parameter2: java.lang.String;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        $r4 = new java.util.HashSet;
+
+        specialinvoke $r4.<java.util.HashSet: void <init>()>();
+
+        r0.<proguard.io.JarWriter: java.util.Set jarEntryNames> = $r4;
+
+        r0.<proguard.io.JarWriter: proguard.io.DataEntryWriter dataEntryWriter> = $r1;
+
+        r0.<proguard.io.JarWriter: java.util.jar.Manifest manifest> = $r2;
+
+        r0.<proguard.io.JarWriter: java.lang.String comment> = $r3;
+
+        return;
+    }
+
+    private void closeEntry() throws java.io.IOException
+    {
+        java.util.zip.ZipOutputStream $r3;
+        proguard.io.Finisher $r2;
+        proguard.io.JarWriter r0;
+        proguard.io.DataEntry $r1;
+
+        r0 := @this: proguard.io.JarWriter;
+
+        $r1 = r0.<proguard.io.JarWriter: proguard.io.DataEntry currentDataEntry>;
+
+        if $r1 == null goto label2;
+
+        $r2 = r0.<proguard.io.JarWriter: proguard.io.Finisher currentFinisher>;
+
+        if $r2 == null goto label1;
+
+        $r2 = r0.<proguard.io.JarWriter: proguard.io.Finisher currentFinisher>;
+
+        interfaceinvoke $r2.<proguard.io.Finisher: void finish()>();
+
+        r0.<proguard.io.JarWriter: proguard.io.Finisher currentFinisher> = null;
+
+     label1:
+        $r3 = r0.<proguard.io.JarWriter: java.util.zip.ZipOutputStream currentJarOutputStream>;
+
+        virtualinvoke $r3.<java.util.zip.ZipOutputStream: void closeEntry()>();
+
+        r0.<proguard.io.JarWriter: proguard.io.DataEntry currentDataEntry> = null;
+
+     label2:
+        return;
+    }
+
+    private boolean prepareEntry(proguard.io.DataEntry) throws java.io.IOException
+    {
+        java.util.jar.Manifest $r2;
+        java.io.OutputStream $r4, $r5;
+        java.util.zip.ZipOutputStream $r8, $r10;
+        proguard.io.DataEntryWriter $r3;
+        java.lang.Object $r6;
+        java.lang.String $r7;
+        proguard.io.JarWriter r0;
+        proguard.io.DataEntry $r1;
+        java.util.jar.JarOutputStream $r9;
+
+        r0 := @this: proguard.io.JarWriter;
+
+        $r1 := @parameter0: proguard.io.DataEntry;
+
+        $r3 = r0.<proguard.io.JarWriter: proguard.io.DataEntryWriter dataEntryWriter>;
+
+        $r1 = interfaceinvoke $r1.<proguard.io.DataEntry: proguard.io.DataEntry getParent()>();
+
+        $r4 = interfaceinvoke $r3.<proguard.io.DataEntryWriter: java.io.OutputStream getOutputStream(proguard.io.DataEntry,proguard.io.Finisher)>($r1, r0);
+
+        if $r4 != null goto label1;
+
+        return 0;
+
+     label1:
+        $r5 = r0.<proguard.io.JarWriter: java.io.OutputStream currentParentOutputStream>;
+
+        if $r5 != null goto label3;
+
+        r0.<proguard.io.JarWriter: java.io.OutputStream currentParentOutputStream> = $r4;
+
+        $r2 = r0.<proguard.io.JarWriter: java.util.jar.Manifest manifest>;
+
+        if $r2 == null goto label4;
+
+        $r9 = new java.util.jar.JarOutputStream;
+
+        $r2 = r0.<proguard.io.JarWriter: java.util.jar.Manifest manifest>;
+
+        specialinvoke $r9.<java.util.jar.JarOutputStream: void <init>(java.io.OutputStream,java.util.jar.Manifest)>($r4, $r2);
+
+        $r6 = $r9;
+
+     label2:
+        $r8 = (java.util.zip.ZipOutputStream) $r6;
+
+        r0.<proguard.io.JarWriter: java.util.zip.ZipOutputStream currentJarOutputStream> = $r8;
+
+        $r7 = r0.<proguard.io.JarWriter: java.lang.String comment>;
+
+        if $r7 == null goto label3;
+
+        $r8 = r0.<proguard.io.JarWriter: java.util.zip.ZipOutputStream currentJarOutputStream>;
+
+        $r7 = r0.<proguard.io.JarWriter: java.lang.String comment>;
+
+        virtualinvoke $r8.<java.util.zip.ZipOutputStream: void setComment(java.lang.String)>($r7);
+
+     label3:
+        return 1;
+
+     label4:
+        $r10 = new java.util.zip.ZipOutputStream;
+
+        specialinvoke $r10.<java.util.zip.ZipOutputStream: void <init>(java.io.OutputStream)>($r4);
+
+        $r6 = $r10;
+
+        goto label2;
+    }
+
+    public void close() throws java.io.IOException
+    {
+        proguard.io.JarWriter r0;
+        proguard.io.DataEntryWriter $r1;
+
+        r0 := @this: proguard.io.JarWriter;
+
+        $r1 = r0.<proguard.io.JarWriter: proguard.io.DataEntryWriter dataEntryWriter>;
+
+        interfaceinvoke $r1.<proguard.io.DataEntryWriter: void close()>();
+
+        return;
+    }
+
+    public boolean createDirectory(proguard.io.DataEntry) throws java.io.IOException
+    {
+        java.util.zip.ZipOutputStream $r6;
+        java.util.Set $r5;
+        java.lang.StringBuffer $r3;
+        java.lang.String $r4;
+        proguard.io.JarWriter r0;
+        proguard.io.DataEntry $r1;
+        java.util.zip.ZipEntry $r2;
+        boolean $z0;
+
+        r0 := @this: proguard.io.JarWriter;
+
+        $r1 := @parameter0: proguard.io.DataEntry;
+
+        $z0 = specialinvoke r0.<proguard.io.JarWriter: boolean prepareEntry(proguard.io.DataEntry)>($r1);
+
+        if $z0 != 0 goto label1;
+
+        return 0;
+
+     label1:
+        specialinvoke r0.<proguard.io.JarWriter: void closeEntry()>();
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r4 = interfaceinvoke $r1.<proguard.io.DataEntry: java.lang.String getName()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(char)>(47);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        $r5 = r0.<proguard.io.JarWriter: java.util.Set jarEntryNames>;
+
+        $z0 = interfaceinvoke $r5.<java.util.Set: boolean add(java.lang.Object)>($r4);
+
+        if $z0 == 0 goto label2;
+
+        $r6 = r0.<proguard.io.JarWriter: java.util.zip.ZipOutputStream currentJarOutputStream>;
+
+        $r2 = new java.util.zip.ZipEntry;
+
+        specialinvoke $r2.<java.util.zip.ZipEntry: void <init>(java.lang.String)>($r4);
+
+        virtualinvoke $r6.<java.util.zip.ZipOutputStream: void putNextEntry(java.util.zip.ZipEntry)>($r2);
+
+        $r6 = r0.<proguard.io.JarWriter: java.util.zip.ZipOutputStream currentJarOutputStream>;
+
+        virtualinvoke $r6.<java.util.zip.ZipOutputStream: void closeEntry()>();
+
+     label2:
+        r0.<proguard.io.JarWriter: proguard.io.Finisher currentFinisher> = null;
+
+        r0.<proguard.io.JarWriter: proguard.io.DataEntry currentDataEntry> = null;
+
+        return 1;
+    }
+
+    public void finish() throws java.io.IOException
+    {
+        java.util.zip.ZipOutputStream $r1;
+        java.util.Set $r2;
+        proguard.io.JarWriter r0;
+
+        r0 := @this: proguard.io.JarWriter;
+
+        $r1 = r0.<proguard.io.JarWriter: java.util.zip.ZipOutputStream currentJarOutputStream>;
+
+        if $r1 == null goto label1;
+
+        specialinvoke r0.<proguard.io.JarWriter: void closeEntry()>();
+
+        $r1 = r0.<proguard.io.JarWriter: java.util.zip.ZipOutputStream currentJarOutputStream>;
+
+        virtualinvoke $r1.<java.util.zip.ZipOutputStream: void finish()>();
+
+        r0.<proguard.io.JarWriter: java.util.zip.ZipOutputStream currentJarOutputStream> = null;
+
+        r0.<proguard.io.JarWriter: java.io.OutputStream currentParentOutputStream> = null;
+
+        $r2 = r0.<proguard.io.JarWriter: java.util.Set jarEntryNames>;
+
+        interfaceinvoke $r2.<java.util.Set: void clear()>();
+
+     label1:
+        return;
+    }
+
+    public java.io.OutputStream getOutputStream(proguard.io.DataEntry) throws java.io.IOException
+    {
+        java.io.OutputStream $r2;
+        proguard.io.JarWriter r0;
+        proguard.io.DataEntry $r1;
+
+        r0 := @this: proguard.io.JarWriter;
+
+        $r1 := @parameter0: proguard.io.DataEntry;
+
+        $r2 = virtualinvoke r0.<proguard.io.JarWriter: java.io.OutputStream getOutputStream(proguard.io.DataEntry,proguard.io.Finisher)>($r1, null);
+
+        return $r2;
+    }
+
+    public java.io.OutputStream getOutputStream(proguard.io.DataEntry, proguard.io.Finisher) throws java.io.IOException
+    {
+        java.util.zip.ZipOutputStream $r8;
+        proguard.io.Finisher $r2;
+        java.util.Set $r5;
+        java.io.IOException $r6;
+        java.lang.StringBuffer $r7;
+        java.lang.String $r4;
+        proguard.io.JarWriter r0;
+        proguard.io.DataEntry $r1, $r3;
+        java.util.zip.ZipEntry $r9;
+        boolean $z0;
+
+        r0 := @this: proguard.io.JarWriter;
+
+        $r1 := @parameter0: proguard.io.DataEntry;
+
+        $r2 := @parameter1: proguard.io.Finisher;
+
+        $z0 = specialinvoke r0.<proguard.io.JarWriter: boolean prepareEntry(proguard.io.DataEntry)>($r1);
+
+        if $z0 != 0 goto label1;
+
+        return null;
+
+     label1:
+        $r3 = r0.<proguard.io.JarWriter: proguard.io.DataEntry currentDataEntry>;
+
+        $z0 = virtualinvoke $r1.<java.lang.Object: boolean equals(java.lang.Object)>($r3);
+
+        if $z0 != 0 goto label3;
+
+        specialinvoke r0.<proguard.io.JarWriter: void closeEntry()>();
+
+        $r4 = interfaceinvoke $r1.<proguard.io.DataEntry: java.lang.String getName()>();
+
+        $r5 = r0.<proguard.io.JarWriter: java.util.Set jarEntryNames>;
+
+        $z0 = interfaceinvoke $r5.<java.util.Set: boolean add(java.lang.Object)>($r4);
+
+        if $z0 != 0 goto label2;
+
+        $r6 = new java.io.IOException;
+
+        $r7 = new java.lang.StringBuffer;
+
+        specialinvoke $r7.<java.lang.StringBuffer: void <init>()>();
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Duplicate zip entry [");
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.Object)>($r1);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r4 = virtualinvoke $r7.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke $r6.<java.io.IOException: void <init>(java.lang.String)>($r4);
+
+        throw $r6;
+
+     label2:
+        $r8 = r0.<proguard.io.JarWriter: java.util.zip.ZipOutputStream currentJarOutputStream>;
+
+        $r9 = new java.util.zip.ZipEntry;
+
+        specialinvoke $r9.<java.util.zip.ZipEntry: void <init>(java.lang.String)>($r4);
+
+        virtualinvoke $r8.<java.util.zip.ZipOutputStream: void putNextEntry(java.util.zip.ZipEntry)>($r9);
+
+        r0.<proguard.io.JarWriter: proguard.io.Finisher currentFinisher> = $r2;
+
+        r0.<proguard.io.JarWriter: proguard.io.DataEntry currentDataEntry> = $r1;
+
+     label3:
+        $r8 = r0.<proguard.io.JarWriter: java.util.zip.ZipOutputStream currentJarOutputStream>;
+
+        return $r8;
+    }
+}

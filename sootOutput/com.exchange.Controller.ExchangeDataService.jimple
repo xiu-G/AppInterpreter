@@ -1,0 +1,3143 @@
+public class com.exchange.Controller.ExchangeDataService extends java.lang.Object
+{
+    public static android.content.Context context;
+    public static int curIndex;
+    public static java.util.List mAdvertisers;
+    static int minimal_ad_count;
+
+    static void <clinit>()
+    {
+        <com.exchange.Controller.ExchangeDataService: java.util.List mAdvertisers> = null;
+
+        <com.exchange.Controller.ExchangeDataService: int curIndex> = 0;
+
+        <com.exchange.Controller.ExchangeDataService: int minimal_ad_count> = 6;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        com.exchange.Controller.ExchangeDataService r0;
+
+        r0 := @this: com.exchange.Controller.ExchangeDataService;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    private static java.lang.String[] NetworkAccessMode(android.content.Context)
+    {
+        android.net.ConnectivityManager r5;
+        android.content.Context $r0;
+        android.content.pm.PackageManager $r2;
+        android.net.NetworkInfo $r6;
+        java.lang.String[] r1;
+        android.net.NetworkInfo$State $r7, $r8;
+        int $i0;
+        java.lang.Object $r4;
+        java.lang.String $r3;
+
+        $r0 := @parameter0: android.content.Context;
+
+        r1 = newarray (java.lang.String)[2];
+
+        r1[0] = "Unknown";
+
+        r1[1] = "Unknown";
+
+        $r2 = virtualinvoke $r0.<android.content.Context: android.content.pm.PackageManager getPackageManager()>();
+
+        $r3 = virtualinvoke $r0.<android.content.Context: java.lang.String getPackageName()>();
+
+        $i0 = virtualinvoke $r2.<android.content.pm.PackageManager: int checkPermission(java.lang.String,java.lang.String)>("android.permission.ACCESS_NETWORK_STATE", $r3);
+
+        if $i0 == 0 goto label1;
+
+        r1[0] = "Unknown";
+
+        return r1;
+
+     label1:
+        $r4 = virtualinvoke $r0.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("connectivity");
+
+        r5 = (android.net.ConnectivityManager) $r4;
+
+        if r5 != null goto label2;
+
+        r1[0] = "Unknown";
+
+        return r1;
+
+     label2:
+        $r6 = virtualinvoke r5.<android.net.ConnectivityManager: android.net.NetworkInfo getNetworkInfo(int)>(1);
+
+        $r7 = virtualinvoke $r6.<android.net.NetworkInfo: android.net.NetworkInfo$State getState()>();
+
+        $r8 = <android.net.NetworkInfo$State: android.net.NetworkInfo$State CONNECTED>;
+
+        if $r7 != $r8 goto label3;
+
+        r1[0] = "Wi-Fi";
+
+        return r1;
+
+     label3:
+        $r6 = virtualinvoke r5.<android.net.ConnectivityManager: android.net.NetworkInfo getNetworkInfo(int)>(0);
+
+        $r7 = virtualinvoke $r6.<android.net.NetworkInfo: android.net.NetworkInfo$State getState()>();
+
+        $r8 = <android.net.NetworkInfo$State: android.net.NetworkInfo$State CONNECTED>;
+
+        if $r7 != $r8 goto label4;
+
+        r1[0] = "2G/3G";
+
+        $r3 = virtualinvoke $r6.<android.net.NetworkInfo: java.lang.String getSubtypeName()>();
+
+        r1[1] = $r3;
+
+     label4:
+        return r1;
+    }
+
+    private static java.util.ArrayList convertToAdvertisers(org.json.JSONObject)
+    {
+        com.exchange.Model.AdvertiserConfig $r7;
+        java.util.ArrayList r0;
+        org.json.JSONException $r8;
+        org.json.JSONObject r1;
+        int i0, $i1;
+        java.lang.Object $r6;
+        java.lang.String $r2, $r3, $r4;
+        org.json.JSONArray $r5;
+        boolean $z0;
+
+        r1 := @parameter0: org.json.JSONObject;
+
+        r0 = new java.util.ArrayList;
+
+        specialinvoke r0.<java.util.ArrayList: void <init>()>();
+
+        if r1 != null goto label01;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String LOG_TAG>;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>($r2, "failed requesting");
+
+        return r0;
+
+     label01:
+        $r2 = virtualinvoke r1.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("status");
+
+        $z0 = virtualinvoke r1.<org.json.JSONObject: boolean has(java.lang.String)>("filter");
+
+     label02:
+        if $z0 == 0 goto label06;
+
+     label03:
+        $r3 = virtualinvoke r1.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("filter");
+
+        $z0 = virtualinvoke $r3.<java.lang.String: boolean equals(java.lang.Object)>("1");
+
+     label04:
+        if $z0 == 0 goto label23;
+
+        $z0 = 1;
+
+     label05:
+        <com.exchange.Public.ExchangeConstants: boolean filterInstalledApp> = $z0;
+
+     label06:
+        $z0 = virtualinvoke r1.<org.json.JSONObject: boolean has(java.lang.String)>("show_size");
+
+     label07:
+        if $z0 == 0 goto label12;
+
+     label08:
+        $r3 = virtualinvoke r1.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("show_size");
+
+     label09:
+        if $r3 == null goto label12;
+
+        $r4 = "1";
+
+     label10:
+        $z0 = virtualinvoke $r4.<java.lang.String: boolean equals(java.lang.Object)>($r3);
+
+     label11:
+        if $z0 == 0 goto label24;
+
+        <com.exchange.Public.ExchangeConstants: boolean show_size> = 1;
+
+     label12:
+        $r3 = "1";
+
+     label13:
+        $z0 = virtualinvoke $r3.<java.lang.String: boolean equals(java.lang.Object)>($r2);
+
+     label14:
+        if $z0 == 0 goto label26;
+
+     label15:
+        $r5 = virtualinvoke r1.<org.json.JSONObject: org.json.JSONArray getJSONArray(java.lang.String)>("promoters");
+
+     label16:
+        i0 = 0;
+
+     label17:
+        $i1 = virtualinvoke $r5.<org.json.JSONArray: int length()>();
+
+     label18:
+        if i0 >= $i1 goto label28;
+
+     label19:
+        $r6 = virtualinvoke $r5.<org.json.JSONArray: java.lang.Object get(int)>(i0);
+
+     label20:
+        r1 = (org.json.JSONObject) $r6;
+
+     label21:
+        $r7 = staticinvoke <com.exchange.Controller.ExchangeDataService: com.exchange.Model.AdvertiserConfig getAdvertiserFromJson(org.json.JSONObject)>(r1);
+
+        virtualinvoke r0.<java.util.ArrayList: boolean add(java.lang.Object)>($r7);
+
+     label22:
+        i0 = i0 + 1;
+
+        goto label17;
+
+     label23:
+        $z0 = 0;
+
+        goto label05;
+
+     label24:
+        <com.exchange.Public.ExchangeConstants: boolean show_size> = 0;
+
+        goto label12;
+
+     label25:
+        $r8 := @caughtexception;
+
+        virtualinvoke $r8.<org.json.JSONException: void printStackTrace()>();
+
+        return r0;
+
+     label26:
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String LOG_TAG>;
+
+     label27:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>($r2, "failed requesting");
+
+     label28:
+        return r0;
+
+        catch org.json.JSONException from label01 to label02 with label25;
+        catch org.json.JSONException from label03 to label04 with label25;
+        catch org.json.JSONException from label06 to label07 with label25;
+        catch org.json.JSONException from label08 to label09 with label25;
+        catch org.json.JSONException from label10 to label11 with label25;
+        catch org.json.JSONException from label13 to label14 with label25;
+        catch org.json.JSONException from label15 to label16 with label25;
+        catch org.json.JSONException from label17 to label18 with label25;
+        catch org.json.JSONException from label19 to label20 with label25;
+        catch org.json.JSONException from label21 to label22 with label25;
+        catch org.json.JSONException from label27 to label28 with label25;
+    }
+
+    public static void filter()
+    {
+        android.content.Context $r2;
+        java.util.Set $r3;
+        com.exchange.Model.AdvertiserConfig r8;
+        java.util.List $r1;
+        int $i0, $i1, $i2, $i3;
+        java.lang.StringBuilder r0, $r5, $r9;
+        java.lang.Object $r7;
+        java.lang.String $r4, $r6;
+        boolean $z0;
+
+        $i0 = <com.exchange.Public.ExchangeConstants: int REQUEST_NUMBER>;
+
+        $i1 = <com.exchange.Controller.ExchangeDataService: int minimal_ad_count>;
+
+        if $i0 <= $i1 goto label6;
+
+        $r1 = <com.exchange.Controller.ExchangeDataService: java.util.List mAdvertisers>;
+
+        if $r1 == null goto label6;
+
+        $r1 = <com.exchange.Controller.ExchangeDataService: java.util.List mAdvertisers>;
+
+        $i0 = interfaceinvoke $r1.<java.util.List: int size()>();
+
+        $i1 = <com.exchange.Controller.ExchangeDataService: int minimal_ad_count>;
+
+        if $i0 > $i1 goto label1;
+
+        return;
+
+     label1:
+        $r2 = <com.exchange.Controller.ExchangeDataService: android.content.Context context>;
+
+        $r3 = staticinvoke <com.exchange.Public.DeviceManager: java.util.Set getInstalledPackages(android.content.Context)>($r2);
+
+        $r5 = new java.lang.StringBuilder;
+
+        r0 = $r5;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>(java.lang.String)>("");
+
+        $i0 = 0;
+
+        $r1 = <com.exchange.Controller.ExchangeDataService: java.util.List mAdvertisers>;
+
+        $i1 = interfaceinvoke $r1.<java.util.List: int size()>();
+
+        $i1 = $i1 - 1;
+
+     label2:
+        if $i1 >= 0 goto label4;
+
+     label3:
+        $r4 = <com.exchange.Public.ExchangeConstants: java.lang.String LOG_TAG>;
+
+        $r9 = new java.lang.StringBuilder;
+
+        $r6 = staticinvoke <java.lang.String: java.lang.String valueOf(int)>($i0);
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>(java.lang.String)>($r6);
+
+        $r5 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" requested apps are filtered, including:");
+
+        $r6 = virtualinvoke r0.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        r0 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r6 = virtualinvoke r0.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>($r4, $r6);
+
+        return;
+
+     label4:
+        $r1 = <com.exchange.Controller.ExchangeDataService: java.util.List mAdvertisers>;
+
+        $i2 = interfaceinvoke $r1.<java.util.List: int size()>();
+
+        $i3 = <com.exchange.Controller.ExchangeDataService: int minimal_ad_count>;
+
+        if $i2 <= $i3 goto label3;
+
+        $r1 = <com.exchange.Controller.ExchangeDataService: java.util.List mAdvertisers>;
+
+        $r7 = interfaceinvoke $r1.<java.util.List: java.lang.Object get(int)>($i1);
+
+        r8 = (com.exchange.Model.AdvertiserConfig) $r7;
+
+        $r4 = r8.<com.exchange.Model.AdvertiserConfig: java.lang.String packageName>;
+
+        $z0 = interfaceinvoke $r3.<java.util.Set: boolean contains(java.lang.Object)>($r4);
+
+        if $z0 == 0 goto label5;
+
+        $r9 = new java.lang.StringBuilder;
+
+        $r4 = r8.<com.exchange.Model.AdvertiserConfig: java.lang.String packageName>;
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r4);
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r5 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(",");
+
+        $r4 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke r0.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $i0 = $i0 + 1;
+
+        $r1 = <com.exchange.Controller.ExchangeDataService: java.util.List mAdvertisers>;
+
+        interfaceinvoke $r1.<java.util.List: java.lang.Object remove(int)>($i1);
+
+     label5:
+        $i1 = $i1 + -1;
+
+        goto label2;
+
+     label6:
+        return;
+    }
+
+    public static com.exchange.Model.AdvertiserConfig getAd(int)
+    {
+        java.util.List $r0;
+        int i0;
+        com.exchange.Model.AdvertiserConfig r2;
+        java.lang.Object $r1;
+        boolean $z0;
+
+        i0 := @parameter0: int;
+
+        $z0 = staticinvoke <com.exchange.Controller.ExchangeDataService: boolean hasData()>();
+
+        if $z0 == 0 goto label1;
+
+        $r0 = <com.exchange.Controller.ExchangeDataService: java.util.List mAdvertisers>;
+
+        $r1 = interfaceinvoke $r0.<java.util.List: java.lang.Object get(int)>(i0);
+
+        r2 = (com.exchange.Model.AdvertiserConfig) $r1;
+
+        return r2;
+
+     label1:
+        return null;
+    }
+
+    static com.exchange.Model.AdvertiserConfig getAdvertiserFromJson(org.json.JSONObject)
+    {
+        com.exchange.Model.AdvertiserConfig r1;
+        long $l0;
+        org.json.JSONException $r5;
+        org.json.JSONObject $r0;
+        int $i1;
+        java.lang.StringBuilder $r4;
+        java.lang.String $r2, $r3;
+        boolean $z0;
+
+        $r0 := @parameter0: org.json.JSONObject;
+
+        r1 = new com.exchange.Model.AdvertiserConfig;
+
+        specialinvoke r1.<com.exchange.Model.AdvertiserConfig: void <init>()>();
+
+     label01:
+        $z0 = virtualinvoke $r0.<org.json.JSONObject: boolean has(java.lang.String)>("title");
+
+     label02:
+        if $z0 == 0 goto label05;
+
+     label03:
+        $r2 = virtualinvoke $r0.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("title");
+
+     label04:
+        r1.<com.exchange.Model.AdvertiserConfig: java.lang.String adName> = $r2;
+
+     label05:
+        $z0 = virtualinvoke $r0.<org.json.JSONObject: boolean has(java.lang.String)>("ad_words");
+
+     label06:
+        if $z0 == 0 goto label09;
+
+     label07:
+        $r2 = virtualinvoke $r0.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("ad_words");
+
+     label08:
+        r1.<com.exchange.Model.AdvertiserConfig: java.lang.String adDescription> = $r2;
+
+     label09:
+        $z0 = virtualinvoke $r0.<org.json.JSONObject: boolean has(java.lang.String)>("description");
+
+     label10:
+        if $z0 == 0 goto label13;
+
+     label11:
+        $r2 = virtualinvoke $r0.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("description");
+
+     label12:
+        r1.<com.exchange.Model.AdvertiserConfig: java.lang.String adDetail> = $r2;
+
+     label13:
+        $z0 = virtualinvoke $r0.<org.json.JSONObject: boolean has(java.lang.String)>("promoter");
+
+     label14:
+        if $z0 == 0 goto label17;
+
+     label15:
+        $r2 = virtualinvoke $r0.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("promoter");
+
+     label16:
+        r1.<com.exchange.Model.AdvertiserConfig: java.lang.String appkey> = $r2;
+
+     label17:
+        $z0 = virtualinvoke $r0.<org.json.JSONObject: boolean has(java.lang.String)>("category");
+
+     label18:
+        if $z0 == 0 goto label21;
+
+     label19:
+        $r2 = virtualinvoke $r0.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("category");
+
+     label20:
+        r1.<com.exchange.Model.AdvertiserConfig: java.lang.String category> = $r2;
+
+     label21:
+        $z0 = virtualinvoke $r0.<org.json.JSONObject: boolean has(java.lang.String)>("size");
+
+     label22:
+        if $z0 == 0 goto label25;
+
+     label23:
+        $l0 = virtualinvoke $r0.<org.json.JSONObject: long getLong(java.lang.String)>("size");
+
+     label24:
+        r1.<com.exchange.Model.AdvertiserConfig: long fileSize> = $l0;
+
+     label25:
+        $z0 = virtualinvoke $r0.<org.json.JSONObject: boolean has(java.lang.String)>("url");
+
+     label26:
+        if $z0 == 0 goto label30;
+
+     label27:
+        $r2 = virtualinvoke $r0.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("url");
+
+        $r3 = virtualinvoke $r2.<java.lang.String: java.lang.String toLowerCase()>();
+
+        $z0 = virtualinvoke $r3.<java.lang.String: boolean contains(java.lang.CharSequence)>("http");
+
+     label28:
+        if $z0 == 0 goto label46;
+
+     label29:
+        r1.<com.exchange.Model.AdvertiserConfig: java.lang.String apk> = $r2;
+
+     label30:
+        $z0 = virtualinvoke $r0.<org.json.JSONObject: boolean has(java.lang.String)>("provider");
+
+     label31:
+        if $z0 == 0 goto label34;
+
+     label32:
+        $r2 = virtualinvoke $r0.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("provider");
+
+     label33:
+        r1.<com.exchange.Model.AdvertiserConfig: java.lang.String provider> = $r2;
+
+     label34:
+        $z0 = virtualinvoke $r0.<org.json.JSONObject: boolean has(java.lang.String)>("app_package_name");
+
+     label35:
+        if $z0 == 0 goto label38;
+
+     label36:
+        $r2 = virtualinvoke $r0.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("app_package_name");
+
+     label37:
+        r1.<com.exchange.Model.AdvertiserConfig: java.lang.String packageName> = $r2;
+
+     label38:
+        $z0 = virtualinvoke $r0.<org.json.JSONObject: boolean has(java.lang.String)>("landing_type");
+
+     label39:
+        if $z0 == 0 goto label42;
+
+     label40:
+        $i1 = virtualinvoke $r0.<org.json.JSONObject: int getInt(java.lang.String)>("landing_type");
+
+     label41:
+        r1.<com.exchange.Model.AdvertiserConfig: int landingType> = $i1;
+
+     label42:
+        $z0 = virtualinvoke $r0.<org.json.JSONObject: boolean has(java.lang.String)>("icon");
+
+     label43:
+        if $z0 == 0 goto label50;
+
+        $r4 = new java.lang.StringBuilder;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String BASE_URL>;
+
+     label44:
+        $r2 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r2);
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>(java.lang.String)>($r2);
+
+        $r2 = virtualinvoke $r0.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("icon");
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r2 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label45:
+        r1.<com.exchange.Model.AdvertiserConfig: java.lang.String adIconUrl> = $r2;
+
+        return r1;
+
+     label46:
+        $r4 = new java.lang.StringBuilder;
+
+        $r3 = <com.exchange.Public.ExchangeConstants: java.lang.String BASE_URL>;
+
+     label47:
+        $r3 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r3);
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>(java.lang.String)>($r3);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r2 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label48:
+        goto label29;
+
+     label49:
+        $r5 := @caughtexception;
+
+        virtualinvoke $r5.<org.json.JSONException: void printStackTrace()>();
+
+     label50:
+        return r1;
+
+        catch org.json.JSONException from label01 to label02 with label49;
+        catch org.json.JSONException from label03 to label04 with label49;
+        catch org.json.JSONException from label05 to label06 with label49;
+        catch org.json.JSONException from label07 to label08 with label49;
+        catch org.json.JSONException from label09 to label10 with label49;
+        catch org.json.JSONException from label11 to label12 with label49;
+        catch org.json.JSONException from label13 to label14 with label49;
+        catch org.json.JSONException from label15 to label16 with label49;
+        catch org.json.JSONException from label17 to label18 with label49;
+        catch org.json.JSONException from label19 to label20 with label49;
+        catch org.json.JSONException from label21 to label22 with label49;
+        catch org.json.JSONException from label23 to label24 with label49;
+        catch org.json.JSONException from label25 to label26 with label49;
+        catch org.json.JSONException from label27 to label28 with label49;
+        catch org.json.JSONException from label30 to label31 with label49;
+        catch org.json.JSONException from label32 to label33 with label49;
+        catch org.json.JSONException from label34 to label35 with label49;
+        catch org.json.JSONException from label36 to label37 with label49;
+        catch org.json.JSONException from label38 to label39 with label49;
+        catch org.json.JSONException from label40 to label41 with label49;
+        catch org.json.JSONException from label42 to label43 with label49;
+        catch org.json.JSONException from label44 to label45 with label49;
+        catch org.json.JSONException from label47 to label48 with label49;
+    }
+
+    public static com.exchange.Model.AdvertiserConfig getCurAd()
+    {
+        java.util.List $r0;
+        int $i0;
+        com.exchange.Model.AdvertiserConfig $r2;
+        java.lang.Object $r1;
+        boolean $z0;
+
+        $z0 = staticinvoke <com.exchange.Controller.ExchangeDataService: boolean hasData()>();
+
+        if $z0 == 0 goto label1;
+
+        $r0 = <com.exchange.Controller.ExchangeDataService: java.util.List mAdvertisers>;
+
+        $i0 = <com.exchange.Controller.ExchangeDataService: int curIndex>;
+
+        $r1 = interfaceinvoke $r0.<java.util.List: java.lang.Object get(int)>($i0);
+
+        $r2 = (com.exchange.Model.AdvertiserConfig) $r1;
+
+        return $r2;
+
+     label1:
+        return null;
+    }
+
+    private static java.lang.String getDateTime()
+    {
+        java.text.SimpleDateFormat r1;
+        java.lang.String $r2;
+        java.util.Date r0;
+
+        r1 = new java.text.SimpleDateFormat;
+
+        specialinvoke r1.<java.text.SimpleDateFormat: void <init>(java.lang.String)>("yyyy-MM-dd HH:mm:ss");
+
+        r0 = new java.util.Date;
+
+        specialinvoke r0.<java.util.Date: void <init>()>();
+
+        $r2 = virtualinvoke r1.<java.text.DateFormat: java.lang.String format(java.util.Date)>(r0);
+
+        return $r2;
+    }
+
+    public static java.util.List getExampleAds(int)
+    {
+        com.exchange.Model.AdvertiserConfig $r1;
+        java.lang.String[] $r2;
+        java.util.ArrayList r0;
+        int[] $r6;
+        int $i0;
+        java.lang.String $r3, $r4, $r5;
+
+        $i0 := @parameter0: int;
+
+        r0 = new java.util.ArrayList;
+
+        specialinvoke r0.<java.util.ArrayList: void <init>()>();
+
+        lookupswitch(0)
+        {
+            case 0: goto label2;
+            case 1: goto label3;
+            case 2: goto label4;
+            case 3: goto label5;
+            case 4: goto label6;
+            case 5: goto label7;
+            case 6: goto label8;
+            case 7: goto label9;
+            default: goto label1;
+        };
+
+     label1:
+        <com.exchange.Controller.ExchangeDataService: java.util.List mAdvertisers> = r0;
+
+        return r0;
+
+     label2:
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[0];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[0];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[0];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[0];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[1];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[1];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[1];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[1];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[2];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[2];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[2];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[2];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[3];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[3];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[3];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[3];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[4];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[4];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[4];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[4];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[5];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[5];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[5];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[5];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[6];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[6];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[6];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[6];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[7];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[7];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[7];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[7];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        goto label1;
+
+     label3:
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[1];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[1];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[1];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[1];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[2];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[2];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[2];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[2];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[0];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[0];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[0];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[0];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[7];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[7];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[7];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[7];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[6];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[6];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[6];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[6];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[5];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[5];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[5];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[5];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[4];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[4];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[4];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[4];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[3];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[3];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[3];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[3];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        goto label1;
+
+     label4:
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[2];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[2];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[2];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[2];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[4];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[4];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[4];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[4];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[1];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[1];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[1];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[1];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[3];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[3];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[3];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[3];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[6];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[6];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[6];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[6];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[5];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[5];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[5];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[5];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[7];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[7];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[7];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[7];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[0];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[0];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[0];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[0];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        goto label1;
+
+     label5:
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[3];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[3];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[3];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[3];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[1];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[1];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[1];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[1];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[0];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[0];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[0];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[0];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[5];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[5];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[5];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[5];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[4];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[4];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[4];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[4];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[2];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[2];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[2];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[2];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[6];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[6];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[6];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[6];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[7];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[7];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[7];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[7];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        goto label1;
+
+     label6:
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[4];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[4];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[4];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[4];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[3];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[3];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[3];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[3];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[2];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[2];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[2];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[2];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[1];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[1];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[1];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[1];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[5];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[5];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[5];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[5];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[0];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[0];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[0];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[0];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[7];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[7];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[7];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[7];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[6];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[6];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[6];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[6];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        goto label1;
+
+     label7:
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[5];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[5];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[5];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[5];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[3];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[3];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[3];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[3];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[2];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[2];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[2];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[2];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[1];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[1];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[1];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[1];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[0];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[0];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[0];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[0];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[6];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[6];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[6];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[6];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[7];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[7];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[7];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[7];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[4];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[4];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[4];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[4];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        goto label1;
+
+     label8:
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[6];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[6];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[6];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[6];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[3];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[3];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[3];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[3];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[2];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[2];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[2];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[2];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[1];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[1];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[1];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[1];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[0];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[0];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[0];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[0];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[7];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[7];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[7];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[7];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[4];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[4];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[4];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[4];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[5];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[5];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[5];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[5];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        goto label1;
+
+     label9:
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[7];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[7];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[7];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[7];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[3];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[3];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[3];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[3];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[4];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[4];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[4];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[4];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[2];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[2];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[2];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[2];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[1];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[1];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[1];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[1];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[0];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[0];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[0];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[0];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[5];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[5];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[5];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[5];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $r1 = new com.exchange.Model.AdvertiserConfig;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] title>;
+
+        $r3 = $r2[6];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] des>;
+
+        $r4 = $r2[6];
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String[] detailDes>;
+
+        $r5 = $r2[6];
+
+        $r6 = <com.exchange.Public.ExchangeConstants: int[] appIcon>;
+
+        $i0 = $r6[6];
+
+        specialinvoke $r1.<com.exchange.Model.AdvertiserConfig: void <init>(java.lang.String,java.lang.String,java.lang.String,long,java.lang.String,int)>($r3, $r4, $r5, 160000L, "1.1", $i0);
+
+        interfaceinvoke r0.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        goto label1;
+    }
+
+    private static android.location.Location getLocationOnce(android.content.Context)
+    {
+        android.content.Context $r0;
+        com.exchange.Public.LocationAgent r1;
+        android.location.Location $r2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        r1 = new com.exchange.Public.LocationAgent;
+
+        specialinvoke r1.<com.exchange.Public.LocationAgent: void <init>(android.content.Context)>($r0);
+
+        $r2 = virtualinvoke r1.<com.exchange.Public.LocationAgent: android.location.Location getLocation()>();
+
+        return $r2;
+    }
+
+    private static org.json.JSONObject getReportInput(int, int, int, java.util.List)
+    {
+        android.content.Context r3;
+        java.lang.String[] $r8;
+        org.json.JSONObject r1, r15;
+        java.util.Calendar $r11;
+        java.util.Locale r10;
+        android.telephony.TelephonyManager r5;
+        int i0, i1, i2, i3;
+        java.lang.String r6, $r7;
+        java.util.TimeZone $r12;
+        com.exchange.Model.AdvertiserConfig r14;
+        java.lang.Exception r13;
+        java.util.List r0;
+        android.content.res.Configuration r9;
+        java.lang.Object $r4;
+        org.json.JSONArray r2;
+
+        i0 := @parameter0: int;
+
+        i1 := @parameter1: int;
+
+        i2 := @parameter2: int;
+
+        r0 := @parameter3: java.util.List;
+
+        r1 = new org.json.JSONObject;
+
+        specialinvoke r1.<org.json.JSONObject: void <init>()>();
+
+     label01:
+        virtualinvoke r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("page_level", i1);
+
+        virtualinvoke r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("promotion_type", i2);
+
+     label02:
+        r3 = <com.exchange.Controller.ExchangeDataService: android.content.Context context>;
+
+     label03:
+        $r4 = virtualinvoke r3.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("phone");
+
+        r5 = (android.telephony.TelephonyManager) $r4;
+
+     label04:
+        if r5 != null goto label07;
+
+        r6 = <com.exchange.Public.ExchangeConstants: java.lang.String LOG_TAG>;
+
+     label05:
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>(r6, "No IMEI.");
+
+     label06:
+        return null;
+
+     label07:
+        r6 = virtualinvoke r5.<android.telephony.TelephonyManager: java.lang.String getDeviceId()>();
+
+        virtualinvoke r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("device_id", r6);
+
+     label08:
+        r6 = <com.exchange.Public.ExchangeConstants: java.lang.String APPKEY>;
+
+     label09:
+        virtualinvoke r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("publisher", r6);
+
+        $r7 = staticinvoke <com.exchange.Controller.ExchangeDataService: java.lang.String getDateTime()>();
+
+        $r8 = virtualinvoke $r7.<java.lang.String: java.lang.String[] split(java.lang.String)>(" ");
+
+        r6 = $r8[0];
+
+        $r8 = virtualinvoke $r7.<java.lang.String: java.lang.String[] split(java.lang.String)>(" ");
+
+        $r7 = $r8[1];
+
+        virtualinvoke r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("date", r6);
+
+        virtualinvoke r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("time", $r7);
+
+     label10:
+        r9 = new android.content.res.Configuration;
+
+     label11:
+        specialinvoke r9.<android.content.res.Configuration: void <init>()>();
+
+        r10 = r9.<android.content.res.Configuration: java.util.Locale locale>;
+
+        $r11 = staticinvoke <java.util.Calendar: java.util.Calendar getInstance(java.util.Locale)>(r10);
+
+     label12:
+        if $r11 == null goto label27;
+
+     label13:
+        $r12 = virtualinvoke $r11.<java.util.Calendar: java.util.TimeZone getTimeZone()>();
+
+     label14:
+        if $r12 == null goto label24;
+
+     label15:
+        i1 = virtualinvoke $r12.<java.util.TimeZone: int getRawOffset()>();
+
+     label16:
+        i1 = i1 / 3600000;
+
+     label17:
+        virtualinvoke r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("timezone", i1);
+
+     label18:
+        r2 = new org.json.JSONArray;
+
+     label19:
+        specialinvoke r2.<org.json.JSONArray: void <init>()>();
+
+        i1 = interfaceinvoke r0.<java.util.List: int size()>();
+
+     label20:
+        i2 = 0;
+
+     label21:
+        if i2 < i1 goto label29;
+
+     label22:
+        virtualinvoke r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("promoters", r2);
+
+     label23:
+        return r1;
+
+     label24:
+        virtualinvoke r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("timezone", 8);
+
+     label25:
+        goto label18;
+
+     label26:
+        r13 := @caughtexception;
+
+        virtualinvoke r13.<java.lang.Exception: void printStackTrace()>();
+
+        goto label23;
+
+     label27:
+        virtualinvoke r1.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("timezone", 8);
+
+     label28:
+        goto label18;
+
+     label29:
+        $r4 = interfaceinvoke r0.<java.util.List: java.lang.Object get(int)>(i2);
+
+        r14 = (com.exchange.Model.AdvertiserConfig) $r4;
+
+     label30:
+        r15 = new org.json.JSONObject;
+
+     label31:
+        specialinvoke r15.<org.json.JSONObject: void <init>()>();
+
+        r6 = r14.<com.exchange.Model.AdvertiserConfig: java.lang.String appkey>;
+
+        virtualinvoke r15.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("promoter", r6);
+
+        r6 = r14.<com.exchange.Model.AdvertiserConfig: java.lang.String category>;
+
+        virtualinvoke r15.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("category", r6);
+
+        i3 = r14.<com.exchange.Model.AdvertiserConfig: int action>;
+
+        virtualinvoke r15.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("action", i3);
+
+     label32:
+        if i1 <= 1 goto label36;
+
+     label33:
+        virtualinvoke r15.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("action_index", i2);
+
+     label34:
+        virtualinvoke r2.<org.json.JSONArray: org.json.JSONArray put(java.lang.Object)>(r15);
+
+     label35:
+        i2 = i2 + 1;
+
+        goto label21;
+
+     label36:
+        virtualinvoke r15.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("action_index", i0);
+
+     label37:
+        goto label34;
+
+        catch java.lang.Exception from label01 to label02 with label26;
+        catch java.lang.Exception from label03 to label04 with label26;
+        catch java.lang.Exception from label05 to label06 with label26;
+        catch java.lang.Exception from label07 to label08 with label26;
+        catch java.lang.Exception from label09 to label10 with label26;
+        catch java.lang.Exception from label11 to label12 with label26;
+        catch java.lang.Exception from label13 to label14 with label26;
+        catch java.lang.Exception from label15 to label16 with label26;
+        catch java.lang.Exception from label17 to label18 with label26;
+        catch java.lang.Exception from label19 to label20 with label26;
+        catch java.lang.Exception from label22 to label23 with label26;
+        catch java.lang.Exception from label24 to label25 with label26;
+        catch java.lang.Exception from label27 to label28 with label26;
+        catch java.lang.Exception from label29 to label30 with label26;
+        catch java.lang.Exception from label31 to label32 with label26;
+        catch java.lang.Exception from label33 to label35 with label26;
+        catch java.lang.Exception from label36 to label37 with label26;
+    }
+
+    private static org.json.JSONObject getRequestInput()
+    {
+        java.lang.Throwable r19;
+        android.content.Context r2;
+        android.content.pm.PackageManager $r5;
+        java.util.Date r18;
+        android.view.WindowManager r13;
+        java.lang.String[] $r16;
+        android.content.pm.PackageInfo $r6;
+        org.json.JSONObject r0;
+        java.util.Calendar $r10;
+        android.content.ContentResolver $r8;
+        java.util.Locale r9;
+        android.telephony.TelephonyManager r4;
+        int i0, i1;
+        android.view.Display $r14;
+        java.lang.String r1;
+        boolean $z0;
+        double $d0;
+        java.util.TimeZone $r11;
+        android.util.DisplayMetrics r12;
+        java.lang.Exception r20, r21, r22, r23;
+        android.content.res.Configuration r7;
+        java.lang.Object $r3;
+        java.lang.StringBuilder $r15;
+        android.location.Location $r17;
+
+        r0 = new org.json.JSONObject;
+
+        specialinvoke r0.<org.json.JSONObject: void <init>()>();
+
+        r1 = <com.exchange.Public.ExchangeConstants: java.lang.String keywords>;
+
+     label01:
+        virtualinvoke r0.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("keywords", r1);
+
+     label02:
+        i0 = <com.exchange.Public.ExchangeConstants: int sdk_version>;
+
+     label03:
+        virtualinvoke r0.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("sdk_version", i0);
+
+     label04:
+        r2 = <com.exchange.Controller.ExchangeDataService: android.content.Context context>;
+
+     label05:
+        $r3 = virtualinvoke r2.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("phone");
+
+        r4 = (android.telephony.TelephonyManager) $r3;
+
+     label06:
+        if r4 != null goto label09;
+
+        r1 = <com.exchange.Public.ExchangeConstants: java.lang.String LOG_TAG>;
+
+     label07:
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>(r1, "No IMEI.");
+
+     label08:
+        return null;
+
+     label09:
+        r1 = virtualinvoke r4.<android.telephony.TelephonyManager: java.lang.String getDeviceId()>();
+
+        virtualinvoke r0.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("device_id", r1);
+
+     label10:
+        r1 = <android.os.Build: java.lang.String MODEL>;
+
+     label11:
+        virtualinvoke r0.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("device_model", r1);
+
+     label12:
+        r2 = <com.exchange.Controller.ExchangeDataService: android.content.Context context>;
+
+     label13:
+        r1 = staticinvoke <com.exchange.Public.DeviceManager: java.lang.String getAppkey(android.content.Context)>(r2);
+
+     label14:
+        <com.exchange.Public.ExchangeConstants: java.lang.String APPKEY> = r1;
+
+        r1 = <com.exchange.Public.ExchangeConstants: java.lang.String APPKEY>;
+
+     label15:
+        virtualinvoke r0.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("app_key", r1);
+
+     label16:
+        r2 = <com.exchange.Controller.ExchangeDataService: android.content.Context context>;
+
+     label17:
+        $r5 = virtualinvoke r2.<android.content.Context: android.content.pm.PackageManager getPackageManager()>();
+
+     label18:
+        r2 = <com.exchange.Controller.ExchangeDataService: android.content.Context context>;
+
+     label19:
+        r1 = virtualinvoke r2.<android.content.Context: java.lang.String getPackageName()>();
+
+        $r6 = virtualinvoke $r5.<android.content.pm.PackageManager: android.content.pm.PackageInfo getPackageInfo(java.lang.String,int)>(r1, 0);
+
+     label20:
+        i0 = $r6.<android.content.pm.PackageInfo: int versionCode>;
+
+     label21:
+        virtualinvoke r0.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("app_version", i0);
+
+     label22:
+        virtualinvoke r0.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("os", "android");
+
+     label23:
+        r7 = new android.content.res.Configuration;
+
+     label24:
+        specialinvoke r7.<android.content.res.Configuration: void <init>()>();
+
+     label25:
+        r2 = <com.exchange.Controller.ExchangeDataService: android.content.Context context>;
+
+     label26:
+        $r8 = virtualinvoke r2.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        staticinvoke <android.provider.Settings$System: void getConfiguration(android.content.ContentResolver,android.content.res.Configuration)>($r8, r7);
+
+     label27:
+        if r7 == null goto label63;
+
+     label28:
+        r9 = r7.<android.content.res.Configuration: java.util.Locale locale>;
+
+     label29:
+        if r9 == null goto label63;
+
+     label30:
+        r9 = r7.<android.content.res.Configuration: java.util.Locale locale>;
+
+        r1 = virtualinvoke r9.<java.util.Locale: java.lang.String getDisplayName()>();
+
+        virtualinvoke r0.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("locale", r1);
+
+     label31:
+        r9 = r7.<android.content.res.Configuration: java.util.Locale locale>;
+
+        $r10 = staticinvoke <java.util.Calendar: java.util.Calendar getInstance(java.util.Locale)>(r9);
+
+     label32:
+        if $r10 == null goto label67;
+
+     label33:
+        $r11 = virtualinvoke $r10.<java.util.Calendar: java.util.TimeZone getTimeZone()>();
+
+     label34:
+        if $r11 == null goto label65;
+
+     label35:
+        i0 = virtualinvoke $r11.<java.util.TimeZone: int getRawOffset()>();
+
+     label36:
+        i0 = i0 / 3600000;
+
+     label37:
+        virtualinvoke r0.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("timezone", i0);
+
+     label38:
+        r12 = new android.util.DisplayMetrics;
+
+     label39:
+        specialinvoke r12.<android.util.DisplayMetrics: void <init>()>();
+
+     label40:
+        r2 = <com.exchange.Controller.ExchangeDataService: android.content.Context context>;
+
+     label41:
+        $r3 = virtualinvoke r2.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("window");
+
+        r13 = (android.view.WindowManager) $r3;
+
+        $r14 = interfaceinvoke r13.<android.view.WindowManager: android.view.Display getDefaultDisplay()>();
+
+        virtualinvoke $r14.<android.view.Display: void getMetrics(android.util.DisplayMetrics)>(r12);
+
+        i0 = r12.<android.util.DisplayMetrics: int widthPixels>;
+
+        i1 = r12.<android.util.DisplayMetrics: int heightPixels>;
+
+     label42:
+        $r15 = new java.lang.StringBuilder;
+
+     label43:
+        r1 = staticinvoke <java.lang.String: java.lang.String valueOf(int)>(i1);
+
+        r1 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>(r1);
+
+        specialinvoke $r15.<java.lang.StringBuilder: void <init>(java.lang.String)>(r1);
+
+        $r15 = virtualinvoke $r15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("*");
+
+        r1 = staticinvoke <java.lang.String: java.lang.String valueOf(int)>(i0);
+
+        $r15 = virtualinvoke $r15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(r1);
+
+        r1 = virtualinvoke $r15.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke r0.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("resolution", r1);
+
+     label44:
+        r2 = <com.exchange.Controller.ExchangeDataService: android.content.Context context>;
+
+     label45:
+        $r16 = staticinvoke <com.exchange.Controller.ExchangeDataService: java.lang.String[] NetworkAccessMode(android.content.Context)>(r2);
+
+        r1 = $r16[0];
+
+        virtualinvoke r0.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("access", r1);
+
+        r1 = $r16[0];
+
+        $z0 = virtualinvoke r1.<java.lang.String: boolean equals(java.lang.Object)>("2G/3G");
+
+     label46:
+        if $z0 == 0 goto label48;
+
+     label47:
+        r1 = $r16[1];
+
+        virtualinvoke r0.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("access_subtype", r1);
+
+     label48:
+        r1 = virtualinvoke r4.<android.telephony.TelephonyManager: java.lang.String getNetworkOperatorName()>();
+
+        virtualinvoke r0.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("carrier", r1);
+
+     label49:
+        r2 = <com.exchange.Controller.ExchangeDataService: android.content.Context context>;
+
+     label50:
+        $r17 = staticinvoke <com.exchange.Controller.ExchangeDataService: android.location.Location getLocationOnce(android.content.Context)>(r2);
+
+     label51:
+        if $r17 == null goto label78;
+
+     label52:
+        $d0 = virtualinvoke $r17.<android.location.Location: double getLatitude()>();
+
+        r1 = staticinvoke <java.lang.String: java.lang.String valueOf(double)>($d0);
+
+        virtualinvoke r0.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("lat", r1);
+
+        $d0 = virtualinvoke $r17.<android.location.Location: double getLongitude()>();
+
+        r1 = staticinvoke <java.lang.String: java.lang.String valueOf(double)>($d0);
+
+        virtualinvoke r0.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("lng", r1);
+
+     label53:
+        r1 = staticinvoke <com.exchange.Public.UmengHelper: java.lang.String getCPU()>();
+
+        virtualinvoke r0.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("cpu", r1);
+
+     label54:
+        r18 = new java.util.Date;
+
+     label55:
+        specialinvoke r18.<java.util.Date: void <init>()>();
+
+        r1 = virtualinvoke r18.<java.util.Date: java.lang.String toString()>();
+
+        virtualinvoke r0.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("time", r1);
+
+        virtualinvoke r0.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("is_banner", "true");
+
+     label56:
+        i0 = <com.exchange.Public.ExchangeConstants: int REQUEST_NUMBER>;
+
+     label57:
+        virtualinvoke r0.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("request_count", i0);
+
+     label58:
+        return r0;
+
+     label59:
+        r19 := @caughtexception;
+
+     label60:
+        virtualinvoke r0.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("app_version", "unknown");
+
+     label61:
+        goto label22;
+
+     label62:
+        r20 := @caughtexception;
+
+        r1 = <com.exchange.Public.ExchangeConstants: java.lang.String LOG_TAG>;
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>(r1, "ERROR GET INPUT.");
+
+        goto label58;
+
+     label63:
+        virtualinvoke r0.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("locale", "null");
+
+     label64:
+        goto label31;
+
+     label65:
+        virtualinvoke r0.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("timezone", 8);
+
+     label66:
+        goto label38;
+
+     label67:
+        virtualinvoke r0.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("timezone", 8);
+
+     label68:
+        goto label38;
+
+     label69:
+        r21 := @caughtexception;
+
+     label70:
+        virtualinvoke r0.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("resolution", "Unknown");
+
+     label71:
+        goto label44;
+
+     label72:
+        r22 := @caughtexception;
+
+     label73:
+        virtualinvoke r0.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("access", "Unknown");
+
+     label74:
+        goto label48;
+
+     label75:
+        r23 := @caughtexception;
+
+     label76:
+        virtualinvoke r0.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("carrier", "Unknown");
+
+     label77:
+        goto label49;
+
+     label78:
+        virtualinvoke r0.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,double)>("lat", 0.0);
+
+        virtualinvoke r0.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,double)>("lng", 0.0);
+
+     label79:
+        goto label53;
+
+        catch java.lang.Exception from label01 to label02 with label62;
+        catch java.lang.Exception from label03 to label04 with label62;
+        catch java.lang.Exception from label05 to label06 with label62;
+        catch java.lang.Exception from label07 to label08 with label62;
+        catch java.lang.Exception from label09 to label10 with label62;
+        catch java.lang.Exception from label11 to label12 with label62;
+        catch java.lang.Exception from label13 to label14 with label62;
+        catch java.lang.Exception from label15 to label16 with label62;
+        catch android.content.pm.PackageManager$NameNotFoundException from label17 to label18 with label59;
+        catch android.content.pm.PackageManager$NameNotFoundException from label19 to label20 with label59;
+        catch android.content.pm.PackageManager$NameNotFoundException from label21 to label22 with label59;
+        catch java.lang.Exception from label17 to label18 with label62;
+        catch java.lang.Exception from label19 to label22 with label62;
+        catch java.lang.Exception from label22 to label23 with label62;
+        catch java.lang.Exception from label24 to label25 with label62;
+        catch java.lang.Exception from label26 to label27 with label62;
+        catch java.lang.Exception from label28 to label29 with label62;
+        catch java.lang.Exception from label30 to label32 with label62;
+        catch java.lang.Exception from label33 to label34 with label62;
+        catch java.lang.Exception from label35 to label36 with label62;
+        catch java.lang.Exception from label37 to label38 with label62;
+        catch java.lang.Exception from label39 to label40 with label69;
+        catch java.lang.Exception from label41 to label42 with label69;
+        catch java.lang.Exception from label43 to label44 with label69;
+        catch java.lang.Exception from label45 to label46 with label72;
+        catch java.lang.Exception from label47 to label48 with label72;
+        catch java.lang.Exception from label48 to label49 with label75;
+        catch java.lang.Exception from label50 to label51 with label62;
+        catch java.lang.Exception from label52 to label54 with label62;
+        catch java.lang.Exception from label55 to label56 with label62;
+        catch java.lang.Exception from label57 to label58 with label62;
+        catch java.lang.Exception from label60 to label61 with label62;
+        catch java.lang.Exception from label63 to label64 with label62;
+        catch java.lang.Exception from label65 to label66 with label62;
+        catch java.lang.Exception from label67 to label68 with label62;
+        catch java.lang.Exception from label70 to label71 with label62;
+        catch java.lang.Exception from label73 to label74 with label62;
+        catch java.lang.Exception from label76 to label77 with label62;
+        catch java.lang.Exception from label78 to label79 with label62;
+    }
+
+    public static boolean hasData()
+    {
+        int $i0;
+        java.util.List $r0;
+
+        $r0 = <com.exchange.Controller.ExchangeDataService: java.util.List mAdvertisers>;
+
+        if $r0 == null goto label1;
+
+        $r0 = <com.exchange.Controller.ExchangeDataService: java.util.List mAdvertisers>;
+
+        $i0 = interfaceinvoke $r0.<java.util.List: int size()>();
+
+        if $i0 != 0 goto label2;
+
+     label1:
+        return 0;
+
+     label2:
+        return 1;
+    }
+
+    static int localLenth(java.lang.String)
+    {
+        int i0, $i1, $i3;
+        char $c2;
+        java.lang.String $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        i0 = 0;
+
+        $i1 = virtualinvoke $r0.<java.lang.String: int length()>();
+
+        $i1 = $i1 - 1;
+
+     label1:
+        if $i1 >= 0 goto label2;
+
+        i0 = i0 / 2;
+
+        return i0;
+
+     label2:
+        $c2 = virtualinvoke $r0.<java.lang.String: char charAt(int)>($i1);
+
+        $i3 = (int) $c2;
+
+        if $i3 < 48 goto label3;
+
+        $i3 = (int) $c2;
+
+        if $i3 <= 57 goto label5;
+
+     label3:
+        $i3 = (int) $c2;
+
+        if $i3 < 97 goto label4;
+
+        $i3 = (int) $c2;
+
+        if $i3 <= 122 goto label5;
+
+     label4:
+        $i3 = (int) $c2;
+
+        if $i3 < 65 goto label7;
+
+        $i3 = (int) $c2;
+
+        if $i3 > 90 goto label7;
+
+     label5:
+        i0 = i0 + 1;
+
+     label6:
+        $i3 = -1;
+
+        $i1 = $i1 + $i3;
+
+        goto label1;
+
+     label7:
+        $z0 = staticinvoke <java.lang.Character: boolean isLetter(char)>($c2);
+
+        if $z0 == 0 goto label8;
+
+        i0 = i0 + 2;
+
+        goto label6;
+
+     label8:
+        i0 = i0 + 1;
+
+        goto label6;
+    }
+
+    public static int report(int, int, int, java.util.List)
+    {
+        java.util.List r0;
+        org.json.JSONException $r5;
+        org.json.JSONObject r1, $r7;
+        int $i0, $i1, $i2;
+        java.lang.StringBuilder $r3, $r6;
+        java.lang.String $r2, $r4;
+        boolean $z0;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $i2 := @parameter2: int;
+
+        r0 := @parameter3: java.util.List;
+
+        r1 = staticinvoke <com.exchange.Controller.ExchangeDataService: org.json.JSONObject getReportInput(int,int,int,java.util.List)>($i0, $i1, $i2, r0);
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String REPORT_URL>;
+
+        $r2 = staticinvoke <com.exchange.Public.Network: java.lang.String sendMessage(org.json.JSONObject,java.lang.String)>(r1, $r2);
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>(java.lang.String)>("report result:");
+
+        $r3 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("exchange", $r4);
+
+        if $r2 != null goto label1;
+
+        return -1;
+
+     label1:
+        $r7 = new org.json.JSONObject;
+
+        r1 = $r7;
+
+     label2:
+        specialinvoke $r7.<org.json.JSONObject: void <init>(java.lang.String)>($r2);
+
+     label3:
+        $r2 = "ok";
+
+     label4:
+        $r4 = virtualinvoke r1.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("success");
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>($r4);
+
+     label5:
+        if $z0 == 0 goto label6;
+
+        return 1;
+
+     label6:
+        return 0;
+
+     label7:
+        $r5 := @caughtexception;
+
+        virtualinvoke $r5.<org.json.JSONException: void printStackTrace()>();
+
+        return -2;
+
+        catch org.json.JSONException from label2 to label3 with label7;
+        catch org.json.JSONException from label4 to label5 with label7;
+    }
+
+    public static void request()
+    {
+        java.lang.Exception $r6;
+        java.util.ArrayList $r5;
+        org.json.JSONObject r0, r4;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r1, $r3;
+        boolean $z0;
+
+        r0 = staticinvoke <com.exchange.Controller.ExchangeDataService: org.json.JSONObject getRequestInput()>();
+
+        $r1 = <com.exchange.Public.ExchangeConstants: java.lang.String REQUEST_URL>;
+
+        $r1 = staticinvoke <com.exchange.Public.Network: java.lang.String sendMessage(org.json.JSONObject,java.lang.String)>(r0, $r1);
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("request result:");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("exchange", $r3);
+
+        r4 = null;
+
+        r0 = new org.json.JSONObject;
+
+     label1:
+        specialinvoke r0.<org.json.JSONObject: void <init>(java.lang.String)>($r1);
+
+     label2:
+        r4 = r0;
+
+     label3:
+        $r5 = staticinvoke <com.exchange.Controller.ExchangeDataService: java.util.ArrayList convertToAdvertisers(org.json.JSONObject)>(r4);
+
+        <com.exchange.Controller.ExchangeDataService: java.util.List mAdvertisers> = $r5;
+
+        $z0 = <com.exchange.Public.ExchangeConstants: boolean filterInstalledApp>;
+
+        if $z0 == 0 goto label5;
+
+        staticinvoke <com.exchange.Controller.ExchangeDataService: void filter()>();
+
+        return;
+
+     label4:
+        $r6 := @caughtexception;
+
+        virtualinvoke $r6.<java.lang.Exception: void printStackTrace()>();
+
+        goto label3;
+
+     label5:
+        return;
+
+        catch java.lang.Exception from label1 to label2 with label4;
+    }
+
+    public static void requestDataAsyn(android.content.Context, com.exchange.Controller.ExchangeDataRequestListener)
+    {
+        android.content.Context $r0;
+        com.exchange.Controller.GetDataThread $r3;
+        java.lang.String $r2;
+        com.exchange.Controller.ExchangeDataRequestListener $r1;
+        boolean $z0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: com.exchange.Controller.ExchangeDataRequestListener;
+
+        $z0 = <com.exchange.Public.ExchangeConstants: boolean ONLY_CHINESE>;
+
+        if $z0 == 0 goto label1;
+
+        $z0 = staticinvoke <com.exchange.Public.DeviceManager: boolean isChinese(android.content.Context)>($r0);
+
+        if $z0 != 0 goto label1;
+
+        $r2 = <com.exchange.Public.ExchangeConstants: java.lang.String LOG_TAG>;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>($r2, "English os can not show ads");
+
+        interfaceinvoke $r1.<com.exchange.Controller.ExchangeDataRequestListener: void dataReceived(int)>(0);
+
+        return;
+
+     label1:
+        $r3 = new com.exchange.Controller.GetDataThread;
+
+        specialinvoke $r3.<com.exchange.Controller.GetDataThread: void <init>(android.content.Context,com.exchange.Controller.ExchangeDataRequestListener)>($r0, $r1);
+
+        virtualinvoke $r3.<com.exchange.Controller.GetDataThread: void start()>();
+
+        return;
+    }
+
+    public static boolean rotate()
+    {
+        java.util.List $r0;
+        int $i0, $i1;
+        com.exchange.Model.AdvertiserConfig $r1;
+        boolean $z0;
+
+        $z0 = staticinvoke <com.exchange.Controller.ExchangeDataService: boolean hasData()>();
+
+        if $z0 == 0 goto label5;
+
+        $i0 = <com.exchange.Controller.ExchangeDataService: int curIndex>;
+
+        $i0 = $i0 + 1;
+
+        $r0 = <com.exchange.Controller.ExchangeDataService: java.util.List mAdvertisers>;
+
+        $i1 = interfaceinvoke $r0.<java.util.List: int size()>();
+
+        $i0 = $i0 % $i1;
+
+     label1:
+        $i1 = <com.exchange.Controller.ExchangeDataService: int curIndex>;
+
+        if $i0 == $i1 goto label2;
+
+        $r1 = staticinvoke <com.exchange.Controller.ExchangeDataService: com.exchange.Model.AdvertiserConfig getAd(int)>($i0);
+
+        $i1 = $r1.<com.exchange.Model.AdvertiserConfig: int landingType>;
+
+        if $i1 != 0 goto label3;
+
+     label2:
+        $i1 = <com.exchange.Controller.ExchangeDataService: int curIndex>;
+
+        if $i0 != $i1 goto label4;
+
+        return 0;
+
+     label3:
+        $i0 = <com.exchange.Controller.ExchangeDataService: int curIndex>;
+
+        $i0 = $i0 + 1;
+
+        $r0 = <com.exchange.Controller.ExchangeDataService: java.util.List mAdvertisers>;
+
+        $i1 = interfaceinvoke $r0.<java.util.List: int size()>();
+
+        $i0 = $i0 % $i1;
+
+        goto label1;
+
+     label4:
+        <com.exchange.Controller.ExchangeDataService: int curIndex> = $i0;
+
+        return 1;
+
+     label5:
+        return 0;
+    }
+
+    public static void setKeywords(java.lang.String)
+    {
+        java.lang.String $r0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        <com.exchange.Public.ExchangeConstants: java.lang.String keywords> = $r0;
+
+        return;
+    }
+
+    public static void trimDescription(java.util.List, int, int)
+    {
+        java.util.Iterator $r2;
+        com.exchange.Model.AdvertiserConfig r4;
+        java.util.List r0;
+        int $i0, $i1, $i2;
+        java.lang.Object $r3;
+        java.lang.String r1;
+        boolean $z0;
+
+        r0 := @parameter0: java.util.List;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $r2 = interfaceinvoke r0.<java.util.List: java.util.Iterator iterator()>();
+
+     label1:
+        $z0 = interfaceinvoke $r2.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 != 0 goto label2;
+
+        return;
+
+     label2:
+        $r3 = interfaceinvoke $r2.<java.util.Iterator: java.lang.Object next()>();
+
+        r4 = (com.exchange.Model.AdvertiserConfig) $r3;
+
+        r1 = r4.<com.exchange.Model.AdvertiserConfig: java.lang.String adDescription>;
+
+        $i2 = virtualinvoke r1.<java.lang.String: int length()>();
+
+        if $i2 <= $i1 goto label3;
+
+        r1 = virtualinvoke r1.<java.lang.String: java.lang.String substring(int,int)>(0, $i1);
+
+        r4.<com.exchange.Model.AdvertiserConfig: java.lang.String adDescription> = r1;
+
+     label3:
+        r1 = r4.<com.exchange.Model.AdvertiserConfig: java.lang.String adName>;
+
+        $i2 = virtualinvoke r1.<java.lang.String: int length()>();
+
+        if $i2 <= $i0 goto label1;
+
+        r1 = virtualinvoke r1.<java.lang.String: java.lang.String substring(int,int)>(0, $i0);
+
+        r4.<com.exchange.Model.AdvertiserConfig: java.lang.String adName> = r1;
+
+        goto label1;
+    }
+}

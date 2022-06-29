@@ -1,0 +1,374 @@
+public class cs.utils.comment.BroadcastImpl extends java.lang.Object
+{
+    private static long jiange;
+    private static long lastGo;
+    private static java.util.Map packageAdBasicInfoMapping;
+
+    static void <clinit>()
+    {
+        java.util.HashMap $r0;
+
+        <cs.utils.comment.BroadcastImpl: long lastGo> = 0L;
+
+        <cs.utils.comment.BroadcastImpl: long jiange> = 10000L;
+
+        $r0 = new java.util.HashMap;
+
+        specialinvoke $r0.<java.util.HashMap: void <init>()>();
+
+        <cs.utils.comment.BroadcastImpl: java.util.Map packageAdBasicInfoMapping> = $r0;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        cs.utils.comment.BroadcastImpl r0;
+
+        r0 := @this: cs.utils.comment.BroadcastImpl;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    public static void addAdBasicInfo(cs.entity.AdBasicInfo)
+    {
+        java.lang.String $r2;
+        cs.entity.AdBasicInfo $r0;
+        java.util.Map $r1;
+
+        $r0 := @parameter0: cs.entity.AdBasicInfo;
+
+        $r1 = <cs.utils.comment.BroadcastImpl: java.util.Map packageAdBasicInfoMapping>;
+
+        $r2 = virtualinvoke $r0.<cs.entity.AdBasicInfo: java.lang.String getPackageName()>();
+
+        interfaceinvoke $r1.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r2, $r0);
+
+        return;
+    }
+
+    private static boolean checkJiange()
+    {
+        byte $b3;
+        int $i4;
+        long $l0, $l1, $l2;
+
+        $l1 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $l0 = <cs.utils.comment.BroadcastImpl: long lastGo>;
+
+        $l2 = $l1 - $l0;
+
+        $l0 = <cs.utils.comment.BroadcastImpl: long jiange>;
+
+        $b3 = $l2 cmp $l0;
+
+        $i4 = (int) $b3;
+
+        if $i4 <= 0 goto label1;
+
+        <cs.utils.comment.BroadcastImpl: long lastGo> = $l1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    private java.util.ArrayList getAllowPackagenames(android.content.Context)
+    {
+        android.content.Context $r1;
+        cs.utils.comment.BroadcastImpl$1 $r6;
+        java.io.File r2;
+        java.lang.Exception r8;
+        java.util.ArrayList r4;
+        cs.utils.system.PackageUtil r3;
+        int $i0, $i1;
+        java.lang.String $r5;
+        cs.utils.comment.BroadcastImpl r0;
+        java.io.File[] $r7;
+        boolean $z0;
+
+        r0 := @this: cs.utils.comment.BroadcastImpl;
+
+        $r1 := @parameter0: android.content.Context;
+
+        r3 = new cs.utils.system.PackageUtil;
+
+     label01:
+        specialinvoke r3.<cs.utils.system.PackageUtil: void <init>(android.content.Context)>($r1);
+
+     label02:
+        r4 = new java.util.ArrayList;
+
+     label03:
+        specialinvoke r4.<java.util.ArrayList: void <init>()>();
+
+     label04:
+        r2 = new java.io.File;
+
+     label05:
+        $r5 = staticinvoke <cs.network.configs.Config: java.lang.String getApkRootDir(android.content.Context)>($r1);
+
+        specialinvoke r2.<java.io.File: void <init>(java.lang.String)>($r5);
+
+        $z0 = virtualinvoke r2.<java.io.File: boolean exists()>();
+
+     label06:
+        if $z0 == 0 goto label18;
+
+        $r6 = new cs.utils.comment.BroadcastImpl$1;
+
+     label07:
+        specialinvoke $r6.<cs.utils.comment.BroadcastImpl$1: void <init>(cs.utils.comment.BroadcastImpl)>(r0);
+
+        $r7 = virtualinvoke r2.<java.io.File: java.io.File[] listFiles(java.io.FilenameFilter)>($r6);
+
+        $i0 = lengthof $r7;
+
+     label08:
+        $i1 = 0;
+
+     label09:
+        if $i1 < $i0 goto label10;
+
+        return r4;
+
+     label10:
+        r2 = $r7[$i1];
+
+        $r5 = virtualinvoke r2.<java.io.File: java.lang.String getAbsolutePath()>();
+
+        $r5 = virtualinvoke r3.<cs.utils.system.PackageUtil: java.lang.String getAPKPackagename(java.lang.String)>($r5);
+
+     label11:
+        if $r5 == null goto label13;
+
+     label12:
+        virtualinvoke r4.<java.util.ArrayList: boolean add(java.lang.Object)>($r5);
+
+     label13:
+        $i1 = $i1 + 1;
+
+        goto label09;
+
+     label14:
+        r8 := @caughtexception;
+
+     label15:
+        virtualinvoke r8.<java.lang.Exception: void printStackTrace()>();
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>("AdBroadcast", "\u83b7\u53d6\u5141\u8bb8\u5305\u540d\u5931\u8d25");
+
+     label16:
+        return null;
+
+     label17:
+        r8 := @caughtexception;
+
+        goto label15;
+
+     label18:
+        goto label16;
+
+        catch java.lang.Exception from label01 to label02 with label14;
+        catch java.lang.Exception from label03 to label04 with label14;
+        catch java.lang.Exception from label05 to label06 with label17;
+        catch java.lang.Exception from label07 to label08 with label17;
+        catch java.lang.Exception from label10 to label11 with label17;
+        catch java.lang.Exception from label12 to label13 with label17;
+    }
+
+    private void onNetworkChanged(android.content.Context)
+    {
+        java.io.PrintStream $r3;
+        android.content.Context $r1;
+        cs.utils.comment.BroadcastImpl$2 $r8;
+        java.util.List $r7;
+        int $i0;
+        cs.utils.system.PackageUtil $r6;
+        java.lang.StringBuilder $r4;
+        java.lang.String $r5;
+        cs.utils.comment.BroadcastImpl r0;
+        cs.request.Ad_LoadRequest r2;
+        boolean $z0;
+
+        r0 := @this: cs.utils.comment.BroadcastImpl;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $i0 = staticinvoke <cs.utils.system.SystemUtil: int getNetworkState(android.content.Context)>($r1);
+
+        $r3 = <java.lang.System: java.io.PrintStream out>;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>(java.lang.String)>("\u7f51\u7edc\u72b6\u6001\u6539\u53d8:");
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r3.<java.io.PrintStream: void println(java.lang.String)>($r5);
+
+        if $i0 != 2 goto label2;
+
+        $z0 = staticinvoke <cs.utils.comment.BroadcastImpl: boolean checkJiange()>();
+
+        if $z0 == 0 goto label1;
+
+        $r3 = <java.lang.System: java.io.PrintStream out>;
+
+        virtualinvoke $r3.<java.io.PrintStream: void println(java.lang.String)>("\u542f\u52a8\u9884\u52a0\u8f7d\u4efb\u52a1");
+
+        r2 = new cs.request.Ad_LoadRequest;
+
+        $r6 = new cs.utils.system.PackageUtil;
+
+        specialinvoke $r6.<cs.utils.system.PackageUtil: void <init>(android.content.Context)>($r1);
+
+        $r7 = virtualinvoke $r6.<cs.utils.system.PackageUtil: java.util.List getInstalledUserPackagesForStrings()>();
+
+        specialinvoke r2.<cs.request.Ad_LoadRequest: void <init>(android.content.Context,java.util.List)>($r1, $r7);
+
+        $r8 = new cs.utils.comment.BroadcastImpl$2;
+
+        specialinvoke $r8.<cs.utils.comment.BroadcastImpl$2: void <init>(cs.utils.comment.BroadcastImpl,android.content.Context)>(r0, $r1);
+
+        virtualinvoke r2.<cs.request.Ad_LoadRequest: void query(cs.network.request.IRequestLinsener)>($r8);
+
+        return;
+
+     label1:
+        $r3 = <java.lang.System: java.io.PrintStream out>;
+
+        virtualinvoke $r3.<java.io.PrintStream: void println(java.lang.String)>("\u95f4\u9694\u592a\u77ed\uff0c\u5ffd\u7565\u672c\u6b21\u7f51\u7edc\u53d8\u5316");
+
+     label2:
+        return;
+    }
+
+    private void onPackageAdded(android.content.Intent, android.content.Context)
+    {
+        android.content.Context $r2;
+        android.content.pm.PackageManager $r8;
+        android.net.Uri $r5;
+        android.content.Intent $r1;
+        java.util.ArrayList $r7;
+        cs.utils.ui.MXAdNotification r3;
+        java.util.Map $r9;
+        cs.entity.AdBasicInfo $r11;
+        cs.entity.AdStatus $r4;
+        int $i0;
+        java.lang.Object $r10;
+        java.lang.String $r6;
+        cs.utils.comment.BroadcastImpl r0;
+        boolean $z0;
+
+        r0 := @this: cs.utils.comment.BroadcastImpl;
+
+        $r1 := @parameter0: android.content.Intent;
+
+        $r2 := @parameter1: android.content.Context;
+
+        $r5 = virtualinvoke $r1.<android.content.Intent: android.net.Uri getData()>();
+
+        $r6 = virtualinvoke $r5.<android.net.Uri: java.lang.String getSchemeSpecificPart()>();
+
+        $r7 = specialinvoke r0.<cs.utils.comment.BroadcastImpl: java.util.ArrayList getAllowPackagenames(android.content.Context)>($r2);
+
+        if $r7 == null goto label1;
+
+        $z0 = interfaceinvoke $r7.<java.util.List: boolean contains(java.lang.Object)>($r6);
+
+        if $z0 == 0 goto label1;
+
+        $r8 = virtualinvoke $r2.<android.content.Context: android.content.pm.PackageManager getPackageManager()>();
+
+        $r1 = new android.content.Intent;
+
+        specialinvoke $r1.<android.content.Intent: void <init>()>();
+
+        $r1 = virtualinvoke $r8.<android.content.pm.PackageManager: android.content.Intent getLaunchIntentForPackage(java.lang.String)>($r6);
+
+        virtualinvoke $r1.<android.content.Intent: android.content.Intent addFlags(int)>(268435456);
+
+        virtualinvoke $r2.<android.content.Context: void startActivity(android.content.Intent)>($r1);
+
+        $r4 = <cs.entity.AdStatus: cs.entity.AdStatus \u5b89\u88c5\u5b8c\u6210>;
+
+        $r9 = <cs.utils.comment.BroadcastImpl: java.util.Map packageAdBasicInfoMapping>;
+
+        $r10 = interfaceinvoke $r9.<java.util.Map: java.lang.Object get(java.lang.Object)>($r6);
+
+        $r11 = (cs.entity.AdBasicInfo) $r10;
+
+        staticinvoke <cs.request.AppReport_addRequest: void Report(android.content.Context,cs.entity.AdStatus,cs.entity.AdBasicInfo)>($r2, $r4, $r11);
+
+        r3 = new cs.utils.ui.MXAdNotification;
+
+        specialinvoke r3.<cs.utils.ui.MXAdNotification: void <init>(android.content.Context)>($r2);
+
+        $i0 = virtualinvoke $r6.<java.lang.String: int hashCode()>();
+
+        virtualinvoke r3.<cs.utils.ui.MXAdNotification: void cancel(int)>($i0);
+
+     label1:
+        return;
+    }
+
+    public void onReceive(android.content.Context, android.content.Intent)
+    {
+        java.io.PrintStream $r4;
+        android.content.Context $r1;
+        android.content.Intent $r2;
+        java.lang.StringBuilder $r5;
+        java.lang.String $r3, $r6;
+        cs.utils.comment.BroadcastImpl r0;
+        boolean $z0;
+
+        r0 := @this: cs.utils.comment.BroadcastImpl;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.content.Intent;
+
+        $r3 = virtualinvoke $r2.<android.content.Intent: java.lang.String getAction()>();
+
+        $r4 = <java.lang.System: java.io.PrintStream out>;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>(java.lang.String)>("!!!!!\u6536\u5230\u901a\u77e5:");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r4.<java.io.PrintStream: void println(java.lang.String)>($r6);
+
+        staticinvoke <cs.network.configs.Config: void init(java.lang.String,java.lang.String,java.lang.String,android.content.Context)>(null, null, null, $r1);
+
+        $r6 = "android.net.conn.CONNECTIVITY_CHANGE";
+
+        $z0 = virtualinvoke $r6.<java.lang.String: boolean equals(java.lang.Object)>($r3);
+
+        if $z0 == 0 goto label1;
+
+        specialinvoke r0.<cs.utils.comment.BroadcastImpl: void onNetworkChanged(android.content.Context)>($r1);
+
+     label1:
+        $r6 = "android.intent.action.PACKAGE_ADDED";
+
+        $z0 = virtualinvoke $r6.<java.lang.String: boolean equals(java.lang.Object)>($r3);
+
+        if $z0 == 0 goto label2;
+
+        specialinvoke r0.<cs.utils.comment.BroadcastImpl: void onPackageAdded(android.content.Intent,android.content.Context)>($r2, $r1);
+
+     label2:
+        return;
+    }
+}

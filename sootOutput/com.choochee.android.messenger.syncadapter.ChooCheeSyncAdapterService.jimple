@@ -1,0 +1,648 @@
+public class com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService extends android.app.Service implements java.lang.Runnable
+{
+    public static final java.lang.String ACTION_CONTACT_SYNC_LISTENER;
+    public static final java.lang.String EXTRA_ENABLE;
+    public static final java.lang.String TAG;
+    static java.util.Timer contactEventStreamTimer;
+    static long contactEventStreamTimerOffset;
+    public static boolean contactEventStreamTimerStarted;
+    private static java.util.TimerTask contactEventStreamTimerTask;
+    private static android.os.Handler mHandler;
+    private static android.database.ContentObserver mNativeContactsObserver;
+    private static com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapter mSyncAdapter;
+    private static final java.lang.Object mSyncAdapterLock;
+    private java.lang.Thread mListenThread;
+    public android.content.Intent ipcIntent;
+    public android.os.IBinder ipcBinder_0;
+
+    static void <clinit>()
+    {
+        java.lang.Object $r0;
+        java.util.Timer $r1;
+
+        <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: java.lang.String TAG> = "CCSyncAdapterService";
+
+        <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: java.lang.String EXTRA_ENABLE> = "com.choochee.android.messenger.syncadapter.ENABLE";
+
+        <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: java.lang.String ACTION_CONTACT_SYNC_LISTENER> = "com.choochee.android.messenger.syncadapter.ACTION_CONTACT_SYNC_LISTENER";
+
+        $r0 = new java.lang.Object;
+
+        specialinvoke $r0.<java.lang.Object: void <init>()>();
+
+        <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: java.lang.Object mSyncAdapterLock> = $r0;
+
+        <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapter mSyncAdapter> = null;
+
+        <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: android.database.ContentObserver mNativeContactsObserver> = null;
+
+        <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: android.os.Handler mHandler> = null;
+
+        <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: long contactEventStreamTimerOffset> = 7000L;
+
+        $r1 = new java.util.Timer;
+
+        specialinvoke $r1.<java.util.Timer: void <init>(java.lang.String)>("Contact Timer");
+
+        <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: java.util.Timer contactEventStreamTimer> = $r1;
+
+        <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: boolean contactEventStreamTimerStarted> = 0;
+
+        <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: java.util.TimerTask contactEventStreamTimerTask> = null;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService r0;
+
+        r0 := @this: com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService;
+
+        specialinvoke r0.<android.app.Service: void <init>()>();
+
+        r0.<com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: java.lang.Thread mListenThread> = null;
+
+        return;
+    }
+
+    static android.os.Handler access$000()
+    {
+        android.os.Handler r0;
+
+        r0 = <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: android.os.Handler mHandler>;
+
+        return r0;
+    }
+
+    private void nativeChangeListener()
+    {
+        android.content.Context $r1;
+        android.net.Uri $r11;
+        android.content.ContentResolver $r2;
+        android.os.Handler $r7;
+        android.os.Looper $r9;
+        android.net.Uri$Builder $r12;
+        java.lang.String $r14;
+        boolean $z0;
+        com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService r0;
+        android.accounts.Account $r5;
+        com.choochee.android.messenger.om.Application $r3;
+        com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService$1 $r8;
+        com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService$2 $r10;
+        android.database.ContentObserver $r6;
+        java.lang.StringBuilder $r13;
+        com.choochee.android.messenger.util.UserProfile $r4;
+
+        r0 := @this: com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService;
+
+        $r1 = virtualinvoke r0.<com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: android.content.Context getApplicationContext()>();
+
+        $r2 = virtualinvoke $r1.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        $r3 = staticinvoke <com.choochee.android.messenger.om.Application: com.choochee.android.messenger.om.Application getInstance()>();
+
+        if $r3 != null goto label1;
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void e(java.lang.String,java.lang.String)>("CCSyncAdapterService", "Null application object.  Cannot create nativeChangeListener");
+
+        return;
+
+     label1:
+        $r4 = virtualinvoke $r3.<com.choochee.android.messenger.om.Application: com.choochee.android.messenger.util.UserProfile getUserProfile()>();
+
+        if $r4 != null goto label2;
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void e(java.lang.String,java.lang.String)>("CCSyncAdapterService", "Null getUserProfile.  Cannot create nativeChangeListener");
+
+        return;
+
+     label2:
+        $r1 = virtualinvoke r0.<com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: android.content.Context getApplicationContext()>();
+
+        $r3 = staticinvoke <com.choochee.android.messenger.om.Application: com.choochee.android.messenger.om.Application getInstance()>();
+
+        $r4 = virtualinvoke $r3.<com.choochee.android.messenger.om.Application: com.choochee.android.messenger.util.UserProfile getUserProfile()>();
+
+        $r5 = staticinvoke <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapter: android.accounts.Account lookupChoocheeAccount(java.lang.String,android.content.Context,com.choochee.android.messenger.util.UserProfile,java.lang.String)>("CCSyncAdapterService", $r1, $r4, "com.revvl.android.messenger");
+
+        if $r5 == null goto label5;
+
+        $r6 = <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: android.database.ContentObserver mNativeContactsObserver>;
+
+        if $r6 != null goto label3;
+
+        $r7 = <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: android.os.Handler mHandler>;
+
+        if $r7 != null goto label3;
+
+        $r8 = new com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService$1;
+
+        $r9 = virtualinvoke r0.<com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: android.os.Looper getMainLooper()>();
+
+        specialinvoke $r8.<com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService$1: void <init>(com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService,android.os.Looper)>(r0, $r9);
+
+        <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: android.os.Handler mHandler> = $r8;
+
+        $r10 = new com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService$2;
+
+        $r7 = <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: android.os.Handler mHandler>;
+
+        specialinvoke $r10.<com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService$2: void <init>(com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService,android.os.Handler)>(r0, $r7);
+
+        <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: android.database.ContentObserver mNativeContactsObserver> = $r10;
+
+     label3:
+        $r11 = <android.provider.ContactsContract$Contacts: android.net.Uri CONTENT_URI>;
+
+        $r12 = virtualinvoke $r11.<android.net.Uri: android.net.Uri$Builder buildUpon()>();
+
+        $r11 = virtualinvoke $r12.<android.net.Uri$Builder: android.net.Uri build()>();
+
+        $z0 = <android.util.Config: boolean DEBUG>;
+
+        if $z0 == 0 goto label4;
+
+        $r13 = new java.lang.StringBuilder;
+
+        specialinvoke $r13.<java.lang.StringBuilder: void <init>()>();
+
+        $r13 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Register listening for native contacts changes. [");
+
+        $r13 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r11);
+
+        $r13 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("]");
+
+        $r14 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void i(java.lang.String,java.lang.String)>("CCSyncAdapterService", $r14);
+
+     label4:
+        $r6 = <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: android.database.ContentObserver mNativeContactsObserver>;
+
+        virtualinvoke $r2.<android.content.ContentResolver: void registerContentObserver(android.net.Uri,boolean,android.database.ContentObserver)>($r11, 1, $r6);
+
+     label5:
+        return;
+    }
+
+    public static void startContactSyncListener(android.content.Context)
+    {
+        android.content.Context $r0;
+        android.content.Intent r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        r1 = new android.content.Intent;
+
+        specialinvoke r1.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>($r0, class "Lcom/choochee/android/messenger/syncadapter/ChooCheeSyncAdapterService;");
+
+        virtualinvoke r1.<android.content.Intent: android.content.Intent setAction(java.lang.String)>("com.choochee.android.messenger.syncadapter.ACTION_CONTACT_SYNC_LISTENER");
+
+        virtualinvoke r1.<android.content.Intent: android.content.Intent putExtra(java.lang.String,boolean)>("com.choochee.android.messenger.syncadapter.ENABLE", 1);
+
+        virtualinvoke $r0.<android.content.Context: android.content.ComponentName startService(android.content.Intent)>(r1);
+
+        return;
+    }
+
+    public static void startContactTimer()
+    {
+        java.lang.Throwable $r4;
+        java.util.Date $r1;
+        long $l0, $l1;
+        java.util.Timer $r2;
+        java.util.TimerTask $r0;
+        com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService$3 $r3;
+
+        entermonitor class "Lcom/choochee/android/messenger/syncadapter/ChooCheeSyncAdapterService;";
+
+     label1:
+        $r0 = <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: java.util.TimerTask contactEventStreamTimerTask>;
+
+        if $r0 == null goto label2;
+
+        $r0 = <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: java.util.TimerTask contactEventStreamTimerTask>;
+
+        virtualinvoke $r0.<java.util.TimerTask: boolean cancel()>();
+
+     label2:
+        $r2 = <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: java.util.Timer contactEventStreamTimer>;
+
+        virtualinvoke $r2.<java.util.Timer: int purge()>();
+
+        $r3 = new com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService$3;
+
+        specialinvoke $r3.<com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService$3: void <init>()>();
+
+        <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: java.util.TimerTask contactEventStreamTimerTask> = $r3;
+
+        $r2 = <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: java.util.Timer contactEventStreamTimer>;
+
+        $r0 = <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: java.util.TimerTask contactEventStreamTimerTask>;
+
+        $r1 = new java.util.Date;
+
+        $l1 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $l0 = <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: long contactEventStreamTimerOffset>;
+
+        $l0 = $l1 + $l0;
+
+        specialinvoke $r1.<java.util.Date: void <init>(long)>($l0);
+
+        virtualinvoke $r2.<java.util.Timer: void schedule(java.util.TimerTask,java.util.Date)>($r0, $r1);
+
+     label3:
+        exitmonitor class "Lcom/choochee/android/messenger/syncadapter/ChooCheeSyncAdapterService;";
+
+        return;
+
+     label4:
+        $r4 := @caughtexception;
+
+        exitmonitor class "Lcom/choochee/android/messenger/syncadapter/ChooCheeSyncAdapterService;";
+
+        throw $r4;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+    }
+
+    public static void stopContactSyncListener(android.content.Context)
+    {
+        android.content.Context $r0;
+        android.content.Intent r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        r1 = new android.content.Intent;
+
+        specialinvoke r1.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>($r0, class "Lcom/choochee/android/messenger/syncadapter/ChooCheeSyncAdapterService;");
+
+        virtualinvoke r1.<android.content.Intent: android.content.Intent setAction(java.lang.String)>("com.choochee.android.messenger.syncadapter.ACTION_CONTACT_SYNC_LISTENER");
+
+        virtualinvoke r1.<android.content.Intent: android.content.Intent putExtra(java.lang.String,boolean)>("com.choochee.android.messenger.syncadapter.ENABLE", 0);
+
+        virtualinvoke $r0.<android.content.Context: android.content.ComponentName startService(android.content.Intent)>(r1);
+
+        return;
+    }
+
+    public android.os.IBinder onBind(android.content.Intent)
+    {
+        com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService this;
+        android.content.Intent parameter0;
+
+        this := @this: com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService;
+
+        parameter0 := @parameter0: android.content.Intent;
+
+        parameter0 = virtualinvoke this.<com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: android.content.Intent getIntent()>();
+
+        this.<com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: android.os.IBinder ipcBinder_0> = parameter0;
+
+        this.<com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: android.os.IBinder ipcBinder_0> = parameter0;
+
+        this.<com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: android.os.IBinder ipcBinder_0> = parameter0;
+
+        this.<com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: android.os.IBinder ipcBinder_0> = parameter0;
+
+        this.<com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: android.os.IBinder ipcBinder_0> = parameter0;
+
+        return parameter0;
+    }
+
+    public void onCreate()
+    {
+        com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService r0;
+        java.lang.Throwable $r4;
+        android.content.Context $r1;
+        com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapter $r3;
+        java.lang.Object $r2;
+        boolean $z0;
+
+        r0 := @this: com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService;
+
+        $z0 = <android.util.Config: boolean DEBUG>;
+
+        if $z0 == 0 goto label1;
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void i(java.lang.String,java.lang.String)>("CCSyncAdapterService", "onCreate");
+
+     label1:
+        $r2 = <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: java.lang.Object mSyncAdapterLock>;
+
+        entermonitor $r2;
+
+     label2:
+        $r3 = <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapter mSyncAdapter>;
+
+        if $r3 != null goto label3;
+
+        $r3 = new com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapter;
+
+        $r1 = virtualinvoke r0.<com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: android.content.Context getApplicationContext()>();
+
+        specialinvoke $r3.<com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapter: void <init>(android.content.Context,boolean)>($r1, 1);
+
+        <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapter mSyncAdapter> = $r3;
+
+     label3:
+        exitmonitor $r2;
+
+     label4:
+        return;
+
+     label5:
+        $r4 := @caughtexception;
+
+        exitmonitor $r2;
+
+     label6:
+        throw $r4;
+
+        catch java.lang.Throwable from label2 to label4 with label5;
+        catch java.lang.Throwable from label5 to label6 with label5;
+    }
+
+    public int onStartCommand(android.content.Intent, int, int)
+    {
+        android.content.Context $r8;
+        android.os.Bundle r2, $r17;
+        android.content.Intent $r1;
+        java.lang.Integer $r10;
+        android.content.ContentResolver $r9;
+        java.lang.Thread $r6, $r16;
+        int $i0, $i1;
+        java.lang.Boolean $r5;
+        java.lang.String $r4, $r11;
+        boolean $z0;
+        com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService r0;
+        android.accounts.Account $r14;
+        com.choochee.android.messenger.om.Application $r12;
+        android.database.ContentObserver $r7;
+        java.lang.StringBuilder $r3, $r15;
+        com.choochee.android.messenger.util.UserProfile $r13;
+
+        r0 := @this: com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService;
+
+        $r1 := @parameter0: android.content.Intent;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $r1 = virtualinvoke r0.<com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: android.content.Intent getIntent()>();
+
+        $z0 = <android.util.Config: boolean DEBUG>;
+
+        if $z0 == 0 goto label02;
+
+        $r15 = new java.lang.StringBuilder;
+
+        specialinvoke $r15.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = virtualinvoke $r15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("onStartCommand  intent [");
+
+        if $r1 == null goto label03;
+
+        $r4 = virtualinvoke $r1.<android.content.Intent: java.lang.String toString()>();
+
+     label01:
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("]");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void i(java.lang.String,java.lang.String)>("CCSyncAdapterService", $r4);
+
+     label02:
+        if $r1 != null goto label04;
+
+        return 2;
+
+     label03:
+        $r4 = "";
+
+        goto label01;
+
+     label04:
+        $r4 = virtualinvoke $r1.<android.content.Intent: java.lang.String getAction()>();
+
+        $z0 = virtualinvoke $r4.<java.lang.String: boolean equals(java.lang.Object)>("com.choochee.android.messenger.syncadapter.ACTION_CONTACT_SYNC_LISTENER");
+
+        if $z0 == 0 goto label14;
+
+        $z0 = virtualinvoke $r1.<android.content.Intent: boolean getBooleanExtra(java.lang.String,boolean)>("com.choochee.android.messenger.syncadapter.ENABLE", 1);
+
+        $r5 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>($z0);
+
+        $z0 = <android.util.Config: boolean DEBUG>;
+
+        if $z0 == 0 goto label06;
+
+        $r15 = new java.lang.StringBuilder;
+
+        $r3 = $r15;
+
+        specialinvoke $r15.<java.lang.StringBuilder: void <init>()>();
+
+        $z0 = virtualinvoke $r5.<java.lang.Boolean: boolean booleanValue()>();
+
+        if $z0 == 0 goto label08;
+
+        $r4 = "Register";
+
+     label05:
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" as Listener for native contacts changes.");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void i(java.lang.String,java.lang.String)>("CCSyncAdapterService", $r4);
+
+     label06:
+        $z0 = virtualinvoke $r5.<java.lang.Boolean: boolean booleanValue()>();
+
+        if $z0 == 0 goto label09;
+
+        $r6 = r0.<com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: java.lang.Thread mListenThread>;
+
+        if $r6 != null goto label07;
+
+        $r16 = new java.lang.Thread;
+
+        specialinvoke $r16.<java.lang.Thread: void <init>(java.lang.Runnable,java.lang.String)>(r0, "ContactContracts");
+
+        r0.<com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: java.lang.Thread mListenThread> = $r16;
+
+        $r6 = r0.<com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: java.lang.Thread mListenThread>;
+
+        virtualinvoke $r6.<java.lang.Thread: void start()>();
+
+        virtualinvoke r0.<com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: void stopSelf()>();
+
+     label07:
+        return 2;
+
+     label08:
+        $r4 = "Unregister";
+
+        goto label05;
+
+     label09:
+        $r7 = <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: android.database.ContentObserver mNativeContactsObserver>;
+
+        if $r7 == null goto label12;
+
+        $z0 = <android.util.Config: boolean DEBUG>;
+
+        if $z0 == 0 goto label10;
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void i(java.lang.String,java.lang.String)>("CCSyncAdapterService", "Unregister listening for native contacts changes.");
+
+     label10:
+        $r8 = virtualinvoke r0.<com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: android.content.Context getApplicationContext()>();
+
+        $r9 = virtualinvoke $r8.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        $r7 = <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: android.database.ContentObserver mNativeContactsObserver>;
+
+        virtualinvoke $r9.<android.content.ContentResolver: void unregisterContentObserver(android.database.ContentObserver)>($r7);
+
+        $z0 = <android.util.Config: boolean DEBUG>;
+
+        if $z0 == 0 goto label11;
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void d(java.lang.String,java.lang.String)>("CCSyncAdapterService", "huh? --- guess what? I am making the mHandler null ...");
+
+     label11:
+        <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: android.os.Handler mHandler> = null;
+
+     label12:
+        $r6 = r0.<com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: java.lang.Thread mListenThread>;
+
+        if $r6 == null goto label13;
+
+        $r6 = r0.<com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: java.lang.Thread mListenThread>;
+
+        virtualinvoke $r6.<java.lang.Thread: void stop()>();
+
+        r0.<com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: java.lang.Thread mListenThread> = null;
+
+     label13:
+        virtualinvoke r0.<com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: void stopSelf()>();
+
+        goto label07;
+
+     label14:
+        $r4 = virtualinvoke $r1.<android.content.Intent: java.lang.String getAction()>();
+
+        $z0 = virtualinvoke $r4.<java.lang.String: boolean equals(java.lang.Object)>("android.intent.action.SYNC");
+
+        if $z0 == 0 goto label18;
+
+        $r4 = virtualinvoke $r1.<android.content.Intent: java.lang.String getStringExtra(java.lang.String)>("extra.choocheesyncadapter.ACCOUNT_ID");
+
+        $i0 = virtualinvoke $r1.<android.content.Intent: int getIntExtra(java.lang.String,int)>("extra.choocheesyncadapter.SYNC_TYPE", -1);
+
+        $r10 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        $z0 = <android.util.Config: boolean DEBUG>;
+
+        if $z0 == 0 goto label15;
+
+        $r15 = new java.lang.StringBuilder;
+
+        specialinvoke $r15.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = virtualinvoke $r15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("onStartCommand: ");
+
+        $r11 = virtualinvoke $r1.<android.content.Intent: java.lang.String getAction()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r11);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" syncType=(");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r10);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(") accountId = [");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("]");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void i(java.lang.String,java.lang.String)>("CCSyncAdapterService", $r4);
+
+     label15:
+        $r12 = staticinvoke <com.choochee.android.messenger.om.Application: com.choochee.android.messenger.om.Application getInstance()>();
+
+        if $r12 != null goto label16;
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void e(java.lang.String,java.lang.String)>("CCSyncAdapterService", "Application instance is null -- surprise!");
+
+        return 2;
+
+     label16:
+        $r12 = staticinvoke <com.choochee.android.messenger.om.Application: com.choochee.android.messenger.om.Application getInstance()>();
+
+        $r13 = virtualinvoke $r12.<com.choochee.android.messenger.om.Application: com.choochee.android.messenger.util.UserProfile getUserProfile()>();
+
+        if $r13 != null goto label17;
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void e(java.lang.String,java.lang.String)>("CCSyncAdapterService", "Application instance is null -- surprise!");
+
+        return 2;
+
+     label17:
+        $r8 = virtualinvoke r0.<com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: android.content.Context getApplicationContext()>();
+
+        $r12 = staticinvoke <com.choochee.android.messenger.om.Application: com.choochee.android.messenger.om.Application getInstance()>();
+
+        $r13 = virtualinvoke $r12.<com.choochee.android.messenger.om.Application: com.choochee.android.messenger.util.UserProfile getUserProfile()>();
+
+        $r14 = staticinvoke <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapter: android.accounts.Account lookupChoocheeAccount(java.lang.String,android.content.Context,com.choochee.android.messenger.util.UserProfile,java.lang.String)>("CCSyncAdapterService", $r8, $r13, "com.revvl.android.messenger");
+
+        $r17 = new android.os.Bundle;
+
+        r2 = $r17;
+
+        specialinvoke $r17.<android.os.Bundle: void <init>()>();
+
+        $i0 = virtualinvoke $r10.<java.lang.Integer: int intValue()>();
+
+        virtualinvoke r2.<android.os.Bundle: void putInt(java.lang.String,int)>("extra.choocheesyncadapter.SYNC_TYPE", $i0);
+
+        staticinvoke <android.content.ContentResolver: void requestSync(android.accounts.Account,java.lang.String,android.os.Bundle)>($r14, "com.android.contacts", r2);
+
+     label18:
+        return 2;
+    }
+
+    public void run()
+    {
+        com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService r0;
+
+        r0 := @this: com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService;
+
+        specialinvoke r0.<com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: void nativeChangeListener()>();
+
+        return;
+    }
+
+    public android.content.Intent getIntent()
+    {
+        com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService this;
+        android.content.Intent $r0;
+
+        this := @this: com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService;
+
+        $r0 = this.<com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapterService: android.content.Intent ipcIntent>;
+
+        return $r0;
+    }
+}

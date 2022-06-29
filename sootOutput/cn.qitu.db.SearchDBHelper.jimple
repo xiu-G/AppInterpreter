@@ -1,0 +1,230 @@
+public class cn.qitu.db.SearchDBHelper extends java.lang.Object
+{
+    public static final java.lang.String APP_TABLE_NAME;
+    private final java.lang.String DB_NAME;
+    private final int DB_VERSION_NUMBER;
+    private java.lang.String NAME;
+    private android.content.Context context;
+    private android.database.sqlite.SQLiteDatabase db;
+    private cn.qitu.db.SearchDBHelper$DatabaseHelper openHelper;
+
+    public void <init>(android.content.Context)
+    {
+        android.content.Context $r1;
+        cn.qitu.db.SearchDBHelper r0;
+        cn.qitu.db.SearchDBHelper$DatabaseHelper $r2;
+
+        r0 := @this: cn.qitu.db.SearchDBHelper;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<cn.qitu.db.SearchDBHelper: java.lang.String DB_NAME> = "app_search.db";
+
+        r0.<cn.qitu.db.SearchDBHelper: int DB_VERSION_NUMBER> = 1;
+
+        r0.<cn.qitu.db.SearchDBHelper: java.lang.String NAME> = "name";
+
+        r0.<cn.qitu.db.SearchDBHelper: android.content.Context context> = $r1;
+
+        $r2 = new cn.qitu.db.SearchDBHelper$DatabaseHelper;
+
+        specialinvoke $r2.<cn.qitu.db.SearchDBHelper$DatabaseHelper: void <init>(cn.qitu.db.SearchDBHelper,android.content.Context,java.lang.String,android.database.sqlite.SQLiteDatabase$CursorFactory,int)>(r0, $r1, null, null, 1);
+
+        r0.<cn.qitu.db.SearchDBHelper: cn.qitu.db.SearchDBHelper$DatabaseHelper openHelper> = $r2;
+
+        return;
+    }
+
+    static android.content.Context access$0(cn.qitu.db.SearchDBHelper)
+    {
+        android.content.Context r1;
+        cn.qitu.db.SearchDBHelper $r0;
+
+        $r0 := @parameter0: cn.qitu.db.SearchDBHelper;
+
+        r1 = $r0.<cn.qitu.db.SearchDBHelper: android.content.Context context>;
+
+        return r1;
+    }
+
+    static java.lang.String access$1(cn.qitu.db.SearchDBHelper)
+    {
+        java.lang.String r1;
+        cn.qitu.db.SearchDBHelper $r0;
+
+        $r0 := @parameter0: cn.qitu.db.SearchDBHelper;
+
+        r1 = $r0.<cn.qitu.db.SearchDBHelper: java.lang.String NAME>;
+
+        return r1;
+    }
+
+    public void close()
+    {
+        android.database.sqlite.SQLiteDatabase $r1;
+        cn.qitu.db.SearchDBHelper r0;
+
+        r0 := @this: cn.qitu.db.SearchDBHelper;
+
+        $r1 = r0.<cn.qitu.db.SearchDBHelper: android.database.sqlite.SQLiteDatabase db>;
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+        return;
+    }
+
+    public void delete(java.lang.String)
+    {
+        android.database.sqlite.SQLiteDatabase $r3;
+        cn.qitu.db.SearchDBHelper$DatabaseHelper $r2;
+        java.lang.StringBuilder $r4;
+        java.lang.String $r1;
+        cn.qitu.db.SearchDBHelper r0;
+
+        r0 := @this: cn.qitu.db.SearchDBHelper;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = r0.<cn.qitu.db.SearchDBHelper: cn.qitu.db.SearchDBHelper$DatabaseHelper openHelper>;
+
+        $r3 = virtualinvoke $r2.<cn.qitu.db.SearchDBHelper$DatabaseHelper: android.database.sqlite.SQLiteDatabase getWritableDatabase()>();
+
+        r0.<cn.qitu.db.SearchDBHelper: android.database.sqlite.SQLiteDatabase db> = $r3;
+
+        $r3 = r0.<cn.qitu.db.SearchDBHelper: android.database.sqlite.SQLiteDatabase db>;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>(java.lang.String)>("drop table ");
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>($r1);
+
+        return;
+    }
+
+    public android.database.Cursor getNameData()
+    {
+        android.database.sqlite.SQLiteDatabase $r2;
+        cn.qitu.db.SearchDBHelper$DatabaseHelper $r1;
+        java.lang.StringBuilder $r3;
+        java.lang.String $r4;
+        cn.qitu.db.SearchDBHelper r0;
+        android.database.Cursor $r5;
+
+        r0 := @this: cn.qitu.db.SearchDBHelper;
+
+        $r1 = r0.<cn.qitu.db.SearchDBHelper: cn.qitu.db.SearchDBHelper$DatabaseHelper openHelper>;
+
+        $r2 = virtualinvoke $r1.<cn.qitu.db.SearchDBHelper$DatabaseHelper: android.database.sqlite.SQLiteDatabase getWritableDatabase()>();
+
+        r0.<cn.qitu.db.SearchDBHelper: android.database.sqlite.SQLiteDatabase db> = $r2;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>("select * from search group by ");
+
+        $r4 = r0.<cn.qitu.db.SearchDBHelper: java.lang.String NAME>;
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" order by id desc limit 6");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("wsf", $r4);
+
+        $r2 = r0.<cn.qitu.db.SearchDBHelper: android.database.sqlite.SQLiteDatabase db>;
+
+        $r5 = virtualinvoke $r2.<android.database.sqlite.SQLiteDatabase: android.database.Cursor rawQuery(java.lang.String,java.lang.String[])>($r4, null);
+
+        return $r5;
+    }
+
+    public void save(java.lang.String)
+    {
+        android.database.sqlite.SQLiteDatabase $r5;
+        cn.qitu.db.SearchDBHelper$DatabaseHelper $r4;
+        int $i0;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r1, $r3, $r6;
+        cn.qitu.db.SearchDBHelper r0;
+        android.database.Cursor $r7;
+
+        r0 := @this: cn.qitu.db.SearchDBHelper;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("insert into search(");
+
+        $r3 = r0.<cn.qitu.db.SearchDBHelper: java.lang.String NAME>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(") values(\'");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\')");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r4 = r0.<cn.qitu.db.SearchDBHelper: cn.qitu.db.SearchDBHelper$DatabaseHelper openHelper>;
+
+        $r5 = virtualinvoke $r4.<cn.qitu.db.SearchDBHelper$DatabaseHelper: android.database.sqlite.SQLiteDatabase getWritableDatabase()>();
+
+        r0.<cn.qitu.db.SearchDBHelper: android.database.sqlite.SQLiteDatabase db> = $r5;
+
+        $r5 = r0.<cn.qitu.db.SearchDBHelper: android.database.sqlite.SQLiteDatabase db>;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("select * from search where ");
+
+        $r6 = r0.<cn.qitu.db.SearchDBHelper: java.lang.String NAME>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" = \'");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\'");
+
+        $r1 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r7 = virtualinvoke $r5.<android.database.sqlite.SQLiteDatabase: android.database.Cursor rawQuery(java.lang.String,java.lang.String[])>($r1, null);
+
+        if $r7 == null goto label1;
+
+        $i0 = interfaceinvoke $r7.<android.database.Cursor: int getCount()>();
+
+        if $i0 > 0 goto label2;
+
+     label1:
+        $r5 = r0.<cn.qitu.db.SearchDBHelper: android.database.sqlite.SQLiteDatabase db>;
+
+        virtualinvoke $r5.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>($r3);
+
+     label2:
+        interfaceinvoke $r7.<android.database.Cursor: void close()>();
+
+        virtualinvoke r0.<cn.qitu.db.SearchDBHelper: void close()>();
+
+        return;
+    }
+
+    public static void <clinit>()
+    {
+        <cn.qitu.db.SearchDBHelper: java.lang.String APP_TABLE_NAME> = "search";
+
+        return;
+    }
+}

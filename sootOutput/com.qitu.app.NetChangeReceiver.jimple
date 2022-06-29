@@ -1,0 +1,295 @@
+public class com.qitu.app.NetChangeReceiver extends android.content.BroadcastReceiver
+{
+    private android.content.SharedPreferences a;
+    public android.content.Intent ipcIntent;
+
+    public void <init>()
+    {
+        com.qitu.app.NetChangeReceiver r0;
+
+        r0 := @this: com.qitu.app.NetChangeReceiver;
+
+        specialinvoke r0.<android.content.BroadcastReceiver: void <init>()>();
+
+        return;
+    }
+
+    public void onReceive(android.content.Context, android.content.Intent)
+    {
+        android.content.SharedPreferences$Editor $r17;
+        android.content.Context $r1;
+        byte[] $r18;
+        javax.crypto.spec.SecretKeySpec $r19;
+        android.content.Intent $r2;
+        javax.crypto.Cipher $r20;
+        org.json.JSONException $r21;
+        org.json.JSONObject $r12, $r13;
+        android.telephony.TelephonyManager $r11;
+        int $i0;
+        java.lang.String $r9, $r14;
+        boolean $z0;
+        android.net.ConnectivityManager $r4;
+        java.io.PrintStream $r15;
+        android.net.NetworkInfo $r5, $r6, $r7;
+        com.qitu.app.NetChangeReceiver r0;
+        java.lang.Exception $r22;
+        android.content.SharedPreferences $r10;
+        java.lang.Object $r3;
+        java.lang.StringBuilder $r8;
+        java.io.InputStream $r16;
+
+        r0 := @this: com.qitu.app.NetChangeReceiver;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.content.Intent;
+
+        virtualinvoke r0.<com.qitu.app.NetChangeReceiver: android.content.Intent getIntent()>();
+
+        $r3 = virtualinvoke $r1.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("connectivity");
+
+        $r4 = (android.net.ConnectivityManager) $r3;
+
+        $r5 = virtualinvoke $r4.<android.net.ConnectivityManager: android.net.NetworkInfo getNetworkInfo(int)>(0);
+
+        $r6 = virtualinvoke $r4.<android.net.ConnectivityManager: android.net.NetworkInfo getNetworkInfo(int)>(1);
+
+        $r7 = virtualinvoke $r4.<android.net.ConnectivityManager: android.net.NetworkInfo getActiveNetworkInfo()>();
+
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>(java.lang.String)>("mobile:");
+
+        $z0 = virtualinvoke $r5.<android.net.NetworkInfo: boolean isConnected()>();
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(boolean)>($z0);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("  wifi:");
+
+        $z0 = virtualinvoke $r6.<android.net.NetworkInfo: boolean isConnected()>();
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(boolean)>($z0);
+
+        $r9 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("wsf", $r9);
+
+        $z0 = virtualinvoke $r5.<android.net.NetworkInfo: boolean isConnected()>();
+
+        if $z0 != 0 goto label01;
+
+        $z0 = virtualinvoke $r6.<android.net.NetworkInfo: boolean isConnected()>();
+
+        if $z0 != 0 goto label01;
+
+        $r2 = new android.content.Intent;
+
+        specialinvoke $r2.<android.content.Intent: void <init>(java.lang.String)>("cn.qitu.download.services.IDownloadService");
+
+        virtualinvoke $r2.<android.content.Intent: android.content.Intent putExtra(java.lang.String,int)>("type", 7);
+
+        virtualinvoke $r1.<android.content.Context: android.content.ComponentName startService(android.content.Intent)>($r2);
+
+     label01:
+        $r10 = virtualinvoke $r1.<android.content.Context: android.content.SharedPreferences getSharedPreferences(java.lang.String,int)>("_info", 0);
+
+        r0.<com.qitu.app.NetChangeReceiver: android.content.SharedPreferences a> = $r10;
+
+        if $r7 == null goto label31;
+
+        $r10 = r0.<com.qitu.app.NetChangeReceiver: android.content.SharedPreferences a>;
+
+        $z0 = interfaceinvoke $r10.<android.content.SharedPreferences: boolean contains(java.lang.String)>("mobile_status");
+
+        if $z0 != 0 goto label31;
+
+        $r3 = virtualinvoke $r1.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("phone");
+
+        $r11 = (android.telephony.TelephonyManager) $r3;
+
+        $r9 = virtualinvoke $r11.<android.telephony.TelephonyManager: java.lang.String getDeviceId()>();
+
+        $r12 = new org.json.JSONObject;
+
+        specialinvoke $r12.<org.json.JSONObject: void <init>()>();
+
+     label02:
+        virtualinvoke $r12.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("action", "uploadMessage");
+
+        virtualinvoke $r12.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("uid", 1);
+
+        virtualinvoke $r12.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("apiver", 2);
+
+     label03:
+        $r13 = new org.json.JSONObject;
+
+     label04:
+        specialinvoke $r13.<org.json.JSONObject: void <init>()>();
+
+        virtualinvoke $r13.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("imei", $r9);
+
+     label05:
+        $r9 = <android.os.Build: java.lang.String MODEL>;
+
+     label06:
+        virtualinvoke $r13.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("model", $r9);
+
+     label07:
+        $r9 = <android.os.Build: java.lang.String BRAND>;
+
+     label08:
+        virtualinvoke $r13.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("brand", $r9);
+
+     label09:
+        $r8 = new java.lang.StringBuilder;
+
+     label10:
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>(java.lang.String)>("\u4e0a\u4f20\u53c2\u6570\uff1a");
+
+        $r9 = virtualinvoke $r13.<org.json.JSONObject: java.lang.String toString()>();
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r9);
+
+        $r9 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("wsf", $r9);
+
+        $r9 = virtualinvoke $r13.<org.json.JSONObject: java.lang.String toString()>();
+
+     label11:
+        $r14 = "SJ@WWW.7TU.CN_AM";
+
+     label12:
+        $i0 = virtualinvoke $r14.<java.lang.String: int length()>();
+
+     label13:
+        if $i0 == 16 goto label23;
+
+        $r15 = <java.lang.System: java.io.PrintStream out>;
+
+     label14:
+        virtualinvoke $r15.<java.io.PrintStream: void print(java.lang.String)>("Key\u957f\u5ea6\u4e0d\u662f16\u4f4d");
+
+     label15:
+        $r9 = null;
+
+     label16:
+        virtualinvoke $r12.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("message", $r9);
+
+     label17:
+        $r8 = new java.lang.StringBuilder;
+
+     label18:
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>(java.lang.String)>("\u89e3\u5bc6\u7ed3\u679c\uff1a");
+
+        $r9 = virtualinvoke $r12.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("message");
+
+        $r9 = staticinvoke <cn.qitu.g.a: java.lang.String a(java.lang.String,java.lang.String)>($r9, "SJ@WWW.7TU.CN_AM");
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r9);
+
+        $r9 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("wsf", $r9);
+
+        $r9 = virtualinvoke $r12.<org.json.JSONObject: java.lang.String toString()>();
+
+        $r16 = staticinvoke <cn.qitu.h.a: java.io.InputStream a(java.lang.String,java.lang.String)>("http://qapi91.7to.cn/api/adapter.ashx?ee", $r9);
+
+     label19:
+        if $r16 == null goto label31;
+
+     label20:
+        $r10 = r0.<com.qitu.app.NetChangeReceiver: android.content.SharedPreferences a>;
+
+     label21:
+        $r17 = interfaceinvoke $r10.<android.content.SharedPreferences: android.content.SharedPreferences$Editor edit()>();
+
+        interfaceinvoke $r17.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putBoolean(java.lang.String,boolean)>("mobile_status", 1);
+
+     label22:
+        return;
+
+     label23:
+        $r18 = virtualinvoke $r14.<java.lang.String: byte[] getBytes(java.lang.String)>("utf-8");
+
+     label24:
+        $r19 = new javax.crypto.spec.SecretKeySpec;
+
+     label25:
+        specialinvoke $r19.<javax.crypto.spec.SecretKeySpec: void <init>(byte[],java.lang.String)>($r18, "AES");
+
+        $r20 = staticinvoke <javax.crypto.Cipher: javax.crypto.Cipher getInstance(java.lang.String)>("AES/ECB/PKCS5Padding");
+
+        virtualinvoke $r20.<javax.crypto.Cipher: void init(int,java.security.Key)>(1, $r19);
+
+        $r18 = virtualinvoke $r9.<java.lang.String: byte[] getBytes(java.lang.String)>("utf-8");
+
+        $r18 = virtualinvoke $r20.<javax.crypto.Cipher: byte[] doFinal(byte[])>($r18);
+
+     label26:
+        $r9 = new java.lang.String;
+
+     label27:
+        $r18 = staticinvoke <a.a.a.a: byte[] a(byte[])>($r18);
+
+        specialinvoke $r9.<java.lang.String: void <init>(byte[])>($r18);
+
+     label28:
+        goto label16;
+
+     label29:
+        $r21 := @caughtexception;
+
+        virtualinvoke $r21.<org.json.JSONException: void printStackTrace()>();
+
+        return;
+
+     label30:
+        $r22 := @caughtexception;
+
+        virtualinvoke $r22.<java.lang.Exception: void printStackTrace()>();
+
+     label31:
+        return;
+
+        catch org.json.JSONException from label02 to label03 with label29;
+        catch org.json.JSONException from label04 to label05 with label29;
+        catch org.json.JSONException from label06 to label07 with label29;
+        catch org.json.JSONException from label08 to label09 with label29;
+        catch org.json.JSONException from label10 to label11 with label29;
+        catch org.json.JSONException from label12 to label13 with label29;
+        catch org.json.JSONException from label14 to label15 with label29;
+        catch org.json.JSONException from label16 to label17 with label29;
+        catch org.json.JSONException from label18 to label19 with label29;
+        catch org.json.JSONException from label21 to label22 with label29;
+        catch org.json.JSONException from label23 to label24 with label29;
+        catch org.json.JSONException from label25 to label26 with label29;
+        catch org.json.JSONException from label27 to label28 with label29;
+        catch java.lang.Exception from label02 to label03 with label30;
+        catch java.lang.Exception from label04 to label05 with label30;
+        catch java.lang.Exception from label06 to label07 with label30;
+        catch java.lang.Exception from label08 to label09 with label30;
+        catch java.lang.Exception from label10 to label11 with label30;
+        catch java.lang.Exception from label12 to label13 with label30;
+        catch java.lang.Exception from label14 to label15 with label30;
+        catch java.lang.Exception from label16 to label17 with label30;
+        catch java.lang.Exception from label18 to label19 with label30;
+        catch java.lang.Exception from label20 to label22 with label30;
+        catch java.lang.Exception from label23 to label24 with label30;
+        catch java.lang.Exception from label25 to label26 with label30;
+        catch java.lang.Exception from label27 to label28 with label30;
+    }
+
+    public android.content.Intent getIntent()
+    {
+        android.content.Intent $r0;
+        com.qitu.app.NetChangeReceiver this;
+
+        this := @this: com.qitu.app.NetChangeReceiver;
+
+        $r0 = this.<com.qitu.app.NetChangeReceiver: android.content.Intent ipcIntent>;
+
+        return $r0;
+    }
+}

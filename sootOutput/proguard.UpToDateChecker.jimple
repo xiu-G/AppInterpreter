@@ -1,0 +1,258 @@
+public class proguard.UpToDateChecker extends java.lang.Object
+{
+    private final proguard.Configuration configuration;
+
+    public void <init>(proguard.Configuration)
+    {
+        proguard.UpToDateChecker r0;
+        proguard.Configuration $r1;
+
+        r0 := @this: proguard.UpToDateChecker;
+
+        $r1 := @parameter0: proguard.Configuration;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<proguard.UpToDateChecker: proguard.Configuration configuration> = $r1;
+
+        return;
+    }
+
+    private long lastModified(java.io.File, boolean)
+    {
+        long $l1, $l3;
+        java.io.File $r1;
+        byte $b4;
+        proguard.UpToDateChecker r0;
+        int $i0, $i2;
+        java.io.File[] $r2;
+        boolean $z0, $z1;
+
+        r0 := @this: proguard.UpToDateChecker;
+
+        $r1 := @parameter0: java.io.File;
+
+        $z0 := @parameter1: boolean;
+
+        $z1 = virtualinvoke $r1.<java.io.File: boolean isDirectory()>();
+
+        if $z1 == 0 goto label8;
+
+        $r2 = virtualinvoke $r1.<java.io.File: java.io.File[] listFiles()>();
+
+        $i0 = lengthof $r2;
+
+        if $i0 == 0 goto label5;
+
+        if $z0 == 0 goto label5;
+
+        $l1 = 9223372036854775807L;
+
+     label1:
+        $i0 = 0;
+
+     label2:
+        $i2 = lengthof $r2;
+
+        if $i0 >= $i2 goto label7;
+
+        $r1 = $r2[$i0];
+
+        $l3 = specialinvoke r0.<proguard.UpToDateChecker: long lastModified(java.io.File,boolean)>($r1, $z0);
+
+        $b4 = $l1 cmp $l3;
+
+        $i2 = (int) $b4;
+
+        if $i2 >= 0 goto label6;
+
+        $z1 = 1;
+
+     label3:
+        $z1 = $z1 ^ $z0;
+
+        if $z1 == 0 goto label4;
+
+        $l1 = $l3;
+
+     label4:
+        $i0 = $i0 + 1;
+
+        goto label2;
+
+     label5:
+        $l1 = 0L;
+
+        goto label1;
+
+     label6:
+        $z1 = 0;
+
+        goto label3;
+
+     label7:
+        return $l1;
+
+     label8:
+        $l1 = virtualinvoke $r1.<java.io.File: long lastModified()>();
+
+        return $l1;
+    }
+
+    public boolean check()
+    {
+        java.io.PrintStream $r4;
+        proguard.ClassPath $r2, $r3;
+        long $l0, $l2, $l5;
+        java.io.File $r6;
+        byte $b4;
+        proguard.ClassPathEntry $r5;
+        proguard.UpToDateChecker r0;
+        proguard.Configuration $r1;
+        int $i1, $i3;
+        boolean $z0;
+
+        r0 := @this: proguard.UpToDateChecker;
+
+        $r1 = r0.<proguard.UpToDateChecker: proguard.Configuration configuration>;
+
+        $l0 = $r1.<proguard.Configuration: long lastModified>;
+
+        $r1 = r0.<proguard.UpToDateChecker: proguard.Configuration configuration>;
+
+        $r2 = $r1.<proguard.Configuration: proguard.ClassPath programJars>;
+
+        $r1 = r0.<proguard.UpToDateChecker: proguard.Configuration configuration>;
+
+        $r3 = $r1.<proguard.Configuration: proguard.ClassPath libraryJars>;
+
+        if $r2 == null goto label14;
+
+        $i1 = 0;
+
+        $l2 = 9223372036854775807L;
+
+     label01:
+        $i3 = virtualinvoke $r2.<proguard.ClassPath: int size()>();
+
+        if $i1 >= $i3 goto label13;
+
+        $b4 = $l0 cmp $l2;
+
+        $i3 = (int) $b4;
+
+        if $i3 < 0 goto label06;
+
+     label02:
+        if $r3 == null goto label04;
+
+        $i1 = 0;
+
+     label03:
+        $i3 = virtualinvoke $r3.<proguard.ClassPath: int size()>();
+
+        if $i1 >= $i3 goto label12;
+
+        $b4 = $l0 cmp $l2;
+
+        $i3 = (int) $b4;
+
+        if $i3 < 0 goto label09;
+
+     label04:
+        $b4 = $l0 cmp $l2;
+
+        $i1 = (int) $b4;
+
+        if $i1 >= 0 goto label11;
+
+        $z0 = 1;
+
+     label05:
+        if $z0 == 0 goto label15;
+
+        $r4 = <java.lang.System: java.io.PrintStream out>;
+
+        virtualinvoke $r4.<java.io.PrintStream: void println(java.lang.String)>("The output is up to date");
+
+        return $z0;
+
+     label06:
+        $r5 = virtualinvoke $r2.<proguard.ClassPath: proguard.ClassPathEntry get(int)>($i1);
+
+        $z0 = virtualinvoke $r5.<proguard.ClassPathEntry: boolean isOutput()>();
+
+        if $z0 == 0 goto label08;
+
+        $r6 = virtualinvoke $r5.<proguard.ClassPathEntry: java.io.File getFile()>();
+
+        $l5 = specialinvoke r0.<proguard.UpToDateChecker: long lastModified(java.io.File,boolean)>($r6, 1);
+
+        $b4 = $l2 cmp $l5;
+
+        $i3 = (int) $b4;
+
+        if $i3 <= 0 goto label07;
+
+        $l2 = $l5;
+
+     label07:
+        $i1 = $i1 + 1;
+
+        goto label01;
+
+     label08:
+        $r6 = virtualinvoke $r5.<proguard.ClassPathEntry: java.io.File getFile()>();
+
+        $l5 = specialinvoke r0.<proguard.UpToDateChecker: long lastModified(java.io.File,boolean)>($r6, 0);
+
+        $b4 = $l0 cmp $l5;
+
+        $i3 = (int) $b4;
+
+        if $i3 >= 0 goto label07;
+
+        $l0 = $l5;
+
+        goto label07;
+
+     label09:
+        $r5 = virtualinvoke $r3.<proguard.ClassPath: proguard.ClassPathEntry get(int)>($i1);
+
+        $r6 = virtualinvoke $r5.<proguard.ClassPathEntry: java.io.File getFile()>();
+
+        $l5 = specialinvoke r0.<proguard.UpToDateChecker: long lastModified(java.io.File,boolean)>($r6, 0);
+
+        $b4 = $l0 cmp $l5;
+
+        $i3 = (int) $b4;
+
+        if $i3 >= 0 goto label10;
+
+        $l0 = $l5;
+
+     label10:
+        $i1 = $i1 + 1;
+
+        goto label03;
+
+     label11:
+        $z0 = 0;
+
+        goto label05;
+
+     label12:
+        goto label04;
+
+     label13:
+        goto label02;
+
+     label14:
+        $l2 = 9223372036854775807L;
+
+        goto label02;
+
+     label15:
+        return $z0;
+    }
+}

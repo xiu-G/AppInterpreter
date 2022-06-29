@@ -1,0 +1,904 @@
+public class com.trustlook.antivirus.backup.CallLogAdaptor extends java.lang.Object implements com.trustlook.antivirus.backup.BackupRestoreAPI
+{
+    private static final java.lang.String TAG;
+    public static java.lang.String backupPath;
+    public static java.lang.String restorePath;
+    java.lang.String backupFile;
+    com.trustlook.antivirus.backup.task.BackupRestoreCallBack backupRestoreAPI;
+    java.util.List calllogList;
+    android.database.Cursor cursor;
+    android.content.CursorLoader cursorLoader;
+    android.app.LoaderManager loadermanager;
+    com.trustlook.antivirus.backup.task.ProgressCallBack progressCallBack;
+    java.lang.String restoreFile;
+
+    public void <init>()
+    {
+        com.trustlook.antivirus.backup.CallLogAdaptor r0;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r3;
+        java.util.ArrayList $r1;
+
+        r0 := @this: com.trustlook.antivirus.backup.CallLogAdaptor;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        $r1 = new java.util.ArrayList;
+
+        specialinvoke $r1.<java.util.ArrayList: void <init>()>();
+
+        r0.<com.trustlook.antivirus.backup.CallLogAdaptor: java.util.List calllogList> = $r1;
+
+        r0.<com.trustlook.antivirus.backup.CallLogAdaptor: java.lang.String backupFile> = "backupCallLog";
+
+        r0.<com.trustlook.antivirus.backup.CallLogAdaptor: java.lang.String restoreFile> = "restoreCallLog";
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = <com.trustlook.antivirus.AntivirusApp: java.lang.String b>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r3 = <java.io.File: java.lang.String separator>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r3 = r0.<com.trustlook.antivirus.backup.CallLogAdaptor: java.lang.String backupFile>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        <com.trustlook.antivirus.backup.CallLogAdaptor: java.lang.String backupPath> = $r3;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = <com.trustlook.antivirus.AntivirusApp: java.lang.String b>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r3 = <java.io.File: java.lang.String separator>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r3 = r0.<com.trustlook.antivirus.backup.CallLogAdaptor: java.lang.String restoreFile>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        <com.trustlook.antivirus.backup.CallLogAdaptor: java.lang.String restorePath> = $r3;
+
+        return;
+    }
+
+    public static void deleteAllCallLog(android.content.Context)
+    {
+        android.content.ContentProviderOperation $r5;
+        java.lang.Throwable $r7, $r8;
+        android.content.Context $r0;
+        android.net.Uri $r3;
+        android.os.RemoteException $r10;
+        java.util.ArrayList $r1, $r9;
+        android.content.OperationApplicationException $r11;
+        android.content.ContentResolver $r2;
+        java.lang.String $r6;
+        android.content.ContentProviderOperation$Builder $r4;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r2 = virtualinvoke $r0.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        $r9 = new java.util.ArrayList;
+
+        $r1 = $r9;
+
+        specialinvoke $r9.<java.util.ArrayList: void <init>()>();
+
+        $r3 = <android.provider.CallLog$Calls: android.net.Uri CONTENT_URI>;
+
+        $r4 = staticinvoke <android.content.ContentProviderOperation: android.content.ContentProviderOperation$Builder newDelete(android.net.Uri)>($r3);
+
+        $r5 = virtualinvoke $r4.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation build()>();
+
+        virtualinvoke $r1.<java.util.ArrayList: boolean add(java.lang.Object)>($r5);
+
+        $r3 = <android.provider.CallLog$Calls: android.net.Uri CONTENT_URI>;
+
+     label1:
+        $r6 = virtualinvoke $r3.<android.net.Uri: java.lang.String getAuthority()>();
+
+        virtualinvoke $r2.<android.content.ContentResolver: android.content.ContentProviderResult[] applyBatch(java.lang.String,java.util.ArrayList)>($r6, $r1);
+
+     label2:
+        return;
+
+     label3:
+        $r7 := @caughtexception;
+
+        $r10 = (android.os.RemoteException) $r7;
+
+        virtualinvoke $r10.<android.os.RemoteException: void printStackTrace()>();
+
+        return;
+
+     label4:
+        $r8 := @caughtexception;
+
+        $r11 = (android.content.OperationApplicationException) $r8;
+
+        virtualinvoke $r11.<android.content.OperationApplicationException: void printStackTrace()>();
+
+        return;
+
+        catch android.os.RemoteException from label1 to label2 with label3;
+        catch android.content.OperationApplicationException from label1 to label2 with label4;
+    }
+
+    private java.util.List populateDataFromFile(java.lang.String)
+    {
+        com.trustlook.antivirus.backup.CallLogAdaptor r0;
+        long $l2;
+        java.util.ArrayList $r2;
+        org.json.JSONException $r6;
+        org.json.JSONObject $r5;
+        int $i0, $i1;
+        java.lang.String $r1;
+        com.trustlook.antivirus.backup.StorableCallLog $r4;
+        org.json.JSONArray $r3;
+
+        r0 := @this: com.trustlook.antivirus.backup.CallLogAdaptor;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = new java.util.ArrayList;
+
+        specialinvoke $r2.<java.util.ArrayList: void <init>()>();
+
+        $r1 = staticinvoke <com.trustlook.antivirus.utils.Utility: java.lang.String k(java.lang.String)>($r1);
+
+        $r3 = new org.json.JSONArray;
+
+     label01:
+        specialinvoke $r3.<org.json.JSONArray: void <init>(java.lang.String)>($r1);
+
+     label02:
+        $i0 = 0;
+
+     label03:
+        $i1 = virtualinvoke $r3.<org.json.JSONArray: int length()>();
+
+     label04:
+        if $i0 >= $i1 goto label10;
+
+     label05:
+        $r5 = virtualinvoke $r3.<org.json.JSONArray: org.json.JSONObject getJSONObject(int)>($i0);
+
+        virtualinvoke $r5.<org.json.JSONObject: java.lang.String toString()>();
+
+     label06:
+        $r4 = new com.trustlook.antivirus.backup.StorableCallLog;
+
+     label07:
+        specialinvoke $r4.<com.trustlook.antivirus.backup.StorableCallLog: void <init>()>();
+
+        $i1 = virtualinvoke $r5.<org.json.JSONObject: int optInt(java.lang.String)>("id");
+
+        virtualinvoke $r4.<com.trustlook.antivirus.backup.StorableCallLog: void setId(int)>($i1);
+
+        $r1 = virtualinvoke $r5.<org.json.JSONObject: java.lang.String optString(java.lang.String)>("name");
+
+        virtualinvoke $r4.<com.trustlook.antivirus.backup.StorableCallLog: void setName(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r5.<org.json.JSONObject: java.lang.String optString(java.lang.String)>("callNumber");
+
+        virtualinvoke $r4.<com.trustlook.antivirus.backup.StorableCallLog: void setCallNumber(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r5.<org.json.JSONObject: java.lang.String optString(java.lang.String)>("callType");
+
+        virtualinvoke $r4.<com.trustlook.antivirus.backup.StorableCallLog: void setCallType(java.lang.String)>($r1);
+
+        $l2 = virtualinvoke $r5.<org.json.JSONObject: long optLong(java.lang.String)>("callDate");
+
+        virtualinvoke $r4.<com.trustlook.antivirus.backup.StorableCallLog: void setCallDate(long)>($l2);
+
+        $l2 = virtualinvoke $r5.<org.json.JSONObject: long optLong(java.lang.String)>("callDuration");
+
+        virtualinvoke $r4.<com.trustlook.antivirus.backup.StorableCallLog: void setCallDuration(long)>($l2);
+
+        $i1 = virtualinvoke $r5.<org.json.JSONObject: int optInt(java.lang.String)>("callIsRead");
+
+        virtualinvoke $r4.<com.trustlook.antivirus.backup.StorableCallLog: void setCallIsRead(int)>($i1);
+
+        $i1 = virtualinvoke $r5.<org.json.JSONObject: int optInt(java.lang.String)>("callCachedNumberType");
+
+        virtualinvoke $r4.<com.trustlook.antivirus.backup.StorableCallLog: void setCallCachedNumberType(int)>($i1);
+
+        $r1 = virtualinvoke $r5.<org.json.JSONObject: java.lang.String optString(java.lang.String)>("callGeocodedLocation");
+
+        virtualinvoke $r4.<com.trustlook.antivirus.backup.StorableCallLog: void setCallGeocodedLocation(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r5.<org.json.JSONObject: java.lang.String optString(java.lang.String)>("callCountryISO");
+
+        virtualinvoke $r4.<com.trustlook.antivirus.backup.StorableCallLog: void setCallCountryISO(java.lang.String)>($r1);
+
+        $i1 = virtualinvoke $r5.<org.json.JSONObject: int optInt(java.lang.String)>("callNew");
+
+        virtualinvoke $r4.<com.trustlook.antivirus.backup.StorableCallLog: void setCallNew(int)>($i1);
+
+        $r1 = virtualinvoke $r5.<org.json.JSONObject: java.lang.String optString(java.lang.String)>("callCachedName");
+
+        virtualinvoke $r4.<com.trustlook.antivirus.backup.StorableCallLog: void setCallCachedName(java.lang.String)>($r1);
+
+        interfaceinvoke $r2.<java.util.List: boolean add(java.lang.Object)>($r4);
+
+     label08:
+        $i0 = $i0 + 1;
+
+        goto label03;
+
+     label09:
+        $r6 := @caughtexception;
+
+        virtualinvoke $r6.<org.json.JSONException: void printStackTrace()>();
+
+     label10:
+        return $r2;
+
+        catch org.json.JSONException from label01 to label02 with label09;
+        catch org.json.JSONException from label03 to label04 with label09;
+        catch org.json.JSONException from label05 to label06 with label09;
+        catch org.json.JSONException from label07 to label08 with label09;
+    }
+
+    private java.util.List populateDataManually()
+    {
+        com.trustlook.antivirus.backup.CallLogAdaptor r0;
+        com.trustlook.antivirus.backup.StorableCallLog $r2, $r3;
+        java.util.ArrayList $r1;
+
+        r0 := @this: com.trustlook.antivirus.backup.CallLogAdaptor;
+
+        $r1 = new java.util.ArrayList;
+
+        specialinvoke $r1.<java.util.ArrayList: void <init>()>();
+
+        $r2 = new com.trustlook.antivirus.backup.StorableCallLog;
+
+        specialinvoke $r2.<com.trustlook.antivirus.backup.StorableCallLog: void <init>()>();
+
+        virtualinvoke $r2.<com.trustlook.antivirus.backup.StorableCallLog: void setCallNumber(java.lang.String)>("4089999999");
+
+        virtualinvoke $r2.<com.trustlook.antivirus.backup.StorableCallLog: void setCallType(java.lang.String)>("1");
+
+        virtualinvoke $r2.<com.trustlook.antivirus.backup.StorableCallLog: void setCallDate(long)>(1397006010062L);
+
+        virtualinvoke $r2.<com.trustlook.antivirus.backup.StorableCallLog: void setCallDuration(long)>(60L);
+
+        $r3 = new com.trustlook.antivirus.backup.StorableCallLog;
+
+        specialinvoke $r3.<com.trustlook.antivirus.backup.StorableCallLog: void <init>()>();
+
+        virtualinvoke $r3.<com.trustlook.antivirus.backup.StorableCallLog: void setCallNumber(java.lang.String)>("6503453455");
+
+        virtualinvoke $r3.<com.trustlook.antivirus.backup.StorableCallLog: void setCallType(java.lang.String)>("2");
+
+        virtualinvoke $r3.<com.trustlook.antivirus.backup.StorableCallLog: void setCallDate(long)>(1397005610062L);
+
+        virtualinvoke $r3.<com.trustlook.antivirus.backup.StorableCallLog: void setCallDuration(long)>(120L);
+
+        interfaceinvoke $r1.<java.util.List: boolean add(java.lang.Object)>($r2);
+
+        interfaceinvoke $r1.<java.util.List: boolean add(java.lang.Object)>($r3);
+
+        return $r1;
+    }
+
+    public long[] getAllStorable(android.content.Context, com.trustlook.antivirus.backup.task.ProgressCallBack)
+    {
+        android.content.Context $r1;
+        android.net.Uri $r4;
+        long $l1;
+        long[] $r6;
+        android.content.ContentResolver $r3;
+        java.lang.Long $r10;
+        int $i0, $i2;
+        java.lang.String $r9;
+        com.trustlook.antivirus.backup.StorableCallLog $r8;
+        com.trustlook.antivirus.backup.task.ProgressCallBack $r2;
+        android.database.Cursor $r5;
+        boolean $z0;
+        com.trustlook.antivirus.backup.CallLogAdaptor r0;
+        java.lang.Exception $r11;
+        java.util.List $r7;
+
+        r0 := @this: com.trustlook.antivirus.backup.CallLogAdaptor;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: com.trustlook.antivirus.backup.task.ProgressCallBack;
+
+        r0.<com.trustlook.antivirus.backup.CallLogAdaptor: com.trustlook.antivirus.backup.task.ProgressCallBack progressCallBack> = $r2;
+
+        $r3 = virtualinvoke $r1.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        $r4 = <android.provider.CallLog$Calls: android.net.Uri CONTENT_URI>;
+
+        $r5 = virtualinvoke $r3.<android.content.ContentResolver: android.database.Cursor query(android.net.Uri,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String)>($r4, null, null, null, null);
+
+        $r6 = newarray (long)[2];
+
+        $i0 = interfaceinvoke $r5.<android.database.Cursor: int getCount()>();
+
+        $l1 = (long) $i0;
+
+        $r6[0] = $l1;
+
+        $z0 = interfaceinvoke $r5.<android.database.Cursor: boolean moveToFirst()>();
+
+        if $z0 == 0 goto label10;
+
+        $r7 = r0.<com.trustlook.antivirus.backup.CallLogAdaptor: java.util.List calllogList>;
+
+        if $r7 == null goto label01;
+
+        $r7 = r0.<com.trustlook.antivirus.backup.CallLogAdaptor: java.util.List calllogList>;
+
+        interfaceinvoke $r7.<java.util.List: void clear()>();
+
+     label01:
+        $i0 = 0;
+
+     label02:
+        $r8 = new com.trustlook.antivirus.backup.StorableCallLog;
+
+     label03:
+        specialinvoke $r8.<com.trustlook.antivirus.backup.StorableCallLog: void <init>()>();
+
+        $i2 = interfaceinvoke $r5.<android.database.Cursor: int getColumnIndex(java.lang.String)>("number");
+
+        $r9 = interfaceinvoke $r5.<android.database.Cursor: java.lang.String getString(int)>($i2);
+
+        virtualinvoke $r8.<com.trustlook.antivirus.backup.StorableCallLog: void setName(java.lang.String)>($r9);
+
+        $i2 = interfaceinvoke $r5.<android.database.Cursor: int getColumnIndex(java.lang.String)>("number");
+
+        $r9 = interfaceinvoke $r5.<android.database.Cursor: java.lang.String getString(int)>($i2);
+
+        virtualinvoke $r8.<com.trustlook.antivirus.backup.StorableCallLog: void setCallNumber(java.lang.String)>($r9);
+
+        $i2 = interfaceinvoke $r5.<android.database.Cursor: int getColumnIndex(java.lang.String)>("presentation");
+
+     label04:
+        if $i2 <= 0 goto label06;
+
+     label05:
+        $i2 = interfaceinvoke $r5.<android.database.Cursor: int getColumnIndex(java.lang.String)>("presentation");
+
+        $r9 = interfaceinvoke $r5.<android.database.Cursor: java.lang.String getString(int)>($i2);
+
+        virtualinvoke $r8.<com.trustlook.antivirus.backup.StorableCallLog: void setCallNumberPresentation(java.lang.String)>($r9);
+
+     label06:
+        $i2 = interfaceinvoke $r5.<android.database.Cursor: int getColumnIndex(java.lang.String)>("date");
+
+        $l1 = interfaceinvoke $r5.<android.database.Cursor: long getLong(int)>($i2);
+
+        virtualinvoke $r8.<com.trustlook.antivirus.backup.StorableCallLog: void setCallDate(long)>($l1);
+
+        $i2 = interfaceinvoke $r5.<android.database.Cursor: int getColumnIndex(java.lang.String)>("duration");
+
+        $l1 = interfaceinvoke $r5.<android.database.Cursor: long getLong(int)>($i2);
+
+        virtualinvoke $r8.<com.trustlook.antivirus.backup.StorableCallLog: void setCallDuration(long)>($l1);
+
+        $i2 = interfaceinvoke $r5.<android.database.Cursor: int getColumnIndex(java.lang.String)>("type");
+
+        $r9 = interfaceinvoke $r5.<android.database.Cursor: java.lang.String getString(int)>($i2);
+
+        virtualinvoke $r8.<com.trustlook.antivirus.backup.StorableCallLog: void setCallType(java.lang.String)>($r9);
+
+        $i2 = interfaceinvoke $r5.<android.database.Cursor: int getColumnIndex(java.lang.String)>("new");
+
+        $i2 = interfaceinvoke $r5.<android.database.Cursor: int getInt(int)>($i2);
+
+        virtualinvoke $r8.<com.trustlook.antivirus.backup.StorableCallLog: void setCallNew(int)>($i2);
+
+        $i2 = interfaceinvoke $r5.<android.database.Cursor: int getColumnIndex(java.lang.String)>("voicemail_uri");
+
+        $r9 = interfaceinvoke $r5.<android.database.Cursor: java.lang.String getString(int)>($i2);
+
+        virtualinvoke $r8.<com.trustlook.antivirus.backup.StorableCallLog: void setCallVoiceMailUri(java.lang.String)>($r9);
+
+        $i2 = interfaceinvoke $r5.<android.database.Cursor: int getColumnIndex(java.lang.String)>("is_read");
+
+        $i2 = interfaceinvoke $r5.<android.database.Cursor: int getInt(int)>($i2);
+
+        virtualinvoke $r8.<com.trustlook.antivirus.backup.StorableCallLog: void setCallIsRead(int)>($i2);
+
+        $i2 = interfaceinvoke $r5.<android.database.Cursor: int getColumnIndex(java.lang.String)>("name");
+
+        $r9 = interfaceinvoke $r5.<android.database.Cursor: java.lang.String getString(int)>($i2);
+
+        virtualinvoke $r8.<com.trustlook.antivirus.backup.StorableCallLog: void setCallCachedName(java.lang.String)>($r9);
+
+        $i2 = interfaceinvoke $r5.<android.database.Cursor: int getColumnIndex(java.lang.String)>("numberlabel");
+
+        $r9 = interfaceinvoke $r5.<android.database.Cursor: java.lang.String getString(int)>($i2);
+
+        virtualinvoke $r8.<com.trustlook.antivirus.backup.StorableCallLog: void setCallCachedNumberLabel(java.lang.String)>($r9);
+
+        $i2 = interfaceinvoke $r5.<android.database.Cursor: int getColumnIndex(java.lang.String)>("numbertype");
+
+        $i2 = interfaceinvoke $r5.<android.database.Cursor: int getInt(int)>($i2);
+
+        virtualinvoke $r8.<com.trustlook.antivirus.backup.StorableCallLog: void setCallCachedNumberType(int)>($i2);
+
+        $i2 = interfaceinvoke $r5.<android.database.Cursor: int getColumnIndex(java.lang.String)>("countryiso");
+
+        $r9 = interfaceinvoke $r5.<android.database.Cursor: java.lang.String getString(int)>($i2);
+
+        virtualinvoke $r8.<com.trustlook.antivirus.backup.StorableCallLog: void setCallCountryISO(java.lang.String)>($r9);
+
+        $i2 = interfaceinvoke $r5.<android.database.Cursor: int getColumnIndex(java.lang.String)>("geocoded_location");
+
+        $r9 = interfaceinvoke $r5.<android.database.Cursor: java.lang.String getString(int)>($i2);
+
+        virtualinvoke $r8.<com.trustlook.antivirus.backup.StorableCallLog: void setCallGeocodedLocation(java.lang.String)>($r9);
+
+        $i2 = interfaceinvoke $r5.<android.database.Cursor: int getColumnIndex(java.lang.String)>("lookup_uri");
+
+        $r9 = interfaceinvoke $r5.<android.database.Cursor: java.lang.String getString(int)>($i2);
+
+        virtualinvoke $r8.<com.trustlook.antivirus.backup.StorableCallLog: void setCallCachedLookupUri(java.lang.String)>($r9);
+
+        $i2 = interfaceinvoke $r5.<android.database.Cursor: int getColumnIndex(java.lang.String)>("matched_number");
+
+        $r9 = interfaceinvoke $r5.<android.database.Cursor: java.lang.String getString(int)>($i2);
+
+        virtualinvoke $r8.<com.trustlook.antivirus.backup.StorableCallLog: void setCallCachedMatchedNumber(java.lang.String)>($r9);
+
+        $i2 = interfaceinvoke $r5.<android.database.Cursor: int getColumnIndex(java.lang.String)>("normalized_number");
+
+        $r9 = interfaceinvoke $r5.<android.database.Cursor: java.lang.String getString(int)>($i2);
+
+        virtualinvoke $r8.<com.trustlook.antivirus.backup.StorableCallLog: void setCallCachedNormalizedNumber(java.lang.String)>($r9);
+
+        $i2 = interfaceinvoke $r5.<android.database.Cursor: int getColumnIndex(java.lang.String)>("photo_id");
+
+        $i2 = interfaceinvoke $r5.<android.database.Cursor: int getInt(int)>($i2);
+
+        virtualinvoke $r8.<com.trustlook.antivirus.backup.StorableCallLog: void setPhotoId(int)>($i2);
+
+        $i2 = interfaceinvoke $r5.<android.database.Cursor: int getColumnIndex(java.lang.String)>("formatted_number");
+
+        $r9 = interfaceinvoke $r5.<android.database.Cursor: java.lang.String getString(int)>($i2);
+
+        virtualinvoke $r8.<com.trustlook.antivirus.backup.StorableCallLog: void setCallCachedFormatedNumber(java.lang.String)>($r9);
+
+        virtualinvoke $r8.<com.trustlook.antivirus.backup.StorableCallLog: java.lang.String toString()>();
+
+        $r7 = r0.<com.trustlook.antivirus.backup.CallLogAdaptor: java.util.List calllogList>;
+
+        interfaceinvoke $r7.<java.util.List: boolean add(java.lang.Object)>($r8);
+
+     label07:
+        $i0 = $i0 + 1;
+
+        $l1 = (long) $i0;
+
+     label08:
+        $r10 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l1);
+
+        interfaceinvoke $r2.<com.trustlook.antivirus.backup.task.ProgressCallBack: void onProgress(java.lang.Long)>($r10);
+
+     label09:
+        $z0 = interfaceinvoke $r5.<android.database.Cursor: boolean moveToNext()>();
+
+        if $z0 != 0 goto label02;
+
+        $l1 = (long) $i0;
+
+        $r6[1] = $l1;
+
+     label10:
+        $r9 = <com.trustlook.antivirus.backup.CallLogAdaptor: java.lang.String backupPath>;
+
+        $r7 = r0.<com.trustlook.antivirus.backup.CallLogAdaptor: java.util.List calllogList>;
+
+        staticinvoke <com.trustlook.antivirus.utils.Utility: void a(android.content.Context,java.lang.String,java.util.List)>($r1, $r9, $r7);
+
+        interfaceinvoke $r5.<android.database.Cursor: void close()>();
+
+        return $r6;
+
+     label11:
+        $r11 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("CallLogAdaptor", "exception in cursor parsing");
+
+        goto label09;
+
+        catch java.lang.Exception from label03 to label04 with label11;
+        catch java.lang.Exception from label05 to label07 with label11;
+        catch java.lang.Exception from label08 to label09 with label11;
+    }
+
+    public java.lang.String getBackupStoragePath()
+    {
+        java.lang.String r1;
+        com.trustlook.antivirus.backup.CallLogAdaptor r0;
+
+        r0 := @this: com.trustlook.antivirus.backup.CallLogAdaptor;
+
+        r1 = <com.trustlook.antivirus.backup.CallLogAdaptor: java.lang.String backupPath>;
+
+        return r1;
+    }
+
+    public int getCallLogID(android.content.Context, java.lang.String, long)
+    {
+        android.content.Context $r1;
+        com.trustlook.antivirus.backup.CallLogAdaptor r0;
+        android.net.Uri $r5;
+        long $l0;
+        java.lang.String[] $r3, $r6;
+        android.content.ContentResolver $r4;
+        int $i1;
+        java.lang.String $r2;
+        android.database.Cursor $r7;
+        boolean $z0;
+
+        r0 := @this: com.trustlook.antivirus.backup.CallLogAdaptor;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $l0 := @parameter2: long;
+
+        $r4 = virtualinvoke $r1.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        $r5 = <android.provider.CallLog$Calls: android.net.Uri CONTENT_URI>;
+
+        $r3 = newarray (java.lang.String)[1];
+
+        $r3[0] = "_id";
+
+        $r6 = newarray (java.lang.String)[2];
+
+        $r6[0] = $r2;
+
+        $r2 = staticinvoke <java.lang.String: java.lang.String valueOf(long)>($l0);
+
+        $r6[1] = $r2;
+
+        $r7 = virtualinvoke $r4.<android.content.ContentResolver: android.database.Cursor query(android.net.Uri,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String)>($r5, $r3, "number = ?  AND date= ?", $r6, null);
+
+        $z0 = interfaceinvoke $r7.<android.database.Cursor: boolean moveToNext()>();
+
+        if $z0 == 0 goto label2;
+
+        $i1 = interfaceinvoke $r7.<android.database.Cursor: int getColumnIndex(java.lang.String)>("_id");
+
+        $i1 = interfaceinvoke $r7.<android.database.Cursor: int getInt(int)>($i1);
+
+     label1:
+        interfaceinvoke $r7.<android.database.Cursor: void close()>();
+
+        return $i1;
+
+     label2:
+        $i1 = 0;
+
+        goto label1;
+    }
+
+    public long getSize(android.content.Context)
+    {
+        android.content.Context $r1;
+        com.trustlook.antivirus.backup.CallLogAdaptor r0;
+        android.content.ContentResolver $r4;
+        android.net.Uri $r2;
+        int $i0;
+        long $l1;
+        android.database.Cursor $r3;
+
+        r0 := @this: com.trustlook.antivirus.backup.CallLogAdaptor;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r3 = r0.<com.trustlook.antivirus.backup.CallLogAdaptor: android.database.Cursor cursor>;
+
+        if $r3 != null goto label1;
+
+        $r4 = virtualinvoke $r1.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        $r2 = <android.provider.CallLog$Calls: android.net.Uri CONTENT_URI>;
+
+        $r3 = virtualinvoke $r4.<android.content.ContentResolver: android.database.Cursor query(android.net.Uri,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String)>($r2, null, null, null, null);
+
+        r0.<com.trustlook.antivirus.backup.CallLogAdaptor: android.database.Cursor cursor> = $r3;
+
+     label1:
+        $r3 = r0.<com.trustlook.antivirus.backup.CallLogAdaptor: android.database.Cursor cursor>;
+
+        $i0 = interfaceinvoke $r3.<android.database.Cursor: int getCount()>();
+
+        $l1 = (long) $i0;
+
+        $r3 = r0.<com.trustlook.antivirus.backup.CallLogAdaptor: android.database.Cursor cursor>;
+
+        interfaceinvoke $r3.<android.database.Cursor: void close()>();
+
+        return $l1;
+    }
+
+    public long[] restoreAllStorable(android.content.Context, java.util.List, com.trustlook.antivirus.backup.task.ProgressCallBack)
+    {
+        android.content.ContentProviderOperation $r19;
+        android.content.Context $r1;
+        android.net.Uri $r15;
+        long $l0, $l2;
+        java.lang.Integer $r18;
+        java.util.ArrayList $r14;
+        long[] $r3;
+        android.content.ContentResolver $r8;
+        java.lang.Long $r17;
+        int $i1, $i3;
+        java.lang.String $r5;
+        com.trustlook.antivirus.backup.StorableCallLog $r12;
+        android.content.ContentProviderOperation$Builder $r16;
+        com.trustlook.antivirus.backup.task.ProgressCallBack $r2;
+        boolean $z0;
+        java.util.Iterator $r9;
+        com.trustlook.antivirus.backup.CallLogAdaptor r0;
+        com.trustlook.antivirus.backup.BackupRestoreConstant$RESTOREALGORITHEM $r6, $r7;
+        java.lang.Exception $r21;
+        java.util.List $r4;
+        android.content.ContentProviderResult[] $r20;
+        com.trustlook.antivirus.backup.Storable $r11;
+        java.lang.Object $r10;
+        java.lang.StringBuilder $r13;
+
+        r0 := @this: com.trustlook.antivirus.backup.CallLogAdaptor;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r4 := @parameter1: java.util.List;
+
+        $r2 := @parameter2: com.trustlook.antivirus.backup.task.ProgressCallBack;
+
+        r0.<com.trustlook.antivirus.backup.CallLogAdaptor: com.trustlook.antivirus.backup.task.ProgressCallBack progressCallBack> = $r2;
+
+        $r3 = newarray (long)[2];
+
+        $l0 = 0L;
+
+        $r5 = <com.trustlook.antivirus.backup.CallLogAdaptor: java.lang.String restorePath>;
+
+        $r4 = specialinvoke r0.<com.trustlook.antivirus.backup.CallLogAdaptor: java.util.List populateDataFromFile(java.lang.String)>($r5);
+
+        if $r4 == null goto label24;
+
+        $r6 = <com.trustlook.antivirus.backup.BackupRestoreConstant: com.trustlook.antivirus.backup.BackupRestoreConstant$RESTOREALGORITHEM restoreAlgorithem>;
+
+        $r7 = <com.trustlook.antivirus.backup.BackupRestoreConstant$RESTOREALGORITHEM: com.trustlook.antivirus.backup.BackupRestoreConstant$RESTOREALGORITHEM CleanAndCopy>;
+
+        if $r6 != $r7 goto label01;
+
+        staticinvoke <com.trustlook.antivirus.backup.CallLogAdaptor: void deleteAllCallLog(android.content.Context)>($r1);
+
+     label01:
+        if $r4 == null goto label24;
+
+     label02:
+        $r8 = virtualinvoke $r1.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        $r9 = interfaceinvoke $r4.<java.util.List: java.util.Iterator iterator()>();
+
+     label03:
+        $i1 = 0;
+
+     label04:
+        $z0 = interfaceinvoke $r9.<java.util.Iterator: boolean hasNext()>();
+
+     label05:
+        if $z0 == 0 goto label19;
+
+     label06:
+        $r10 = interfaceinvoke $r9.<java.util.Iterator: java.lang.Object next()>();
+
+        $r11 = (com.trustlook.antivirus.backup.Storable) $r10;
+
+        $r12 = (com.trustlook.antivirus.backup.StorableCallLog) $r11;
+
+        $r5 = virtualinvoke $r12.<com.trustlook.antivirus.backup.StorableCallLog: java.lang.String getCallNumber()>();
+
+        $l2 = virtualinvoke $r12.<com.trustlook.antivirus.backup.StorableCallLog: long getCallDate()>();
+
+        $i3 = virtualinvoke r0.<com.trustlook.antivirus.backup.CallLogAdaptor: int getCallLogID(android.content.Context,java.lang.String,long)>($r1, $r5, $l2);
+
+     label07:
+        $r13 = new java.lang.StringBuilder;
+
+     label08:
+        specialinvoke $r13.<java.lang.StringBuilder: void <init>(java.lang.String)>("call log id = ");
+
+        virtualinvoke $r13.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i3);
+
+     label09:
+        if $i3 != 0 goto label16;
+
+        $r14 = new java.util.ArrayList;
+
+     label10:
+        specialinvoke $r14.<java.util.ArrayList: void <init>()>();
+
+     label11:
+        $r15 = <android.provider.CallLog$Calls: android.net.Uri CONTENT_URI>;
+
+     label12:
+        $r16 = staticinvoke <android.content.ContentProviderOperation: android.content.ContentProviderOperation$Builder newInsert(android.net.Uri)>($r15);
+
+        $r5 = virtualinvoke $r12.<com.trustlook.antivirus.backup.StorableCallLog: java.lang.String getCallNumber()>();
+
+        $r16 = virtualinvoke $r16.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValue(java.lang.String,java.lang.Object)>("number", $r5);
+
+        $r5 = virtualinvoke $r12.<com.trustlook.antivirus.backup.StorableCallLog: java.lang.String getCallType()>();
+
+        $r16 = virtualinvoke $r16.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValue(java.lang.String,java.lang.Object)>("type", $r5);
+
+        $l2 = virtualinvoke $r12.<com.trustlook.antivirus.backup.StorableCallLog: long getCallDate()>();
+
+        $r17 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l2);
+
+        $r16 = virtualinvoke $r16.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValue(java.lang.String,java.lang.Object)>("date", $r17);
+
+        $l2 = virtualinvoke $r12.<com.trustlook.antivirus.backup.StorableCallLog: long getCallDuration()>();
+
+        $r17 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l2);
+
+        $r16 = virtualinvoke $r16.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValue(java.lang.String,java.lang.Object)>("duration", $r17);
+
+        $r5 = virtualinvoke $r12.<com.trustlook.antivirus.backup.StorableCallLog: java.lang.String getCallCachedName()>();
+
+        $r16 = virtualinvoke $r16.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValue(java.lang.String,java.lang.Object)>("name", $r5);
+
+        $i3 = virtualinvoke $r12.<com.trustlook.antivirus.backup.StorableCallLog: int getCallNew()>();
+
+        $r18 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i3);
+
+        $r16 = virtualinvoke $r16.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValue(java.lang.String,java.lang.Object)>("new", $r18);
+
+        $r5 = virtualinvoke $r12.<com.trustlook.antivirus.backup.StorableCallLog: java.lang.String getCallVoiceMailUri()>();
+
+        $r16 = virtualinvoke $r16.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValue(java.lang.String,java.lang.Object)>("voicemail_uri", $r5);
+
+        $i3 = virtualinvoke $r12.<com.trustlook.antivirus.backup.StorableCallLog: int getCallIsRead()>();
+
+        $r18 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i3);
+
+        $r16 = virtualinvoke $r16.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValue(java.lang.String,java.lang.Object)>("is_read", $r18);
+
+        $r5 = virtualinvoke $r12.<com.trustlook.antivirus.backup.StorableCallLog: java.lang.String getCallCachedName()>();
+
+        $r16 = virtualinvoke $r16.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValue(java.lang.String,java.lang.Object)>("name", $r5);
+
+        $r5 = virtualinvoke $r12.<com.trustlook.antivirus.backup.StorableCallLog: java.lang.String getCallCachedNumberLabel()>();
+
+        $r16 = virtualinvoke $r16.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValue(java.lang.String,java.lang.Object)>("numberlabel", $r5);
+
+        $i3 = virtualinvoke $r12.<com.trustlook.antivirus.backup.StorableCallLog: int getCallCachedNumberType()>();
+
+        $r18 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i3);
+
+        $r16 = virtualinvoke $r16.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValue(java.lang.String,java.lang.Object)>("numbertype", $r18);
+
+        $r5 = virtualinvoke $r12.<com.trustlook.antivirus.backup.StorableCallLog: java.lang.String getCallCountryISO()>();
+
+        $r16 = virtualinvoke $r16.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValue(java.lang.String,java.lang.Object)>("countryiso", $r5);
+
+        $r5 = virtualinvoke $r12.<com.trustlook.antivirus.backup.StorableCallLog: java.lang.String getCallGeocodedLocation()>();
+
+        $r16 = virtualinvoke $r16.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValue(java.lang.String,java.lang.Object)>("geocoded_location", $r5);
+
+        $r5 = virtualinvoke $r12.<com.trustlook.antivirus.backup.StorableCallLog: java.lang.String getCallCachedLookupUri()>();
+
+        $r16 = virtualinvoke $r16.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValue(java.lang.String,java.lang.Object)>("lookup_uri", $r5);
+
+        $r5 = virtualinvoke $r12.<com.trustlook.antivirus.backup.StorableCallLog: java.lang.String getCallCachedMatchedNumber()>();
+
+        $r16 = virtualinvoke $r16.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValue(java.lang.String,java.lang.Object)>("matched_number", $r5);
+
+        $r5 = virtualinvoke $r12.<com.trustlook.antivirus.backup.StorableCallLog: java.lang.String getCallCachedNormalizedNumber()>();
+
+        $r16 = virtualinvoke $r16.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValue(java.lang.String,java.lang.Object)>("normalized_number", $r5);
+
+        $i3 = virtualinvoke $r12.<com.trustlook.antivirus.backup.StorableCallLog: int getPhotoId()>();
+
+        $r18 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i3);
+
+        $r16 = virtualinvoke $r16.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValue(java.lang.String,java.lang.Object)>("photo_id", $r18);
+
+        $r5 = virtualinvoke $r12.<com.trustlook.antivirus.backup.StorableCallLog: java.lang.String getCallCachedFormatedNumber()>();
+
+        $r16 = virtualinvoke $r16.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValue(java.lang.String,java.lang.Object)>("formatted_number", $r5);
+
+        $r19 = virtualinvoke $r16.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation build()>();
+
+        virtualinvoke $r14.<java.util.ArrayList: boolean add(java.lang.Object)>($r19);
+
+     label13:
+        $r15 = <android.provider.CallLog$Calls: android.net.Uri CONTENT_URI>;
+
+     label14:
+        $r5 = virtualinvoke $r15.<android.net.Uri: java.lang.String getAuthority()>();
+
+        $r20 = virtualinvoke $r8.<android.content.ContentResolver: android.content.ContentProviderResult[] applyBatch(java.lang.String,java.util.ArrayList)>($r5, $r14);
+
+     label15:
+        if $r20 == null goto label16;
+
+        $l0 = 1L + $l0;
+
+     label16:
+        $i1 = $i1 + 1;
+
+        $l2 = (long) $i1;
+
+     label17:
+        $r17 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l2);
+
+        interfaceinvoke $r2.<com.trustlook.antivirus.backup.task.ProgressCallBack: void onProgress(java.lang.Long)>($r17);
+
+     label18:
+        goto label04;
+
+     label19:
+        $i1 = interfaceinvoke $r4.<java.util.List: int size()>();
+
+     label20:
+        $l2 = (long) $i1;
+
+     label21:
+        $r3[0] = $l2;
+
+        $r3[1] = $l0;
+
+     label22:
+        return $r3;
+
+     label23:
+        $r21 := @caughtexception;
+
+        virtualinvoke $r21.<java.lang.Exception: void printStackTrace()>();
+
+        return $r3;
+
+     label24:
+        return $r3;
+
+        catch java.lang.Exception from label02 to label03 with label23;
+        catch java.lang.Exception from label04 to label05 with label23;
+        catch java.lang.Exception from label06 to label07 with label23;
+        catch java.lang.Exception from label08 to label09 with label23;
+        catch java.lang.Exception from label10 to label11 with label23;
+        catch java.lang.Exception from label12 to label13 with label23;
+        catch java.lang.Exception from label14 to label15 with label23;
+        catch java.lang.Exception from label17 to label18 with label23;
+        catch java.lang.Exception from label19 to label20 with label23;
+        catch java.lang.Exception from label21 to label22 with label23;
+    }
+
+    public static void <clinit>()
+    {
+        <com.trustlook.antivirus.backup.CallLogAdaptor: java.lang.String TAG> = "CallLogAdaptor";
+
+        return;
+    }
+}

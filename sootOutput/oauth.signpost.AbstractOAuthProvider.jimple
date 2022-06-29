@@ -1,0 +1,794 @@
+public abstract class oauth.signpost.AbstractOAuthProvider extends java.lang.Object implements oauth.signpost.OAuthProvider
+{
+    private static final long serialVersionUID;
+    private java.lang.String accessTokenEndpointUrl;
+    private java.lang.String authorizationWebsiteUrl;
+    private java.util.Map defaultHeaders;
+    private boolean isOAuth10a;
+    private transient oauth.signpost.OAuthProviderListener listener;
+    private java.lang.String requestTokenEndpointUrl;
+    private oauth.signpost.http.HttpParameters responseParameters;
+
+    public void <init>(java.lang.String, java.lang.String, java.lang.String)
+    {
+        oauth.signpost.http.HttpParameters $r4;
+        java.util.HashMap $r5;
+        java.lang.String $r1, $r2, $r3;
+        oauth.signpost.AbstractOAuthProvider r0;
+
+        r0 := @this: oauth.signpost.AbstractOAuthProvider;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: java.lang.String;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<oauth.signpost.AbstractOAuthProvider: java.lang.String requestTokenEndpointUrl> = "http://twitter.com/oauth/request_token";
+
+        r0.<oauth.signpost.AbstractOAuthProvider: java.lang.String accessTokenEndpointUrl> = "http://twitter.com/oauth/access_token";
+
+        r0.<oauth.signpost.AbstractOAuthProvider: java.lang.String authorizationWebsiteUrl> = "http://twitter.com/oauth/authorize";
+
+        $r4 = new oauth.signpost.http.HttpParameters;
+
+        specialinvoke $r4.<oauth.signpost.http.HttpParameters: void <init>()>();
+
+        r0.<oauth.signpost.AbstractOAuthProvider: oauth.signpost.http.HttpParameters responseParameters> = $r4;
+
+        $r5 = new java.util.HashMap;
+
+        specialinvoke $r5.<java.util.HashMap: void <init>()>();
+
+        r0.<oauth.signpost.AbstractOAuthProvider: java.util.Map defaultHeaders> = $r5;
+
+        return;
+    }
+
+    protected void closeConnection(oauth.signpost.http.HttpRequest, oauth.signpost.http.HttpResponse) throws java.lang.Exception
+    {
+        oauth.signpost.http.HttpResponse $r2;
+        oauth.signpost.http.HttpRequest $r1;
+        oauth.signpost.AbstractOAuthProvider r0;
+
+        r0 := @this: oauth.signpost.AbstractOAuthProvider;
+
+        $r1 := @parameter0: oauth.signpost.http.HttpRequest;
+
+        $r2 := @parameter1: oauth.signpost.http.HttpResponse;
+
+        return;
+    }
+
+    protected abstract oauth.signpost.http.HttpRequest createRequest(java.lang.String) throws java.lang.Exception;
+
+    public java.lang.String getAccessTokenEndpointUrl()
+    {
+        java.lang.String r1;
+        oauth.signpost.AbstractOAuthProvider r0;
+
+        r0 := @this: oauth.signpost.AbstractOAuthProvider;
+
+        r1 = r0.<oauth.signpost.AbstractOAuthProvider: java.lang.String accessTokenEndpointUrl>;
+
+        return r1;
+    }
+
+    public java.lang.String getAuthorizationWebsiteUrl()
+    {
+        java.lang.String r1;
+        oauth.signpost.AbstractOAuthProvider r0;
+
+        r0 := @this: oauth.signpost.AbstractOAuthProvider;
+
+        r1 = r0.<oauth.signpost.AbstractOAuthProvider: java.lang.String authorizationWebsiteUrl>;
+
+        return r1;
+    }
+
+    public java.util.Map getRequestHeaders()
+    {
+        oauth.signpost.AbstractOAuthProvider r0;
+        java.util.Map r1;
+
+        r0 := @this: oauth.signpost.AbstractOAuthProvider;
+
+        r1 = r0.<oauth.signpost.AbstractOAuthProvider: java.util.Map defaultHeaders>;
+
+        return r1;
+    }
+
+    public java.lang.String getRequestTokenEndpointUrl()
+    {
+        java.lang.String r1;
+        oauth.signpost.AbstractOAuthProvider r0;
+
+        r0 := @this: oauth.signpost.AbstractOAuthProvider;
+
+        r1 = r0.<oauth.signpost.AbstractOAuthProvider: java.lang.String requestTokenEndpointUrl>;
+
+        return r1;
+    }
+
+    protected java.lang.String getResponseParameter(java.lang.String)
+    {
+        java.lang.String $r1;
+        oauth.signpost.http.HttpParameters $r2;
+        oauth.signpost.AbstractOAuthProvider r0;
+
+        r0 := @this: oauth.signpost.AbstractOAuthProvider;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = r0.<oauth.signpost.AbstractOAuthProvider: oauth.signpost.http.HttpParameters responseParameters>;
+
+        $r1 = virtualinvoke $r2.<oauth.signpost.http.HttpParameters: java.lang.String getFirst(java.lang.Object)>($r1);
+
+        return $r1;
+    }
+
+    public oauth.signpost.http.HttpParameters getResponseParameters()
+    {
+        oauth.signpost.http.HttpParameters r1;
+        oauth.signpost.AbstractOAuthProvider r0;
+
+        r0 := @this: oauth.signpost.AbstractOAuthProvider;
+
+        r1 = r0.<oauth.signpost.AbstractOAuthProvider: oauth.signpost.http.HttpParameters responseParameters>;
+
+        return r1;
+    }
+
+    protected void handleUnexpectedResponse(int, oauth.signpost.http.HttpResponse) throws java.lang.Exception
+    {
+        oauth.signpost.exception.OAuthNotAuthorizedException $r10;
+        java.io.InputStreamReader $r4;
+        oauth.signpost.http.HttpResponse $r1;
+        int $i0;
+        java.lang.StringBuilder r3, $r8;
+        java.io.BufferedReader r2;
+        java.lang.String $r6, $r9;
+        oauth.signpost.AbstractOAuthProvider r0;
+        oauth.signpost.exception.OAuthCommunicationException $r7;
+        java.io.InputStream $r5;
+
+        r0 := @this: oauth.signpost.AbstractOAuthProvider;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: oauth.signpost.http.HttpResponse;
+
+        if $r1 != null goto label1;
+
+        return;
+
+     label1:
+        r2 = new java.io.BufferedReader;
+
+        $r4 = new java.io.InputStreamReader;
+
+        $r5 = interfaceinvoke $r1.<oauth.signpost.http.HttpResponse: java.io.InputStream getContent()>();
+
+        specialinvoke $r4.<java.io.InputStreamReader: void <init>(java.io.InputStream)>($r5);
+
+        specialinvoke r2.<java.io.BufferedReader: void <init>(java.io.Reader)>($r4);
+
+        r3 = new java.lang.StringBuilder;
+
+        specialinvoke r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r6 = virtualinvoke r2.<java.io.BufferedReader: java.lang.String readLine()>();
+
+     label2:
+        if $r6 == null goto label3;
+
+        virtualinvoke r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r6 = virtualinvoke r2.<java.io.BufferedReader: java.lang.String readLine()>();
+
+        goto label2;
+
+     label3:
+        lookupswitch($i0)
+        {
+            case 401: goto label5;
+            default: goto label4;
+        };
+
+     label4:
+        $r7 = new oauth.signpost.exception.OAuthCommunicationException;
+
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>()>();
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Service provider responded in error: ");
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" (");
+
+        $r6 = interfaceinvoke $r1.<oauth.signpost.http.HttpResponse: java.lang.String getReasonPhrase()>();
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(")");
+
+        $r6 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r9 = virtualinvoke r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r7.<oauth.signpost.exception.OAuthCommunicationException: void <init>(java.lang.String,java.lang.String)>($r6, $r9);
+
+        throw $r7;
+
+     label5:
+        $r10 = new oauth.signpost.exception.OAuthNotAuthorizedException;
+
+        $r6 = virtualinvoke r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r10.<oauth.signpost.exception.OAuthNotAuthorizedException: void <init>(java.lang.String)>($r6);
+
+        throw $r10;
+    }
+
+    public boolean isOAuth10a()
+    {
+        oauth.signpost.AbstractOAuthProvider r0;
+        boolean z0;
+
+        r0 := @this: oauth.signpost.AbstractOAuthProvider;
+
+        z0 = r0.<oauth.signpost.AbstractOAuthProvider: boolean isOAuth10a>;
+
+        return z0;
+    }
+
+    public void removeListener(oauth.signpost.OAuthProviderListener)
+    {
+        oauth.signpost.OAuthProviderListener $r1;
+        oauth.signpost.AbstractOAuthProvider r0;
+
+        r0 := @this: oauth.signpost.AbstractOAuthProvider;
+
+        $r1 := @parameter0: oauth.signpost.OAuthProviderListener;
+
+        r0.<oauth.signpost.AbstractOAuthProvider: oauth.signpost.OAuthProviderListener listener> = null;
+
+        return;
+    }
+
+    public void retrieveAccessToken(oauth.signpost.OAuthConsumer, java.lang.String) throws oauth.signpost.exception.OAuthMessageSignerException, oauth.signpost.exception.OAuthNotAuthorizedException, oauth.signpost.exception.OAuthExpectationFailedException, oauth.signpost.exception.OAuthCommunicationException
+    {
+        oauth.signpost.exception.OAuthExpectationFailedException $r4;
+        oauth.signpost.OAuthConsumer $r1;
+        java.lang.String[] $r5;
+        java.lang.String $r2, $r3;
+        oauth.signpost.AbstractOAuthProvider r0;
+        boolean $z0;
+
+        r0 := @this: oauth.signpost.AbstractOAuthProvider;
+
+        $r1 := @parameter0: oauth.signpost.OAuthConsumer;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 = interfaceinvoke $r1.<oauth.signpost.OAuthConsumer: java.lang.String getToken()>();
+
+        if $r3 == null goto label1;
+
+        $r3 = interfaceinvoke $r1.<oauth.signpost.OAuthConsumer: java.lang.String getTokenSecret()>();
+
+        if $r3 != null goto label2;
+
+     label1:
+        $r4 = new oauth.signpost.exception.OAuthExpectationFailedException;
+
+        specialinvoke $r4.<oauth.signpost.exception.OAuthExpectationFailedException: void <init>(java.lang.String)>("Authorized request token or token secret not set. Did you retrieve an authorized request token before?");
+
+        throw $r4;
+
+     label2:
+        $z0 = r0.<oauth.signpost.AbstractOAuthProvider: boolean isOAuth10a>;
+
+        if $z0 == 0 goto label3;
+
+        if $r2 == null goto label3;
+
+        $r3 = r0.<oauth.signpost.AbstractOAuthProvider: java.lang.String accessTokenEndpointUrl>;
+
+        $r5 = newarray (java.lang.String)[2];
+
+        $r5[0] = "oauth_verifier";
+
+        $r5[1] = $r2;
+
+        virtualinvoke r0.<oauth.signpost.AbstractOAuthProvider: void retrieveToken(oauth.signpost.OAuthConsumer,java.lang.String,java.lang.String[])>($r1, $r3, $r5);
+
+        return;
+
+     label3:
+        $r2 = r0.<oauth.signpost.AbstractOAuthProvider: java.lang.String accessTokenEndpointUrl>;
+
+        $r5 = newarray (java.lang.String)[0];
+
+        virtualinvoke r0.<oauth.signpost.AbstractOAuthProvider: void retrieveToken(oauth.signpost.OAuthConsumer,java.lang.String,java.lang.String[])>($r1, $r2, $r5);
+
+        return;
+    }
+
+    public java.lang.String retrieveRequestToken(oauth.signpost.OAuthConsumer, java.lang.String) throws oauth.signpost.exception.OAuthMessageSignerException, oauth.signpost.exception.OAuthNotAuthorizedException, oauth.signpost.exception.OAuthExpectationFailedException, oauth.signpost.exception.OAuthCommunicationException
+    {
+        java.lang.String[] $r4;
+        oauth.signpost.http.HttpParameters $r5;
+        oauth.signpost.OAuthConsumer $r1;
+        java.lang.Boolean $r6;
+        java.lang.String $r2, $r3, $r7;
+        oauth.signpost.AbstractOAuthProvider r0;
+        boolean $z0;
+
+        r0 := @this: oauth.signpost.AbstractOAuthProvider;
+
+        $r1 := @parameter0: oauth.signpost.OAuthConsumer;
+
+        $r2 := @parameter1: java.lang.String;
+
+        interfaceinvoke $r1.<oauth.signpost.OAuthConsumer: void setTokenWithSecret(java.lang.String,java.lang.String)>(null, null);
+
+        $r3 = r0.<oauth.signpost.AbstractOAuthProvider: java.lang.String requestTokenEndpointUrl>;
+
+        $r4 = newarray (java.lang.String)[2];
+
+        $r4[0] = "oauth_callback";
+
+        $r4[1] = $r2;
+
+        virtualinvoke r0.<oauth.signpost.AbstractOAuthProvider: void retrieveToken(oauth.signpost.OAuthConsumer,java.lang.String,java.lang.String[])>($r1, $r3, $r4);
+
+        $r5 = r0.<oauth.signpost.AbstractOAuthProvider: oauth.signpost.http.HttpParameters responseParameters>;
+
+        $r3 = virtualinvoke $r5.<oauth.signpost.http.HttpParameters: java.lang.String getFirst(java.lang.Object)>("oauth_callback_confirmed");
+
+        $r5 = r0.<oauth.signpost.AbstractOAuthProvider: oauth.signpost.http.HttpParameters responseParameters>;
+
+        virtualinvoke $r5.<oauth.signpost.http.HttpParameters: java.util.SortedSet remove(java.lang.Object)>("oauth_callback_confirmed");
+
+        $r6 = <java.lang.Boolean: java.lang.Boolean TRUE>;
+
+        $r7 = virtualinvoke $r6.<java.lang.Boolean: java.lang.String toString()>();
+
+        $z0 = virtualinvoke $r7.<java.lang.String: boolean equals(java.lang.Object)>($r3);
+
+        r0.<oauth.signpost.AbstractOAuthProvider: boolean isOAuth10a> = $z0;
+
+        $z0 = r0.<oauth.signpost.AbstractOAuthProvider: boolean isOAuth10a>;
+
+        if $z0 == 0 goto label1;
+
+        $r2 = r0.<oauth.signpost.AbstractOAuthProvider: java.lang.String authorizationWebsiteUrl>;
+
+        $r4 = newarray (java.lang.String)[2];
+
+        $r4[0] = "oauth_token";
+
+        $r3 = interfaceinvoke $r1.<oauth.signpost.OAuthConsumer: java.lang.String getToken()>();
+
+        $r4[1] = $r3;
+
+        $r2 = staticinvoke <oauth.signpost.OAuth: java.lang.String addQueryParameters(java.lang.String,java.lang.String[])>($r2, $r4);
+
+        return $r2;
+
+     label1:
+        $r3 = r0.<oauth.signpost.AbstractOAuthProvider: java.lang.String authorizationWebsiteUrl>;
+
+        $r4 = newarray (java.lang.String)[4];
+
+        $r4[0] = "oauth_token";
+
+        $r7 = interfaceinvoke $r1.<oauth.signpost.OAuthConsumer: java.lang.String getToken()>();
+
+        $r4[1] = $r7;
+
+        $r4[2] = "oauth_callback";
+
+        $r4[3] = $r2;
+
+        $r2 = staticinvoke <oauth.signpost.OAuth: java.lang.String addQueryParameters(java.lang.String,java.lang.String[])>($r3, $r4);
+
+        return $r2;
+    }
+
+    protected transient void retrieveToken(oauth.signpost.OAuthConsumer, java.lang.String, java.lang.String[]) throws oauth.signpost.exception.OAuthMessageSignerException, oauth.signpost.exception.OAuthCommunicationException, oauth.signpost.exception.OAuthNotAuthorizedException, oauth.signpost.exception.OAuthExpectationFailedException
+    {
+        java.lang.Throwable $r15;
+        java.lang.String[] $r3;
+        oauth.signpost.http.HttpResponse r9, $r17;
+        oauth.signpost.http.HttpRequest r8, $r10;
+        java.util.Map $r5;
+        int $i0;
+        java.lang.String $r2, $r6;
+        oauth.signpost.AbstractOAuthProvider r0;
+        oauth.signpost.exception.OAuthCommunicationException $r19;
+        boolean $z0;
+        oauth.signpost.exception.OAuthExpectationFailedException $r7;
+        java.util.Iterator $r12;
+        oauth.signpost.exception.OAuthNotAuthorizedException r14;
+        java.util.Set $r11;
+        java.lang.Exception r18, r21, r22, r23;
+        oauth.signpost.http.HttpParameters r4;
+        oauth.signpost.OAuthConsumer $r1;
+        oauth.signpost.OAuthProviderListener $r16;
+        java.lang.Object $r13;
+        java.io.InputStream $r20;
+
+        r0 := @this: oauth.signpost.AbstractOAuthProvider;
+
+        $r1 := @parameter0: oauth.signpost.OAuthConsumer;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: java.lang.String[];
+
+        $r5 = virtualinvoke r0.<oauth.signpost.AbstractOAuthProvider: java.util.Map getRequestHeaders()>();
+
+        $r6 = interfaceinvoke $r1.<oauth.signpost.OAuthConsumer: java.lang.String getConsumerKey()>();
+
+        if $r6 == null goto label01;
+
+        $r6 = interfaceinvoke $r1.<oauth.signpost.OAuthConsumer: java.lang.String getConsumerSecret()>();
+
+        if $r6 != null goto label02;
+
+     label01:
+        $r7 = new oauth.signpost.exception.OAuthExpectationFailedException;
+
+        specialinvoke $r7.<oauth.signpost.exception.OAuthExpectationFailedException: void <init>(java.lang.String)>("Consumer key or secret not set");
+
+        throw $r7;
+
+     label02:
+        r8 = null;
+
+        r9 = null;
+
+     label03:
+        $r10 = virtualinvoke r0.<oauth.signpost.AbstractOAuthProvider: oauth.signpost.http.HttpRequest createRequest(java.lang.String)>($r2);
+
+     label04:
+        r8 = $r10;
+
+     label05:
+        $r11 = interfaceinvoke $r5.<java.util.Map: java.util.Set keySet()>();
+
+        $r12 = interfaceinvoke $r11.<java.util.Set: java.util.Iterator iterator()>();
+
+     label06:
+        $z0 = interfaceinvoke $r12.<java.util.Iterator: boolean hasNext()>();
+
+     label07:
+        if $z0 == 0 goto label19;
+
+     label08:
+        $r13 = interfaceinvoke $r12.<java.util.Iterator: java.lang.Object next()>();
+
+     label09:
+        $r2 = (java.lang.String) $r13;
+
+     label10:
+        $r13 = interfaceinvoke $r5.<java.util.Map: java.lang.Object get(java.lang.Object)>($r2);
+
+     label11:
+        $r6 = (java.lang.String) $r13;
+
+     label12:
+        interfaceinvoke $r10.<oauth.signpost.http.HttpRequest: void setHeader(java.lang.String,java.lang.String)>($r2, $r6);
+
+     label13:
+        goto label06;
+
+     label14:
+        r14 := @caughtexception;
+
+     label15:
+        throw r14;
+
+     label16:
+        $r15 := @caughtexception;
+
+     label17:
+        virtualinvoke r0.<oauth.signpost.AbstractOAuthProvider: void closeConnection(oauth.signpost.http.HttpRequest,oauth.signpost.http.HttpResponse)>(r8, r9);
+
+     label18:
+        throw $r15;
+
+     label19:
+        if $r3 == null goto label22;
+
+     label20:
+        r4 = new oauth.signpost.http.HttpParameters;
+
+     label21:
+        specialinvoke r4.<oauth.signpost.http.HttpParameters: void <init>()>();
+
+        virtualinvoke r4.<oauth.signpost.http.HttpParameters: void putAll(java.lang.String[],boolean)>($r3, 1);
+
+        interfaceinvoke $r1.<oauth.signpost.OAuthConsumer: void setAdditionalParameters(oauth.signpost.http.HttpParameters)>(r4);
+
+     label22:
+        $r16 = r0.<oauth.signpost.AbstractOAuthProvider: oauth.signpost.OAuthProviderListener listener>;
+
+     label23:
+        if $r16 == null goto label26;
+
+     label24:
+        $r16 = r0.<oauth.signpost.AbstractOAuthProvider: oauth.signpost.OAuthProviderListener listener>;
+
+     label25:
+        interfaceinvoke $r16.<oauth.signpost.OAuthProviderListener: void prepareRequest(oauth.signpost.http.HttpRequest)>($r10);
+
+     label26:
+        interfaceinvoke $r1.<oauth.signpost.OAuthConsumer: oauth.signpost.http.HttpRequest sign(oauth.signpost.http.HttpRequest)>($r10);
+
+     label27:
+        $r16 = r0.<oauth.signpost.AbstractOAuthProvider: oauth.signpost.OAuthProviderListener listener>;
+
+     label28:
+        if $r16 == null goto label31;
+
+     label29:
+        $r16 = r0.<oauth.signpost.AbstractOAuthProvider: oauth.signpost.OAuthProviderListener listener>;
+
+     label30:
+        interfaceinvoke $r16.<oauth.signpost.OAuthProviderListener: void prepareSubmission(oauth.signpost.http.HttpRequest)>($r10);
+
+     label31:
+        $r17 = virtualinvoke r0.<oauth.signpost.AbstractOAuthProvider: oauth.signpost.http.HttpResponse sendRequest(oauth.signpost.http.HttpRequest)>($r10);
+
+     label32:
+        r9 = $r17;
+
+     label33:
+        $i0 = interfaceinvoke $r17.<oauth.signpost.http.HttpResponse: int getStatusCode()>();
+
+     label34:
+        $z0 = 0;
+
+     label35:
+        $r16 = r0.<oauth.signpost.AbstractOAuthProvider: oauth.signpost.OAuthProviderListener listener>;
+
+     label36:
+        if $r16 == null goto label39;
+
+     label37:
+        $r16 = r0.<oauth.signpost.AbstractOAuthProvider: oauth.signpost.OAuthProviderListener listener>;
+
+     label38:
+        $z0 = interfaceinvoke $r16.<oauth.signpost.OAuthProviderListener: boolean onResponseReceived(oauth.signpost.http.HttpRequest,oauth.signpost.http.HttpResponse)>($r10, $r17);
+
+     label39:
+        if $z0 == 0 goto label43;
+
+     label40:
+        virtualinvoke r0.<oauth.signpost.AbstractOAuthProvider: void closeConnection(oauth.signpost.http.HttpRequest,oauth.signpost.http.HttpResponse)>($r10, $r17);
+
+     label41:
+        return;
+
+     label42:
+        r18 := @caughtexception;
+
+        $r19 = new oauth.signpost.exception.OAuthCommunicationException;
+
+        specialinvoke $r19.<oauth.signpost.exception.OAuthCommunicationException: void <init>(java.lang.Exception)>(r18);
+
+        throw $r19;
+
+     label43:
+        if $i0 < 300 goto label45;
+
+     label44:
+        virtualinvoke r0.<oauth.signpost.AbstractOAuthProvider: void handleUnexpectedResponse(int,oauth.signpost.http.HttpResponse)>($i0, $r17);
+
+     label45:
+        $r20 = interfaceinvoke $r17.<oauth.signpost.http.HttpResponse: java.io.InputStream getContent()>();
+
+        r4 = staticinvoke <oauth.signpost.OAuth: oauth.signpost.http.HttpParameters decodeForm(java.io.InputStream)>($r20);
+
+        $r2 = virtualinvoke r4.<oauth.signpost.http.HttpParameters: java.lang.String getFirst(java.lang.Object)>("oauth_token");
+
+        $r6 = virtualinvoke r4.<oauth.signpost.http.HttpParameters: java.lang.String getFirst(java.lang.Object)>("oauth_token_secret");
+
+        virtualinvoke r4.<oauth.signpost.http.HttpParameters: java.util.SortedSet remove(java.lang.Object)>("oauth_token");
+
+        virtualinvoke r4.<oauth.signpost.http.HttpParameters: java.util.SortedSet remove(java.lang.Object)>("oauth_token_secret");
+
+        virtualinvoke r0.<oauth.signpost.AbstractOAuthProvider: void setResponseParameters(oauth.signpost.http.HttpParameters)>(r4);
+
+     label46:
+        if $r2 == null goto label47;
+
+        if $r6 != null goto label52;
+
+     label47:
+        $r7 = new oauth.signpost.exception.OAuthExpectationFailedException;
+
+     label48:
+        specialinvoke $r7.<oauth.signpost.exception.OAuthExpectationFailedException: void <init>(java.lang.String)>("Request token or token secret not set in server reply. The service provider you use is probably buggy.");
+
+     label49:
+        throw $r7;
+
+     label50:
+        $r7 := @caughtexception;
+
+     label51:
+        throw $r7;
+
+     label52:
+        interfaceinvoke $r1.<oauth.signpost.OAuthConsumer: void setTokenWithSecret(java.lang.String,java.lang.String)>($r2, $r6);
+
+     label53:
+        virtualinvoke r0.<oauth.signpost.AbstractOAuthProvider: void closeConnection(oauth.signpost.http.HttpRequest,oauth.signpost.http.HttpResponse)>($r10, $r17);
+
+     label54:
+        return;
+
+     label55:
+        r21 := @caughtexception;
+
+        $r19 = new oauth.signpost.exception.OAuthCommunicationException;
+
+        specialinvoke $r19.<oauth.signpost.exception.OAuthCommunicationException: void <init>(java.lang.Exception)>(r21);
+
+        throw $r19;
+
+     label56:
+        r22 := @caughtexception;
+
+     label57:
+        $r19 = new oauth.signpost.exception.OAuthCommunicationException;
+
+        specialinvoke $r19.<oauth.signpost.exception.OAuthCommunicationException: void <init>(java.lang.Exception)>(r22);
+
+        throw $r19;
+
+     label58:
+        r23 := @caughtexception;
+
+        $r19 = new oauth.signpost.exception.OAuthCommunicationException;
+
+        specialinvoke $r19.<oauth.signpost.exception.OAuthCommunicationException: void <init>(java.lang.Exception)>(r23);
+
+        throw $r19;
+
+        catch oauth.signpost.exception.OAuthNotAuthorizedException from label03 to label04 with label14;
+        catch oauth.signpost.exception.OAuthNotAuthorizedException from label05 to label07 with label14;
+        catch oauth.signpost.exception.OAuthNotAuthorizedException from label08 to label09 with label14;
+        catch oauth.signpost.exception.OAuthNotAuthorizedException from label10 to label11 with label14;
+        catch oauth.signpost.exception.OAuthNotAuthorizedException from label12 to label13 with label14;
+        catch oauth.signpost.exception.OAuthExpectationFailedException from label03 to label04 with label50;
+        catch oauth.signpost.exception.OAuthExpectationFailedException from label05 to label07 with label50;
+        catch oauth.signpost.exception.OAuthExpectationFailedException from label08 to label09 with label50;
+        catch oauth.signpost.exception.OAuthExpectationFailedException from label10 to label11 with label50;
+        catch oauth.signpost.exception.OAuthExpectationFailedException from label12 to label13 with label50;
+        catch java.lang.Exception from label03 to label04 with label56;
+        catch java.lang.Exception from label05 to label07 with label56;
+        catch java.lang.Exception from label08 to label13 with label56;
+        catch java.lang.Throwable from label03 to label04 with label16;
+        catch java.lang.Throwable from label05 to label07 with label16;
+        catch java.lang.Throwable from label08 to label13 with label16;
+        catch java.lang.Throwable from label15 to label16 with label16;
+        catch java.lang.Exception from label17 to label18 with label58;
+        catch oauth.signpost.exception.OAuthNotAuthorizedException from label21 to label22 with label14;
+        catch oauth.signpost.exception.OAuthNotAuthorizedException from label25 to label27 with label14;
+        catch oauth.signpost.exception.OAuthNotAuthorizedException from label30 to label32 with label14;
+        catch oauth.signpost.exception.OAuthNotAuthorizedException from label33 to label34 with label14;
+        catch oauth.signpost.exception.OAuthNotAuthorizedException from label38 to label39 with label14;
+        catch oauth.signpost.exception.OAuthExpectationFailedException from label21 to label22 with label50;
+        catch oauth.signpost.exception.OAuthExpectationFailedException from label25 to label27 with label50;
+        catch oauth.signpost.exception.OAuthExpectationFailedException from label30 to label32 with label50;
+        catch oauth.signpost.exception.OAuthExpectationFailedException from label33 to label34 with label50;
+        catch oauth.signpost.exception.OAuthExpectationFailedException from label38 to label39 with label50;
+        catch java.lang.Exception from label21 to label23 with label56;
+        catch java.lang.Exception from label24 to label28 with label56;
+        catch java.lang.Exception from label29 to label32 with label56;
+        catch java.lang.Exception from label33 to label34 with label56;
+        catch java.lang.Exception from label35 to label36 with label56;
+        catch java.lang.Exception from label37 to label39 with label56;
+        catch java.lang.Throwable from label20 to label23 with label16;
+        catch java.lang.Throwable from label24 to label28 with label16;
+        catch java.lang.Throwable from label29 to label32 with label16;
+        catch java.lang.Throwable from label33 to label34 with label16;
+        catch java.lang.Throwable from label35 to label36 with label16;
+        catch java.lang.Throwable from label37 to label39 with label16;
+        catch java.lang.Exception from label40 to label41 with label42;
+        catch oauth.signpost.exception.OAuthNotAuthorizedException from label44 to label46 with label14;
+        catch oauth.signpost.exception.OAuthNotAuthorizedException from label48 to label49 with label14;
+        catch oauth.signpost.exception.OAuthExpectationFailedException from label44 to label46 with label50;
+        catch oauth.signpost.exception.OAuthExpectationFailedException from label48 to label50 with label50;
+        catch java.lang.Exception from label44 to label46 with label56;
+        catch java.lang.Exception from label48 to label50 with label56;
+        catch java.lang.Throwable from label44 to label46 with label16;
+        catch java.lang.Throwable from label47 to label50 with label16;
+        catch java.lang.Throwable from label51 to label52 with label16;
+        catch oauth.signpost.exception.OAuthNotAuthorizedException from label52 to label53 with label14;
+        catch oauth.signpost.exception.OAuthExpectationFailedException from label52 to label53 with label50;
+        catch java.lang.Exception from label52 to label53 with label56;
+        catch java.lang.Throwable from label52 to label53 with label16;
+        catch java.lang.Exception from label53 to label54 with label55;
+        catch java.lang.Throwable from label57 to label58 with label16;
+    }
+
+    protected abstract oauth.signpost.http.HttpResponse sendRequest(oauth.signpost.http.HttpRequest) throws java.lang.Exception;
+
+    public void setListener(oauth.signpost.OAuthProviderListener)
+    {
+        oauth.signpost.OAuthProviderListener $r1;
+        oauth.signpost.AbstractOAuthProvider r0;
+
+        r0 := @this: oauth.signpost.AbstractOAuthProvider;
+
+        $r1 := @parameter0: oauth.signpost.OAuthProviderListener;
+
+        r0.<oauth.signpost.AbstractOAuthProvider: oauth.signpost.OAuthProviderListener listener> = $r1;
+
+        return;
+    }
+
+    public void setOAuth10a(boolean)
+    {
+        oauth.signpost.AbstractOAuthProvider r0;
+        boolean $z0;
+
+        r0 := @this: oauth.signpost.AbstractOAuthProvider;
+
+        $z0 := @parameter0: boolean;
+
+        r0.<oauth.signpost.AbstractOAuthProvider: boolean isOAuth10a> = $z0;
+
+        return;
+    }
+
+    public void setRequestHeader(java.lang.String, java.lang.String)
+    {
+        java.util.Map $r3;
+        java.lang.String $r1, $r2;
+        oauth.signpost.AbstractOAuthProvider r0;
+
+        r0 := @this: oauth.signpost.AbstractOAuthProvider;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 = r0.<oauth.signpost.AbstractOAuthProvider: java.util.Map defaultHeaders>;
+
+        interfaceinvoke $r3.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r1, $r2);
+
+        return;
+    }
+
+    public void setResponseParameters(oauth.signpost.http.HttpParameters)
+    {
+        oauth.signpost.http.HttpParameters $r1;
+        oauth.signpost.AbstractOAuthProvider r0;
+
+        r0 := @this: oauth.signpost.AbstractOAuthProvider;
+
+        $r1 := @parameter0: oauth.signpost.http.HttpParameters;
+
+        r0.<oauth.signpost.AbstractOAuthProvider: oauth.signpost.http.HttpParameters responseParameters> = $r1;
+
+        return;
+    }
+
+    public static void <clinit>()
+    {
+        <oauth.signpost.AbstractOAuthProvider: long serialVersionUID> = 1L;
+
+        return;
+    }
+}

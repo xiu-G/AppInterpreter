@@ -1,0 +1,299 @@
+public class com.skt.wifiagent.DNSLookupHost extends java.lang.Object implements java.lang.Runnable, com.skt.wifiagent.AgentCommon
+{
+    private android.content.Context context;
+    private com.skt.wifiagent.log.AgentLog log;
+    java.lang.Thread me;
+
+    public void <init>(android.content.Context)
+    {
+        android.content.Context $r1;
+        java.lang.Thread $r2;
+        com.skt.wifiagent.DNSLookupHost r0;
+        com.skt.wifiagent.log.AgentLog $r3;
+
+        r0 := @this: com.skt.wifiagent.DNSLookupHost;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<com.skt.wifiagent.DNSLookupHost: java.lang.Thread me> = null;
+
+        r0.<com.skt.wifiagent.DNSLookupHost: android.content.Context context> = null;
+
+        r0.<com.skt.wifiagent.DNSLookupHost: com.skt.wifiagent.log.AgentLog log> = null;
+
+        r0.<com.skt.wifiagent.DNSLookupHost: android.content.Context context> = $r1;
+
+        $r2 = r0.<com.skt.wifiagent.DNSLookupHost: java.lang.Thread me>;
+
+        if $r2 != null goto label1;
+
+        $r2 = new java.lang.Thread;
+
+        specialinvoke $r2.<java.lang.Thread: void <init>(java.lang.Runnable)>(r0);
+
+        r0.<com.skt.wifiagent.DNSLookupHost: java.lang.Thread me> = $r2;
+
+     label1:
+        $r3 = new com.skt.wifiagent.log.AgentLog;
+
+        specialinvoke $r3.<com.skt.wifiagent.log.AgentLog: void <init>(android.content.Context)>($r1);
+
+        r0.<com.skt.wifiagent.DNSLookupHost: com.skt.wifiagent.log.AgentLog log> = $r3;
+
+        return;
+    }
+
+    private int getHostAddressInt(java.net.InetAddress)
+    {
+        java.net.InetAddress $r1;
+        byte[] $r2;
+        short $s2;
+        byte $b1;
+        int i0, $i3;
+        com.skt.wifiagent.DNSLookupHost r0;
+
+        r0 := @this: com.skt.wifiagent.DNSLookupHost;
+
+        $r1 := @parameter0: java.net.InetAddress;
+
+        if $r1 != null goto label1;
+
+        return -1;
+
+     label1:
+        $r2 = virtualinvoke $r1.<java.net.InetAddress: byte[] getAddress()>();
+
+        $b1 = $r2[3];
+
+        $s2 = (short) $b1;
+
+        $s2 = $s2 & 255;
+
+        i0 = (int) $s2;
+
+        i0 = i0 << 24;
+
+        $b1 = $r2[2];
+
+        $s2 = (short) $b1;
+
+        $s2 = $s2 & 255;
+
+        $i3 = (int) $s2;
+
+        $i3 = $i3 << 16;
+
+        i0 = i0 | $i3;
+
+        $b1 = $r2[1];
+
+        $s2 = (short) $b1;
+
+        $s2 = $s2 & 255;
+
+        $i3 = (int) $s2;
+
+        $i3 = $i3 << 8;
+
+        i0 = i0 | $i3;
+
+        $b1 = $r2[0];
+
+        $s2 = (short) $b1;
+
+        $s2 = $s2 & 255;
+
+        $i3 = (int) $s2;
+
+        i0 = i0 | $i3;
+
+        return i0;
+    }
+
+    private java.net.InetAddress getInetAddress(java.lang.String)
+    {
+        java.lang.Throwable $r3, $r4, $r7;
+        com.skt.wifiagent.log.AgentLog $r5;
+        java.net.UnknownHostException $r10;
+        java.lang.Exception $r8;
+        java.net.InetAddress $r2;
+        java.lang.InterruptedException $r11;
+        com.skt.wifiagent.DNSLookupHost r0;
+        java.lang.StringBuilder $r6, $r9;
+        java.lang.String $r1;
+
+        r0 := @this: com.skt.wifiagent.DNSLookupHost;
+
+        $r1 := @parameter0: java.lang.String;
+
+     label1:
+        $r2 = staticinvoke <java.net.InetAddress: java.net.InetAddress getByName(java.lang.String)>("wpde.nate.com");
+
+     label2:
+        entermonitor $r2;
+
+     label3:
+        virtualinvoke $r2.<java.lang.Object: void wait(long)>(30000L);
+
+        exitmonitor $r2;
+
+     label4:
+        return $r2;
+
+     label5:
+        $r3 := @caughtexception;
+
+        exitmonitor $r2;
+
+     label6:
+        throw $r3;
+
+     label7:
+        $r4 := @caughtexception;
+
+        $r5 = r0.<com.skt.wifiagent.DNSLookupHost: com.skt.wifiagent.log.AgentLog log>;
+
+        $r9 = new java.lang.StringBuilder;
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>(java.lang.String)>("unknownHostEx=");
+
+        $r10 = (java.net.UnknownHostException) $r4;
+
+        $r1 = virtualinvoke $r10.<java.net.UnknownHostException: java.lang.String getMessage()>();
+
+        $r6 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r5.<com.skt.wifiagent.log.AgentLog: void out(java.lang.String,int,java.lang.String,boolean)>("HPS_DEBUG", 5, $r1, 1);
+
+        return null;
+
+     label8:
+        $r7 := @caughtexception;
+
+        $r5 = r0.<com.skt.wifiagent.DNSLookupHost: com.skt.wifiagent.log.AgentLog log>;
+
+        $r11 = (java.lang.InterruptedException) $r7;
+
+        $r1 = virtualinvoke $r11.<java.lang.InterruptedException: java.lang.String getMessage()>();
+
+        virtualinvoke $r5.<com.skt.wifiagent.log.AgentLog: void out(java.lang.String,int,java.lang.String,boolean)>("HPS_DEBUG", 5, $r1, 1);
+
+        return null;
+
+     label9:
+        $r8 := @caughtexception;
+
+        $r5 = r0.<com.skt.wifiagent.DNSLookupHost: com.skt.wifiagent.log.AgentLog log>;
+
+        $r9 = new java.lang.StringBuilder;
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>(java.lang.String)>("ex=");
+
+        $r1 = virtualinvoke $r8.<java.lang.Exception: java.lang.String getMessage()>();
+
+        $r6 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r5.<com.skt.wifiagent.log.AgentLog: void out(java.lang.String,int,java.lang.String,boolean)>("HPS_DEBUG", 5, $r1, 1);
+
+        return null;
+
+        catch java.net.UnknownHostException from label1 to label2 with label7;
+        catch java.lang.InterruptedException from label1 to label2 with label8;
+        catch java.lang.Exception from label1 to label3 with label9;
+        catch java.lang.Throwable from label3 to label4 with label5;
+        catch java.lang.Throwable from label5 to label6 with label5;
+        catch java.net.UnknownHostException from label6 to label7 with label7;
+        catch java.lang.InterruptedException from label6 to label7 with label8;
+        catch java.lang.Exception from label6 to label7 with label9;
+    }
+
+    public void run()
+    {
+        android.content.Context $r6;
+        com.skt.wifiagent.log.AgentLog $r1;
+        java.lang.Exception $r7;
+        java.net.InetAddress $r2;
+        int $i0;
+        com.skt.wifiagent.DNSLookupHost r0;
+        java.lang.StringBuilder $r4, $r8;
+        java.lang.String $r3, $r5;
+
+        r0 := @this: com.skt.wifiagent.DNSLookupHost;
+
+        $r1 = r0.<com.skt.wifiagent.DNSLookupHost: com.skt.wifiagent.log.AgentLog log>;
+
+        virtualinvoke $r1.<com.skt.wifiagent.log.AgentLog: void out(java.lang.String,int,java.lang.String,boolean)>("HPS_DEBUG", 2, "getInetAddress(wpde.nate.com)", 1);
+
+     label01:
+        $r2 = specialinvoke r0.<com.skt.wifiagent.DNSLookupHost: java.net.InetAddress getInetAddress(java.lang.String)>("wpde.nate.com");
+
+        $i0 = specialinvoke r0.<com.skt.wifiagent.DNSLookupHost: int getHostAddressInt(java.net.InetAddress)>($r2);
+
+        $r3 = virtualinvoke $r2.<java.net.InetAddress: java.lang.String getHostAddress()>();
+
+        $r1 = r0.<com.skt.wifiagent.DNSLookupHost: com.skt.wifiagent.log.AgentLog log>;
+
+     label02:
+        $r8 = new java.lang.StringBuilder;
+
+        $r4 = $r8;
+
+     label03:
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>(java.lang.String)>("intHostIp=");
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(", strHostIp=");
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r1.<com.skt.wifiagent.log.AgentLog: void out(java.lang.String,int,java.lang.String,boolean)>("HPS_DEBUG", 2, $r5, 1);
+
+     label04:
+        if $i0 != -1 goto label07;
+
+     label05:
+        $r1 = r0.<com.skt.wifiagent.DNSLookupHost: com.skt.wifiagent.log.AgentLog log>;
+
+        virtualinvoke $r1.<com.skt.wifiagent.log.AgentLog: void out(java.lang.String,int,java.lang.String,boolean)>("HPS_DEBUG", 5, "DNSLookupHost Fail.", 1);
+
+     label06:
+        return;
+
+     label07:
+        $r1 = r0.<com.skt.wifiagent.DNSLookupHost: com.skt.wifiagent.log.AgentLog log>;
+
+        virtualinvoke $r1.<com.skt.wifiagent.log.AgentLog: void out(java.lang.String,int,java.lang.String,boolean)>("HPS_DEBUG", 2, "DNSLookupHost Success.", 1);
+
+     label08:
+        if $r3 == null goto label12;
+
+     label09:
+        $r6 = r0.<com.skt.wifiagent.DNSLookupHost: android.content.Context context>;
+
+        staticinvoke <com.skt.wifiagent.AgentPreferences: void setValue(android.content.Context,java.lang.String,java.lang.Object)>($r6, "SKT_SLP_IP", $r3);
+
+     label10:
+        return;
+
+     label11:
+        $r7 := @caughtexception;
+
+     label12:
+        return;
+
+        catch java.lang.Exception from label01 to label02 with label11;
+        catch java.lang.Exception from label03 to label04 with label11;
+        catch java.lang.Exception from label05 to label06 with label11;
+        catch java.lang.Exception from label07 to label08 with label11;
+        catch java.lang.Exception from label09 to label10 with label11;
+    }
+}

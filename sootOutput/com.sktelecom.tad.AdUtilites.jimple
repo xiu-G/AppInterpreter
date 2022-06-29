@@ -1,0 +1,713 @@
+public final class com.sktelecom.tad.AdUtilites extends java.lang.Object
+{
+    public static final int IO_BUFFER_SIZE;
+
+    private void <init>()
+    {
+        com.sktelecom.tad.AdUtilites r0;
+
+        r0 := @this: com.sktelecom.tad.AdUtilites;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    public static final void finalizeBitmap(android.graphics.Bitmap)
+    {
+        android.graphics.Bitmap $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: android.graphics.Bitmap;
+
+        if $r0 == null goto label1;
+
+        $z0 = virtualinvoke $r0.<android.graphics.Bitmap: boolean isRecycled()>();
+
+        if $z0 != 0 goto label1;
+
+        virtualinvoke $r0.<android.graphics.Bitmap: void recycle()>();
+
+     label1:
+        return;
+    }
+
+    public static final byte[] getBytesFromLocalResource(java.lang.String) throws java.io.IOException
+    {
+        java.lang.Throwable $r7, $r8, $r9, $r10;
+        byte[] $r6;
+        java.net.URL $r4;
+        java.lang.Class $r2;
+        java.lang.String $r0;
+        java.lang.ClassLoader $r3;
+        java.io.InputStream r1, $r5;
+
+        $r0 := @parameter0: java.lang.String;
+
+        if $r0 == null goto label12;
+
+        r1 = null;
+
+        $r2 = class "Lcom/sktelecom/tad/AdUtilites;";
+
+     label01:
+        $r3 = virtualinvoke $r2.<java.lang.Class: java.lang.ClassLoader getClassLoader()>();
+
+        $r4 = virtualinvoke $r3.<java.lang.ClassLoader: java.net.URL getResource(java.lang.String)>($r0);
+
+        $r5 = virtualinvoke $r4.<java.net.URL: java.io.InputStream openStream()>();
+
+     label02:
+        r1 = $r5;
+
+        if $r5 == null goto label12;
+
+     label03:
+        $r6 = staticinvoke <com.sktelecom.tad.AdUtilites: byte[] streamToBytes(java.io.InputStream)>($r5);
+
+     label04:
+        if $r5 == null goto label15;
+
+     label05:
+        virtualinvoke $r5.<java.io.InputStream: void close()>();
+
+     label06:
+        return $r6;
+
+     label07:
+        $r7 := @caughtexception;
+
+     label08:
+        throw $r7;
+
+     label09:
+        $r8 := @caughtexception;
+
+        if r1 == null goto label11;
+
+     label10:
+        virtualinvoke r1.<java.io.InputStream: void close()>();
+
+     label11:
+        throw $r8;
+
+     label12:
+        return null;
+
+     label13:
+        $r9 := @caughtexception;
+
+        return $r6;
+
+     label14:
+        $r10 := @caughtexception;
+
+        goto label11;
+
+     label15:
+        return $r6;
+
+        catch java.io.IOException from label01 to label02 with label07;
+        catch java.io.IOException from label03 to label04 with label07;
+        catch java.lang.Throwable from label01 to label02 with label09;
+        catch java.lang.Throwable from label03 to label04 with label09;
+        catch java.io.IOException from label05 to label06 with label13;
+        catch java.lang.Throwable from label08 to label09 with label09;
+        catch java.io.IOException from label10 to label11 with label14;
+    }
+
+    public static byte[] getBytesFromRemoteResource(java.lang.String) throws java.io.IOException
+    {
+        java.net.HttpURLConnection r3, $r6;
+        java.lang.Throwable r11, $r12, $r13, $r14, $r15, $r16, $r17;
+        byte[] r1, $r8;
+        java.net.URL r4, $r19;
+        java.net.URLConnection $r5;
+        int i0, $i1;
+        java.lang.String $r0, $r10;
+        boolean z0;
+        java.io.IOException $r18;
+        java.lang.InterruptedException $r21;
+        java.lang.StringBuilder $r9, $r20;
+        java.io.InputStream r2, $r7;
+
+        $r0 := @parameter0: java.lang.String;
+
+        r1 = null;
+
+        r2 = null;
+
+        r3 = null;
+
+        z0 = 1;
+
+        if $r0 != null goto label01;
+
+        return null;
+
+     label01:
+        i0 = 0;
+
+     label02:
+        if i0 >= 3 goto label03;
+
+        if z0 != 0 goto label04;
+
+     label03:
+        if z0 == 0 goto label46;
+
+        $r18 = new java.io.IOException;
+
+        specialinvoke $r18.<java.io.IOException: void <init>(java.lang.String)>("failed to connect the server to get banner image");
+
+        throw $r18;
+
+     label04:
+        $r19 = new java.net.URL;
+
+     label05:
+        r4 = $r19;
+
+     label06:
+        specialinvoke $r19.<java.net.URL: void <init>(java.lang.String)>($r0);
+
+     label07:
+        $r5 = virtualinvoke r4.<java.net.URL: java.net.URLConnection openConnection()>();
+
+     label08:
+        $r6 = (java.net.HttpURLConnection) $r5;
+
+     label09:
+        r3 = $r6;
+
+     label10:
+        virtualinvoke $r6.<java.net.HttpURLConnection: void setConnectTimeout(int)>(10000);
+
+        virtualinvoke $r6.<java.net.HttpURLConnection: void setReadTimeout(int)>(10000);
+
+        virtualinvoke $r6.<java.net.HttpURLConnection: void setDoInput(boolean)>(1);
+
+        virtualinvoke $r6.<java.net.HttpURLConnection: void connect()>();
+
+        $i1 = virtualinvoke $r6.<java.net.HttpURLConnection: int getResponseCode()>();
+
+     label11:
+        if $i1 != 200 goto label21;
+
+     label12:
+        $r7 = virtualinvoke $r6.<java.net.HttpURLConnection: java.io.InputStream getInputStream()>();
+
+     label13:
+        r2 = $r7;
+
+     label14:
+        $r8 = staticinvoke <com.sktelecom.tad.AdUtilites: byte[] streamToBytes(java.io.InputStream)>($r7);
+
+     label15:
+        r1 = $r8;
+
+        z0 = 0;
+
+     label16:
+        staticinvoke <java.lang.Thread: void sleep(long)>(1000L);
+
+     label17:
+        if r2 == null goto label19;
+
+     label18:
+        virtualinvoke r2.<java.io.InputStream: void close()>();
+
+     label19:
+        if $r6 == null goto label20;
+
+        virtualinvoke $r6.<java.net.HttpURLConnection: void disconnect()>();
+
+     label20:
+        i0 = i0 + 1;
+
+        goto label02;
+
+     label21:
+        $r20 = new java.lang.StringBuilder;
+
+     label22:
+        $r9 = $r20;
+
+     label23:
+        specialinvoke $r20.<java.lang.StringBuilder: void <init>(java.lang.String)>("getResponseCode:");
+
+        $i1 = virtualinvoke $r6.<java.net.HttpURLConnection: int getResponseCode()>();
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1);
+
+        $r10 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.sktelecom.tad.sdk.AdLog: void println(java.lang.String)>($r10);
+
+     label24:
+        $r20 = new java.lang.StringBuilder;
+
+     label25:
+        $r9 = $r20;
+
+     label26:
+        specialinvoke $r20.<java.lang.StringBuilder: void <init>(java.lang.String)>("getResponseMessage:");
+
+        $r10 = virtualinvoke $r6.<java.net.HttpURLConnection: java.lang.String getResponseMessage()>();
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r10);
+
+        $r10 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.sktelecom.tad.sdk.AdLog: void println(java.lang.String)>($r10);
+
+     label27:
+        z0 = 1;
+
+        goto label16;
+
+     label28:
+        r11 := @caughtexception;
+
+     label29:
+        $r21 = (java.lang.InterruptedException) r11;
+
+     label30:
+        $r10 = virtualinvoke $r21.<java.lang.InterruptedException: java.lang.String getMessage()>();
+
+        staticinvoke <com.sktelecom.tad.sdk.AdLog: void println(java.lang.String,java.lang.Throwable)>($r10, r11);
+
+     label31:
+        goto label17;
+
+     label32:
+        $r12 := @caughtexception;
+
+        r11 = $r12;
+
+     label33:
+        $r20 = new java.lang.StringBuilder;
+
+     label34:
+        $r9 = $r20;
+
+     label35:
+        specialinvoke $r20.<java.lang.StringBuilder: void <init>(java.lang.String)>("failed to connecto the server to get images. try(");
+
+     label36:
+        $i1 = i0 + 1;
+
+     label37:
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1);
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("):");
+
+        $r10 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.sktelecom.tad.sdk.AdLog: void println(java.lang.String,java.lang.Throwable)>($r10, r11);
+
+     label38:
+        if r2 == null goto label40;
+
+     label39:
+        virtualinvoke r2.<java.io.InputStream: void close()>();
+
+     label40:
+        if r3 == null goto label20;
+
+        virtualinvoke r3.<java.net.HttpURLConnection: void disconnect()>();
+
+        goto label20;
+
+     label41:
+        $r13 := @caughtexception;
+
+     label42:
+        if r2 == null goto label44;
+
+     label43:
+        virtualinvoke r2.<java.io.InputStream: void close()>();
+
+     label44:
+        if r3 == null goto label45;
+
+        virtualinvoke r3.<java.net.HttpURLConnection: void disconnect()>();
+
+     label45:
+        throw $r13;
+
+     label46:
+        return r1;
+
+     label47:
+        $r14 := @caughtexception;
+
+        goto label40;
+
+     label48:
+        $r15 := @caughtexception;
+
+        goto label44;
+
+     label49:
+        $r16 := @caughtexception;
+
+        goto label19;
+
+     label50:
+        $r13 := @caughtexception;
+
+        goto label42;
+
+     label51:
+        $r17 := @caughtexception;
+
+        r11 = $r17;
+
+        goto label33;
+
+        catch java.io.IOException from label06 to label07 with label51;
+        catch java.lang.Throwable from label04 to label05 with label41;
+        catch java.lang.Throwable from label06 to label07 with label41;
+        catch java.io.IOException from label07 to label08 with label32;
+        catch java.io.IOException from label10 to label11 with label32;
+        catch java.io.IOException from label12 to label13 with label32;
+        catch java.io.IOException from label14 to label15 with label32;
+        catch java.lang.Throwable from label07 to label09 with label50;
+        catch java.lang.Throwable from label10 to label11 with label50;
+        catch java.lang.Throwable from label12 to label13 with label50;
+        catch java.lang.Throwable from label14 to label15 with label50;
+        catch java.lang.InterruptedException from label16 to label17 with label28;
+        catch java.io.IOException from label16 to label17 with label32;
+        catch java.lang.Throwable from label16 to label17 with label50;
+        catch java.io.IOException from label18 to label19 with label49;
+        catch java.io.IOException from label23 to label24 with label32;
+        catch java.io.IOException from label26 to label27 with label32;
+        catch java.io.IOException from label30 to label31 with label32;
+        catch java.lang.Throwable from label21 to label22 with label50;
+        catch java.lang.Throwable from label23 to label25 with label50;
+        catch java.lang.Throwable from label26 to label27 with label50;
+        catch java.lang.Throwable from label29 to label31 with label50;
+        catch java.lang.Throwable from label33 to label34 with label50;
+        catch java.lang.Throwable from label35 to label36 with label50;
+        catch java.lang.Throwable from label37 to label38 with label50;
+        catch java.io.IOException from label39 to label40 with label47;
+        catch java.io.IOException from label43 to label44 with label48;
+    }
+
+    public static final java.lang.String getPortaitHouseBannerFilePathForBandBanner()
+    {
+        return null;
+    }
+
+    protected static final boolean initPropertiesFromMeataData(android.content.Context)
+    {
+        java.lang.Throwable r2;
+        android.content.Context $r0, $r3;
+        android.os.Bundle r1;
+        android.content.pm.PackageManager $r4;
+        android.content.ComponentName $r6;
+        java.lang.Object $r9;
+        java.lang.String $r7;
+        android.app.Activity $r5;
+        android.content.pm.ApplicationInfo $r8;
+        boolean $z0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        if $r0 != null goto label1;
+
+        return 0;
+
+     label1:
+        $r3 = virtualinvoke $r0.<android.content.Context: android.content.Context getApplicationContext()>();
+
+        $r4 = virtualinvoke $r3.<android.content.Context: android.content.pm.PackageManager getPackageManager()>();
+
+        $r5 = (android.app.Activity) $r0;
+
+        $r6 = virtualinvoke $r5.<android.app.Activity: android.content.ComponentName getComponentName()>();
+
+        $r7 = virtualinvoke $r6.<android.content.ComponentName: java.lang.String getPackageName()>();
+
+     label2:
+        $r8 = virtualinvoke $r4.<android.content.pm.PackageManager: android.content.pm.ApplicationInfo getApplicationInfo(java.lang.String,int)>($r7, 128);
+
+     label3:
+        if $r8 != null goto label5;
+
+        staticinvoke <com.sktelecom.tad.sdk.AdLog: void println(java.lang.String)>("ApplicationInfo is null");
+
+        return 0;
+
+     label4:
+        r2 := @caughtexception;
+
+        staticinvoke <com.sktelecom.tad.sdk.AdLog: void println(java.lang.String,java.lang.Throwable)>("Error in adview", r2);
+
+        return 0;
+
+     label5:
+        r1 = $r8.<android.content.pm.ApplicationInfo: android.os.Bundle metaData>;
+
+        if r1 != null goto label6;
+
+        staticinvoke <com.sktelecom.tad.sdk.AdLog: void println(java.lang.String)>("Bundle is null");
+
+        return 0;
+
+     label6:
+        $r9 = virtualinvoke r1.<android.os.Bundle: java.lang.Object get(java.lang.String)>("TAD_APP_ID");
+
+        $r7 = (java.lang.String) $r9;
+
+        $z0 = staticinvoke <com.sktelecom.tad.AdUtilites: boolean initializeProperties(android.content.Context,java.lang.String)>($r0, $r7);
+
+        return $z0;
+
+        catch android.content.pm.PackageManager$NameNotFoundException from label2 to label3 with label4;
+    }
+
+    private static boolean initializeProperties(android.content.Context, java.lang.String)
+    {
+        android.content.Context $r0;
+        java.lang.String $r1, $r2;
+        boolean z0, $z1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        z0 = 1;
+
+        if $r1 != null goto label1;
+
+        $r1 = "";
+
+        staticinvoke <com.sktelecom.tad.sdk.AdLog: void printlnPublic(java.lang.String)>("not allowed that the application id is null. ");
+
+        z0 = 0;
+
+     label1:
+        if $r1 == null goto label2;
+
+        $r2 = virtualinvoke $r1.<java.lang.String: java.lang.String trim()>();
+
+        $z1 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>("");
+
+        if $z1 == 0 goto label2;
+
+        $r1 = "";
+
+        staticinvoke <com.sktelecom.tad.sdk.AdLog: void printlnPublic(java.lang.String)>("not allowed that the application id is empty. ");
+
+        z0 = 0;
+
+     label2:
+        if z0 == 0 goto label3;
+
+        staticinvoke <com.sktelecom.tad.sdk.filesystem.AdStorageSystemManager: void putAppId(android.content.Context,java.lang.String)>($r0, $r1);
+
+     label3:
+        return z0;
+    }
+
+    public static final android.graphics.Bitmap makeNewLocalBitmap(java.lang.String) throws java.io.IOException
+    {
+        java.lang.String $r0;
+        android.graphics.Bitmap $r1;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 = staticinvoke <com.sktelecom.tad.AdUtilites: android.graphics.Bitmap makeNewLocalBitmap(java.lang.String,int)>($r0, 1);
+
+        return $r1;
+    }
+
+    public static final android.graphics.Bitmap makeNewLocalBitmap(java.lang.String, int) throws java.io.IOException
+    {
+        byte[] $r2;
+        android.graphics.Bitmap $r4;
+        int $i0;
+        java.io.IOException $r3;
+        java.lang.String $r0;
+        android.graphics.BitmapFactory$Options r1;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $i0 := @parameter1: int;
+
+        if $r0 != null goto label1;
+
+        return null;
+
+     label1:
+        $r2 = staticinvoke <com.sktelecom.tad.AdUtilites: byte[] getBytesFromLocalResource(java.lang.String)>($r0);
+
+        if $r2 != null goto label2;
+
+        $r3 = new java.io.IOException;
+
+        specialinvoke $r3.<java.io.IOException: void <init>(java.lang.String)>("image binary == null");
+
+        throw $r3;
+
+     label2:
+        r1 = new android.graphics.BitmapFactory$Options;
+
+        specialinvoke r1.<android.graphics.BitmapFactory$Options: void <init>()>();
+
+        r1.<android.graphics.BitmapFactory$Options: int inSampleSize> = $i0;
+
+        $i0 = lengthof $r2;
+
+        $r4 = staticinvoke <android.graphics.BitmapFactory: android.graphics.Bitmap decodeByteArray(byte[],int,int,android.graphics.BitmapFactory$Options)>($r2, 0, $i0, r1);
+
+        if $r4 != null goto label3;
+
+        $r3 = new java.io.IOException;
+
+        specialinvoke $r3.<java.io.IOException: void <init>(java.lang.String)>("bitmap == null");
+
+        throw $r3;
+
+     label3:
+        return $r4;
+    }
+
+    public static android.graphics.Bitmap makeNewRemoteBitmap(java.lang.String) throws java.io.IOException
+    {
+        byte[] $r1;
+        android.graphics.Bitmap $r3;
+        int $i0;
+        java.io.IOException $r2;
+        java.lang.String $r0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        if $r0 != null goto label1;
+
+        return null;
+
+     label1:
+        $r1 = staticinvoke <com.sktelecom.tad.AdUtilites: byte[] getBytesFromRemoteResource(java.lang.String)>($r0);
+
+        if $r1 != null goto label2;
+
+        $r2 = new java.io.IOException;
+
+        specialinvoke $r2.<java.io.IOException: void <init>(java.lang.String)>("binary == null");
+
+        throw $r2;
+
+     label2:
+        $i0 = lengthof $r1;
+
+        $r3 = staticinvoke <android.graphics.BitmapFactory: android.graphics.Bitmap decodeByteArray(byte[],int,int)>($r1, 0, $i0);
+
+        if $r3 != null goto label3;
+
+        $r2 = new java.io.IOException;
+
+        specialinvoke $r2.<java.io.IOException: void <init>(java.lang.String)>("bitmap == null");
+
+        throw $r2;
+
+     label3:
+        return $r3;
+    }
+
+    protected static final void printSdkProperties(android.content.Context)
+    {
+        android.content.Context $r0;
+        java.lang.StringBuilder $r1;
+        java.lang.String $r2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>(java.lang.String)>("!Version is ");
+
+        $r2 = staticinvoke <com.sktelecom.tad.sdk.filesystem.AdStorageSystemManager: java.lang.String getSdkVersion(android.content.Context)>($r0);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.sktelecom.tad.sdk.AdLog: void printlnPublic(java.lang.String)>($r2);
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>(java.lang.String)>("!App ID set to ");
+
+        $r2 = staticinvoke <com.sktelecom.tad.sdk.filesystem.AdStorageSystemManager: java.lang.String getAppID(android.content.Context)>($r0);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.sktelecom.tad.sdk.AdLog: void printlnPublic(java.lang.String)>($r2);
+
+        return;
+    }
+
+    private static final byte[] streamToBytes(java.io.InputStream)
+    {
+        java.lang.Throwable $r3;
+        byte[] r1;
+        java.io.ByteArrayOutputStream r2, $r5;
+        java.io.IOException $r6;
+        int $i0;
+        java.lang.String $r4;
+        java.io.InputStream $r0;
+
+        $r0 := @parameter0: java.io.InputStream;
+
+        $r5 = new java.io.ByteArrayOutputStream;
+
+        r2 = $r5;
+
+        specialinvoke $r5.<java.io.ByteArrayOutputStream: void <init>(int)>(1024);
+
+        r1 = newarray (byte)[1024];
+
+     label1:
+        $i0 = virtualinvoke $r0.<java.io.InputStream: int read(byte[])>(r1);
+
+     label2:
+        if $i0 >= 0 goto label4;
+
+     label3:
+        r1 = virtualinvoke r2.<java.io.ByteArrayOutputStream: byte[] toByteArray()>();
+
+        return r1;
+
+     label4:
+        virtualinvoke r2.<java.io.ByteArrayOutputStream: void write(byte[],int,int)>(r1, 0, $i0);
+
+     label5:
+        goto label1;
+
+     label6:
+        $r3 := @caughtexception;
+
+        $r6 = (java.io.IOException) $r3;
+
+        $r4 = virtualinvoke $r6.<java.io.IOException: java.lang.String getMessage()>();
+
+        staticinvoke <com.sktelecom.tad.sdk.AdLog: void println(java.lang.String,java.lang.Throwable)>($r4, $r3);
+
+        goto label3;
+
+        catch java.io.IOException from label1 to label2 with label6;
+        catch java.io.IOException from label4 to label5 with label6;
+    }
+
+    public static void <clinit>()
+    {
+        <com.sktelecom.tad.AdUtilites: int IO_BUFFER_SIZE> = 1024;
+
+        return;
+    }
+}

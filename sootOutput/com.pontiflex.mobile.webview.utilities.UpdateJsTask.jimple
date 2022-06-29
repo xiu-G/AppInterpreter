@@ -1,0 +1,1472 @@
+public class com.pontiflex.mobile.webview.utilities.UpdateJsTask extends android.os.AsyncTask
+{
+    private static final int BUFFERED_READER_SIZE;
+    protected static final java.lang.String PACKAGE_FORCE_UPDATE_PROP;
+    protected static final java.lang.String PACKAGE_PFLX_SDK_VERSION;
+    protected static final java.lang.String PACKAGE_UPDATE_CHECKSUM;
+    protected static final java.lang.String PACKAGE_UPDATE_URL;
+    protected static java.lang.String pflxStorageLocation;
+    protected static java.lang.String pflxTransitionLocation;
+
+    static void <clinit>()
+    {
+        <com.pontiflex.mobile.webview.utilities.UpdateJsTask: java.lang.String PACKAGE_UPDATE_URL> = "url";
+
+        <com.pontiflex.mobile.webview.utilities.UpdateJsTask: java.lang.String PACKAGE_UPDATE_CHECKSUM> = "hash";
+
+        <com.pontiflex.mobile.webview.utilities.UpdateJsTask: java.lang.String PACKAGE_PFLX_SDK_VERSION> = "sdkversioncode";
+
+        <com.pontiflex.mobile.webview.utilities.UpdateJsTask: java.lang.String PACKAGE_FORCE_UPDATE_PROP> = "forceupdate";
+
+        <com.pontiflex.mobile.webview.utilities.UpdateJsTask: int BUFFERED_READER_SIZE> = 256;
+
+        <com.pontiflex.mobile.webview.utilities.UpdateJsTask: java.lang.String pflxStorageLocation> = "pflx_new";
+
+        <com.pontiflex.mobile.webview.utilities.UpdateJsTask: java.lang.String pflxTransitionLocation> = "pflx_old";
+
+        return;
+    }
+
+    public void <init>()
+    {
+        com.pontiflex.mobile.webview.utilities.UpdateJsTask r0;
+
+        r0 := @this: com.pontiflex.mobile.webview.utilities.UpdateJsTask;
+
+        specialinvoke r0.<android.os.AsyncTask: void <init>()>();
+
+        return;
+    }
+
+    private java.lang.String checksum(java.io.File)
+    {
+        byte[] $r4;
+        java.security.MessageDigest $r3;
+        java.io.FileInputStream $r2, $r8;
+        java.io.File $r1;
+        java.lang.Exception $r7;
+        short $s3;
+        byte $b2;
+        int $i0, $i1;
+        java.lang.StringBuilder $r6, $r9;
+        com.pontiflex.mobile.webview.utilities.UpdateJsTask r0;
+        java.lang.String $r5;
+
+        r0 := @this: com.pontiflex.mobile.webview.utilities.UpdateJsTask;
+
+        $r1 := @parameter0: java.io.File;
+
+        $r8 = new java.io.FileInputStream;
+
+        $r2 = $r8;
+
+     label01:
+        specialinvoke $r8.<java.io.FileInputStream: void <init>(java.io.File)>($r1);
+
+        $r3 = staticinvoke <java.security.MessageDigest: java.security.MessageDigest getInstance(java.lang.String)>("MD5");
+
+     label02:
+        $r4 = newarray (byte)[1024];
+
+     label03:
+        $i0 = virtualinvoke $r2.<java.io.InputStream: int read(byte[])>($r4);
+
+     label04:
+        if $i0 <= 0 goto label06;
+
+     label05:
+        virtualinvoke $r3.<java.security.MessageDigest: void update(byte[],int,int)>($r4, 0, $i0);
+
+     label06:
+        if $i0 != -1 goto label03;
+
+     label07:
+        virtualinvoke $r2.<java.io.InputStream: void close()>();
+
+        $r4 = virtualinvoke $r3.<java.security.MessageDigest: byte[] digest()>();
+
+     label08:
+        if $r4 != null goto label09;
+
+        return null;
+
+     label09:
+        $r5 = "";
+
+        $i0 = 0;
+
+     label10:
+        $i1 = lengthof $r4;
+
+     label11:
+        if $i0 >= $i1 goto label16;
+
+        $r9 = new java.lang.StringBuilder;
+
+        $r6 = $r9;
+
+     label12:
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $b2 = $r4[$i0];
+
+     label13:
+        $s3 = (short) $b2;
+
+        $s3 = $s3 & 255;
+
+        $i1 = (int) $s3;
+
+        $i1 = $i1 + 256;
+
+     label14:
+        $r5 = staticinvoke <java.lang.Integer: java.lang.String toString(int,int)>($i1, 16);
+
+        $r5 = virtualinvoke $r5.<java.lang.String: java.lang.String substring(int)>(1);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label15:
+        $i0 = $i0 + 1;
+
+        goto label10;
+
+     label16:
+        return $r5;
+
+     label17:
+        $r7 := @caughtexception;
+
+        return null;
+
+        catch java.lang.Exception from label01 to label02 with label17;
+        catch java.lang.Exception from label03 to label04 with label17;
+        catch java.lang.Exception from label05 to label06 with label17;
+        catch java.lang.Exception from label07 to label08 with label17;
+        catch java.lang.Exception from label10 to label11 with label17;
+        catch java.lang.Exception from label12 to label13 with label17;
+        catch java.lang.Exception from label14 to label15 with label17;
+    }
+
+    private java.io.InputStream fetchData(java.lang.String, android.content.Context)
+    {
+        org.apache.http.impl.client.DefaultHttpClient $r4;
+        android.content.Context $r1;
+        org.apache.http.params.BasicHttpParams $r3;
+        org.apache.http.StatusLine $r13;
+        java.util.Map $r7;
+        int $i0;
+        java.lang.String $r0, $r11;
+        com.pontiflex.mobile.webview.utilities.UpdateJsTask r2;
+        boolean $z0;
+        java.util.Iterator $r9;
+        org.apache.http.HttpEntity $r14;
+        java.util.Set $r8;
+        com.pontiflex.mobile.webview.utilities.VersionHelper $r6;
+        org.apache.http.client.methods.HttpGet $r5;
+        org.apache.http.HttpResponse $r12;
+        java.lang.Object $r10;
+        java.io.InputStream $r15;
+
+        r2 := @this: com.pontiflex.mobile.webview.utilities.UpdateJsTask;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: android.content.Context;
+
+        $r3 = new org.apache.http.params.BasicHttpParams;
+
+        specialinvoke $r3.<org.apache.http.params.BasicHttpParams: void <init>()>();
+
+        $r4 = new org.apache.http.impl.client.DefaultHttpClient;
+
+        specialinvoke $r4.<org.apache.http.impl.client.DefaultHttpClient: void <init>(org.apache.http.params.HttpParams)>($r3);
+
+        $r5 = new org.apache.http.client.methods.HttpGet;
+
+        specialinvoke $r5.<org.apache.http.client.methods.HttpGet: void <init>(java.lang.String)>($r0);
+
+        $r6 = staticinvoke <com.pontiflex.mobile.webview.utilities.VersionHelper: com.pontiflex.mobile.webview.utilities.VersionHelper getInstance(android.content.Context)>($r1);
+
+        $r7 = virtualinvoke $r6.<com.pontiflex.mobile.webview.utilities.VersionHelper: java.util.Map getHeaders(android.content.Context)>($r1);
+
+        if $r7 == null goto label2;
+
+        $r8 = interfaceinvoke $r7.<java.util.Map: java.util.Set keySet()>();
+
+        $r9 = interfaceinvoke $r8.<java.util.Set: java.util.Iterator iterator()>();
+
+     label1:
+        $z0 = interfaceinvoke $r9.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label2;
+
+        $r10 = interfaceinvoke $r9.<java.util.Iterator: java.lang.Object next()>();
+
+        $r0 = (java.lang.String) $r10;
+
+        $r10 = interfaceinvoke $r7.<java.util.Map: java.lang.Object get(java.lang.Object)>($r0);
+
+        $r11 = (java.lang.String) $r10;
+
+        virtualinvoke $r5.<org.apache.http.client.methods.HttpGet: void addHeader(java.lang.String,java.lang.String)>($r0, $r11);
+
+        goto label1;
+
+     label2:
+        $r12 = virtualinvoke $r4.<org.apache.http.impl.client.DefaultHttpClient: org.apache.http.HttpResponse execute(org.apache.http.client.methods.HttpUriRequest)>($r5);
+
+        $r13 = interfaceinvoke $r12.<org.apache.http.HttpResponse: org.apache.http.StatusLine getStatusLine()>();
+
+        $i0 = interfaceinvoke $r13.<org.apache.http.StatusLine: int getStatusCode()>();
+
+        if $i0 == 200 goto label3;
+
+        return null;
+
+     label3:
+        $r14 = interfaceinvoke $r12.<org.apache.http.HttpResponse: org.apache.http.HttpEntity getEntity()>();
+
+        $r15 = interfaceinvoke $r14.<org.apache.http.HttpEntity: java.io.InputStream getContent()>();
+
+        return $r15;
+    }
+
+    protected boolean compareVersion(java.lang.String, java.lang.String)
+    {
+        java.lang.String[] $r4, $r5;
+        int $i0, $i1, $i2, $i3;
+        com.pontiflex.mobile.webview.utilities.UpdateJsTask r0;
+        java.lang.String $r1, $r2, $r3;
+        boolean $z0;
+
+        r0 := @this: com.pontiflex.mobile.webview.utilities.UpdateJsTask;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        if $r1 == null goto label1;
+
+        $r3 = "";
+
+        $z0 = virtualinvoke $r3.<java.lang.String: boolean equals(java.lang.Object)>($r1);
+
+        if $z0 == 0 goto label2;
+
+     label1:
+        return 0;
+
+     label2:
+        if $r2 == null goto label3;
+
+        $r3 = "";
+
+        $z0 = virtualinvoke $r3.<java.lang.String: boolean equals(java.lang.Object)>($r2);
+
+        if $z0 == 0 goto label4;
+
+     label3:
+        return 0;
+
+     label4:
+        $r4 = virtualinvoke $r2.<java.lang.String: java.lang.String[] split(java.lang.String)>("\\.");
+
+        $r5 = virtualinvoke $r1.<java.lang.String: java.lang.String[] split(java.lang.String)>("\\.");
+
+        $i1 = 0;
+
+     label5:
+        $i2 = lengthof $r5;
+
+        if $i1 >= $i2 goto label8;
+
+        $r1 = $r5[$i1];
+
+        $i2 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String)>($r1);
+
+        $i3 = -1;
+
+        $i0 = lengthof $r4;
+
+        if $i0 <= $i1 goto label6;
+
+        $r1 = $r4[$i1];
+
+        $i3 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String)>($r1);
+
+     label6:
+        if $i2 <= $i3 goto label7;
+
+        return 1;
+
+     label7:
+        $i1 = $i1 + 1;
+
+        goto label5;
+
+     label8:
+        return 0;
+    }
+
+    protected volatile java.lang.Object doInBackground(java.lang.Object[])
+    {
+        java.lang.Void $r2;
+        com.pontiflex.mobile.webview.utilities.UpdateJsTask r0;
+        java.lang.Object[] $r1;
+
+        r0 := @this: com.pontiflex.mobile.webview.utilities.UpdateJsTask;
+
+        $r1 := @parameter0: java.lang.Object[];
+
+        $r2 = virtualinvoke r0.<com.pontiflex.mobile.webview.utilities.UpdateJsTask: java.lang.Void doInBackground(java.lang.Object[])>($r1);
+
+        return $r2;
+    }
+
+    protected transient java.lang.Void doInBackground(java.lang.Object[])
+    {
+        android.content.Context $r5, $r12;
+        java.lang.Object[] $r1;
+        org.json.JSONException $r9, $r22;
+        org.json.JSONObject $r6;
+        int $i0;
+        com.pontiflex.mobile.webview.utilities.UpdateJsTask r0;
+        java.lang.String $r4, $r8, $r10, $r11, $r15;
+        boolean $z0;
+        com.pontiflex.mobile.webview.sdk.AdManager $r14;
+        java.lang.IllegalArgumentException $r2;
+        java.io.File $r17, $r19, $r20, $r21;
+        com.pontiflex.mobile.webview.utilities.VersionHelper $r7;
+        android.app.Application $r13;
+        com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper $r18;
+        java.lang.Object $r3;
+        java.lang.StringBuilder $r16;
+
+        r0 := @this: com.pontiflex.mobile.webview.utilities.UpdateJsTask;
+
+        $r1 := @parameter0: java.lang.Object[];
+
+        if $r1 == null goto label01;
+
+        $i0 = lengthof $r1;
+
+        if $i0 >= 2 goto label02;
+
+     label01:
+        $r2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Invalid URL parameters");
+
+        throw $r2;
+
+     label02:
+        $r3 = $r1[0];
+
+        $r4 = (java.lang.String) $r3;
+
+        $r3 = $r1[1];
+
+        $r5 = (android.content.Context) $r3;
+
+        $r4 = virtualinvoke r0.<com.pontiflex.mobile.webview.utilities.UpdateJsTask: java.lang.String getUpdateResponse(java.lang.String,android.content.Context)>($r4, $r5);
+
+        if $r4 != null goto label03;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("Pontiflex SDK", "No response received from server for package update");
+
+        return null;
+
+     label03:
+        $r6 = new org.json.JSONObject;
+
+     label04:
+        specialinvoke $r6.<org.json.JSONObject: void <init>(java.lang.String)>($r4);
+
+     label05:
+        $z0 = virtualinvoke $r6.<org.json.JSONObject: boolean getBoolean(java.lang.String)>("forceupdate");
+
+     label06:
+        $r7 = staticinvoke <com.pontiflex.mobile.webview.utilities.VersionHelper: com.pontiflex.mobile.webview.utilities.VersionHelper getInstance(android.content.Context)>($r5);
+
+        $r4 = virtualinvoke $r7.<com.pontiflex.mobile.webview.utilities.VersionHelper: java.lang.String getPflxSdkVersionCode(android.content.Context)>($r5);
+
+     label07:
+        if $z0 == 0 goto label10;
+
+        $z0 = 1;
+
+        $r8 = null;
+
+     label08:
+        if $z0 != 0 goto label12;
+
+        return null;
+
+     label09:
+        $r9 := @caughtexception;
+
+        $z0 = 0;
+
+        goto label06;
+
+     label10:
+        $r8 = virtualinvoke $r6.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("sdkversioncode");
+
+        $z0 = virtualinvoke r0.<com.pontiflex.mobile.webview.utilities.UpdateJsTask: boolean compareVersion(java.lang.String,java.lang.String)>($r8, $r4);
+
+     label11:
+        goto label08;
+
+     label12:
+        $r10 = virtualinvoke $r6.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("hash");
+
+     label13:
+        if $r10 == null goto label16;
+
+     label14:
+        $i0 = virtualinvoke $r10.<java.lang.String: int length()>();
+
+     label15:
+        if $i0 != 0 goto label18;
+
+     label16:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("Pontiflex SDK", "Invalid expected Md5 Checksum");
+
+     label17:
+        return null;
+
+     label18:
+        $r11 = virtualinvoke $r6.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("url");
+
+     label19:
+        if $r11 == null goto label22;
+
+     label20:
+        $i0 = virtualinvoke $r11.<java.lang.String: int length()>();
+
+     label21:
+        if $i0 != 0 goto label23;
+
+     label22:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("Pontiflex SDK", "Invalid Update Url");
+
+     label23:
+        $r12 = virtualinvoke $r5.<android.content.Context: android.content.Context getApplicationContext()>();
+
+     label24:
+        $r13 = (android.app.Application) $r12;
+
+     label25:
+        $r14 = staticinvoke <com.pontiflex.mobile.webview.sdk.AdManager: com.pontiflex.mobile.webview.sdk.AdManager getAdManagerInstance(android.app.Application)>($r13);
+
+        $r15 = virtualinvoke $r14.<com.pontiflex.mobile.webview.sdk.AdManager: java.lang.String getJsUpdateHostString()>();
+
+     label26:
+        if $r15 == null goto label29;
+
+     label27:
+        $i0 = virtualinvoke $r15.<java.lang.String: int length()>();
+
+     label28:
+        if $i0 != 0 goto label30;
+
+     label29:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("Pontiflex SDK", "Invalid ad hosting url");
+
+     label30:
+        $r16 = new java.lang.StringBuilder;
+
+     label31:
+        specialinvoke $r16.<java.lang.StringBuilder: void <init>()>();
+
+        $r16 = virtualinvoke $r16.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r15);
+
+        $r16 = virtualinvoke $r16.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r11);
+
+        $r11 = virtualinvoke $r16.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $z0 = virtualinvoke r0.<com.pontiflex.mobile.webview.utilities.UpdateJsTask: boolean getUpdatedPackage(java.lang.String,java.lang.String,android.content.Context)>($r11, $r10, $r5);
+
+     label32:
+        if $z0 != 0 goto label35;
+
+     label33:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("Pontiflex SDK", "Download of updated package failed");
+
+     label34:
+        return null;
+
+     label35:
+        $r17 = virtualinvoke r0.<com.pontiflex.mobile.webview.utilities.UpdateJsTask: java.io.File getUpdatedPackageDir(android.content.Context)>($r5);
+
+        $r18 = staticinvoke <com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper getInstance(android.content.Context)>($r5);
+
+        $r19 = virtualinvoke $r18.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: java.io.File getPontiflexPackageDir(android.content.Context)>($r5);
+
+     label36:
+        $r20 = new java.io.File;
+
+     label37:
+        $r21 = virtualinvoke $r5.<android.content.Context: java.io.File getFilesDir()>();
+
+     label38:
+        $r10 = <com.pontiflex.mobile.webview.utilities.UpdateJsTask: java.lang.String pflxTransitionLocation>;
+
+     label39:
+        specialinvoke $r20.<java.io.File: void <init>(java.io.File,java.lang.String)>($r21, $r10);
+
+        $r18 = staticinvoke <com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper getInstance(android.content.Context)>($r5);
+
+        virtualinvoke $r18.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: void extractAndMovePflxPackage(android.content.Context,java.io.File,java.io.File,java.io.File)>($r5, $r17, $r19, $r20);
+
+     label40:
+        $r16 = new java.lang.StringBuilder;
+
+     label41:
+        specialinvoke $r16.<java.lang.StringBuilder: void <init>()>();
+
+        $r16 = virtualinvoke $r16.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Pontiflex package is updated from ");
+
+        $r16 = virtualinvoke $r16.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r16 = virtualinvoke $r16.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" to ");
+
+        $r16 = virtualinvoke $r16.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r4 = virtualinvoke $r16.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("Pontiflex SDK", $r4);
+
+        $r7 = staticinvoke <com.pontiflex.mobile.webview.utilities.VersionHelper: com.pontiflex.mobile.webview.utilities.VersionHelper getInstance(android.content.Context)>($r5);
+
+        virtualinvoke $r7.<com.pontiflex.mobile.webview.utilities.VersionHelper: void resetCache()>();
+
+     label42:
+        return null;
+
+     label43:
+        $r22 := @caughtexception;
+
+        $r16 = new java.lang.StringBuilder;
+
+        specialinvoke $r16.<java.lang.StringBuilder: void <init>()>();
+
+        $r16 = virtualinvoke $r16.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Failed to retrieve value from JSON: ");
+
+        $r4 = virtualinvoke $r22.<org.json.JSONException: java.lang.String getMessage()>();
+
+        $r16 = virtualinvoke $r16.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r16.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("Pontiflex SDK", $r4, $r22);
+
+        goto label42;
+
+        catch org.json.JSONException from label04 to label05 with label43;
+        catch org.json.JSONException from label05 to label06 with label09;
+        catch org.json.JSONException from label06 to label07 with label43;
+        catch org.json.JSONException from label10 to label11 with label43;
+        catch org.json.JSONException from label12 to label13 with label43;
+        catch org.json.JSONException from label14 to label15 with label43;
+        catch org.json.JSONException from label16 to label17 with label43;
+        catch org.json.JSONException from label18 to label19 with label43;
+        catch org.json.JSONException from label20 to label21 with label43;
+        catch org.json.JSONException from label22 to label24 with label43;
+        catch org.json.JSONException from label25 to label26 with label43;
+        catch org.json.JSONException from label27 to label28 with label43;
+        catch org.json.JSONException from label29 to label30 with label43;
+        catch org.json.JSONException from label31 to label32 with label43;
+        catch org.json.JSONException from label33 to label34 with label43;
+        catch org.json.JSONException from label35 to label36 with label43;
+        catch org.json.JSONException from label37 to label38 with label43;
+        catch org.json.JSONException from label39 to label40 with label43;
+        catch org.json.JSONException from label41 to label42 with label43;
+    }
+
+    protected java.lang.String getUpdateResponse(java.lang.String, android.content.Context)
+    {
+        java.lang.Throwable $r7, $r8, $r9, $r11, $r12, $r13, $r14, $r15, $r16, $r17, $r18, $r19;
+        org.apache.http.client.ClientProtocolException $r23;
+        android.content.Context $r2;
+        com.pontiflex.mobile.webview.utilities.UpdateJsTask r0;
+        java.lang.String $r1;
+        java.io.IOException $r24;
+        java.io.InputStreamReader $r6, $r21;
+        java.lang.StringBuilder $r4, $r20;
+        java.io.BufferedReader $r5, $r22;
+        java.io.InputStream $r3;
+
+        r0 := @this: com.pontiflex.mobile.webview.utilities.UpdateJsTask;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: android.content.Context;
+
+     label01:
+        $r3 = specialinvoke r0.<com.pontiflex.mobile.webview.utilities.UpdateJsTask: java.io.InputStream fetchData(java.lang.String,android.content.Context)>($r1, $r2);
+
+     label02:
+        if $r3 != null goto label07;
+
+     label03:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("Pontiflex SDK", "Couldn\'t open stream to the destination path");
+
+     label04:
+        if $r3 == null goto label06;
+
+     label05:
+        virtualinvoke $r3.<java.io.InputStream: void close()>();
+
+     label06:
+        return null;
+
+     label07:
+        if $r3 == null goto label28;
+
+     label08:
+        $r20 = new java.lang.StringBuilder;
+
+     label09:
+        $r4 = $r20;
+
+     label10:
+        specialinvoke $r20.<java.lang.StringBuilder: void <init>()>();
+
+     label11:
+        $r22 = new java.io.BufferedReader;
+
+     label12:
+        $r5 = $r22;
+
+     label13:
+        $r21 = new java.io.InputStreamReader;
+
+     label14:
+        $r6 = $r21;
+
+     label15:
+        specialinvoke $r21.<java.io.InputStreamReader: void <init>(java.io.InputStream,java.lang.String)>($r3, "UTF-8");
+
+        specialinvoke $r22.<java.io.BufferedReader: void <init>(java.io.Reader,int)>($r6, 256);
+
+     label16:
+        $r1 = virtualinvoke $r5.<java.io.BufferedReader: java.lang.String readLine()>();
+
+     label17:
+        if $r1 == null goto label29;
+
+     label18:
+        virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+     label19:
+        goto label16;
+
+     label20:
+        $r7 := @caughtexception;
+
+     label21:
+        virtualinvoke $r3.<java.io.InputStream: void close()>();
+
+        throw $r7;
+
+     label22:
+        $r8 := @caughtexception;
+
+        $r9 = $r8;
+
+     label23:
+        $r20 = new java.lang.StringBuilder;
+
+     label24:
+        $r4 = $r20;
+
+     label25:
+        specialinvoke $r20.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Error in fetching update package ");
+
+        $r23 = (org.apache.http.client.ClientProtocolException) $r9;
+
+        $r1 = virtualinvoke $r23.<org.apache.http.client.ClientProtocolException: java.lang.String getMessage()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("Pontiflex SDK", $r1);
+
+     label26:
+        if $r3 == null goto label28;
+
+     label27:
+        virtualinvoke $r3.<java.io.InputStream: void close()>();
+
+     label28:
+        return null;
+
+     label29:
+        virtualinvoke $r3.<java.io.InputStream: void close()>();
+
+        $r1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label30:
+        if $r3 == null goto label32;
+
+     label31:
+        virtualinvoke $r3.<java.io.InputStream: void close()>();
+
+     label32:
+        return $r1;
+
+     label33:
+        $r11 := @caughtexception;
+
+        $r3 = null;
+
+     label34:
+        $r20 = new java.lang.StringBuilder;
+
+     label35:
+        $r4 = $r20;
+
+     label36:
+        specialinvoke $r20.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Error in fetching update package ");
+
+        $r24 = (java.io.IOException) $r11;
+
+        $r1 = virtualinvoke $r24.<java.io.IOException: java.lang.String getMessage()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("Pontiflex SDK", $r1);
+
+     label37:
+        if $r3 == null goto label28;
+
+     label38:
+        virtualinvoke $r3.<java.io.InputStream: void close()>();
+
+     label39:
+        goto label28;
+
+     label40:
+        $r12 := @caughtexception;
+
+        goto label28;
+
+     label41:
+        $r13 := @caughtexception;
+
+        $r3 = null;
+
+     label42:
+        if $r3 == null goto label44;
+
+     label43:
+        virtualinvoke $r3.<java.io.InputStream: void close()>();
+
+     label44:
+        throw $r13;
+
+     label45:
+        $r14 := @caughtexception;
+
+        goto label06;
+
+     label46:
+        $r15 := @caughtexception;
+
+        goto label32;
+
+     label47:
+        $r16 := @caughtexception;
+
+        goto label28;
+
+     label48:
+        $r17 := @caughtexception;
+
+        goto label44;
+
+     label49:
+        $r18 := @caughtexception;
+
+        $r13 = $r18;
+
+        goto label42;
+
+     label50:
+        $r13 := @caughtexception;
+
+        goto label42;
+
+     label51:
+        $r19 := @caughtexception;
+
+        $r11 = $r19;
+
+        goto label34;
+
+     label52:
+        $r9 := @caughtexception;
+
+        $r3 = null;
+
+        goto label23;
+
+        catch org.apache.http.client.ClientProtocolException from label01 to label02 with label52;
+        catch java.io.IOException from label01 to label02 with label33;
+        catch java.lang.Throwable from label01 to label02 with label41;
+        catch org.apache.http.client.ClientProtocolException from label03 to label04 with label22;
+        catch java.io.IOException from label03 to label04 with label51;
+        catch java.lang.Throwable from label03 to label04 with label49;
+        catch java.io.IOException from label05 to label06 with label45;
+        catch org.apache.http.client.ClientProtocolException from label10 to label11 with label22;
+        catch java.io.IOException from label10 to label11 with label51;
+        catch java.lang.Throwable from label08 to label09 with label49;
+        catch java.lang.Throwable from label10 to label11 with label49;
+        catch java.lang.Throwable from label11 to label12 with label20;
+        catch java.lang.Throwable from label13 to label14 with label20;
+        catch java.lang.Throwable from label15 to label17 with label20;
+        catch java.lang.Throwable from label18 to label19 with label20;
+        catch org.apache.http.client.ClientProtocolException from label21 to label22 with label22;
+        catch java.io.IOException from label21 to label22 with label51;
+        catch java.lang.Throwable from label21 to label22 with label49;
+        catch java.lang.Throwable from label23 to label24 with label50;
+        catch java.lang.Throwable from label25 to label26 with label50;
+        catch java.io.IOException from label27 to label28 with label47;
+        catch org.apache.http.client.ClientProtocolException from label29 to label30 with label22;
+        catch java.io.IOException from label29 to label30 with label51;
+        catch java.lang.Throwable from label29 to label30 with label49;
+        catch java.io.IOException from label31 to label32 with label46;
+        catch java.lang.Throwable from label34 to label35 with label50;
+        catch java.lang.Throwable from label36 to label37 with label50;
+        catch java.io.IOException from label38 to label39 with label40;
+        catch java.io.IOException from label43 to label44 with label48;
+    }
+
+    protected boolean getUpdatedPackage(java.lang.String, java.lang.String, android.content.Context)
+    {
+        byte[] $r10;
+        com.pontiflex.mobile.webview.utilities.UpdateJsTask r0;
+        boolean $z0, $z1;
+        com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper $r6;
+        java.lang.StringBuilder $r13, $r31;
+        java.lang.Throwable $r11, $r12, $r14, $r15, $r16, $r17, $r18, $r19, $r20, $r21, $r22, $r23, $r24, $r25, $r26, $r27, $r28;
+        org.apache.http.client.ClientProtocolException $r32;
+        android.content.Context $r3;
+        int $i0;
+        java.lang.String $r1, $r2;
+        java.io.FileOutputStream $r9, $r30;
+        java.io.IOException $r33;
+        java.io.File $r7, $r8, $r29;
+        java.io.InputStream $r4, $r5;
+
+        r0 := @this: com.pontiflex.mobile.webview.utilities.UpdateJsTask;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: android.content.Context;
+
+        $r4 = null;
+
+     label01:
+        $r5 = specialinvoke r0.<com.pontiflex.mobile.webview.utilities.UpdateJsTask: java.io.InputStream fetchData(java.lang.String,android.content.Context)>($r1, $r3);
+
+     label02:
+        if $r5 != null goto label07;
+
+     label03:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("Pontiflex SDK", "Couldn\'t open stream to the destination path");
+
+     label04:
+        if $r5 == null goto label06;
+
+     label05:
+        virtualinvoke $r5.<java.io.InputStream: void close()>();
+
+     label06:
+        return 0;
+
+     label07:
+        $r6 = staticinvoke <com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper getInstance(android.content.Context)>($r3);
+
+        $r7 = virtualinvoke r0.<com.pontiflex.mobile.webview.utilities.UpdateJsTask: java.io.File getUpdatedPackageDir(android.content.Context)>($r3);
+
+        staticinvoke <com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: boolean deleteDir(java.io.File)>($r7);
+
+        virtualinvoke $r7.<java.io.File: boolean mkdir()>();
+
+     label08:
+        $r29 = new java.io.File;
+
+     label09:
+        $r8 = $r29;
+
+     label10:
+        $r1 = virtualinvoke $r6.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: java.lang.String getPontiflexPackageName()>();
+
+        specialinvoke $r29.<java.io.File: void <init>(java.io.File,java.lang.String)>($r7, $r1);
+
+     label11:
+        $z0 = virtualinvoke $r8.<java.io.File: boolean exists()>();
+
+     label12:
+        if $z0 == 0 goto label14;
+
+     label13:
+        virtualinvoke $r8.<java.io.File: boolean delete()>();
+
+     label14:
+        $r30 = new java.io.FileOutputStream;
+
+     label15:
+        $r9 = $r30;
+
+     label16:
+        specialinvoke $r30.<java.io.FileOutputStream: void <init>(java.io.File)>($r8);
+
+     label17:
+        $r10 = newarray (byte)[1024];
+
+     label18:
+        $i0 = virtualinvoke $r5.<java.io.InputStream: int read(byte[])>($r10);
+
+     label19:
+        if $i0 <= 0 goto label32;
+
+     label20:
+        virtualinvoke $r9.<java.io.OutputStream: void write(byte[],int,int)>($r10, 0, $i0);
+
+     label21:
+        goto label18;
+
+     label22:
+        $r11 := @caughtexception;
+
+        $r4 = $r5;
+
+        $z0 = 0;
+
+        $r12 = $r11;
+
+        $r7 = $r8;
+
+     label23:
+        $r31 = new java.lang.StringBuilder;
+
+     label24:
+        $r13 = $r31;
+
+     label25:
+        specialinvoke $r31.<java.lang.StringBuilder: void <init>()>();
+
+        $r13 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Error in fetching update package ");
+
+        $r32 = (org.apache.http.client.ClientProtocolException) $r12;
+
+        $r1 = virtualinvoke $r32.<org.apache.http.client.ClientProtocolException: java.lang.String getMessage()>();
+
+        $r13 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("Pontiflex SDK", $r1);
+
+     label26:
+        if $r4 == null goto label28;
+
+     label27:
+        virtualinvoke $r4.<java.io.InputStream: void close()>();
+
+     label28:
+        if $r9 == null goto label30;
+
+     label29:
+        virtualinvoke $r9.<java.io.OutputStream: void flush()>();
+
+        virtualinvoke $r9.<java.io.OutputStream: void close()>();
+
+     label30:
+        if $r7 == null goto label77;
+
+        $z1 = virtualinvoke $r7.<java.io.File: boolean exists()>();
+
+        if $z1 == 0 goto label77;
+
+        virtualinvoke $r7.<java.io.File: boolean delete()>();
+
+        $z1 = 0;
+
+     label31:
+        if $z0 == 0 goto label55;
+
+        if $z1 == 0 goto label55;
+
+        return 1;
+
+     label32:
+        $r1 = specialinvoke r0.<com.pontiflex.mobile.webview.utilities.UpdateJsTask: java.lang.String checksum(java.io.File)>($r8);
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>($r1);
+
+     label33:
+        if $z0 == 0 goto label79;
+
+        $z0 = 1;
+
+     label34:
+        if $r5 == null goto label36;
+
+     label35:
+        virtualinvoke $r5.<java.io.InputStream: void close()>();
+
+     label36:
+        if $r9 == null goto label38;
+
+     label37:
+        virtualinvoke $r9.<java.io.OutputStream: void flush()>();
+
+        virtualinvoke $r9.<java.io.OutputStream: void close()>();
+
+     label38:
+        if $r8 == null goto label78;
+
+        $z1 = virtualinvoke $r8.<java.io.File: boolean exists()>();
+
+        if $z1 == 0 goto label78;
+
+        if $z0 != 0 goto label78;
+
+        virtualinvoke $r8.<java.io.File: boolean delete()>();
+
+        $z1 = $z0;
+
+        $z0 = 1;
+
+        goto label31;
+
+     label39:
+        $r14 := @caughtexception;
+
+        $z0 = 0;
+
+        $r7 = null;
+
+        $r9 = null;
+
+     label40:
+        $r31 = new java.lang.StringBuilder;
+
+     label41:
+        $r13 = $r31;
+
+     label42:
+        specialinvoke $r31.<java.lang.StringBuilder: void <init>()>();
+
+        $r13 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Error in fetching update package ");
+
+        $r33 = (java.io.IOException) $r14;
+
+        $r1 = virtualinvoke $r33.<java.io.IOException: java.lang.String getMessage()>();
+
+        $r13 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("Pontiflex SDK", $r1);
+
+     label43:
+        if $r4 == null goto label45;
+
+     label44:
+        virtualinvoke $r4.<java.io.InputStream: void close()>();
+
+     label45:
+        if $r9 == null goto label47;
+
+     label46:
+        virtualinvoke $r9.<java.io.OutputStream: void flush()>();
+
+        virtualinvoke $r9.<java.io.OutputStream: void close()>();
+
+     label47:
+        if $r7 == null goto label77;
+
+        $z1 = virtualinvoke $r7.<java.io.File: boolean exists()>();
+
+        if $z1 == 0 goto label77;
+
+        virtualinvoke $r7.<java.io.File: boolean delete()>();
+
+        $z1 = 0;
+
+        goto label31;
+
+     label48:
+        $r15 := @caughtexception;
+
+        $r7 = null;
+
+        $r9 = null;
+
+        $r4 = null;
+
+     label49:
+        if $r4 == null goto label51;
+
+     label50:
+        virtualinvoke $r4.<java.io.InputStream: void close()>();
+
+     label51:
+        if $r9 == null goto label53;
+
+     label52:
+        virtualinvoke $r9.<java.io.OutputStream: void flush()>();
+
+        virtualinvoke $r9.<java.io.OutputStream: void close()>();
+
+     label53:
+        if $r7 == null goto label54;
+
+        $z0 = virtualinvoke $r7.<java.io.File: boolean exists()>();
+
+        if $z0 == 0 goto label54;
+
+        virtualinvoke $r7.<java.io.File: boolean delete()>();
+
+     label54:
+        throw $r15;
+
+     label55:
+        return 0;
+
+     label56:
+        $r16 := @caughtexception;
+
+        goto label06;
+
+     label57:
+        $r17 := @caughtexception;
+
+        goto label36;
+
+     label58:
+        $r18 := @caughtexception;
+
+        goto label28;
+
+     label59:
+        $r19 := @caughtexception;
+
+        goto label45;
+
+     label60:
+        $r20 := @caughtexception;
+
+        goto label51;
+
+     label61:
+        $r21 := @caughtexception;
+
+        goto label53;
+
+     label62:
+        $r15 := @caughtexception;
+
+        $r9 = null;
+
+        $r4 = $r5;
+
+        $r7 = null;
+
+        goto label49;
+
+     label63:
+        $r15 := @caughtexception;
+
+        $r9 = null;
+
+        $r4 = $r5;
+
+        $r7 = $r8;
+
+        goto label49;
+
+     label64:
+        $r22 := @caughtexception;
+
+        $r15 = $r22;
+
+        $r4 = $r5;
+
+        $r7 = $r8;
+
+        goto label49;
+
+     label65:
+        $r15 := @caughtexception;
+
+        goto label49;
+
+     label66:
+        $r23 := @caughtexception;
+
+        goto label47;
+
+     label67:
+        $r14 := @caughtexception;
+
+        $r7 = null;
+
+        $r9 = null;
+
+        $r4 = $r5;
+
+        $z0 = 0;
+
+        goto label40;
+
+     label68:
+        $r14 := @caughtexception;
+
+        $r7 = $r8;
+
+        $r9 = null;
+
+        $r4 = $r5;
+
+        $z0 = 0;
+
+        goto label40;
+
+     label69:
+        $r24 := @caughtexception;
+
+        $r4 = $r5;
+
+        $z0 = 0;
+
+        $r14 = $r24;
+
+        $r7 = $r8;
+
+        goto label40;
+
+     label70:
+        $r25 := @caughtexception;
+
+        $r4 = $r5;
+
+        $z0 = 1;
+
+        $r14 = $r25;
+
+        $r7 = $r8;
+
+        goto label40;
+
+     label71:
+        $r26 := @caughtexception;
+
+        goto label30;
+
+     label72:
+        $r12 := @caughtexception;
+
+        $z0 = 0;
+
+        $r7 = null;
+
+        $r9 = null;
+
+        goto label23;
+
+     label73:
+        $r12 := @caughtexception;
+
+        $r7 = null;
+
+        $r9 = null;
+
+        $r4 = $r5;
+
+        $z0 = 0;
+
+        goto label23;
+
+     label74:
+        $r12 := @caughtexception;
+
+        $r7 = $r8;
+
+        $r9 = null;
+
+        $r4 = $r5;
+
+        $z0 = 0;
+
+        goto label23;
+
+     label75:
+        $r27 := @caughtexception;
+
+        $r4 = $r5;
+
+        $z0 = 1;
+
+        $r12 = $r27;
+
+        $r7 = $r8;
+
+        goto label23;
+
+     label76:
+        $r28 := @caughtexception;
+
+        goto label38;
+
+     label77:
+        $z1 = 0;
+
+        goto label31;
+
+     label78:
+        $z1 = $z0;
+
+        $z0 = 1;
+
+        goto label31;
+
+     label79:
+        $z0 = 0;
+
+        goto label34;
+
+        catch org.apache.http.client.ClientProtocolException from label01 to label02 with label72;
+        catch java.io.IOException from label01 to label02 with label39;
+        catch java.lang.Throwable from label01 to label02 with label48;
+        catch org.apache.http.client.ClientProtocolException from label03 to label04 with label73;
+        catch java.io.IOException from label03 to label04 with label67;
+        catch java.lang.Throwable from label03 to label04 with label62;
+        catch java.io.IOException from label05 to label06 with label56;
+        catch org.apache.http.client.ClientProtocolException from label07 to label08 with label73;
+        catch org.apache.http.client.ClientProtocolException from label10 to label11 with label73;
+        catch java.io.IOException from label07 to label08 with label67;
+        catch java.io.IOException from label10 to label11 with label67;
+        catch java.lang.Throwable from label07 to label09 with label62;
+        catch java.lang.Throwable from label10 to label11 with label62;
+        catch org.apache.http.client.ClientProtocolException from label11 to label12 with label74;
+        catch org.apache.http.client.ClientProtocolException from label13 to label14 with label74;
+        catch org.apache.http.client.ClientProtocolException from label16 to label17 with label74;
+        catch java.io.IOException from label11 to label12 with label68;
+        catch java.io.IOException from label13 to label14 with label68;
+        catch java.io.IOException from label16 to label17 with label68;
+        catch java.lang.Throwable from label11 to label12 with label63;
+        catch java.lang.Throwable from label13 to label15 with label63;
+        catch java.lang.Throwable from label16 to label17 with label63;
+        catch org.apache.http.client.ClientProtocolException from label18 to label19 with label22;
+        catch org.apache.http.client.ClientProtocolException from label20 to label21 with label22;
+        catch java.io.IOException from label18 to label19 with label69;
+        catch java.io.IOException from label20 to label21 with label69;
+        catch java.lang.Throwable from label18 to label19 with label64;
+        catch java.lang.Throwable from label20 to label21 with label64;
+        catch java.lang.Throwable from label23 to label24 with label65;
+        catch java.lang.Throwable from label25 to label26 with label65;
+        catch java.io.IOException from label27 to label28 with label58;
+        catch java.io.IOException from label29 to label30 with label71;
+        catch org.apache.http.client.ClientProtocolException from label32 to label33 with label75;
+        catch java.io.IOException from label32 to label33 with label70;
+        catch java.lang.Throwable from label32 to label33 with label64;
+        catch java.io.IOException from label35 to label36 with label57;
+        catch java.io.IOException from label37 to label38 with label76;
+        catch java.lang.Throwable from label40 to label41 with label65;
+        catch java.lang.Throwable from label42 to label43 with label65;
+        catch java.io.IOException from label44 to label45 with label59;
+        catch java.io.IOException from label46 to label47 with label66;
+        catch java.io.IOException from label50 to label51 with label60;
+        catch java.io.IOException from label52 to label53 with label61;
+    }
+
+    protected java.io.File getUpdatedPackageDir(android.content.Context)
+    {
+        android.content.Context $r1;
+        com.pontiflex.mobile.webview.utilities.UpdateJsTask r0;
+        java.lang.String $r3;
+        java.io.File $r2, $r4;
+
+        r0 := @this: com.pontiflex.mobile.webview.utilities.UpdateJsTask;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 = new java.io.File;
+
+        $r4 = virtualinvoke $r1.<android.content.Context: java.io.File getFilesDir()>();
+
+        $r3 = <com.pontiflex.mobile.webview.utilities.UpdateJsTask: java.lang.String pflxStorageLocation>;
+
+        specialinvoke $r2.<java.io.File: void <init>(java.io.File,java.lang.String)>($r4, $r3);
+
+        return $r2;
+    }
+
+    protected transient void onProgressUpdate(java.lang.Integer[])
+    {
+        java.lang.StringBuilder $r2;
+        com.pontiflex.mobile.webview.utilities.UpdateJsTask r0;
+        java.lang.String $r4;
+        java.lang.Integer $r3;
+        java.lang.Integer[] $r1;
+
+        r0 := @this: com.pontiflex.mobile.webview.utilities.UpdateJsTask;
+
+        $r1 := @parameter0: java.lang.Integer[];
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Updated ");
+
+        $r3 = $r1[0];
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r3);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" %");
+
+        $r4 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("Pontiflex SDK", $r4);
+
+        return;
+    }
+
+    protected volatile void onProgressUpdate(java.lang.Object[])
+    {
+        com.pontiflex.mobile.webview.utilities.UpdateJsTask r0;
+        java.lang.Object[] $r1;
+        java.lang.Integer[] $r2;
+
+        r0 := @this: com.pontiflex.mobile.webview.utilities.UpdateJsTask;
+
+        $r1 := @parameter0: java.lang.Object[];
+
+        $r2 = (java.lang.Integer[]) $r1;
+
+        virtualinvoke r0.<com.pontiflex.mobile.webview.utilities.UpdateJsTask: void onProgressUpdate(java.lang.Integer[])>($r2);
+
+        return;
+    }
+}

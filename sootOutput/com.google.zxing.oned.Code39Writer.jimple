@@ -1,0 +1,247 @@
+public final class com.google.zxing.oned.Code39Writer extends com.google.zxing.oned.UPCEANWriter
+{
+
+    public void <init>()
+    {
+        com.google.zxing.oned.Code39Writer r0;
+
+        r0 := @this: com.google.zxing.oned.Code39Writer;
+
+        specialinvoke r0.<com.google.zxing.oned.UPCEANWriter: void <init>()>();
+
+        return;
+    }
+
+    private static void toIntArray(int, int[])
+    {
+        byte $b3;
+        int[] $r0;
+        int $i0, $i1, $i2;
+
+        $i0 := @parameter0: int;
+
+        $r0 := @parameter1: int[];
+
+        $i1 = 0;
+
+     label1:
+        if $i1 >= 9 goto label4;
+
+        $i2 = 1 << $i1;
+
+        $i2 = $i2 & $i0;
+
+        if $i2 != 0 goto label3;
+
+        $b3 = 1;
+
+     label2:
+        $r0[$i1] = $b3;
+
+        $i1 = $i1 + 1;
+
+        goto label1;
+
+     label3:
+        $b3 = 2;
+
+        goto label2;
+
+     label4:
+        return;
+    }
+
+    public com.google.zxing.common.BitMatrix encode(java.lang.String, com.google.zxing.BarcodeFormat, int, int, java.util.Hashtable) throws com.google.zxing.WriterException
+    {
+        java.lang.IllegalArgumentException $r5;
+        com.google.zxing.oned.Code39Writer r0;
+        java.lang.StringBuffer $r6;
+        int $i0, $i1;
+        com.google.zxing.common.BitMatrix $r7;
+        java.lang.String $r1;
+        com.google.zxing.BarcodeFormat $r2, $r4;
+        java.util.Hashtable $r3;
+
+        r0 := @this: com.google.zxing.oned.Code39Writer;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: com.google.zxing.BarcodeFormat;
+
+        $i0 := @parameter2: int;
+
+        $i1 := @parameter3: int;
+
+        $r3 := @parameter4: java.util.Hashtable;
+
+        $r4 = <com.google.zxing.BarcodeFormat: com.google.zxing.BarcodeFormat CODE_39>;
+
+        if $r2 == $r4 goto label1;
+
+        $r5 = new java.lang.IllegalArgumentException;
+
+        $r6 = new java.lang.StringBuffer;
+
+        specialinvoke $r6.<java.lang.StringBuffer: void <init>()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Can only encode CODE_39, but got ");
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.Object)>($r2);
+
+        $r1 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke $r5.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r1);
+
+        throw $r5;
+
+     label1:
+        $r7 = specialinvoke r0.<com.google.zxing.oned.UPCEANWriter: com.google.zxing.common.BitMatrix encode(java.lang.String,com.google.zxing.BarcodeFormat,int,int,java.util.Hashtable)>($r1, $r2, $i0, $i1, $r3);
+
+        return $r7;
+    }
+
+    public byte[] encode(java.lang.String)
+    {
+        byte[] $r6;
+        int[] $r2, $r5, $r7;
+        java.lang.StringBuffer $r3, $r8;
+        int $i0, $i1, $i2, $i4, $i5;
+        java.lang.String $r1, $r4;
+        char $c3;
+        java.lang.IllegalArgumentException $r9;
+        com.google.zxing.oned.Code39Writer r0;
+
+        r0 := @this: com.google.zxing.oned.Code39Writer;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $i0 = virtualinvoke $r1.<java.lang.String: int length()>();
+
+        if $i0 <= 80 goto label1;
+
+        $r9 = new java.lang.IllegalArgumentException;
+
+        $r8 = new java.lang.StringBuffer;
+
+        specialinvoke $r8.<java.lang.StringBuffer: void <init>()>();
+
+        $r3 = virtualinvoke $r8.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Requested contents should be less than 80 digits long, but got ");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r1 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke $r9.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r1);
+
+        throw $r9;
+
+     label1:
+        $r2 = newarray (int)[9];
+
+        $i1 = $i0 + 25;
+
+        $i2 = 0;
+
+     label2:
+        if $i2 >= $i0 goto label5;
+
+        $r4 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-. *$/+%";
+
+        $c3 = virtualinvoke $r1.<java.lang.String: char charAt(int)>($i2);
+
+        $i4 = (int) $c3;
+
+        $i4 = virtualinvoke $r4.<java.lang.String: int indexOf(int)>($i4);
+
+        $r5 = <com.google.zxing.oned.Code39Reader: int[] CHARACTER_ENCODINGS>;
+
+        $i4 = $r5[$i4];
+
+        staticinvoke <com.google.zxing.oned.Code39Writer: void toIntArray(int,int[])>($i4, $r2);
+
+        $i4 = 0;
+
+     label3:
+        $i5 = lengthof $r2;
+
+        if $i4 >= $i5 goto label4;
+
+        $i5 = $r2[$i4];
+
+        $i1 = $i1 + $i5;
+
+        $i4 = $i4 + 1;
+
+        goto label3;
+
+     label4:
+        $i2 = $i2 + 1;
+
+        goto label2;
+
+     label5:
+        $r6 = newarray (byte)[$i1];
+
+        $r5 = <com.google.zxing.oned.Code39Reader: int[] CHARACTER_ENCODINGS>;
+
+        $i2 = $r5[39];
+
+        staticinvoke <com.google.zxing.oned.Code39Writer: void toIntArray(int,int[])>($i2, $r2);
+
+        $i2 = staticinvoke <com.google.zxing.oned.Code39Writer: int appendPattern(byte[],int,int[],int)>($r6, 0, $r2, 1);
+
+        $r5 = newarray (int)[1];
+
+        $r5[0] = 1;
+
+        $i1 = staticinvoke <com.google.zxing.oned.Code39Writer: int appendPattern(byte[],int,int[],int)>($r6, $i2, $r5, 0);
+
+        $i2 = $i1 + $i2;
+
+        $i1 = -1;
+
+        $i0 = $i0 + $i1;
+
+     label6:
+        if $i0 < 0 goto label7;
+
+        $r4 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-. *$/+%";
+
+        $c3 = virtualinvoke $r1.<java.lang.String: char charAt(int)>($i0);
+
+        $i1 = (int) $c3;
+
+        $i1 = virtualinvoke $r4.<java.lang.String: int indexOf(int)>($i1);
+
+        $r7 = <com.google.zxing.oned.Code39Reader: int[] CHARACTER_ENCODINGS>;
+
+        $i1 = $r7[$i1];
+
+        staticinvoke <com.google.zxing.oned.Code39Writer: void toIntArray(int,int[])>($i1, $r2);
+
+        $i1 = staticinvoke <com.google.zxing.oned.Code39Writer: int appendPattern(byte[],int,int[],int)>($r6, $i2, $r2, 1);
+
+        $i2 = $i2 + $i1;
+
+        $i1 = staticinvoke <com.google.zxing.oned.Code39Writer: int appendPattern(byte[],int,int[],int)>($r6, $i2, $r5, 0);
+
+        $i2 = $i2 + $i1;
+
+        $i1 = -1;
+
+        $i0 = $i0 + $i1;
+
+        goto label6;
+
+     label7:
+        $r5 = <com.google.zxing.oned.Code39Reader: int[] CHARACTER_ENCODINGS>;
+
+        $i0 = $r5[39];
+
+        staticinvoke <com.google.zxing.oned.Code39Writer: void toIntArray(int,int[])>($i0, $r2);
+
+        staticinvoke <com.google.zxing.oned.Code39Writer: int appendPattern(byte[],int,int[],int)>($r6, $i2, $r2, 1);
+
+        return $r6;
+    }
+}

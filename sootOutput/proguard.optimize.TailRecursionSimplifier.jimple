@@ -1,0 +1,521 @@
+public class proguard.optimize.TailRecursionSimplifier extends proguard.classfile.util.SimplifiedVisitor implements proguard.classfile.attribute.visitor.AttributeVisitor, proguard.classfile.instruction.visitor.InstructionVisitor, proguard.classfile.constant.visitor.ConstantVisitor, proguard.classfile.attribute.visitor.ExceptionInfoVisitor
+{
+    private static final boolean DEBUG;
+    private final proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer;
+    private final proguard.classfile.instruction.visitor.InstructionVisitor extraTailRecursionVisitor;
+    private boolean inlinedAny;
+    private final proguard.optimize.TailRecursionSimplifier$MyRecursionChecker recursionChecker;
+    private proguard.classfile.Method targetMethod;
+
+    public void <init>()
+    {
+        proguard.optimize.TailRecursionSimplifier r0;
+
+        r0 := @this: proguard.optimize.TailRecursionSimplifier;
+
+        specialinvoke r0.<proguard.optimize.TailRecursionSimplifier: void <init>(proguard.classfile.instruction.visitor.InstructionVisitor)>(null);
+
+        return;
+    }
+
+    public void <init>(proguard.classfile.instruction.visitor.InstructionVisitor)
+    {
+        proguard.optimize.TailRecursionSimplifier r0;
+        proguard.optimize.TailRecursionSimplifier$MyRecursionChecker $r3;
+        proguard.classfile.editor.CodeAttributeComposer $r2;
+        proguard.classfile.instruction.visitor.InstructionVisitor $r1;
+
+        r0 := @this: proguard.optimize.TailRecursionSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.instruction.visitor.InstructionVisitor;
+
+        specialinvoke r0.<proguard.classfile.util.SimplifiedVisitor: void <init>()>();
+
+        $r2 = new proguard.classfile.editor.CodeAttributeComposer;
+
+        specialinvoke $r2.<proguard.classfile.editor.CodeAttributeComposer: void <init>()>();
+
+        r0.<proguard.optimize.TailRecursionSimplifier: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer> = $r2;
+
+        $r3 = new proguard.optimize.TailRecursionSimplifier$MyRecursionChecker;
+
+        specialinvoke $r3.<proguard.optimize.TailRecursionSimplifier$MyRecursionChecker: void <init>(proguard.optimize.TailRecursionSimplifier,proguard.optimize.TailRecursionSimplifier$1)>(r0, null);
+
+        r0.<proguard.optimize.TailRecursionSimplifier: proguard.optimize.TailRecursionSimplifier$MyRecursionChecker recursionChecker> = $r3;
+
+        r0.<proguard.optimize.TailRecursionSimplifier: proguard.classfile.instruction.visitor.InstructionVisitor extraTailRecursionVisitor> = $r1;
+
+        return;
+    }
+
+    static proguard.classfile.Method access$100(proguard.optimize.TailRecursionSimplifier)
+    {
+        proguard.classfile.Method r1;
+        proguard.optimize.TailRecursionSimplifier $r0;
+
+        $r0 := @parameter0: proguard.optimize.TailRecursionSimplifier;
+
+        r1 = $r0.<proguard.optimize.TailRecursionSimplifier: proguard.classfile.Method targetMethod>;
+
+        return r1;
+    }
+
+    private void storeParameters(proguard.classfile.Clazz, proguard.classfile.Method)
+    {
+        java.lang.String[] $r3;
+        proguard.classfile.editor.CodeAttributeComposer $r6;
+        byte $b4;
+        proguard.classfile.Clazz $r1;
+        int $i0, $i1, $i2, $i5;
+        java.lang.String $r4;
+        boolean $z0, $z1;
+        char $c3;
+        proguard.classfile.instruction.VariableInstruction $r9;
+        proguard.classfile.util.InternalTypeEnumeration $r5, $r8;
+        proguard.classfile.instruction.Instruction $r7;
+        proguard.classfile.Method $r2;
+        proguard.optimize.TailRecursionSimplifier r0;
+
+        r0 := @this: proguard.optimize.TailRecursionSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r4 = interfaceinvoke $r2.<proguard.classfile.Method: java.lang.String getDescriptor(proguard.classfile.Clazz)>($r1);
+
+        $i1 = interfaceinvoke $r2.<proguard.classfile.Method: int getAccessFlags()>();
+
+        $i1 = $i1 & 8;
+
+        if $i1 == 0 goto label05;
+
+        $z0 = 1;
+
+     label01:
+        $i1 = staticinvoke <proguard.classfile.util.ClassUtil: int internalMethodParameterSize(java.lang.String)>($r4);
+
+        if $z0 == 0 goto label06;
+
+        $z1 = 0;
+
+     label02:
+        $r3 = newarray (java.lang.String)[$i1];
+
+        $r8 = new proguard.classfile.util.InternalTypeEnumeration;
+
+        $r5 = $r8;
+
+        specialinvoke $r8.<proguard.classfile.util.InternalTypeEnumeration: void <init>(java.lang.String)>($r4);
+
+        $i2 = 0;
+
+     label03:
+        if $i2 >= $i1 goto label07;
+
+        $r4 = virtualinvoke $r5.<proguard.classfile.util.InternalTypeEnumeration: java.lang.String nextType()>();
+
+        $r3[$i2] = $r4;
+
+        $i0 = staticinvoke <proguard.classfile.util.ClassUtil: int internalTypeSize(java.lang.String)>($r4);
+
+        if $i0 != 2 goto label04;
+
+        $i2 = $i2 + 1;
+
+     label04:
+        $i2 = $i2 + 1;
+
+        goto label03;
+
+     label05:
+        $z0 = 0;
+
+        goto label01;
+
+     label06:
+        $z1 = 1;
+
+        goto label02;
+
+     label07:
+        $r6 = r0.<proguard.optimize.TailRecursionSimplifier: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer>;
+
+        $i2 = $i1 + 1;
+
+        virtualinvoke $r6.<proguard.classfile.editor.CodeAttributeComposer: void beginCodeFragment(int)>($i2);
+
+        $i2 = $i1 - 1;
+
+     label08:
+        if $i2 < 0 goto label16;
+
+        $r4 = $r3[$i2];
+
+        if $r4 == null goto label11;
+
+        $c3 = virtualinvoke $r4.<java.lang.String: char charAt(int)>(0);
+
+        $i0 = (int) $c3;
+
+        lookupswitch($i0)
+        {
+            case 66: goto label12;
+            case 67: goto label12;
+            case 68: goto label15;
+            case 70: goto label14;
+            case 73: goto label12;
+            case 74: goto label13;
+            case 83: goto label12;
+            case 90: goto label12;
+            default: goto label09;
+        };
+
+     label09:
+        $b4 = 58;
+
+     label10:
+        $r6 = r0.<proguard.optimize.TailRecursionSimplifier: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer>;
+
+        $i0 = $i1 - $i2;
+
+        $i5 = $i0 - 1;
+
+        $r9 = new proguard.classfile.instruction.VariableInstruction;
+
+        $i0 = $z1 + $i2;
+
+        specialinvoke $r9.<proguard.classfile.instruction.VariableInstruction: void <init>(byte,int)>($b4, $i0);
+
+        $r7 = virtualinvoke $r9.<proguard.classfile.instruction.VariableInstruction: proguard.classfile.instruction.Instruction shrink()>();
+
+        virtualinvoke $r6.<proguard.classfile.editor.CodeAttributeComposer: void appendInstruction(int,proguard.classfile.instruction.Instruction)>($i5, $r7);
+
+     label11:
+        $i2 = $i2 + -1;
+
+        goto label08;
+
+     label12:
+        $b4 = 54;
+
+        goto label10;
+
+     label13:
+        $b4 = 55;
+
+        goto label10;
+
+     label14:
+        $b4 = 56;
+
+        goto label10;
+
+     label15:
+        $b4 = 57;
+
+        goto label10;
+
+     label16:
+        if $z0 != 0 goto label17;
+
+        $r6 = r0.<proguard.optimize.TailRecursionSimplifier: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer>;
+
+        $r9 = new proguard.classfile.instruction.VariableInstruction;
+
+        specialinvoke $r9.<proguard.classfile.instruction.VariableInstruction: void <init>(byte,int)>(58, 0);
+
+        $r7 = virtualinvoke $r9.<proguard.classfile.instruction.VariableInstruction: proguard.classfile.instruction.Instruction shrink()>();
+
+        virtualinvoke $r6.<proguard.classfile.editor.CodeAttributeComposer: void appendInstruction(int,proguard.classfile.instruction.Instruction)>($i1, $r7);
+
+     label17:
+        $r6 = r0.<proguard.optimize.TailRecursionSimplifier: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer>;
+
+        virtualinvoke $r6.<proguard.classfile.editor.CodeAttributeComposer: void endCodeFragment()>();
+
+        return;
+    }
+
+    public void visitAnyAttribute(proguard.classfile.Clazz, proguard.classfile.attribute.Attribute)
+    {
+        proguard.optimize.TailRecursionSimplifier r0;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.Attribute $r2;
+
+        r0 := @this: proguard.optimize.TailRecursionSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.Attribute;
+
+        return;
+    }
+
+    public void visitAnyInstruction(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.instruction.Instruction)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.instruction.Instruction $r4;
+        int $i0;
+        proguard.classfile.Method $r2;
+        proguard.optimize.TailRecursionSimplifier r0;
+        proguard.classfile.editor.CodeAttributeComposer $r5;
+
+        r0 := @this: proguard.optimize.TailRecursionSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.instruction.Instruction;
+
+        $r5 = r0.<proguard.optimize.TailRecursionSimplifier: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer>;
+
+        $r4 = virtualinvoke $r4.<proguard.classfile.instruction.Instruction: proguard.classfile.instruction.Instruction shrink()>();
+
+        virtualinvoke $r5.<proguard.classfile.editor.CodeAttributeComposer: void appendInstruction(int,proguard.classfile.instruction.Instruction)>($i0, $r4);
+
+        return;
+    }
+
+    public void visitCodeAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute)
+    {
+        proguard.classfile.editor.CodeAttributeComposer $r4;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int $i0, $i1;
+        proguard.classfile.Method $r2;
+        proguard.optimize.TailRecursionSimplifier r0;
+        boolean $z0;
+
+        r0 := @this: proguard.optimize.TailRecursionSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 = interfaceinvoke $r2.<proguard.classfile.Method: int getAccessFlags()>();
+
+        $i1 = $i0 & 26;
+
+        if $i1 == 0 goto label1;
+
+        $i0 = $i0 & 1824;
+
+        if $i0 != 0 goto label1;
+
+        r0.<proguard.optimize.TailRecursionSimplifier: proguard.classfile.Method targetMethod> = $r2;
+
+        r0.<proguard.optimize.TailRecursionSimplifier: boolean inlinedAny> = 0;
+
+        $r4 = r0.<proguard.optimize.TailRecursionSimplifier: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer>;
+
+        virtualinvoke $r4.<proguard.classfile.editor.CodeAttributeComposer: void reset()>();
+
+        $r4 = r0.<proguard.optimize.TailRecursionSimplifier: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer>;
+
+        $i0 = $r3.<proguard.classfile.attribute.CodeAttribute: int u4codeLength>;
+
+        virtualinvoke $r4.<proguard.classfile.editor.CodeAttributeComposer: void beginCodeFragment(int)>($i0);
+
+        virtualinvoke $r3.<proguard.classfile.attribute.CodeAttribute: void instructionsAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.instruction.visitor.InstructionVisitor)>($r1, $r2, r0);
+
+        $z0 = r0.<proguard.optimize.TailRecursionSimplifier: boolean inlinedAny>;
+
+        if $z0 == 0 goto label1;
+
+        virtualinvoke $r3.<proguard.classfile.attribute.CodeAttribute: void exceptionsAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.visitor.ExceptionInfoVisitor)>($r1, $r2, r0);
+
+        $r4 = r0.<proguard.optimize.TailRecursionSimplifier: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer>;
+
+        $i0 = $r3.<proguard.classfile.attribute.CodeAttribute: int u4codeLength>;
+
+        virtualinvoke $r4.<proguard.classfile.editor.CodeAttributeComposer: void appendLabel(int)>($i0);
+
+        $r4 = r0.<proguard.optimize.TailRecursionSimplifier: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer>;
+
+        virtualinvoke $r4.<proguard.classfile.editor.CodeAttributeComposer: void endCodeFragment()>();
+
+        $r4 = r0.<proguard.optimize.TailRecursionSimplifier: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer>;
+
+        virtualinvoke $r4.<proguard.classfile.editor.CodeAttributeComposer: void visitCodeAttribute(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute)>($r1, $r2, $r3);
+
+     label1:
+        return;
+    }
+
+    public void visitConstantInstruction(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.instruction.ConstantInstruction)
+    {
+        byte[] $r8;
+        proguard.classfile.editor.CodeAttributeComposer $r5;
+        byte $b1;
+        proguard.classfile.Clazz $r1;
+        int $i0, $i2, $i3;
+        boolean $z0;
+        proguard.classfile.instruction.BranchInstruction $r10;
+        proguard.classfile.instruction.visitor.InstructionVisitor $r9;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.instruction.Instruction $r6;
+        proguard.classfile.instruction.ConstantInstruction $r4;
+        proguard.classfile.Method $r2;
+        proguard.optimize.TailRecursionSimplifier r0;
+        proguard.optimize.TailRecursionSimplifier$MyRecursionChecker $r7;
+
+        r0 := @this: proguard.optimize.TailRecursionSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.instruction.ConstantInstruction;
+
+        $b1 = $r4.<proguard.classfile.instruction.ConstantInstruction: byte opcode>;
+
+        $i2 = (int) $b1;
+
+        lookupswitch($i2)
+        {
+            case -74: goto label2;
+            case -73: goto label2;
+            case -72: goto label2;
+            default: goto label1;
+        };
+
+     label1:
+        $r5 = r0.<proguard.optimize.TailRecursionSimplifier: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer>;
+
+        $r6 = virtualinvoke $r4.<proguard.classfile.instruction.ConstantInstruction: proguard.classfile.instruction.Instruction shrink()>();
+
+        virtualinvoke $r5.<proguard.classfile.editor.CodeAttributeComposer: void appendInstruction(int,proguard.classfile.instruction.Instruction)>($i0, $r6);
+
+        return;
+
+     label2:
+        $i2 = $r4.<proguard.classfile.instruction.ConstantInstruction: int constantIndex>;
+
+        $r7 = r0.<proguard.optimize.TailRecursionSimplifier: proguard.optimize.TailRecursionSimplifier$MyRecursionChecker recursionChecker>;
+
+        interfaceinvoke $r1.<proguard.classfile.Clazz: void constantPoolEntryAccept(int,proguard.classfile.constant.visitor.ConstantVisitor)>($i2, $r7);
+
+        $r7 = r0.<proguard.optimize.TailRecursionSimplifier: proguard.optimize.TailRecursionSimplifier$MyRecursionChecker recursionChecker>;
+
+        $z0 = virtualinvoke $r7.<proguard.optimize.TailRecursionSimplifier$MyRecursionChecker: boolean isRecursive()>();
+
+        if $z0 == 0 goto label1;
+
+        $i2 = virtualinvoke $r4.<proguard.classfile.instruction.ConstantInstruction: int length(int)>($i0);
+
+        $i2 = $i2 + $i0;
+
+        $r8 = $r3.<proguard.classfile.attribute.CodeAttribute: byte[] code>;
+
+        $r6 = staticinvoke <proguard.classfile.instruction.InstructionFactory: proguard.classfile.instruction.Instruction create(byte[],int)>($r8, $i2);
+
+        $b1 = $r6.<proguard.classfile.instruction.Instruction: byte opcode>;
+
+        $i2 = (int) $b1;
+
+        lookupswitch($i2)
+        {
+            case -84: goto label3;
+            case -83: goto label3;
+            case -82: goto label3;
+            case -81: goto label3;
+            case -80: goto label3;
+            case -79: goto label3;
+            default: goto label1;
+        };
+
+     label3:
+        $r7 = r0.<proguard.optimize.TailRecursionSimplifier: proguard.optimize.TailRecursionSimplifier$MyRecursionChecker recursionChecker>;
+
+        virtualinvoke $r3.<proguard.classfile.attribute.CodeAttribute: void exceptionsAccept(proguard.classfile.Clazz,proguard.classfile.Method,int,proguard.classfile.attribute.visitor.ExceptionInfoVisitor)>($r1, $r2, $i0, $r7);
+
+        $r7 = r0.<proguard.optimize.TailRecursionSimplifier: proguard.optimize.TailRecursionSimplifier$MyRecursionChecker recursionChecker>;
+
+        $z0 = virtualinvoke $r7.<proguard.optimize.TailRecursionSimplifier$MyRecursionChecker: boolean isRecursive()>();
+
+        if $z0 == 0 goto label1;
+
+        $r5 = r0.<proguard.optimize.TailRecursionSimplifier: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer>;
+
+        virtualinvoke $r5.<proguard.classfile.editor.CodeAttributeComposer: void appendLabel(int)>($i0);
+
+        specialinvoke r0.<proguard.optimize.TailRecursionSimplifier: void storeParameters(proguard.classfile.Clazz,proguard.classfile.Method)>($r1, $r2);
+
+        $i2 = $i0 + 1;
+
+        $r5 = r0.<proguard.optimize.TailRecursionSimplifier: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer>;
+
+        $r10 = new proguard.classfile.instruction.BranchInstruction;
+
+        $i3 = neg $i2;
+
+        specialinvoke $r10.<proguard.classfile.instruction.BranchInstruction: void <init>(byte,int)>(-89, $i3);
+
+        virtualinvoke $r5.<proguard.classfile.editor.CodeAttributeComposer: void appendInstruction(int,proguard.classfile.instruction.Instruction)>($i2, $r10);
+
+        r0.<proguard.optimize.TailRecursionSimplifier: boolean inlinedAny> = 1;
+
+        $r9 = r0.<proguard.optimize.TailRecursionSimplifier: proguard.classfile.instruction.visitor.InstructionVisitor extraTailRecursionVisitor>;
+
+        if $r9 == null goto label4;
+
+        $r9 = r0.<proguard.optimize.TailRecursionSimplifier: proguard.classfile.instruction.visitor.InstructionVisitor extraTailRecursionVisitor>;
+
+        interfaceinvoke $r9.<proguard.classfile.instruction.visitor.InstructionVisitor: void visitConstantInstruction(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,int,proguard.classfile.instruction.ConstantInstruction)>($r1, $r2, $r3, $i0, $r4);
+
+     label4:
+        return;
+    }
+
+    public void visitExceptionInfo(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, proguard.classfile.attribute.ExceptionInfo)
+    {
+        proguard.classfile.editor.CodeAttributeComposer $r5;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int $i0, $i1, $i2, $i3;
+        proguard.classfile.Method $r2;
+        proguard.optimize.TailRecursionSimplifier r0;
+        proguard.classfile.attribute.ExceptionInfo $r4, $r6;
+
+        r0 := @this: proguard.optimize.TailRecursionSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 := @parameter3: proguard.classfile.attribute.ExceptionInfo;
+
+        $r5 = r0.<proguard.optimize.TailRecursionSimplifier: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer>;
+
+        $r6 = new proguard.classfile.attribute.ExceptionInfo;
+
+        $i0 = $r4.<proguard.classfile.attribute.ExceptionInfo: int u2startPC>;
+
+        $i1 = $r4.<proguard.classfile.attribute.ExceptionInfo: int u2endPC>;
+
+        $i2 = $r4.<proguard.classfile.attribute.ExceptionInfo: int u2handlerPC>;
+
+        $i3 = $r4.<proguard.classfile.attribute.ExceptionInfo: int u2catchType>;
+
+        specialinvoke $r6.<proguard.classfile.attribute.ExceptionInfo: void <init>(int,int,int,int)>($i0, $i1, $i2, $i3);
+
+        virtualinvoke $r5.<proguard.classfile.editor.CodeAttributeComposer: void appendException(proguard.classfile.attribute.ExceptionInfo)>($r6);
+
+        return;
+    }
+}

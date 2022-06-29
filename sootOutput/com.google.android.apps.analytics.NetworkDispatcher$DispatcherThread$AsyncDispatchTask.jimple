@@ -1,0 +1,526 @@
+class com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask extends java.lang.Object implements java.lang.Runnable
+{
+    private final java.util.LinkedList hits;
+    final com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread this$0;
+
+    public void <init>(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread, com.google.android.apps.analytics.Hit[])
+    {
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread $r1;
+        com.google.android.apps.analytics.Hit[] $r2;
+        java.util.LinkedList $r3;
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask r0;
+
+        r0 := @this: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask;
+
+        $r1 := @parameter0: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread;
+
+        $r2 := @parameter1: com.google.android.apps.analytics.Hit[];
+
+        r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread this$0> = $r1;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        $r3 = new java.util.LinkedList;
+
+        specialinvoke $r3.<java.util.LinkedList: void <init>()>();
+
+        r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask: java.util.LinkedList hits> = $r3;
+
+        $r3 = r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask: java.util.LinkedList hits>;
+
+        staticinvoke <java.util.Collections: boolean addAll(java.util.Collection,java.lang.Object[])>($r3, $r2);
+
+        return;
+    }
+
+    private void dispatchSomePendingHits(boolean) throws java.io.IOException, org.apache.http.ParseException, org.apache.http.HttpException
+    {
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread $r3;
+        com.google.android.apps.analytics.PipelinedRequester $r19;
+        long $l2;
+        org.apache.http.Header $r15;
+        org.apache.http.message.BasicHttpEntityEnclosingRequest $r9, $r20;
+        org.apache.http.RequestLine $r17;
+        java.lang.StringBuffer $r13, $r16;
+        int $i0, $i1, $i3;
+        java.lang.String $r6, $r7, $r8;
+        java.util.LinkedList $r2;
+        com.google.android.apps.analytics.NetworkDispatcher $r10;
+        boolean $z0, $z1;
+        org.apache.http.Header[] $r14;
+        org.apache.http.entity.StringEntity $r22;
+        com.google.android.apps.analytics.GoogleAnalyticsTracker $r1;
+        com.google.android.apps.analytics.Hit $r5;
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$RequesterCallbacks $r18;
+        java.lang.Object $r4;
+        java.lang.StringBuilder $r12, $r21;
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask r0;
+        org.apache.http.HttpHost $r11;
+
+        r0 := @this: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask;
+
+        $z0 := @parameter0: boolean;
+
+        $r1 = staticinvoke <com.google.android.apps.analytics.GoogleAnalyticsTracker: com.google.android.apps.analytics.GoogleAnalyticsTracker getInstance()>();
+
+        $z1 = virtualinvoke $r1.<com.google.android.apps.analytics.GoogleAnalyticsTracker: boolean getDebug()>();
+
+        if $z1 == 0 goto label01;
+
+        if $z0 == 0 goto label01;
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("GoogleAnalyticsTracker", "dispatching hits in dry run mode");
+
+     label01:
+        $i0 = 0;
+
+     label02:
+        $r2 = r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask: java.util.LinkedList hits>;
+
+        $i1 = virtualinvoke $r2.<java.util.LinkedList: int size()>();
+
+        if $i0 >= $i1 goto label17;
+
+        $r3 = r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread this$0>;
+
+        $i1 = staticinvoke <com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: int access$1000(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread)>($r3);
+
+        if $i0 >= $i1 goto label17;
+
+        $r2 = r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask: java.util.LinkedList hits>;
+
+        $r4 = virtualinvoke $r2.<java.util.LinkedList: java.lang.Object get(int)>($i0);
+
+        $r5 = (com.google.android.apps.analytics.Hit) $r4;
+
+        $r6 = $r5.<com.google.android.apps.analytics.Hit: java.lang.String hitString>;
+
+        $l2 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $r7 = staticinvoke <com.google.android.apps.analytics.Utils: java.lang.String addQueueTimeParameter(java.lang.String,long)>($r6, $l2);
+
+        $i1 = virtualinvoke $r7.<java.lang.String: int indexOf(int)>(63);
+
+        if $i1 >= 0 goto label07;
+
+        $r6 = "";
+
+        $r8 = $r7;
+
+     label03:
+        $i1 = virtualinvoke $r6.<java.lang.String: int length()>();
+
+        if $i1 >= 2036 goto label11;
+
+        $r20 = new org.apache.http.message.BasicHttpEntityEnclosingRequest;
+
+        $r9 = $r20;
+
+        specialinvoke $r20.<org.apache.http.message.BasicHttpEntityEnclosingRequest: void <init>(java.lang.String,java.lang.String)>("GET", $r7);
+
+     label04:
+        $r3 = r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread this$0>;
+
+        $r10 = staticinvoke <com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: com.google.android.apps.analytics.NetworkDispatcher access$700(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread)>($r3);
+
+        $r11 = staticinvoke <com.google.android.apps.analytics.NetworkDispatcher: org.apache.http.HttpHost access$200(com.google.android.apps.analytics.NetworkDispatcher)>($r10);
+
+        $r7 = virtualinvoke $r11.<org.apache.http.HttpHost: java.lang.String getHostName()>();
+
+        $r8 = $r7;
+
+        $r3 = r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread this$0>;
+
+        $r10 = staticinvoke <com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: com.google.android.apps.analytics.NetworkDispatcher access$700(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread)>($r3);
+
+        $r11 = staticinvoke <com.google.android.apps.analytics.NetworkDispatcher: org.apache.http.HttpHost access$200(com.google.android.apps.analytics.NetworkDispatcher)>($r10);
+
+        $i1 = virtualinvoke $r11.<org.apache.http.HttpHost: int getPort()>();
+
+        if $i1 == 80 goto label05;
+
+        $r21 = new java.lang.StringBuilder;
+
+        specialinvoke $r21.<java.lang.StringBuilder: void <init>()>();
+
+        $r12 = virtualinvoke $r21.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(":");
+
+        $r3 = r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread this$0>;
+
+        $r10 = staticinvoke <com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: com.google.android.apps.analytics.NetworkDispatcher access$700(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread)>($r3);
+
+        $r11 = staticinvoke <com.google.android.apps.analytics.NetworkDispatcher: org.apache.http.HttpHost access$200(com.google.android.apps.analytics.NetworkDispatcher)>($r10);
+
+        $i1 = virtualinvoke $r11.<org.apache.http.HttpHost: int getPort()>();
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1);
+
+        $r8 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label05:
+        interfaceinvoke $r9.<org.apache.http.HttpEntityEnclosingRequest: void addHeader(java.lang.String,java.lang.String)>("Host", $r8);
+
+        $r3 = r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread this$0>;
+
+        $r7 = staticinvoke <com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: java.lang.String access$1100(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread)>($r3);
+
+        interfaceinvoke $r9.<org.apache.http.HttpEntityEnclosingRequest: void addHeader(java.lang.String,java.lang.String)>("User-Agent", $r7);
+
+        $r1 = staticinvoke <com.google.android.apps.analytics.GoogleAnalyticsTracker: com.google.android.apps.analytics.GoogleAnalyticsTracker getInstance()>();
+
+        $z1 = virtualinvoke $r1.<com.google.android.apps.analytics.GoogleAnalyticsTracker: boolean getDebug()>();
+
+        if $z1 == 0 goto label13;
+
+        $r16 = new java.lang.StringBuffer;
+
+        $r13 = $r16;
+
+        specialinvoke $r16.<java.lang.StringBuffer: void <init>()>();
+
+        $r14 = interfaceinvoke $r9.<org.apache.http.HttpEntityEnclosingRequest: org.apache.http.Header[] getAllHeaders()>();
+
+        $i1 = lengthof $r14;
+
+        $i3 = 0;
+
+     label06:
+        if $i3 >= $i1 goto label12;
+
+        $r15 = $r14[$i3];
+
+        $r7 = virtualinvoke $r15.<java.lang.Object: java.lang.String toString()>();
+
+        $r16 = virtualinvoke $r13.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r7);
+
+        virtualinvoke $r16.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("\n");
+
+        $i3 = $i3 + 1;
+
+        goto label06;
+
+     label07:
+        if $i1 <= 0 goto label09;
+
+        $r8 = virtualinvoke $r7.<java.lang.String: java.lang.String substring(int,int)>(0, $i1);
+
+     label08:
+        $i3 = virtualinvoke $r7.<java.lang.String: int length()>();
+
+        $i3 = $i3 + -2;
+
+        if $i1 >= $i3 goto label10;
+
+        $i1 = $i1 + 1;
+
+        $r6 = virtualinvoke $r7.<java.lang.String: java.lang.String substring(int)>($i1);
+
+        goto label03;
+
+     label09:
+        $r8 = "";
+
+        goto label08;
+
+     label10:
+        $r6 = "";
+
+        goto label03;
+
+     label11:
+        $r20 = new org.apache.http.message.BasicHttpEntityEnclosingRequest;
+
+        $r9 = $r20;
+
+        $r21 = new java.lang.StringBuilder;
+
+        specialinvoke $r21.<java.lang.StringBuilder: void <init>()>();
+
+        $r12 = virtualinvoke $r21.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/p");
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r7 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r20.<org.apache.http.message.BasicHttpEntityEnclosingRequest: void <init>(java.lang.String,java.lang.String)>("POST", $r7);
+
+        $i1 = virtualinvoke $r6.<java.lang.String: int length()>();
+
+        $r7 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i1);
+
+        interfaceinvoke $r9.<org.apache.http.HttpEntityEnclosingRequest: void addHeader(java.lang.String,java.lang.String)>("Content-Length", $r7);
+
+        interfaceinvoke $r9.<org.apache.http.HttpEntityEnclosingRequest: void addHeader(java.lang.String,java.lang.String)>("Content-Type", "text/plain");
+
+        $r22 = new org.apache.http.entity.StringEntity;
+
+        specialinvoke $r22.<org.apache.http.entity.StringEntity: void <init>(java.lang.String)>($r6);
+
+        interfaceinvoke $r9.<org.apache.http.HttpEntityEnclosingRequest: void setEntity(org.apache.http.HttpEntity)>($r22);
+
+        goto label04;
+
+     label12:
+        $r17 = interfaceinvoke $r9.<org.apache.http.HttpEntityEnclosingRequest: org.apache.http.RequestLine getRequestLine()>();
+
+        $r7 = virtualinvoke $r17.<java.lang.Object: java.lang.String toString()>();
+
+        $r16 = virtualinvoke $r13.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r7);
+
+        virtualinvoke $r16.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("\n");
+
+        $r7 = virtualinvoke $r13.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("GoogleAnalyticsTracker", $r7);
+
+     label13:
+        $i1 = virtualinvoke $r6.<java.lang.String: int length()>();
+
+        if $i1 <= 8192 goto label15;
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>("GoogleAnalyticsTracker", "Hit too long (> 8192 bytes)--not sent");
+
+        $r3 = r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread this$0>;
+
+        $r18 = staticinvoke <com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$RequesterCallbacks access$1200(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread)>($r3);
+
+        virtualinvoke $r18.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$RequesterCallbacks: void requestSent()>();
+
+     label14:
+        $i0 = $i0 + 1;
+
+        goto label02;
+
+     label15:
+        if $z0 == 0 goto label16;
+
+        $r3 = r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread this$0>;
+
+        $r18 = staticinvoke <com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$RequesterCallbacks access$1200(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread)>($r3);
+
+        virtualinvoke $r18.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$RequesterCallbacks: void requestSent()>();
+
+        goto label14;
+
+     label16:
+        $r3 = r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread this$0>;
+
+        $r19 = staticinvoke <com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: com.google.android.apps.analytics.PipelinedRequester access$800(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread)>($r3);
+
+        virtualinvoke $r19.<com.google.android.apps.analytics.PipelinedRequester: void addRequest(org.apache.http.HttpEntityEnclosingRequest)>($r9);
+
+        goto label14;
+
+     label17:
+        if $z0 != 0 goto label18;
+
+        $r3 = r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread this$0>;
+
+        $r19 = staticinvoke <com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: com.google.android.apps.analytics.PipelinedRequester access$800(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread)>($r3);
+
+        virtualinvoke $r19.<com.google.android.apps.analytics.PipelinedRequester: void sendRequests()>();
+
+     label18:
+        return;
+    }
+
+    public com.google.android.apps.analytics.Hit removeNextHit()
+    {
+        com.google.android.apps.analytics.Hit $r3;
+        java.lang.Object $r1;
+        java.util.LinkedList $r2;
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask r0;
+
+        r0 := @this: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask;
+
+        $r2 = r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask: java.util.LinkedList hits>;
+
+        $r1 = virtualinvoke $r2.<java.util.LinkedList: java.lang.Object poll()>();
+
+        $r3 = (com.google.android.apps.analytics.Hit) $r1;
+
+        return $r3;
+    }
+
+    public void run()
+    {
+        java.lang.Throwable $r4, $r7, $r8;
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread $r1;
+        com.google.android.apps.analytics.PipelinedRequester $r5;
+        long $l2, $l3;
+        byte $b4;
+        int $i0, $i1;
+        java.util.LinkedList $r2;
+        com.google.android.apps.analytics.NetworkDispatcher $r3;
+        double $d0, $d1;
+        boolean $z0;
+        com.google.android.apps.analytics.Dispatcher$Callbacks $r6;
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask r0;
+
+        r0 := @this: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask;
+
+        $r1 = r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread this$0>;
+
+        staticinvoke <com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask access$402(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread,com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask)>($r1, r0);
+
+        $i0 = 0;
+
+     label01:
+        if $i0 >= 5 goto label22;
+
+        $r2 = r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask: java.util.LinkedList hits>;
+
+        $i1 = virtualinvoke $r2.<java.util.LinkedList: int size()>();
+
+        if $i1 <= 0 goto label22;
+
+        $l2 = 0L;
+
+        $r1 = r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread this$0>;
+
+     label02:
+        $i1 = staticinvoke <com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: int access$500(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread)>($r1);
+
+     label03:
+        if $i1 == 500 goto label06;
+
+        $r1 = r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread this$0>;
+
+     label04:
+        $i1 = staticinvoke <com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: int access$500(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread)>($r1);
+
+     label05:
+        if $i1 != 503 goto label18;
+
+     label06:
+        $d0 = staticinvoke <java.lang.Math: double random()>();
+
+     label07:
+        $r1 = r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread this$0>;
+
+     label08:
+        $l2 = staticinvoke <com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: long access$600(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread)>($r1);
+
+     label09:
+        $d1 = (double) $l2;
+
+        $d0 = $d0 * $d1;
+
+        $l2 = (long) $d0;
+
+        $r1 = r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread this$0>;
+
+     label10:
+        $l3 = staticinvoke <com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: long access$600(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread)>($r1);
+
+     label11:
+        $b4 = $l3 cmp 256L;
+
+        $i1 = (int) $b4;
+
+        if $i1 >= 0 goto label13;
+
+        $r1 = r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread this$0>;
+
+     label12:
+        staticinvoke <com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: long access$630(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread,long)>($r1, 2L);
+
+     label13:
+        $l2 = $l2 * 1000L;
+
+     label14:
+        staticinvoke <java.lang.Thread: void sleep(long)>($l2);
+
+     label15:
+        $r1 = r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread this$0>;
+
+     label16:
+        $r3 = staticinvoke <com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: com.google.android.apps.analytics.NetworkDispatcher access$700(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread)>($r1);
+
+        $z0 = virtualinvoke $r3.<com.google.android.apps.analytics.NetworkDispatcher: boolean isDryRun()>();
+
+        specialinvoke r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask: void dispatchSomePendingHits(boolean)>($z0);
+
+     label17:
+        $i0 = $i0 + 1;
+
+        goto label01;
+
+     label18:
+        $r1 = r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread this$0>;
+
+     label19:
+        staticinvoke <com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: long access$602(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread,long)>($r1, 2L);
+
+     label20:
+        goto label13;
+
+     label21:
+        $r4 := @caughtexception;
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String,java.lang.Throwable)>("GoogleAnalyticsTracker", "Couldn\'t sleep.", $r4);
+
+     label22:
+        $r1 = r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread this$0>;
+
+        $r5 = staticinvoke <com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: com.google.android.apps.analytics.PipelinedRequester access$800(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread)>($r1);
+
+        virtualinvoke $r5.<com.google.android.apps.analytics.PipelinedRequester: void finishedCurrentRequests()>();
+
+        $r1 = r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread this$0>;
+
+        $r6 = staticinvoke <com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: com.google.android.apps.analytics.Dispatcher$Callbacks access$900(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread)>($r1);
+
+        interfaceinvoke $r6.<com.google.android.apps.analytics.Dispatcher$Callbacks: void dispatchFinished()>();
+
+        $r1 = r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread this$0>;
+
+        staticinvoke <com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask access$402(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread,com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask)>($r1, null);
+
+        return;
+
+     label23:
+        $r7 := @caughtexception;
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String,java.lang.Throwable)>("GoogleAnalyticsTracker", "Problem with socket or streams.", $r7);
+
+        goto label22;
+
+     label24:
+        $r8 := @caughtexception;
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String,java.lang.Throwable)>("GoogleAnalyticsTracker", "Problem with http streams.", $r8);
+
+        goto label22;
+
+        catch java.lang.InterruptedException from label02 to label03 with label21;
+        catch java.lang.InterruptedException from label04 to label05 with label21;
+        catch java.lang.InterruptedException from label06 to label07 with label21;
+        catch java.lang.InterruptedException from label08 to label09 with label21;
+        catch java.lang.InterruptedException from label10 to label11 with label21;
+        catch java.lang.InterruptedException from label12 to label13 with label21;
+        catch java.lang.InterruptedException from label14 to label15 with label21;
+        catch java.lang.InterruptedException from label16 to label17 with label21;
+        catch java.lang.InterruptedException from label19 to label20 with label21;
+        catch java.io.IOException from label02 to label03 with label23;
+        catch java.io.IOException from label04 to label05 with label23;
+        catch java.io.IOException from label06 to label07 with label23;
+        catch java.io.IOException from label08 to label09 with label23;
+        catch java.io.IOException from label10 to label11 with label23;
+        catch java.io.IOException from label12 to label13 with label23;
+        catch java.io.IOException from label14 to label15 with label23;
+        catch java.io.IOException from label16 to label17 with label23;
+        catch java.io.IOException from label19 to label20 with label23;
+        catch org.apache.http.HttpException from label02 to label03 with label24;
+        catch org.apache.http.HttpException from label04 to label05 with label24;
+        catch org.apache.http.HttpException from label06 to label07 with label24;
+        catch org.apache.http.HttpException from label08 to label09 with label24;
+        catch org.apache.http.HttpException from label10 to label11 with label24;
+        catch org.apache.http.HttpException from label12 to label13 with label24;
+        catch org.apache.http.HttpException from label14 to label15 with label24;
+        catch org.apache.http.HttpException from label16 to label17 with label24;
+        catch org.apache.http.HttpException from label19 to label20 with label24;
+    }
+}

@@ -1,0 +1,529 @@
+public abstract class hw.ats.common.activity.DBAwareActivity extends android.app.Activity
+{
+    private static final java.lang.String TAG;
+    private hw.ats.common.util.DBHelper dbHelper;
+    private final int iDatabaseVersion;
+    public android.app.Activity sender;
+
+    static void <clinit>()
+    {
+        java.lang.Class $r1;
+        java.lang.String $r0;
+
+        $r1 = class "Lhw/ats/common/activity/DBAwareActivity;";
+
+        $r0 = virtualinvoke $r1.<java.lang.Class: java.lang.String getSimpleName()>();
+
+        <hw.ats.common.activity.DBAwareActivity: java.lang.String TAG> = $r0;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        hw.ats.common.activity.DBAwareActivity r0;
+
+        r0 := @this: hw.ats.common.activity.DBAwareActivity;
+
+        specialinvoke r0.<android.app.Activity: void <init>()>();
+
+        r0.<hw.ats.common.activity.DBAwareActivity: hw.ats.common.util.DBHelper dbHelper> = null;
+
+        r0.<hw.ats.common.activity.DBAwareActivity: int iDatabaseVersion> = -1;
+
+        r0.<hw.ats.common.activity.DBAwareActivity: android.app.Activity sender> = null;
+
+        return;
+    }
+
+    private int getDatabaseVersion()
+    {
+        int $i0;
+        java.lang.String $r1;
+        hw.ats.common.activity.DBAwareActivity r0;
+
+        r0 := @this: hw.ats.common.activity.DBAwareActivity;
+
+        $r1 = virtualinvoke r0.<hw.ats.common.activity.DBAwareActivity: java.lang.String getString(int)>(2131099655);
+
+        if $r1 == null goto label1;
+
+        $i0 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String)>($r1);
+
+        return $i0;
+
+     label1:
+        $r1 = <hw.ats.common.activity.DBAwareActivity: java.lang.String TAG>;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>($r1, "Database Version is null. Check DATABASE_VER.");
+
+        return -1;
+    }
+
+    protected void closeDatabase()
+    {
+        hw.ats.common.util.DBHelper $r1;
+        hw.ats.common.activity.DBAwareActivity r0;
+
+        r0 := @this: hw.ats.common.activity.DBAwareActivity;
+
+        $r1 = r0.<hw.ats.common.activity.DBAwareActivity: hw.ats.common.util.DBHelper dbHelper>;
+
+        if $r1 == null goto label1;
+
+        $r1 = r0.<hw.ats.common.activity.DBAwareActivity: hw.ats.common.util.DBHelper dbHelper>;
+
+        virtualinvoke $r1.<hw.ats.common.util.DBHelper: void close()>();
+
+     label1:
+        return;
+    }
+
+    protected hw.ats.common.util.DBHelper getDBHelper()
+    {
+        java.lang.Throwable $r3;
+        hw.ats.common.util.DBHelper $r1;
+        int $i0;
+        java.lang.String $r2;
+        hw.ats.common.activity.DBAwareActivity r0;
+
+        r0 := @this: hw.ats.common.activity.DBAwareActivity;
+
+        entermonitor r0;
+
+     label1:
+        $r1 = r0.<hw.ats.common.activity.DBAwareActivity: hw.ats.common.util.DBHelper dbHelper>;
+
+        if $r1 != null goto label2;
+
+        $r1 = new hw.ats.common.util.DBHelper;
+
+        $r2 = virtualinvoke r0.<hw.ats.common.activity.DBAwareActivity: java.lang.String getString(int)>(2131099686);
+
+        $i0 = specialinvoke r0.<hw.ats.common.activity.DBAwareActivity: int getDatabaseVersion()>();
+
+        specialinvoke $r1.<hw.ats.common.util.DBHelper: void <init>(android.content.Context,java.lang.String,android.database.sqlite.SQLiteDatabase$CursorFactory,int)>(r0, $r2, null, $i0);
+
+        r0.<hw.ats.common.activity.DBAwareActivity: hw.ats.common.util.DBHelper dbHelper> = $r1;
+
+     label2:
+        $r1 = r0.<hw.ats.common.activity.DBAwareActivity: hw.ats.common.util.DBHelper dbHelper>;
+
+     label3:
+        exitmonitor r0;
+
+        return $r1;
+
+     label4:
+        $r3 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+    }
+
+    protected android.database.sqlite.SQLiteDatabase getReadableDatabase()
+    {
+        hw.ats.common.util.DBHelper $r1;
+        android.database.sqlite.SQLiteDatabase $r2;
+        hw.ats.common.activity.DBAwareActivity r0;
+
+        r0 := @this: hw.ats.common.activity.DBAwareActivity;
+
+        $r1 = virtualinvoke r0.<hw.ats.common.activity.DBAwareActivity: hw.ats.common.util.DBHelper getDBHelper()>();
+
+        $r2 = virtualinvoke $r1.<hw.ats.common.util.DBHelper: android.database.sqlite.SQLiteDatabase getReadableDatabase()>();
+
+        return $r2;
+    }
+
+    protected java.lang.String getThumbPath()
+    {
+        android.content.Context $r3;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r1;
+        hw.ats.common.activity.DBAwareActivity r0;
+        boolean $z0;
+
+        r0 := @this: hw.ats.common.activity.DBAwareActivity;
+
+        $z0 = staticinvoke <com.humanwares.util.HwUtil: boolean externalStorageExists()>();
+
+        if $z0 == 0 goto label1;
+
+        $r1 = <android.os.Build: java.lang.String MODEL>;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>("SHW-M110S");
+
+        if $z0 != 0 goto label1;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/sdcard/");
+
+        $r3 = virtualinvoke r0.<hw.ats.common.activity.DBAwareActivity: android.content.Context getApplicationContext()>();
+
+        $r1 = virtualinvoke $r3.<android.content.Context: java.lang.String getPackageName()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/img");
+
+        $r1 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r1;
+
+     label1:
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/data/data/");
+
+        $r3 = virtualinvoke r0.<hw.ats.common.activity.DBAwareActivity: android.content.Context getApplicationContext()>();
+
+        $r1 = virtualinvoke $r3.<android.content.Context: java.lang.String getPackageName()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/img");
+
+        $r1 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r1;
+    }
+
+    protected android.database.sqlite.SQLiteDatabase getWritableDatabase()
+    {
+        hw.ats.common.util.DBHelper $r1;
+        android.database.sqlite.SQLiteDatabase $r2;
+        hw.ats.common.activity.DBAwareActivity r0;
+
+        r0 := @this: hw.ats.common.activity.DBAwareActivity;
+
+        $r1 = virtualinvoke r0.<hw.ats.common.activity.DBAwareActivity: hw.ats.common.util.DBHelper getDBHelper()>();
+
+        $r2 = virtualinvoke $r1.<hw.ats.common.util.DBHelper: android.database.sqlite.SQLiteDatabase getWritableDatabase()>();
+
+        return $r2;
+    }
+
+    public boolean onCreateOptionsMenu(android.view.Menu)
+    {
+        android.view.WindowManager $r3;
+        android.widget.FrameLayout r6;
+        hw.ats.common.activity.DBAwareActivity r0;
+        hw.ats.common.ui.CommonUI$AsyncSquareTask $r9;
+        byte $b1;
+        android.view.Menu $r1;
+        int $i0;
+        android.view.Display $r4;
+        android.view.View $r5;
+        android.widget.RelativeLayout r7;
+        java.lang.Object $r2;
+        android.view.animation.Animation $r8;
+
+        r0 := @this: hw.ats.common.activity.DBAwareActivity;
+
+        $r1 := @parameter0: android.view.Menu;
+
+        specialinvoke r0.<android.app.Activity: boolean onCreateOptionsMenu(android.view.Menu)>($r1);
+
+        $r2 = virtualinvoke r0.<hw.ats.common.activity.DBAwareActivity: java.lang.Object getSystemService(java.lang.String)>("window");
+
+        $r3 = (android.view.WindowManager) $r2;
+
+        $r4 = interfaceinvoke $r3.<android.view.WindowManager: android.view.Display getDefaultDisplay()>();
+
+        $i0 = virtualinvoke $r4.<android.view.Display: int getOrientation()>();
+
+        if $i0 != 0 goto label4;
+
+        $r5 = virtualinvoke r0.<hw.ats.common.activity.DBAwareActivity: android.view.View findViewById(int)>(2131296367);
+
+        r6 = (android.widget.FrameLayout) $r5;
+
+        $i0 = virtualinvoke r6.<android.widget.FrameLayout: int getVisibility()>();
+
+        if $i0 != 0 goto label2;
+
+        $b1 = 8;
+
+     label1:
+        virtualinvoke r6.<android.widget.FrameLayout: void setVisibility(int)>($b1);
+
+        $i0 = virtualinvoke r6.<android.widget.FrameLayout: int getVisibility()>();
+
+        if $i0 != 0 goto label3;
+
+        $r5 = virtualinvoke r0.<hw.ats.common.activity.DBAwareActivity: android.view.View findViewById(int)>(2131296368);
+
+        r7 = (android.widget.RelativeLayout) $r5;
+
+        $r8 = staticinvoke <android.view.animation.AnimationUtils: android.view.animation.Animation loadAnimation(android.content.Context,int)>(r0, 2130968583);
+
+        virtualinvoke r7.<android.widget.RelativeLayout: void setAnimation(android.view.animation.Animation)>($r8);
+
+        virtualinvoke r7.<android.widget.RelativeLayout: void setVisibility(int)>(0);
+
+        staticinvoke <hw.ats.common.ui.CommonUI: void renderSquare(android.app.Activity)>(r0);
+
+        return 0;
+
+     label2:
+        $b1 = 0;
+
+        goto label1;
+
+     label3:
+        $r9 = <hw.ats.common.ui.CommonUI: hw.ats.common.ui.CommonUI$AsyncSquareTask squareAT>;
+
+        if $r9 == null goto label4;
+
+        $r9 = <hw.ats.common.ui.CommonUI: hw.ats.common.ui.CommonUI$AsyncSquareTask squareAT>;
+
+        virtualinvoke $r9.<hw.ats.common.ui.CommonUI$AsyncSquareTask: boolean cancel(boolean)>(1);
+
+        <hw.ats.common.ui.CommonUI: hw.ats.common.ui.CommonUI$AsyncSquareTask squareAT> = null;
+
+     label4:
+        return 0;
+    }
+
+    public void onLowMemory()
+    {
+        java.lang.String $r1;
+        hw.ats.common.activity.DBAwareActivity r0;
+
+        r0 := @this: hw.ats.common.activity.DBAwareActivity;
+
+        specialinvoke r0.<android.app.Activity: void onLowMemory()>();
+
+        $r1 = <hw.ats.common.activity.DBAwareActivity: java.lang.String TAG>;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>($r1, "onLowMemory()");
+
+        return;
+    }
+
+    protected void onPause()
+    {
+        java.lang.String $r1;
+        hw.ats.common.activity.DBAwareActivity r0;
+
+        r0 := @this: hw.ats.common.activity.DBAwareActivity;
+
+        specialinvoke r0.<android.app.Activity: void onPause()>();
+
+        $r1 = <hw.ats.common.activity.DBAwareActivity: java.lang.String TAG>;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>($r1, "onPause()");
+
+        return;
+    }
+
+    protected void onPostCreate(android.os.Bundle)
+    {
+        android.os.Bundle $r1;
+        hw.ats.common.activity.DBAwareActivity r0;
+        hw.ats.common.activity.DBAwareActivity$AsyncPostTask_ad $r2;
+        java.lang.Void[] $r3;
+        java.lang.Exception $r4;
+
+        r0 := @this: hw.ats.common.activity.DBAwareActivity;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke r0.<android.app.Activity: void onPostCreate(android.os.Bundle)>($r1);
+
+        $r2 = new hw.ats.common.activity.DBAwareActivity$AsyncPostTask_ad;
+
+     label1:
+        specialinvoke $r2.<hw.ats.common.activity.DBAwareActivity$AsyncPostTask_ad: void <init>(hw.ats.common.activity.DBAwareActivity,android.app.Activity)>(r0, r0);
+
+     label2:
+        $r3 = newarray (java.lang.Void)[0];
+
+     label3:
+        virtualinvoke $r2.<hw.ats.common.activity.DBAwareActivity$AsyncPostTask_ad: android.os.AsyncTask execute(java.lang.Object[])>($r3);
+
+     label4:
+        return;
+
+     label5:
+        $r4 := @caughtexception;
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("DBAwareActivity", "error loadBanner ");
+
+        return;
+
+        catch java.lang.Exception from label1 to label2 with label5;
+        catch java.lang.Exception from label3 to label4 with label5;
+    }
+
+    protected void onPostResume()
+    {
+        java.lang.String $r1;
+        hw.ats.common.activity.DBAwareActivity r0;
+
+        r0 := @this: hw.ats.common.activity.DBAwareActivity;
+
+        specialinvoke r0.<android.app.Activity: void onPostResume()>();
+
+        $r1 = <hw.ats.common.activity.DBAwareActivity: java.lang.String TAG>;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>($r1, "onPostResume()");
+
+        return;
+    }
+
+    protected void onRestart()
+    {
+        java.lang.String $r1;
+        hw.ats.common.activity.DBAwareActivity r0;
+
+        r0 := @this: hw.ats.common.activity.DBAwareActivity;
+
+        specialinvoke r0.<android.app.Activity: void onRestart()>();
+
+        $r1 = <hw.ats.common.activity.DBAwareActivity: java.lang.String TAG>;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>($r1, "onRestart()");
+
+        return;
+    }
+
+    protected void onResume()
+    {
+        java.lang.String $r1;
+        hw.ats.common.activity.DBAwareActivity r0;
+
+        r0 := @this: hw.ats.common.activity.DBAwareActivity;
+
+        specialinvoke r0.<android.app.Activity: void onResume()>();
+
+        $r1 = <hw.ats.common.activity.DBAwareActivity: java.lang.String TAG>;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>($r1, "onResume()");
+
+        return;
+    }
+
+    protected void onSaveInstanceState(android.os.Bundle)
+    {
+        android.os.Bundle $r1, $r3;
+        java.lang.String $r2;
+        hw.ats.common.activity.DBAwareActivity r0;
+
+        r0 := @this: hw.ats.common.activity.DBAwareActivity;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke r0.<android.app.Activity: void onSaveInstanceState(android.os.Bundle)>($r1);
+
+        $r2 = <hw.ats.common.activity.DBAwareActivity: java.lang.String TAG>;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>($r2, "onSaveInstanceState()");
+
+        $r2 = virtualinvoke r0.<hw.ats.common.activity.DBAwareActivity: java.lang.String getPackageName()>();
+
+        $r3 = virtualinvoke r0.<hw.ats.common.activity.DBAwareActivity: android.os.Bundle saveState()>();
+
+        virtualinvoke $r1.<android.os.Bundle: void putBundle(java.lang.String,android.os.Bundle)>($r2, $r3);
+
+        return;
+    }
+
+    protected void onSaveInstanceState(android.os.Bundle, java.lang.String)
+    {
+        android.os.Bundle $r1, $r4;
+        java.lang.String $r2, $r3;
+        hw.ats.common.activity.DBAwareActivity r0;
+
+        r0 := @this: hw.ats.common.activity.DBAwareActivity;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        $r2 := @parameter1: java.lang.String;
+
+        specialinvoke r0.<android.app.Activity: void onSaveInstanceState(android.os.Bundle)>($r1);
+
+        $r3 = <hw.ats.common.activity.DBAwareActivity: java.lang.String TAG>;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>($r3, "onSaveInstanceState()");
+
+        $r4 = virtualinvoke r0.<hw.ats.common.activity.DBAwareActivity: android.os.Bundle saveState()>();
+
+        virtualinvoke $r4.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("URL", $r2);
+
+        $r2 = virtualinvoke r0.<hw.ats.common.activity.DBAwareActivity: java.lang.String getPackageName()>();
+
+        virtualinvoke $r1.<android.os.Bundle: void putBundle(java.lang.String,android.os.Bundle)>($r2, $r4);
+
+        return;
+    }
+
+    protected void onStart()
+    {
+        java.lang.String $r1;
+        hw.ats.common.activity.DBAwareActivity r0;
+
+        r0 := @this: hw.ats.common.activity.DBAwareActivity;
+
+        specialinvoke r0.<android.app.Activity: void onStart()>();
+
+        $r1 = <hw.ats.common.activity.DBAwareActivity: java.lang.String TAG>;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>($r1, "onStart()");
+
+        return;
+    }
+
+    protected void onStop()
+    {
+        java.lang.String $r1;
+        hw.ats.common.activity.DBAwareActivity r0;
+
+        r0 := @this: hw.ats.common.activity.DBAwareActivity;
+
+        specialinvoke r0.<android.app.Activity: void onStop()>();
+
+        $r1 = <hw.ats.common.activity.DBAwareActivity: java.lang.String TAG>;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>($r1, "onStop()");
+
+        return;
+    }
+
+    public void restoreState(android.os.Bundle)
+    {
+        android.os.Bundle $r1;
+        hw.ats.common.activity.DBAwareActivity r0;
+
+        r0 := @this: hw.ats.common.activity.DBAwareActivity;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        staticinvoke <hw.ats.common.util.DataLoader: void initDataLoader(android.app.Activity)>(r0);
+
+        return;
+    }
+
+    public android.os.Bundle saveState()
+    {
+        android.os.Bundle r1;
+        hw.ats.common.activity.DBAwareActivity r0;
+
+        r0 := @this: hw.ats.common.activity.DBAwareActivity;
+
+        r1 = new android.os.Bundle;
+
+        specialinvoke r1.<android.os.Bundle: void <init>()>();
+
+        return r1;
+    }
+}

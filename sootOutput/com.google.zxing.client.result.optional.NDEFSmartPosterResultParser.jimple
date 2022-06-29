@@ -1,0 +1,156 @@
+final class com.google.zxing.client.result.optional.NDEFSmartPosterResultParser extends com.google.zxing.client.result.optional.AbstractNDEFResultParser
+{
+
+    void <init>()
+    {
+        com.google.zxing.client.result.optional.NDEFSmartPosterResultParser r0;
+
+        r0 := @this: com.google.zxing.client.result.optional.NDEFSmartPosterResultParser;
+
+        specialinvoke r0.<com.google.zxing.client.result.optional.AbstractNDEFResultParser: void <init>()>();
+
+        return;
+    }
+
+    public static com.google.zxing.client.result.optional.NDEFSmartPosterParsedResult parse(com.google.zxing.Result)
+    {
+        com.google.zxing.Result $r0;
+        byte[] $r1, $r8;
+        com.google.zxing.client.result.optional.NDEFSmartPosterParsedResult $r10;
+        java.lang.String[] $r9;
+        byte $b0;
+        int $i1, $i2, $i3;
+        java.lang.String $r3, $r4, $r6, $r7;
+        boolean $z0;
+        com.google.zxing.client.result.optional.NDEFRecord $r2, $r5;
+
+        $r0 := @parameter0: com.google.zxing.Result;
+
+        $r1 = virtualinvoke $r0.<com.google.zxing.Result: byte[] getRawBytes()>();
+
+        if $r1 != null goto label1;
+
+        return null;
+
+     label1:
+        $r2 = staticinvoke <com.google.zxing.client.result.optional.NDEFRecord: com.google.zxing.client.result.optional.NDEFRecord readRecord(byte[],int)>($r1, 0);
+
+        if $r2 == null goto label9;
+
+        $z0 = virtualinvoke $r2.<com.google.zxing.client.result.optional.NDEFRecord: boolean isMessageBegin()>();
+
+        if $z0 == 0 goto label9;
+
+        $z0 = virtualinvoke $r2.<com.google.zxing.client.result.optional.NDEFRecord: boolean isMessageEnd()>();
+
+        if $z0 == 0 goto label9;
+
+        $r3 = virtualinvoke $r2.<com.google.zxing.client.result.optional.NDEFRecord: java.lang.String getType()>();
+
+        $z0 = virtualinvoke $r3.<java.lang.String: boolean equals(java.lang.Object)>("Sp");
+
+        if $z0 == 0 goto label9;
+
+        $r1 = virtualinvoke $r2.<com.google.zxing.client.result.optional.NDEFRecord: byte[] getPayload()>();
+
+        $b0 = -1;
+
+        $r4 = null;
+
+        $r3 = null;
+
+        $r2 = null;
+
+        $i1 = 0;
+
+        $i2 = 0;
+
+     label2:
+        $i3 = lengthof $r1;
+
+        if $i2 >= $i3 goto label7;
+
+        $r5 = staticinvoke <com.google.zxing.client.result.optional.NDEFRecord: com.google.zxing.client.result.optional.NDEFRecord readRecord(byte[],int)>($r1, $i2);
+
+        $r2 = $r5;
+
+        if $r5 == null goto label7;
+
+        if $i1 != 0 goto label3;
+
+        $z0 = virtualinvoke $r5.<com.google.zxing.client.result.optional.NDEFRecord: boolean isMessageBegin()>();
+
+        if $z0 == 0 goto label9;
+
+     label3:
+        $r6 = virtualinvoke $r5.<com.google.zxing.client.result.optional.NDEFRecord: java.lang.String getType()>();
+
+        $r7 = "T";
+
+        $z0 = virtualinvoke $r7.<java.lang.String: boolean equals(java.lang.Object)>($r6);
+
+        if $z0 == 0 goto label5;
+
+        $r8 = virtualinvoke $r5.<com.google.zxing.client.result.optional.NDEFRecord: byte[] getPayload()>();
+
+        $r9 = staticinvoke <com.google.zxing.client.result.optional.NDEFTextResultParser: java.lang.String[] decodeTextPayload(byte[])>($r8);
+
+        $r3 = $r9[1];
+
+     label4:
+        $i1 = $i1 + 1;
+
+        $i3 = virtualinvoke $r5.<com.google.zxing.client.result.optional.NDEFRecord: int getTotalRecordLength()>();
+
+        $i2 = $i2 + $i3;
+
+        goto label2;
+
+     label5:
+        $r7 = "U";
+
+        $z0 = virtualinvoke $r7.<java.lang.String: boolean equals(java.lang.Object)>($r6);
+
+        if $z0 == 0 goto label6;
+
+        $r8 = virtualinvoke $r5.<com.google.zxing.client.result.optional.NDEFRecord: byte[] getPayload()>();
+
+        $r4 = staticinvoke <com.google.zxing.client.result.optional.NDEFURIResultParser: java.lang.String decodeURIPayload(byte[])>($r8);
+
+        goto label4;
+
+     label6:
+        $r7 = "act";
+
+        $z0 = virtualinvoke $r7.<java.lang.String: boolean equals(java.lang.Object)>($r6);
+
+        if $z0 == 0 goto label4;
+
+        $r8 = virtualinvoke $r5.<com.google.zxing.client.result.optional.NDEFRecord: byte[] getPayload()>();
+
+        $b0 = $r8[0];
+
+        goto label4;
+
+     label7:
+        if $i1 == 0 goto label9;
+
+        if $r2 == null goto label8;
+
+        $z0 = virtualinvoke $r2.<com.google.zxing.client.result.optional.NDEFRecord: boolean isMessageEnd()>();
+
+        if $z0 == 0 goto label9;
+
+     label8:
+        $r10 = new com.google.zxing.client.result.optional.NDEFSmartPosterParsedResult;
+
+        $i1 = (int) $b0;
+
+        specialinvoke $r10.<com.google.zxing.client.result.optional.NDEFSmartPosterParsedResult: void <init>(int,java.lang.String,java.lang.String)>($i1, $r4, $r3);
+
+        return $r10;
+
+     label9:
+        return null;
+    }
+}

@@ -1,0 +1,487 @@
+class cn.hi321.browser.weave.client.HexEncoder extends java.lang.Object
+{
+    protected final byte[] decodingTable;
+    protected final byte[] encodingTable;
+
+    public void <init>()
+    {
+        byte[] $r1;
+        cn.hi321.browser.weave.client.HexEncoder r0;
+
+        r0 := @this: cn.hi321.browser.weave.client.HexEncoder;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        $r1 = newarray (byte)[16];
+
+        $r1[0] = 48;
+
+        $r1[1] = 49;
+
+        $r1[2] = 50;
+
+        $r1[3] = 51;
+
+        $r1[4] = 52;
+
+        $r1[5] = 53;
+
+        $r1[6] = 54;
+
+        $r1[7] = 55;
+
+        $r1[8] = 56;
+
+        $r1[9] = 57;
+
+        $r1[10] = 97;
+
+        $r1[11] = 98;
+
+        $r1[12] = 99;
+
+        $r1[13] = 100;
+
+        $r1[14] = 101;
+
+        $r1[15] = 102;
+
+        r0.<cn.hi321.browser.weave.client.HexEncoder: byte[] encodingTable> = $r1;
+
+        $r1 = newarray (byte)[128];
+
+        r0.<cn.hi321.browser.weave.client.HexEncoder: byte[] decodingTable> = $r1;
+
+        virtualinvoke r0.<cn.hi321.browser.weave.client.HexEncoder: void initialiseDecodingTable()>();
+
+        return;
+    }
+
+    private boolean ignore(char)
+    {
+        int $i1;
+        char $c0;
+        cn.hi321.browser.weave.client.HexEncoder r0;
+
+        r0 := @this: cn.hi321.browser.weave.client.HexEncoder;
+
+        $c0 := @parameter0: char;
+
+        $i1 = (int) $c0;
+
+        if $i1 == 10 goto label1;
+
+        $i1 = (int) $c0;
+
+        if $i1 == 13 goto label1;
+
+        $i1 = (int) $c0;
+
+        if $i1 == 9 goto label1;
+
+        $i1 = (int) $c0;
+
+        if $i1 == 32 goto label1;
+
+        return 0;
+
+     label1:
+        return 1;
+    }
+
+    public int decode(java.lang.String, java.io.OutputStream) throws java.io.IOException
+    {
+        java.io.OutputStream $r2;
+        byte[] $r3;
+        cn.hi321.browser.weave.client.HexEncoder r0;
+        char $c5;
+        byte b0, b1;
+        int i2, $i3, i4, i6, $i7;
+        java.lang.String $r1;
+        boolean $z0;
+
+        r0 := @this: cn.hi321.browser.weave.client.HexEncoder;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.io.OutputStream;
+
+        i2 = 0;
+
+        $i3 = virtualinvoke $r1.<java.lang.String: int length()>();
+
+     label01:
+        if $i3 > 0 goto label04;
+
+     label02:
+        i4 = 0;
+
+     label03:
+        if i4 < $i3 goto label11;
+
+        return i2;
+
+     label04:
+        i4 = -1;
+
+        i4 = $i3 + i4;
+
+        $c5 = virtualinvoke $r1.<java.lang.String: char charAt(int)>(i4);
+
+        $z0 = specialinvoke r0.<cn.hi321.browser.weave.client.HexEncoder: boolean ignore(char)>($c5);
+
+        if $z0 == 0 goto label02;
+
+        i4 = -1;
+
+        $i3 = $i3 + i4;
+
+        goto label01;
+
+     label05:
+        i6 = i6 + 1;
+
+     label06:
+        if i6 >= $i3 goto label07;
+
+        $c5 = virtualinvoke $r1.<java.lang.String: char charAt(int)>(i6);
+
+        $z0 = specialinvoke r0.<cn.hi321.browser.weave.client.HexEncoder: boolean ignore(char)>($c5);
+
+        if $z0 != 0 goto label05;
+
+     label07:
+        $r3 = r0.<cn.hi321.browser.weave.client.HexEncoder: byte[] decodingTable>;
+
+        i4 = i6 + 1;
+
+        $c5 = virtualinvoke $r1.<java.lang.String: char charAt(int)>(i6);
+
+        i6 = (int) $c5;
+
+        b0 = $r3[i6];
+
+        i6 = i4;
+
+     label08:
+        if i6 >= $i3 goto label09;
+
+        $c5 = virtualinvoke $r1.<java.lang.String: char charAt(int)>(i6);
+
+        $z0 = specialinvoke r0.<cn.hi321.browser.weave.client.HexEncoder: boolean ignore(char)>($c5);
+
+        if $z0 != 0 goto label10;
+
+     label09:
+        $r3 = r0.<cn.hi321.browser.weave.client.HexEncoder: byte[] decodingTable>;
+
+        i4 = i6 + 1;
+
+        $c5 = virtualinvoke $r1.<java.lang.String: char charAt(int)>(i6);
+
+        i6 = (int) $c5;
+
+        b1 = $r3[i6];
+
+        i6 = (int) b0;
+
+        i6 = i6 << 4;
+
+        $i7 = (int) b1;
+
+        i6 = i6 | $i7;
+
+        virtualinvoke $r2.<java.io.OutputStream: void write(int)>(i6);
+
+        i2 = i2 + 1;
+
+        goto label03;
+
+     label10:
+        i6 = i6 + 1;
+
+        goto label08;
+
+     label11:
+        i6 = i4;
+
+        goto label06;
+    }
+
+    public int decode(byte[], int, int, java.io.OutputStream) throws java.io.IOException
+    {
+        java.io.OutputStream $r2;
+        byte[] $r1, $r3;
+        cn.hi321.browser.weave.client.HexEncoder r0;
+        char $c6;
+        byte b2, b3;
+        int $i0, $i1, i4, $i5, $i7;
+        boolean $z0;
+
+        r0 := @this: cn.hi321.browser.weave.client.HexEncoder;
+
+        $r1 := @parameter0: byte[];
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $r2 := @parameter3: java.io.OutputStream;
+
+        i4 = 0;
+
+        $i1 = $i0 + $i1;
+
+     label01:
+        if $i1 > $i0 goto label03;
+
+     label02:
+        if $i0 < $i1 goto label10;
+
+        return i4;
+
+     label03:
+        $i5 = -1;
+
+        $i5 = $i1 + $i5;
+
+        b2 = $r1[$i5];
+
+        $c6 = (char) b2;
+
+        $z0 = specialinvoke r0.<cn.hi321.browser.weave.client.HexEncoder: boolean ignore(char)>($c6);
+
+        if $z0 == 0 goto label02;
+
+        $i5 = -1;
+
+        $i1 = $i1 + $i5;
+
+        goto label01;
+
+     label04:
+        $i5 = $i5 + 1;
+
+     label05:
+        if $i5 >= $i1 goto label06;
+
+        b2 = $r1[$i5];
+
+        $c6 = (char) b2;
+
+        $z0 = specialinvoke r0.<cn.hi321.browser.weave.client.HexEncoder: boolean ignore(char)>($c6);
+
+        if $z0 != 0 goto label04;
+
+     label06:
+        $r3 = r0.<cn.hi321.browser.weave.client.HexEncoder: byte[] decodingTable>;
+
+        $i0 = $i5 + 1;
+
+        b2 = $r1[$i5];
+
+        $i5 = (int) b2;
+
+        b2 = $r3[$i5];
+
+        $i5 = $i0;
+
+     label07:
+        if $i5 >= $i1 goto label08;
+
+        b3 = $r1[$i5];
+
+        $c6 = (char) b3;
+
+        $z0 = specialinvoke r0.<cn.hi321.browser.weave.client.HexEncoder: boolean ignore(char)>($c6);
+
+        if $z0 != 0 goto label09;
+
+     label08:
+        $r3 = r0.<cn.hi321.browser.weave.client.HexEncoder: byte[] decodingTable>;
+
+        $i0 = $i5 + 1;
+
+        b3 = $r1[$i5];
+
+        $i5 = (int) b3;
+
+        b3 = $r3[$i5];
+
+        $i5 = (int) b2;
+
+        $i5 = $i5 << 4;
+
+        $i7 = (int) b3;
+
+        $i5 = $i5 | $i7;
+
+        virtualinvoke $r2.<java.io.OutputStream: void write(int)>($i5);
+
+        i4 = i4 + 1;
+
+        goto label02;
+
+     label09:
+        $i5 = $i5 + 1;
+
+        goto label07;
+
+     label10:
+        $i5 = $i0;
+
+        goto label05;
+    }
+
+    public int encode(byte[], int, int, java.io.OutputStream) throws java.io.IOException
+    {
+        java.io.OutputStream $r2;
+        byte[] $r1, $r3;
+        cn.hi321.browser.weave.client.HexEncoder r0;
+        short s2;
+        byte $b5;
+        int $i0, $i1, i3, $i4;
+
+        r0 := @this: cn.hi321.browser.weave.client.HexEncoder;
+
+        $r1 := @parameter0: byte[];
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $r2 := @parameter3: java.io.OutputStream;
+
+        i3 = 0;
+
+     label1:
+        $i4 = 0 + $i1;
+
+        if i3 < $i4 goto label2;
+
+        $i0 = $i1 * 2;
+
+        return $i0;
+
+     label2:
+        $b5 = $r1[i3];
+
+        s2 = (short) $b5;
+
+        s2 = s2 & 255;
+
+        $r3 = r0.<cn.hi321.browser.weave.client.HexEncoder: byte[] encodingTable>;
+
+        $i4 = (int) s2;
+
+        $i4 = $i4 >>> 4;
+
+        $b5 = $r3[$i4];
+
+        $i4 = (int) $b5;
+
+        virtualinvoke $r2.<java.io.OutputStream: void write(int)>($i4);
+
+        $r3 = r0.<cn.hi321.browser.weave.client.HexEncoder: byte[] encodingTable>;
+
+        s2 = s2 & 15;
+
+        $i4 = (int) s2;
+
+        $b5 = $r3[$i4];
+
+        $i4 = (int) $b5;
+
+        virtualinvoke $r2.<java.io.OutputStream: void write(int)>($i4);
+
+        i3 = i3 + 1;
+
+        goto label1;
+    }
+
+    protected void initialiseDecodingTable()
+    {
+        byte[] $r1, $r2;
+        byte $b2, $b3;
+        cn.hi321.browser.weave.client.HexEncoder r0;
+        int i0, $i1;
+
+        r0 := @this: cn.hi321.browser.weave.client.HexEncoder;
+
+        i0 = 0;
+
+     label1:
+        $r1 = r0.<cn.hi321.browser.weave.client.HexEncoder: byte[] encodingTable>;
+
+        $i1 = lengthof $r1;
+
+        if i0 < $i1 goto label2;
+
+        $r1 = r0.<cn.hi321.browser.weave.client.HexEncoder: byte[] decodingTable>;
+
+        $r2 = r0.<cn.hi321.browser.weave.client.HexEncoder: byte[] decodingTable>;
+
+        $b2 = $r2[97];
+
+        $r1[65] = $b2;
+
+        $r1 = r0.<cn.hi321.browser.weave.client.HexEncoder: byte[] decodingTable>;
+
+        $r2 = r0.<cn.hi321.browser.weave.client.HexEncoder: byte[] decodingTable>;
+
+        $b2 = $r2[98];
+
+        $r1[66] = $b2;
+
+        $r1 = r0.<cn.hi321.browser.weave.client.HexEncoder: byte[] decodingTable>;
+
+        $r2 = r0.<cn.hi321.browser.weave.client.HexEncoder: byte[] decodingTable>;
+
+        $b2 = $r2[99];
+
+        $r1[67] = $b2;
+
+        $r1 = r0.<cn.hi321.browser.weave.client.HexEncoder: byte[] decodingTable>;
+
+        $r2 = r0.<cn.hi321.browser.weave.client.HexEncoder: byte[] decodingTable>;
+
+        $b2 = $r2[100];
+
+        $r1[68] = $b2;
+
+        $r1 = r0.<cn.hi321.browser.weave.client.HexEncoder: byte[] decodingTable>;
+
+        $r2 = r0.<cn.hi321.browser.weave.client.HexEncoder: byte[] decodingTable>;
+
+        $b2 = $r2[101];
+
+        $r1[69] = $b2;
+
+        $r1 = r0.<cn.hi321.browser.weave.client.HexEncoder: byte[] decodingTable>;
+
+        $r2 = r0.<cn.hi321.browser.weave.client.HexEncoder: byte[] decodingTable>;
+
+        $b2 = $r2[102];
+
+        $r1[70] = $b2;
+
+        return;
+
+     label2:
+        $r1 = r0.<cn.hi321.browser.weave.client.HexEncoder: byte[] decodingTable>;
+
+        $r2 = r0.<cn.hi321.browser.weave.client.HexEncoder: byte[] encodingTable>;
+
+        $b2 = $r2[i0];
+
+        $b3 = (byte) i0;
+
+        $i1 = (int) $b2;
+
+        $r1[$i1] = $b3;
+
+        i0 = i0 + 1;
+
+        goto label1;
+    }
+}

@@ -1,0 +1,388 @@
+public class cn.trinea.android.common.dao.impl.HttpCacheDaoImpl extends java.lang.Object implements cn.trinea.android.common.dao.HttpCacheDao
+{
+    private cn.trinea.android.common.util.SqliteUtils sqliteUtils;
+
+    public void <init>(cn.trinea.android.common.util.SqliteUtils)
+    {
+        cn.trinea.android.common.dao.impl.HttpCacheDaoImpl r0;
+        cn.trinea.android.common.util.SqliteUtils $r1;
+
+        r0 := @this: cn.trinea.android.common.dao.impl.HttpCacheDaoImpl;
+
+        $r1 := @parameter0: cn.trinea.android.common.util.SqliteUtils;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<cn.trinea.android.common.dao.impl.HttpCacheDaoImpl: cn.trinea.android.common.util.SqliteUtils sqliteUtils> = $r1;
+
+        return;
+    }
+
+    private cn.trinea.android.common.entity.HttpResponse cursorToHttpResponse(android.database.Cursor, java.lang.String)
+    {
+        cn.trinea.android.common.entity.HttpResponse $r3;
+        int $i1;
+        cn.trinea.android.common.dao.impl.HttpCacheDaoImpl r0;
+        long $l0;
+        java.lang.String $r2;
+        android.database.Cursor $r1;
+        boolean $z0;
+
+        r0 := @this: cn.trinea.android.common.dao.impl.HttpCacheDaoImpl;
+
+        $r1 := @parameter0: android.database.Cursor;
+
+        $r2 := @parameter1: java.lang.String;
+
+        if $r1 != null goto label1;
+
+        return null;
+
+     label1:
+        if $r2 != null goto label2;
+
+        $r2 = interfaceinvoke $r1.<android.database.Cursor: java.lang.String getString(int)>(1);
+
+     label2:
+        $z0 = staticinvoke <cn.trinea.android.common.util.StringUtils: boolean isEmpty(java.lang.String)>($r2);
+
+        if $z0 != 0 goto label3;
+
+        $r3 = new cn.trinea.android.common.entity.HttpResponse;
+
+        specialinvoke $r3.<cn.trinea.android.common.entity.HttpResponse: void <init>(java.lang.String)>($r2);
+
+        $r2 = interfaceinvoke $r1.<android.database.Cursor: java.lang.String getString(int)>(2);
+
+        virtualinvoke $r3.<cn.trinea.android.common.entity.HttpResponse: void setResponseBody(java.lang.String)>($r2);
+
+        $l0 = interfaceinvoke $r1.<android.database.Cursor: long getLong(int)>(3);
+
+        virtualinvoke $r3.<cn.trinea.android.common.entity.HttpResponse: void setExpiredTime(long)>($l0);
+
+        $i1 = interfaceinvoke $r1.<android.database.Cursor: int getInt(int)>(5);
+
+        virtualinvoke $r3.<cn.trinea.android.common.entity.HttpResponse: void setType(int)>($i1);
+
+        return $r3;
+
+     label3:
+        return null;
+    }
+
+    private static android.content.ContentValues httpResponseToCV(cn.trinea.android.common.entity.HttpResponse)
+    {
+        long $l0;
+        java.lang.Integer $r4;
+        cn.trinea.android.common.entity.HttpResponse $r0;
+        java.lang.Long $r3;
+        int $i1;
+        java.lang.String $r1;
+        android.content.ContentValues $r2;
+        boolean $z0;
+
+        $r0 := @parameter0: cn.trinea.android.common.entity.HttpResponse;
+
+        if $r0 == null goto label1;
+
+        $r1 = virtualinvoke $r0.<cn.trinea.android.common.entity.HttpResponse: java.lang.String getUrl()>();
+
+        $z0 = staticinvoke <cn.trinea.android.common.util.StringUtils: boolean isEmpty(java.lang.String)>($r1);
+
+        if $z0 == 0 goto label2;
+
+     label1:
+        return null;
+
+     label2:
+        $r2 = new android.content.ContentValues;
+
+        specialinvoke $r2.<android.content.ContentValues: void <init>()>();
+
+        $r1 = virtualinvoke $r0.<cn.trinea.android.common.entity.HttpResponse: java.lang.String getUrl()>();
+
+        virtualinvoke $r2.<android.content.ContentValues: void put(java.lang.String,java.lang.String)>("url", $r1);
+
+        $r1 = virtualinvoke $r0.<cn.trinea.android.common.entity.HttpResponse: java.lang.String getResponseBody()>();
+
+        virtualinvoke $r2.<android.content.ContentValues: void put(java.lang.String,java.lang.String)>("response", $r1);
+
+        $l0 = virtualinvoke $r0.<cn.trinea.android.common.entity.HttpResponse: long getExpiredTime()>();
+
+        $r3 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l0);
+
+        virtualinvoke $r2.<android.content.ContentValues: void put(java.lang.String,java.lang.Long)>("expires", $r3);
+
+        $r1 = staticinvoke <cn.trinea.android.common.util.TimeUtils: java.lang.String getCurrentTimeInString()>();
+
+        virtualinvoke $r2.<android.content.ContentValues: void put(java.lang.String,java.lang.String)>("gmt_create", $r1);
+
+        $i1 = virtualinvoke $r0.<cn.trinea.android.common.entity.HttpResponse: int getType()>();
+
+        $r4 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i1);
+
+        virtualinvoke $r2.<android.content.ContentValues: void put(java.lang.String,java.lang.Integer)>("type", $r4);
+
+        return $r2;
+    }
+
+    public int deleteAllHttpResponse()
+    {
+        android.database.sqlite.SQLiteDatabase $r2;
+        int $i0;
+        cn.trinea.android.common.dao.impl.HttpCacheDaoImpl r0;
+        cn.trinea.android.common.util.SqliteUtils $r1;
+
+        r0 := @this: cn.trinea.android.common.dao.impl.HttpCacheDaoImpl;
+
+        $r1 = r0.<cn.trinea.android.common.dao.impl.HttpCacheDaoImpl: cn.trinea.android.common.util.SqliteUtils sqliteUtils>;
+
+        $r2 = virtualinvoke $r1.<cn.trinea.android.common.util.SqliteUtils: android.database.sqlite.SQLiteDatabase getWDb()>();
+
+        $i0 = virtualinvoke $r2.<android.database.sqlite.SQLiteDatabase: int delete(java.lang.String,java.lang.String,java.lang.String[])>("type", null, null);
+
+        return $i0;
+    }
+
+    public cn.trinea.android.common.entity.HttpResponse getHttpResponse(java.lang.String)
+    {
+        java.lang.Throwable $r9;
+        cn.trinea.android.common.dao.impl.HttpCacheDaoImpl r0;
+        java.lang.String[] $r2;
+        android.database.sqlite.SQLiteDatabase $r5;
+        cn.trinea.android.common.entity.HttpResponse $r8;
+        java.lang.StringBuilder $r3;
+        java.lang.String $r1, $r6;
+        cn.trinea.android.common.util.SqliteUtils $r4;
+        boolean $z0;
+        android.database.Cursor $r7;
+
+        r0 := @this: cn.trinea.android.common.dao.impl.HttpCacheDaoImpl;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $z0 = staticinvoke <cn.trinea.android.common.util.StringUtils: boolean isEmpty(java.lang.String)>($r1);
+
+        if $z0 == 0 goto label1;
+
+        return null;
+
+     label1:
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("url=?");
+
+        $r2 = newarray (java.lang.String)[1];
+
+        $r2[0] = $r1;
+
+        entermonitor class "Lcn/trinea/android/common/dao/impl/HttpCacheDaoImpl;";
+
+     label2:
+        $r4 = r0.<cn.trinea.android.common.dao.impl.HttpCacheDaoImpl: cn.trinea.android.common.util.SqliteUtils sqliteUtils>;
+
+        $r5 = virtualinvoke $r4.<cn.trinea.android.common.util.SqliteUtils: android.database.sqlite.SQLiteDatabase getRDb()>();
+
+        $r6 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r7 = virtualinvoke $r5.<android.database.sqlite.SQLiteDatabase: android.database.Cursor query(java.lang.String,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String,java.lang.String,java.lang.String)>("http_cache", null, $r6, $r2, null, null, null);
+
+        if $r7 != null goto label4;
+
+        exitmonitor class "Lcn/trinea/android/common/dao/impl/HttpCacheDaoImpl;";
+
+     label3:
+        return null;
+
+     label4:
+        $z0 = interfaceinvoke $r7.<android.database.Cursor: boolean moveToFirst()>();
+
+        if $z0 == 0 goto label9;
+
+        $r8 = specialinvoke r0.<cn.trinea.android.common.dao.impl.HttpCacheDaoImpl: cn.trinea.android.common.entity.HttpResponse cursorToHttpResponse(android.database.Cursor,java.lang.String)>($r7, $r1);
+
+     label5:
+        $z0 = interfaceinvoke $r7.<android.database.Cursor: boolean isClosed()>();
+
+        if $z0 != 0 goto label6;
+
+        interfaceinvoke $r7.<android.database.Cursor: void close()>();
+
+     label6:
+        exitmonitor class "Lcn/trinea/android/common/dao/impl/HttpCacheDaoImpl;";
+
+     label7:
+        return $r8;
+
+     label8:
+        $r9 := @caughtexception;
+
+        exitmonitor class "Lcn/trinea/android/common/dao/impl/HttpCacheDaoImpl;";
+
+        throw $r9;
+
+     label9:
+        $r8 = null;
+
+        goto label5;
+
+        catch java.lang.Throwable from label2 to label3 with label8;
+        catch java.lang.Throwable from label4 to label7 with label8;
+    }
+
+    public java.util.Map getHttpResponsesByType(int)
+    {
+        java.lang.Throwable $r8;
+        cn.trinea.android.common.dao.impl.HttpCacheDaoImpl r0;
+        java.lang.String[] $r1;
+        java.util.HashMap $r7;
+        android.database.sqlite.SQLiteDatabase $r5;
+        cn.trinea.android.common.entity.HttpResponse $r9;
+        int $i0;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r3;
+        cn.trinea.android.common.util.SqliteUtils $r4;
+        android.database.Cursor $r6;
+        boolean $z0;
+
+        r0 := @this: cn.trinea.android.common.dao.impl.HttpCacheDaoImpl;
+
+        $i0 := @parameter0: int;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("type=?");
+
+        $r1 = newarray (java.lang.String)[1];
+
+        $r3 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i0);
+
+        $r1[0] = $r3;
+
+        entermonitor class "Lcn/trinea/android/common/dao/impl/HttpCacheDaoImpl;";
+
+     label01:
+        $r4 = r0.<cn.trinea.android.common.dao.impl.HttpCacheDaoImpl: cn.trinea.android.common.util.SqliteUtils sqliteUtils>;
+
+        $r5 = virtualinvoke $r4.<cn.trinea.android.common.util.SqliteUtils: android.database.sqlite.SQLiteDatabase getRDb()>();
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r6 = virtualinvoke $r5.<android.database.sqlite.SQLiteDatabase: android.database.Cursor query(java.lang.String,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String,java.lang.String,java.lang.String)>("http_cache", null, $r3, $r1, null, null, null);
+
+        if $r6 != null goto label03;
+
+        exitmonitor class "Lcn/trinea/android/common/dao/impl/HttpCacheDaoImpl;";
+
+     label02:
+        return null;
+
+     label03:
+        $r7 = new java.util.HashMap;
+
+        specialinvoke $r7.<java.util.HashMap: void <init>()>();
+
+        $i0 = interfaceinvoke $r6.<android.database.Cursor: int getCount()>();
+
+        if $i0 <= 0 goto label05;
+
+        interfaceinvoke $r6.<android.database.Cursor: boolean moveToFirst()>();
+
+     label04:
+        $z0 = interfaceinvoke $r6.<android.database.Cursor: boolean isAfterLast()>();
+
+        if $z0 == 0 goto label09;
+
+     label05:
+        $z0 = interfaceinvoke $r6.<android.database.Cursor: boolean isClosed()>();
+
+        if $z0 != 0 goto label06;
+
+        interfaceinvoke $r6.<android.database.Cursor: void close()>();
+
+     label06:
+        exitmonitor class "Lcn/trinea/android/common/dao/impl/HttpCacheDaoImpl;";
+
+     label07:
+        return $r7;
+
+     label08:
+        $r8 := @caughtexception;
+
+        exitmonitor class "Lcn/trinea/android/common/dao/impl/HttpCacheDaoImpl;";
+
+        throw $r8;
+
+     label09:
+        $r3 = interfaceinvoke $r6.<android.database.Cursor: java.lang.String getString(int)>(1);
+
+        $z0 = staticinvoke <cn.trinea.android.common.util.StringUtils: boolean isEmpty(java.lang.String)>($r3);
+
+        if $z0 != 0 goto label10;
+
+        $r9 = specialinvoke r0.<cn.trinea.android.common.dao.impl.HttpCacheDaoImpl: cn.trinea.android.common.entity.HttpResponse cursorToHttpResponse(android.database.Cursor,java.lang.String)>($r6, $r3);
+
+        if $r9 == null goto label10;
+
+        interfaceinvoke $r7.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r3, $r9);
+
+     label10:
+        interfaceinvoke $r6.<android.database.Cursor: boolean moveToNext()>();
+
+     label11:
+        goto label04;
+
+        catch java.lang.Throwable from label01 to label02 with label08;
+        catch java.lang.Throwable from label03 to label07 with label08;
+        catch java.lang.Throwable from label09 to label11 with label08;
+    }
+
+    public long insertHttpResponse(cn.trinea.android.common.entity.HttpResponse)
+    {
+        java.lang.Throwable $r5;
+        cn.trinea.android.common.entity.HttpResponse $r1;
+        android.database.sqlite.SQLiteDatabase $r4;
+        cn.trinea.android.common.dao.impl.HttpCacheDaoImpl r0;
+        long $l0;
+        android.content.ContentValues $r2;
+        cn.trinea.android.common.util.SqliteUtils $r3;
+
+        r0 := @this: cn.trinea.android.common.dao.impl.HttpCacheDaoImpl;
+
+        $r1 := @parameter0: cn.trinea.android.common.entity.HttpResponse;
+
+        $r2 = staticinvoke <cn.trinea.android.common.dao.impl.HttpCacheDaoImpl: android.content.ContentValues httpResponseToCV(cn.trinea.android.common.entity.HttpResponse)>($r1);
+
+        if $r2 != null goto label1;
+
+        return -1L;
+
+     label1:
+        entermonitor class "Lcn/trinea/android/common/dao/impl/HttpCacheDaoImpl;";
+
+     label2:
+        $r3 = r0.<cn.trinea.android.common.dao.impl.HttpCacheDaoImpl: cn.trinea.android.common.util.SqliteUtils sqliteUtils>;
+
+        $r4 = virtualinvoke $r3.<cn.trinea.android.common.util.SqliteUtils: android.database.sqlite.SQLiteDatabase getWDb()>();
+
+        $l0 = virtualinvoke $r4.<android.database.sqlite.SQLiteDatabase: long replace(java.lang.String,java.lang.String,android.content.ContentValues)>("http_cache", null, $r2);
+
+        exitmonitor class "Lcn/trinea/android/common/dao/impl/HttpCacheDaoImpl;";
+
+     label3:
+        return $l0;
+
+     label4:
+        $r5 := @caughtexception;
+
+        exitmonitor class "Lcn/trinea/android/common/dao/impl/HttpCacheDaoImpl;";
+
+        throw $r5;
+
+        catch java.lang.Throwable from label2 to label3 with label4;
+    }
+}

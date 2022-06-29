@@ -1,0 +1,206 @@
+public abstract class org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis extends java.lang.Object
+{
+    public static final int ENOUGH_DATA_THRESHOLD;
+    public static final int MINIMUM_DATA_THRESHOLD;
+    public static final float SURE_NO;
+    public static final float SURE_YES;
+    protected int[] charToFreqOrder;
+    protected boolean done;
+    private int freqChars;
+    private int totalChars;
+    protected float typicalDistributionRatio;
+
+    public void <init>()
+    {
+        org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis r0;
+
+        r0 := @this: org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        virtualinvoke r0.<org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis: void reset()>();
+
+        return;
+    }
+
+    public float getConfidence()
+    {
+        byte $b3;
+        int $i0, $i1, $i2;
+        float $f0, $f1;
+        org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis r0;
+
+        r0 := @this: org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis;
+
+        $i1 = r0.<org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis: int totalChars>;
+
+        if $i1 <= 0 goto label1;
+
+        $i1 = r0.<org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis: int freqChars>;
+
+        if $i1 > 4 goto label2;
+
+     label1:
+        return 0.01F;
+
+     label2:
+        $i1 = r0.<org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis: int totalChars>;
+
+        $i0 = r0.<org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis: int freqChars>;
+
+        if $i1 == $i0 goto label3;
+
+        $i1 = r0.<org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis: int freqChars>;
+
+        $i2 = r0.<org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis: int totalChars>;
+
+        $i0 = r0.<org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis: int freqChars>;
+
+        $i0 = $i2 - $i0;
+
+        $i1 = $i1 / $i0;
+
+        $f0 = (float) $i1;
+
+        $f1 = r0.<org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis: float typicalDistributionRatio>;
+
+        $f0 = $f0 * $f1;
+
+        $b3 = $f0 cmpg 0.99F;
+
+        $i1 = (int) $b3;
+
+        if $i1 < 0 goto label4;
+
+     label3:
+        return 0.99F;
+
+     label4:
+        return $f0;
+    }
+
+    protected abstract int getOrder(byte[], int);
+
+    public boolean gotEnoughData()
+    {
+        int $i0;
+        org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis r0;
+
+        r0 := @this: org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis;
+
+        $i0 = r0.<org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis: int totalChars>;
+
+        if $i0 <= 1024 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public void handleData(byte[], int, int)
+    {
+        byte[] $r1;
+        int $i0, $i1;
+        org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis r0;
+
+        r0 := @this: org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis;
+
+        $r1 := @parameter0: byte[];
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        return;
+    }
+
+    public void handleOneChar(byte[], int, int)
+    {
+        byte[] $r1;
+        int[] $r2;
+        int $i0, $i1, $i2;
+        org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis r0;
+
+        r0 := @this: org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis;
+
+        $r1 := @parameter0: byte[];
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $i2 = -1;
+
+        if $i1 != 2 goto label1;
+
+        $i2 = virtualinvoke r0.<org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis: int getOrder(byte[],int)>($r1, $i0);
+
+     label1:
+        if $i2 < 0 goto label2;
+
+        $i0 = r0.<org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis: int totalChars>;
+
+        $i0 = $i0 + 1;
+
+        r0.<org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis: int totalChars> = $i0;
+
+        $r2 = r0.<org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis: int[] charToFreqOrder>;
+
+        $i0 = lengthof $r2;
+
+        if $i2 >= $i0 goto label2;
+
+        $r2 = r0.<org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis: int[] charToFreqOrder>;
+
+        $i0 = $r2[$i2];
+
+        if 512 <= $i0 goto label2;
+
+        $i0 = r0.<org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis: int freqChars>;
+
+        $i0 = $i0 + 1;
+
+        r0.<org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis: int freqChars> = $i0;
+
+     label2:
+        return;
+    }
+
+    public void reset()
+    {
+        org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis r0;
+
+        r0 := @this: org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis;
+
+        r0.<org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis: boolean done> = 0;
+
+        r0.<org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis: int totalChars> = 0;
+
+        r0.<org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis: int freqChars> = 0;
+
+        return;
+    }
+
+    public void setOption()
+    {
+        org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis r0;
+
+        r0 := @this: org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis;
+
+        return;
+    }
+
+    public static void <clinit>()
+    {
+        <org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis: float SURE_YES> = 0.99F;
+
+        <org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis: float SURE_NO> = 0.01F;
+
+        <org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis: int MINIMUM_DATA_THRESHOLD> = 4;
+
+        <org.mozilla.universalchardet.prober.distributionanalysis.CharDistributionAnalysis: int ENOUGH_DATA_THRESHOLD> = 1024;
+
+        return;
+    }
+}

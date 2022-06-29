@@ -1,0 +1,873 @@
+public final class com.google.zxing.oned.Code93Reader extends com.google.zxing.oned.OneDReader
+{
+    private static final char[] ALPHABET;
+    private static final java.lang.String ALPHABET_STRING;
+    private static final int ASTERISK_ENCODING;
+    private static final int[] CHARACTER_ENCODINGS;
+
+    static void <clinit>()
+    {
+        int[] $r2;
+        int $i0;
+        char[] $r0;
+        java.lang.String $r1;
+
+        <com.google.zxing.oned.Code93Reader: java.lang.String ALPHABET_STRING> = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-. $/+%abcd*";
+
+        $r1 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-. $/+%abcd*";
+
+        $r0 = virtualinvoke $r1.<java.lang.String: char[] toCharArray()>();
+
+        <com.google.zxing.oned.Code93Reader: char[] ALPHABET> = $r0;
+
+        $r2 = newarray (int)[48];
+
+        $r2[0] = 276;
+
+        $r2[1] = 328;
+
+        $r2[2] = 324;
+
+        $r2[3] = 322;
+
+        $r2[4] = 296;
+
+        $r2[5] = 292;
+
+        $r2[6] = 290;
+
+        $r2[7] = 336;
+
+        $r2[8] = 274;
+
+        $r2[9] = 266;
+
+        $r2[10] = 424;
+
+        $r2[11] = 420;
+
+        $r2[12] = 418;
+
+        $r2[13] = 404;
+
+        $r2[14] = 402;
+
+        $r2[15] = 394;
+
+        $r2[16] = 360;
+
+        $r2[17] = 356;
+
+        $r2[18] = 354;
+
+        $r2[19] = 308;
+
+        $r2[20] = 282;
+
+        $r2[21] = 344;
+
+        $r2[22] = 332;
+
+        $r2[23] = 326;
+
+        $r2[24] = 300;
+
+        $r2[25] = 278;
+
+        $r2[26] = 436;
+
+        $r2[27] = 434;
+
+        $r2[28] = 428;
+
+        $r2[29] = 422;
+
+        $r2[30] = 406;
+
+        $r2[31] = 410;
+
+        $r2[32] = 364;
+
+        $r2[33] = 358;
+
+        $r2[34] = 310;
+
+        $r2[35] = 314;
+
+        $r2[36] = 302;
+
+        $r2[37] = 468;
+
+        $r2[38] = 466;
+
+        $r2[39] = 458;
+
+        $r2[40] = 366;
+
+        $r2[41] = 374;
+
+        $r2[42] = 430;
+
+        $r2[43] = 294;
+
+        $r2[44] = 474;
+
+        $r2[45] = 470;
+
+        $r2[46] = 306;
+
+        $r2[47] = 350;
+
+        <com.google.zxing.oned.Code93Reader: int[] CHARACTER_ENCODINGS> = $r2;
+
+        $r2 = <com.google.zxing.oned.Code93Reader: int[] CHARACTER_ENCODINGS>;
+
+        $i0 = $r2[47];
+
+        <com.google.zxing.oned.Code93Reader: int ASTERISK_ENCODING> = $i0;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        com.google.zxing.oned.Code93Reader r0;
+
+        r0 := @this: com.google.zxing.oned.Code93Reader;
+
+        specialinvoke r0.<com.google.zxing.oned.OneDReader: void <init>()>();
+
+        return;
+    }
+
+    private static void checkChecksums(java.lang.StringBuffer) throws com.google.zxing.ChecksumException
+    {
+        int $i0, $i1;
+        java.lang.StringBuffer $r0;
+
+        $r0 := @parameter0: java.lang.StringBuffer;
+
+        $i0 = virtualinvoke $r0.<java.lang.StringBuffer: int length()>();
+
+        $i1 = $i0 + -2;
+
+        staticinvoke <com.google.zxing.oned.Code93Reader: void checkOneChecksum(java.lang.StringBuffer,int,int)>($r0, $i1, 20);
+
+        $i0 = $i0 + -1;
+
+        staticinvoke <com.google.zxing.oned.Code93Reader: void checkOneChecksum(java.lang.StringBuffer,int,int)>($r0, $i0, 15);
+
+        return;
+    }
+
+    private static void checkOneChecksum(java.lang.StringBuffer, int, int) throws com.google.zxing.ChecksumException
+    {
+        com.google.zxing.ChecksumException $r3;
+        char $c5, $c7;
+        java.lang.StringBuffer $r0;
+        int $i0, $i1, $i2, $i3, $i4, $i6;
+        char[] $r2;
+        java.lang.String $r1;
+
+        $r0 := @parameter0: java.lang.StringBuffer;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $i3 = 1;
+
+        $i2 = $i0 + -1;
+
+        $i4 = 0;
+
+     label1:
+        if $i2 < 0 goto label3;
+
+        $r1 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ-. $/+%abcd*";
+
+        $c5 = virtualinvoke $r0.<java.lang.StringBuffer: char charAt(int)>($i2);
+
+        $i6 = (int) $c5;
+
+        $i6 = virtualinvoke $r1.<java.lang.String: int indexOf(int)>($i6);
+
+        $i6 = $i6 * $i3;
+
+        $i4 = $i6 + $i4;
+
+        $i3 = $i3 + 1;
+
+        if $i3 <= $i1 goto label2;
+
+        $i3 = 1;
+
+     label2:
+        $i2 = $i2 + -1;
+
+        goto label1;
+
+     label3:
+        $c5 = virtualinvoke $r0.<java.lang.StringBuffer: char charAt(int)>($i0);
+
+        $r2 = <com.google.zxing.oned.Code93Reader: char[] ALPHABET>;
+
+        $i0 = $i4 % 47;
+
+        $c7 = $r2[$i0];
+
+        $i0 = (int) $c5;
+
+        $i1 = (int) $c7;
+
+        if $i0 == $i1 goto label4;
+
+        $r3 = staticinvoke <com.google.zxing.ChecksumException: com.google.zxing.ChecksumException getChecksumInstance()>();
+
+        throw $r3;
+
+     label4:
+        return;
+    }
+
+    private static java.lang.String decodeExtended(java.lang.StringBuffer) throws com.google.zxing.FormatException
+    {
+        char $c2, $c4;
+        java.lang.StringBuffer $r0, $r1, $r4;
+        int $i0, $i1, $i3;
+        java.lang.String $r3;
+        com.google.zxing.FormatException $r2;
+
+        $r0 := @parameter0: java.lang.StringBuffer;
+
+        $i0 = virtualinvoke $r0.<java.lang.StringBuffer: int length()>();
+
+        $r4 = new java.lang.StringBuffer;
+
+        $r1 = $r4;
+
+        specialinvoke $r4.<java.lang.StringBuffer: void <init>(int)>($i0);
+
+        $i1 = 0;
+
+     label01:
+        if $i1 >= $i0 goto label16;
+
+        $c2 = virtualinvoke $r0.<java.lang.StringBuffer: char charAt(int)>($i1);
+
+        $i3 = (int) $c2;
+
+        if $i3 < 97 goto label15;
+
+        $i3 = (int) $c2;
+
+        if $i3 > 100 goto label15;
+
+        $i3 = $i1 + 1;
+
+        $c4 = virtualinvoke $r0.<java.lang.StringBuffer: char charAt(int)>($i3);
+
+        $i3 = (int) $c2;
+
+        lookupswitch($i3)
+        {
+            case 97: goto label07;
+            case 98: goto label09;
+            case 99: goto label12;
+            case 100: goto label05;
+            default: goto label02;
+        };
+
+     label02:
+        $c2 = 0;
+
+     label03:
+        virtualinvoke $r1.<java.lang.StringBuffer: java.lang.StringBuffer append(char)>($c2);
+
+        $i1 = $i1 + 1;
+
+     label04:
+        $i1 = $i1 + 1;
+
+        goto label01;
+
+     label05:
+        $i3 = (int) $c4;
+
+        if $i3 < 65 goto label06;
+
+        $i3 = (int) $c4;
+
+        if $i3 > 90 goto label06;
+
+        $i3 = (int) $c4;
+
+        $i3 = $i3 + 32;
+
+        $c2 = (char) $i3;
+
+        goto label03;
+
+     label06:
+        $r2 = staticinvoke <com.google.zxing.FormatException: com.google.zxing.FormatException getFormatInstance()>();
+
+        throw $r2;
+
+     label07:
+        $i3 = (int) $c4;
+
+        if $i3 < 65 goto label08;
+
+        $i3 = (int) $c4;
+
+        if $i3 > 90 goto label08;
+
+        $i3 = (int) $c4;
+
+        $i3 = $i3 + -64;
+
+        $c2 = (char) $i3;
+
+        goto label03;
+
+     label08:
+        $r2 = staticinvoke <com.google.zxing.FormatException: com.google.zxing.FormatException getFormatInstance()>();
+
+        throw $r2;
+
+     label09:
+        $i3 = (int) $c4;
+
+        if $i3 < 65 goto label10;
+
+        $i3 = (int) $c4;
+
+        if $i3 > 69 goto label10;
+
+        $i3 = (int) $c4;
+
+        $i3 = $i3 + -38;
+
+        $c2 = (char) $i3;
+
+        goto label03;
+
+     label10:
+        $i3 = (int) $c4;
+
+        if $i3 < 70 goto label11;
+
+        $i3 = (int) $c4;
+
+        if $i3 > 87 goto label11;
+
+        $i3 = (int) $c4;
+
+        $i3 = $i3 + -11;
+
+        $c2 = (char) $i3;
+
+        goto label03;
+
+     label11:
+        $r2 = staticinvoke <com.google.zxing.FormatException: com.google.zxing.FormatException getFormatInstance()>();
+
+        throw $r2;
+
+     label12:
+        $i3 = (int) $c4;
+
+        if $i3 < 65 goto label13;
+
+        $i3 = (int) $c4;
+
+        if $i3 > 79 goto label13;
+
+        $i3 = (int) $c4;
+
+        $i3 = $i3 + -32;
+
+        $c2 = (char) $i3;
+
+        goto label03;
+
+     label13:
+        $i3 = (int) $c4;
+
+        if $i3 != 90 goto label14;
+
+        $c2 = 58;
+
+        goto label03;
+
+     label14:
+        $r2 = staticinvoke <com.google.zxing.FormatException: com.google.zxing.FormatException getFormatInstance()>();
+
+        throw $r2;
+
+     label15:
+        virtualinvoke $r1.<java.lang.StringBuffer: java.lang.StringBuffer append(char)>($c2);
+
+        goto label04;
+
+     label16:
+        $r3 = virtualinvoke $r1.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        return $r3;
+    }
+
+    private static int[] findAsteriskPattern(com.google.zxing.common.BitArray) throws com.google.zxing.NotFoundException
+    {
+        com.google.zxing.common.BitArray $r0;
+        int[] $r1;
+        com.google.zxing.NotFoundException $r2;
+        int $i0, $i1, $i2, $i3, $i4, $i5, $i6, $i7;
+        boolean $z0, $z1;
+
+        $r0 := @parameter0: com.google.zxing.common.BitArray;
+
+        $i2 = virtualinvoke $r0.<com.google.zxing.common.BitArray: int getSize()>();
+
+        $i3 = 0;
+
+     label01:
+        if $i3 >= $i2 goto label02;
+
+        $z0 = virtualinvoke $r0.<com.google.zxing.common.BitArray: boolean get(int)>($i3);
+
+        if $z0 == 0 goto label05;
+
+     label02:
+        $r1 = newarray (int)[6];
+
+        $i0 = lengthof $r1;
+
+        $i4 = $i3;
+
+        $z0 = 0;
+
+        $i5 = 0;
+
+     label03:
+        if $i4 >= $i2 goto label13;
+
+        $z1 = virtualinvoke $r0.<com.google.zxing.common.BitArray: boolean get(int)>($i4);
+
+        $z1 = $z1 ^ $z0;
+
+        if $z1 == 0 goto label06;
+
+        $i6 = $r1[$i5];
+
+        $i6 = $i6 + 1;
+
+        $r1[$i5] = $i6;
+
+     label04:
+        $i4 = $i4 + 1;
+
+        goto label03;
+
+     label05:
+        $i3 = $i3 + 1;
+
+        goto label01;
+
+     label06:
+        $i6 = $i0 + -1;
+
+        if $i5 != $i6 goto label11;
+
+        $i6 = staticinvoke <com.google.zxing.oned.Code93Reader: int toPattern(int[])>($r1);
+
+        $i1 = <com.google.zxing.oned.Code93Reader: int ASTERISK_ENCODING>;
+
+        if $i6 != $i1 goto label07;
+
+        $r1 = newarray (int)[2];
+
+        $r1[0] = $i3;
+
+        $r1[1] = $i4;
+
+        return $r1;
+
+     label07:
+        $i6 = $r1[0];
+
+        $i1 = $r1[1];
+
+        $i6 = $i6 + $i1;
+
+        $i3 = $i3 + $i6;
+
+        $i6 = 2;
+
+     label08:
+        if $i6 >= $i0 goto label09;
+
+        $i7 = $i6 + -2;
+
+        $i1 = $r1[$i6];
+
+        $r1[$i7] = $i1;
+
+        $i6 = $i6 + 1;
+
+        goto label08;
+
+     label09:
+        $i6 = $i0 + -2;
+
+        $r1[$i6] = 0;
+
+        $i6 = $i0 + -1;
+
+        $r1[$i6] = 0;
+
+        $i5 = $i5 + -1;
+
+     label10:
+        $r1[$i5] = 1;
+
+        if $z0 != 0 goto label12;
+
+        $z0 = 1;
+
+        goto label04;
+
+     label11:
+        $i5 = $i5 + 1;
+
+        goto label10;
+
+     label12:
+        $z0 = 0;
+
+        goto label04;
+
+     label13:
+        $r2 = staticinvoke <com.google.zxing.NotFoundException: com.google.zxing.NotFoundException getNotFoundInstance()>();
+
+        throw $r2;
+    }
+
+    private static char patternToChar(int) throws com.google.zxing.NotFoundException
+    {
+        com.google.zxing.NotFoundException $r0;
+        int[] $r1;
+        int $i0, $i1, $i2;
+        char[] $r2;
+        char $c3;
+
+        $i0 := @parameter0: int;
+
+        $i1 = 0;
+
+     label1:
+        $r1 = <com.google.zxing.oned.Code93Reader: int[] CHARACTER_ENCODINGS>;
+
+        $i2 = lengthof $r1;
+
+        if $i1 >= $i2 goto label3;
+
+        $r1 = <com.google.zxing.oned.Code93Reader: int[] CHARACTER_ENCODINGS>;
+
+        $i2 = $r1[$i1];
+
+        if $i2 != $i0 goto label2;
+
+        $r2 = <com.google.zxing.oned.Code93Reader: char[] ALPHABET>;
+
+        $c3 = $r2[$i1];
+
+        return $c3;
+
+     label2:
+        $i1 = $i1 + 1;
+
+        goto label1;
+
+     label3:
+        $r0 = staticinvoke <com.google.zxing.NotFoundException: com.google.zxing.NotFoundException getNotFoundInstance()>();
+
+        throw $r0;
+    }
+
+    private static int toPattern(int[])
+    {
+        int[] $r0;
+        int $i0, $i1, $i2, $i3, $i4, $i5;
+
+        $r0 := @parameter0: int[];
+
+        $i0 = lengthof $r0;
+
+        $i1 = 0;
+
+        $i2 = 0;
+
+     label01:
+        if $i1 >= $i0 goto label02;
+
+        $i3 = $r0[$i1];
+
+        $i1 = $i1 + 1;
+
+        $i2 = $i3 + $i2;
+
+        goto label01;
+
+     label02:
+        $i1 = 0;
+
+        $i3 = 0;
+
+     label03:
+        if $i1 >= $i0 goto label10;
+
+        $i4 = $r0[$i1];
+
+        $i4 = $i4 << 8;
+
+        $i4 = $i4 * 9;
+
+        $i5 = $i4 / $i2;
+
+        $i4 = $i5 >> 8;
+
+        $i5 = $i5 & 255;
+
+        if $i5 <= 127 goto label04;
+
+        $i4 = $i4 + 1;
+
+     label04:
+        if $i4 < 1 goto label05;
+
+        if $i4 <= 4 goto label06;
+
+     label05:
+        return -1;
+
+     label06:
+        $i5 = $i1 & 1;
+
+        if $i5 != 0 goto label08;
+
+        $i5 = 0;
+
+     label07:
+        if $i5 >= $i4 goto label09;
+
+        $i3 = $i3 << 1;
+
+        $i5 = $i5 + 1;
+
+        $i3 = $i3 | 1;
+
+        goto label07;
+
+     label08:
+        $i3 = $i3 << $i4;
+
+     label09:
+        $i1 = $i1 + 1;
+
+        goto label03;
+
+     label10:
+        return $i3;
+    }
+
+    public com.google.zxing.Result decodeRow(int, com.google.zxing.common.BitArray, java.util.Hashtable) throws com.google.zxing.NotFoundException, com.google.zxing.ChecksumException, com.google.zxing.FormatException
+    {
+        com.google.zxing.oned.Code93Reader r0;
+        com.google.zxing.Result $r12;
+        com.google.zxing.ResultPoint $r11;
+        int[] $r3, $r5;
+        java.lang.StringBuffer $r4, $r10;
+        int $i0, $i1, $i2, $i3, $i5, $i6;
+        java.lang.String $r7;
+        java.util.Hashtable $r2;
+        boolean $z0;
+        char $c4;
+        com.google.zxing.common.BitArray $r1;
+        com.google.zxing.ResultPoint[] $r8;
+        com.google.zxing.NotFoundException $r6;
+        float $f0, $f1, $f2;
+        com.google.zxing.BarcodeFormat $r9;
+
+        r0 := @this: com.google.zxing.oned.Code93Reader;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: com.google.zxing.common.BitArray;
+
+        $r2 := @parameter2: java.util.Hashtable;
+
+        $r3 = staticinvoke <com.google.zxing.oned.Code93Reader: int[] findAsteriskPattern(com.google.zxing.common.BitArray)>($r1);
+
+        $i1 = $r3[1];
+
+        $i2 = virtualinvoke $r1.<com.google.zxing.common.BitArray: int getSize()>();
+
+     label01:
+        if $i1 >= $i2 goto label02;
+
+        $z0 = virtualinvoke $r1.<com.google.zxing.common.BitArray: boolean get(int)>($i1);
+
+        if $z0 != 0 goto label02;
+
+        $i1 = $i1 + 1;
+
+        goto label01;
+
+     label02:
+        $r10 = new java.lang.StringBuffer;
+
+        $r4 = $r10;
+
+        specialinvoke $r10.<java.lang.StringBuffer: void <init>(int)>(20);
+
+        $r5 = newarray (int)[6];
+
+     label03:
+        staticinvoke <com.google.zxing.oned.Code93Reader: void recordPattern(com.google.zxing.common.BitArray,int,int[])>($r1, $i1, $r5);
+
+        $i3 = staticinvoke <com.google.zxing.oned.Code93Reader: int toPattern(int[])>($r5);
+
+        if $i3 >= 0 goto label04;
+
+        $r6 = staticinvoke <com.google.zxing.NotFoundException: com.google.zxing.NotFoundException getNotFoundInstance()>();
+
+        throw $r6;
+
+     label04:
+        $c4 = staticinvoke <com.google.zxing.oned.Code93Reader: char patternToChar(int)>($i3);
+
+        virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(char)>($c4);
+
+        $i3 = 0;
+
+        $i5 = $i1;
+
+     label05:
+        $i6 = lengthof $r5;
+
+        if $i3 >= $i6 goto label12;
+
+        $i6 = $r5[$i3];
+
+        $i5 = $i5 + $i6;
+
+        $i3 = $i3 + 1;
+
+        goto label05;
+
+     label06:
+        if $i3 >= $i2 goto label07;
+
+        $z0 = virtualinvoke $r1.<com.google.zxing.common.BitArray: boolean get(int)>($i3);
+
+        if $z0 != 0 goto label07;
+
+        $i3 = $i3 + 1;
+
+        goto label06;
+
+     label07:
+        $i5 = (int) $c4;
+
+        if $i5 != 42 goto label11;
+
+        $i5 = virtualinvoke $r4.<java.lang.StringBuffer: int length()>();
+
+        $i5 = $i5 + -1;
+
+        virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer deleteCharAt(int)>($i5);
+
+        if $i3 == $i2 goto label08;
+
+        $z0 = virtualinvoke $r1.<com.google.zxing.common.BitArray: boolean get(int)>($i3);
+
+        if $z0 != 0 goto label09;
+
+     label08:
+        $r6 = staticinvoke <com.google.zxing.NotFoundException: com.google.zxing.NotFoundException getNotFoundInstance()>();
+
+        throw $r6;
+
+     label09:
+        $i2 = virtualinvoke $r4.<java.lang.StringBuffer: int length()>();
+
+        if $i2 >= 2 goto label10;
+
+        $r6 = staticinvoke <com.google.zxing.NotFoundException: com.google.zxing.NotFoundException getNotFoundInstance()>();
+
+        throw $r6;
+
+     label10:
+        staticinvoke <com.google.zxing.oned.Code93Reader: void checkChecksums(java.lang.StringBuffer)>($r4);
+
+        $i2 = virtualinvoke $r4.<java.lang.StringBuffer: int length()>();
+
+        $i2 = $i2 + -2;
+
+        virtualinvoke $r4.<java.lang.StringBuffer: void setLength(int)>($i2);
+
+        $r7 = staticinvoke <com.google.zxing.oned.Code93Reader: java.lang.String decodeExtended(java.lang.StringBuffer)>($r4);
+
+        $i2 = $r3[1];
+
+        $i5 = $r3[0];
+
+        $i2 = $i5 + $i2;
+
+        $f0 = (float) $i2;
+
+        $f0 = $f0 / 2.0F;
+
+        $i1 = $i1 + $i3;
+
+        $f1 = (float) $i1;
+
+        $f1 = $f1 / 2.0F;
+
+        $r12 = new com.google.zxing.Result;
+
+        $r8 = newarray (com.google.zxing.ResultPoint)[2];
+
+        $r11 = new com.google.zxing.ResultPoint;
+
+        $f2 = (float) $i0;
+
+        specialinvoke $r11.<com.google.zxing.ResultPoint: void <init>(float,float)>($f0, $f2);
+
+        $r8[0] = $r11;
+
+        $r11 = new com.google.zxing.ResultPoint;
+
+        $f0 = (float) $i0;
+
+        specialinvoke $r11.<com.google.zxing.ResultPoint: void <init>(float,float)>($f1, $f0);
+
+        $r8[1] = $r11;
+
+        $r9 = <com.google.zxing.BarcodeFormat: com.google.zxing.BarcodeFormat CODE_93>;
+
+        specialinvoke $r12.<com.google.zxing.Result: void <init>(java.lang.String,byte[],com.google.zxing.ResultPoint[],com.google.zxing.BarcodeFormat)>($r7, null, $r8, $r9);
+
+        return $r12;
+
+     label11:
+        $i1 = $i3;
+
+        goto label03;
+
+     label12:
+        $i3 = $i5;
+
+        goto label06;
+    }
+}

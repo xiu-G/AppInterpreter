@@ -1,0 +1,773 @@
+public class com.apostek.untangle.inapp.InAppBillingInternal extends java.lang.Object
+{
+    private static final java.lang.String DB_INITIALIZED;
+    private static android.app.Activity activity;
+    private static java.lang.Boolean billingSupported;
+    private static android.content.Context context;
+    private static android.widget.TextView message_log;
+    private static com.apostek.untangle.inapp.InAppBillingInternal sInstance;
+    private com.apostek.untangle.inapp.BillingService billingService;
+    private android.os.Handler handler;
+    private com.apostek.untangle.inapp.InAppBillingInternal$InAppPurchaseObserver inAppBillingPurchaseObserver;
+    private java.util.Set ownedItems;
+    private com.apostek.untangle.inapp.PurchaseDatabase purchaseDatabase;
+
+    static void <clinit>()
+    {
+        java.lang.Boolean $r0;
+
+        <com.apostek.untangle.inapp.InAppBillingInternal: java.lang.String DB_INITIALIZED> = "db_initialized";
+
+        $r0 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(0);
+
+        <com.apostek.untangle.inapp.InAppBillingInternal: java.lang.Boolean billingSupported> = $r0;
+
+        return;
+    }
+
+    public void <init>(android.app.Activity)
+    {
+        java.util.HashSet $r3;
+        android.content.Context $r2;
+        com.apostek.untangle.inapp.InAppBillingInternal r0;
+        java.lang.Thread $r5;
+        com.apostek.untangle.inapp.BillingService $r4;
+        com.apostek.untangle.inapp.InAppBillingInternal$1 $r6;
+        android.app.Activity $r1;
+
+        r0 := @this: com.apostek.untangle.inapp.InAppBillingInternal;
+
+        $r1 := @parameter0: android.app.Activity;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        $r3 = new java.util.HashSet;
+
+        specialinvoke $r3.<java.util.HashSet: void <init>()>();
+
+        r0.<com.apostek.untangle.inapp.InAppBillingInternal: java.util.Set ownedItems> = $r3;
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("MY_TAG", "Starting billing service");
+
+        <com.apostek.untangle.inapp.InAppBillingInternal: android.app.Activity activity> = $r1;
+
+        $r2 = virtualinvoke $r1.<android.app.Activity: android.content.Context getApplicationContext()>();
+
+        <com.apostek.untangle.inapp.InAppBillingInternal: android.content.Context context> = $r2;
+
+        $r4 = new com.apostek.untangle.inapp.BillingService;
+
+        specialinvoke $r4.<com.apostek.untangle.inapp.BillingService: void <init>()>();
+
+        r0.<com.apostek.untangle.inapp.InAppBillingInternal: com.apostek.untangle.inapp.BillingService billingService> = $r4;
+
+        $r4 = r0.<com.apostek.untangle.inapp.InAppBillingInternal: com.apostek.untangle.inapp.BillingService billingService>;
+
+        $r2 = <com.apostek.untangle.inapp.InAppBillingInternal: android.content.Context context>;
+
+        virtualinvoke $r4.<com.apostek.untangle.inapp.BillingService: void setContext(android.content.Context)>($r2);
+
+        $r5 = new java.lang.Thread;
+
+        $r6 = new com.apostek.untangle.inapp.InAppBillingInternal$1;
+
+        specialinvoke $r6.<com.apostek.untangle.inapp.InAppBillingInternal$1: void <init>(com.apostek.untangle.inapp.InAppBillingInternal)>(r0);
+
+        specialinvoke $r5.<java.lang.Thread: void <init>(java.lang.Runnable)>($r6);
+
+        virtualinvoke $r5.<java.lang.Thread: void start()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("MY_TAG", "Billing service started");
+
+        return;
+    }
+
+    public static java.lang.Boolean Buy(int)
+    {
+        com.apostek.untangle.inapp.InAppBillingInternal $r0;
+        android.widget.TextView $r1;
+        int $i0;
+        java.lang.Boolean $r2;
+        boolean $z0;
+
+        $i0 := @parameter0: int;
+
+        $r0 = <com.apostek.untangle.inapp.InAppBillingInternal: com.apostek.untangle.inapp.InAppBillingInternal sInstance>;
+
+        $z0 = specialinvoke $r0.<com.apostek.untangle.inapp.InAppBillingInternal: boolean buy(int)>(1);
+
+        if $z0 == 0 goto label1;
+
+        $r1 = <com.apostek.untangle.inapp.InAppBillingInternal: android.widget.TextView message_log>;
+
+        virtualinvoke $r1.<android.widget.TextView: void append(java.lang.CharSequence)>("Item bought sent successfull\n");
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("InAppBillingInternal", "request sent for buying");
+
+        $r2 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(1);
+
+        return $r2;
+
+     label1:
+        $r1 = <com.apostek.untangle.inapp.InAppBillingInternal: android.widget.TextView message_log>;
+
+        virtualinvoke $r1.<android.widget.TextView: void append(java.lang.CharSequence)>("Item bought sent with errors\n");
+
+        $r2 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(0);
+
+        return $r2;
+    }
+
+    public static java.lang.Boolean BuyDummy(java.lang.Boolean)
+    {
+        com.apostek.untangle.inapp.InAppBillingInternal $r1;
+        android.widget.TextView $r2;
+        java.lang.Boolean $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.Boolean;
+
+        $r1 = <com.apostek.untangle.inapp.InAppBillingInternal: com.apostek.untangle.inapp.InAppBillingInternal sInstance>;
+
+        $z0 = specialinvoke $r1.<com.apostek.untangle.inapp.InAppBillingInternal: boolean dummy_buy(java.lang.Boolean)>($r0);
+
+        if $z0 == 0 goto label1;
+
+        $r2 = <com.apostek.untangle.inapp.InAppBillingInternal: android.widget.TextView message_log>;
+
+        virtualinvoke $r2.<android.widget.TextView: void append(java.lang.CharSequence)>("Dummy bought sent successfull\n");
+
+        $r0 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(1);
+
+        return $r0;
+
+     label1:
+        $r2 = <com.apostek.untangle.inapp.InAppBillingInternal: android.widget.TextView message_log>;
+
+        virtualinvoke $r2.<android.widget.TextView: void append(java.lang.CharSequence)>("Dummy bought sent with errors\n");
+
+        $r0 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(0);
+
+        return $r0;
+    }
+
+    public static com.apostek.untangle.inapp.InAppBillingInternal GetInstance()
+    {
+        com.apostek.untangle.inapp.InAppBillingInternal r0;
+
+        r0 = <com.apostek.untangle.inapp.InAppBillingInternal: com.apostek.untangle.inapp.InAppBillingInternal sInstance>;
+
+        return r0;
+    }
+
+    public static void Initialize(android.app.Activity)
+    {
+        android.content.Context $r1;
+        com.apostek.untangle.inapp.InAppBillingInternal $r2;
+        android.widget.TextView $r3;
+        android.app.Activity $r0;
+
+        $r0 := @parameter0: android.app.Activity;
+
+        $r2 = <com.apostek.untangle.inapp.InAppBillingInternal: com.apostek.untangle.inapp.InAppBillingInternal sInstance>;
+
+        if $r2 != null goto label1;
+
+        $r2 = new com.apostek.untangle.inapp.InAppBillingInternal;
+
+        specialinvoke $r2.<com.apostek.untangle.inapp.InAppBillingInternal: void <init>(android.app.Activity)>($r0);
+
+        <com.apostek.untangle.inapp.InAppBillingInternal: com.apostek.untangle.inapp.InAppBillingInternal sInstance> = $r2;
+
+        $r3 = new android.widget.TextView;
+
+        $r1 = virtualinvoke $r0.<android.app.Activity: android.content.Context getApplicationContext()>();
+
+        specialinvoke $r3.<android.widget.TextView: void <init>(android.content.Context)>($r1);
+
+        <com.apostek.untangle.inapp.InAppBillingInternal: android.widget.TextView message_log> = $r3;
+
+     label1:
+        return;
+    }
+
+    public static void Initialize(android.app.Activity, android.widget.TextView)
+    {
+        android.content.Context $r2;
+        android.widget.TextView $r1;
+        com.apostek.untangle.inapp.InAppBillingInternal $r3;
+        android.app.Activity $r0;
+
+        $r0 := @parameter0: android.app.Activity;
+
+        $r1 := @parameter1: android.widget.TextView;
+
+        $r3 = <com.apostek.untangle.inapp.InAppBillingInternal: com.apostek.untangle.inapp.InAppBillingInternal sInstance>;
+
+        if $r3 != null goto label3;
+
+        if $r1 == null goto label2;
+
+        <com.apostek.untangle.inapp.InAppBillingInternal: android.widget.TextView message_log> = $r1;
+
+     label1:
+        $r3 = new com.apostek.untangle.inapp.InAppBillingInternal;
+
+        specialinvoke $r3.<com.apostek.untangle.inapp.InAppBillingInternal: void <init>(android.app.Activity)>($r0);
+
+        <com.apostek.untangle.inapp.InAppBillingInternal: com.apostek.untangle.inapp.InAppBillingInternal sInstance> = $r3;
+
+        return;
+
+     label2:
+        $r1 = new android.widget.TextView;
+
+        $r2 = <com.apostek.untangle.inapp.InAppBillingInternal: android.content.Context context>;
+
+        $r2 = virtualinvoke $r2.<android.content.Context: android.content.Context getApplicationContext()>();
+
+        specialinvoke $r1.<android.widget.TextView: void <init>(android.content.Context)>($r2);
+
+        <com.apostek.untangle.inapp.InAppBillingInternal: android.widget.TextView message_log> = $r1;
+
+        goto label1;
+
+     label3:
+        return;
+    }
+
+    public static void IsBillingSupported()
+    {
+        com.apostek.untangle.inapp.InAppBillingInternal $r0;
+        com.apostek.untangle.inapp.BillingService $r1;
+
+        $r0 = <com.apostek.untangle.inapp.InAppBillingInternal: com.apostek.untangle.inapp.InAppBillingInternal sInstance>;
+
+        $r1 = $r0.<com.apostek.untangle.inapp.InAppBillingInternal: com.apostek.untangle.inapp.BillingService billingService>;
+
+        virtualinvoke $r1.<com.apostek.untangle.inapp.BillingService: boolean checkBillingSupported()>();
+
+        return;
+    }
+
+    private void ListOwnedIntems()
+    {
+        com.apostek.untangle.inapp.InAppBillingInternal r0;
+        java.util.Iterator $r5;
+        java.util.Set $r3;
+        android.widget.TextView $r1;
+        int $i0;
+        java.lang.StringBuilder $r2;
+        java.lang.Object $r6;
+        java.lang.String $r4;
+        boolean $z0;
+
+        r0 := @this: com.apostek.untangle.inapp.InAppBillingInternal;
+
+        $r1 = <com.apostek.untangle.inapp.InAppBillingInternal: android.widget.TextView message_log>;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("OwnedIntemsCount: ");
+
+        $r3 = r0.<com.apostek.untangle.inapp.InAppBillingInternal: java.util.Set ownedItems>;
+
+        $i0 = interfaceinvoke $r3.<java.util.Set: int size()>();
+
+        $r4 = staticinvoke <java.lang.Integer: java.lang.String toBinaryString(int)>($i0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(": \n");
+
+        $r4 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r1.<android.widget.TextView: void append(java.lang.CharSequence)>($r4);
+
+        $r3 = r0.<com.apostek.untangle.inapp.InAppBillingInternal: java.util.Set ownedItems>;
+
+        $r5 = interfaceinvoke $r3.<java.util.Set: java.util.Iterator iterator()>();
+
+     label1:
+        $z0 = interfaceinvoke $r5.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 != 0 goto label2;
+
+        return;
+
+     label2:
+        $r6 = interfaceinvoke $r5.<java.util.Iterator: java.lang.Object next()>();
+
+        $r4 = (java.lang.String) $r6;
+
+        $r1 = <com.apostek.untangle.inapp.InAppBillingInternal: android.widget.TextView message_log>;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("Intem: ");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\n");
+
+        $r4 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r1.<android.widget.TextView: void append(java.lang.CharSequence)>($r4);
+
+        goto label1;
+    }
+
+    public static void ReCheckingOwned()
+    {
+        com.apostek.untangle.inapp.InAppBillingInternal $r0;
+
+        $r0 = <com.apostek.untangle.inapp.InAppBillingInternal: com.apostek.untangle.inapp.InAppBillingInternal sInstance>;
+
+        specialinvoke $r0.<com.apostek.untangle.inapp.InAppBillingInternal: void initializeOwnedItems()>();
+
+        return;
+    }
+
+    private boolean RestoreTransact()
+    {
+        com.apostek.untangle.inapp.InAppBillingInternal r0;
+        com.apostek.untangle.inapp.BillingService $r1;
+        boolean $z0;
+
+        r0 := @this: com.apostek.untangle.inapp.InAppBillingInternal;
+
+        $r1 = r0.<com.apostek.untangle.inapp.InAppBillingInternal: com.apostek.untangle.inapp.BillingService billingService>;
+
+        $z0 = virtualinvoke $r1.<com.apostek.untangle.inapp.BillingService: boolean restoreTransactions()>();
+
+        return $z0;
+    }
+
+    public static boolean RestoreTransaction()
+    {
+        com.apostek.untangle.inapp.InAppBillingInternal $r0;
+        android.widget.TextView $r1;
+        boolean $z0;
+
+        $r0 = <com.apostek.untangle.inapp.InAppBillingInternal: com.apostek.untangle.inapp.InAppBillingInternal sInstance>;
+
+        $z0 = specialinvoke $r0.<com.apostek.untangle.inapp.InAppBillingInternal: boolean RestoreTransact()>();
+
+        if $z0 == 0 goto label1;
+
+        $r1 = <com.apostek.untangle.inapp.InAppBillingInternal: android.widget.TextView message_log>;
+
+        virtualinvoke $r1.<android.widget.TextView: void append(java.lang.CharSequence)>("Transactions restored successfull\n");
+
+        return 1;
+
+     label1:
+        $r1 = <com.apostek.untangle.inapp.InAppBillingInternal: android.widget.TextView message_log>;
+
+        virtualinvoke $r1.<android.widget.TextView: void append(java.lang.CharSequence)>("Transactions restored with errors\n");
+
+        return 0;
+    }
+
+    public static void Stop()
+    {
+        com.apostek.untangle.inapp.InAppBillingInternal $r1;
+        android.os.Looper $r0;
+        android.os.Handler $r4;
+        com.apostek.untangle.inapp.PurchaseDatabase $r2;
+        com.apostek.untangle.inapp.BillingService $r3;
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("MY_TAG", "Stopping billing service");
+
+        $r1 = <com.apostek.untangle.inapp.InAppBillingInternal: com.apostek.untangle.inapp.InAppBillingInternal sInstance>;
+
+        if $r1 == null goto label1;
+
+        $r1 = <com.apostek.untangle.inapp.InAppBillingInternal: com.apostek.untangle.inapp.InAppBillingInternal sInstance>;
+
+        $r2 = $r1.<com.apostek.untangle.inapp.InAppBillingInternal: com.apostek.untangle.inapp.PurchaseDatabase purchaseDatabase>;
+
+        virtualinvoke $r2.<com.apostek.untangle.inapp.PurchaseDatabase: void close()>();
+
+        $r1 = <com.apostek.untangle.inapp.InAppBillingInternal: com.apostek.untangle.inapp.InAppBillingInternal sInstance>;
+
+        $r3 = $r1.<com.apostek.untangle.inapp.InAppBillingInternal: com.apostek.untangle.inapp.BillingService billingService>;
+
+        virtualinvoke $r3.<com.apostek.untangle.inapp.BillingService: void unbind()>();
+
+        $r1 = <com.apostek.untangle.inapp.InAppBillingInternal: com.apostek.untangle.inapp.InAppBillingInternal sInstance>;
+
+        $r4 = $r1.<com.apostek.untangle.inapp.InAppBillingInternal: android.os.Handler handler>;
+
+        $r0 = virtualinvoke $r4.<android.os.Handler: android.os.Looper getLooper()>();
+
+        virtualinvoke $r0.<android.os.Looper: void quit()>();
+
+        return;
+
+     label1:
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("MY_TAG", "Stopping failed, never initialized");
+
+        return;
+    }
+
+    static android.app.Activity access$0()
+    {
+        android.app.Activity r0;
+
+        r0 = <com.apostek.untangle.inapp.InAppBillingInternal: android.app.Activity activity>;
+
+        return r0;
+    }
+
+    static java.lang.Boolean access$1()
+    {
+        java.lang.Boolean r0;
+
+        r0 = <com.apostek.untangle.inapp.InAppBillingInternal: java.lang.Boolean billingSupported>;
+
+        return r0;
+    }
+
+    static com.apostek.untangle.inapp.InAppBillingInternal$InAppPurchaseObserver access$10(com.apostek.untangle.inapp.InAppBillingInternal)
+    {
+        com.apostek.untangle.inapp.InAppBillingInternal $r0;
+        com.apostek.untangle.inapp.InAppBillingInternal$InAppPurchaseObserver r1;
+
+        $r0 := @parameter0: com.apostek.untangle.inapp.InAppBillingInternal;
+
+        r1 = $r0.<com.apostek.untangle.inapp.InAppBillingInternal: com.apostek.untangle.inapp.InAppBillingInternal$InAppPurchaseObserver inAppBillingPurchaseObserver>;
+
+        return r1;
+    }
+
+    static void access$11(com.apostek.untangle.inapp.InAppBillingInternal)
+    {
+        com.apostek.untangle.inapp.InAppBillingInternal $r0;
+
+        $r0 := @parameter0: com.apostek.untangle.inapp.InAppBillingInternal;
+
+        specialinvoke $r0.<com.apostek.untangle.inapp.InAppBillingInternal: void doInitializeOwnedItems()>();
+
+        return;
+    }
+
+    static void access$2(java.lang.Boolean)
+    {
+        java.lang.Boolean $r0;
+
+        $r0 := @parameter0: java.lang.Boolean;
+
+        <com.apostek.untangle.inapp.InAppBillingInternal: java.lang.Boolean billingSupported> = $r0;
+
+        return;
+    }
+
+    static void access$3(com.apostek.untangle.inapp.InAppBillingInternal)
+    {
+        com.apostek.untangle.inapp.InAppBillingInternal $r0;
+
+        $r0 := @parameter0: com.apostek.untangle.inapp.InAppBillingInternal;
+
+        specialinvoke $r0.<com.apostek.untangle.inapp.InAppBillingInternal: void restoreDatabase()>();
+
+        return;
+    }
+
+    static android.widget.TextView access$4()
+    {
+        android.widget.TextView r0;
+
+        r0 = <com.apostek.untangle.inapp.InAppBillingInternal: android.widget.TextView message_log>;
+
+        return r0;
+    }
+
+    static java.util.Set access$5(com.apostek.untangle.inapp.InAppBillingInternal)
+    {
+        java.util.Set r1;
+        com.apostek.untangle.inapp.InAppBillingInternal $r0;
+
+        $r0 := @parameter0: com.apostek.untangle.inapp.InAppBillingInternal;
+
+        r1 = $r0.<com.apostek.untangle.inapp.InAppBillingInternal: java.util.Set ownedItems>;
+
+        return r1;
+    }
+
+    static android.content.SharedPreferences access$6(com.apostek.untangle.inapp.InAppBillingInternal, int)
+    {
+        int $i0;
+        com.apostek.untangle.inapp.InAppBillingInternal $r0;
+        android.content.SharedPreferences $r1;
+
+        $r0 := @parameter0: com.apostek.untangle.inapp.InAppBillingInternal;
+
+        $i0 := @parameter1: int;
+
+        $r1 = specialinvoke $r0.<com.apostek.untangle.inapp.InAppBillingInternal: android.content.SharedPreferences getPreferences(int)>(0);
+
+        return $r1;
+    }
+
+    static void access$7(com.apostek.untangle.inapp.InAppBillingInternal, android.os.Handler)
+    {
+        com.apostek.untangle.inapp.InAppBillingInternal $r0;
+        android.os.Handler $r1;
+
+        $r0 := @parameter0: com.apostek.untangle.inapp.InAppBillingInternal;
+
+        $r1 := @parameter1: android.os.Handler;
+
+        $r0.<com.apostek.untangle.inapp.InAppBillingInternal: android.os.Handler handler> = $r1;
+
+        return;
+    }
+
+    static android.os.Handler access$8(com.apostek.untangle.inapp.InAppBillingInternal)
+    {
+        com.apostek.untangle.inapp.InAppBillingInternal $r0;
+        android.os.Handler r1;
+
+        $r0 := @parameter0: com.apostek.untangle.inapp.InAppBillingInternal;
+
+        r1 = $r0.<com.apostek.untangle.inapp.InAppBillingInternal: android.os.Handler handler>;
+
+        return r1;
+    }
+
+    static void access$9(com.apostek.untangle.inapp.InAppBillingInternal, com.apostek.untangle.inapp.InAppBillingInternal$InAppPurchaseObserver)
+    {
+        com.apostek.untangle.inapp.InAppBillingInternal $r0;
+        com.apostek.untangle.inapp.InAppBillingInternal$InAppPurchaseObserver $r1;
+
+        $r0 := @parameter0: com.apostek.untangle.inapp.InAppBillingInternal;
+
+        $r1 := @parameter1: com.apostek.untangle.inapp.InAppBillingInternal$InAppPurchaseObserver;
+
+        $r0.<com.apostek.untangle.inapp.InAppBillingInternal: com.apostek.untangle.inapp.InAppBillingInternal$InAppPurchaseObserver inAppBillingPurchaseObserver> = $r1;
+
+        return;
+    }
+
+    private boolean buy(int)
+    {
+        com.apostek.untangle.inapp.InAppBillingInternal r0;
+        int $i0;
+        com.apostek.untangle.inapp.BillingService $r1;
+        boolean $z0;
+
+        r0 := @this: com.apostek.untangle.inapp.InAppBillingInternal;
+
+        $i0 := @parameter0: int;
+
+        $r1 = r0.<com.apostek.untangle.inapp.InAppBillingInternal: com.apostek.untangle.inapp.BillingService billingService>;
+
+        $z0 = virtualinvoke $r1.<com.apostek.untangle.inapp.BillingService: boolean requestPurchase(java.lang.String,java.lang.String)>("unlocklevels_removeads", null);
+
+        return $z0;
+    }
+
+    private void doInitializeOwnedItems()
+    {
+        java.lang.Throwable $r7;
+        com.apostek.untangle.inapp.InAppBillingInternal r0;
+        com.apostek.untangle.inapp.PurchaseDatabase $r3;
+        com.apostek.untangle.inapp.InAppBillingInternal$3 $r2;
+        java.util.HashSet r1;
+        android.os.Handler $r5;
+        int $i0;
+        java.lang.String $r6;
+        android.database.Cursor $r4;
+        boolean $z0;
+
+        r0 := @this: com.apostek.untangle.inapp.InAppBillingInternal;
+
+        $r3 = r0.<com.apostek.untangle.inapp.InAppBillingInternal: com.apostek.untangle.inapp.PurchaseDatabase purchaseDatabase>;
+
+        $r4 = virtualinvoke $r3.<com.apostek.untangle.inapp.PurchaseDatabase: android.database.Cursor queryAllPurchasedItems()>();
+
+        if $r4 != null goto label1;
+
+        return;
+
+     label1:
+        r1 = new java.util.HashSet;
+
+        specialinvoke r1.<java.util.HashSet: void <init>()>();
+
+     label2:
+        $i0 = interfaceinvoke $r4.<android.database.Cursor: int getColumnIndexOrThrow(java.lang.String)>("_id");
+
+     label3:
+        $z0 = interfaceinvoke $r4.<android.database.Cursor: boolean moveToNext()>();
+
+     label4:
+        if $z0 != 0 goto label5;
+
+        interfaceinvoke $r4.<android.database.Cursor: void close()>();
+
+        $r5 = r0.<com.apostek.untangle.inapp.InAppBillingInternal: android.os.Handler handler>;
+
+        $r2 = new com.apostek.untangle.inapp.InAppBillingInternal$3;
+
+        specialinvoke $r2.<com.apostek.untangle.inapp.InAppBillingInternal$3: void <init>(com.apostek.untangle.inapp.InAppBillingInternal,java.util.Set)>(r0, r1);
+
+        virtualinvoke $r5.<android.os.Handler: boolean post(java.lang.Runnable)>($r2);
+
+        return;
+
+     label5:
+        $r6 = interfaceinvoke $r4.<android.database.Cursor: java.lang.String getString(int)>($i0);
+
+        interfaceinvoke r1.<java.util.Set: boolean add(java.lang.Object)>($r6);
+
+     label6:
+        goto label3;
+
+     label7:
+        $r7 := @caughtexception;
+
+        interfaceinvoke $r4.<android.database.Cursor: void close()>();
+
+        throw $r7;
+
+        catch java.lang.Throwable from label2 to label4 with label7;
+        catch java.lang.Throwable from label5 to label6 with label7;
+    }
+
+    private boolean dummy_buy(java.lang.Boolean)
+    {
+        com.apostek.untangle.inapp.InAppBillingInternal r0;
+        java.lang.Boolean $r1;
+        com.apostek.untangle.inapp.BillingService $r2;
+        boolean $z0;
+
+        r0 := @this: com.apostek.untangle.inapp.InAppBillingInternal;
+
+        $r1 := @parameter0: java.lang.Boolean;
+
+        $z0 = virtualinvoke $r1.<java.lang.Boolean: boolean booleanValue()>();
+
+        if $z0 == 0 goto label1;
+
+        $r2 = r0.<com.apostek.untangle.inapp.InAppBillingInternal: com.apostek.untangle.inapp.BillingService billingService>;
+
+        $z0 = virtualinvoke $r2.<com.apostek.untangle.inapp.BillingService: boolean requestPurchase(java.lang.String,java.lang.String)>("android.test.purchased", null);
+
+        return $z0;
+
+     label1:
+        $r2 = r0.<com.apostek.untangle.inapp.InAppBillingInternal: com.apostek.untangle.inapp.BillingService billingService>;
+
+        $z0 = virtualinvoke $r2.<com.apostek.untangle.inapp.BillingService: boolean requestPurchase(java.lang.String,java.lang.String)>("android.test.refunded", null);
+
+        return $z0;
+    }
+
+    public static boolean getBillingSupported()
+    {
+        java.lang.Boolean $r0;
+        android.widget.TextView $r1;
+        boolean $z0;
+
+        $r0 = <com.apostek.untangle.inapp.InAppBillingInternal: java.lang.Boolean billingSupported>;
+
+        $z0 = virtualinvoke $r0.<java.lang.Boolean: boolean booleanValue()>();
+
+        if $z0 == 0 goto label1;
+
+        $r1 = <com.apostek.untangle.inapp.InAppBillingInternal: android.widget.TextView message_log>;
+
+        virtualinvoke $r1.<android.widget.TextView: void append(java.lang.CharSequence)>("Billing supported\n");
+
+        return 1;
+
+     label1:
+        $r1 = <com.apostek.untangle.inapp.InAppBillingInternal: android.widget.TextView message_log>;
+
+        virtualinvoke $r1.<android.widget.TextView: void append(java.lang.CharSequence)>("Billing not supported\n");
+
+        return 0;
+    }
+
+    private android.content.SharedPreferences getPreferences(int)
+    {
+        int $i0;
+        com.apostek.untangle.inapp.InAppBillingInternal r0;
+
+        r0 := @this: com.apostek.untangle.inapp.InAppBillingInternal;
+
+        $i0 := @parameter0: int;
+
+        return null;
+    }
+
+    private void initializeOwnedItems()
+    {
+        com.apostek.untangle.inapp.InAppBillingInternal r0;
+        java.lang.Thread $r1;
+        com.apostek.untangle.inapp.InAppBillingInternal$2 $r2;
+
+        r0 := @this: com.apostek.untangle.inapp.InAppBillingInternal;
+
+        $r1 = new java.lang.Thread;
+
+        $r2 = new com.apostek.untangle.inapp.InAppBillingInternal$2;
+
+        specialinvoke $r2.<com.apostek.untangle.inapp.InAppBillingInternal$2: void <init>(com.apostek.untangle.inapp.InAppBillingInternal)>(r0);
+
+        specialinvoke $r1.<java.lang.Thread: void <init>(java.lang.Runnable)>($r2);
+
+        virtualinvoke $r1.<java.lang.Thread: void start()>();
+
+        specialinvoke r0.<com.apostek.untangle.inapp.InAppBillingInternal: void ListOwnedIntems()>();
+
+        return;
+    }
+
+    private void restoreDatabase()
+    {
+        com.apostek.untangle.inapp.InAppBillingInternal r0;
+        android.content.SharedPreferences $r1;
+        com.apostek.untangle.inapp.BillingService $r2;
+        java.lang.Exception $r3;
+        boolean $z0;
+
+        r0 := @this: com.apostek.untangle.inapp.InAppBillingInternal;
+
+     label1:
+        $r1 = specialinvoke r0.<com.apostek.untangle.inapp.InAppBillingInternal: android.content.SharedPreferences getPreferences(int)>(0);
+
+        $z0 = interfaceinvoke $r1.<android.content.SharedPreferences: boolean getBoolean(java.lang.String,boolean)>("db_initialized", 0);
+
+     label2:
+        if $z0 != 0 goto label6;
+
+     label3:
+        $r2 = r0.<com.apostek.untangle.inapp.InAppBillingInternal: com.apostek.untangle.inapp.BillingService billingService>;
+
+        virtualinvoke $r2.<com.apostek.untangle.inapp.BillingService: boolean restoreTransactions()>();
+
+     label4:
+        return;
+
+     label5:
+        $r3 := @caughtexception;
+
+     label6:
+        return;
+
+        catch java.lang.Exception from label1 to label2 with label5;
+        catch java.lang.Exception from label3 to label4 with label5;
+    }
+
+    public static android.widget.TextView returnTxtView()
+    {
+        android.widget.TextView r0;
+
+        r0 = <com.apostek.untangle.inapp.InAppBillingInternal: android.widget.TextView message_log>;
+
+        return r0;
+    }
+}

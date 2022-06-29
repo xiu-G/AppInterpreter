@@ -1,0 +1,365 @@
+class com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread extends android.os.HandlerThread
+{
+    private final com.google.android.apps.analytics.Dispatcher$Callbacks callbacks;
+    private com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask currentTask;
+    volatile android.os.Handler handlerExecuteOnDispatcherThread;
+    private int lastStatusCode;
+    private int maxEventsPerRequest;
+    private final com.google.android.apps.analytics.NetworkDispatcher parent;
+    private final com.google.android.apps.analytics.PipelinedRequester pipelinedRequester;
+    private final com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$RequesterCallbacks requesterCallBacks;
+    private long retryInterval;
+    private final java.lang.String userAgent;
+
+    private void <init>(com.google.android.apps.analytics.Dispatcher$Callbacks, com.google.android.apps.analytics.PipelinedRequester, java.lang.String, com.google.android.apps.analytics.NetworkDispatcher)
+    {
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread r0;
+        com.google.android.apps.analytics.Dispatcher$Callbacks $r1;
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$RequesterCallbacks $r5;
+        com.google.android.apps.analytics.PipelinedRequester $r2;
+        java.lang.String $r3;
+        com.google.android.apps.analytics.NetworkDispatcher $r4;
+
+        r0 := @this: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread;
+
+        $r1 := @parameter0: com.google.android.apps.analytics.Dispatcher$Callbacks;
+
+        $r2 := @parameter1: com.google.android.apps.analytics.PipelinedRequester;
+
+        $r3 := @parameter2: java.lang.String;
+
+        $r4 := @parameter3: com.google.android.apps.analytics.NetworkDispatcher;
+
+        specialinvoke r0.<android.os.HandlerThread: void <init>(java.lang.String)>("DispatcherThread");
+
+        r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: int maxEventsPerRequest> = 30;
+
+        r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask currentTask> = null;
+
+        r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: com.google.android.apps.analytics.Dispatcher$Callbacks callbacks> = $r1;
+
+        r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: java.lang.String userAgent> = $r3;
+
+        r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: com.google.android.apps.analytics.PipelinedRequester pipelinedRequester> = $r2;
+
+        $r5 = new com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$RequesterCallbacks;
+
+        specialinvoke $r5.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$RequesterCallbacks: void <init>(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread,com.google.android.apps.analytics.NetworkDispatcher$1)>(r0, null);
+
+        r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$RequesterCallbacks requesterCallBacks> = $r5;
+
+        $r2 = r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: com.google.android.apps.analytics.PipelinedRequester pipelinedRequester>;
+
+        $r5 = r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$RequesterCallbacks requesterCallBacks>;
+
+        virtualinvoke $r2.<com.google.android.apps.analytics.PipelinedRequester: void installCallbacks(com.google.android.apps.analytics.PipelinedRequester$Callbacks)>($r5);
+
+        r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: com.google.android.apps.analytics.NetworkDispatcher parent> = $r4;
+
+        return;
+    }
+
+    void <init>(com.google.android.apps.analytics.Dispatcher$Callbacks, com.google.android.apps.analytics.PipelinedRequester, java.lang.String, com.google.android.apps.analytics.NetworkDispatcher, com.google.android.apps.analytics.NetworkDispatcher$1)
+    {
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread r0;
+        com.google.android.apps.analytics.Dispatcher$Callbacks $r1;
+        com.google.android.apps.analytics.NetworkDispatcher$1 $r5;
+        com.google.android.apps.analytics.PipelinedRequester $r2;
+        java.lang.String $r3;
+        com.google.android.apps.analytics.NetworkDispatcher $r4;
+
+        r0 := @this: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread;
+
+        $r1 := @parameter0: com.google.android.apps.analytics.Dispatcher$Callbacks;
+
+        $r2 := @parameter1: com.google.android.apps.analytics.PipelinedRequester;
+
+        $r3 := @parameter2: java.lang.String;
+
+        $r4 := @parameter3: com.google.android.apps.analytics.NetworkDispatcher;
+
+        $r5 := @parameter4: com.google.android.apps.analytics.NetworkDispatcher$1;
+
+        specialinvoke r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: void <init>(com.google.android.apps.analytics.Dispatcher$Callbacks,com.google.android.apps.analytics.PipelinedRequester,java.lang.String,com.google.android.apps.analytics.NetworkDispatcher)>($r1, $r2, $r3, $r4);
+
+        return;
+    }
+
+    private void <init>(com.google.android.apps.analytics.Dispatcher$Callbacks, java.lang.String, com.google.android.apps.analytics.NetworkDispatcher)
+    {
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread r0;
+        com.google.android.apps.analytics.Dispatcher$Callbacks $r1;
+        com.google.android.apps.analytics.PipelinedRequester $r4;
+        java.lang.String $r2;
+        com.google.android.apps.analytics.NetworkDispatcher $r3;
+        org.apache.http.HttpHost $r5;
+
+        r0 := @this: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread;
+
+        $r1 := @parameter0: com.google.android.apps.analytics.Dispatcher$Callbacks;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: com.google.android.apps.analytics.NetworkDispatcher;
+
+        $r4 = new com.google.android.apps.analytics.PipelinedRequester;
+
+        $r5 = staticinvoke <com.google.android.apps.analytics.NetworkDispatcher: org.apache.http.HttpHost access$200(com.google.android.apps.analytics.NetworkDispatcher)>($r3);
+
+        specialinvoke $r4.<com.google.android.apps.analytics.PipelinedRequester: void <init>(org.apache.http.HttpHost)>($r5);
+
+        specialinvoke r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: void <init>(com.google.android.apps.analytics.Dispatcher$Callbacks,com.google.android.apps.analytics.PipelinedRequester,java.lang.String,com.google.android.apps.analytics.NetworkDispatcher)>($r1, $r4, $r2, $r3);
+
+        return;
+    }
+
+    void <init>(com.google.android.apps.analytics.Dispatcher$Callbacks, java.lang.String, com.google.android.apps.analytics.NetworkDispatcher, com.google.android.apps.analytics.NetworkDispatcher$1)
+    {
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread r0;
+        com.google.android.apps.analytics.Dispatcher$Callbacks $r1;
+        com.google.android.apps.analytics.NetworkDispatcher$1 $r4;
+        java.lang.String $r2;
+        com.google.android.apps.analytics.NetworkDispatcher $r3;
+
+        r0 := @this: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread;
+
+        $r1 := @parameter0: com.google.android.apps.analytics.Dispatcher$Callbacks;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: com.google.android.apps.analytics.NetworkDispatcher;
+
+        $r4 := @parameter3: com.google.android.apps.analytics.NetworkDispatcher$1;
+
+        specialinvoke r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: void <init>(com.google.android.apps.analytics.Dispatcher$Callbacks,java.lang.String,com.google.android.apps.analytics.NetworkDispatcher)>($r1, $r2, $r3);
+
+        return;
+    }
+
+    static int access$1000(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread)
+    {
+        int i0;
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread $r0;
+
+        $r0 := @parameter0: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread;
+
+        i0 = $r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: int maxEventsPerRequest>;
+
+        return i0;
+    }
+
+    static int access$1002(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread, int)
+    {
+        int $i0;
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread $r0;
+
+        $r0 := @parameter0: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread;
+
+        $i0 := @parameter1: int;
+
+        $r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: int maxEventsPerRequest> = $i0;
+
+        return $i0;
+    }
+
+    static java.lang.String access$1100(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread)
+    {
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread $r0;
+        java.lang.String r1;
+
+        $r0 := @parameter0: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread;
+
+        r1 = $r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: java.lang.String userAgent>;
+
+        return r1;
+    }
+
+    static com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$RequesterCallbacks access$1200(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread)
+    {
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$RequesterCallbacks r1;
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread $r0;
+
+        $r0 := @parameter0: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread;
+
+        r1 = $r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$RequesterCallbacks requesterCallBacks>;
+
+        return r1;
+    }
+
+    static com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask access$400(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread)
+    {
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread $r0;
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask r1;
+
+        $r0 := @parameter0: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread;
+
+        r1 = $r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask currentTask>;
+
+        return r1;
+    }
+
+    static com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask access$402(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread, com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask)
+    {
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread $r0;
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask $r1;
+
+        $r0 := @parameter0: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread;
+
+        $r1 := @parameter1: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask;
+
+        $r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask currentTask> = $r1;
+
+        return $r1;
+    }
+
+    static int access$500(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread)
+    {
+        int i0;
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread $r0;
+
+        $r0 := @parameter0: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread;
+
+        i0 = $r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: int lastStatusCode>;
+
+        return i0;
+    }
+
+    static int access$502(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread, int)
+    {
+        int $i0;
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread $r0;
+
+        $r0 := @parameter0: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread;
+
+        $i0 := @parameter1: int;
+
+        $r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: int lastStatusCode> = $i0;
+
+        return $i0;
+    }
+
+    static long access$600(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread)
+    {
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread $r0;
+        long l0;
+
+        $r0 := @parameter0: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread;
+
+        l0 = $r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: long retryInterval>;
+
+        return l0;
+    }
+
+    static long access$602(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread, long)
+    {
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread $r0;
+        long $l0;
+
+        $r0 := @parameter0: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread;
+
+        $l0 := @parameter1: long;
+
+        $r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: long retryInterval> = $l0;
+
+        return $l0;
+    }
+
+    static long access$630(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread, long)
+    {
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread $r0;
+        long $l0, $l1;
+
+        $r0 := @parameter0: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread;
+
+        $l0 := @parameter1: long;
+
+        $l1 = $r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: long retryInterval>;
+
+        $l0 = $l1 * $l0;
+
+        $r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: long retryInterval> = $l0;
+
+        return $l0;
+    }
+
+    static com.google.android.apps.analytics.NetworkDispatcher access$700(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread)
+    {
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread $r0;
+        com.google.android.apps.analytics.NetworkDispatcher r1;
+
+        $r0 := @parameter0: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread;
+
+        r1 = $r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: com.google.android.apps.analytics.NetworkDispatcher parent>;
+
+        return r1;
+    }
+
+    static com.google.android.apps.analytics.PipelinedRequester access$800(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread)
+    {
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread $r0;
+        com.google.android.apps.analytics.PipelinedRequester r1;
+
+        $r0 := @parameter0: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread;
+
+        r1 = $r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: com.google.android.apps.analytics.PipelinedRequester pipelinedRequester>;
+
+        return r1;
+    }
+
+    static com.google.android.apps.analytics.Dispatcher$Callbacks access$900(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread)
+    {
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread $r0;
+        com.google.android.apps.analytics.Dispatcher$Callbacks r1;
+
+        $r0 := @parameter0: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread;
+
+        r1 = $r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: com.google.android.apps.analytics.Dispatcher$Callbacks callbacks>;
+
+        return r1;
+    }
+
+    public void dispatchHits(com.google.android.apps.analytics.Hit[])
+    {
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread r0;
+        android.os.Handler $r3;
+        com.google.android.apps.analytics.Hit[] $r1;
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask $r2;
+
+        r0 := @this: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread;
+
+        $r1 := @parameter0: com.google.android.apps.analytics.Hit[];
+
+        $r3 = r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: android.os.Handler handlerExecuteOnDispatcherThread>;
+
+        if $r3 != null goto label1;
+
+        return;
+
+     label1:
+        $r3 = r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: android.os.Handler handlerExecuteOnDispatcherThread>;
+
+        $r2 = new com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask;
+
+        specialinvoke $r2.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread$AsyncDispatchTask: void <init>(com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread,com.google.android.apps.analytics.Hit[])>(r0, $r1);
+
+        virtualinvoke $r3.<android.os.Handler: boolean post(java.lang.Runnable)>($r2);
+
+        return;
+    }
+
+    protected void onLooperPrepared()
+    {
+        com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread r0;
+        android.os.Handler $r1;
+
+        r0 := @this: com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread;
+
+        $r1 = new android.os.Handler;
+
+        specialinvoke $r1.<android.os.Handler: void <init>()>();
+
+        r0.<com.google.android.apps.analytics.NetworkDispatcher$DispatcherThread: android.os.Handler handlerExecuteOnDispatcherThread> = $r1;
+
+        return;
+    }
+}

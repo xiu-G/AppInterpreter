@@ -1,0 +1,340 @@
+public class app.SazilerApp.BoardWrite extends android.app.Activity
+{
+    java.lang.String FilePath;
+    android.widget.ImageView ImgFile;
+    java.lang.String getPage;
+    android.net.Uri imgURI;
+    boolean isFile;
+    android.view.View$OnClickListener mClickListener;
+    java.lang.String pFilePath;
+    android.widget.TextView wContent;
+    android.widget.TextView wTitle;
+    public android.content.Intent ipcIntent;
+    public android.content.Intent ipcResultIntent;
+
+    public void <init>()
+    {
+        app.SazilerApp.BoardWrite r0;
+        app.SazilerApp.BoardWrite$1 $r1;
+
+        r0 := @this: app.SazilerApp.BoardWrite;
+
+        specialinvoke r0.<android.app.Activity: void <init>()>();
+
+        r0.<app.SazilerApp.BoardWrite: boolean isFile> = 0;
+
+        r0.<app.SazilerApp.BoardWrite: java.lang.String pFilePath> = "";
+
+        $r1 = new app.SazilerApp.BoardWrite$1;
+
+        specialinvoke $r1.<app.SazilerApp.BoardWrite$1: void <init>(app.SazilerApp.BoardWrite)>(r0);
+
+        r0.<app.SazilerApp.BoardWrite: android.view.View$OnClickListener mClickListener> = $r1;
+
+        return;
+    }
+
+    protected void onActivityResult(int, int, android.content.Intent)
+    {
+        android.net.Uri $r4;
+        android.widget.ImageView $r10;
+        app.SazilerApp.BoardWrite r0;
+        android.content.Intent $r1;
+        long $l2;
+        android.graphics.drawable.Drawable $r11;
+        byte $b3;
+        android.content.ContentResolver $r6;
+        android.widget.Toast $r9;
+        int $i0, $i1;
+        java.lang.String $r5, $r8;
+        android.database.Cursor $r7;
+        boolean $z0;
+        android.graphics.drawable.BitmapDrawable $r12;
+        java.io.File r2, $r16;
+        java.lang.Exception $r14;
+        android.graphics.Bitmap $r13;
+        java.lang.StringBuilder $r3, $r15;
+
+        r0 := @this: app.SazilerApp.BoardWrite;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $r1 := @parameter2: android.content.Intent;
+
+        $r1 = virtualinvoke r0.<app.SazilerApp.BoardWrite: android.content.Intent getIntent()>();
+
+        specialinvoke r0.<android.app.Activity: void onActivityResult(int,int,android.content.Intent)>($i0, $i1, $r1);
+
+        $r15 = new java.lang.StringBuilder;
+
+        specialinvoke $r15.<java.lang.StringBuilder: void <init>(java.lang.String)>("d");
+
+        $r4 = virtualinvoke $r1.<android.content.Intent: android.net.Uri getData()>();
+
+        $r5 = virtualinvoke $r4.<android.net.Uri: java.lang.String getPath()>();
+
+        $r3 = virtualinvoke $r15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("FILEPATH", $r5);
+
+     label01:
+        $r6 = virtualinvoke r0.<app.SazilerApp.BoardWrite: android.content.ContentResolver getContentResolver()>();
+
+        $r4 = virtualinvoke $r1.<android.content.Intent: android.net.Uri getData()>();
+
+        $r7 = virtualinvoke $r6.<android.content.ContentResolver: android.database.Cursor query(android.net.Uri,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String)>($r4, null, null, null, null);
+
+        interfaceinvoke $r7.<android.database.Cursor: boolean moveToFirst()>();
+
+        $i0 = interfaceinvoke $r7.<android.database.Cursor: int getColumnIndex(java.lang.String)>("_data");
+
+        $r5 = interfaceinvoke $r7.<android.database.Cursor: java.lang.String getString(int)>($i0);
+
+        r0.<app.SazilerApp.BoardWrite: java.lang.String FilePath> = $r5;
+
+        $r5 = r0.<app.SazilerApp.BoardWrite: java.lang.String FilePath>;
+
+        $r8 = r0.<app.SazilerApp.BoardWrite: java.lang.String pFilePath>;
+
+        $z0 = virtualinvoke $r5.<java.lang.String: boolean equals(java.lang.Object)>($r8);
+
+     label02:
+        if $z0 != 0 goto label21;
+
+        $r16 = new java.io.File;
+
+        r2 = $r16;
+
+     label03:
+        $r5 = r0.<app.SazilerApp.BoardWrite: java.lang.String FilePath>;
+
+        specialinvoke $r16.<java.io.File: void <init>(java.lang.String)>($r5);
+
+        $l2 = virtualinvoke r2.<java.io.File: long length()>();
+
+     label04:
+        $b3 = $l2 cmp 512000L;
+
+        $i0 = (int) $b3;
+
+        if $i0 <= 0 goto label07;
+
+     label05:
+        $r9 = staticinvoke <android.widget.Toast: android.widget.Toast makeText(android.content.Context,java.lang.CharSequence,int)>(r0, "500Kb \ubcf4\ub2e4 \ud07d\ub2c8\ub2e4", 0);
+
+        virtualinvoke $r9.<android.widget.Toast: void show()>();
+
+     label06:
+        return;
+
+     label07:
+        $r5 = r0.<app.SazilerApp.BoardWrite: java.lang.String FilePath>;
+
+        $z0 = virtualinvoke $r5.<java.lang.String: boolean contains(java.lang.CharSequence)>(".jpg");
+
+     label08:
+        if $z0 != 0 goto label11;
+
+     label09:
+        $r5 = r0.<app.SazilerApp.BoardWrite: java.lang.String FilePath>;
+
+        $z0 = virtualinvoke $r5.<java.lang.String: boolean contains(java.lang.CharSequence)>(".JPG");
+
+     label10:
+        if $z0 == 0 goto label19;
+
+     label11:
+        $r10 = r0.<app.SazilerApp.BoardWrite: android.widget.ImageView ImgFile>;
+
+        $r11 = virtualinvoke $r10.<android.widget.ImageView: android.graphics.drawable.Drawable getDrawable()>();
+
+        $r12 = (android.graphics.drawable.BitmapDrawable) $r11;
+
+     label12:
+        if $r12 == null goto label16;
+
+     label13:
+        $r10 = r0.<app.SazilerApp.BoardWrite: android.widget.ImageView ImgFile>;
+
+        $r11 = virtualinvoke $r10.<android.widget.ImageView: android.graphics.drawable.Drawable getDrawable()>();
+
+        $r12 = (android.graphics.drawable.BitmapDrawable) $r11;
+
+        $r13 = virtualinvoke $r12.<android.graphics.drawable.BitmapDrawable: android.graphics.Bitmap getBitmap()>();
+
+     label14:
+        if $r13 == null goto label16;
+
+     label15:
+        $r10 = r0.<app.SazilerApp.BoardWrite: android.widget.ImageView ImgFile>;
+
+        $r11 = virtualinvoke $r10.<android.widget.ImageView: android.graphics.drawable.Drawable getDrawable()>();
+
+        $r12 = (android.graphics.drawable.BitmapDrawable) $r11;
+
+        $r13 = virtualinvoke $r12.<android.graphics.drawable.BitmapDrawable: android.graphics.Bitmap getBitmap()>();
+
+        virtualinvoke $r13.<android.graphics.Bitmap: void recycle()>();
+
+     label16:
+        r0.<app.SazilerApp.BoardWrite: boolean isFile> = 1;
+
+        $r5 = r0.<app.SazilerApp.BoardWrite: java.lang.String FilePath>;
+
+        r0.<app.SazilerApp.BoardWrite: java.lang.String pFilePath> = $r5;
+
+        $r10 = r0.<app.SazilerApp.BoardWrite: android.widget.ImageView ImgFile>;
+
+        $r4 = virtualinvoke $r1.<android.content.Intent: android.net.Uri getData()>();
+
+        virtualinvoke $r10.<android.widget.ImageView: void setImageURI(android.net.Uri)>($r4);
+
+     label17:
+        return;
+
+     label18:
+        $r14 := @caughtexception;
+
+        virtualinvoke $r14.<java.lang.Exception: void printStackTrace()>();
+
+        return;
+
+     label19:
+        $r9 = staticinvoke <android.widget.Toast: android.widget.Toast makeText(android.content.Context,java.lang.CharSequence,int)>(r0, "JPG\uc774\ubbf8\uc9c0\uac00 \uc544\ub2d9\ub2c8\ub2e4", 0);
+
+        virtualinvoke $r9.<android.widget.Toast: void show()>();
+
+        $r10 = r0.<app.SazilerApp.BoardWrite: android.widget.ImageView ImgFile>;
+
+        virtualinvoke $r10.<android.widget.ImageView: void destroyDrawingCache()>();
+
+        r0.<app.SazilerApp.BoardWrite: boolean isFile> = 0;
+
+     label20:
+        return;
+
+     label21:
+        $r9 = staticinvoke <android.widget.Toast: android.widget.Toast makeText(android.content.Context,java.lang.CharSequence,int)>(r0, "\uac19\uc740 \ud30c\uc77c\uc785\ub2c8\ub2e4", 0);
+
+        virtualinvoke $r9.<android.widget.Toast: void show()>();
+
+     label22:
+        return;
+
+        catch java.lang.Exception from label01 to label02 with label18;
+        catch java.lang.Exception from label03 to label04 with label18;
+        catch java.lang.Exception from label05 to label06 with label18;
+        catch java.lang.Exception from label07 to label08 with label18;
+        catch java.lang.Exception from label09 to label10 with label18;
+        catch java.lang.Exception from label11 to label12 with label18;
+        catch java.lang.Exception from label13 to label14 with label18;
+        catch java.lang.Exception from label15 to label17 with label18;
+        catch java.lang.Exception from label19 to label20 with label18;
+        catch java.lang.Exception from label21 to label22 with label18;
+    }
+
+    public void onCreate(android.os.Bundle)
+    {
+        android.os.Bundle $r1;
+        android.view.View$OnClickListener $r7;
+        android.widget.ImageView $r6;
+        app.SazilerApp.BoardWrite r0;
+        android.content.Intent $r2;
+        android.widget.TextView $r5;
+        android.view.View $r4;
+        java.lang.String $r3;
+
+        r0 := @this: app.SazilerApp.BoardWrite;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke r0.<android.app.Activity: void onCreate(android.os.Bundle)>($r1);
+
+        virtualinvoke r0.<app.SazilerApp.BoardWrite: void setContentView(int)>(2130903044);
+
+        $r2 = virtualinvoke r0.<app.SazilerApp.BoardWrite: android.content.Intent getIntent()>();
+
+        $r3 = virtualinvoke $r2.<android.content.Intent: java.lang.String getStringExtra(java.lang.String)>("getPage");
+
+        r0.<app.SazilerApp.BoardWrite: java.lang.String getPage> = $r3;
+
+        $r4 = virtualinvoke r0.<app.SazilerApp.BoardWrite: android.view.View findViewById(int)>(2131034148);
+
+        $r5 = (android.widget.TextView) $r4;
+
+        r0.<app.SazilerApp.BoardWrite: android.widget.TextView wTitle> = $r5;
+
+        $r4 = virtualinvoke r0.<app.SazilerApp.BoardWrite: android.view.View findViewById(int)>(2131034152);
+
+        $r5 = (android.widget.TextView) $r4;
+
+        r0.<app.SazilerApp.BoardWrite: android.widget.TextView wContent> = $r5;
+
+        $r4 = virtualinvoke r0.<app.SazilerApp.BoardWrite: android.view.View findViewById(int)>(2131034149);
+
+        $r6 = (android.widget.ImageView) $r4;
+
+        r0.<app.SazilerApp.BoardWrite: android.widget.ImageView ImgFile> = $r6;
+
+        $r4 = virtualinvoke r0.<app.SazilerApp.BoardWrite: android.view.View findViewById(int)>(2131034150);
+
+        $r7 = r0.<app.SazilerApp.BoardWrite: android.view.View$OnClickListener mClickListener>;
+
+        virtualinvoke $r4.<android.view.View: void setOnClickListener(android.view.View$OnClickListener)>($r7);
+
+        $r4 = virtualinvoke r0.<app.SazilerApp.BoardWrite: android.view.View findViewById(int)>(2131034151);
+
+        $r7 = r0.<app.SazilerApp.BoardWrite: android.view.View$OnClickListener mClickListener>;
+
+        virtualinvoke $r4.<android.view.View: void setOnClickListener(android.view.View$OnClickListener)>($r7);
+
+        return;
+    }
+
+    public android.content.Intent getIntent()
+    {
+        app.SazilerApp.BoardWrite this;
+        android.content.Intent $r0;
+
+        this := @this: app.SazilerApp.BoardWrite;
+
+        $r0 = this.<app.SazilerApp.BoardWrite: android.content.Intent ipcIntent>;
+
+        return $r0;
+    }
+
+    public void setIntent(android.content.Intent)
+    {
+        app.SazilerApp.BoardWrite this;
+        android.content.Intent parameter0;
+
+        this := @this: app.SazilerApp.BoardWrite;
+
+        parameter0 := @parameter0: android.content.Intent;
+
+        this.<app.SazilerApp.BoardWrite: android.content.Intent ipcIntent> = parameter0;
+
+        return;
+    }
+
+    public void setResult(int, android.content.Intent)
+    {
+        int parameter0;
+        app.SazilerApp.BoardWrite this;
+        android.content.Intent parameter1;
+
+        this := @this: app.SazilerApp.BoardWrite;
+
+        parameter0 := @parameter0: int;
+
+        parameter1 := @parameter1: android.content.Intent;
+
+        this.<app.SazilerApp.BoardWrite: android.content.Intent ipcResultIntent> = parameter1;
+
+        return;
+    }
+}

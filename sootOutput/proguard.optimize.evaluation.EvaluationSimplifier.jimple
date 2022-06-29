@@ -1,0 +1,1786 @@
+public class proguard.optimize.evaluation.EvaluationSimplifier extends proguard.classfile.util.SimplifiedVisitor implements proguard.classfile.attribute.visitor.AttributeVisitor, proguard.classfile.instruction.visitor.InstructionVisitor
+{
+    private static final boolean DEBUG;
+    private static long POS_ZERO_DOUBLE_BITS;
+    private static int POS_ZERO_FLOAT_BITS;
+    private final proguard.classfile.editor.CodeAttributeEditor codeAttributeEditor;
+    private final proguard.classfile.instruction.visitor.InstructionVisitor extraInstructionVisitor;
+    private final proguard.optimize.evaluation.PartialEvaluator partialEvaluator;
+    private final proguard.optimize.info.SideEffectInstructionChecker sideEffectInstructionChecker;
+
+    static void <clinit>()
+    {
+        int $i0;
+        long $l1;
+
+        $i0 = staticinvoke <java.lang.Float: int floatToIntBits(float)>(0.0F);
+
+        <proguard.optimize.evaluation.EvaluationSimplifier: int POS_ZERO_FLOAT_BITS> = $i0;
+
+        $l1 = staticinvoke <java.lang.Double: long doubleToLongBits(double)>(0.0);
+
+        <proguard.optimize.evaluation.EvaluationSimplifier: long POS_ZERO_DOUBLE_BITS> = $l1;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        proguard.optimize.evaluation.EvaluationSimplifier r0;
+        proguard.optimize.evaluation.PartialEvaluator $r1;
+
+        r0 := @this: proguard.optimize.evaluation.EvaluationSimplifier;
+
+        $r1 = new proguard.optimize.evaluation.PartialEvaluator;
+
+        specialinvoke $r1.<proguard.optimize.evaluation.PartialEvaluator: void <init>()>();
+
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void <init>(proguard.optimize.evaluation.PartialEvaluator,proguard.classfile.instruction.visitor.InstructionVisitor)>($r1, null);
+
+        return;
+    }
+
+    public void <init>(proguard.optimize.evaluation.PartialEvaluator, proguard.classfile.instruction.visitor.InstructionVisitor)
+    {
+        proguard.optimize.evaluation.EvaluationSimplifier r0;
+        proguard.optimize.evaluation.PartialEvaluator $r1;
+        proguard.classfile.editor.CodeAttributeEditor $r4;
+        proguard.optimize.info.SideEffectInstructionChecker $r3;
+        proguard.classfile.instruction.visitor.InstructionVisitor $r2;
+
+        r0 := @this: proguard.optimize.evaluation.EvaluationSimplifier;
+
+        $r1 := @parameter0: proguard.optimize.evaluation.PartialEvaluator;
+
+        $r2 := @parameter1: proguard.classfile.instruction.visitor.InstructionVisitor;
+
+        specialinvoke r0.<proguard.classfile.util.SimplifiedVisitor: void <init>()>();
+
+        $r3 = new proguard.optimize.info.SideEffectInstructionChecker;
+
+        specialinvoke $r3.<proguard.optimize.info.SideEffectInstructionChecker: void <init>(boolean)>(1);
+
+        r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.optimize.info.SideEffectInstructionChecker sideEffectInstructionChecker> = $r3;
+
+        $r4 = new proguard.classfile.editor.CodeAttributeEditor;
+
+        specialinvoke $r4.<proguard.classfile.editor.CodeAttributeEditor: void <init>(boolean)>(0);
+
+        r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.classfile.editor.CodeAttributeEditor codeAttributeEditor> = $r4;
+
+        r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.optimize.evaluation.PartialEvaluator partialEvaluator> = $r1;
+
+        r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.classfile.instruction.visitor.InstructionVisitor extraInstructionVisitor> = $r2;
+
+        return;
+    }
+
+    private void deleteReferencePopInstruction(proguard.classfile.Clazz, int, proguard.classfile.instruction.Instruction)
+    {
+        proguard.optimize.evaluation.EvaluationSimplifier r0;
+        proguard.classfile.editor.CodeAttributeEditor $r5;
+        proguard.optimize.evaluation.PartialEvaluator $r3;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.instruction.Instruction $r2;
+        proguard.evaluation.value.InstructionOffsetValue $r4;
+        int $i0, $i1;
+        boolean $z0;
+
+        r0 := @this: proguard.optimize.evaluation.EvaluationSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $i0 := @parameter1: int;
+
+        $r2 := @parameter2: proguard.classfile.instruction.Instruction;
+
+        $r3 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.optimize.evaluation.PartialEvaluator partialEvaluator>;
+
+        $z0 = virtualinvoke $r3.<proguard.optimize.evaluation.PartialEvaluator: boolean isSubroutineStart(int)>($i0);
+
+        if $z0 == 0 goto label2;
+
+        $r3 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.optimize.evaluation.PartialEvaluator partialEvaluator>;
+
+        $z0 = virtualinvoke $r3.<proguard.optimize.evaluation.PartialEvaluator: boolean isSubroutineReturning(int)>($i0);
+
+        if $z0 == 0 goto label1;
+
+        $r3 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.optimize.evaluation.PartialEvaluator partialEvaluator>;
+
+        $r4 = virtualinvoke $r3.<proguard.optimize.evaluation.PartialEvaluator: proguard.evaluation.value.InstructionOffsetValue branchOrigins(int)>($i0);
+
+        $i1 = virtualinvoke $r4.<proguard.evaluation.value.InstructionOffsetValue: int instructionOffsetCount()>();
+
+        if $i1 != 1 goto label2;
+
+     label1:
+        $r5 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.classfile.editor.CodeAttributeEditor codeAttributeEditor>;
+
+        virtualinvoke $r5.<proguard.classfile.editor.CodeAttributeEditor: void deleteInstruction(int)>($i0);
+
+     label2:
+        return;
+    }
+
+    private void insertPopInstructions(int, int)
+    {
+        proguard.optimize.evaluation.EvaluationSimplifier r0;
+        proguard.classfile.instruction.Instruction[] $r1;
+        proguard.classfile.editor.CodeAttributeEditor $r3;
+        proguard.classfile.instruction.SimpleInstruction $r2;
+        int $i0, $i1, $i2, $i3;
+
+        r0 := @this: proguard.optimize.evaluation.EvaluationSimplifier;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        lookupswitch($i1)
+        {
+            case 0: goto label4;
+            case 1: goto label3;
+            case 2: goto label5;
+            default: goto label1;
+        };
+
+     label1:
+        $i2 = $i1 / 2;
+
+        $i3 = $i1 % 2;
+
+        $i2 = $i2 + $i3;
+
+        $r1 = newarray (proguard.classfile.instruction.Instruction)[$i2];
+
+        $r2 = new proguard.classfile.instruction.SimpleInstruction;
+
+        specialinvoke $r2.<proguard.classfile.instruction.SimpleInstruction: void <init>(byte)>(88);
+
+        $i3 = 0;
+
+     label2:
+        $i2 = $i1 / 2;
+
+        if $i3 >= $i2 goto label6;
+
+        $r1[$i3] = $r2;
+
+        $i3 = $i3 + 1;
+
+        goto label2;
+
+     label3:
+        $r2 = new proguard.classfile.instruction.SimpleInstruction;
+
+        specialinvoke $r2.<proguard.classfile.instruction.SimpleInstruction: void <init>(byte)>(87);
+
+        $r3 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.classfile.editor.CodeAttributeEditor codeAttributeEditor>;
+
+        virtualinvoke $r3.<proguard.classfile.editor.CodeAttributeEditor: void insertBeforeInstruction(int,proguard.classfile.instruction.Instruction)>($i0, $r2);
+
+     label4:
+        return;
+
+     label5:
+        $r2 = new proguard.classfile.instruction.SimpleInstruction;
+
+        specialinvoke $r2.<proguard.classfile.instruction.SimpleInstruction: void <init>(byte)>(88);
+
+        $r3 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.classfile.editor.CodeAttributeEditor codeAttributeEditor>;
+
+        virtualinvoke $r3.<proguard.classfile.editor.CodeAttributeEditor: void insertBeforeInstruction(int,proguard.classfile.instruction.Instruction)>($i0, $r2);
+
+        return;
+
+     label6:
+        $i2 = $i1 % 2;
+
+        if $i2 != 1 goto label7;
+
+        $r2 = new proguard.classfile.instruction.SimpleInstruction;
+
+        specialinvoke $r2.<proguard.classfile.instruction.SimpleInstruction: void <init>(byte)>(87);
+
+        $i1 = $i1 / 2;
+
+        $r1[$i1] = $r2;
+
+     label7:
+        $r3 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.classfile.editor.CodeAttributeEditor codeAttributeEditor>;
+
+        virtualinvoke $r3.<proguard.classfile.editor.CodeAttributeEditor: void insertBeforeInstruction(int,proguard.classfile.instruction.Instruction[])>($i0, $r1);
+
+        return;
+    }
+
+    private void replaceAnyPushInstruction(proguard.classfile.Clazz, int, proguard.classfile.instruction.Instruction)
+    {
+        proguard.optimize.evaluation.EvaluationSimplifier r0;
+        proguard.evaluation.TracedStack $r4;
+        proguard.optimize.evaluation.PartialEvaluator $r3;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.instruction.Instruction $r2;
+        int $i0, $i1;
+        proguard.evaluation.value.Value $r5;
+        boolean $z0;
+
+        r0 := @this: proguard.optimize.evaluation.EvaluationSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $i0 := @parameter1: int;
+
+        $r2 := @parameter2: proguard.classfile.instruction.Instruction;
+
+        $r3 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.optimize.evaluation.PartialEvaluator partialEvaluator>;
+
+        $r4 = virtualinvoke $r3.<proguard.optimize.evaluation.PartialEvaluator: proguard.evaluation.TracedStack getStackAfter(int)>($i0);
+
+        $r5 = virtualinvoke $r4.<proguard.evaluation.TracedStack: proguard.evaluation.value.Value getTop(int)>(0);
+
+        $z0 = virtualinvoke $r5.<proguard.evaluation.value.Value: boolean isParticular()>();
+
+        if $z0 == 0 goto label7;
+
+        $i1 = virtualinvoke $r5.<proguard.evaluation.value.Value: int computationalType()>();
+
+        lookupswitch($i1)
+        {
+            case 1: goto label2;
+            case 2: goto label3;
+            case 3: goto label4;
+            case 4: goto label5;
+            case 5: goto label6;
+            default: goto label1;
+        };
+
+     label1:
+        return;
+
+     label2:
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceIntegerPushInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction)>($r1, $i0, $r2);
+
+        return;
+
+     label3:
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceLongPushInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction)>($r1, $i0, $r2);
+
+        return;
+
+     label4:
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceFloatPushInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction)>($r1, $i0, $r2);
+
+        return;
+
+     label5:
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceDoublePushInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction)>($r1, $i0, $r2);
+
+        return;
+
+     label6:
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceReferencePushInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction)>($r1, $i0, $r2);
+
+     label7:
+        return;
+    }
+
+    private void replaceBranchInstruction(proguard.classfile.Clazz, int, proguard.classfile.instruction.Instruction)
+    {
+        proguard.optimize.evaluation.EvaluationSimplifier r0;
+        proguard.classfile.instruction.BranchInstruction $r5;
+        proguard.optimize.evaluation.PartialEvaluator $r3;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.instruction.Instruction $r2, $r6;
+        proguard.evaluation.value.InstructionOffsetValue $r4;
+        int $i0, $i1, $i2;
+
+        r0 := @this: proguard.optimize.evaluation.EvaluationSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $i0 := @parameter1: int;
+
+        $r2 := @parameter2: proguard.classfile.instruction.Instruction;
+
+        $r3 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.optimize.evaluation.PartialEvaluator partialEvaluator>;
+
+        $r4 = virtualinvoke $r3.<proguard.optimize.evaluation.PartialEvaluator: proguard.evaluation.value.InstructionOffsetValue branchTargets(int)>($i0);
+
+        if $r4 == null goto label2;
+
+        $i1 = virtualinvoke $r4.<proguard.evaluation.value.InstructionOffsetValue: int instructionOffsetCount()>();
+
+        if $i1 != 1 goto label2;
+
+        $i1 = virtualinvoke $r4.<proguard.evaluation.value.InstructionOffsetValue: int instructionOffset(int)>(0);
+
+        $i1 = $i1 - $i0;
+
+        $i2 = virtualinvoke $r2.<proguard.classfile.instruction.Instruction: int length(int)>($i0);
+
+        if $i1 != $i2 goto label1;
+
+        return;
+
+     label1:
+        $r5 = new proguard.classfile.instruction.BranchInstruction;
+
+        specialinvoke $r5.<proguard.classfile.instruction.BranchInstruction: void <init>(byte,int)>(-56, $i1);
+
+        $r6 = virtualinvoke $r5.<proguard.classfile.instruction.BranchInstruction: proguard.classfile.instruction.Instruction shrink()>();
+
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction,proguard.classfile.instruction.Instruction)>($r1, $i0, $r2, $r6);
+
+     label2:
+        return;
+    }
+
+    private void replaceByInfiniteLoop(proguard.classfile.Clazz, int, proguard.classfile.instruction.Instruction)
+    {
+        proguard.optimize.evaluation.EvaluationSimplifier r0;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.instruction.Instruction $r2;
+        int $i0;
+        proguard.classfile.editor.CodeAttributeEditor $r5;
+        proguard.classfile.instruction.BranchInstruction $r4;
+        proguard.classfile.instruction.visitor.InstructionVisitor $r3;
+
+        r0 := @this: proguard.optimize.evaluation.EvaluationSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $i0 := @parameter1: int;
+
+        $r2 := @parameter2: proguard.classfile.instruction.Instruction;
+
+        $r4 = new proguard.classfile.instruction.BranchInstruction;
+
+        specialinvoke $r4.<proguard.classfile.instruction.BranchInstruction: void <init>(byte,int)>(-89, 0);
+
+        $r5 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.classfile.editor.CodeAttributeEditor codeAttributeEditor>;
+
+        virtualinvoke $r5.<proguard.classfile.editor.CodeAttributeEditor: void replaceInstruction(int,proguard.classfile.instruction.Instruction)>($i0, $r4);
+
+        $r3 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.classfile.instruction.visitor.InstructionVisitor extraInstructionVisitor>;
+
+        if $r3 == null goto label1;
+
+        $r3 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.classfile.instruction.visitor.InstructionVisitor extraInstructionVisitor>;
+
+        virtualinvoke $r2.<proguard.classfile.instruction.Instruction: void accept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,int,proguard.classfile.instruction.visitor.InstructionVisitor)>($r1, null, null, $i0, $r3);
+
+     label1:
+        return;
+    }
+
+    private void replaceConstantPushInstruction(proguard.classfile.Clazz, int, proguard.classfile.instruction.Instruction, byte, int)
+    {
+        proguard.optimize.evaluation.EvaluationSimplifier r0;
+        proguard.classfile.instruction.SimpleInstruction $r4;
+        byte $b1;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.instruction.Instruction $r2, $r3;
+        int $i0, $i2;
+
+        r0 := @this: proguard.optimize.evaluation.EvaluationSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $i0 := @parameter1: int;
+
+        $r2 := @parameter2: proguard.classfile.instruction.Instruction;
+
+        $b1 := @parameter3: byte;
+
+        $i2 := @parameter4: int;
+
+        $r4 = new proguard.classfile.instruction.SimpleInstruction;
+
+        specialinvoke $r4.<proguard.classfile.instruction.SimpleInstruction: void <init>(byte,int)>($b1, $i2);
+
+        $r3 = virtualinvoke $r4.<proguard.classfile.instruction.SimpleInstruction: proguard.classfile.instruction.Instruction shrink()>();
+
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction,proguard.classfile.instruction.Instruction)>($r1, $i0, $r2, $r3);
+
+        return;
+    }
+
+    private void replaceDoublePushInstruction(proguard.classfile.Clazz, int, proguard.classfile.instruction.Instruction)
+    {
+        proguard.optimize.evaluation.EvaluationSimplifier r0;
+        proguard.optimize.evaluation.PartialEvaluator $r3;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.instruction.Instruction $r2;
+        proguard.evaluation.TracedVariables $r4;
+        int $i0, $i1;
+
+        r0 := @this: proguard.optimize.evaluation.EvaluationSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $i0 := @parameter1: int;
+
+        $r2 := @parameter2: proguard.classfile.instruction.Instruction;
+
+        $r3 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.optimize.evaluation.PartialEvaluator partialEvaluator>;
+
+        $r4 = virtualinvoke $r3.<proguard.optimize.evaluation.PartialEvaluator: proguard.evaluation.TracedVariables getVariablesBefore(int)>($i0);
+
+        $i1 = virtualinvoke $r4.<proguard.evaluation.TracedVariables: int size()>();
+
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceDoublePushInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction,int)>($r1, $i0, $r2, $i1);
+
+        return;
+    }
+
+    private void replaceDoublePushInstruction(proguard.classfile.Clazz, int, proguard.classfile.instruction.Instruction, int)
+    {
+        proguard.optimize.evaluation.EvaluationSimplifier r0;
+        long $l3, $l4;
+        proguard.classfile.ProgramClass $r8;
+        proguard.optimize.evaluation.PartialEvaluator $r3;
+        byte $b2;
+        proguard.classfile.Clazz $r1;
+        int $i0, $i1, $i5;
+        proguard.evaluation.value.DoubleValue $r6;
+        proguard.classfile.editor.ConstantPoolEditor $r7;
+        proguard.evaluation.value.Value $r5, $r12;
+        boolean $z0;
+        double $d0;
+        proguard.evaluation.TracedVariables $r11;
+        proguard.evaluation.TracedStack $r4;
+        proguard.classfile.instruction.Instruction $r2, $r10;
+        proguard.classfile.instruction.ConstantInstruction $r9;
+
+        r0 := @this: proguard.optimize.evaluation.EvaluationSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $i0 := @parameter1: int;
+
+        $r2 := @parameter2: proguard.classfile.instruction.Instruction;
+
+        $i1 := @parameter3: int;
+
+        $r3 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.optimize.evaluation.PartialEvaluator partialEvaluator>;
+
+        $r4 = virtualinvoke $r3.<proguard.optimize.evaluation.PartialEvaluator: proguard.evaluation.TracedStack getStackAfter(int)>($i0);
+
+        $r5 = virtualinvoke $r4.<proguard.evaluation.TracedStack: proguard.evaluation.value.Value getTop(int)>(0);
+
+        $z0 = virtualinvoke $r5.<proguard.evaluation.value.Value: boolean isParticular()>();
+
+        if $z0 == 0 goto label4;
+
+        $r6 = virtualinvoke $r5.<proguard.evaluation.value.Value: proguard.evaluation.value.DoubleValue doubleValue()>();
+
+        $d0 = virtualinvoke $r6.<proguard.evaluation.value.DoubleValue: double value()>();
+
+        $b2 = $d0 cmpl 0.0;
+
+        if $b2 != 0 goto label1;
+
+        $l3 = staticinvoke <java.lang.Double: long doubleToLongBits(double)>($d0);
+
+        $l4 = <proguard.optimize.evaluation.EvaluationSimplifier: long POS_ZERO_DOUBLE_BITS>;
+
+        $b2 = $l3 cmp $l4;
+
+        if $b2 == 0 goto label2;
+
+     label1:
+        $b2 = $d0 cmpl 1.0;
+
+        if $b2 != 0 goto label3;
+
+     label2:
+        $i1 = (int) $d0;
+
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceConstantPushInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction,byte,int)>($r1, $i0, $r2, 14, $i1);
+
+        return;
+
+     label3:
+        $r7 = new proguard.classfile.editor.ConstantPoolEditor;
+
+        $r8 = (proguard.classfile.ProgramClass) $r1;
+
+        specialinvoke $r7.<proguard.classfile.editor.ConstantPoolEditor: void <init>(proguard.classfile.ProgramClass)>($r8);
+
+        $r9 = new proguard.classfile.instruction.ConstantInstruction;
+
+        $i1 = virtualinvoke $r7.<proguard.classfile.editor.ConstantPoolEditor: int addDoubleConstant(double)>($d0);
+
+        specialinvoke $r9.<proguard.classfile.instruction.ConstantInstruction: void <init>(byte,int)>(20, $i1);
+
+        $r10 = virtualinvoke $r9.<proguard.classfile.instruction.ConstantInstruction: proguard.classfile.instruction.Instruction shrink()>();
+
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction,proguard.classfile.instruction.Instruction)>($r1, $i0, $r2, $r10);
+
+        return;
+
+     label4:
+        $z0 = virtualinvoke $r5.<proguard.evaluation.value.Value: boolean isSpecific()>();
+
+        if $z0 == 0 goto label7;
+
+        $r3 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.optimize.evaluation.PartialEvaluator partialEvaluator>;
+
+        $r11 = virtualinvoke $r3.<proguard.optimize.evaluation.PartialEvaluator: proguard.evaluation.TracedVariables getVariablesBefore(int)>($i0);
+
+        $i5 = 0;
+
+     label5:
+        if $i5 >= $i1 goto label7;
+
+        $r12 = virtualinvoke $r11.<proguard.evaluation.TracedVariables: proguard.evaluation.value.Value load(int)>($i5);
+
+        $z0 = virtualinvoke $r5.<java.lang.Object: boolean equals(java.lang.Object)>($r12);
+
+        if $z0 == 0 goto label6;
+
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceVariablePushInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction,byte,int)>($r1, $i0, $r2, 24, $i5);
+
+     label6:
+        $i5 = $i5 + 1;
+
+        goto label5;
+
+     label7:
+        return;
+    }
+
+    private void replaceFloatPushInstruction(proguard.classfile.Clazz, int, proguard.classfile.instruction.Instruction)
+    {
+        proguard.optimize.evaluation.EvaluationSimplifier r0;
+        proguard.optimize.evaluation.PartialEvaluator $r3;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.instruction.Instruction $r2;
+        proguard.evaluation.TracedVariables $r4;
+        int $i0, $i1;
+
+        r0 := @this: proguard.optimize.evaluation.EvaluationSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $i0 := @parameter1: int;
+
+        $r2 := @parameter2: proguard.classfile.instruction.Instruction;
+
+        $r3 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.optimize.evaluation.PartialEvaluator partialEvaluator>;
+
+        $r4 = virtualinvoke $r3.<proguard.optimize.evaluation.PartialEvaluator: proguard.evaluation.TracedVariables getVariablesBefore(int)>($i0);
+
+        $i1 = virtualinvoke $r4.<proguard.evaluation.TracedVariables: int size()>();
+
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceFloatPushInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction,int)>($r1, $i0, $r2, $i1);
+
+        return;
+    }
+
+    private void replaceFloatPushInstruction(proguard.classfile.Clazz, int, proguard.classfile.instruction.Instruction, int)
+    {
+        proguard.optimize.evaluation.EvaluationSimplifier r0;
+        proguard.classfile.ProgramClass $r8;
+        proguard.optimize.evaluation.PartialEvaluator $r3;
+        byte $b2;
+        proguard.classfile.Clazz $r1;
+        int $i0, $i1, $i3;
+        proguard.evaluation.value.FloatValue $r6;
+        proguard.classfile.editor.ConstantPoolEditor $r7;
+        proguard.evaluation.value.Value $r5, $r12;
+        boolean $z0;
+        proguard.evaluation.TracedVariables $r11;
+        proguard.evaluation.TracedStack $r4;
+        proguard.classfile.instruction.Instruction $r2, $r10;
+        proguard.classfile.instruction.ConstantInstruction $r9;
+        float $f0;
+
+        r0 := @this: proguard.optimize.evaluation.EvaluationSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $i0 := @parameter1: int;
+
+        $r2 := @parameter2: proguard.classfile.instruction.Instruction;
+
+        $i1 := @parameter3: int;
+
+        $r3 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.optimize.evaluation.PartialEvaluator partialEvaluator>;
+
+        $r4 = virtualinvoke $r3.<proguard.optimize.evaluation.PartialEvaluator: proguard.evaluation.TracedStack getStackAfter(int)>($i0);
+
+        $r5 = virtualinvoke $r4.<proguard.evaluation.TracedStack: proguard.evaluation.value.Value getTop(int)>(0);
+
+        $z0 = virtualinvoke $r5.<proguard.evaluation.value.Value: boolean isParticular()>();
+
+        if $z0 == 0 goto label4;
+
+        $r6 = virtualinvoke $r5.<proguard.evaluation.value.Value: proguard.evaluation.value.FloatValue floatValue()>();
+
+        $f0 = virtualinvoke $r6.<proguard.evaluation.value.FloatValue: float value()>();
+
+        $b2 = $f0 cmpl 0.0F;
+
+        if $b2 != 0 goto label1;
+
+        $i1 = staticinvoke <java.lang.Float: int floatToIntBits(float)>($f0);
+
+        $i3 = <proguard.optimize.evaluation.EvaluationSimplifier: int POS_ZERO_FLOAT_BITS>;
+
+        if $i1 == $i3 goto label2;
+
+     label1:
+        $b2 = $f0 cmpl 1.0F;
+
+        if $b2 == 0 goto label2;
+
+        $b2 = $f0 cmpl 2.0F;
+
+        if $b2 != 0 goto label3;
+
+     label2:
+        $i1 = (int) $f0;
+
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceConstantPushInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction,byte,int)>($r1, $i0, $r2, 11, $i1);
+
+        return;
+
+     label3:
+        $r7 = new proguard.classfile.editor.ConstantPoolEditor;
+
+        $r8 = (proguard.classfile.ProgramClass) $r1;
+
+        specialinvoke $r7.<proguard.classfile.editor.ConstantPoolEditor: void <init>(proguard.classfile.ProgramClass)>($r8);
+
+        $r9 = new proguard.classfile.instruction.ConstantInstruction;
+
+        $i1 = virtualinvoke $r7.<proguard.classfile.editor.ConstantPoolEditor: int addFloatConstant(float)>($f0);
+
+        specialinvoke $r9.<proguard.classfile.instruction.ConstantInstruction: void <init>(byte,int)>(18, $i1);
+
+        $r10 = virtualinvoke $r9.<proguard.classfile.instruction.ConstantInstruction: proguard.classfile.instruction.Instruction shrink()>();
+
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction,proguard.classfile.instruction.Instruction)>($r1, $i0, $r2, $r10);
+
+        return;
+
+     label4:
+        $z0 = virtualinvoke $r5.<proguard.evaluation.value.Value: boolean isSpecific()>();
+
+        if $z0 == 0 goto label7;
+
+        $r3 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.optimize.evaluation.PartialEvaluator partialEvaluator>;
+
+        $r11 = virtualinvoke $r3.<proguard.optimize.evaluation.PartialEvaluator: proguard.evaluation.TracedVariables getVariablesBefore(int)>($i0);
+
+        $i3 = 0;
+
+     label5:
+        if $i3 >= $i1 goto label7;
+
+        $r12 = virtualinvoke $r11.<proguard.evaluation.TracedVariables: proguard.evaluation.value.Value load(int)>($i3);
+
+        $z0 = virtualinvoke $r5.<java.lang.Object: boolean equals(java.lang.Object)>($r12);
+
+        if $z0 == 0 goto label6;
+
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceVariablePushInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction,byte,int)>($r1, $i0, $r2, 23, $i3);
+
+     label6:
+        $i3 = $i3 + 1;
+
+        goto label5;
+
+     label7:
+        return;
+    }
+
+    private void replaceInstruction(proguard.classfile.Clazz, int, proguard.classfile.instruction.Instruction, proguard.classfile.instruction.Instruction)
+    {
+        proguard.optimize.evaluation.EvaluationSimplifier r0;
+        proguard.classfile.editor.CodeAttributeEditor $r5;
+        proguard.classfile.instruction.visitor.InstructionVisitor $r4;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.instruction.Instruction $r2, $r3;
+        int $i0, $i1, $i2;
+
+        r0 := @this: proguard.optimize.evaluation.EvaluationSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $i0 := @parameter1: int;
+
+        $r2 := @parameter2: proguard.classfile.instruction.Instruction;
+
+        $r3 := @parameter3: proguard.classfile.instruction.Instruction;
+
+        $i1 = virtualinvoke $r2.<proguard.classfile.instruction.Instruction: int stackPopCount(proguard.classfile.Clazz)>($r1);
+
+        $i2 = virtualinvoke $r3.<proguard.classfile.instruction.Instruction: int stackPopCount(proguard.classfile.Clazz)>($r1);
+
+        $i1 = $i1 - $i2;
+
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void insertPopInstructions(int,int)>($i0, $i1);
+
+        $r5 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.classfile.editor.CodeAttributeEditor codeAttributeEditor>;
+
+        virtualinvoke $r5.<proguard.classfile.editor.CodeAttributeEditor: void replaceInstruction(int,proguard.classfile.instruction.Instruction)>($i0, $r3);
+
+        $r4 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.classfile.instruction.visitor.InstructionVisitor extraInstructionVisitor>;
+
+        if $r4 == null goto label1;
+
+        $r4 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.classfile.instruction.visitor.InstructionVisitor extraInstructionVisitor>;
+
+        virtualinvoke $r2.<proguard.classfile.instruction.Instruction: void accept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,int,proguard.classfile.instruction.visitor.InstructionVisitor)>($r1, null, null, $i0, $r4);
+
+     label1:
+        return;
+    }
+
+    private void replaceIntegerPushInstruction(proguard.classfile.Clazz, int, proguard.classfile.instruction.Instruction)
+    {
+        proguard.optimize.evaluation.EvaluationSimplifier r0;
+        proguard.optimize.evaluation.PartialEvaluator $r3;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.instruction.Instruction $r2;
+        proguard.evaluation.TracedVariables $r4;
+        int $i0, $i1;
+
+        r0 := @this: proguard.optimize.evaluation.EvaluationSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $i0 := @parameter1: int;
+
+        $r2 := @parameter2: proguard.classfile.instruction.Instruction;
+
+        $r3 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.optimize.evaluation.PartialEvaluator partialEvaluator>;
+
+        $r4 = virtualinvoke $r3.<proguard.optimize.evaluation.PartialEvaluator: proguard.evaluation.TracedVariables getVariablesBefore(int)>($i0);
+
+        $i1 = virtualinvoke $r4.<proguard.evaluation.TracedVariables: int size()>();
+
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceIntegerPushInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction,int)>($r1, $i0, $r2, $i1);
+
+        return;
+    }
+
+    private void replaceIntegerPushInstruction(proguard.classfile.Clazz, int, proguard.classfile.instruction.Instruction, int)
+    {
+        proguard.optimize.evaluation.EvaluationSimplifier r0;
+        proguard.classfile.ProgramClass $r8;
+        proguard.evaluation.value.IntegerValue $r6;
+        proguard.optimize.evaluation.PartialEvaluator $r3;
+        proguard.classfile.Clazz $r1;
+        int $i0, $i1, $i2;
+        proguard.classfile.editor.ConstantPoolEditor $r7;
+        proguard.evaluation.value.Value $r5, $r12;
+        boolean $z0;
+        proguard.evaluation.TracedVariables $r11;
+        proguard.evaluation.TracedStack $r4;
+        proguard.classfile.instruction.Instruction $r2, $r10;
+        proguard.classfile.instruction.ConstantInstruction $r9;
+
+        r0 := @this: proguard.optimize.evaluation.EvaluationSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $i0 := @parameter1: int;
+
+        $r2 := @parameter2: proguard.classfile.instruction.Instruction;
+
+        $i1 := @parameter3: int;
+
+        $r3 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.optimize.evaluation.PartialEvaluator partialEvaluator>;
+
+        $r4 = virtualinvoke $r3.<proguard.optimize.evaluation.PartialEvaluator: proguard.evaluation.TracedStack getStackAfter(int)>($i0);
+
+        $r5 = virtualinvoke $r4.<proguard.evaluation.TracedStack: proguard.evaluation.value.Value getTop(int)>(0);
+
+        $z0 = virtualinvoke $r5.<proguard.evaluation.value.Value: boolean isParticular()>();
+
+        if $z0 == 0 goto label2;
+
+        $r6 = virtualinvoke $r5.<proguard.evaluation.value.Value: proguard.evaluation.value.IntegerValue integerValue()>();
+
+        $i1 = virtualinvoke $r6.<proguard.evaluation.value.IntegerValue: int value()>();
+
+        $i2 = $i1 << 16;
+
+        $i2 = $i2 >> 16;
+
+        if $i2 != $i1 goto label1;
+
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceConstantPushInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction,byte,int)>($r1, $i0, $r2, 17, $i1);
+
+        return;
+
+     label1:
+        $r7 = new proguard.classfile.editor.ConstantPoolEditor;
+
+        $r8 = (proguard.classfile.ProgramClass) $r1;
+
+        specialinvoke $r7.<proguard.classfile.editor.ConstantPoolEditor: void <init>(proguard.classfile.ProgramClass)>($r8);
+
+        $r9 = new proguard.classfile.instruction.ConstantInstruction;
+
+        $i1 = virtualinvoke $r7.<proguard.classfile.editor.ConstantPoolEditor: int addIntegerConstant(int)>($i1);
+
+        specialinvoke $r9.<proguard.classfile.instruction.ConstantInstruction: void <init>(byte,int)>(18, $i1);
+
+        $r10 = virtualinvoke $r9.<proguard.classfile.instruction.ConstantInstruction: proguard.classfile.instruction.Instruction shrink()>();
+
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction,proguard.classfile.instruction.Instruction)>($r1, $i0, $r2, $r10);
+
+        return;
+
+     label2:
+        $z0 = virtualinvoke $r5.<proguard.evaluation.value.Value: boolean isSpecific()>();
+
+        if $z0 == 0 goto label5;
+
+        $r3 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.optimize.evaluation.PartialEvaluator partialEvaluator>;
+
+        $r11 = virtualinvoke $r3.<proguard.optimize.evaluation.PartialEvaluator: proguard.evaluation.TracedVariables getVariablesBefore(int)>($i0);
+
+        $i2 = 0;
+
+     label3:
+        if $i2 >= $i1 goto label5;
+
+        $r12 = virtualinvoke $r11.<proguard.evaluation.TracedVariables: proguard.evaluation.value.Value load(int)>($i2);
+
+        $z0 = virtualinvoke $r5.<java.lang.Object: boolean equals(java.lang.Object)>($r12);
+
+        if $z0 == 0 goto label4;
+
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceVariablePushInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction,byte,int)>($r1, $i0, $r2, 21, $i2);
+
+     label4:
+        $i2 = $i2 + 1;
+
+        goto label3;
+
+     label5:
+        return;
+    }
+
+    private void replaceJsrInstruction(proguard.classfile.Clazz, int, proguard.classfile.instruction.BranchInstruction)
+    {
+        proguard.optimize.evaluation.EvaluationSimplifier r0;
+        proguard.classfile.instruction.BranchInstruction $r2;
+        proguard.optimize.evaluation.PartialEvaluator $r3;
+        proguard.classfile.Clazz $r1;
+        proguard.evaluation.value.InstructionOffsetValue $r4;
+        int $i0, $i1;
+        boolean $z0;
+
+        r0 := @this: proguard.optimize.evaluation.EvaluationSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $i0 := @parameter1: int;
+
+        $r2 := @parameter2: proguard.classfile.instruction.BranchInstruction;
+
+        $i1 = $r2.<proguard.classfile.instruction.BranchInstruction: int branchOffset>;
+
+        $i1 = $i1 + $i0;
+
+        $r3 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.optimize.evaluation.PartialEvaluator partialEvaluator>;
+
+        $z0 = virtualinvoke $r3.<proguard.optimize.evaluation.PartialEvaluator: boolean isSubroutineReturning(int)>($i1);
+
+        if $z0 == 0 goto label1;
+
+        $r3 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.optimize.evaluation.PartialEvaluator partialEvaluator>;
+
+        $r4 = virtualinvoke $r3.<proguard.optimize.evaluation.PartialEvaluator: proguard.evaluation.value.InstructionOffsetValue branchOrigins(int)>($i1);
+
+        $i1 = virtualinvoke $r4.<proguard.evaluation.value.InstructionOffsetValue: int instructionOffsetCount()>();
+
+        if $i1 != 1 goto label2;
+
+     label1:
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceBranchInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction)>($r1, $i0, $r2);
+
+        return;
+
+     label2:
+        $r3 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.optimize.evaluation.PartialEvaluator partialEvaluator>;
+
+        $i1 = virtualinvoke $r2.<proguard.classfile.instruction.BranchInstruction: int length(int)>($i0);
+
+        $i1 = $i1 + $i0;
+
+        $z0 = virtualinvoke $r3.<proguard.optimize.evaluation.PartialEvaluator: boolean isTraced(int)>($i1);
+
+        if $z0 != 0 goto label3;
+
+        $i1 = virtualinvoke $r2.<proguard.classfile.instruction.BranchInstruction: int length(int)>($i0);
+
+        $i0 = $i1 + $i0;
+
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceByInfiniteLoop(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction)>($r1, $i0, $r2);
+
+     label3:
+        return;
+    }
+
+    private void replaceLongPushInstruction(proguard.classfile.Clazz, int, proguard.classfile.instruction.Instruction)
+    {
+        proguard.optimize.evaluation.EvaluationSimplifier r0;
+        proguard.optimize.evaluation.PartialEvaluator $r3;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.instruction.Instruction $r2;
+        proguard.evaluation.TracedVariables $r4;
+        int $i0, $i1;
+
+        r0 := @this: proguard.optimize.evaluation.EvaluationSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $i0 := @parameter1: int;
+
+        $r2 := @parameter2: proguard.classfile.instruction.Instruction;
+
+        $r3 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.optimize.evaluation.PartialEvaluator partialEvaluator>;
+
+        $r4 = virtualinvoke $r3.<proguard.optimize.evaluation.PartialEvaluator: proguard.evaluation.TracedVariables getVariablesBefore(int)>($i0);
+
+        $i1 = virtualinvoke $r4.<proguard.evaluation.TracedVariables: int size()>();
+
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceLongPushInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction,int)>($r1, $i0, $r2, $i1);
+
+        return;
+    }
+
+    private void replaceLongPushInstruction(proguard.classfile.Clazz, int, proguard.classfile.instruction.Instruction, int)
+    {
+        proguard.optimize.evaluation.EvaluationSimplifier r0;
+        long $l2;
+        proguard.classfile.ProgramClass $r8;
+        proguard.optimize.evaluation.PartialEvaluator $r3;
+        byte $b3;
+        proguard.classfile.Clazz $r1;
+        int $i0, $i1, $i4;
+        proguard.classfile.editor.ConstantPoolEditor $r7;
+        proguard.evaluation.value.Value $r5, $r12;
+        boolean $z0;
+        proguard.evaluation.TracedVariables $r11;
+        proguard.evaluation.TracedStack $r4;
+        proguard.classfile.instruction.Instruction $r2, $r10;
+        proguard.evaluation.value.LongValue $r6;
+        proguard.classfile.instruction.ConstantInstruction $r9;
+
+        r0 := @this: proguard.optimize.evaluation.EvaluationSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $i0 := @parameter1: int;
+
+        $r2 := @parameter2: proguard.classfile.instruction.Instruction;
+
+        $i1 := @parameter3: int;
+
+        $r3 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.optimize.evaluation.PartialEvaluator partialEvaluator>;
+
+        $r4 = virtualinvoke $r3.<proguard.optimize.evaluation.PartialEvaluator: proguard.evaluation.TracedStack getStackAfter(int)>($i0);
+
+        $r5 = virtualinvoke $r4.<proguard.evaluation.TracedStack: proguard.evaluation.value.Value getTop(int)>(0);
+
+        $z0 = virtualinvoke $r5.<proguard.evaluation.value.Value: boolean isParticular()>();
+
+        if $z0 == 0 goto label3;
+
+        $r6 = virtualinvoke $r5.<proguard.evaluation.value.Value: proguard.evaluation.value.LongValue longValue()>();
+
+        $l2 = virtualinvoke $r6.<proguard.evaluation.value.LongValue: long value()>();
+
+        $b3 = $l2 cmp 0L;
+
+        if $b3 == 0 goto label1;
+
+        $b3 = $l2 cmp 1L;
+
+        if $b3 != 0 goto label2;
+
+     label1:
+        $i1 = (int) $l2;
+
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceConstantPushInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction,byte,int)>($r1, $i0, $r2, 9, $i1);
+
+        return;
+
+     label2:
+        $r7 = new proguard.classfile.editor.ConstantPoolEditor;
+
+        $r8 = (proguard.classfile.ProgramClass) $r1;
+
+        specialinvoke $r7.<proguard.classfile.editor.ConstantPoolEditor: void <init>(proguard.classfile.ProgramClass)>($r8);
+
+        $r9 = new proguard.classfile.instruction.ConstantInstruction;
+
+        $i1 = virtualinvoke $r7.<proguard.classfile.editor.ConstantPoolEditor: int addLongConstant(long)>($l2);
+
+        specialinvoke $r9.<proguard.classfile.instruction.ConstantInstruction: void <init>(byte,int)>(20, $i1);
+
+        $r10 = virtualinvoke $r9.<proguard.classfile.instruction.ConstantInstruction: proguard.classfile.instruction.Instruction shrink()>();
+
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction,proguard.classfile.instruction.Instruction)>($r1, $i0, $r2, $r10);
+
+        return;
+
+     label3:
+        $z0 = virtualinvoke $r5.<proguard.evaluation.value.Value: boolean isSpecific()>();
+
+        if $z0 == 0 goto label6;
+
+        $r3 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.optimize.evaluation.PartialEvaluator partialEvaluator>;
+
+        $r11 = virtualinvoke $r3.<proguard.optimize.evaluation.PartialEvaluator: proguard.evaluation.TracedVariables getVariablesBefore(int)>($i0);
+
+        $i4 = 0;
+
+     label4:
+        if $i4 >= $i1 goto label6;
+
+        $r12 = virtualinvoke $r11.<proguard.evaluation.TracedVariables: proguard.evaluation.value.Value load(int)>($i4);
+
+        $z0 = virtualinvoke $r5.<java.lang.Object: boolean equals(java.lang.Object)>($r12);
+
+        if $z0 == 0 goto label5;
+
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceVariablePushInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction,byte,int)>($r1, $i0, $r2, 22, $i4);
+
+     label5:
+        $i4 = $i4 + 1;
+
+        goto label4;
+
+     label6:
+        return;
+    }
+
+    private void replaceReferencePushInstruction(proguard.classfile.Clazz, int, proguard.classfile.instruction.Instruction)
+    {
+        proguard.optimize.evaluation.EvaluationSimplifier r0;
+        proguard.evaluation.TracedStack $r4;
+        proguard.optimize.evaluation.PartialEvaluator $r3;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.instruction.Instruction $r2;
+        int $i0;
+        proguard.evaluation.value.Value $r5;
+        boolean $z0;
+
+        r0 := @this: proguard.optimize.evaluation.EvaluationSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $i0 := @parameter1: int;
+
+        $r2 := @parameter2: proguard.classfile.instruction.Instruction;
+
+        $r3 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.optimize.evaluation.PartialEvaluator partialEvaluator>;
+
+        $r4 = virtualinvoke $r3.<proguard.optimize.evaluation.PartialEvaluator: proguard.evaluation.TracedStack getStackAfter(int)>($i0);
+
+        $r5 = virtualinvoke $r4.<proguard.evaluation.TracedStack: proguard.evaluation.value.Value getTop(int)>(0);
+
+        $z0 = virtualinvoke $r5.<proguard.evaluation.value.Value: boolean isParticular()>();
+
+        if $z0 == 0 goto label1;
+
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceConstantPushInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction,byte,int)>($r1, $i0, $r2, 1, 0);
+
+     label1:
+        return;
+    }
+
+    private void replaceSwitchInstruction(proguard.classfile.Clazz, int, proguard.classfile.instruction.SwitchInstruction)
+    {
+        proguard.optimize.evaluation.EvaluationSimplifier r0;
+        proguard.classfile.instruction.SwitchInstruction $r2, $r6;
+        proguard.optimize.evaluation.PartialEvaluator $r4;
+        proguard.classfile.Clazz $r1;
+        int[] $r3;
+        proguard.evaluation.value.InstructionOffsetValue $r5;
+        int $i0, $i1, $i2, $i3;
+        boolean $z0;
+
+        r0 := @this: proguard.optimize.evaluation.EvaluationSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $i0 := @parameter1: int;
+
+        $r2 := @parameter2: proguard.classfile.instruction.SwitchInstruction;
+
+        $r4 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.optimize.evaluation.PartialEvaluator partialEvaluator>;
+
+        $r5 = virtualinvoke $r4.<proguard.optimize.evaluation.PartialEvaluator: proguard.evaluation.value.InstructionOffsetValue branchTargets(int)>($i0);
+
+        $i1 = virtualinvoke $r5.<proguard.evaluation.value.InstructionOffsetValue: int instructionOffsetCount()>();
+
+        $i1 = $i1 - 1;
+
+        $i1 = virtualinvoke $r5.<proguard.evaluation.value.InstructionOffsetValue: int instructionOffset(int)>($i1);
+
+        $i1 = $i1 - $i0;
+
+        $r3 = $r2.<proguard.classfile.instruction.SwitchInstruction: int[] jumpOffsets>;
+
+        $r6 = null;
+
+        $i2 = 0;
+
+     label1:
+        $i3 = lengthof $r3;
+
+        if $i2 >= $i3 goto label3;
+
+        $i3 = $r3[$i2];
+
+        $i3 = $i3 + $i0;
+
+        $z0 = virtualinvoke $r5.<proguard.evaluation.value.InstructionOffsetValue: boolean contains(int)>($i3);
+
+        if $z0 != 0 goto label2;
+
+        $r3[$i2] = $i1;
+
+        $r6 = $r2;
+
+     label2:
+        $i2 = $i2 + 1;
+
+        goto label1;
+
+     label3:
+        $i2 = $r2.<proguard.classfile.instruction.SwitchInstruction: int defaultOffset>;
+
+        $i2 = $i2 + $i0;
+
+        $z0 = virtualinvoke $r5.<proguard.evaluation.value.InstructionOffsetValue: boolean contains(int)>($i2);
+
+        if $z0 != 0 goto label4;
+
+        $r2.<proguard.classfile.instruction.SwitchInstruction: int defaultOffset> = $i1;
+
+        $r6 = $r2;
+
+     label4:
+        if $r6 == null goto label5;
+
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction,proguard.classfile.instruction.Instruction)>($r1, $i0, $r2, $r6);
+
+        return;
+
+     label5:
+        return;
+    }
+
+    private void replaceVariablePushInstruction(proguard.classfile.Clazz, int, proguard.classfile.instruction.Instruction, byte, int)
+    {
+        proguard.optimize.evaluation.EvaluationSimplifier r0;
+        proguard.classfile.instruction.VariableInstruction $r4;
+        byte $b1;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.instruction.Instruction $r2, $r3;
+        int $i0, $i2;
+
+        r0 := @this: proguard.optimize.evaluation.EvaluationSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $i0 := @parameter1: int;
+
+        $r2 := @parameter2: proguard.classfile.instruction.Instruction;
+
+        $b1 := @parameter3: byte;
+
+        $i2 := @parameter4: int;
+
+        $r4 = new proguard.classfile.instruction.VariableInstruction;
+
+        specialinvoke $r4.<proguard.classfile.instruction.VariableInstruction: void <init>(byte,int)>($b1, $i2);
+
+        $r3 = virtualinvoke $r4.<proguard.classfile.instruction.VariableInstruction: proguard.classfile.instruction.Instruction shrink()>();
+
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction,proguard.classfile.instruction.Instruction)>($r1, $i0, $r2, $r3);
+
+        return;
+    }
+
+    public void visitAnyAttribute(proguard.classfile.Clazz, proguard.classfile.attribute.Attribute)
+    {
+        proguard.optimize.evaluation.EvaluationSimplifier r0;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.Attribute $r2;
+
+        r0 := @this: proguard.optimize.evaluation.EvaluationSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.Attribute;
+
+        return;
+    }
+
+    public void visitAnySwitchInstruction(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.instruction.SwitchInstruction)
+    {
+        proguard.optimize.evaluation.EvaluationSimplifier r0;
+        proguard.classfile.editor.CodeAttributeEditor $r5;
+        proguard.classfile.instruction.SwitchInstruction $r4;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int $i0;
+        proguard.classfile.Method $r2;
+        boolean $z0;
+
+        r0 := @this: proguard.optimize.evaluation.EvaluationSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.instruction.SwitchInstruction;
+
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceBranchInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction)>($r1, $i0, $r4);
+
+        $r5 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.classfile.editor.CodeAttributeEditor codeAttributeEditor>;
+
+        $z0 = virtualinvoke $r5.<proguard.classfile.editor.CodeAttributeEditor: boolean isModified(int)>($i0);
+
+        if $z0 != 0 goto label1;
+
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceSwitchInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.SwitchInstruction)>($r1, $i0, $r4);
+
+     label1:
+        return;
+    }
+
+    public void visitBranchInstruction(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.instruction.BranchInstruction)
+    {
+        proguard.optimize.evaluation.EvaluationSimplifier r0;
+        proguard.classfile.instruction.BranchInstruction $r4;
+        byte $b1;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int $i0, $i2;
+        proguard.classfile.Method $r2;
+
+        r0 := @this: proguard.optimize.evaluation.EvaluationSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.instruction.BranchInstruction;
+
+        $b1 = $r4.<proguard.classfile.instruction.BranchInstruction: byte opcode>;
+
+        $i2 = (int) $b1;
+
+        lookupswitch($i2)
+        {
+            case -89: goto label2;
+            case -88: goto label3;
+            case -56: goto label2;
+            case -55: goto label3;
+            default: goto label1;
+        };
+
+     label1:
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceBranchInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction)>($r1, $i0, $r4);
+
+     label2:
+        return;
+
+     label3:
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceJsrInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.BranchInstruction)>($r1, $i0, $r4);
+
+        return;
+    }
+
+    public void visitCodeAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute)
+    {
+        proguard.optimize.evaluation.EvaluationSimplifier r0;
+        java.io.PrintStream $r5;
+        java.lang.RuntimeException $r4;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        java.lang.StringBuffer $r6;
+        proguard.classfile.Method $r2;
+        java.lang.Class $r8;
+        java.lang.String $r7;
+
+        r0 := @this: proguard.optimize.evaluation.EvaluationSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+     label1:
+        virtualinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void visitCodeAttribute0(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute)>($r1, $r2, $r3);
+
+     label2:
+        return;
+
+     label3:
+        $r4 := @caughtexception;
+
+        $r5 = <java.lang.System: java.io.PrintStream err>;
+
+        virtualinvoke $r5.<java.io.PrintStream: void println(java.lang.String)>("Unexpected error while simplifying instructions after partial evaluation:");
+
+        $r5 = <java.lang.System: java.io.PrintStream err>;
+
+        $r6 = new java.lang.StringBuffer;
+
+        specialinvoke $r6.<java.lang.StringBuffer: void <init>()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("  Class       = [");
+
+        $r7 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getName()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r7);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        virtualinvoke $r5.<java.io.PrintStream: void println(java.lang.String)>($r7);
+
+        $r5 = <java.lang.System: java.io.PrintStream err>;
+
+        $r6 = new java.lang.StringBuffer;
+
+        specialinvoke $r6.<java.lang.StringBuffer: void <init>()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("  Method      = [");
+
+        $r7 = interfaceinvoke $r2.<proguard.classfile.Method: java.lang.String getName(proguard.classfile.Clazz)>($r1);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r7);
+
+        $r7 = interfaceinvoke $r2.<proguard.classfile.Method: java.lang.String getDescriptor(proguard.classfile.Clazz)>($r1);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r7);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        virtualinvoke $r5.<java.io.PrintStream: void println(java.lang.String)>($r7);
+
+        $r5 = <java.lang.System: java.io.PrintStream err>;
+
+        $r6 = new java.lang.StringBuffer;
+
+        specialinvoke $r6.<java.lang.StringBuffer: void <init>()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("  Exception   = [");
+
+        $r8 = virtualinvoke $r4.<java.lang.Object: java.lang.Class getClass()>();
+
+        $r7 = virtualinvoke $r8.<java.lang.Class: java.lang.String getName()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r7);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("] (");
+
+        $r7 = virtualinvoke $r4.<java.lang.RuntimeException: java.lang.String getMessage()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r7);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(")");
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        virtualinvoke $r5.<java.io.PrintStream: void println(java.lang.String)>($r7);
+
+        $r5 = <java.lang.System: java.io.PrintStream err>;
+
+        virtualinvoke $r5.<java.io.PrintStream: void println(java.lang.String)>("Not optimizing this method");
+
+        return;
+
+        catch java.lang.RuntimeException from label1 to label2 with label3;
+    }
+
+    public void visitCodeAttribute0(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute)
+    {
+        proguard.optimize.evaluation.EvaluationSimplifier r0;
+        byte[] $r6;
+        proguard.classfile.editor.CodeAttributeEditor $r5;
+        proguard.optimize.evaluation.PartialEvaluator $r4;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.instruction.Instruction $r7;
+        int $i0, $i1;
+        proguard.classfile.Method $r2;
+        boolean $z0;
+
+        r0 := @this: proguard.optimize.evaluation.EvaluationSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.optimize.evaluation.PartialEvaluator partialEvaluator>;
+
+        virtualinvoke $r4.<proguard.optimize.evaluation.PartialEvaluator: void visitCodeAttribute(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute)>($r1, $r2, $r3);
+
+        $i0 = $r3.<proguard.classfile.attribute.CodeAttribute: int u4codeLength>;
+
+        $r5 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.classfile.editor.CodeAttributeEditor codeAttributeEditor>;
+
+        virtualinvoke $r5.<proguard.classfile.editor.CodeAttributeEditor: void reset(int)>($i0);
+
+        $i1 = 0;
+
+     label1:
+        if $i1 >= $i0 goto label3;
+
+        $r4 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.optimize.evaluation.PartialEvaluator partialEvaluator>;
+
+        $z0 = virtualinvoke $r4.<proguard.optimize.evaluation.PartialEvaluator: boolean isTraced(int)>($i1);
+
+        if $z0 == 0 goto label2;
+
+        $r6 = $r3.<proguard.classfile.attribute.CodeAttribute: byte[] code>;
+
+        $r7 = staticinvoke <proguard.classfile.instruction.InstructionFactory: proguard.classfile.instruction.Instruction create(byte[],int)>($r6, $i1);
+
+        virtualinvoke $r7.<proguard.classfile.instruction.Instruction: void accept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,int,proguard.classfile.instruction.visitor.InstructionVisitor)>($r1, $r2, $r3, $i1, r0);
+
+     label2:
+        $i1 = $i1 + 1;
+
+        goto label1;
+
+     label3:
+        $r5 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.classfile.editor.CodeAttributeEditor codeAttributeEditor>;
+
+        virtualinvoke $r5.<proguard.classfile.editor.CodeAttributeEditor: void visitCodeAttribute(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute)>($r1, $r2, $r3);
+
+        return;
+    }
+
+    public void visitConstantInstruction(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.instruction.ConstantInstruction)
+    {
+        proguard.optimize.evaluation.EvaluationSimplifier r0;
+        proguard.optimize.info.SideEffectInstructionChecker $r5;
+        byte $b1;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int $i0, $i2;
+        proguard.classfile.instruction.ConstantInstruction $r4;
+        proguard.classfile.Method $r2;
+        boolean $z0;
+
+        r0 := @this: proguard.optimize.evaluation.EvaluationSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.instruction.ConstantInstruction;
+
+        $b1 = $r4.<proguard.classfile.instruction.ConstantInstruction: byte opcode>;
+
+        $i2 = (int) $b1;
+
+        lookupswitch($i2)
+        {
+            case -78: goto label2;
+            case -77: goto label1;
+            case -76: goto label2;
+            case -75: goto label1;
+            case -74: goto label3;
+            case -73: goto label3;
+            case -72: goto label3;
+            case -71: goto label3;
+            case -70: goto label1;
+            case -69: goto label1;
+            case -68: goto label1;
+            case -67: goto label1;
+            case -66: goto label1;
+            case -65: goto label1;
+            case -64: goto label4;
+            default: goto label1;
+        };
+
+     label1:
+        return;
+
+     label2:
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceAnyPushInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction)>($r1, $i0, $r4);
+
+        return;
+
+     label3:
+        $i2 = virtualinvoke $r4.<proguard.classfile.instruction.ConstantInstruction: int stackPushCount(proguard.classfile.Clazz)>($r1);
+
+        if $i2 <= 0 goto label5;
+
+        $r5 = r0.<proguard.optimize.evaluation.EvaluationSimplifier: proguard.optimize.info.SideEffectInstructionChecker sideEffectInstructionChecker>;
+
+        $z0 = virtualinvoke $r5.<proguard.optimize.info.SideEffectInstructionChecker: boolean hasSideEffects(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,int,proguard.classfile.instruction.Instruction)>($r1, $r2, $r3, $i0, $r4);
+
+        if $z0 != 0 goto label5;
+
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceAnyPushInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction)>($r1, $i0, $r4);
+
+        return;
+
+     label4:
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceReferencePushInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction)>($r1, $i0, $r4);
+
+     label5:
+        return;
+    }
+
+    public void visitSimpleInstruction(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.instruction.SimpleInstruction)
+    {
+        proguard.optimize.evaluation.EvaluationSimplifier r0;
+        proguard.classfile.instruction.SimpleInstruction $r4;
+        byte $b1;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int $i0, $i2;
+        proguard.classfile.Method $r2;
+
+        r0 := @this: proguard.optimize.evaluation.EvaluationSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.instruction.SimpleInstruction;
+
+        $b1 = $r4.<proguard.classfile.instruction.SimpleInstruction: byte opcode>;
+
+        $i2 = (int) $b1;
+
+        lookupswitch($i2)
+        {
+            case -128: goto label2;
+            case -127: goto label3;
+            case -126: goto label2;
+            case -125: goto label3;
+            case -123: goto label3;
+            case -122: goto label4;
+            case -121: goto label5;
+            case -120: goto label2;
+            case -119: goto label4;
+            case -118: goto label5;
+            case -117: goto label2;
+            case -116: goto label3;
+            case -115: goto label5;
+            case -114: goto label2;
+            case -113: goto label3;
+            case -112: goto label4;
+            case -111: goto label2;
+            case -110: goto label2;
+            case -109: goto label2;
+            case 46: goto label2;
+            case 47: goto label3;
+            case 48: goto label4;
+            case 49: goto label5;
+            case 50: goto label6;
+            case 51: goto label2;
+            case 52: goto label2;
+            case 53: goto label2;
+            case 96: goto label2;
+            case 97: goto label3;
+            case 98: goto label4;
+            case 99: goto label5;
+            case 100: goto label2;
+            case 101: goto label3;
+            case 102: goto label4;
+            case 103: goto label5;
+            case 104: goto label2;
+            case 105: goto label3;
+            case 106: goto label4;
+            case 107: goto label5;
+            case 108: goto label2;
+            case 109: goto label3;
+            case 110: goto label4;
+            case 111: goto label5;
+            case 112: goto label2;
+            case 113: goto label3;
+            case 114: goto label4;
+            case 115: goto label5;
+            case 116: goto label2;
+            case 117: goto label3;
+            case 118: goto label4;
+            case 119: goto label5;
+            case 120: goto label2;
+            case 121: goto label3;
+            case 122: goto label2;
+            case 123: goto label3;
+            case 124: goto label2;
+            case 125: goto label3;
+            case 126: goto label2;
+            case 127: goto label3;
+            default: goto label1;
+        };
+
+     label1:
+        return;
+
+     label2:
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceIntegerPushInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction)>($r1, $i0, $r4);
+
+        return;
+
+     label3:
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceLongPushInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction)>($r1, $i0, $r4);
+
+        return;
+
+     label4:
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceFloatPushInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction)>($r1, $i0, $r4);
+
+        return;
+
+     label5:
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceDoublePushInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction)>($r1, $i0, $r4);
+
+        return;
+
+     label6:
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceReferencePushInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction)>($r1, $i0, $r4);
+
+        return;
+    }
+
+    public void visitVariableInstruction(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.instruction.VariableInstruction)
+    {
+        proguard.optimize.evaluation.EvaluationSimplifier r0;
+        proguard.classfile.instruction.VariableInstruction $r4;
+        byte $b2;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int $i0, $i1, $i3;
+        proguard.classfile.Method $r2;
+
+        r0 := @this: proguard.optimize.evaluation.EvaluationSimplifier;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.instruction.VariableInstruction;
+
+        $i1 = $r4.<proguard.classfile.instruction.VariableInstruction: int variableIndex>;
+
+        $b2 = $r4.<proguard.classfile.instruction.VariableInstruction: byte opcode>;
+
+        $i3 = (int) $b2;
+
+        lookupswitch($i3)
+        {
+            case -87: goto label8;
+            case 21: goto label2;
+            case 22: goto label3;
+            case 23: goto label4;
+            case 24: goto label5;
+            case 25: goto label6;
+            case 26: goto label2;
+            case 27: goto label2;
+            case 28: goto label2;
+            case 29: goto label2;
+            case 30: goto label3;
+            case 31: goto label3;
+            case 32: goto label3;
+            case 33: goto label3;
+            case 34: goto label4;
+            case 35: goto label4;
+            case 36: goto label4;
+            case 37: goto label4;
+            case 38: goto label5;
+            case 39: goto label5;
+            case 40: goto label5;
+            case 41: goto label5;
+            case 42: goto label6;
+            case 43: goto label6;
+            case 44: goto label6;
+            case 45: goto label6;
+            case 58: goto label7;
+            case 75: goto label7;
+            case 76: goto label7;
+            case 77: goto label7;
+            case 78: goto label7;
+            default: goto label1;
+        };
+
+     label1:
+        return;
+
+     label2:
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceIntegerPushInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction,int)>($r1, $i0, $r4, $i1);
+
+        return;
+
+     label3:
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceLongPushInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction,int)>($r1, $i0, $r4, $i1);
+
+        return;
+
+     label4:
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceFloatPushInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction,int)>($r1, $i0, $r4, $i1);
+
+        return;
+
+     label5:
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceDoublePushInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction,int)>($r1, $i0, $r4, $i1);
+
+        return;
+
+     label6:
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceReferencePushInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction)>($r1, $i0, $r4);
+
+        return;
+
+     label7:
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void deleteReferencePopInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction)>($r1, $i0, $r4);
+
+        return;
+
+     label8:
+        specialinvoke r0.<proguard.optimize.evaluation.EvaluationSimplifier: void replaceBranchInstruction(proguard.classfile.Clazz,int,proguard.classfile.instruction.Instruction)>($r1, $i0, $r4);
+
+        return;
+    }
+}

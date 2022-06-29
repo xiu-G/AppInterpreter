@@ -1,0 +1,344 @@
+public abstract class com.google.api.GoogleAPI extends java.lang.Object
+{
+    protected static final java.lang.String ENCODING;
+    protected static java.lang.String key;
+    protected static java.lang.String referrer;
+
+    public void <init>()
+    {
+        com.google.api.GoogleAPI r0;
+
+        r0 := @this: com.google.api.GoogleAPI;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    private static java.lang.String inputStreamToString(java.io.InputStream) throws java.lang.Exception
+    {
+        java.io.InputStreamReader $r3;
+        java.lang.Exception $r6, $r7;
+        java.lang.StringBuilder r1, $r5;
+        java.io.BufferedReader r2;
+        java.lang.String $r4;
+        java.io.InputStream $r0;
+
+        $r0 := @parameter0: java.io.InputStream;
+
+        r1 = new java.lang.StringBuilder;
+
+        specialinvoke r1.<java.lang.StringBuilder: void <init>()>();
+
+        if $r0 == null goto label4;
+
+        r2 = new java.io.BufferedReader;
+
+        $r3 = new java.io.InputStreamReader;
+
+     label1:
+        specialinvoke $r3.<java.io.InputStreamReader: void <init>(java.io.InputStream,java.lang.String)>($r0, "UTF-8");
+
+        specialinvoke r2.<java.io.BufferedReader: void <init>(java.io.Reader)>($r3);
+
+     label2:
+        $r4 = virtualinvoke r2.<java.io.BufferedReader: java.lang.String readLine()>();
+
+     label3:
+        if $r4 != null goto label5;
+
+     label4:
+        $r4 = virtualinvoke r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r4;
+
+     label5:
+        $r5 = virtualinvoke r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(10);
+
+     label6:
+        goto label2;
+
+     label7:
+        $r6 := @caughtexception;
+
+        $r7 = new java.lang.Exception;
+
+        specialinvoke $r7.<java.lang.Exception: void <init>(java.lang.String,java.lang.Throwable)>("[google-api-translate-java] Error reading translation stream.", $r6);
+
+        throw $r7;
+
+        catch java.lang.Exception from label1 to label3 with label7;
+        catch java.lang.Exception from label5 to label6 with label7;
+    }
+
+    protected static org.json.JSONObject retrieveJSON(java.net.URL) throws java.lang.Exception
+    {
+        java.net.HttpURLConnection r2;
+        java.lang.Throwable $r6;
+        java.net.URL $r0;
+        java.lang.Exception $r7, $r8;
+        org.json.JSONObject $r5;
+        java.net.URLConnection $r1;
+        java.lang.String $r3;
+        java.io.InputStream $r4;
+
+        $r0 := @parameter0: java.net.URL;
+
+     label01:
+        $r1 = virtualinvoke $r0.<java.net.URL: java.net.URLConnection openConnection()>();
+
+        r2 = (java.net.HttpURLConnection) $r1;
+
+     label02:
+        $r3 = <com.google.api.GoogleAPI: java.lang.String referrer>;
+
+     label03:
+        virtualinvoke r2.<java.net.HttpURLConnection: void setRequestProperty(java.lang.String,java.lang.String)>("referer", $r3);
+
+        virtualinvoke r2.<java.net.HttpURLConnection: void setRequestMethod(java.lang.String)>("GET");
+
+        virtualinvoke r2.<java.net.HttpURLConnection: void setDoOutput(boolean)>(1);
+
+     label04:
+        $r4 = virtualinvoke r2.<java.net.HttpURLConnection: java.io.InputStream getInputStream()>();
+
+        $r3 = staticinvoke <com.google.api.GoogleAPI: java.lang.String inputStreamToString(java.io.InputStream)>($r4);
+
+        $r5 = new org.json.JSONObject;
+
+        specialinvoke $r5.<org.json.JSONObject: void <init>(java.lang.String)>($r3);
+
+     label05:
+        $r4 = virtualinvoke r2.<java.net.HttpURLConnection: java.io.InputStream getInputStream()>();
+
+        virtualinvoke $r4.<java.io.InputStream: void close()>();
+
+        $r4 = virtualinvoke r2.<java.net.HttpURLConnection: java.io.InputStream getErrorStream()>();
+
+     label06:
+        if $r4 == null goto label15;
+
+     label07:
+        $r4 = virtualinvoke r2.<java.net.HttpURLConnection: java.io.InputStream getErrorStream()>();
+
+        virtualinvoke $r4.<java.io.InputStream: void close()>();
+
+     label08:
+        return $r5;
+
+     label09:
+        $r6 := @caughtexception;
+
+     label10:
+        $r4 = virtualinvoke r2.<java.net.HttpURLConnection: java.io.InputStream getInputStream()>();
+
+        virtualinvoke $r4.<java.io.InputStream: void close()>();
+
+        $r4 = virtualinvoke r2.<java.net.HttpURLConnection: java.io.InputStream getErrorStream()>();
+
+     label11:
+        if $r4 == null goto label13;
+
+     label12:
+        $r4 = virtualinvoke r2.<java.net.HttpURLConnection: java.io.InputStream getErrorStream()>();
+
+        virtualinvoke $r4.<java.io.InputStream: void close()>();
+
+     label13:
+        throw $r6;
+
+     label14:
+        $r7 := @caughtexception;
+
+        $r8 = new java.lang.Exception;
+
+        specialinvoke $r8.<java.lang.Exception: void <init>(java.lang.String,java.lang.Throwable)>("[google-api-translate-java] Error retrieving translation.", $r7);
+
+        throw $r8;
+
+     label15:
+        return $r5;
+
+        catch java.lang.Exception from label01 to label02 with label14;
+        catch java.lang.Exception from label03 to label04 with label14;
+        catch java.lang.Throwable from label04 to label05 with label09;
+        catch java.lang.Exception from label05 to label06 with label14;
+        catch java.lang.Exception from label07 to label08 with label14;
+        catch java.lang.Exception from label10 to label11 with label14;
+        catch java.lang.Exception from label12 to label14 with label14;
+    }
+
+    protected static org.json.JSONObject retrieveJSON(java.net.URL, java.lang.String) throws java.lang.Exception
+    {
+        java.io.PrintWriter r2;
+        java.net.HttpURLConnection r4;
+        java.io.OutputStream $r6;
+        java.lang.Throwable $r9;
+        java.net.URL $r0;
+        java.lang.Exception $r10, $r11;
+        org.json.JSONObject $r8;
+        java.net.URLConnection $r3;
+        java.lang.String $r1, $r5;
+        java.io.InputStream $r7;
+
+        $r0 := @parameter0: java.net.URL;
+
+        $r1 := @parameter1: java.lang.String;
+
+     label01:
+        $r3 = virtualinvoke $r0.<java.net.URL: java.net.URLConnection openConnection()>();
+
+        r4 = (java.net.HttpURLConnection) $r3;
+
+     label02:
+        $r5 = <com.google.api.GoogleAPI: java.lang.String referrer>;
+
+     label03:
+        virtualinvoke r4.<java.net.HttpURLConnection: void setRequestProperty(java.lang.String,java.lang.String)>("referer", $r5);
+
+        virtualinvoke r4.<java.net.HttpURLConnection: void setRequestMethod(java.lang.String)>("POST");
+
+        virtualinvoke r4.<java.net.HttpURLConnection: void setDoOutput(boolean)>(1);
+
+     label04:
+        r2 = new java.io.PrintWriter;
+
+     label05:
+        $r6 = virtualinvoke r4.<java.net.HttpURLConnection: java.io.OutputStream getOutputStream()>();
+
+        specialinvoke r2.<java.io.PrintWriter: void <init>(java.io.OutputStream)>($r6);
+
+        virtualinvoke r2.<java.io.PrintWriter: void write(java.lang.String)>($r1);
+
+        virtualinvoke r2.<java.io.PrintWriter: void flush()>();
+
+     label06:
+        $r7 = virtualinvoke r4.<java.net.HttpURLConnection: java.io.InputStream getInputStream()>();
+
+        $r1 = staticinvoke <com.google.api.GoogleAPI: java.lang.String inputStreamToString(java.io.InputStream)>($r7);
+
+        $r8 = new org.json.JSONObject;
+
+        specialinvoke $r8.<org.json.JSONObject: void <init>(java.lang.String)>($r1);
+
+     label07:
+        $r7 = virtualinvoke r4.<java.net.HttpURLConnection: java.io.InputStream getInputStream()>();
+
+        virtualinvoke $r7.<java.io.InputStream: void close()>();
+
+        $r7 = virtualinvoke r4.<java.net.HttpURLConnection: java.io.InputStream getErrorStream()>();
+
+     label08:
+        if $r7 == null goto label10;
+
+     label09:
+        $r7 = virtualinvoke r4.<java.net.HttpURLConnection: java.io.InputStream getErrorStream()>();
+
+        virtualinvoke $r7.<java.io.InputStream: void close()>();
+
+     label10:
+        virtualinvoke r2.<java.io.PrintWriter: void close()>();
+
+     label11:
+        return $r8;
+
+     label12:
+        $r9 := @caughtexception;
+
+     label13:
+        $r7 = virtualinvoke r4.<java.net.HttpURLConnection: java.io.InputStream getInputStream()>();
+
+        virtualinvoke $r7.<java.io.InputStream: void close()>();
+
+        $r7 = virtualinvoke r4.<java.net.HttpURLConnection: java.io.InputStream getErrorStream()>();
+
+     label14:
+        if $r7 == null goto label16;
+
+     label15:
+        $r7 = virtualinvoke r4.<java.net.HttpURLConnection: java.io.InputStream getErrorStream()>();
+
+        virtualinvoke $r7.<java.io.InputStream: void close()>();
+
+     label16:
+        virtualinvoke r2.<java.io.PrintWriter: void close()>();
+
+        throw $r9;
+
+     label17:
+        $r10 := @caughtexception;
+
+        $r11 = new java.lang.Exception;
+
+        specialinvoke $r11.<java.lang.Exception: void <init>(java.lang.String,java.lang.Throwable)>("[google-api-translate-java] Error retrieving translation.", $r10);
+
+        throw $r11;
+
+        catch java.lang.Exception from label01 to label02 with label17;
+        catch java.lang.Exception from label03 to label04 with label17;
+        catch java.lang.Exception from label05 to label06 with label17;
+        catch java.lang.Throwable from label06 to label07 with label12;
+        catch java.lang.Exception from label07 to label08 with label17;
+        catch java.lang.Exception from label09 to label11 with label17;
+        catch java.lang.Exception from label13 to label14 with label17;
+        catch java.lang.Exception from label15 to label17 with label17;
+    }
+
+    public static void setHttpReferrer(java.lang.String)
+    {
+        java.lang.String $r0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        <com.google.api.GoogleAPI: java.lang.String referrer> = $r0;
+
+        return;
+    }
+
+    public static void setKey(java.lang.String)
+    {
+        java.lang.String $r0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        <com.google.api.GoogleAPI: java.lang.String key> = $r0;
+
+        return;
+    }
+
+    public static void validateReferrer() throws java.lang.Exception
+    {
+        int $i0;
+        java.lang.String $r0;
+        java.lang.Exception $r1;
+
+        $r0 = <com.google.api.GoogleAPI: java.lang.String referrer>;
+
+        if $r0 == null goto label1;
+
+        $r0 = <com.google.api.GoogleAPI: java.lang.String referrer>;
+
+        $i0 = virtualinvoke $r0.<java.lang.String: int length()>();
+
+        if $i0 != 0 goto label2;
+
+     label1:
+        $r1 = new java.lang.Exception;
+
+        specialinvoke $r1.<java.lang.Exception: void <init>(java.lang.String)>("[google-api-translate-java] Referrer is not set. Call setHttpReferrer().");
+
+        throw $r1;
+
+     label2:
+        return;
+    }
+
+    public static void <clinit>()
+    {
+        <com.google.api.GoogleAPI: java.lang.String ENCODING> = "UTF-8";
+
+        return;
+    }
+}

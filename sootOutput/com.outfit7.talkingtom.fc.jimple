@@ -1,0 +1,222 @@
+final class com.outfit7.talkingtom.fc extends java.lang.Object implements android.media.MediaScannerConnection$MediaScannerConnectionClient
+{
+    private android.media.MediaScannerConnection a;
+    private java.io.File b;
+    private android.app.Activity c;
+
+    public void <init>(java.io.File, android.app.Activity)
+    {
+        android.media.MediaScannerConnection $r3;
+        com.outfit7.talkingtom.fc r0;
+        android.app.Activity $r2;
+        java.io.File $r1;
+
+        r0 := @this: com.outfit7.talkingtom.fc;
+
+        $r1 := @parameter0: java.io.File;
+
+        $r2 := @parameter1: android.app.Activity;
+
+        r0.<com.outfit7.talkingtom.fc: android.app.Activity c> = $r2;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<com.outfit7.talkingtom.fc: java.io.File b> = $r1;
+
+        $r3 = new android.media.MediaScannerConnection;
+
+        $r2 = r0.<com.outfit7.talkingtom.fc: android.app.Activity c>;
+
+        specialinvoke $r3.<android.media.MediaScannerConnection: void <init>(android.content.Context,android.media.MediaScannerConnection$MediaScannerConnectionClient)>($r2, r0);
+
+        r0.<com.outfit7.talkingtom.fc: android.media.MediaScannerConnection a> = $r3;
+
+        $r3 = r0.<com.outfit7.talkingtom.fc: android.media.MediaScannerConnection a>;
+
+        virtualinvoke $r3.<android.media.MediaScannerConnection: void connect()>();
+
+        return;
+    }
+
+    public final void onMediaScannerConnected()
+    {
+        android.media.MediaScannerConnection $r1;
+        com.outfit7.talkingtom.fc r0;
+        java.lang.String $r2;
+        java.io.File $r3;
+
+        r0 := @this: com.outfit7.talkingtom.fc;
+
+        $r1 = r0.<com.outfit7.talkingtom.fc: android.media.MediaScannerConnection a>;
+
+        $r3 = r0.<com.outfit7.talkingtom.fc: java.io.File b>;
+
+        $r2 = virtualinvoke $r3.<java.io.File: java.lang.String getAbsolutePath()>();
+
+        virtualinvoke $r1.<android.media.MediaScannerConnection: void scanFile(java.lang.String,java.lang.String)>($r2, null);
+
+        return;
+    }
+
+    public final void onScanCompleted(java.lang.String, android.net.Uri)
+    {
+        android.net.Uri $r2;
+        java.lang.String[] $r6;
+        android.content.Intent $r11;
+        android.content.ContentResolver $r5;
+        int $i0, $i1;
+        java.lang.String $r1, $r9;
+        android.database.Cursor $r8;
+        android.media.MediaScannerConnection $r3;
+        java.io.File $r7;
+        java.lang.Exception $r12, $r13, $r14;
+        com.outfit7.talkingtom.fc r0;
+        android.app.Activity $r4, $r15;
+        android.content.res.Resources $r10;
+
+        r0 := @this: com.outfit7.talkingtom.fc;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: android.net.Uri;
+
+        $r3 = r0.<com.outfit7.talkingtom.fc: android.media.MediaScannerConnection a>;
+
+        virtualinvoke $r3.<android.media.MediaScannerConnection: void disconnect()>();
+
+        $r4 = r0.<com.outfit7.talkingtom.fc: android.app.Activity c>;
+
+        $r5 = virtualinvoke $r4.<android.app.Activity: android.content.ContentResolver getContentResolver()>();
+
+        $r2 = <android.provider.MediaStore$Video$Media: android.net.Uri EXTERNAL_CONTENT_URI>;
+
+        $r6 = newarray (java.lang.String)[1];
+
+        $r7 = r0.<com.outfit7.talkingtom.fc: java.io.File b>;
+
+        $r1 = virtualinvoke $r7.<java.io.File: java.lang.String getName()>();
+
+        $r6[0] = $r1;
+
+        $r8 = virtualinvoke $r5.<android.content.ContentResolver: android.database.Cursor query(android.net.Uri,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String)>($r2, null, "_display_name = ?", $r6, "date_added DESC");
+
+        $i0 = interfaceinvoke $r8.<android.database.Cursor: int getColumnIndex(java.lang.String)>("_id");
+
+        $i1 = interfaceinvoke $r8.<android.database.Cursor: int getColumnIndex(java.lang.String)>("mime_type");
+
+        interfaceinvoke $r8.<android.database.Cursor: boolean moveToFirst()>();
+
+        $i0 = interfaceinvoke $r8.<android.database.Cursor: int getInt(int)>($i0);
+
+        $r1 = interfaceinvoke $r8.<android.database.Cursor: java.lang.String getString(int)>($i1);
+
+        $r2 = <android.provider.MediaStore$Video$Media: android.net.Uri EXTERNAL_CONTENT_URI>;
+
+        $r9 = staticinvoke <java.lang.String: java.lang.String valueOf(int)>($i0);
+
+        $r2 = staticinvoke <android.net.Uri: android.net.Uri withAppendedPath(android.net.Uri,java.lang.String)>($r2, $r9);
+
+        $r4 = r0.<com.outfit7.talkingtom.fc: android.app.Activity c>;
+
+        $r10 = virtualinvoke $r4.<android.app.Activity: android.content.res.Resources getResources()>();
+
+        $r9 = virtualinvoke $r10.<android.content.res.Resources: java.lang.String getString(int)>(2131099678);
+
+        $r11 = new android.content.Intent;
+
+     label1:
+        specialinvoke $r11.<android.content.Intent: void <init>(java.lang.String)>("android.intent.action.SEND");
+
+        virtualinvoke $r11.<android.content.Intent: android.content.Intent setClassName(java.lang.String,java.lang.String)>("com.android.mms", "com.android.mms.ui.ComposeMessageActivity");
+
+        virtualinvoke $r11.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("sms_body", $r9);
+
+        virtualinvoke $r11.<android.content.Intent: android.content.Intent putExtra(java.lang.String,android.os.Parcelable)>("android.intent.extra.STREAM", $r2);
+
+        virtualinvoke $r11.<android.content.Intent: android.content.Intent setType(java.lang.String)>($r1);
+
+        $r4 = r0.<com.outfit7.talkingtom.fc: android.app.Activity c>;
+
+        virtualinvoke $r4.<android.app.Activity: void startActivityForResult(android.content.Intent,int)>($r11, 7);
+
+     label2:
+        return;
+
+     label3:
+        $r12 := @caughtexception;
+
+        $r11 = new android.content.Intent;
+
+     label4:
+        specialinvoke $r11.<android.content.Intent: void <init>(java.lang.String)>("android.intent.action.SEND_MSG");
+
+        virtualinvoke $r11.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("sms_body", $r9);
+
+        virtualinvoke $r11.<android.content.Intent: android.content.Intent putExtra(java.lang.String,android.os.Parcelable)>("android.intent.extra.STREAM", $r2);
+
+        virtualinvoke $r11.<android.content.Intent: android.content.Intent setType(java.lang.String)>($r1);
+
+        $r4 = r0.<com.outfit7.talkingtom.fc: android.app.Activity c>;
+
+        virtualinvoke $r4.<android.app.Activity: void startActivityForResult(android.content.Intent,int)>($r11, 7);
+
+     label5:
+        return;
+
+     label6:
+        $r13 := @caughtexception;
+
+        $r11 = new android.content.Intent;
+
+     label7:
+        specialinvoke $r11.<android.content.Intent: void <init>(java.lang.String)>("android.intent.action.SEND");
+
+        virtualinvoke $r11.<android.content.Intent: android.content.Intent setClassName(java.lang.String,java.lang.String)>("com.sonyericsson.conversations", "com.sonyericsson.conversations.ui.ConversationListActivity");
+
+        virtualinvoke $r11.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("android.intent.extra.TEXT", $r9);
+
+        virtualinvoke $r11.<android.content.Intent: android.content.Intent putExtra(java.lang.String,android.os.Parcelable)>("android.intent.extra.STREAM", $r2);
+
+        virtualinvoke $r11.<android.content.Intent: android.content.Intent setType(java.lang.String)>($r1);
+
+        $r4 = r0.<com.outfit7.talkingtom.fc: android.app.Activity c>;
+
+        virtualinvoke $r4.<android.app.Activity: void startActivityForResult(android.content.Intent,int)>($r11, 7);
+
+     label8:
+        return;
+
+     label9:
+        $r14 := @caughtexception;
+
+        $r11 = new android.content.Intent;
+
+        specialinvoke $r11.<android.content.Intent: void <init>(java.lang.String)>("android.intent.action.SEND");
+
+        virtualinvoke $r11.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("sms_body", $r9);
+
+        virtualinvoke $r11.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("android.intent.extra.TEXT", $r9);
+
+        virtualinvoke $r11.<android.content.Intent: android.content.Intent putExtra(java.lang.String,android.os.Parcelable)>("android.intent.extra.STREAM", $r2);
+
+        virtualinvoke $r11.<android.content.Intent: android.content.Intent setType(java.lang.String)>($r1);
+
+        $r4 = r0.<com.outfit7.talkingtom.fc: android.app.Activity c>;
+
+        $r15 = r0.<com.outfit7.talkingtom.fc: android.app.Activity c>;
+
+        $r10 = virtualinvoke $r15.<android.app.Activity: android.content.res.Resources getResources()>();
+
+        $r1 = virtualinvoke $r10.<android.content.res.Resources: java.lang.String getString(int)>(2131099665);
+
+        $r11 = staticinvoke <android.content.Intent: android.content.Intent createChooser(android.content.Intent,java.lang.CharSequence)>($r11, $r1);
+
+        virtualinvoke $r4.<android.app.Activity: void startActivityForResult(android.content.Intent,int)>($r11, 7);
+
+        return;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+        catch java.lang.Exception from label4 to label5 with label6;
+        catch java.lang.Exception from label7 to label8 with label9;
+    }
+}

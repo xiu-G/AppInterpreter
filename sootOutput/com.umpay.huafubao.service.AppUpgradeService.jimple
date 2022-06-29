@@ -1,0 +1,781 @@
+public class com.umpay.huafubao.service.AppUpgradeService extends android.app.Service
+{
+    private java.lang.String a;
+    private android.app.NotificationManager b;
+    private android.app.Notification c;
+    private android.app.PendingIntent d;
+    private java.io.File e;
+    private java.io.File f;
+    private android.os.Handler g;
+    private com.umpay.huafubao.service.d h;
+    public android.content.Intent ipcIntent;
+    public android.os.IBinder ipcBinder_0;
+
+    public void <init>()
+    {
+        com.umpay.huafubao.service.AppUpgradeService r0;
+        com.umpay.huafubao.service.b $r2;
+        com.umpay.huafubao.service.a $r1;
+
+        r0 := @this: com.umpay.huafubao.service.AppUpgradeService;
+
+        specialinvoke r0.<android.app.Service: void <init>()>();
+
+        r0.<com.umpay.huafubao.service.AppUpgradeService: java.lang.String a> = null;
+
+        r0.<com.umpay.huafubao.service.AppUpgradeService: android.app.NotificationManager b> = null;
+
+        r0.<com.umpay.huafubao.service.AppUpgradeService: android.app.Notification c> = null;
+
+        r0.<com.umpay.huafubao.service.AppUpgradeService: android.app.PendingIntent d> = null;
+
+        r0.<com.umpay.huafubao.service.AppUpgradeService: java.io.File e> = null;
+
+        r0.<com.umpay.huafubao.service.AppUpgradeService: java.io.File f> = null;
+
+        $r1 = new com.umpay.huafubao.service.a;
+
+        specialinvoke $r1.<com.umpay.huafubao.service.a: void <init>(com.umpay.huafubao.service.AppUpgradeService)>(r0);
+
+        r0.<com.umpay.huafubao.service.AppUpgradeService: android.os.Handler g> = $r1;
+
+        $r2 = new com.umpay.huafubao.service.b;
+
+        specialinvoke $r2.<com.umpay.huafubao.service.b: void <init>(com.umpay.huafubao.service.AppUpgradeService)>(r0);
+
+        r0.<com.umpay.huafubao.service.AppUpgradeService: com.umpay.huafubao.service.d h> = $r2;
+
+        return;
+    }
+
+    public static long a(java.lang.String, java.io.File, boolean, com.umpay.huafubao.service.d)
+    {
+        org.apache.http.impl.client.DefaultHttpClient $r7, $r21;
+        byte[] $r3;
+        java.util.zip.GZIPInputStream $r22;
+        org.apache.http.params.BasicHttpParams $r6, $r20;
+        org.apache.http.StatusLine $r9;
+        org.apache.http.Header $r13;
+        byte $b3;
+        boolean $z0;
+        org.apache.http.HttpEntity $r10;
+        java.lang.Exception $r25;
+        org.apache.http.client.methods.HttpGet $r5, $r19;
+        java.lang.StringBuilder $r17, $r24;
+        java.lang.Throwable $r18;
+        long $l1, $l2, $l4;
+        int $i0;
+        com.umpay.huafubao.service.d $r2;
+        java.lang.String $r0, $r14;
+        java.io.FileOutputStream $r4, $r16, $r23;
+        java.io.File $r1;
+        org.apache.http.HttpResponse $r8;
+        java.lang.Object $r12, $r15;
+        java.io.InputStream $r11;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: java.io.File;
+
+        $z0 := @parameter2: boolean;
+
+        $r2 := @parameter3: com.umpay.huafubao.service.d;
+
+        $r4 = null;
+
+        $z0 = virtualinvoke $r1.<java.io.File: boolean exists()>();
+
+        if $z0 == 0 goto label01;
+
+        $z0 = virtualinvoke $r1.<java.io.File: boolean isFile()>();
+
+        if $z0 == 0 goto label01;
+
+        virtualinvoke $r1.<java.io.File: boolean delete()>();
+
+     label01:
+        $r19 = new org.apache.http.client.methods.HttpGet;
+
+        $r5 = $r19;
+
+        specialinvoke $r19.<org.apache.http.client.methods.HttpGet: void <init>(java.lang.String)>($r0);
+
+        $r20 = new org.apache.http.params.BasicHttpParams;
+
+        $r6 = $r20;
+
+        specialinvoke $r20.<org.apache.http.params.BasicHttpParams: void <init>()>();
+
+        staticinvoke <org.apache.http.params.HttpConnectionParams: void setConnectionTimeout(org.apache.http.params.HttpParams,int)>($r6, 10000);
+
+        staticinvoke <org.apache.http.params.HttpConnectionParams: void setSoTimeout(org.apache.http.params.HttpParams,int)>($r6, 40000);
+
+        $r21 = new org.apache.http.impl.client.DefaultHttpClient;
+
+        $r7 = $r21;
+
+        specialinvoke $r21.<org.apache.http.impl.client.DefaultHttpClient: void <init>(org.apache.http.params.HttpParams)>($r6);
+
+     label02:
+        $r8 = interfaceinvoke $r7.<org.apache.http.client.HttpClient: org.apache.http.HttpResponse execute(org.apache.http.client.methods.HttpUriRequest)>($r5);
+
+        $r9 = interfaceinvoke $r8.<org.apache.http.HttpResponse: org.apache.http.StatusLine getStatusLine()>();
+
+        $i0 = interfaceinvoke $r9.<org.apache.http.StatusLine: int getStatusCode()>();
+
+     label03:
+        if $i0 != 200 goto label37;
+
+     label04:
+        $r10 = interfaceinvoke $r8.<org.apache.http.HttpResponse: org.apache.http.HttpEntity getEntity()>();
+
+        $r11 = interfaceinvoke $r10.<org.apache.http.HttpEntity: java.io.InputStream getContent()>();
+
+     label05:
+        $r12 = $r11;
+
+     label06:
+        $r10 = interfaceinvoke $r8.<org.apache.http.HttpResponse: org.apache.http.HttpEntity getEntity()>();
+
+        $l1 = interfaceinvoke $r10.<org.apache.http.HttpEntity: long getContentLength()>();
+
+        $r13 = interfaceinvoke $r8.<org.apache.http.HttpResponse: org.apache.http.Header getFirstHeader(java.lang.String)>("Content-Encoding");
+
+     label07:
+        if $r13 == null goto label36;
+
+     label08:
+        $r14 = interfaceinvoke $r13.<org.apache.http.Header: java.lang.String getValue()>();
+
+        $z0 = virtualinvoke $r14.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("gzip");
+
+     label09:
+        if $z0 == 0 goto label36;
+
+     label10:
+        $r22 = new java.util.zip.GZIPInputStream;
+
+     label11:
+        $r15 = $r22;
+
+     label12:
+        specialinvoke $r22.<java.util.zip.GZIPInputStream: void <init>(java.io.InputStream)>($r11);
+
+     label13:
+        $r23 = new java.io.FileOutputStream;
+
+     label14:
+        $r16 = $r23;
+
+     label15:
+        specialinvoke $r23.<java.io.FileOutputStream: void <init>(java.io.File,boolean)>($r1, 0);
+
+     label16:
+        $r3 = newarray (byte)[8192];
+
+        $l2 = -1L;
+
+     label17:
+        $r11 = (java.io.InputStream) $r15;
+
+        $i0 = virtualinvoke $r11.<java.io.InputStream: int read(byte[])>($r3);
+
+     label18:
+        if $i0 > 0 goto label22;
+
+        $b3 = $l2 cmp 0L;
+
+        $i0 = (int) $b3;
+
+        if $i0 >= 0 goto label19;
+
+        $l2 = 0L;
+
+     label19:
+        if $r16 == null goto label20;
+
+        virtualinvoke $r16.<java.io.FileOutputStream: void close()>();
+
+     label20:
+        if $r15 == null goto label21;
+
+        $r11 = (java.io.InputStream) $r15;
+
+        virtualinvoke $r11.<java.io.InputStream: void close()>();
+
+     label21:
+        $b3 = $l2 cmp 0L;
+
+        $i0 = (int) $b3;
+
+        if $i0 >= 0 goto label32;
+
+        $r25 = new java.lang.Exception;
+
+        $r24 = new java.lang.StringBuilder;
+
+        specialinvoke $r24.<java.lang.StringBuilder: void <init>(java.lang.String)>("Download file fail: ");
+
+        $r17 = virtualinvoke $r24.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r0);
+
+        $r0 = virtualinvoke $r17.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r25.<java.lang.Exception: void <init>(java.lang.String)>($r0);
+
+        throw $r25;
+
+     label22:
+        virtualinvoke $r16.<java.io.FileOutputStream: void write(byte[],int,int)>($r3, 0, $i0);
+
+        virtualinvoke $r16.<java.io.FileOutputStream: void flush()>();
+
+     label23:
+        $l4 = (long) $i0;
+
+        $l2 = $l2 + $l4;
+
+        if $r2 == null goto label17;
+
+        $l4 = 100L * $l2;
+
+     label24:
+        $l4 = $l4 / $l1;
+
+     label25:
+        $i0 = (int) $l4;
+
+     label26:
+        interfaceinvoke $r2.<com.umpay.huafubao.service.d: void a(int)>($i0);
+
+     label27:
+        goto label17;
+
+     label28:
+        $r18 := @caughtexception;
+
+        $r4 = $r16;
+
+        $r12 = $r15;
+
+     label29:
+        if $r4 == null goto label30;
+
+        virtualinvoke $r4.<java.io.FileOutputStream: void close()>();
+
+     label30:
+        if $r12 == null goto label31;
+
+        $r11 = (java.io.InputStream) $r12;
+
+        virtualinvoke $r11.<java.io.InputStream: void close()>();
+
+     label31:
+        throw $r18;
+
+     label32:
+        if $r2 == null goto label38;
+
+        interfaceinvoke $r2.<com.umpay.huafubao.service.d: void a()>();
+
+        return $l2;
+
+     label33:
+        $r18 := @caughtexception;
+
+        $r12 = null;
+
+        goto label29;
+
+     label34:
+        $r18 := @caughtexception;
+
+        goto label29;
+
+     label35:
+        $r18 := @caughtexception;
+
+        $r12 = $r15;
+
+        goto label29;
+
+     label36:
+        $r15 = $r11;
+
+        goto label13;
+
+     label37:
+        $r16 = null;
+
+        $r15 = null;
+
+        $l2 = -1L;
+
+        goto label19;
+
+     label38:
+        return $l2;
+
+        catch java.lang.Throwable from label02 to label03 with label33;
+        catch java.lang.Throwable from label04 to label05 with label33;
+        catch java.lang.Throwable from label06 to label07 with label34;
+        catch java.lang.Throwable from label08 to label09 with label34;
+        catch java.lang.Throwable from label10 to label11 with label34;
+        catch java.lang.Throwable from label12 to label13 with label34;
+        catch java.lang.Throwable from label13 to label14 with label35;
+        catch java.lang.Throwable from label15 to label16 with label35;
+        catch java.lang.Throwable from label17 to label18 with label28;
+        catch java.lang.Throwable from label22 to label23 with label28;
+        catch java.lang.Throwable from label24 to label25 with label28;
+        catch java.lang.Throwable from label26 to label27 with label28;
+    }
+
+    static java.io.File a(com.umpay.huafubao.service.AppUpgradeService)
+    {
+        com.umpay.huafubao.service.AppUpgradeService $r0;
+        java.io.File r1;
+
+        $r0 := @parameter0: com.umpay.huafubao.service.AppUpgradeService;
+
+        r1 = $r0.<com.umpay.huafubao.service.AppUpgradeService: java.io.File f>;
+
+        return r1;
+    }
+
+    static void a(com.umpay.huafubao.service.AppUpgradeService, java.io.File)
+    {
+        com.umpay.huafubao.service.AppUpgradeService $r0;
+        java.io.File $r1;
+
+        $r0 := @parameter0: com.umpay.huafubao.service.AppUpgradeService;
+
+        $r1 := @parameter1: java.io.File;
+
+        $r0.<com.umpay.huafubao.service.AppUpgradeService: java.io.File e> = $r1;
+
+        return;
+    }
+
+    static android.app.NotificationManager b(com.umpay.huafubao.service.AppUpgradeService)
+    {
+        com.umpay.huafubao.service.AppUpgradeService $r0;
+        android.app.NotificationManager r1;
+
+        $r0 := @parameter0: com.umpay.huafubao.service.AppUpgradeService;
+
+        r1 = $r0.<com.umpay.huafubao.service.AppUpgradeService: android.app.NotificationManager b>;
+
+        return r1;
+    }
+
+    static void b(com.umpay.huafubao.service.AppUpgradeService, java.io.File)
+    {
+        com.umpay.huafubao.service.AppUpgradeService $r0;
+        java.io.File $r1;
+
+        $r0 := @parameter0: com.umpay.huafubao.service.AppUpgradeService;
+
+        $r1 := @parameter1: java.io.File;
+
+        $r0.<com.umpay.huafubao.service.AppUpgradeService: java.io.File f> = $r1;
+
+        return;
+    }
+
+    static android.app.Notification c(com.umpay.huafubao.service.AppUpgradeService)
+    {
+        android.app.Notification r1;
+        com.umpay.huafubao.service.AppUpgradeService $r0;
+
+        $r0 := @parameter0: com.umpay.huafubao.service.AppUpgradeService;
+
+        r1 = $r0.<com.umpay.huafubao.service.AppUpgradeService: android.app.Notification c>;
+
+        return r1;
+    }
+
+    static android.app.PendingIntent d(com.umpay.huafubao.service.AppUpgradeService)
+    {
+        com.umpay.huafubao.service.AppUpgradeService $r0;
+        android.app.PendingIntent r1;
+
+        $r0 := @parameter0: com.umpay.huafubao.service.AppUpgradeService;
+
+        r1 = $r0.<com.umpay.huafubao.service.AppUpgradeService: android.app.PendingIntent d>;
+
+        return r1;
+    }
+
+    static android.os.Handler e(com.umpay.huafubao.service.AppUpgradeService)
+    {
+        com.umpay.huafubao.service.AppUpgradeService $r0;
+        android.os.Handler r1;
+
+        $r0 := @parameter0: com.umpay.huafubao.service.AppUpgradeService;
+
+        r1 = $r0.<com.umpay.huafubao.service.AppUpgradeService: android.os.Handler g>;
+
+        return r1;
+    }
+
+    static java.io.File f(com.umpay.huafubao.service.AppUpgradeService)
+    {
+        com.umpay.huafubao.service.AppUpgradeService $r0;
+        java.io.File r1;
+
+        $r0 := @parameter0: com.umpay.huafubao.service.AppUpgradeService;
+
+        r1 = $r0.<com.umpay.huafubao.service.AppUpgradeService: java.io.File e>;
+
+        return r1;
+    }
+
+    static java.lang.String g(com.umpay.huafubao.service.AppUpgradeService)
+    {
+        com.umpay.huafubao.service.AppUpgradeService $r0;
+        java.lang.String r1;
+
+        $r0 := @parameter0: com.umpay.huafubao.service.AppUpgradeService;
+
+        r1 = $r0.<com.umpay.huafubao.service.AppUpgradeService: java.lang.String a>;
+
+        return r1;
+    }
+
+    static com.umpay.huafubao.service.d h(com.umpay.huafubao.service.AppUpgradeService)
+    {
+        com.umpay.huafubao.service.AppUpgradeService $r0;
+        com.umpay.huafubao.service.d r1;
+
+        $r0 := @parameter0: com.umpay.huafubao.service.AppUpgradeService;
+
+        r1 = $r0.<com.umpay.huafubao.service.AppUpgradeService: com.umpay.huafubao.service.d h>;
+
+        return r1;
+    }
+
+    public final void a(java.io.File)
+    {
+        com.umpay.huafubao.service.AppUpgradeService r0;
+        android.net.Uri $r3;
+        android.content.Intent $r2;
+        java.io.File $r1;
+
+        r0 := @this: com.umpay.huafubao.service.AppUpgradeService;
+
+        $r1 := @parameter0: java.io.File;
+
+        $r3 = staticinvoke <android.net.Uri: android.net.Uri fromFile(java.io.File)>($r1);
+
+        $r2 = new android.content.Intent;
+
+        specialinvoke $r2.<android.content.Intent: void <init>(java.lang.String)>("android.intent.action.VIEW");
+
+        virtualinvoke $r2.<android.content.Intent: android.content.Intent setFlags(int)>(268435456);
+
+        virtualinvoke $r2.<android.content.Intent: android.content.Intent setDataAndType(android.net.Uri,java.lang.String)>($r3, "application/vnd.android.package-archive");
+
+        virtualinvoke r0.<com.umpay.huafubao.service.AppUpgradeService: void startActivity(android.content.Intent)>($r2);
+
+        return;
+    }
+
+    public final boolean a(java.lang.String)
+    {
+        com.umpay.huafubao.service.AppUpgradeService r0;
+        android.content.pm.PackageManager $r2;
+        java.lang.String $r1;
+        android.content.pm.PackageInfo $r3;
+        java.lang.Exception $r4;
+
+        r0 := @this: com.umpay.huafubao.service.AppUpgradeService;
+
+        $r1 := @parameter0: java.lang.String;
+
+     label1:
+        $r2 = virtualinvoke r0.<com.umpay.huafubao.service.AppUpgradeService: android.content.pm.PackageManager getPackageManager()>();
+
+        $r3 = virtualinvoke $r2.<android.content.pm.PackageManager: android.content.pm.PackageInfo getPackageArchiveInfo(java.lang.String,int)>($r1, 1);
+
+     label2:
+        if $r3 != null goto label3;
+
+        return 0;
+
+     label3:
+        return 1;
+
+     label4:
+        $r4 := @caughtexception;
+
+        virtualinvoke $r4.<java.lang.Exception: void printStackTrace()>();
+
+        return 0;
+
+        catch java.lang.Exception from label1 to label2 with label4;
+    }
+
+    public android.os.IBinder onBind(android.content.Intent)
+    {
+        com.umpay.huafubao.service.AppUpgradeService this;
+        android.content.Intent parameter0;
+
+        this := @this: com.umpay.huafubao.service.AppUpgradeService;
+
+        parameter0 := @parameter0: android.content.Intent;
+
+        parameter0 = virtualinvoke this.<com.umpay.huafubao.service.AppUpgradeService: android.content.Intent getIntent()>();
+
+        this.<com.umpay.huafubao.service.AppUpgradeService: android.os.IBinder ipcBinder_0> = parameter0;
+
+        this.<com.umpay.huafubao.service.AppUpgradeService: android.os.IBinder ipcBinder_0> = parameter0;
+
+        this.<com.umpay.huafubao.service.AppUpgradeService: android.os.IBinder ipcBinder_0> = parameter0;
+
+        this.<com.umpay.huafubao.service.AppUpgradeService: android.os.IBinder ipcBinder_0> = parameter0;
+
+        return parameter0;
+    }
+
+    public void onStart(android.content.Intent, int)
+    {
+        android.content.Context $r12;
+        android.content.Intent $r1, $r13;
+        android.app.PendingIntent $r14;
+        int $i0, $i1;
+        java.lang.String $r2, $r3;
+        com.umpay.huafubao.service.c $r15;
+        boolean $z0;
+        android.widget.RemoteViews $r10;
+        com.umpay.huafubao.service.AppUpgradeService r0;
+        android.app.NotificationManager $r8;
+        java.io.File $r4, $r6;
+        android.app.Application $r11;
+        android.app.Notification $r9;
+        java.lang.StringBuilder $r5;
+        java.lang.Object $r7;
+
+        r0 := @this: com.umpay.huafubao.service.AppUpgradeService;
+
+        $r1 := @parameter0: android.content.Intent;
+
+        $i0 := @parameter1: int;
+
+        $r1 = virtualinvoke r0.<com.umpay.huafubao.service.AppUpgradeService: android.content.Intent getIntent()>();
+
+        $r2 = virtualinvoke $r1.<android.content.Intent: java.lang.String getStringExtra(java.lang.String)>("downloadUrl");
+
+        r0.<com.umpay.huafubao.service.AppUpgradeService: java.lang.String a> = $r2;
+
+        $r2 = r0.<com.umpay.huafubao.service.AppUpgradeService: java.lang.String a>;
+
+        if $r2 == null goto label1;
+
+        $r2 = "";
+
+        $r3 = r0.<com.umpay.huafubao.service.AppUpgradeService: java.lang.String a>;
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>($r3);
+
+        if $z0 == 0 goto label2;
+
+     label1:
+        r0.<com.umpay.huafubao.service.AppUpgradeService: java.lang.String a> = "";
+
+     label2:
+        $r2 = staticinvoke <android.os.Environment: java.lang.String getExternalStorageState()>();
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>("mounted");
+
+        if $z0 == 0 goto label3;
+
+        $r4 = new java.io.File;
+
+        $r5 = new java.lang.StringBuilder;
+
+        $r6 = staticinvoke <android.os.Environment: java.io.File getExternalStorageDirectory()>();
+
+        $r2 = virtualinvoke $r6.<java.io.File: java.lang.String getPath()>();
+
+        $r2 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r2);
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>(java.lang.String)>($r2);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/umpay/huafubao/download");
+
+        $r2 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r4.<java.io.File: void <init>(java.lang.String)>($r2);
+
+        r0.<com.umpay.huafubao.service.AppUpgradeService: java.io.File e> = $r4;
+
+        $r4 = r0.<com.umpay.huafubao.service.AppUpgradeService: java.io.File e>;
+
+        $z0 = virtualinvoke $r4.<java.io.File: boolean exists()>();
+
+        if $z0 == 0 goto label4;
+
+        $r4 = new java.io.File;
+
+        $r5 = new java.lang.StringBuilder;
+
+        $r6 = r0.<com.umpay.huafubao.service.AppUpgradeService: java.io.File e>;
+
+        $r2 = virtualinvoke $r6.<java.io.File: java.lang.String getPath()>();
+
+        $r2 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r2);
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>(java.lang.String)>($r2);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/");
+
+        $r2 = r0.<com.umpay.huafubao.service.AppUpgradeService: java.lang.String a>;
+
+        $r2 = staticinvoke <java.net.URLEncoder: java.lang.String encode(java.lang.String)>($r2);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r2 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r4.<java.io.File: void <init>(java.lang.String)>($r2);
+
+        $z0 = virtualinvoke $r4.<java.io.File: boolean exists()>();
+
+        if $z0 == 0 goto label4;
+
+        $z0 = virtualinvoke $r4.<java.io.File: boolean isFile()>();
+
+        if $z0 == 0 goto label4;
+
+        $r2 = virtualinvoke $r4.<java.io.File: java.lang.String getPath()>();
+
+        $z0 = virtualinvoke r0.<com.umpay.huafubao.service.AppUpgradeService: boolean a(java.lang.String)>($r2);
+
+        if $z0 == 0 goto label4;
+
+        virtualinvoke $r4.<java.io.File: boolean delete()>();
+
+        virtualinvoke r0.<com.umpay.huafubao.service.AppUpgradeService: void stopSelf()>();
+
+     label3:
+        specialinvoke r0.<android.app.Service: void onStart(android.content.Intent,int)>($r1, $i0);
+
+     label4:
+        $r7 = virtualinvoke r0.<com.umpay.huafubao.service.AppUpgradeService: java.lang.Object getSystemService(java.lang.String)>("notification");
+
+        $r8 = (android.app.NotificationManager) $r7;
+
+        r0.<com.umpay.huafubao.service.AppUpgradeService: android.app.NotificationManager b> = $r8;
+
+        $r9 = new android.app.Notification;
+
+        specialinvoke $r9.<android.app.Notification: void <init>()>();
+
+        r0.<com.umpay.huafubao.service.AppUpgradeService: android.app.Notification c> = $r9;
+
+        $r9 = r0.<com.umpay.huafubao.service.AppUpgradeService: android.app.Notification c>;
+
+        $r10 = new android.widget.RemoteViews;
+
+        $r11 = virtualinvoke r0.<com.umpay.huafubao.service.AppUpgradeService: android.app.Application getApplication()>();
+
+        $r2 = virtualinvoke $r11.<android.app.Application: java.lang.String getPackageName()>();
+
+        $r12 = virtualinvoke r0.<com.umpay.huafubao.service.AppUpgradeService: android.content.Context getApplicationContext()>();
+
+        $i1 = staticinvoke <com.umpay.huafubao.e.a: int c(android.content.Context,java.lang.String)>($r12, "hfb_upgrade_notification");
+
+        specialinvoke $r10.<android.widget.RemoteViews: void <init>(java.lang.String,int)>($r2, $i1);
+
+        $r9.<android.app.Notification: android.widget.RemoteViews contentView> = $r10;
+
+        $r13 = new android.content.Intent;
+
+        specialinvoke $r13.<android.content.Intent: void <init>()>();
+
+        virtualinvoke $r13.<android.content.Intent: android.content.Intent setFlags(int)>(536870912);
+
+        $r11 = virtualinvoke r0.<com.umpay.huafubao.service.AppUpgradeService: android.app.Application getApplication()>();
+
+        $r12 = virtualinvoke $r11.<android.app.Application: android.content.Context getApplicationContext()>();
+
+        virtualinvoke $r13.<android.content.Intent: android.content.Intent setClass(android.content.Context,java.lang.Class)>($r12, class "Lcom/umpay/huafubao/service/AppUpgradeService;");
+
+        $r12 = virtualinvoke r0.<com.umpay.huafubao.service.AppUpgradeService: android.content.Context getApplicationContext()>();
+
+        $i1 = staticinvoke <com.umpay.huafubao.e.a: int d(android.content.Context,java.lang.String)>($r12, "hfb_app_name");
+
+        $r14 = staticinvoke <android.app.PendingIntent: android.app.PendingIntent getActivity(android.content.Context,int,android.content.Intent,int)>(r0, $i1, $r13, 134217728);
+
+        r0.<com.umpay.huafubao.service.AppUpgradeService: android.app.PendingIntent d> = $r14;
+
+        $r9 = r0.<com.umpay.huafubao.service.AppUpgradeService: android.app.Notification c>;
+
+        $r12 = virtualinvoke r0.<com.umpay.huafubao.service.AppUpgradeService: android.content.Context getApplicationContext()>();
+
+        $i1 = staticinvoke <com.umpay.huafubao.e.a: int a(android.content.Context,java.lang.String)>($r12, "hfb_application");
+
+        $r9.<android.app.Notification: int icon> = $i1;
+
+        $r9 = r0.<com.umpay.huafubao.service.AppUpgradeService: android.app.Notification c>;
+
+        $r9.<android.app.Notification: java.lang.CharSequence tickerText> = "\u5f00\u59cb\u4e0b\u8f7d";
+
+        $r9 = r0.<com.umpay.huafubao.service.AppUpgradeService: android.app.Notification c>;
+
+        $r14 = r0.<com.umpay.huafubao.service.AppUpgradeService: android.app.PendingIntent d>;
+
+        $r9.<android.app.Notification: android.app.PendingIntent contentIntent> = $r14;
+
+        $r9 = r0.<com.umpay.huafubao.service.AppUpgradeService: android.app.Notification c>;
+
+        $r10 = $r9.<android.app.Notification: android.widget.RemoteViews contentView>;
+
+        $r12 = virtualinvoke r0.<com.umpay.huafubao.service.AppUpgradeService: android.content.Context getApplicationContext()>();
+
+        $i1 = staticinvoke <com.umpay.huafubao.e.a: int b(android.content.Context,java.lang.String)>($r12, "app_upgrade_progressbar");
+
+        virtualinvoke $r10.<android.widget.RemoteViews: void setProgressBar(int,int,int,boolean)>($i1, 100, 0, 0);
+
+        $r9 = r0.<com.umpay.huafubao.service.AppUpgradeService: android.app.Notification c>;
+
+        $r10 = $r9.<android.app.Notification: android.widget.RemoteViews contentView>;
+
+        $r12 = virtualinvoke r0.<com.umpay.huafubao.service.AppUpgradeService: android.content.Context getApplicationContext()>();
+
+        $i1 = staticinvoke <com.umpay.huafubao.e.a: int b(android.content.Context,java.lang.String)>($r12, "app_upgrade_progresstext");
+
+        virtualinvoke $r10.<android.widget.RemoteViews: void setTextViewText(int,java.lang.CharSequence)>($i1, "0%");
+
+        $r8 = r0.<com.umpay.huafubao.service.AppUpgradeService: android.app.NotificationManager b>;
+
+        virtualinvoke $r8.<android.app.NotificationManager: void cancel(int)>(100);
+
+        $r8 = r0.<com.umpay.huafubao.service.AppUpgradeService: android.app.NotificationManager b>;
+
+        $r9 = r0.<com.umpay.huafubao.service.AppUpgradeService: android.app.Notification c>;
+
+        virtualinvoke $r8.<android.app.NotificationManager: void notify(int,android.app.Notification)>(100, $r9);
+
+        $r15 = new com.umpay.huafubao.service.c;
+
+        specialinvoke $r15.<com.umpay.huafubao.service.c: void <init>(com.umpay.huafubao.service.AppUpgradeService)>(r0);
+
+        virtualinvoke $r15.<com.umpay.huafubao.service.c: void start()>();
+
+        specialinvoke r0.<android.app.Service: void onStart(android.content.Intent,int)>($r1, $i0);
+
+        return;
+    }
+
+    public android.content.Intent getIntent()
+    {
+        com.umpay.huafubao.service.AppUpgradeService this;
+        android.content.Intent $r0;
+
+        this := @this: com.umpay.huafubao.service.AppUpgradeService;
+
+        $r0 = this.<com.umpay.huafubao.service.AppUpgradeService: android.content.Intent ipcIntent>;
+
+        return $r0;
+    }
+}

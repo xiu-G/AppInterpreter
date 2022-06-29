@@ -1,0 +1,575 @@
+public class com.adview.DownloadService extends android.app.Service
+{
+    private static int index;
+    private java.lang.String path;
+    private java.lang.String title;
+    private java.io.File updateDir;
+    private java.io.File updateFile;
+    private android.os.Handler updateHandler;
+    private android.content.Intent updateIntent;
+    private android.app.Notification updateNotification;
+    private android.app.NotificationManager updateNotificationManager;
+    private android.app.PendingIntent updatePendingIntent;
+
+    static void <clinit>()
+    {
+        <com.adview.DownloadService: int index> = 0;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        com.adview.h $r1;
+        com.adview.DownloadService r0;
+
+        r0 := @this: com.adview.DownloadService;
+
+        specialinvoke r0.<android.app.Service: void <init>()>();
+
+        r0.<com.adview.DownloadService: java.lang.String title> = "adview";
+
+        r0.<com.adview.DownloadService: java.lang.String path> = "";
+
+        r0.<com.adview.DownloadService: java.io.File updateDir> = null;
+
+        r0.<com.adview.DownloadService: java.io.File updateFile> = null;
+
+        r0.<com.adview.DownloadService: android.app.NotificationManager updateNotificationManager> = null;
+
+        r0.<com.adview.DownloadService: android.app.Notification updateNotification> = null;
+
+        r0.<com.adview.DownloadService: android.content.Intent updateIntent> = null;
+
+        r0.<com.adview.DownloadService: android.app.PendingIntent updatePendingIntent> = null;
+
+        $r1 = new com.adview.h;
+
+        specialinvoke $r1.<com.adview.h: void <init>(com.adview.DownloadService)>(r0);
+
+        r0.<com.adview.DownloadService: android.os.Handler updateHandler> = $r1;
+
+        return;
+    }
+
+    static java.io.File access$0(com.adview.DownloadService)
+    {
+        java.io.File r1;
+        com.adview.DownloadService $r0;
+
+        $r0 := @parameter0: com.adview.DownloadService;
+
+        r1 = $r0.<com.adview.DownloadService: java.io.File updateFile>;
+
+        return r1;
+    }
+
+    static void access$1(com.adview.DownloadService, android.app.PendingIntent)
+    {
+        android.app.PendingIntent $r1;
+        com.adview.DownloadService $r0;
+
+        $r0 := @parameter0: com.adview.DownloadService;
+
+        $r1 := @parameter1: android.app.PendingIntent;
+
+        $r0.<com.adview.DownloadService: android.app.PendingIntent updatePendingIntent> = $r1;
+
+        return;
+    }
+
+    static java.lang.String access$10(com.adview.DownloadService)
+    {
+        java.lang.String r1;
+        com.adview.DownloadService $r0;
+
+        $r0 := @parameter0: com.adview.DownloadService;
+
+        r1 = $r0.<com.adview.DownloadService: java.lang.String path>;
+
+        return r1;
+    }
+
+    static android.app.Notification access$2(com.adview.DownloadService)
+    {
+        android.app.Notification r1;
+        com.adview.DownloadService $r0;
+
+        $r0 := @parameter0: com.adview.DownloadService;
+
+        r1 = $r0.<com.adview.DownloadService: android.app.Notification updateNotification>;
+
+        return r1;
+    }
+
+    static android.app.NotificationManager access$3(com.adview.DownloadService)
+    {
+        android.app.NotificationManager r1;
+        com.adview.DownloadService $r0;
+
+        $r0 := @parameter0: com.adview.DownloadService;
+
+        r1 = $r0.<com.adview.DownloadService: android.app.NotificationManager updateNotificationManager>;
+
+        return r1;
+    }
+
+    static int access$4()
+    {
+        int i0;
+
+        i0 = <com.adview.DownloadService: int index>;
+
+        return i0;
+    }
+
+    static android.content.Intent access$5(com.adview.DownloadService)
+    {
+        android.content.Intent r1;
+        com.adview.DownloadService $r0;
+
+        $r0 := @parameter0: com.adview.DownloadService;
+
+        r1 = $r0.<com.adview.DownloadService: android.content.Intent updateIntent>;
+
+        return r1;
+    }
+
+    static java.lang.String access$6(com.adview.DownloadService)
+    {
+        java.lang.String r1;
+        com.adview.DownloadService $r0;
+
+        $r0 := @parameter0: com.adview.DownloadService;
+
+        r1 = $r0.<com.adview.DownloadService: java.lang.String title>;
+
+        return r1;
+    }
+
+    static android.app.PendingIntent access$7(com.adview.DownloadService)
+    {
+        android.app.PendingIntent r1;
+        com.adview.DownloadService $r0;
+
+        $r0 := @parameter0: com.adview.DownloadService;
+
+        r1 = $r0.<com.adview.DownloadService: android.app.PendingIntent updatePendingIntent>;
+
+        return r1;
+    }
+
+    static android.os.Handler access$8(com.adview.DownloadService)
+    {
+        com.adview.DownloadService $r0;
+        android.os.Handler r1;
+
+        $r0 := @parameter0: com.adview.DownloadService;
+
+        r1 = $r0.<com.adview.DownloadService: android.os.Handler updateHandler>;
+
+        return r1;
+    }
+
+    static java.io.File access$9(com.adview.DownloadService)
+    {
+        java.io.File r1;
+        com.adview.DownloadService $r0;
+
+        $r0 := @parameter0: com.adview.DownloadService;
+
+        r1 = $r0.<com.adview.DownloadService: java.io.File updateDir>;
+
+        return r1;
+    }
+
+    public long downloadFile(java.lang.String, java.io.File)
+    {
+        java.net.HttpURLConnection $r6;
+        java.lang.Throwable $r8, $r11, $r16, $r17;
+        byte[] $r3;
+        java.net.URL $r4, $r18;
+        com.adview.DownloadService r0;
+        long $l0, $l1, $l5;
+        android.app.PendingIntent $r14;
+        java.net.URLConnection $r5;
+        int $i2, $i3, $i4, $i6;
+        java.lang.String $r1;
+        android.app.NotificationManager $r15;
+        java.io.FileOutputStream $r9, $r20;
+        java.io.File $r2;
+        java.lang.Exception $r7, $r19;
+        android.app.Notification $r12;
+        java.lang.StringBuilder $r13, $r21;
+        java.io.InputStream $r10;
+
+        r0 := @this: com.adview.DownloadService;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.io.File;
+
+        $l1 = 0L;
+
+     label01:
+        $r18 = new java.net.URL;
+
+     label02:
+        $r4 = $r18;
+
+     label03:
+        specialinvoke $r18.<java.net.URL: void <init>(java.lang.String)>($r1);
+
+        $r5 = virtualinvoke $r4.<java.net.URL: java.net.URLConnection openConnection()>();
+
+        $r6 = (java.net.HttpURLConnection) $r5;
+
+     label04:
+        virtualinvoke $r6.<java.net.HttpURLConnection: void setRequestProperty(java.lang.String,java.lang.String)>("User-Agent", "PacificHttpClient");
+
+        virtualinvoke $r6.<java.net.HttpURLConnection: void setConnectTimeout(int)>(10000);
+
+        virtualinvoke $r6.<java.net.HttpURLConnection: void setReadTimeout(int)>(20000);
+
+        $i2 = virtualinvoke $r6.<java.net.HttpURLConnection: int getContentLength()>();
+
+        $i3 = virtualinvoke $r6.<java.net.HttpURLConnection: int getResponseCode()>();
+
+     label05:
+        if $i3 != 404 goto label14;
+
+     label06:
+        $r19 = new java.lang.Exception;
+
+     label07:
+        $r7 = $r19;
+
+     label08:
+        specialinvoke $r19.<java.lang.Exception: void <init>(java.lang.String)>("fail!");
+
+        throw $r7;
+
+     label09:
+        $r8 := @caughtexception;
+
+        $r9 = null;
+
+        $r10 = null;
+
+        $r11 = $r8;
+
+     label10:
+        if $r6 == null goto label11;
+
+        virtualinvoke $r6.<java.net.HttpURLConnection: void disconnect()>();
+
+     label11:
+        if $r10 == null goto label12;
+
+        virtualinvoke $r10.<java.io.InputStream: void close()>();
+
+     label12:
+        if $r9 == null goto label13;
+
+        virtualinvoke $r9.<java.io.FileOutputStream: void close()>();
+
+     label13:
+        throw $r11;
+
+     label14:
+        $r10 = virtualinvoke $r6.<java.net.HttpURLConnection: java.io.InputStream getInputStream()>();
+
+     label15:
+        $r20 = new java.io.FileOutputStream;
+
+     label16:
+        $r9 = $r20;
+
+     label17:
+        specialinvoke $r20.<java.io.FileOutputStream: void <init>(java.io.File,boolean)>($r2, 0);
+
+     label18:
+        $r3 = newarray (byte)[4096];
+
+        $i4 = 0;
+
+        $i3 = 0;
+
+     label19:
+        virtualinvoke $r9.<java.io.FileOutputStream: void write(byte[],int,int)>($r3, 0, $i4);
+
+     label20:
+        $l0 = (long) $i4;
+
+        $l1 = $l1 + $l0;
+
+        if $i3 == 0 goto label23;
+
+        $l5 = 100L * $l1;
+
+        $l0 = (long) $i2;
+
+     label21:
+        $l0 = $l5 / $l0;
+
+     label22:
+        $i4 = (int) $l0;
+
+        $i4 = $i4 + -10;
+
+        if $i4 <= $i3 goto label27;
+
+     label23:
+        $i3 = $i3 + 10;
+
+     label24:
+        $r12 = r0.<com.adview.DownloadService: android.app.Notification updateNotification>;
+
+        $r21 = new java.lang.StringBuilder;
+
+     label25:
+        $r13 = $r21;
+
+        $i4 = (int) $l1;
+
+        $i4 = $i4 * 100;
+
+     label26:
+        $i4 = $i4 / $i2;
+
+        $r1 = staticinvoke <java.lang.String: java.lang.String valueOf(int)>($i4);
+
+        specialinvoke $r21.<java.lang.StringBuilder: void <init>(java.lang.String)>($r1);
+
+        $r13 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("%");
+
+        $r1 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r14 = r0.<com.adview.DownloadService: android.app.PendingIntent updatePendingIntent>;
+
+        virtualinvoke $r12.<android.app.Notification: void setLatestEventInfo(android.content.Context,java.lang.CharSequence,java.lang.CharSequence,android.app.PendingIntent)>(r0, "\u6b63\u5728\u4e0b\u8f7d\u5e94\u7528", $r1, $r14);
+
+        $r15 = r0.<com.adview.DownloadService: android.app.NotificationManager updateNotificationManager>;
+
+        $i4 = <com.adview.DownloadService: int index>;
+
+        $r12 = r0.<com.adview.DownloadService: android.app.Notification updateNotification>;
+
+        virtualinvoke $r15.<android.app.NotificationManager: void notify(int,android.app.Notification)>($i4, $r12);
+
+     label27:
+        $i6 = virtualinvoke $r10.<java.io.InputStream: int read(byte[])>($r3);
+
+     label28:
+        $i4 = $i6;
+
+        if $i6 <= 0 goto label29;
+
+        if r0 != null goto label19;
+
+     label29:
+        if $r6 == null goto label30;
+
+        virtualinvoke $r6.<java.net.HttpURLConnection: void disconnect()>();
+
+     label30:
+        if $r10 == null goto label31;
+
+        virtualinvoke $r10.<java.io.InputStream: void close()>();
+
+     label31:
+        virtualinvoke $r9.<java.io.FileOutputStream: void close()>();
+
+        return $l1;
+
+     label32:
+        $r11 := @caughtexception;
+
+        $r10 = null;
+
+        $r6 = null;
+
+        $r9 = null;
+
+        goto label10;
+
+     label33:
+        $r16 := @caughtexception;
+
+        $r11 = $r16;
+
+        $r9 = null;
+
+        goto label10;
+
+     label34:
+        $r17 := @caughtexception;
+
+        $r11 = $r17;
+
+        goto label10;
+
+        catch java.lang.Throwable from label01 to label02 with label32;
+        catch java.lang.Throwable from label03 to label04 with label32;
+        catch java.lang.Throwable from label04 to label05 with label09;
+        catch java.lang.Throwable from label06 to label07 with label09;
+        catch java.lang.Throwable from label08 to label09 with label09;
+        catch java.lang.Throwable from label14 to label15 with label09;
+        catch java.lang.Throwable from label15 to label16 with label33;
+        catch java.lang.Throwable from label17 to label18 with label33;
+        catch java.lang.Throwable from label19 to label20 with label34;
+        catch java.lang.Throwable from label21 to label22 with label34;
+        catch java.lang.Throwable from label24 to label25 with label34;
+        catch java.lang.Throwable from label26 to label28 with label34;
+    }
+
+    public android.os.IBinder onBind(android.content.Intent)
+    {
+        android.content.Intent $r1;
+        com.adview.DownloadService r0;
+
+        r0 := @this: com.adview.DownloadService;
+
+        $r1 := @parameter0: android.content.Intent;
+
+        return null;
+    }
+
+    public void onStart(android.content.Intent, int)
+    {
+        com.adview.DownloadService r0;
+        android.content.Intent $r1, $r10;
+        long $l2;
+        android.app.PendingIntent $r12;
+        com.adview.i $r14;
+        java.lang.Thread $r13;
+        int $i0, $i1;
+        java.lang.String $r2, $r3;
+        boolean $z0;
+        android.app.NotificationManager $r8;
+        java.io.File $r4, $r5;
+        android.app.Notification $r9;
+        java.lang.StringBuilder $r6;
+        java.lang.Object $r7;
+        java.lang.Class $r11;
+
+        r0 := @this: com.adview.DownloadService;
+
+        $r1 := @parameter0: android.content.Intent;
+
+        $i0 := @parameter1: int;
+
+        $i1 = <com.adview.DownloadService: int index>;
+
+        $i1 = $i1 + 1;
+
+        <com.adview.DownloadService: int index> = $i1;
+
+        $r2 = virtualinvoke $r1.<android.content.Intent: java.lang.String getStringExtra(java.lang.String)>("adview_url");
+
+        r0.<com.adview.DownloadService: java.lang.String path> = $r2;
+
+        $r2 = "mounted";
+
+        $r3 = staticinvoke <android.os.Environment: java.lang.String getExternalStorageState()>();
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>($r3);
+
+        if $z0 == 0 goto label1;
+
+        $r4 = new java.io.File;
+
+        $r5 = staticinvoke <android.os.Environment: java.io.File getExternalStorageDirectory()>();
+
+        specialinvoke $r4.<java.io.File: void <init>(java.io.File,java.lang.String)>($r5, "Adview/download/");
+
+        r0.<com.adview.DownloadService: java.io.File updateDir> = $r4;
+
+        $r4 = new java.io.File;
+
+        $r5 = r0.<com.adview.DownloadService: java.io.File updateDir>;
+
+        $r2 = virtualinvoke $r5.<java.io.File: java.lang.String getPath()>();
+
+        $r6 = new java.lang.StringBuilder;
+
+        $r3 = r0.<com.adview.DownloadService: java.lang.String title>;
+
+        $r3 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r3);
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>(java.lang.String)>($r3);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(".apk");
+
+        $r3 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r4.<java.io.File: void <init>(java.lang.String,java.lang.String)>($r2, $r3);
+
+        r0.<com.adview.DownloadService: java.io.File updateFile> = $r4;
+
+     label1:
+        $r7 = virtualinvoke r0.<com.adview.DownloadService: java.lang.Object getSystemService(java.lang.String)>("notification");
+
+        $r8 = (android.app.NotificationManager) $r7;
+
+        r0.<com.adview.DownloadService: android.app.NotificationManager updateNotificationManager> = $r8;
+
+        $l2 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $r9 = new android.app.Notification;
+
+        specialinvoke $r9.<android.app.Notification: void <init>(int,java.lang.CharSequence,long)>(17301633, "\u5f00\u59cb\u4e0b\u8f7d\u5e94\u7528", $l2);
+
+        r0.<com.adview.DownloadService: android.app.Notification updateNotification> = $r9;
+
+        $r10 = new android.content.Intent;
+
+        $r11 = virtualinvoke $r1.<java.lang.Object: java.lang.Class getClass()>();
+
+        specialinvoke $r10.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>(r0, $r11);
+
+        r0.<com.adview.DownloadService: android.content.Intent updateIntent> = $r10;
+
+        $r10 = r0.<com.adview.DownloadService: android.content.Intent updateIntent>;
+
+        $r12 = staticinvoke <android.app.PendingIntent: android.app.PendingIntent getActivity(android.content.Context,int,android.content.Intent,int)>(r0, 0, $r10, 0);
+
+        r0.<com.adview.DownloadService: android.app.PendingIntent updatePendingIntent> = $r12;
+
+        $r9 = r0.<com.adview.DownloadService: android.app.Notification updateNotification>;
+
+        $r12 = r0.<com.adview.DownloadService: android.app.PendingIntent updatePendingIntent>;
+
+        virtualinvoke $r9.<android.app.Notification: void setLatestEventInfo(android.content.Context,java.lang.CharSequence,java.lang.CharSequence,android.app.PendingIntent)>(r0, "\u6b63\u5728\u4e0b\u8f7d\u5e94\u7528", "0%", $r12);
+
+        $r9 = r0.<com.adview.DownloadService: android.app.Notification updateNotification>;
+
+        $i1 = $r9.<android.app.Notification: int flags>;
+
+        $i1 = $i1 | 2;
+
+        $r9.<android.app.Notification: int flags> = $i1;
+
+        $r8 = r0.<com.adview.DownloadService: android.app.NotificationManager updateNotificationManager>;
+
+        $i1 = <com.adview.DownloadService: int index>;
+
+        $r9 = r0.<com.adview.DownloadService: android.app.Notification updateNotification>;
+
+        virtualinvoke $r8.<android.app.NotificationManager: void notify(int,android.app.Notification)>($i1, $r9);
+
+        $r13 = new java.lang.Thread;
+
+        $r14 = new com.adview.i;
+
+        specialinvoke $r14.<com.adview.i: void <init>(com.adview.DownloadService)>(r0);
+
+        specialinvoke $r13.<java.lang.Thread: void <init>(java.lang.Runnable)>($r14);
+
+        virtualinvoke $r13.<java.lang.Thread: void start()>();
+
+        specialinvoke r0.<android.app.Service: void onStart(android.content.Intent,int)>($r1, $i0);
+
+        return;
+    }
+}

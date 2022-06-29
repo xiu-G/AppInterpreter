@@ -1,0 +1,2124 @@
+public class net.adlayout.ad.AdLayout extends android.widget.RelativeLayout implements net.adlayout.ad.BaseAdapterListener
+{
+    private static final int FAILOVER_SDK;
+    public static final int MAX_FAILOVER;
+    private static final int RANDOM_SDK;
+    private static final int RECEIVE_AD;
+    private net.adlayout.ad.AdLayoutListener adLayoutListener;
+    private java.lang.Object adListenerLock;
+    private boolean adLoading;
+    private net.adlayout.ad.manager.AdManager adManager;
+    private long changeInterval;
+    private long changeT1;
+    private long changeT2;
+    private java.lang.Thread changeThread;
+    private net.adlayout.ad.BaseAdapter currentAdBridge;
+    private int currentLoadingSDK;
+    private int currentSDK;
+    private android.view.View currentView;
+    private int failoverSign;
+    private android.os.Handler handler;
+    private boolean isLive;
+    private boolean isPause;
+    private net.adlayout.ad.BaseAdapter lastAdBridge;
+    private java.util.ArrayList simultaneous;
+    private int simultaneousFailedSign;
+    private boolean simultaneousLoading;
+
+    public void <init>(android.content.Context)
+    {
+        android.content.Context $r1;
+        net.adlayout.ad.AdLayout$1 $r3;
+        java.lang.Object $r2;
+        net.adlayout.ad.AdLayout r0;
+        java.util.ArrayList $r4;
+
+        r0 := @this: net.adlayout.ad.AdLayout;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke r0.<android.widget.RelativeLayout: void <init>(android.content.Context)>($r1);
+
+        r0.<net.adlayout.ad.AdLayout: boolean isLive> = 0;
+
+        r0.<net.adlayout.ad.AdLayout: boolean adLoading> = 0;
+
+        r0.<net.adlayout.ad.AdLayout: boolean isPause> = 0;
+
+        r0.<net.adlayout.ad.AdLayout: long changeInterval> = 20L;
+
+        $r2 = new java.lang.Object;
+
+        specialinvoke $r2.<java.lang.Object: void <init>()>();
+
+        r0.<net.adlayout.ad.AdLayout: java.lang.Object adListenerLock> = $r2;
+
+        r0.<net.adlayout.ad.AdLayout: int currentSDK> = -1;
+
+        $r3 = new net.adlayout.ad.AdLayout$1;
+
+        specialinvoke $r3.<net.adlayout.ad.AdLayout$1: void <init>(net.adlayout.ad.AdLayout)>(r0);
+
+        r0.<net.adlayout.ad.AdLayout: android.os.Handler handler> = $r3;
+
+        r0.<net.adlayout.ad.AdLayout: int failoverSign> = 0;
+
+        r0.<net.adlayout.ad.AdLayout: int currentLoadingSDK> = -1;
+
+        $r4 = new java.util.ArrayList;
+
+        specialinvoke $r4.<java.util.ArrayList: void <init>()>();
+
+        r0.<net.adlayout.ad.AdLayout: java.util.ArrayList simultaneous> = $r4;
+
+        r0.<net.adlayout.ad.AdLayout: boolean simultaneousLoading> = 0;
+
+        r0.<net.adlayout.ad.AdLayout: int simultaneousFailedSign> = 0;
+
+        specialinvoke r0.<net.adlayout.ad.AdLayout: void init()>();
+
+        return;
+    }
+
+    public void <init>(android.content.Context, android.util.AttributeSet)
+    {
+        android.content.Context $r1;
+        android.util.AttributeSet $r2;
+        net.adlayout.ad.AdLayout$1 $r4;
+        int $i0;
+        java.lang.Object $r3;
+        net.adlayout.ad.AdLayout r0;
+        java.util.ArrayList $r5;
+
+        r0 := @this: net.adlayout.ad.AdLayout;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.util.AttributeSet;
+
+        specialinvoke r0.<android.widget.RelativeLayout: void <init>(android.content.Context,android.util.AttributeSet)>($r1, $r2);
+
+        r0.<net.adlayout.ad.AdLayout: boolean isLive> = 0;
+
+        r0.<net.adlayout.ad.AdLayout: boolean adLoading> = 0;
+
+        r0.<net.adlayout.ad.AdLayout: boolean isPause> = 0;
+
+        r0.<net.adlayout.ad.AdLayout: long changeInterval> = 20L;
+
+        $r3 = new java.lang.Object;
+
+        specialinvoke $r3.<java.lang.Object: void <init>()>();
+
+        r0.<net.adlayout.ad.AdLayout: java.lang.Object adListenerLock> = $r3;
+
+        $i0 = -1;
+
+        r0.<net.adlayout.ad.AdLayout: int currentSDK> = $i0;
+
+        $r4 = new net.adlayout.ad.AdLayout$1;
+
+        specialinvoke $r4.<net.adlayout.ad.AdLayout$1: void <init>(net.adlayout.ad.AdLayout)>(r0);
+
+        r0.<net.adlayout.ad.AdLayout: android.os.Handler handler> = $r4;
+
+        r0.<net.adlayout.ad.AdLayout: int failoverSign> = 0;
+
+        $i0 = -1;
+
+        r0.<net.adlayout.ad.AdLayout: int currentLoadingSDK> = $i0;
+
+        $r5 = new java.util.ArrayList;
+
+        specialinvoke $r5.<java.util.ArrayList: void <init>()>();
+
+        r0.<net.adlayout.ad.AdLayout: java.util.ArrayList simultaneous> = $r5;
+
+        r0.<net.adlayout.ad.AdLayout: boolean simultaneousLoading> = 0;
+
+        r0.<net.adlayout.ad.AdLayout: int simultaneousFailedSign> = 0;
+
+        specialinvoke r0.<net.adlayout.ad.AdLayout: void init()>();
+
+        return;
+    }
+
+    static boolean access$0(net.adlayout.ad.AdLayout)
+    {
+        net.adlayout.ad.AdLayout $r0;
+        boolean z0;
+
+        $r0 := @parameter0: net.adlayout.ad.AdLayout;
+
+        z0 = $r0.<net.adlayout.ad.AdLayout: boolean isLive>;
+
+        return z0;
+    }
+
+    static void access$1(net.adlayout.ad.AdLayout)
+    {
+        net.adlayout.ad.AdLayout $r0;
+
+        $r0 := @parameter0: net.adlayout.ad.AdLayout;
+
+        specialinvoke $r0.<net.adlayout.ad.AdLayout: void randomSDK()>();
+
+        return;
+    }
+
+    static void access$10(net.adlayout.ad.AdLayout, long)
+    {
+        long $l0;
+        net.adlayout.ad.AdLayout $r0;
+
+        $r0 := @parameter0: net.adlayout.ad.AdLayout;
+
+        $l0 := @parameter1: long;
+
+        $r0.<net.adlayout.ad.AdLayout: long changeInterval> = $l0;
+
+        return;
+    }
+
+    static void access$11(net.adlayout.ad.AdLayout)
+    {
+        net.adlayout.ad.AdLayout $r0;
+
+        $r0 := @parameter0: net.adlayout.ad.AdLayout;
+
+        specialinvoke $r0.<net.adlayout.ad.AdLayout: void initChangeThread()>();
+
+        return;
+    }
+
+    static long access$12(net.adlayout.ad.AdLayout)
+    {
+        long l0;
+        net.adlayout.ad.AdLayout $r0;
+
+        $r0 := @parameter0: net.adlayout.ad.AdLayout;
+
+        l0 = $r0.<net.adlayout.ad.AdLayout: long changeT1>;
+
+        return l0;
+    }
+
+    static long access$13(net.adlayout.ad.AdLayout)
+    {
+        long l0;
+        net.adlayout.ad.AdLayout $r0;
+
+        $r0 := @parameter0: net.adlayout.ad.AdLayout;
+
+        l0 = $r0.<net.adlayout.ad.AdLayout: long changeInterval>;
+
+        return l0;
+    }
+
+    static boolean access$14(net.adlayout.ad.AdLayout)
+    {
+        net.adlayout.ad.AdLayout $r0;
+        boolean z0;
+
+        $r0 := @parameter0: net.adlayout.ad.AdLayout;
+
+        z0 = $r0.<net.adlayout.ad.AdLayout: boolean isPause>;
+
+        return z0;
+    }
+
+    static boolean access$15(net.adlayout.ad.AdLayout)
+    {
+        net.adlayout.ad.AdLayout $r0;
+        boolean z0;
+
+        $r0 := @parameter0: net.adlayout.ad.AdLayout;
+
+        z0 = $r0.<net.adlayout.ad.AdLayout: boolean adLoading>;
+
+        return z0;
+    }
+
+    static void access$2(net.adlayout.ad.AdLayout, net.adlayout.ad.content.SDKBean)
+    {
+        net.adlayout.ad.AdLayout $r0;
+        net.adlayout.ad.content.SDKBean $r1;
+
+        $r0 := @parameter0: net.adlayout.ad.AdLayout;
+
+        $r1 := @parameter1: net.adlayout.ad.content.SDKBean;
+
+        specialinvoke $r0.<net.adlayout.ad.AdLayout: void failover(net.adlayout.ad.content.SDKBean)>($r1);
+
+        return;
+    }
+
+    static void access$3(net.adlayout.ad.AdLayout, net.adlayout.ad.content.SDKBean)
+    {
+        net.adlayout.ad.AdLayout $r0;
+        net.adlayout.ad.content.SDKBean $r1;
+
+        $r0 := @parameter0: net.adlayout.ad.AdLayout;
+
+        $r1 := @parameter1: net.adlayout.ad.content.SDKBean;
+
+        specialinvoke $r0.<net.adlayout.ad.AdLayout: void reveiveAdView(net.adlayout.ad.content.SDKBean)>($r1);
+
+        return;
+    }
+
+    static void access$4(net.adlayout.ad.AdLayout, boolean)
+    {
+        net.adlayout.ad.AdLayout $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: net.adlayout.ad.AdLayout;
+
+        $z0 := @parameter1: boolean;
+
+        $r0.<net.adlayout.ad.AdLayout: boolean adLoading> = 1;
+
+        return;
+    }
+
+    static android.os.Handler access$5(net.adlayout.ad.AdLayout)
+    {
+        net.adlayout.ad.AdLayout $r0;
+        android.os.Handler r1;
+
+        $r0 := @parameter0: net.adlayout.ad.AdLayout;
+
+        r1 = $r0.<net.adlayout.ad.AdLayout: android.os.Handler handler>;
+
+        return r1;
+    }
+
+    static void access$6(net.adlayout.ad.AdLayout, long)
+    {
+        long $l0;
+        net.adlayout.ad.AdLayout $r0;
+
+        $r0 := @parameter0: net.adlayout.ad.AdLayout;
+
+        $l0 := @parameter1: long;
+
+        $r0.<net.adlayout.ad.AdLayout: long changeT2> = $l0;
+
+        return;
+    }
+
+    static long access$7(net.adlayout.ad.AdLayout)
+    {
+        long l0;
+        net.adlayout.ad.AdLayout $r0;
+
+        $r0 := @parameter0: net.adlayout.ad.AdLayout;
+
+        l0 = $r0.<net.adlayout.ad.AdLayout: long changeT2>;
+
+        return l0;
+    }
+
+    static void access$8(net.adlayout.ad.AdLayout, long)
+    {
+        long $l0;
+        net.adlayout.ad.AdLayout $r0;
+
+        $r0 := @parameter0: net.adlayout.ad.AdLayout;
+
+        $l0 := @parameter1: long;
+
+        $r0.<net.adlayout.ad.AdLayout: long changeT1> = $l0;
+
+        return;
+    }
+
+    static net.adlayout.ad.manager.AdManager access$9(net.adlayout.ad.AdLayout)
+    {
+        net.adlayout.ad.manager.AdManager r1;
+        net.adlayout.ad.AdLayout $r0;
+
+        $r0 := @parameter0: net.adlayout.ad.AdLayout;
+
+        r1 = $r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.manager.AdManager adManager>;
+
+        return r1;
+    }
+
+    private android.view.View create3rdPartyNetwork(net.adlayout.ad.content.SDKBean)
+    {
+        android.content.Context $r3;
+        net.adlayout.ad.content.SDKBean $r1;
+        android.view.View $r4;
+        net.adlayout.ad.BaseAdapter $r2;
+        net.adlayout.ad.AdLayout r0;
+
+        r0 := @this: net.adlayout.ad.AdLayout;
+
+        $r1 := @parameter0: net.adlayout.ad.content.SDKBean;
+
+        $r2 = staticinvoke <net.adlayout.ad.BaseAdapter: net.adlayout.ad.BaseAdapter createMenueAdAdapter(net.adlayout.ad.content.SDKBean)>($r1);
+
+        r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.BaseAdapter currentAdBridge> = $r2;
+
+        $r2 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.BaseAdapter currentAdBridge>;
+
+        if $r2 == null goto label1;
+
+        $r2 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.BaseAdapter currentAdBridge>;
+
+        $r3 = virtualinvoke r0.<net.adlayout.ad.AdLayout: android.content.Context getContext()>();
+
+        $r4 = virtualinvoke $r2.<net.adlayout.ad.BaseAdapter: android.view.View getAdView(android.content.Context)>($r3);
+
+        $r2 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.BaseAdapter currentAdBridge>;
+
+        virtualinvoke $r2.<net.adlayout.ad.BaseAdapter: void setBaseAdapterListener(net.adlayout.ad.BaseAdapterListener)>(r0);
+
+        return $r4;
+
+     label1:
+        return null;
+    }
+
+    private android.view.View createJaAdlantis(net.adlayout.ad.content.SDKBean)
+    {
+        java.lang.Throwable $r8;
+        android.content.Context $r4;
+        net.adlayout.ad.AdLayoutListener $r7;
+        net.adlayout.ad.content.SDKBean $r1;
+        android.view.View r3;
+        java.lang.Object $r6;
+        net.adlayout.ad.BaseAdapter $r2;
+        android.app.Activity $r5;
+        net.adlayout.ad.AdLayout r0;
+
+        r0 := @this: net.adlayout.ad.AdLayout;
+
+        $r1 := @parameter0: net.adlayout.ad.content.SDKBean;
+
+        $r2 = staticinvoke <net.adlayout.ad.BaseAdapter: net.adlayout.ad.BaseAdapter createMenueAdAdapter(net.adlayout.ad.content.SDKBean)>($r1);
+
+        r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.BaseAdapter currentAdBridge> = $r2;
+
+        r3 = null;
+
+        $r2 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.BaseAdapter currentAdBridge>;
+
+        if $r2 == null goto label1;
+
+        $r2 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.BaseAdapter currentAdBridge>;
+
+        $r4 = virtualinvoke r0.<net.adlayout.ad.AdLayout: android.content.Context getContext()>();
+
+        $r5 = (android.app.Activity) $r4;
+
+        r3 = virtualinvoke $r2.<net.adlayout.ad.BaseAdapter: android.view.View getAdView(android.content.Context)>($r5);
+
+        $r2 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.BaseAdapter currentAdBridge>;
+
+        virtualinvoke $r2.<net.adlayout.ad.BaseAdapter: void setBaseAdapterListener(net.adlayout.ad.BaseAdapterListener)>(r0);
+
+     label1:
+        $r6 = r0.<net.adlayout.ad.AdLayout: java.lang.Object adListenerLock>;
+
+        entermonitor $r6;
+
+     label2:
+        $r7 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.AdLayoutListener adLayoutListener>;
+
+        if $r7 == null goto label3;
+
+        $r7 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.AdLayoutListener adLayoutListener>;
+
+        interfaceinvoke $r7.<net.adlayout.ad.AdLayoutListener: void onReceiveAd(int)>(1004);
+
+     label3:
+        exitmonitor $r6;
+
+     label4:
+        return r3;
+
+     label5:
+        $r8 := @caughtexception;
+
+        exitmonitor $r6;
+
+     label6:
+        throw $r8;
+
+        catch java.lang.Throwable from label2 to label4 with label5;
+        catch java.lang.Throwable from label5 to label6 with label5;
+    }
+
+    private android.view.View createJaAmoad(net.adlayout.ad.content.SDKBean)
+    {
+        java.lang.Throwable $r8;
+        android.content.Context $r4;
+        net.adlayout.ad.AdLayoutListener $r7;
+        net.adlayout.ad.content.SDKBean $r1;
+        android.view.View r3;
+        java.lang.Object $r6;
+        net.adlayout.ad.BaseAdapter $r2;
+        android.app.Activity $r5;
+        net.adlayout.ad.AdLayout r0;
+
+        r0 := @this: net.adlayout.ad.AdLayout;
+
+        $r1 := @parameter0: net.adlayout.ad.content.SDKBean;
+
+        $r2 = staticinvoke <net.adlayout.ad.BaseAdapter: net.adlayout.ad.BaseAdapter createMenueAdAdapter(net.adlayout.ad.content.SDKBean)>($r1);
+
+        r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.BaseAdapter currentAdBridge> = $r2;
+
+        r3 = null;
+
+        $r2 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.BaseAdapter currentAdBridge>;
+
+        if $r2 == null goto label1;
+
+        $r2 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.BaseAdapter currentAdBridge>;
+
+        $r4 = virtualinvoke r0.<net.adlayout.ad.AdLayout: android.content.Context getContext()>();
+
+        $r5 = (android.app.Activity) $r4;
+
+        r3 = virtualinvoke $r2.<net.adlayout.ad.BaseAdapter: android.view.View getAdView(android.content.Context)>($r5);
+
+        $r2 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.BaseAdapter currentAdBridge>;
+
+        virtualinvoke $r2.<net.adlayout.ad.BaseAdapter: void setBaseAdapterListener(net.adlayout.ad.BaseAdapterListener)>(r0);
+
+     label1:
+        $r6 = r0.<net.adlayout.ad.AdLayout: java.lang.Object adListenerLock>;
+
+        entermonitor $r6;
+
+     label2:
+        $r7 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.AdLayoutListener adLayoutListener>;
+
+        if $r7 == null goto label3;
+
+        $r7 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.AdLayoutListener adLayoutListener>;
+
+        interfaceinvoke $r7.<net.adlayout.ad.AdLayoutListener: void onReceiveAd(int)>(1003);
+
+     label3:
+        exitmonitor $r6;
+
+     label4:
+        return r3;
+
+     label5:
+        $r8 := @caughtexception;
+
+        exitmonitor $r6;
+
+     label6:
+        throw $r8;
+
+        catch java.lang.Throwable from label2 to label4 with label5;
+        catch java.lang.Throwable from label5 to label6 with label5;
+    }
+
+    private void directSDK(net.adlayout.ad.content.SDKBean)
+    {
+        net.adlayout.ad.content.SDKBean $r1;
+        long $l2;
+        android.widget.RelativeLayout$LayoutParams $r9;
+        int i0, i1;
+        android.view.View $r5;
+        java.lang.String $r4;
+        net.adlayout.ad.AdLayout r0;
+        boolean $z0;
+        net.adlayout.ad.manager.AdManager $r2;
+        android.util.DisplayMetrics $r7;
+        float f0, $f1;
+        java.lang.StringBuilder $r3, $r8;
+        android.content.res.Resources $r6;
+
+        r0 := @this: net.adlayout.ad.AdLayout;
+
+        $r1 := @parameter0: net.adlayout.ad.content.SDKBean;
+
+        i0 = virtualinvoke $r1.<net.adlayout.ad.content.SDKBean: int getSdkCode()>();
+
+        r0.<net.adlayout.ad.AdLayout: boolean adLoading> = 1;
+
+        $l2 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        r0.<net.adlayout.ad.AdLayout: long changeT2> = $l2;
+
+        $l2 = r0.<net.adlayout.ad.AdLayout: long changeT2>;
+
+        r0.<net.adlayout.ad.AdLayout: long changeT1> = $l2;
+
+        $r2 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.manager.AdManager adManager>;
+
+        $z0 = virtualinvoke $r2.<net.adlayout.ad.manager.AdManager: boolean isHaveSimultaneousList()>();
+
+        if $z0 == 0 goto label1;
+
+        $z0 = virtualinvoke $r1.<net.adlayout.ad.content.SDKBean: boolean isSimultaneous()>();
+
+        if $z0 == 0 goto label1;
+
+        specialinvoke r0.<net.adlayout.ad.AdLayout: void simultaneousRequest()>();
+
+        return;
+
+     label1:
+        r0.<net.adlayout.ad.AdLayout: int currentLoadingSDK> = i0;
+
+        lookupswitch(i0)
+        {
+            case 1: goto label5;
+            case 2: goto label5;
+            case 3: goto label5;
+            case 4: goto label5;
+            case 5: goto label5;
+            case 6: goto label5;
+            case 7: goto label5;
+            case 8: goto label5;
+            case 9: goto label5;
+            case 10: goto label5;
+            case 11: goto label5;
+            case 12: goto label5;
+            case 13: goto label5;
+            case 14: goto label5;
+            case 1001: goto label5;
+            case 1002: goto label5;
+            case 1003: goto label6;
+            case 1004: goto label7;
+            case 1005: goto label5;
+            case 1006: goto label5;
+            case 1007: goto label5;
+            default: goto label2;
+        };
+
+     label2:
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>(java.lang.String)>("Unknow Ad network loading ");
+
+        i1 = r0.<net.adlayout.ad.AdLayout: int currentLoadingSDK>;
+
+        $r3 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>(i1);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", $r4);
+
+        r0.<net.adlayout.ad.AdLayout: int currentLoadingSDK> = 1;
+
+        virtualinvoke $r1.<net.adlayout.ad.content.SDKBean: void setSdkCode(int)>(1);
+
+        $r5 = specialinvoke r0.<net.adlayout.ad.AdLayout: android.view.View create3rdPartyNetwork(net.adlayout.ad.content.SDKBean)>($r1);
+
+        r0.<net.adlayout.ad.AdLayout: android.view.View currentView> = $r5;
+
+     label3:
+        $r5 = r0.<net.adlayout.ad.AdLayout: android.view.View currentView>;
+
+        if $r5 == null goto label9;
+
+        if i0 == 1005 goto label4;
+
+        if i0 == 1004 goto label4;
+
+        if i0 != 13 goto label8;
+
+     label4:
+        $r6 = virtualinvoke r0.<net.adlayout.ad.AdLayout: android.content.res.Resources getResources()>();
+
+        $r7 = virtualinvoke $r6.<android.content.res.Resources: android.util.DisplayMetrics getDisplayMetrics()>();
+
+        f0 = $r7.<android.util.DisplayMetrics: float density>;
+
+        $f1 = 50.0F * f0;
+
+        $f1 = $f1 + 0.5F;
+
+        i0 = (int) $f1;
+
+        f0 = 320.0F * f0;
+
+        f0 = f0 + 0.5F;
+
+        i1 = (int) f0;
+
+        $r9 = new android.widget.RelativeLayout$LayoutParams;
+
+        specialinvoke $r9.<android.widget.RelativeLayout$LayoutParams: void <init>(int,int)>(i1, i0);
+
+        virtualinvoke $r9.<android.widget.RelativeLayout$LayoutParams: void addRule(int,int)>(13, -1);
+
+        $r9 = new android.widget.RelativeLayout$LayoutParams;
+
+        specialinvoke $r9.<android.widget.RelativeLayout$LayoutParams: void <init>(int,int)>(i1, i0);
+
+        $r5 = r0.<net.adlayout.ad.AdLayout: android.view.View currentView>;
+
+        virtualinvoke r0.<net.adlayout.ad.AdLayout: void addView(android.view.View,android.view.ViewGroup$LayoutParams)>($r5, $r9);
+
+        return;
+
+     label5:
+        $r5 = specialinvoke r0.<net.adlayout.ad.AdLayout: android.view.View create3rdPartyNetwork(net.adlayout.ad.content.SDKBean)>($r1);
+
+        r0.<net.adlayout.ad.AdLayout: android.view.View currentView> = $r5;
+
+        goto label3;
+
+     label6:
+        $r5 = specialinvoke r0.<net.adlayout.ad.AdLayout: android.view.View createJaAmoad(net.adlayout.ad.content.SDKBean)>($r1);
+
+        r0.<net.adlayout.ad.AdLayout: android.view.View currentView> = $r5;
+
+        goto label3;
+
+     label7:
+        $r5 = specialinvoke r0.<net.adlayout.ad.AdLayout: android.view.View createJaAdlantis(net.adlayout.ad.content.SDKBean)>($r1);
+
+        r0.<net.adlayout.ad.AdLayout: android.view.View currentView> = $r5;
+
+        goto label3;
+
+     label8:
+        $r9 = new android.widget.RelativeLayout$LayoutParams;
+
+        specialinvoke $r9.<android.widget.RelativeLayout$LayoutParams: void <init>(int,int)>(-1, -2);
+
+        $r5 = r0.<net.adlayout.ad.AdLayout: android.view.View currentView>;
+
+        virtualinvoke r0.<net.adlayout.ad.AdLayout: void addView(android.view.View,android.view.ViewGroup$LayoutParams)>($r5, $r9);
+
+     label9:
+        return;
+    }
+
+    private void failover(net.adlayout.ad.content.SDKBean)
+    {
+        java.lang.Throwable r3;
+        android.content.Context $r4;
+        net.adlayout.ad.content.SDKBean $r1, r12;
+        java.util.ArrayList $r8;
+        int $i0, $i1;
+        android.view.View $r14;
+        java.lang.SecurityException $r16;
+        java.lang.String $r9;
+        net.adlayout.ad.AdLayout r0;
+        boolean $z0;
+        android.net.ConnectivityManager r6;
+        java.util.Iterator $r11;
+        net.adlayout.ad.manager.AdManager $r10;
+        android.net.NetworkInfo $r7;
+        java.lang.Exception r2;
+        java.lang.Object $r5;
+        java.lang.StringBuilder $r13, $r15;
+
+        r0 := @this: net.adlayout.ad.AdLayout;
+
+        $r1 := @parameter0: net.adlayout.ad.content.SDKBean;
+
+        $i0 = r0.<net.adlayout.ad.AdLayout: int failoverSign>;
+
+        if $i0 < 4 goto label03;
+
+     label01:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("AdLayout", "Failover over 4.Stop failover.");
+
+     label02:
+        return;
+
+     label03:
+        $r4 = virtualinvoke r0.<net.adlayout.ad.AdLayout: android.content.Context getContext()>();
+
+        $r5 = virtualinvoke $r4.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("connectivity");
+
+     label04:
+        r6 = (android.net.ConnectivityManager) $r5;
+
+     label05:
+        $r7 = virtualinvoke r6.<android.net.ConnectivityManager: android.net.NetworkInfo getActiveNetworkInfo()>();
+
+     label06:
+        if $r7 == null goto label31;
+
+     label07:
+        $z0 = virtualinvoke $r7.<android.net.NetworkInfo: boolean isAvailable()>();
+
+     label08:
+        if $z0 == 0 goto label31;
+
+        $z0 = r0.<net.adlayout.ad.AdLayout: boolean simultaneousLoading>;
+
+        if $z0 == 0 goto label12;
+
+        $i0 = r0.<net.adlayout.ad.AdLayout: int simultaneousFailedSign>;
+
+        $r8 = r0.<net.adlayout.ad.AdLayout: java.util.ArrayList simultaneous>;
+
+     label09:
+        $i1 = virtualinvoke $r8.<java.util.ArrayList: int size()>();
+
+     label10:
+        $i1 = $i1 + -1;
+
+        if $i0 >= $i1 goto label12;
+
+        $i0 = r0.<net.adlayout.ad.AdLayout: int simultaneousFailedSign>;
+
+        $i0 = $i0 + 1;
+
+        r0.<net.adlayout.ad.AdLayout: int simultaneousFailedSign> = $i0;
+
+        return;
+
+     label11:
+        r3 := @caughtexception;
+
+        $r16 = (java.lang.SecurityException) r3;
+
+        $r9 = virtualinvoke $r16.<java.lang.SecurityException: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", $r9);
+
+        return;
+
+     label12:
+        $r10 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.manager.AdManager adManager>;
+
+     label13:
+        $r8 = virtualinvoke $r10.<net.adlayout.ad.manager.AdManager: java.util.ArrayList getSdkList()>();
+
+        $r11 = virtualinvoke $r8.<java.util.ArrayList: java.util.Iterator iterator()>();
+
+     label14:
+        $z0 = interfaceinvoke $r11.<java.util.Iterator: boolean hasNext()>();
+
+     label15:
+        if $z0 != 0 goto label17;
+
+     label16:
+        r0.<net.adlayout.ad.AdLayout: int simultaneousFailedSign> = 0;
+
+        r0.<net.adlayout.ad.AdLayout: boolean simultaneousLoading> = 0;
+
+        return;
+
+     label17:
+        $r5 = interfaceinvoke $r11.<java.util.Iterator: java.lang.Object next()>();
+
+     label18:
+        r12 = (net.adlayout.ad.content.SDKBean) $r5;
+
+     label19:
+        $i0 = virtualinvoke r12.<net.adlayout.ad.content.SDKBean: int getSdkCode()>();
+
+        $i1 = virtualinvoke $r1.<net.adlayout.ad.content.SDKBean: int getFailover()>();
+
+     label20:
+        if $i0 != $i1 goto label14;
+
+        $i0 = r0.<net.adlayout.ad.AdLayout: int failoverSign>;
+
+        $i0 = $i0 + 1;
+
+        r0.<net.adlayout.ad.AdLayout: int failoverSign> = $i0;
+
+        $r15 = new java.lang.StringBuilder;
+
+        $r13 = $r15;
+
+     label21:
+        specialinvoke $r15.<java.lang.StringBuilder: void <init>(java.lang.String)>("failover ");
+
+        $i0 = virtualinvoke r12.<net.adlayout.ad.content.SDKBean: int getSdkCode()>();
+
+        $r13 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r9 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("AdLayout", $r9);
+
+     label22:
+        $r14 = r0.<net.adlayout.ad.AdLayout: android.view.View currentView>;
+
+        if $r14 == null goto label26;
+
+        $r14 = r0.<net.adlayout.ad.AdLayout: android.view.View currentView>;
+
+     label23:
+        $i0 = virtualinvoke r0.<net.adlayout.ad.AdLayout: int indexOfChild(android.view.View)>($r14);
+
+     label24:
+        if $i0 == -1 goto label26;
+
+     label25:
+        $r14 = r0.<net.adlayout.ad.AdLayout: android.view.View currentView>;
+
+        virtualinvoke r0.<net.adlayout.ad.AdLayout: void removeView(android.view.View)>($r14);
+
+     label26:
+        specialinvoke r0.<net.adlayout.ad.AdLayout: void directSDK(net.adlayout.ad.content.SDKBean)>(r12);
+
+     label27:
+        goto label16;
+
+     label28:
+        r2 := @caughtexception;
+
+     label29:
+        virtualinvoke r2.<java.lang.Exception: void printStackTrace()>();
+
+     label30:
+        goto label26;
+
+     label31:
+        return;
+
+        catch java.lang.SecurityException from label01 to label02 with label11;
+        catch java.lang.SecurityException from label03 to label04 with label11;
+        catch java.lang.SecurityException from label05 to label06 with label11;
+        catch java.lang.SecurityException from label07 to label08 with label11;
+        catch java.lang.SecurityException from label09 to label10 with label11;
+        catch java.lang.SecurityException from label13 to label15 with label11;
+        catch java.lang.SecurityException from label17 to label18 with label11;
+        catch java.lang.SecurityException from label19 to label20 with label11;
+        catch java.lang.SecurityException from label21 to label22 with label11;
+        catch java.lang.SecurityException from label23 to label24 with label11;
+        catch java.lang.Exception from label25 to label26 with label28;
+        catch java.lang.SecurityException from label26 to label27 with label11;
+        catch java.lang.SecurityException from label29 to label30 with label11;
+    }
+
+    private android.view.View getSDKView(int)
+    {
+        int $i0;
+        android.view.View $r1;
+        net.adlayout.ad.BaseAdapter $r2;
+        net.adlayout.ad.AdLayout r0;
+
+        r0 := @this: net.adlayout.ad.AdLayout;
+
+        $i0 := @parameter0: int;
+
+        $r2 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.BaseAdapter currentAdBridge>;
+
+        if $r2 == null goto label1;
+
+        $r2 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.BaseAdapter currentAdBridge>;
+
+        $r1 = virtualinvoke $r2.<net.adlayout.ad.BaseAdapter: android.view.View getCurrentView()>();
+
+        return $r1;
+
+     label1:
+        return null;
+    }
+
+    private void init()
+    {
+        android.content.Context $r2;
+        net.adlayout.ad.manager.AdManager $r6;
+        android.util.DisplayMetrics $r4;
+        net.adlayout.ad.AdLayout$2 r1;
+        int i0, i1;
+        float f0, $f1;
+        android.widget.LinearLayout$LayoutParams $r5;
+        net.adlayout.ad.AdLayout r0;
+        android.content.res.Resources $r3;
+
+        r0 := @this: net.adlayout.ad.AdLayout;
+
+        r0.<net.adlayout.ad.AdLayout: boolean isLive> = 1;
+
+        $r2 = virtualinvoke r0.<net.adlayout.ad.AdLayout: android.content.Context getContext()>();
+
+        $r3 = virtualinvoke $r2.<android.content.Context: android.content.res.Resources getResources()>();
+
+        $r4 = virtualinvoke $r3.<android.content.res.Resources: android.util.DisplayMetrics getDisplayMetrics()>();
+
+        f0 = $r4.<android.util.DisplayMetrics: float density>;
+
+        $f1 = 320.0F * f0;
+
+        $f1 = $f1 + 0.5F;
+
+        i1 = (int) $f1;
+
+        f0 = 50.0F * f0;
+
+        f0 = f0 + 0.5F;
+
+        i0 = (int) f0;
+
+        $r5 = new android.widget.LinearLayout$LayoutParams;
+
+        specialinvoke $r5.<android.widget.LinearLayout$LayoutParams: void <init>(int,int)>(i1, i0);
+
+        virtualinvoke r0.<net.adlayout.ad.AdLayout: void setLayoutParams(android.view.ViewGroup$LayoutParams)>($r5);
+
+        r1 = new net.adlayout.ad.AdLayout$2;
+
+        specialinvoke r1.<net.adlayout.ad.AdLayout$2: void <init>(net.adlayout.ad.AdLayout)>(r0);
+
+        $r2 = virtualinvoke r0.<net.adlayout.ad.AdLayout: android.content.Context getContext()>();
+
+        $r6 = staticinvoke <net.adlayout.ad.manager.AdManager: net.adlayout.ad.manager.AdManager getAdManager(android.content.Context,net.adlayout.ad.manager.AdManager$AdManagerListener)>($r2, r1);
+
+        r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.manager.AdManager adManager> = $r6;
+
+        $r6 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.manager.AdManager adManager>;
+
+        virtualinvoke $r6.<net.adlayout.ad.manager.AdManager: void getHeadFile()>();
+
+        return;
+    }
+
+    private void initChangeThread()
+    {
+        byte $b1;
+        net.adlayout.ad.AdLayout$3 $r2;
+        java.lang.Thread $r1;
+        int $i2;
+        long $l0;
+        net.adlayout.ad.AdLayout r0;
+        boolean $z0;
+
+        r0 := @this: net.adlayout.ad.AdLayout;
+
+        $l0 = r0.<net.adlayout.ad.AdLayout: long changeInterval>;
+
+        $b1 = $l0 cmp 0L;
+
+        if $b1 != 0 goto label1;
+
+        return;
+
+     label1:
+        $r1 = r0.<net.adlayout.ad.AdLayout: java.lang.Thread changeThread>;
+
+        if $r1 == null goto label2;
+
+        $r1 = r0.<net.adlayout.ad.AdLayout: java.lang.Thread changeThread>;
+
+        $z0 = virtualinvoke $r1.<java.lang.Thread: boolean isAlive()>();
+
+        if $z0 != 0 goto label4;
+
+     label2:
+        $l0 = r0.<net.adlayout.ad.AdLayout: long changeInterval>;
+
+        $b1 = $l0 cmp 15L;
+
+        $i2 = (int) $b1;
+
+        if $i2 >= 0 goto label3;
+
+        r0.<net.adlayout.ad.AdLayout: long changeInterval> = 15L;
+
+     label3:
+        $l0 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        r0.<net.adlayout.ad.AdLayout: long changeT1> = $l0;
+
+        $r2 = new net.adlayout.ad.AdLayout$3;
+
+        specialinvoke $r2.<net.adlayout.ad.AdLayout$3: void <init>(net.adlayout.ad.AdLayout)>(r0);
+
+        r0.<net.adlayout.ad.AdLayout: java.lang.Thread changeThread> = $r2;
+
+        $r1 = r0.<net.adlayout.ad.AdLayout: java.lang.Thread changeThread>;
+
+        virtualinvoke $r1.<java.lang.Thread: void start()>();
+
+     label4:
+        return;
+    }
+
+    private void randomSDK()
+    {
+        net.adlayout.ad.manager.AdManager $r1;
+        net.adlayout.ad.AdLayout r0;
+        net.adlayout.ad.content.SDKBean $r2;
+
+        r0 := @this: net.adlayout.ad.AdLayout;
+
+        $r1 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.manager.AdManager adManager>;
+
+        $r2 = virtualinvoke $r1.<net.adlayout.ad.manager.AdManager: net.adlayout.ad.content.SDKBean randomSDK()>();
+
+        specialinvoke r0.<net.adlayout.ad.AdLayout: void directSDK(net.adlayout.ad.content.SDKBean)>($r2);
+
+        return;
+    }
+
+    private void reveiveAdView(net.adlayout.ad.content.SDKBean)
+    {
+        java.util.Iterator $r3;
+        net.adlayout.ad.content.SDKBean $r1;
+        java.lang.Integer r5;
+        java.util.ArrayList $r2;
+        int $i0, $i1;
+        android.view.View $r6, $r7;
+        java.lang.Object $r4;
+        net.adlayout.ad.BaseAdapter $r8;
+        net.adlayout.ad.AdLayout r0;
+        boolean $z0;
+
+        r0 := @this: net.adlayout.ad.AdLayout;
+
+        $r1 := @parameter0: net.adlayout.ad.content.SDKBean;
+
+        $z0 = r0.<net.adlayout.ad.AdLayout: boolean simultaneousLoading>;
+
+        if $z0 == 0 goto label07;
+
+        $r2 = r0.<net.adlayout.ad.AdLayout: java.util.ArrayList simultaneous>;
+
+        $r3 = virtualinvoke $r2.<java.util.ArrayList: java.util.Iterator iterator()>();
+
+     label01:
+        $z0 = interfaceinvoke $r3.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 != 0 goto label03;
+
+        $i0 = virtualinvoke r0.<net.adlayout.ad.AdLayout: int getChildCount()>();
+
+        $i0 = $i0 + -1;
+
+     label02:
+        if $i0 >= 0 goto label05;
+
+        r0.<net.adlayout.ad.AdLayout: boolean simultaneousLoading> = 0;
+
+        r0.<net.adlayout.ad.AdLayout: boolean adLoading> = 0;
+
+        r0.<net.adlayout.ad.AdLayout: int currentLoadingSDK> = -1;
+
+        $i0 = virtualinvoke $r1.<net.adlayout.ad.content.SDKBean: int getSdkCode()>();
+
+        r0.<net.adlayout.ad.AdLayout: int currentSDK> = $i0;
+
+        r0.<net.adlayout.ad.AdLayout: int failoverSign> = 0;
+
+        r0.<net.adlayout.ad.AdLayout: int simultaneousFailedSign> = 0;
+
+        return;
+
+     label03:
+        $r4 = interfaceinvoke $r3.<java.util.Iterator: java.lang.Object next()>();
+
+        r5 = (java.lang.Integer) $r4;
+
+        $i0 = virtualinvoke r5.<java.lang.Integer: int intValue()>();
+
+        $i1 = virtualinvoke $r1.<net.adlayout.ad.content.SDKBean: int getSdkCode()>();
+
+        if $i1 == $i0 goto label04;
+
+        specialinvoke r0.<net.adlayout.ad.AdLayout: void stopSDK(int)>($i0);
+
+        goto label01;
+
+     label04:
+        $r6 = specialinvoke r0.<net.adlayout.ad.AdLayout: android.view.View getSDKView(int)>($i0);
+
+        if $r6 == null goto label01;
+
+        r0.<net.adlayout.ad.AdLayout: android.view.View currentView> = $r6;
+
+        goto label01;
+
+     label05:
+        $r6 = virtualinvoke r0.<net.adlayout.ad.AdLayout: android.view.View getChildAt(int)>($i0);
+
+        $r7 = r0.<net.adlayout.ad.AdLayout: android.view.View currentView>;
+
+        if $r6 == $r7 goto label06;
+
+        virtualinvoke r0.<net.adlayout.ad.AdLayout: void removeViewAt(int)>($i0);
+
+     label06:
+        $i0 = $i0 + -1;
+
+        goto label02;
+
+     label07:
+        $i0 = virtualinvoke r0.<net.adlayout.ad.AdLayout: int getChildCount()>();
+
+        $i0 = $i0 + -1;
+
+     label08:
+        if $i0 >= 0 goto label09;
+
+        $r8 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.BaseAdapter currentAdBridge>;
+
+        r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.BaseAdapter lastAdBridge> = $r8;
+
+        r0.<net.adlayout.ad.AdLayout: boolean adLoading> = 0;
+
+        r0.<net.adlayout.ad.AdLayout: int currentLoadingSDK> = -1;
+
+        $i0 = virtualinvoke $r1.<net.adlayout.ad.content.SDKBean: int getSdkCode()>();
+
+        r0.<net.adlayout.ad.AdLayout: int currentSDK> = $i0;
+
+        r0.<net.adlayout.ad.AdLayout: int failoverSign> = 0;
+
+        return;
+
+     label09:
+        $r6 = virtualinvoke r0.<net.adlayout.ad.AdLayout: android.view.View getChildAt(int)>($i0);
+
+        $r7 = r0.<net.adlayout.ad.AdLayout: android.view.View currentView>;
+
+        if $r6 == $r7 goto label11;
+
+        $r8 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.BaseAdapter lastAdBridge>;
+
+        if $r8 == null goto label10;
+
+        $r8 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.BaseAdapter lastAdBridge>;
+
+        virtualinvoke $r8.<net.adlayout.ad.BaseAdapter: void destroy()>();
+
+     label10:
+        virtualinvoke r0.<net.adlayout.ad.AdLayout: void removeViewAt(int)>($i0);
+
+     label11:
+        $i0 = $i0 + -1;
+
+        goto label08;
+    }
+
+    private void simultaneousRequest()
+    {
+        java.util.Iterator $r4;
+        net.adlayout.ad.content.SDKBean r6;
+        net.adlayout.ad.manager.AdManager $r1;
+        java.util.ArrayList $r2, $r3;
+        java.lang.Object $r5;
+        net.adlayout.ad.AdLayout r0;
+        boolean $z0;
+
+        r0 := @this: net.adlayout.ad.AdLayout;
+
+        r0.<net.adlayout.ad.AdLayout: boolean simultaneousLoading> = 1;
+
+        $r1 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.manager.AdManager adManager>;
+
+        $r2 = virtualinvoke $r1.<net.adlayout.ad.manager.AdManager: java.util.ArrayList getSimultaneousList()>();
+
+        $r3 = r0.<net.adlayout.ad.AdLayout: java.util.ArrayList simultaneous>;
+
+        virtualinvoke $r3.<java.util.ArrayList: void clear()>();
+
+        $r4 = virtualinvoke $r2.<java.util.ArrayList: java.util.Iterator iterator()>();
+
+     label1:
+        $z0 = interfaceinvoke $r4.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 != 0 goto label2;
+
+        return;
+
+     label2:
+        $r5 = interfaceinvoke $r4.<java.util.Iterator: java.lang.Object next()>();
+
+        r6 = (net.adlayout.ad.content.SDKBean) $r5;
+
+        virtualinvoke r6.<net.adlayout.ad.content.SDKBean: int getSdkCode()>();
+
+        goto label1;
+    }
+
+    private void stopSDK(int)
+    {
+        int $i0;
+        net.adlayout.ad.BaseAdapter $r1;
+        net.adlayout.ad.AdLayout r0;
+
+        r0 := @this: net.adlayout.ad.AdLayout;
+
+        $i0 := @parameter0: int;
+
+        $r1 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.BaseAdapter currentAdBridge>;
+
+        virtualinvoke $r1.<net.adlayout.ad.BaseAdapter: void stop()>();
+
+        return;
+    }
+
+    public void onClickAd(int)
+    {
+        java.lang.Throwable $r6;
+        net.adlayout.ad.AdLayoutListener $r5;
+        net.adlayout.ad.http.HttpHandler $r8;
+        org.json.JSONException r1;
+        org.json.JSONObject r2, $r7;
+        java.lang.Thread $r9;
+        int $i0;
+        java.lang.Object $r4;
+        java.lang.String $r3;
+        net.adlayout.ad.AdLayout r0;
+
+        r0 := @this: net.adlayout.ad.AdLayout;
+
+        $i0 := @parameter0: int;
+
+        lookupswitch($i0)
+        {
+            case 1: goto label02;
+            case 2: goto label12;
+            case 3: goto label13;
+            case 4: goto label14;
+            case 5: goto label15;
+            case 6: goto label16;
+            case 7: goto label17;
+            case 8: goto label18;
+            case 9: goto label19;
+            case 10: goto label20;
+            case 11: goto label21;
+            case 12: goto label22;
+            case 13: goto label28;
+            case 14: goto label29;
+            case 1001: goto label23;
+            case 1002: goto label24;
+            case 1003: goto label25;
+            case 1004: goto label26;
+            case 1005: goto label27;
+            case 1006: goto label30;
+            case 1007: goto label31;
+            default: goto label01;
+        };
+
+     label01:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "unknow onClickAd");
+
+        return;
+
+     label02:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "AdLayout onClickAd");
+
+     label03:
+        if $i0 == 1 goto label06;
+
+        if $i0 == -1 goto label06;
+
+        $r7 = new org.json.JSONObject;
+
+        r2 = $r7;
+
+        specialinvoke $r7.<org.json.JSONObject: void <init>()>();
+
+     label04:
+        $r3 = staticinvoke <net.adlayout.ad.manager.AdManager: java.lang.String getSessionId()>();
+
+        virtualinvoke r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("sessionId", $r3);
+
+        $r3 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i0);
+
+        virtualinvoke r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("networkSDK", $r3);
+
+     label05:
+        $r8 = new net.adlayout.ad.http.HttpHandler;
+
+        $r3 = virtualinvoke r2.<org.json.JSONObject: java.lang.String toString()>();
+
+        specialinvoke $r8.<net.adlayout.ad.http.HttpHandler: void <init>(java.lang.String,java.lang.String)>("http://ads.adlayout.net/bbmf_boss/application_clickAdNetwork.action", $r3);
+
+        $r9 = new java.lang.Thread;
+
+        specialinvoke $r9.<java.lang.Thread: void <init>(java.lang.Runnable)>($r8);
+
+        virtualinvoke $r9.<java.lang.Thread: void start()>();
+
+     label06:
+        $r4 = r0.<net.adlayout.ad.AdLayout: java.lang.Object adListenerLock>;
+
+        entermonitor $r4;
+
+     label07:
+        $r5 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.AdLayoutListener adLayoutListener>;
+
+        if $r5 == null goto label08;
+
+        $r5 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.AdLayoutListener adLayoutListener>;
+
+        interfaceinvoke $r5.<net.adlayout.ad.AdLayoutListener: void onClickAd(int)>($i0);
+
+     label08:
+        exitmonitor $r4;
+
+     label09:
+        return;
+
+     label10:
+        $r6 := @caughtexception;
+
+        exitmonitor $r4;
+
+     label11:
+        throw $r6;
+
+     label12:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Admob onClickAd");
+
+        goto label03;
+
+     label13:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Youmi onClickAd");
+
+        goto label03;
+
+     label14:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Wooboo onClickAd");
+
+        goto label03;
+
+     label15:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Adwo onClickAd");
+
+        goto label03;
+
+     label16:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Domob onClickAd");
+
+        goto label03;
+
+     label17:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Wiyun onClickAd");
+
+        goto label03;
+
+     label18:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Waps onClickAd");
+
+        goto label03;
+
+     label19:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Smartmad onClickAd");
+
+        goto label03;
+
+     label20:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Millennial onClickAd");
+
+        goto label03;
+
+     label21:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Mobclix onClickAd");
+
+        goto label03;
+
+     label22:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Madvertise onClickAd");
+
+        goto label03;
+
+     label23:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Mopub onClickAd");
+
+        goto label03;
+
+     label24:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Admarvel onClickAd");
+
+        goto label03;
+
+     label25:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "JaAmoad onClickAd");
+
+        goto label03;
+
+     label26:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "JaAdlantis onClickAd");
+
+        goto label03;
+
+     label27:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "JaIMobile onClickAd");
+
+        goto label03;
+
+     label28:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Inmobi onClickAd");
+
+        goto label03;
+
+     label29:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Nexage onClickAd");
+
+        goto label03;
+
+     label30:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "SmarTap(JtadTag) onClickAd");
+
+        goto label03;
+
+     label31:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "AdStir onClickAd");
+
+        goto label03;
+
+     label32:
+        r1 := @caughtexception;
+
+        virtualinvoke r1.<org.json.JSONException: void printStackTrace()>();
+
+        goto label05;
+
+        catch org.json.JSONException from label04 to label05 with label32;
+        catch java.lang.Throwable from label07 to label09 with label10;
+        catch java.lang.Throwable from label10 to label11 with label10;
+    }
+
+    public void onDestroy()
+    {
+        java.lang.Throwable $r3;
+        java.lang.Object $r1;
+        net.adlayout.ad.BaseAdapter $r2;
+        net.adlayout.ad.AdLayout r0;
+
+        r0 := @this: net.adlayout.ad.AdLayout;
+
+        $r1 = r0.<net.adlayout.ad.AdLayout: java.lang.Object adListenerLock>;
+
+        entermonitor $r1;
+
+     label1:
+        r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.AdLayoutListener adLayoutListener> = null;
+
+        exitmonitor $r1;
+
+     label2:
+        $r2 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.BaseAdapter currentAdBridge>;
+
+        if $r2 == null goto label3;
+
+        $r2 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.BaseAdapter currentAdBridge>;
+
+        virtualinvoke $r2.<net.adlayout.ad.BaseAdapter: void destroy()>();
+
+     label3:
+        r0.<net.adlayout.ad.AdLayout: boolean isLive> = 0;
+
+        return;
+
+     label4:
+        $r3 := @caughtexception;
+
+     label5:
+        exitmonitor $r1;
+
+     label6:
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label2 with label4;
+        catch java.lang.Throwable from label5 to label6 with label4;
+    }
+
+    public void onFailedToReceiveAd(net.adlayout.ad.content.SDKBean)
+    {
+        java.lang.Throwable $r11;
+        net.adlayout.ad.AdLayoutListener $r10;
+        net.adlayout.ad.content.SDKBean $r1;
+        net.adlayout.ad.http.HttpHandler r3;
+        org.json.JSONException r2;
+        org.json.JSONObject r4;
+        android.os.Message r5;
+        java.lang.Thread $r7;
+        android.os.Handler $r8;
+        int $i0;
+        java.lang.Object $r9;
+        java.lang.String $r6;
+        net.adlayout.ad.AdLayout r0;
+
+        r0 := @this: net.adlayout.ad.AdLayout;
+
+        $r1 := @parameter0: net.adlayout.ad.content.SDKBean;
+
+        $i0 = virtualinvoke $r1.<net.adlayout.ad.content.SDKBean: int getSdkCode()>();
+
+        lookupswitch($i0)
+        {
+            case 1: goto label02;
+            case 2: goto label13;
+            case 3: goto label14;
+            case 4: goto label15;
+            case 5: goto label16;
+            case 6: goto label17;
+            case 7: goto label18;
+            case 8: goto label19;
+            case 9: goto label20;
+            case 10: goto label21;
+            case 11: goto label22;
+            case 12: goto label23;
+            case 13: goto label29;
+            case 14: goto label30;
+            case 1001: goto label24;
+            case 1002: goto label25;
+            case 1003: goto label26;
+            case 1004: goto label27;
+            case 1005: goto label28;
+            case 1006: goto label31;
+            case 1007: goto label32;
+            default: goto label01;
+        };
+
+     label01:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "unknow onFailedToReceive");
+
+        return;
+
+     label02:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "AdLayout onFailedToReceive");
+
+     label03:
+        $i0 = virtualinvoke $r1.<net.adlayout.ad.content.SDKBean: int getSdkCode()>();
+
+        if $i0 == 1 goto label06;
+
+        r4 = new org.json.JSONObject;
+
+        specialinvoke r4.<org.json.JSONObject: void <init>()>();
+
+     label04:
+        $r6 = staticinvoke <net.adlayout.ad.manager.AdManager: java.lang.String getSessionId()>();
+
+        virtualinvoke r4.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("sessionId", $r6);
+
+        $i0 = virtualinvoke $r1.<net.adlayout.ad.content.SDKBean: int getSdkCode()>();
+
+        $r6 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i0);
+
+        virtualinvoke r4.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("networkSDK", $r6);
+
+        virtualinvoke r4.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("success", "0");
+
+     label05:
+        r3 = new net.adlayout.ad.http.HttpHandler;
+
+        $r6 = virtualinvoke r4.<org.json.JSONObject: java.lang.String toString()>();
+
+        specialinvoke r3.<net.adlayout.ad.http.HttpHandler: void <init>(java.lang.String,java.lang.String)>("http://ads.adlayout.net/bbmf_boss/application_requestAdNetwork.action", $r6);
+
+        $r7 = new java.lang.Thread;
+
+        specialinvoke $r7.<java.lang.Thread: void <init>(java.lang.Runnable)>(r3);
+
+        virtualinvoke $r7.<java.lang.Thread: void start()>();
+
+     label06:
+        $i0 = virtualinvoke $r1.<net.adlayout.ad.content.SDKBean: int getFailover()>();
+
+        if $i0 == 0 goto label34;
+
+        r5 = new android.os.Message;
+
+        specialinvoke r5.<android.os.Message: void <init>()>();
+
+        r5.<android.os.Message: int what> = 1;
+
+        r5.<android.os.Message: java.lang.Object obj> = $r1;
+
+        $r8 = r0.<net.adlayout.ad.AdLayout: android.os.Handler handler>;
+
+        virtualinvoke $r8.<android.os.Handler: boolean sendMessage(android.os.Message)>(r5);
+
+     label07:
+        $r9 = r0.<net.adlayout.ad.AdLayout: java.lang.Object adListenerLock>;
+
+        entermonitor $r9;
+
+     label08:
+        $r10 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.AdLayoutListener adLayoutListener>;
+
+        if $r10 == null goto label09;
+
+        $r10 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.AdLayoutListener adLayoutListener>;
+
+        $i0 = virtualinvoke $r1.<net.adlayout.ad.content.SDKBean: int getSdkCode()>();
+
+        interfaceinvoke $r10.<net.adlayout.ad.AdLayoutListener: void onFailedToReceiveAd(int)>($i0);
+
+     label09:
+        exitmonitor $r9;
+
+     label10:
+        return;
+
+     label11:
+        $r11 := @caughtexception;
+
+        exitmonitor $r9;
+
+     label12:
+        throw $r11;
+
+     label13:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Admob onFailedToReceive");
+
+        goto label03;
+
+     label14:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Youmi onFailedToReceive");
+
+        goto label03;
+
+     label15:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Wooboo onFailedToReceive");
+
+        goto label03;
+
+     label16:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Adwo onFailedToReceive");
+
+        goto label03;
+
+     label17:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Domob onFailedToReceive");
+
+        goto label03;
+
+     label18:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Wiyun onFailedToReceive");
+
+        goto label03;
+
+     label19:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Waps onFailedToReceive");
+
+        goto label03;
+
+     label20:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Smartmad onFailedToReceive");
+
+        goto label03;
+
+     label21:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Millennial onFailedToReceive");
+
+        goto label03;
+
+     label22:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Mobclix onFailedToReceive");
+
+        goto label03;
+
+     label23:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Madvertise onFailedToReceive");
+
+        goto label03;
+
+     label24:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Mopub onFailedToReceive");
+
+        goto label03;
+
+     label25:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Admarvel onFailedToReceive");
+
+        goto label03;
+
+     label26:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "JaAmoad onFailedToReceive");
+
+        goto label03;
+
+     label27:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "JaAdlantis onFailedToReceive");
+
+        goto label03;
+
+     label28:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "JaIMobile onFailedToReceive");
+
+        goto label03;
+
+     label29:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Inmobi onFailedToReceive");
+
+        goto label03;
+
+     label30:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Nexage onFailedToReceive");
+
+        goto label03;
+
+     label31:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "SmarTap(JtadTag) onFailedToReceive");
+
+        goto label03;
+
+     label32:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "AdStir onFailedToReceive");
+
+        goto label03;
+
+     label33:
+        r2 := @caughtexception;
+
+        virtualinvoke r2.<org.json.JSONException: void printStackTrace()>();
+
+        goto label05;
+
+     label34:
+        r0.<net.adlayout.ad.AdLayout: boolean adLoading> = 0;
+
+        goto label07;
+
+        catch org.json.JSONException from label04 to label05 with label33;
+        catch java.lang.Throwable from label08 to label10 with label11;
+        catch java.lang.Throwable from label11 to label12 with label11;
+    }
+
+    public boolean onInterceptTouchEvent(android.view.MotionEvent)
+    {
+        int $i0;
+        net.adlayout.ad.AdLayout r0;
+        android.view.MotionEvent $r1;
+
+        r0 := @this: net.adlayout.ad.AdLayout;
+
+        $r1 := @parameter0: android.view.MotionEvent;
+
+        $i0 = virtualinvoke $r1.<android.view.MotionEvent: int getAction()>();
+
+        if $i0 != 0 goto label1;
+
+        $i0 = r0.<net.adlayout.ad.AdLayout: int currentSDK>;
+
+        if $i0 == -1 goto label1;
+
+        $i0 = r0.<net.adlayout.ad.AdLayout: int currentSDK>;
+
+        if $i0 == 1 goto label1;
+
+        $i0 = r0.<net.adlayout.ad.AdLayout: int currentSDK>;
+
+        virtualinvoke r0.<net.adlayout.ad.AdLayout: void onClickAd(int)>($i0);
+
+     label1:
+        return 0;
+    }
+
+    public void onReceiveAd(net.adlayout.ad.content.SDKBean)
+    {
+        java.lang.Throwable $r11;
+        net.adlayout.ad.AdLayoutListener $r10;
+        net.adlayout.ad.content.SDKBean $r1;
+        net.adlayout.ad.http.HttpHandler r3;
+        org.json.JSONException r2;
+        org.json.JSONObject r4;
+        android.os.Message r5;
+        java.lang.Thread $r7;
+        android.os.Handler $r8;
+        int $i0;
+        java.lang.Object $r9;
+        java.lang.String $r6;
+        net.adlayout.ad.AdLayout r0;
+
+        r0 := @this: net.adlayout.ad.AdLayout;
+
+        $r1 := @parameter0: net.adlayout.ad.content.SDKBean;
+
+        $i0 = virtualinvoke $r1.<net.adlayout.ad.content.SDKBean: int getSdkCode()>();
+
+        lookupswitch($i0)
+        {
+            case 1: goto label02;
+            case 2: goto label12;
+            case 3: goto label13;
+            case 4: goto label14;
+            case 5: goto label15;
+            case 6: goto label16;
+            case 7: goto label17;
+            case 8: goto label18;
+            case 9: goto label19;
+            case 10: goto label20;
+            case 11: goto label21;
+            case 12: goto label22;
+            case 13: goto label28;
+            case 14: goto label29;
+            case 1001: goto label23;
+            case 1002: goto label24;
+            case 1003: goto label25;
+            case 1004: goto label26;
+            case 1005: goto label27;
+            case 1006: goto label30;
+            case 1007: goto label31;
+            default: goto label01;
+        };
+
+     label01:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "unknow onReceiveAd");
+
+        return;
+
+     label02:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "AdLayout onReceiveAd");
+
+     label03:
+        $i0 = virtualinvoke $r1.<net.adlayout.ad.content.SDKBean: int getSdkCode()>();
+
+        if $i0 == 1 goto label06;
+
+        r4 = new org.json.JSONObject;
+
+        specialinvoke r4.<org.json.JSONObject: void <init>()>();
+
+     label04:
+        $r6 = staticinvoke <net.adlayout.ad.manager.AdManager: java.lang.String getSessionId()>();
+
+        virtualinvoke r4.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("sessionId", $r6);
+
+        $i0 = virtualinvoke $r1.<net.adlayout.ad.content.SDKBean: int getSdkCode()>();
+
+        $r6 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i0);
+
+        virtualinvoke r4.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("networkSDK", $r6);
+
+        virtualinvoke r4.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("success", "1");
+
+     label05:
+        r3 = new net.adlayout.ad.http.HttpHandler;
+
+        $r6 = virtualinvoke r4.<org.json.JSONObject: java.lang.String toString()>();
+
+        specialinvoke r3.<net.adlayout.ad.http.HttpHandler: void <init>(java.lang.String,java.lang.String)>("http://ads.adlayout.net/bbmf_boss/application_requestAdNetwork.action", $r6);
+
+        $r7 = new java.lang.Thread;
+
+        specialinvoke $r7.<java.lang.Thread: void <init>(java.lang.Runnable)>(r3);
+
+        virtualinvoke $r7.<java.lang.Thread: void start()>();
+
+     label06:
+        r5 = new android.os.Message;
+
+        specialinvoke r5.<android.os.Message: void <init>()>();
+
+        r5.<android.os.Message: int what> = 2;
+
+        r5.<android.os.Message: java.lang.Object obj> = $r1;
+
+        $r8 = r0.<net.adlayout.ad.AdLayout: android.os.Handler handler>;
+
+        virtualinvoke $r8.<android.os.Handler: boolean sendMessage(android.os.Message)>(r5);
+
+        $r9 = r0.<net.adlayout.ad.AdLayout: java.lang.Object adListenerLock>;
+
+        entermonitor $r9;
+
+     label07:
+        $r10 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.AdLayoutListener adLayoutListener>;
+
+        if $r10 == null goto label08;
+
+        $r10 = r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.AdLayoutListener adLayoutListener>;
+
+        $i0 = virtualinvoke $r1.<net.adlayout.ad.content.SDKBean: int getSdkCode()>();
+
+        interfaceinvoke $r10.<net.adlayout.ad.AdLayoutListener: void onReceiveAd(int)>($i0);
+
+     label08:
+        exitmonitor $r9;
+
+     label09:
+        return;
+
+     label10:
+        $r11 := @caughtexception;
+
+        exitmonitor $r9;
+
+     label11:
+        throw $r11;
+
+     label12:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Admob onReceiveAd");
+
+        goto label03;
+
+     label13:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Youmi onReceiveAd");
+
+        goto label03;
+
+     label14:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Wooboo onReceiveAd");
+
+        goto label03;
+
+     label15:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Adwo onReceiveAd");
+
+        goto label03;
+
+     label16:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Domob onReceiveAd");
+
+        goto label03;
+
+     label17:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Wiyun onReceiveAd");
+
+        goto label03;
+
+     label18:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Waps onReceiveAd");
+
+        goto label03;
+
+     label19:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Smartmad onReceiveAd");
+
+        goto label03;
+
+     label20:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Millennial onReceiveAd");
+
+        goto label03;
+
+     label21:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Mobclix onReceiveAd");
+
+        goto label03;
+
+     label22:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Madvertise onReceiveAd");
+
+        goto label03;
+
+     label23:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Mopub onReceiveAd");
+
+        goto label03;
+
+     label24:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Admarvel onReceiveAd");
+
+        goto label03;
+
+     label25:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "JaAmoad onReceiveAd");
+
+        goto label03;
+
+     label26:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "JaAdlantis onReceiveAd");
+
+        goto label03;
+
+     label27:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "JaIMobile onReceiveAd");
+
+        goto label03;
+
+     label28:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Inmobi onReceiveAd");
+
+        goto label03;
+
+     label29:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Nexage onReceiveAd");
+
+        goto label03;
+
+     label30:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "SmarTap(JtadTag) onReceiveAd");
+
+        goto label03;
+
+     label31:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "AdStir onReceiveAd");
+
+        goto label03;
+
+     label32:
+        r2 := @caughtexception;
+
+        virtualinvoke r2.<org.json.JSONException: void printStackTrace()>();
+
+        goto label05;
+
+        catch org.json.JSONException from label04 to label05 with label32;
+        catch java.lang.Throwable from label07 to label09 with label10;
+        catch java.lang.Throwable from label10 to label11 with label10;
+    }
+
+    public void onWindowFocusChanged(boolean)
+    {
+        net.adlayout.ad.AdLayout r0;
+        boolean $z0;
+
+        r0 := @this: net.adlayout.ad.AdLayout;
+
+        $z0 := @parameter0: boolean;
+
+        specialinvoke r0.<android.widget.RelativeLayout: void onWindowFocusChanged(boolean)>($z0);
+
+        if $z0 == 0 goto label1;
+
+        r0.<net.adlayout.ad.AdLayout: boolean isPause> = 0;
+
+        return;
+
+     label1:
+        r0.<net.adlayout.ad.AdLayout: boolean isPause> = 1;
+
+        return;
+    }
+
+    public void setAdLayoutListener(net.adlayout.ad.AdLayoutListener)
+    {
+        java.lang.Throwable $r2;
+        net.adlayout.ad.AdLayoutListener $r1;
+        java.lang.Object $r3;
+        net.adlayout.ad.AdLayout r0;
+
+        r0 := @this: net.adlayout.ad.AdLayout;
+
+        $r1 := @parameter0: net.adlayout.ad.AdLayoutListener;
+
+        $r3 = r0.<net.adlayout.ad.AdLayout: java.lang.Object adListenerLock>;
+
+        entermonitor $r3;
+
+     label1:
+        r0.<net.adlayout.ad.AdLayout: net.adlayout.ad.AdLayoutListener adLayoutListener> = $r1;
+
+        exitmonitor $r3;
+
+     label2:
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor $r3;
+
+     label4:
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+        catch java.lang.Throwable from label3 to label4 with label3;
+    }
+
+    public static void <clinit>()
+    {
+        <net.adlayout.ad.AdLayout: int RECEIVE_AD> = 2;
+
+        <net.adlayout.ad.AdLayout: int RANDOM_SDK> = 0;
+
+        <net.adlayout.ad.AdLayout: int MAX_FAILOVER> = 4;
+
+        <net.adlayout.ad.AdLayout: int FAILOVER_SDK> = 1;
+
+        return;
+    }
+}

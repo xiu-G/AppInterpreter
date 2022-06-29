@@ -1,0 +1,402 @@
+public class com.rsm.insurance.irl.remote.HttpUtils extends java.lang.Object
+{
+    static final java.lang.String urlServer;
+    public java.lang.String baseUrl;
+    public java.lang.String output;
+    private java.lang.String password;
+    private org.apache.http.HttpEntity resEntity;
+    private java.lang.String username;
+
+    public void <init>()
+    {
+        com.rsm.insurance.irl.remote.HttpUtils r0;
+
+        r0 := @this: com.rsm.insurance.irl.remote.HttpUtils;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<com.rsm.insurance.irl.remote.HttpUtils: java.lang.String username> = "icube";
+
+        r0.<com.rsm.insurance.irl.remote.HttpUtils: java.lang.String password> = "icube";
+
+        r0.<com.rsm.insurance.irl.remote.HttpUtils: java.lang.String baseUrl> = "http://rubystar.org/ws/insurance/ws/";
+
+        r0.<com.rsm.insurance.irl.remote.HttpUtils: java.lang.String output> = "";
+
+        return;
+    }
+
+    public static java.lang.String httpFileUpload(java.io.File, java.lang.String)
+    {
+        java.net.HttpURLConnection r5;
+        byte[] r10;
+        java.net.URL r3;
+        java.io.DataOutputStream r8;
+        java.net.URLConnection $r4;
+        int $i0, $i1;
+        java.lang.String r2, $r7;
+        java.io.OutputStream $r9;
+        java.io.FileInputStream r0;
+        java.io.File r1;
+        java.lang.Exception r11, r12, r13, r14;
+        java.lang.StringBuilder r6;
+
+        r1 := @parameter0: java.io.File;
+
+        r2 := @parameter1: java.lang.String;
+
+        r0 = new java.io.FileInputStream;
+
+     label01:
+        specialinvoke r0.<java.io.FileInputStream: void <init>(java.io.File)>(r1);
+
+     label02:
+        r3 = new java.net.URL;
+
+     label03:
+        specialinvoke r3.<java.net.URL: void <init>(java.lang.String)>("http://rubystar.org/ws/insurance/fileupload.php");
+
+        $r4 = virtualinvoke r3.<java.net.URL: java.net.URLConnection openConnection()>();
+
+        r5 = (java.net.HttpURLConnection) $r4;
+
+     label04:
+        virtualinvoke r5.<java.net.HttpURLConnection: void setDoInput(boolean)>(1);
+
+        virtualinvoke r5.<java.net.HttpURLConnection: void setDoOutput(boolean)>(1);
+
+        virtualinvoke r5.<java.net.HttpURLConnection: void setUseCaches(boolean)>(0);
+
+        virtualinvoke r5.<java.net.HttpURLConnection: void setRequestMethod(java.lang.String)>("POST");
+
+        virtualinvoke r5.<java.net.HttpURLConnection: void setRequestProperty(java.lang.String,java.lang.String)>("Connection", "Keep-Alive");
+
+     label05:
+        r6 = new java.lang.StringBuilder;
+
+     label06:
+        specialinvoke r6.<java.lang.StringBuilder: void <init>(java.lang.String)>("multipart/form-data;boundary=");
+
+        r6 = virtualinvoke r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("*****");
+
+        $r7 = virtualinvoke r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke r5.<java.net.HttpURLConnection: void setRequestProperty(java.lang.String,java.lang.String)>("Content-Type", $r7);
+
+     label07:
+        r8 = new java.io.DataOutputStream;
+
+     label08:
+        $r9 = virtualinvoke r5.<java.net.HttpURLConnection: java.io.OutputStream getOutputStream()>();
+
+        specialinvoke r8.<java.io.DataOutputStream: void <init>(java.io.OutputStream)>($r9);
+
+     label09:
+        r6 = new java.lang.StringBuilder;
+
+     label10:
+        $r7 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>("--");
+
+        specialinvoke r6.<java.lang.StringBuilder: void <init>(java.lang.String)>($r7);
+
+        r6 = virtualinvoke r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("*****");
+
+        r6 = virtualinvoke r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\r\n");
+
+        $r7 = virtualinvoke r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke r8.<java.io.DataOutputStream: void writeBytes(java.lang.String)>($r7);
+
+     label11:
+        r6 = new java.lang.StringBuilder;
+
+     label12:
+        specialinvoke r6.<java.lang.StringBuilder: void <init>(java.lang.String)>("Content-Disposition: form-data; name=\"uploadedfile\";filename=\"");
+
+        r6 = virtualinvoke r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(r2);
+
+        r6 = virtualinvoke r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\"");
+
+        r6 = virtualinvoke r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\r\n");
+
+        r2 = virtualinvoke r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke r8.<java.io.DataOutputStream: void writeBytes(java.lang.String)>(r2);
+
+        virtualinvoke r8.<java.io.DataOutputStream: void writeBytes(java.lang.String)>("\r\n");
+
+        $i0 = virtualinvoke r0.<java.io.FileInputStream: int available()>();
+
+        $i1 = staticinvoke <java.lang.Math: int min(int,int)>($i0, 1048576);
+
+     label13:
+        $i0 = $i1;
+
+     label14:
+        r10 = newarray (byte)[$i1];
+
+        $i1 = virtualinvoke r0.<java.io.FileInputStream: int read(byte[],int,int)>(r10, 0, $i1);
+
+     label15:
+        if $i1 > 0 goto label21;
+
+     label16:
+        virtualinvoke r8.<java.io.DataOutputStream: void writeBytes(java.lang.String)>("\r\n");
+
+     label17:
+        r6 = new java.lang.StringBuilder;
+
+     label18:
+        r2 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>("--");
+
+        specialinvoke r6.<java.lang.StringBuilder: void <init>(java.lang.String)>(r2);
+
+        r6 = virtualinvoke r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("*****");
+
+        r6 = virtualinvoke r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("--");
+
+        r6 = virtualinvoke r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\r\n");
+
+        r2 = virtualinvoke r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke r8.<java.io.DataOutputStream: void writeBytes(java.lang.String)>(r2);
+
+        r2 = virtualinvoke r5.<java.net.HttpURLConnection: java.lang.String getResponseMessage()>();
+
+     label19:
+        virtualinvoke r0.<java.io.FileInputStream: void close()>();
+
+        virtualinvoke r8.<java.io.DataOutputStream: void flush()>();
+
+        virtualinvoke r8.<java.io.DataOutputStream: void close()>();
+
+     label20:
+        return r2;
+
+     label21:
+        virtualinvoke r8.<java.io.DataOutputStream: void write(byte[],int,int)>(r10, 0, $i0);
+
+        $i0 = virtualinvoke r0.<java.io.FileInputStream: int available()>();
+
+        $i1 = staticinvoke <java.lang.Math: int min(int,int)>($i0, 1048576);
+
+     label22:
+        $i0 = $i1;
+
+     label23:
+        $i1 = virtualinvoke r0.<java.io.FileInputStream: int read(byte[],int,int)>(r10, 0, $i1);
+
+     label24:
+        goto label15;
+
+     label25:
+        r11 := @caughtexception;
+
+        r12 = r11;
+
+     label26:
+        virtualinvoke r12.<java.lang.Exception: void printStackTrace()>();
+
+        r2 = virtualinvoke r12.<java.lang.Exception: java.lang.String getMessage()>();
+
+        return r2;
+
+     label27:
+        r13 := @caughtexception;
+
+        r12 = r13;
+
+        goto label26;
+
+     label28:
+        r14 := @caughtexception;
+
+        r12 = r14;
+
+        goto label26;
+
+     label29:
+        r12 := @caughtexception;
+
+        goto label26;
+
+        catch java.lang.Exception from label01 to label02 with label25;
+        catch java.lang.Exception from label03 to label04 with label25;
+        catch java.lang.Exception from label04 to label05 with label27;
+        catch java.lang.Exception from label06 to label07 with label27;
+        catch java.lang.Exception from label08 to label09 with label27;
+        catch java.lang.Exception from label10 to label11 with label28;
+        catch java.lang.Exception from label12 to label13 with label28;
+        catch java.lang.Exception from label14 to label15 with label28;
+        catch java.lang.Exception from label16 to label17 with label28;
+        catch java.lang.Exception from label18 to label19 with label28;
+        catch java.lang.Exception from label19 to label20 with label29;
+        catch java.lang.Exception from label21 to label22 with label28;
+        catch java.lang.Exception from label23 to label24 with label28;
+    }
+
+    public static java.lang.String sendJson(java.lang.String, java.lang.String, java.lang.String[], java.lang.String[])
+    {
+        com.rsm.insurance.irl.remote.HttpUtils$1 r4;
+        java.lang.String[] $r2, $r3;
+        java.lang.String $r0, $r1;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 := @parameter2: java.lang.String[];
+
+        $r3 := @parameter3: java.lang.String[];
+
+        r4 = new com.rsm.insurance.irl.remote.HttpUtils$1;
+
+        specialinvoke r4.<com.rsm.insurance.irl.remote.HttpUtils$1: void <init>(java.lang.String,java.lang.String,java.lang.String[],java.lang.String[])>($r0, $r1, $r2, $r3);
+
+        virtualinvoke r4.<java.lang.Thread: void start()>();
+
+        return "Success";
+    }
+
+    public java.io.InputStream postRequest(java.lang.String, java.util.List) throws java.io.IOException
+    {
+        org.apache.http.impl.client.DefaultHttpClient r3;
+        org.apache.http.message.BasicNameValuePair $r9;
+        org.apache.http.client.methods.HttpPost r6;
+        org.apache.http.client.entity.UrlEncodedFormEntity r4;
+        com.rsm.insurance.irl.remote.HttpUtils r0;
+        java.util.ArrayList r5;
+        int i0, $i1;
+        java.lang.String $r1, $r8;
+        org.apache.http.HttpEntity $r11;
+        java.lang.Exception $r15;
+        java.util.List r2;
+        org.apache.http.HttpResponse $r10;
+        java.lang.StringBuilder $r7;
+        java.lang.Object $r13;
+        org.apache.http.NameValuePair $r14;
+        java.io.InputStream $r12;
+
+        r0 := @this: com.rsm.insurance.irl.remote.HttpUtils;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r2 := @parameter1: java.util.List;
+
+        r3 = new org.apache.http.impl.client.DefaultHttpClient;
+
+     label01:
+        specialinvoke r3.<org.apache.http.impl.client.DefaultHttpClient: void <init>()>();
+
+     label02:
+        $r7 = new java.lang.StringBuilder;
+
+     label03:
+        $r8 = r0.<com.rsm.insurance.irl.remote.HttpUtils: java.lang.String baseUrl>;
+
+        $r8 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r8);
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>(java.lang.String)>($r8);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label04:
+        r6 = new org.apache.http.client.methods.HttpPost;
+
+     label05:
+        specialinvoke r6.<org.apache.http.client.methods.HttpPost: void <init>(java.lang.String)>($r1);
+
+     label06:
+        r5 = new java.util.ArrayList;
+
+     label07:
+        specialinvoke r5.<java.util.ArrayList: void <init>()>();
+
+     label08:
+        $r9 = new org.apache.http.message.BasicNameValuePair;
+
+     label09:
+        $r1 = r0.<com.rsm.insurance.irl.remote.HttpUtils: java.lang.String username>;
+
+        specialinvoke $r9.<org.apache.http.message.BasicNameValuePair: void <init>(java.lang.String,java.lang.String)>("login.userID", $r1);
+
+        interfaceinvoke r5.<java.util.List: boolean add(java.lang.Object)>($r9);
+
+     label10:
+        $r9 = new org.apache.http.message.BasicNameValuePair;
+
+     label11:
+        $r1 = r0.<com.rsm.insurance.irl.remote.HttpUtils: java.lang.String password>;
+
+        specialinvoke $r9.<org.apache.http.message.BasicNameValuePair: void <init>(java.lang.String,java.lang.String)>("login.password", $r1);
+
+        interfaceinvoke r5.<java.util.List: boolean add(java.lang.Object)>($r9);
+
+     label12:
+        i0 = 0;
+
+     label13:
+        $i1 = interfaceinvoke r2.<java.util.List: int size()>();
+
+     label14:
+        if i0 < $i1 goto label17;
+
+        r4 = new org.apache.http.client.entity.UrlEncodedFormEntity;
+
+     label15:
+        specialinvoke r4.<org.apache.http.client.entity.UrlEncodedFormEntity: void <init>(java.util.List,java.lang.String)>(r5, "UTF-8");
+
+        virtualinvoke r6.<org.apache.http.client.methods.HttpPost: void setEntity(org.apache.http.HttpEntity)>(r4);
+
+        $r10 = interfaceinvoke r3.<org.apache.http.client.HttpClient: org.apache.http.HttpResponse execute(org.apache.http.client.methods.HttpUriRequest)>(r6);
+
+        $r11 = interfaceinvoke $r10.<org.apache.http.HttpResponse: org.apache.http.HttpEntity getEntity()>();
+
+        r0.<com.rsm.insurance.irl.remote.HttpUtils: org.apache.http.HttpEntity resEntity> = $r11;
+
+     label16:
+        $r11 = r0.<com.rsm.insurance.irl.remote.HttpUtils: org.apache.http.HttpEntity resEntity>;
+
+        $r12 = interfaceinvoke $r11.<org.apache.http.HttpEntity: java.io.InputStream getContent()>();
+
+        return $r12;
+
+     label17:
+        $r13 = interfaceinvoke r2.<java.util.List: java.lang.Object get(int)>(i0);
+
+        $r14 = (org.apache.http.NameValuePair) $r13;
+
+        interfaceinvoke r5.<java.util.List: boolean add(java.lang.Object)>($r14);
+
+     label18:
+        i0 = i0 + 1;
+
+        goto label13;
+
+     label19:
+        $r15 := @caughtexception;
+
+        virtualinvoke $r15.<java.lang.Exception: void printStackTrace()>();
+
+        goto label16;
+
+        catch java.lang.Exception from label01 to label02 with label19;
+        catch java.lang.Exception from label03 to label04 with label19;
+        catch java.lang.Exception from label05 to label06 with label19;
+        catch java.lang.Exception from label07 to label08 with label19;
+        catch java.lang.Exception from label09 to label10 with label19;
+        catch java.lang.Exception from label11 to label12 with label19;
+        catch java.lang.Exception from label13 to label14 with label19;
+        catch java.lang.Exception from label15 to label16 with label19;
+        catch java.lang.Exception from label17 to label18 with label19;
+    }
+
+    public static void <clinit>()
+    {
+        <com.rsm.insurance.irl.remote.HttpUtils: java.lang.String urlServer> = "http://rubystar.org/ws/insurance/fileupload.php";
+
+        return;
+    }
+}

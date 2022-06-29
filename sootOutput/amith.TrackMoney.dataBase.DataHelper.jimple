@@ -1,0 +1,1528 @@
+public class amith.TrackMoney.dataBase.DataHelper extends java.lang.Object
+{
+    private static final java.lang.String ACCOUNT_INSERT;
+    private static final java.lang.String ACCOUNT_UPDATE;
+    public static final java.lang.String A_BALANCE;
+    public static final java.lang.String A_CARD_TYPE;
+    public static final java.lang.String A_ID;
+    public static final java.lang.String A_NAME;
+    public static final java.lang.String A_NUMBER;
+    public static final java.lang.String A_TYPE;
+    private static final java.lang.String CATAGORY_INSERT;
+    private static final java.lang.String CATAGORY_UPDATE;
+    public static final java.lang.String C_DESCRIPTION;
+    public static final java.lang.String C_ICON;
+    public static final java.lang.String C_ID;
+    public static final java.lang.String DATABASE_NAME;
+    public static final int DATABASE_VERSION;
+    public static final java.lang.String O_ID;
+    public static final java.lang.String O_KEY;
+    public static final java.lang.String O_VALUE;
+    public static final java.lang.String TABLE_NAME_ACCOUNTS;
+    public static final java.lang.String TABLE_NAME_CATEGORIES;
+    public static final java.lang.String TABLE_NAME_OTHERS;
+    public static final java.lang.String TABLE_NAME_TRANSACTIONS;
+    private static final java.lang.String TRANSACTION_INSERT;
+    private static final java.lang.String TRANSACTION_UPDATE;
+    public static final java.lang.String T_ACCOUNT;
+    public static final java.lang.String T_CATEGORY_ID;
+    public static final java.lang.String T_DATE;
+    public static final java.lang.String T_ID;
+    public static final java.lang.String T_NOTE;
+    public static final java.lang.String T_TRANSACTION_AMOUNT;
+    private android.content.Context context;
+
+    public void <init>(android.content.Context, java.lang.String)
+    {
+        android.content.Context $r1;
+        amith.TrackMoney.dataBase.DataHelper r0;
+        java.lang.StringBuilder $r3;
+        java.lang.String $r2;
+
+        r0 := @this: amith.TrackMoney.dataBase.DataHelper;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<amith.TrackMoney.dataBase.DataHelper: android.content.Context context> = $r1;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>("Looking for Database ");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r2 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>("TrackMoney", $r2);
+
+        return;
+    }
+
+    public void clearDatabase()
+    {
+        android.database.sqlite.SQLiteDatabase $r2;
+        android.content.Context $r3;
+        amith.TrackMoney.dataBase.DataHelper$OpenHelper r1;
+        amith.TrackMoney.dataBase.DataHelper r0;
+
+        r0 := @this: amith.TrackMoney.dataBase.DataHelper;
+
+        r1 = new amith.TrackMoney.dataBase.DataHelper$OpenHelper;
+
+        $r3 = r0.<amith.TrackMoney.dataBase.DataHelper: android.content.Context context>;
+
+        specialinvoke r1.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: void <init>(android.content.Context)>($r3);
+
+        $r2 = virtualinvoke r1.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: android.database.sqlite.SQLiteDatabase getWritableDatabase()>();
+
+        virtualinvoke $r2.<android.database.sqlite.SQLiteDatabase: int delete(java.lang.String,java.lang.String,java.lang.String[])>("TRANSACTIONS", null, null);
+
+        virtualinvoke $r2.<android.database.sqlite.SQLiteDatabase: int delete(java.lang.String,java.lang.String,java.lang.String[])>("CATEGORIES", null, null);
+
+        virtualinvoke $r2.<android.database.sqlite.SQLiteDatabase: int delete(java.lang.String,java.lang.String,java.lang.String[])>("ACCOUNTS", null, null);
+
+        virtualinvoke $r2.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+        staticinvoke <amith.TrackMoney.Global.CGlobal: void refreshDataCache(boolean)>(1);
+
+        return;
+    }
+
+    public int countTransactions()
+    {
+        android.content.Context $r2;
+        android.database.sqlite.SQLiteDatabase $r3;
+        amith.TrackMoney.dataBase.DataHelper$OpenHelper r1;
+        int i0;
+        amith.TrackMoney.dataBase.DataHelper r0;
+        android.database.Cursor $r4;
+        boolean $z0;
+
+        r0 := @this: amith.TrackMoney.dataBase.DataHelper;
+
+        i0 = 0;
+
+        r1 = new amith.TrackMoney.dataBase.DataHelper$OpenHelper;
+
+        $r2 = r0.<amith.TrackMoney.dataBase.DataHelper: android.content.Context context>;
+
+        specialinvoke r1.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: void <init>(android.content.Context)>($r2);
+
+        $r3 = virtualinvoke r1.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: android.database.sqlite.SQLiteDatabase getReadableDatabase()>();
+
+        $r4 = virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: android.database.Cursor rawQuery(java.lang.String,java.lang.String[])>("select count(*) from TRANSACTIONS", null);
+
+        $z0 = interfaceinvoke $r4.<android.database.Cursor: boolean moveToFirst()>();
+
+        if $z0 == 0 goto label2;
+
+     label1:
+        i0 = interfaceinvoke $r4.<android.database.Cursor: int getInt(int)>(0);
+
+        $z0 = interfaceinvoke $r4.<android.database.Cursor: boolean moveToNext()>();
+
+        if $z0 != 0 goto label1;
+
+     label2:
+        if $r4 == null goto label3;
+
+        $z0 = interfaceinvoke $r4.<android.database.Cursor: boolean isClosed()>();
+
+        if $z0 != 0 goto label3;
+
+        interfaceinvoke $r4.<android.database.Cursor: void close()>();
+
+     label3:
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+        return i0;
+    }
+
+    public int countTransactionsForAccount(java.lang.String)
+    {
+        android.content.Context $r3;
+        amith.TrackMoney.dataBase.DataHelper r0;
+        android.database.sqlite.SQLiteDatabase $r4;
+        amith.TrackMoney.dataBase.DataHelper$OpenHelper r2;
+        int i0;
+        java.lang.StringBuilder $r5;
+        java.lang.String $r1;
+        android.database.Cursor $r6;
+        boolean $z0;
+
+        r0 := @this: amith.TrackMoney.dataBase.DataHelper;
+
+        $r1 := @parameter0: java.lang.String;
+
+        i0 = 0;
+
+        r2 = new amith.TrackMoney.dataBase.DataHelper$OpenHelper;
+
+        $r3 = r0.<amith.TrackMoney.dataBase.DataHelper: android.content.Context context>;
+
+        specialinvoke r2.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: void <init>(android.content.Context)>($r3);
+
+        $r4 = virtualinvoke r2.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: android.database.sqlite.SQLiteDatabase getReadableDatabase()>();
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>(java.lang.String)>("select count(*) from TRANSACTIONS WHERE T_ACCOUNT = ");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r6 = virtualinvoke $r4.<android.database.sqlite.SQLiteDatabase: android.database.Cursor rawQuery(java.lang.String,java.lang.String[])>($r1, null);
+
+        $z0 = interfaceinvoke $r6.<android.database.Cursor: boolean moveToFirst()>();
+
+        if $z0 == 0 goto label2;
+
+     label1:
+        i0 = interfaceinvoke $r6.<android.database.Cursor: int getInt(int)>(0);
+
+        $z0 = interfaceinvoke $r6.<android.database.Cursor: boolean moveToNext()>();
+
+        if $z0 != 0 goto label1;
+
+     label2:
+        if $r6 == null goto label3;
+
+        $z0 = interfaceinvoke $r6.<android.database.Cursor: boolean isClosed()>();
+
+        if $z0 != 0 goto label3;
+
+        interfaceinvoke $r6.<android.database.Cursor: void close()>();
+
+     label3:
+        virtualinvoke $r4.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+        return i0;
+    }
+
+    public void deductAmountFromBankAccount(int, float)
+    {
+        amith.TrackMoney.dataBase.DataHelper r0;
+        java.lang.Exception $r10;
+        java.util.ArrayList r1;
+        int $i0, $i1;
+        float $f0, $f1;
+        amith.TrackMoney.Objects.CAccountsObject r5;
+        java.lang.StringBuilder $r2;
+        java.lang.Object $r4;
+        java.lang.String $r3, $r6, $r7, $r8, $r9;
+
+        r0 := @this: amith.TrackMoney.dataBase.DataHelper;
+
+        $i0 := @parameter0: int;
+
+        $f0 := @parameter1: float;
+
+        r1 = new java.util.ArrayList;
+
+        specialinvoke r1.<java.util.ArrayList: void <init>()>();
+
+        $r2 = new java.lang.StringBuilder;
+
+        $r3 = staticinvoke <java.lang.String: java.lang.String valueOf(int)>($i0);
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        r1 = virtualinvoke r0.<amith.TrackMoney.dataBase.DataHelper: java.util.ArrayList getAccountsFor(java.lang.String)>($r3);
+
+        $i1 = virtualinvoke r1.<java.util.ArrayList: int size()>();
+
+        if $i1 > 0 goto label1;
+
+        return;
+
+     label1:
+        $r4 = virtualinvoke r1.<java.util.ArrayList: java.lang.Object get(int)>(0);
+
+        r5 = (amith.TrackMoney.Objects.CAccountsObject) $r4;
+
+        $f1 = virtualinvoke r5.<amith.TrackMoney.Objects.CAccountsObject: float getAccountBalance()>();
+
+     label2:
+        $f0 = $f1 - $f0;
+
+        $r2 = new java.lang.StringBuilder;
+
+     label3:
+        $r3 = staticinvoke <java.lang.String: java.lang.String valueOf(int)>($i0);
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r6 = virtualinvoke r5.<amith.TrackMoney.Objects.CAccountsObject: java.lang.String getAccountName()>();
+
+        $r7 = virtualinvoke r5.<amith.TrackMoney.Objects.CAccountsObject: java.lang.String getAccountNumber()>();
+
+        $r8 = virtualinvoke r5.<amith.TrackMoney.Objects.CAccountsObject: java.lang.String getAccountType()>();
+
+        $r9 = virtualinvoke r5.<amith.TrackMoney.Objects.CAccountsObject: java.lang.String getAccountCardType()>();
+
+        virtualinvoke r0.<amith.TrackMoney.dataBase.DataHelper: void updateAccount(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,float)>($r3, $r6, $r7, $r8, $r9, $f0);
+
+     label4:
+        return;
+
+     label5:
+        $r10 := @caughtexception;
+
+        return;
+
+        catch java.lang.Exception from label1 to label2 with label5;
+        catch java.lang.Exception from label3 to label4 with label5;
+    }
+
+    public boolean deleteAccount(java.lang.String)
+    {
+        android.content.Context $r3;
+        amith.TrackMoney.dataBase.DataHelper r0;
+        android.database.sqlite.SQLiteDatabase $r4;
+        amith.TrackMoney.dataBase.DataHelper$OpenHelper r2;
+        int $i0;
+        java.lang.StringBuilder $r5;
+        java.lang.String $r1;
+        boolean z0;
+
+        r0 := @this: amith.TrackMoney.dataBase.DataHelper;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r2 = new amith.TrackMoney.dataBase.DataHelper$OpenHelper;
+
+        $r3 = r0.<amith.TrackMoney.dataBase.DataHelper: android.content.Context context>;
+
+        specialinvoke r2.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: void <init>(android.content.Context)>($r3);
+
+        $r4 = virtualinvoke r2.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: android.database.sqlite.SQLiteDatabase getWritableDatabase()>();
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>(java.lang.String)>("A_ID=");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $i0 = virtualinvoke $r4.<android.database.sqlite.SQLiteDatabase: int delete(java.lang.String,java.lang.String,java.lang.String[])>("ACCOUNTS", $r1, null);
+
+        if $i0 <= 0 goto label2;
+
+        z0 = 1;
+
+     label1:
+        virtualinvoke $r4.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+        return z0;
+
+     label2:
+        z0 = 0;
+
+        goto label1;
+    }
+
+    public void deleteAll()
+    {
+        android.database.sqlite.SQLiteDatabase $r2;
+        android.content.Context $r3;
+        amith.TrackMoney.dataBase.DataHelper$OpenHelper r1;
+        amith.TrackMoney.dataBase.DataHelper r0;
+
+        r0 := @this: amith.TrackMoney.dataBase.DataHelper;
+
+        r1 = new amith.TrackMoney.dataBase.DataHelper$OpenHelper;
+
+        $r3 = r0.<amith.TrackMoney.dataBase.DataHelper: android.content.Context context>;
+
+        specialinvoke r1.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: void <init>(android.content.Context)>($r3);
+
+        $r2 = virtualinvoke r1.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: android.database.sqlite.SQLiteDatabase getWritableDatabase()>();
+
+        virtualinvoke $r2.<android.database.sqlite.SQLiteDatabase: int delete(java.lang.String,java.lang.String,java.lang.String[])>("TRANSACTIONS", null, null);
+
+        virtualinvoke $r2.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+        return;
+    }
+
+    public boolean deleteCategory(java.lang.String)
+    {
+        android.content.Context $r3;
+        amith.TrackMoney.dataBase.DataHelper r0;
+        android.database.sqlite.SQLiteDatabase $r4;
+        amith.TrackMoney.dataBase.DataHelper$OpenHelper r2;
+        int $i0;
+        java.lang.StringBuilder $r5;
+        java.lang.String $r1;
+        boolean z0;
+
+        r0 := @this: amith.TrackMoney.dataBase.DataHelper;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r2 = new amith.TrackMoney.dataBase.DataHelper$OpenHelper;
+
+        $r3 = r0.<amith.TrackMoney.dataBase.DataHelper: android.content.Context context>;
+
+        specialinvoke r2.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: void <init>(android.content.Context)>($r3);
+
+        $r4 = virtualinvoke r2.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: android.database.sqlite.SQLiteDatabase getWritableDatabase()>();
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>(java.lang.String)>("C_ID=");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $i0 = virtualinvoke $r4.<android.database.sqlite.SQLiteDatabase: int delete(java.lang.String,java.lang.String,java.lang.String[])>("CATEGORIES", $r1, null);
+
+        if $i0 <= 0 goto label2;
+
+        z0 = 1;
+
+     label1:
+        virtualinvoke $r4.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+        return z0;
+
+     label2:
+        z0 = 0;
+
+        goto label1;
+    }
+
+    public boolean deleteTransaction(java.lang.String)
+    {
+        java.lang.Float $r4;
+        android.content.Context $r9;
+        amith.TrackMoney.dataBase.DataHelper r0;
+        java.lang.Integer $r8;
+        java.util.ArrayList r3, $r6;
+        android.database.sqlite.SQLiteDatabase $r10;
+        int $i0, $i1;
+        java.lang.String $r1, $r7;
+        boolean z0;
+        amith.TrackMoney.dataBase.DataHelper$OpenHelper r2;
+        float $f0;
+        java.lang.Object $r5;
+        java.lang.StringBuilder $r11;
+
+        r0 := @this: amith.TrackMoney.dataBase.DataHelper;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r3 = new java.util.ArrayList;
+
+        specialinvoke r3.<java.util.ArrayList: void <init>()>();
+
+        r3 = virtualinvoke r0.<amith.TrackMoney.dataBase.DataHelper: java.util.ArrayList getTransactionFor(java.lang.String)>($r1);
+
+        $r4 = new java.lang.Float;
+
+        $r5 = virtualinvoke r3.<java.util.ArrayList: java.lang.Object get(int)>(0);
+
+        $r6 = (java.util.ArrayList) $r5;
+
+        $r5 = virtualinvoke $r6.<java.util.ArrayList: java.lang.Object get(int)>(3);
+
+        $r7 = (java.lang.String) $r5;
+
+        specialinvoke $r4.<java.lang.Float: void <init>(java.lang.String)>($r7);
+
+        $f0 = virtualinvoke $r4.<java.lang.Float: float floatValue()>();
+
+        $r8 = new java.lang.Integer;
+
+        $r5 = virtualinvoke r3.<java.util.ArrayList: java.lang.Object get(int)>(0);
+
+        r3 = (java.util.ArrayList) $r5;
+
+        $r5 = virtualinvoke r3.<java.util.ArrayList: java.lang.Object get(int)>(5);
+
+        $r7 = (java.lang.String) $r5;
+
+        specialinvoke $r8.<java.lang.Integer: void <init>(java.lang.String)>($r7);
+
+        $i0 = virtualinvoke $r8.<java.lang.Integer: int intValue()>();
+
+        r2 = new amith.TrackMoney.dataBase.DataHelper$OpenHelper;
+
+        $r9 = r0.<amith.TrackMoney.dataBase.DataHelper: android.content.Context context>;
+
+        specialinvoke r2.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: void <init>(android.content.Context)>($r9);
+
+        $r10 = virtualinvoke r2.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: android.database.sqlite.SQLiteDatabase getWritableDatabase()>();
+
+        $r11 = new java.lang.StringBuilder;
+
+        specialinvoke $r11.<java.lang.StringBuilder: void <init>(java.lang.String)>("T_ID=");
+
+        $r11 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $i1 = virtualinvoke $r10.<android.database.sqlite.SQLiteDatabase: int delete(java.lang.String,java.lang.String,java.lang.String[])>("TRANSACTIONS", $r1, null);
+
+        if $i1 <= 0 goto label2;
+
+        z0 = 1;
+
+     label1:
+        virtualinvoke $r10.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+        $f0 = neg $f0;
+
+        virtualinvoke r0.<amith.TrackMoney.dataBase.DataHelper: void deductAmountFromBankAccount(int,float)>($i0, $f0);
+
+        return z0;
+
+     label2:
+        z0 = 0;
+
+        goto label1;
+    }
+
+    public java.util.ArrayList getAccounts()
+    {
+        android.content.Context $r3;
+        amith.TrackMoney.dataBase.DataHelper r0;
+        java.util.ArrayList r2;
+        android.database.sqlite.SQLiteDatabase $r4;
+        amith.TrackMoney.dataBase.DataHelper$OpenHelper r1;
+        int $i0;
+        amith.TrackMoney.Objects.CAccountsObject $r6;
+        float $f0;
+        java.lang.String $r7, $r8, $r9, $r10;
+        android.database.Cursor $r5;
+        boolean $z0;
+
+        r0 := @this: amith.TrackMoney.dataBase.DataHelper;
+
+        r2 = new java.util.ArrayList;
+
+        specialinvoke r2.<java.util.ArrayList: void <init>()>();
+
+        r1 = new amith.TrackMoney.dataBase.DataHelper$OpenHelper;
+
+        $r3 = r0.<amith.TrackMoney.dataBase.DataHelper: android.content.Context context>;
+
+        specialinvoke r1.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: void <init>(android.content.Context)>($r3);
+
+        $r4 = virtualinvoke r1.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: android.database.sqlite.SQLiteDatabase getReadableDatabase()>();
+
+        $r5 = virtualinvoke $r4.<android.database.sqlite.SQLiteDatabase: android.database.Cursor rawQuery(java.lang.String,java.lang.String[])>("select * from ACCOUNTS", null);
+
+        $z0 = interfaceinvoke $r5.<android.database.Cursor: boolean moveToFirst()>();
+
+        if $z0 == 0 goto label2;
+
+     label1:
+        $r6 = new amith.TrackMoney.Objects.CAccountsObject;
+
+        $i0 = interfaceinvoke $r5.<android.database.Cursor: int getInt(int)>(0);
+
+        $r7 = interfaceinvoke $r5.<android.database.Cursor: java.lang.String getString(int)>(1);
+
+        $r8 = interfaceinvoke $r5.<android.database.Cursor: java.lang.String getString(int)>(2);
+
+        $r9 = interfaceinvoke $r5.<android.database.Cursor: java.lang.String getString(int)>(3);
+
+        $r10 = interfaceinvoke $r5.<android.database.Cursor: java.lang.String getString(int)>(4);
+
+        $f0 = interfaceinvoke $r5.<android.database.Cursor: float getFloat(int)>(5);
+
+        specialinvoke $r6.<amith.TrackMoney.Objects.CAccountsObject: void <init>(int,java.lang.String,java.lang.String,java.lang.String,java.lang.String,float)>($i0, $r7, $r8, $r9, $r10, $f0);
+
+        virtualinvoke r2.<java.util.ArrayList: boolean add(java.lang.Object)>($r6);
+
+        $z0 = interfaceinvoke $r5.<android.database.Cursor: boolean moveToNext()>();
+
+        if $z0 != 0 goto label1;
+
+     label2:
+        if $r5 == null goto label3;
+
+        $z0 = interfaceinvoke $r5.<android.database.Cursor: boolean isClosed()>();
+
+        if $z0 != 0 goto label3;
+
+        interfaceinvoke $r5.<android.database.Cursor: void close()>();
+
+     label3:
+        virtualinvoke $r4.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+        return r2;
+    }
+
+    public java.util.ArrayList getAccountsFor(java.lang.String)
+    {
+        android.content.Context $r4;
+        amith.TrackMoney.dataBase.DataHelper r0;
+        java.util.ArrayList r3;
+        android.database.sqlite.SQLiteDatabase $r5;
+        amith.TrackMoney.dataBase.DataHelper$OpenHelper r2;
+        int $i0;
+        amith.TrackMoney.Objects.CAccountsObject $r8;
+        float $f0;
+        java.lang.StringBuilder $r6;
+        java.lang.String $r1, $r9, $r10, $r11;
+        android.database.Cursor $r7;
+        boolean $z0;
+
+        r0 := @this: amith.TrackMoney.dataBase.DataHelper;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r3 = new java.util.ArrayList;
+
+        specialinvoke r3.<java.util.ArrayList: void <init>()>();
+
+        r2 = new amith.TrackMoney.dataBase.DataHelper$OpenHelper;
+
+        $r4 = r0.<amith.TrackMoney.dataBase.DataHelper: android.content.Context context>;
+
+        specialinvoke r2.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: void <init>(android.content.Context)>($r4);
+
+        $r5 = virtualinvoke r2.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: android.database.sqlite.SQLiteDatabase getReadableDatabase()>();
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>(java.lang.String)>("select * from ACCOUNTS WHERE A_ID = ");
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r7 = virtualinvoke $r5.<android.database.sqlite.SQLiteDatabase: android.database.Cursor rawQuery(java.lang.String,java.lang.String[])>($r1, null);
+
+        $z0 = interfaceinvoke $r7.<android.database.Cursor: boolean moveToFirst()>();
+
+        if $z0 == 0 goto label2;
+
+     label1:
+        $r8 = new amith.TrackMoney.Objects.CAccountsObject;
+
+        $i0 = interfaceinvoke $r7.<android.database.Cursor: int getInt(int)>(0);
+
+        $r1 = interfaceinvoke $r7.<android.database.Cursor: java.lang.String getString(int)>(1);
+
+        $r9 = interfaceinvoke $r7.<android.database.Cursor: java.lang.String getString(int)>(2);
+
+        $r10 = interfaceinvoke $r7.<android.database.Cursor: java.lang.String getString(int)>(3);
+
+        $r11 = interfaceinvoke $r7.<android.database.Cursor: java.lang.String getString(int)>(4);
+
+        $f0 = interfaceinvoke $r7.<android.database.Cursor: float getFloat(int)>(5);
+
+        specialinvoke $r8.<amith.TrackMoney.Objects.CAccountsObject: void <init>(int,java.lang.String,java.lang.String,java.lang.String,java.lang.String,float)>($i0, $r1, $r9, $r10, $r11, $f0);
+
+        virtualinvoke r3.<java.util.ArrayList: boolean add(java.lang.Object)>($r8);
+
+        $z0 = interfaceinvoke $r7.<android.database.Cursor: boolean moveToNext()>();
+
+        if $z0 != 0 goto label1;
+
+     label2:
+        if $r7 == null goto label3;
+
+        $z0 = interfaceinvoke $r7.<android.database.Cursor: boolean isClosed()>();
+
+        if $z0 != 0 goto label3;
+
+        interfaceinvoke $r7.<android.database.Cursor: void close()>();
+
+     label3:
+        virtualinvoke $r5.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+        return r3;
+    }
+
+    public java.util.ArrayList getCategories()
+    {
+        android.content.Context $r3;
+        amith.TrackMoney.dataBase.DataHelper r0;
+        java.lang.String[] $r6;
+        java.util.ArrayList r2;
+        android.database.sqlite.SQLiteDatabase $r4;
+        amith.TrackMoney.dataBase.DataHelper$OpenHelper r1;
+        int $i0;
+        java.lang.StringBuilder $r7;
+        java.lang.String $r8;
+        android.database.Cursor $r5;
+        boolean $z0;
+
+        r0 := @this: amith.TrackMoney.dataBase.DataHelper;
+
+        r2 = new java.util.ArrayList;
+
+        specialinvoke r2.<java.util.ArrayList: void <init>()>();
+
+        r1 = new amith.TrackMoney.dataBase.DataHelper$OpenHelper;
+
+        $r3 = r0.<amith.TrackMoney.dataBase.DataHelper: android.content.Context context>;
+
+        specialinvoke r1.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: void <init>(android.content.Context)>($r3);
+
+        $r4 = virtualinvoke r1.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: android.database.sqlite.SQLiteDatabase getReadableDatabase()>();
+
+        $r5 = virtualinvoke $r4.<android.database.sqlite.SQLiteDatabase: android.database.Cursor rawQuery(java.lang.String,java.lang.String[])>("select * from CATEGORIES", null);
+
+        $z0 = interfaceinvoke $r5.<android.database.Cursor: boolean moveToFirst()>();
+
+        if $z0 == 0 goto label2;
+
+     label1:
+        $r6 = newarray (java.lang.String)[3];
+
+        $r7 = new java.lang.StringBuilder;
+
+        $i0 = interfaceinvoke $r5.<android.database.Cursor: int getInt(int)>(0);
+
+        $r8 = staticinvoke <java.lang.String: java.lang.String valueOf(int)>($i0);
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>(java.lang.String)>($r8);
+
+        $r8 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r6[0] = $r8;
+
+        $r8 = interfaceinvoke $r5.<android.database.Cursor: java.lang.String getString(int)>(1);
+
+        $r6[1] = $r8;
+
+        $r8 = interfaceinvoke $r5.<android.database.Cursor: java.lang.String getString(int)>(2);
+
+        $r6[2] = $r8;
+
+        virtualinvoke r2.<java.util.ArrayList: boolean add(java.lang.Object)>($r6);
+
+        $z0 = interfaceinvoke $r5.<android.database.Cursor: boolean moveToNext()>();
+
+        if $z0 != 0 goto label1;
+
+     label2:
+        if $r5 == null goto label3;
+
+        $z0 = interfaceinvoke $r5.<android.database.Cursor: boolean isClosed()>();
+
+        if $z0 != 0 goto label3;
+
+        interfaceinvoke $r5.<android.database.Cursor: void close()>();
+
+     label3:
+        virtualinvoke $r4.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+        return r2;
+    }
+
+    public java.util.ArrayList getTransactionFor(java.lang.String)
+    {
+        android.content.Context $r5;
+        amith.TrackMoney.dataBase.DataHelper r0;
+        java.util.ArrayList r2, r4;
+        android.database.sqlite.SQLiteDatabase $r6;
+        amith.TrackMoney.dataBase.DataHelper$OpenHelper r3;
+        java.lang.StringBuilder $r7;
+        java.lang.String $r1;
+        android.database.Cursor $r8;
+        boolean $z0;
+
+        r0 := @this: amith.TrackMoney.dataBase.DataHelper;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r4 = new java.util.ArrayList;
+
+        specialinvoke r4.<java.util.ArrayList: void <init>()>();
+
+        r3 = new amith.TrackMoney.dataBase.DataHelper$OpenHelper;
+
+        $r5 = r0.<amith.TrackMoney.dataBase.DataHelper: android.content.Context context>;
+
+        specialinvoke r3.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: void <init>(android.content.Context)>($r5);
+
+        $r6 = virtualinvoke r3.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: android.database.sqlite.SQLiteDatabase getReadableDatabase()>();
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>(java.lang.String)>("select * from TRANSACTIONS WHERE T_ID = ");
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r8 = virtualinvoke $r6.<android.database.sqlite.SQLiteDatabase: android.database.Cursor rawQuery(java.lang.String,java.lang.String[])>($r1, null);
+
+        $z0 = interfaceinvoke $r8.<android.database.Cursor: boolean moveToFirst()>();
+
+        if $z0 == 0 goto label2;
+
+     label1:
+        r2 = new java.util.ArrayList;
+
+        specialinvoke r2.<java.util.ArrayList: void <init>()>();
+
+        $r1 = interfaceinvoke $r8.<android.database.Cursor: java.lang.String getString(int)>(0);
+
+        virtualinvoke r2.<java.util.ArrayList: boolean add(java.lang.Object)>($r1);
+
+        $r1 = interfaceinvoke $r8.<android.database.Cursor: java.lang.String getString(int)>(1);
+
+        virtualinvoke r2.<java.util.ArrayList: boolean add(java.lang.Object)>($r1);
+
+        $r1 = interfaceinvoke $r8.<android.database.Cursor: java.lang.String getString(int)>(2);
+
+        virtualinvoke r2.<java.util.ArrayList: boolean add(java.lang.Object)>($r1);
+
+        $r1 = interfaceinvoke $r8.<android.database.Cursor: java.lang.String getString(int)>(3);
+
+        virtualinvoke r2.<java.util.ArrayList: boolean add(java.lang.Object)>($r1);
+
+        $r1 = interfaceinvoke $r8.<android.database.Cursor: java.lang.String getString(int)>(4);
+
+        virtualinvoke r2.<java.util.ArrayList: boolean add(java.lang.Object)>($r1);
+
+        $r1 = interfaceinvoke $r8.<android.database.Cursor: java.lang.String getString(int)>(5);
+
+        virtualinvoke r2.<java.util.ArrayList: boolean add(java.lang.Object)>($r1);
+
+        virtualinvoke r4.<java.util.ArrayList: boolean add(java.lang.Object)>(r2);
+
+        $z0 = interfaceinvoke $r8.<android.database.Cursor: boolean moveToNext()>();
+
+        if $z0 != 0 goto label1;
+
+     label2:
+        if $r8 == null goto label3;
+
+        $z0 = interfaceinvoke $r8.<android.database.Cursor: boolean isClosed()>();
+
+        if $z0 != 0 goto label3;
+
+        interfaceinvoke $r8.<android.database.Cursor: void close()>();
+
+     label3:
+        virtualinvoke $r6.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+        return r4;
+    }
+
+    public java.util.ArrayList getTransactionFor(java.lang.String, java.lang.String)
+    {
+        android.content.Context $r6;
+        amith.TrackMoney.dataBase.DataHelper r0;
+        java.util.ArrayList r3, r5;
+        android.database.sqlite.SQLiteDatabase $r7;
+        amith.TrackMoney.dataBase.DataHelper$OpenHelper r4;
+        java.lang.StringBuilder $r8;
+        java.lang.String $r1, $r2;
+        android.database.Cursor $r9;
+        boolean $z0;
+
+        r0 := @this: amith.TrackMoney.dataBase.DataHelper;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        r5 = new java.util.ArrayList;
+
+        specialinvoke r5.<java.util.ArrayList: void <init>()>();
+
+        r4 = new amith.TrackMoney.dataBase.DataHelper$OpenHelper;
+
+        $r6 = r0.<amith.TrackMoney.dataBase.DataHelper: android.content.Context context>;
+
+        specialinvoke r4.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: void <init>(android.content.Context)>($r6);
+
+        $r7 = virtualinvoke r4.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: android.database.sqlite.SQLiteDatabase getReadableDatabase()>();
+
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>(java.lang.String)>("select * from TRANSACTIONS WHERE T_DATE BETWEEN \'");
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\' AND \'");
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\'");
+
+        $r1 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r9 = virtualinvoke $r7.<android.database.sqlite.SQLiteDatabase: android.database.Cursor rawQuery(java.lang.String,java.lang.String[])>($r1, null);
+
+        $z0 = interfaceinvoke $r9.<android.database.Cursor: boolean moveToFirst()>();
+
+        if $z0 == 0 goto label2;
+
+     label1:
+        r3 = new java.util.ArrayList;
+
+        specialinvoke r3.<java.util.ArrayList: void <init>()>();
+
+        $r1 = interfaceinvoke $r9.<android.database.Cursor: java.lang.String getString(int)>(0);
+
+        virtualinvoke r3.<java.util.ArrayList: boolean add(java.lang.Object)>($r1);
+
+        $r1 = interfaceinvoke $r9.<android.database.Cursor: java.lang.String getString(int)>(1);
+
+        virtualinvoke r3.<java.util.ArrayList: boolean add(java.lang.Object)>($r1);
+
+        $r1 = interfaceinvoke $r9.<android.database.Cursor: java.lang.String getString(int)>(2);
+
+        virtualinvoke r3.<java.util.ArrayList: boolean add(java.lang.Object)>($r1);
+
+        $r1 = interfaceinvoke $r9.<android.database.Cursor: java.lang.String getString(int)>(3);
+
+        virtualinvoke r3.<java.util.ArrayList: boolean add(java.lang.Object)>($r1);
+
+        virtualinvoke r5.<java.util.ArrayList: boolean add(java.lang.Object)>(r3);
+
+        $z0 = interfaceinvoke $r9.<android.database.Cursor: boolean moveToNext()>();
+
+        if $z0 != 0 goto label1;
+
+     label2:
+        if $r9 == null goto label3;
+
+        $z0 = interfaceinvoke $r9.<android.database.Cursor: boolean isClosed()>();
+
+        if $z0 != 0 goto label3;
+
+        interfaceinvoke $r9.<android.database.Cursor: void close()>();
+
+     label3:
+        virtualinvoke $r7.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+        return r5;
+    }
+
+    public java.util.ArrayList getTransactions(java.lang.String)
+    {
+        android.content.Context $r5;
+        amith.TrackMoney.dataBase.DataHelper r0;
+        java.util.ArrayList r2, r4;
+        android.database.sqlite.SQLiteDatabase $r6;
+        amith.TrackMoney.dataBase.DataHelper$OpenHelper r3;
+        java.lang.StringBuilder $r7;
+        java.lang.String $r1;
+        android.database.Cursor $r8;
+        boolean $z0;
+
+        r0 := @this: amith.TrackMoney.dataBase.DataHelper;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r4 = new java.util.ArrayList;
+
+        specialinvoke r4.<java.util.ArrayList: void <init>()>();
+
+        r3 = new amith.TrackMoney.dataBase.DataHelper$OpenHelper;
+
+        $r5 = r0.<amith.TrackMoney.dataBase.DataHelper: android.content.Context context>;
+
+        specialinvoke r3.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: void <init>(android.content.Context)>($r5);
+
+        $r6 = virtualinvoke r3.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: android.database.sqlite.SQLiteDatabase getReadableDatabase()>();
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>(java.lang.String)>("select * from TRANSACTIONS WHERE strftime(\'%m-%d-%Y\', \'");
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\') = strftime(\'%m-%d-%Y\', T_DATE)");
+
+        $r1 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r8 = virtualinvoke $r6.<android.database.sqlite.SQLiteDatabase: android.database.Cursor rawQuery(java.lang.String,java.lang.String[])>($r1, null);
+
+        $z0 = interfaceinvoke $r8.<android.database.Cursor: boolean moveToFirst()>();
+
+        if $z0 == 0 goto label2;
+
+     label1:
+        r2 = new java.util.ArrayList;
+
+        specialinvoke r2.<java.util.ArrayList: void <init>()>();
+
+        $r1 = interfaceinvoke $r8.<android.database.Cursor: java.lang.String getString(int)>(0);
+
+        virtualinvoke r2.<java.util.ArrayList: boolean add(java.lang.Object)>($r1);
+
+        $r1 = interfaceinvoke $r8.<android.database.Cursor: java.lang.String getString(int)>(1);
+
+        virtualinvoke r2.<java.util.ArrayList: boolean add(java.lang.Object)>($r1);
+
+        $r1 = interfaceinvoke $r8.<android.database.Cursor: java.lang.String getString(int)>(2);
+
+        virtualinvoke r2.<java.util.ArrayList: boolean add(java.lang.Object)>($r1);
+
+        $r1 = interfaceinvoke $r8.<android.database.Cursor: java.lang.String getString(int)>(3);
+
+        virtualinvoke r2.<java.util.ArrayList: boolean add(java.lang.Object)>($r1);
+
+        $r1 = interfaceinvoke $r8.<android.database.Cursor: java.lang.String getString(int)>(4);
+
+        virtualinvoke r2.<java.util.ArrayList: boolean add(java.lang.Object)>($r1);
+
+        virtualinvoke r4.<java.util.ArrayList: boolean add(java.lang.Object)>(r2);
+
+        $z0 = interfaceinvoke $r8.<android.database.Cursor: boolean moveToNext()>();
+
+        if $z0 != 0 goto label1;
+
+     label2:
+        if $r8 == null goto label3;
+
+        $z0 = interfaceinvoke $r8.<android.database.Cursor: boolean isClosed()>();
+
+        if $z0 != 0 goto label3;
+
+        interfaceinvoke $r8.<android.database.Cursor: void close()>();
+
+     label3:
+        virtualinvoke $r6.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+        return r4;
+    }
+
+    public void insertAccount(java.lang.String, java.lang.String, java.lang.String, java.lang.String, float)
+    {
+        android.content.Context $r6;
+        amith.TrackMoney.dataBase.DataHelper r0;
+        android.database.sqlite.SQLiteDatabase $r7;
+        amith.TrackMoney.dataBase.DataHelper$OpenHelper r5;
+        float $f0;
+        java.lang.String $r1, $r2, $r3, $r4;
+        android.database.sqlite.SQLiteStatement $r8;
+        double $d0;
+
+        r0 := @this: amith.TrackMoney.dataBase.DataHelper;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: java.lang.String;
+
+        $r4 := @parameter3: java.lang.String;
+
+        $f0 := @parameter4: float;
+
+        r5 = new amith.TrackMoney.dataBase.DataHelper$OpenHelper;
+
+        $r6 = r0.<amith.TrackMoney.dataBase.DataHelper: android.content.Context context>;
+
+        specialinvoke r5.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: void <init>(android.content.Context)>($r6);
+
+        $r7 = virtualinvoke r5.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: android.database.sqlite.SQLiteDatabase getWritableDatabase()>();
+
+        $r8 = virtualinvoke $r7.<android.database.sqlite.SQLiteDatabase: android.database.sqlite.SQLiteStatement compileStatement(java.lang.String)>("insert into ACCOUNTS(A_NAME,A_NUMBER,A_TYPE,A_CARD_TYPE,A_BALANCE) values (?, ?, ?, ?, ?)");
+
+        virtualinvoke $r8.<android.database.sqlite.SQLiteStatement: void bindString(int,java.lang.String)>(1, $r1);
+
+        virtualinvoke $r8.<android.database.sqlite.SQLiteStatement: void bindString(int,java.lang.String)>(2, $r2);
+
+        virtualinvoke $r8.<android.database.sqlite.SQLiteStatement: void bindString(int,java.lang.String)>(3, $r3);
+
+        virtualinvoke $r8.<android.database.sqlite.SQLiteStatement: void bindString(int,java.lang.String)>(4, $r4);
+
+        $d0 = (double) $f0;
+
+        virtualinvoke $r8.<android.database.sqlite.SQLiteStatement: void bindDouble(int,double)>(5, $d0);
+
+        virtualinvoke $r8.<android.database.sqlite.SQLiteStatement: long executeInsert()>();
+
+        virtualinvoke $r7.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+        return;
+    }
+
+    public void insertCategory(java.lang.String, java.lang.String)
+    {
+        android.content.Context $r4;
+        amith.TrackMoney.dataBase.DataHelper r0;
+        java.lang.Exception $r7;
+        android.database.sqlite.SQLiteDatabase $r5;
+        amith.TrackMoney.dataBase.DataHelper$OpenHelper r3;
+        java.lang.String $r1, $r2;
+        android.database.sqlite.SQLiteStatement $r6;
+
+        r0 := @this: amith.TrackMoney.dataBase.DataHelper;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        r3 = new amith.TrackMoney.dataBase.DataHelper$OpenHelper;
+
+     label1:
+        $r4 = r0.<amith.TrackMoney.dataBase.DataHelper: android.content.Context context>;
+
+        specialinvoke r3.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: void <init>(android.content.Context)>($r4);
+
+        $r5 = virtualinvoke r3.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: android.database.sqlite.SQLiteDatabase getWritableDatabase()>();
+
+        $r6 = virtualinvoke $r5.<android.database.sqlite.SQLiteDatabase: android.database.sqlite.SQLiteStatement compileStatement(java.lang.String)>("insert into CATEGORIES(C_DESCRIPTION,C_ICON) values (?, ?)");
+
+        virtualinvoke $r6.<android.database.sqlite.SQLiteStatement: void bindString(int,java.lang.String)>(1, $r1);
+
+        virtualinvoke $r6.<android.database.sqlite.SQLiteStatement: void bindString(int,java.lang.String)>(2, $r2);
+
+        virtualinvoke $r6.<android.database.sqlite.SQLiteStatement: long executeInsert()>();
+
+        virtualinvoke $r5.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+     label2:
+        return;
+
+     label3:
+        $r7 := @caughtexception;
+
+        return;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+    }
+
+    public void insertTransaction(java.lang.String, java.lang.String, float, java.lang.String, int)
+    {
+        android.content.Context $r5;
+        amith.TrackMoney.dataBase.DataHelper r0;
+        long $l2;
+        android.database.sqlite.SQLiteDatabase $r6;
+        amith.TrackMoney.dataBase.DataHelper$OpenHelper r4;
+        int $i0, $i1;
+        float $f0;
+        java.lang.StringBuilder $r8;
+        java.lang.String $r1, $r2, $r3;
+        android.database.sqlite.SQLiteStatement $r7;
+        double $d0;
+
+        r0 := @this: amith.TrackMoney.dataBase.DataHelper;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $f0 := @parameter2: float;
+
+        $r3 := @parameter3: java.lang.String;
+
+        $i0 := @parameter4: int;
+
+        r4 = new amith.TrackMoney.dataBase.DataHelper$OpenHelper;
+
+        $r5 = r0.<amith.TrackMoney.dataBase.DataHelper: android.content.Context context>;
+
+        specialinvoke r4.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: void <init>(android.content.Context)>($r5);
+
+        $r6 = virtualinvoke r4.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: android.database.sqlite.SQLiteDatabase getWritableDatabase()>();
+
+        $r7 = virtualinvoke $r6.<android.database.sqlite.SQLiteDatabase: android.database.sqlite.SQLiteStatement compileStatement(java.lang.String)>("insert into TRANSACTIONS(T_DATE,T_CATEGORY_ID,T_TRANSACTION_AMOUNT,T_NOTE,T_ACCOUNT) values (?, ?, ?, ?, ?)");
+
+        virtualinvoke $r7.<android.database.sqlite.SQLiteStatement: void bindString(int,java.lang.String)>(1, $r1);
+
+        $i1 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String)>($r2);
+
+        $l2 = (long) $i1;
+
+        virtualinvoke $r7.<android.database.sqlite.SQLiteStatement: void bindLong(int,long)>(2, $l2);
+
+        $d0 = (double) $f0;
+
+        virtualinvoke $r7.<android.database.sqlite.SQLiteStatement: void bindDouble(int,double)>(3, $d0);
+
+        virtualinvoke $r7.<android.database.sqlite.SQLiteStatement: void bindString(int,java.lang.String)>(4, $r3);
+
+        $r8 = new java.lang.StringBuilder;
+
+        $r1 = staticinvoke <java.lang.String: java.lang.String valueOf(int)>($i0);
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r7.<android.database.sqlite.SQLiteStatement: void bindString(int,java.lang.String)>(5, $r1);
+
+        virtualinvoke $r7.<android.database.sqlite.SQLiteStatement: long executeInsert()>();
+
+        virtualinvoke $r6.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+        virtualinvoke r0.<amith.TrackMoney.dataBase.DataHelper: void deductAmountFromBankAccount(int,float)>($i0, $f0);
+
+        return;
+    }
+
+    public java.util.ArrayList searchTransactions(java.lang.String)
+    {
+        android.content.Context $r5;
+        amith.TrackMoney.dataBase.DataHelper r0;
+        java.util.ArrayList r2, r4;
+        android.database.sqlite.SQLiteDatabase $r6;
+        amith.TrackMoney.dataBase.DataHelper$OpenHelper r3;
+        java.lang.StringBuilder $r8;
+        java.lang.String $r1, $r7;
+        android.database.Cursor $r9;
+        boolean $z0;
+
+        r0 := @this: amith.TrackMoney.dataBase.DataHelper;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r4 = new java.util.ArrayList;
+
+        specialinvoke r4.<java.util.ArrayList: void <init>()>();
+
+        r3 = new amith.TrackMoney.dataBase.DataHelper$OpenHelper;
+
+        $r5 = r0.<amith.TrackMoney.dataBase.DataHelper: android.content.Context context>;
+
+        specialinvoke r3.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: void <init>(android.content.Context)>($r5);
+
+        $r6 = virtualinvoke r3.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: android.database.sqlite.SQLiteDatabase getReadableDatabase()>();
+
+        $r7 = staticinvoke <amith.TrackMoney.Global.CGlobal: java.lang.String categorySearchString(java.lang.String)>($r1);
+
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>(java.lang.String)>("select * from TRANSACTIONS WHERE T_NOTE like \'%");
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("%\'");
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" ORDER BY T_ID DESC");
+
+        $r1 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r9 = virtualinvoke $r6.<android.database.sqlite.SQLiteDatabase: android.database.Cursor rawQuery(java.lang.String,java.lang.String[])>($r1, null);
+
+        $z0 = interfaceinvoke $r9.<android.database.Cursor: boolean moveToFirst()>();
+
+        if $z0 == 0 goto label2;
+
+     label1:
+        r2 = new java.util.ArrayList;
+
+        specialinvoke r2.<java.util.ArrayList: void <init>()>();
+
+        $r1 = interfaceinvoke $r9.<android.database.Cursor: java.lang.String getString(int)>(0);
+
+        virtualinvoke r2.<java.util.ArrayList: boolean add(java.lang.Object)>($r1);
+
+        $r1 = interfaceinvoke $r9.<android.database.Cursor: java.lang.String getString(int)>(1);
+
+        virtualinvoke r2.<java.util.ArrayList: boolean add(java.lang.Object)>($r1);
+
+        $r1 = interfaceinvoke $r9.<android.database.Cursor: java.lang.String getString(int)>(2);
+
+        virtualinvoke r2.<java.util.ArrayList: boolean add(java.lang.Object)>($r1);
+
+        $r1 = interfaceinvoke $r9.<android.database.Cursor: java.lang.String getString(int)>(3);
+
+        virtualinvoke r2.<java.util.ArrayList: boolean add(java.lang.Object)>($r1);
+
+        $r1 = interfaceinvoke $r9.<android.database.Cursor: java.lang.String getString(int)>(4);
+
+        virtualinvoke r2.<java.util.ArrayList: boolean add(java.lang.Object)>($r1);
+
+        virtualinvoke r4.<java.util.ArrayList: boolean add(java.lang.Object)>(r2);
+
+        $z0 = interfaceinvoke $r9.<android.database.Cursor: boolean moveToNext()>();
+
+        if $z0 != 0 goto label1;
+
+     label2:
+        if $r9 == null goto label3;
+
+        $z0 = interfaceinvoke $r9.<android.database.Cursor: boolean isClosed()>();
+
+        if $z0 != 0 goto label3;
+
+        interfaceinvoke $r9.<android.database.Cursor: void close()>();
+
+     label3:
+        virtualinvoke $r6.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+        return r4;
+    }
+
+    public void updateAccount(java.lang.String, java.lang.String, java.lang.String, java.lang.String, java.lang.String, float)
+    {
+        android.content.Context $r7;
+        amith.TrackMoney.dataBase.DataHelper r0;
+        long $l0;
+        android.database.sqlite.SQLiteDatabase $r8;
+        amith.TrackMoney.dataBase.DataHelper$OpenHelper r6;
+        float $f0;
+        java.lang.String $r1, $r2, $r3, $r4, $r5;
+        android.database.sqlite.SQLiteStatement $r9;
+        double $d0;
+
+        r0 := @this: amith.TrackMoney.dataBase.DataHelper;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: java.lang.String;
+
+        $r4 := @parameter3: java.lang.String;
+
+        $r5 := @parameter4: java.lang.String;
+
+        $f0 := @parameter5: float;
+
+        r6 = new amith.TrackMoney.dataBase.DataHelper$OpenHelper;
+
+        $r7 = r0.<amith.TrackMoney.dataBase.DataHelper: android.content.Context context>;
+
+        specialinvoke r6.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: void <init>(android.content.Context)>($r7);
+
+        $r8 = virtualinvoke r6.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: android.database.sqlite.SQLiteDatabase getWritableDatabase()>();
+
+        $r9 = virtualinvoke $r8.<android.database.sqlite.SQLiteDatabase: android.database.sqlite.SQLiteStatement compileStatement(java.lang.String)>("UPDATE ACCOUNTS SET A_NAME= ?,A_NUMBER= ?,A_TYPE= ?,A_CARD_TYPE= ?,A_BALANCE= ? WHERE A_ID = ?");
+
+        virtualinvoke $r9.<android.database.sqlite.SQLiteStatement: void bindString(int,java.lang.String)>(1, $r2);
+
+        virtualinvoke $r9.<android.database.sqlite.SQLiteStatement: void bindString(int,java.lang.String)>(2, $r3);
+
+        virtualinvoke $r9.<android.database.sqlite.SQLiteStatement: void bindString(int,java.lang.String)>(3, $r4);
+
+        virtualinvoke $r9.<android.database.sqlite.SQLiteStatement: void bindString(int,java.lang.String)>(4, $r5);
+
+        $d0 = (double) $f0;
+
+        virtualinvoke $r9.<android.database.sqlite.SQLiteStatement: void bindDouble(int,double)>(5, $d0);
+
+        $l0 = staticinvoke <java.lang.Long: long parseLong(java.lang.String)>($r1);
+
+        virtualinvoke $r9.<android.database.sqlite.SQLiteStatement: void bindLong(int,long)>(6, $l0);
+
+        virtualinvoke $r9.<android.database.sqlite.SQLiteStatement: long executeInsert()>();
+
+        virtualinvoke $r8.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+        return;
+    }
+
+    public void updateCategory(java.lang.String, java.lang.String, java.lang.String)
+    {
+        android.content.Context $r5;
+        amith.TrackMoney.dataBase.DataHelper r0;
+        android.database.sqlite.SQLiteDatabase $r6;
+        amith.TrackMoney.dataBase.DataHelper$OpenHelper r4;
+        java.lang.String $r1, $r2, $r3;
+        android.database.sqlite.SQLiteStatement $r7;
+
+        r0 := @this: amith.TrackMoney.dataBase.DataHelper;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: java.lang.String;
+
+        r4 = new amith.TrackMoney.dataBase.DataHelper$OpenHelper;
+
+        $r5 = r0.<amith.TrackMoney.dataBase.DataHelper: android.content.Context context>;
+
+        specialinvoke r4.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: void <init>(android.content.Context)>($r5);
+
+        $r6 = virtualinvoke r4.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: android.database.sqlite.SQLiteDatabase getWritableDatabase()>();
+
+        $r7 = virtualinvoke $r6.<android.database.sqlite.SQLiteDatabase: android.database.sqlite.SQLiteStatement compileStatement(java.lang.String)>("UPDATE CATEGORIES SET C_DESCRIPTION= ?,C_ICON= ? WHERE C_ID = ?");
+
+        virtualinvoke $r7.<android.database.sqlite.SQLiteStatement: void bindString(int,java.lang.String)>(1, $r2);
+
+        virtualinvoke $r7.<android.database.sqlite.SQLiteStatement: void bindString(int,java.lang.String)>(2, $r3);
+
+        virtualinvoke $r7.<android.database.sqlite.SQLiteStatement: void bindString(int,java.lang.String)>(3, $r1);
+
+        virtualinvoke $r7.<android.database.sqlite.SQLiteStatement: long executeInsert()>();
+
+        virtualinvoke $r6.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+        return;
+    }
+
+    public void updateTransaction(java.lang.String, java.lang.String, java.lang.String, float, java.lang.String, int, float, java.lang.String)
+    {
+        android.content.Context $r7;
+        amith.TrackMoney.dataBase.DataHelper r0;
+        long $l2;
+        android.database.sqlite.SQLiteDatabase $r8;
+        int $i0, $i1;
+        java.lang.String $r1, $r2, $r3, $r4, $r5;
+        android.database.sqlite.SQLiteStatement $r9;
+        double $d0;
+        java.lang.Exception $r11;
+        amith.TrackMoney.dataBase.DataHelper$OpenHelper r6;
+        float $f0, $f1;
+        java.lang.StringBuilder $r10;
+
+        r0 := @this: amith.TrackMoney.dataBase.DataHelper;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: java.lang.String;
+
+        $f0 := @parameter3: float;
+
+        $r4 := @parameter4: java.lang.String;
+
+        $i0 := @parameter5: int;
+
+        $f1 := @parameter6: float;
+
+        $r5 := @parameter7: java.lang.String;
+
+        r6 = new amith.TrackMoney.dataBase.DataHelper$OpenHelper;
+
+        $r7 = r0.<amith.TrackMoney.dataBase.DataHelper: android.content.Context context>;
+
+        specialinvoke r6.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: void <init>(android.content.Context)>($r7);
+
+        $r8 = virtualinvoke r6.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: android.database.sqlite.SQLiteDatabase getWritableDatabase()>();
+
+        $r9 = virtualinvoke $r8.<android.database.sqlite.SQLiteDatabase: android.database.sqlite.SQLiteStatement compileStatement(java.lang.String)>("UPDATE TRANSACTIONS SET T_DATE= ?,T_CATEGORY_ID= ?,T_TRANSACTION_AMOUNT= ?,T_NOTE= ?,T_ACCOUNT= ? WHERE T_ID = ?");
+
+        virtualinvoke $r9.<android.database.sqlite.SQLiteStatement: void bindString(int,java.lang.String)>(1, $r2);
+
+        $i1 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String)>($r3);
+
+        $l2 = (long) $i1;
+
+        virtualinvoke $r9.<android.database.sqlite.SQLiteStatement: void bindLong(int,long)>(2, $l2);
+
+        $d0 = (double) $f0;
+
+        virtualinvoke $r9.<android.database.sqlite.SQLiteStatement: void bindDouble(int,double)>(3, $d0);
+
+        virtualinvoke $r9.<android.database.sqlite.SQLiteStatement: void bindString(int,java.lang.String)>(4, $r4);
+
+        $r10 = new java.lang.StringBuilder;
+
+        $r2 = staticinvoke <java.lang.String: java.lang.String valueOf(int)>($i0);
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>(java.lang.String)>($r2);
+
+        $r2 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r9.<android.database.sqlite.SQLiteStatement: void bindString(int,java.lang.String)>(5, $r2);
+
+        $l2 = staticinvoke <java.lang.Long: long parseLong(java.lang.String)>($r1);
+
+        virtualinvoke $r9.<android.database.sqlite.SQLiteStatement: void bindLong(int,long)>(6, $l2);
+
+        virtualinvoke $r9.<android.database.sqlite.SQLiteStatement: long executeInsert()>();
+
+        virtualinvoke $r8.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+     label1:
+        $i1 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String)>($r5);
+
+     label2:
+        $f1 = neg $f1;
+
+     label3:
+        virtualinvoke r0.<amith.TrackMoney.dataBase.DataHelper: void deductAmountFromBankAccount(int,float)>($i1, $f1);
+
+        virtualinvoke r0.<amith.TrackMoney.dataBase.DataHelper: void deductAmountFromBankAccount(int,float)>($i0, $f0);
+
+     label4:
+        return;
+
+     label5:
+        $r11 := @caughtexception;
+
+        return;
+
+        catch java.lang.Exception from label1 to label2 with label5;
+        catch java.lang.Exception from label3 to label4 with label5;
+    }
+
+    public static void <clinit>()
+    {
+        <amith.TrackMoney.dataBase.DataHelper: java.lang.String T_TRANSACTION_AMOUNT> = "T_TRANSACTION_AMOUNT";
+
+        <amith.TrackMoney.dataBase.DataHelper: java.lang.String T_NOTE> = "T_NOTE";
+
+        <amith.TrackMoney.dataBase.DataHelper: java.lang.String T_ID> = "T_ID";
+
+        <amith.TrackMoney.dataBase.DataHelper: java.lang.String T_DATE> = "T_DATE";
+
+        <amith.TrackMoney.dataBase.DataHelper: java.lang.String T_CATEGORY_ID> = "T_CATEGORY_ID";
+
+        <amith.TrackMoney.dataBase.DataHelper: java.lang.String T_ACCOUNT> = "T_ACCOUNT";
+
+        <amith.TrackMoney.dataBase.DataHelper: java.lang.String TRANSACTION_UPDATE> = "UPDATE TRANSACTIONS SET T_DATE= ?,T_CATEGORY_ID= ?,T_TRANSACTION_AMOUNT= ?,T_NOTE= ?,T_ACCOUNT= ? WHERE T_ID = ?";
+
+        <amith.TrackMoney.dataBase.DataHelper: java.lang.String TRANSACTION_INSERT> = "insert into TRANSACTIONS(T_DATE,T_CATEGORY_ID,T_TRANSACTION_AMOUNT,T_NOTE,T_ACCOUNT) values (?, ?, ?, ?, ?)";
+
+        <amith.TrackMoney.dataBase.DataHelper: java.lang.String TABLE_NAME_TRANSACTIONS> = "TRANSACTIONS";
+
+        <amith.TrackMoney.dataBase.DataHelper: java.lang.String TABLE_NAME_OTHERS> = "OTHERS";
+
+        <amith.TrackMoney.dataBase.DataHelper: java.lang.String TABLE_NAME_CATEGORIES> = "CATEGORIES";
+
+        <amith.TrackMoney.dataBase.DataHelper: java.lang.String TABLE_NAME_ACCOUNTS> = "ACCOUNTS";
+
+        <amith.TrackMoney.dataBase.DataHelper: java.lang.String O_VALUE> = "O_VALUE";
+
+        <amith.TrackMoney.dataBase.DataHelper: java.lang.String O_KEY> = "O_KEY";
+
+        <amith.TrackMoney.dataBase.DataHelper: java.lang.String O_ID> = "O_ID";
+
+        <amith.TrackMoney.dataBase.DataHelper: int DATABASE_VERSION> = 2;
+
+        <amith.TrackMoney.dataBase.DataHelper: java.lang.String DATABASE_NAME> = "TrackMoney.db";
+
+        <amith.TrackMoney.dataBase.DataHelper: java.lang.String C_ID> = "C_ID";
+
+        <amith.TrackMoney.dataBase.DataHelper: java.lang.String C_ICON> = "C_ICON";
+
+        <amith.TrackMoney.dataBase.DataHelper: java.lang.String C_DESCRIPTION> = "C_DESCRIPTION";
+
+        <amith.TrackMoney.dataBase.DataHelper: java.lang.String CATAGORY_UPDATE> = "UPDATE CATEGORIES SET C_DESCRIPTION= ?,C_ICON= ? WHERE C_ID = ?";
+
+        <amith.TrackMoney.dataBase.DataHelper: java.lang.String CATAGORY_INSERT> = "insert into CATEGORIES(C_DESCRIPTION,C_ICON) values (?, ?)";
+
+        <amith.TrackMoney.dataBase.DataHelper: java.lang.String A_TYPE> = "A_TYPE";
+
+        <amith.TrackMoney.dataBase.DataHelper: java.lang.String A_NUMBER> = "A_NUMBER";
+
+        <amith.TrackMoney.dataBase.DataHelper: java.lang.String A_NAME> = "A_NAME";
+
+        <amith.TrackMoney.dataBase.DataHelper: java.lang.String A_ID> = "A_ID";
+
+        <amith.TrackMoney.dataBase.DataHelper: java.lang.String A_CARD_TYPE> = "A_CARD_TYPE";
+
+        <amith.TrackMoney.dataBase.DataHelper: java.lang.String A_BALANCE> = "A_BALANCE";
+
+        <amith.TrackMoney.dataBase.DataHelper: java.lang.String ACCOUNT_UPDATE> = "UPDATE ACCOUNTS SET A_NAME= ?,A_NUMBER= ?,A_TYPE= ?,A_CARD_TYPE= ?,A_BALANCE= ? WHERE A_ID = ?";
+
+        <amith.TrackMoney.dataBase.DataHelper: java.lang.String ACCOUNT_INSERT> = "insert into ACCOUNTS(A_NAME,A_NUMBER,A_TYPE,A_CARD_TYPE,A_BALANCE) values (?, ?, ?, ?, ?)";
+
+        return;
+    }
+}

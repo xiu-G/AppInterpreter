@@ -1,0 +1,1726 @@
+public class com.skt.wifiagent.AssistNetwork extends java.lang.Object implements com.skt.wifiagent.AgentCommon, com.skt.wifiagent.AssistTransmit, android.content.SharedPreferences$OnSharedPreferenceChangeListener
+{
+    private final int DEFAULT_BUFFER_SIZE;
+    private final int NETWORK_SOCKET_RECEIVE_TIME_OUT;
+    private final java.lang.String TAG;
+    private int cellId;
+    private java.lang.Thread connThread;
+    private android.content.Context context;
+    private boolean isUserRequestCancel;
+    private com.skt.wifiagent.log.AgentLog log;
+    private java.io.BufferedInputStream mBufInStream;
+    private java.io.BufferedOutputStream mBufOutStream;
+    private java.io.DataInputStream mDataInStream;
+    private java.io.DataOutputStream mDataOutStream;
+    private int mScanSize;
+    private java.lang.Thread recvThread;
+    private java.lang.String serverIP;
+    private int serverPort;
+    private java.net.Socket socket;
+    private int timeout;
+
+    public void <init>(android.content.Context, int)
+    {
+        android.content.Context $r1;
+        com.skt.wifiagent.AssistNetwork r0;
+        java.lang.Integer $r5;
+        com.skt.wifiagent.log.AgentLog $r6;
+        int $i0, $i1;
+        java.lang.Class $r2;
+        java.lang.Object $r4;
+        java.lang.StringBuilder $r7;
+        java.lang.String $r3;
+
+        r0 := @this: com.skt.wifiagent.AssistNetwork;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $i0 := @parameter1: int;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        $r2 = virtualinvoke r0.<java.lang.Object: java.lang.Class getClass()>();
+
+        $r3 = virtualinvoke $r2.<java.lang.Class: java.lang.String getSimpleName()>();
+
+        r0.<com.skt.wifiagent.AssistNetwork: java.lang.String TAG> = $r3;
+
+        r0.<com.skt.wifiagent.AssistNetwork: int NETWORK_SOCKET_RECEIVE_TIME_OUT> = 10000;
+
+        r0.<com.skt.wifiagent.AssistNetwork: int DEFAULT_BUFFER_SIZE> = 4096;
+
+        r0.<com.skt.wifiagent.AssistNetwork: java.lang.Thread connThread> = null;
+
+        r0.<com.skt.wifiagent.AssistNetwork: java.lang.Thread recvThread> = null;
+
+        r0.<com.skt.wifiagent.AssistNetwork: com.skt.wifiagent.log.AgentLog log> = null;
+
+        r0.<com.skt.wifiagent.AssistNetwork: int mScanSize> = 0;
+
+        r0.<com.skt.wifiagent.AssistNetwork: int cellId> = 0;
+
+        r0.<com.skt.wifiagent.AssistNetwork: android.content.Context context> = $r1;
+
+        $r4 = staticinvoke <com.skt.wifiagent.AgentPreferences: java.lang.Object getValue(android.content.Context,java.lang.String)>($r1, "SKT_SLP_IP");
+
+        $r3 = (java.lang.String) $r4;
+
+        r0.<com.skt.wifiagent.AssistNetwork: java.lang.String serverIP> = $r3;
+
+        $r4 = staticinvoke <com.skt.wifiagent.AgentPreferences: java.lang.Object getValue(android.content.Context,java.lang.String)>($r1, "SKT_SLP_PORT");
+
+        $r5 = (java.lang.Integer) $r4;
+
+        $i1 = virtualinvoke $r5.<java.lang.Integer: int intValue()>();
+
+        r0.<com.skt.wifiagent.AssistNetwork: int serverPort> = $i1;
+
+        r0.<com.skt.wifiagent.AssistNetwork: int timeout> = 12000;
+
+        r0.<com.skt.wifiagent.AssistNetwork: boolean isUserRequestCancel> = 0;
+
+        $r6 = new com.skt.wifiagent.log.AgentLog;
+
+        specialinvoke $r6.<com.skt.wifiagent.log.AgentLog: void <init>(android.content.Context)>($r1);
+
+        r0.<com.skt.wifiagent.AssistNetwork: com.skt.wifiagent.log.AgentLog log> = $r6;
+
+        $r6 = r0.<com.skt.wifiagent.AssistNetwork: com.skt.wifiagent.log.AgentLog log>;
+
+        $r7 = new java.lang.StringBuilder;
+
+        $r3 = r0.<com.skt.wifiagent.AssistNetwork: java.lang.String TAG>;
+
+        $r3 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r3);
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>(java.lang.String)>($r3);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" Created");
+
+        $r3 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r6.<com.skt.wifiagent.log.AgentLog: void out(java.lang.String,int,java.lang.String,boolean)>("HPS_DEBUG", 2, $r3, 1);
+
+        return;
+    }
+
+    static com.skt.wifiagent.log.AgentLog access$0(com.skt.wifiagent.AssistNetwork)
+    {
+        com.skt.wifiagent.AssistNetwork $r0;
+        com.skt.wifiagent.log.AgentLog r1;
+
+        $r0 := @parameter0: com.skt.wifiagent.AssistNetwork;
+
+        r1 = $r0.<com.skt.wifiagent.AssistNetwork: com.skt.wifiagent.log.AgentLog log>;
+
+        return r1;
+    }
+
+    static java.lang.String access$1(com.skt.wifiagent.AssistNetwork)
+    {
+        com.skt.wifiagent.AssistNetwork $r0;
+        java.lang.String r1;
+
+        $r0 := @parameter0: com.skt.wifiagent.AssistNetwork;
+
+        r1 = $r0.<com.skt.wifiagent.AssistNetwork: java.lang.String TAG>;
+
+        return r1;
+    }
+
+    static java.lang.String access$2(com.skt.wifiagent.AssistNetwork)
+    {
+        com.skt.wifiagent.AssistNetwork $r0;
+        java.lang.String r1;
+
+        $r0 := @parameter0: com.skt.wifiagent.AssistNetwork;
+
+        r1 = $r0.<com.skt.wifiagent.AssistNetwork: java.lang.String serverIP>;
+
+        return r1;
+    }
+
+    static int access$3(com.skt.wifiagent.AssistNetwork)
+    {
+        int i0;
+        com.skt.wifiagent.AssistNetwork $r0;
+
+        $r0 := @parameter0: com.skt.wifiagent.AssistNetwork;
+
+        i0 = $r0.<com.skt.wifiagent.AssistNetwork: int serverPort>;
+
+        return i0;
+    }
+
+    static android.content.Context access$4(com.skt.wifiagent.AssistNetwork)
+    {
+        android.content.Context r1;
+        com.skt.wifiagent.AssistNetwork $r0;
+
+        $r0 := @parameter0: com.skt.wifiagent.AssistNetwork;
+
+        r1 = $r0.<com.skt.wifiagent.AssistNetwork: android.content.Context context>;
+
+        return r1;
+    }
+
+    static void access$5(com.skt.wifiagent.AssistNetwork, java.net.Socket)
+    {
+        java.net.Socket $r1;
+        com.skt.wifiagent.AssistNetwork $r0;
+
+        $r0 := @parameter0: com.skt.wifiagent.AssistNetwork;
+
+        $r1 := @parameter1: java.net.Socket;
+
+        $r0.<com.skt.wifiagent.AssistNetwork: java.net.Socket socket> = $r1;
+
+        return;
+    }
+
+    static java.net.Socket access$6(com.skt.wifiagent.AssistNetwork)
+    {
+        java.net.Socket r1;
+        com.skt.wifiagent.AssistNetwork $r0;
+
+        $r0 := @parameter0: com.skt.wifiagent.AssistNetwork;
+
+        r1 = $r0.<com.skt.wifiagent.AssistNetwork: java.net.Socket socket>;
+
+        return r1;
+    }
+
+    static java.io.DataInputStream access$7(com.skt.wifiagent.AssistNetwork)
+    {
+        java.io.DataInputStream r1;
+        com.skt.wifiagent.AssistNetwork $r0;
+
+        $r0 := @parameter0: com.skt.wifiagent.AssistNetwork;
+
+        r1 = $r0.<com.skt.wifiagent.AssistNetwork: java.io.DataInputStream mDataInStream>;
+
+        return r1;
+    }
+
+    static int access$8(com.skt.wifiagent.AssistNetwork)
+    {
+        int i0;
+        com.skt.wifiagent.AssistNetwork $r0;
+
+        $r0 := @parameter0: com.skt.wifiagent.AssistNetwork;
+
+        i0 = $r0.<com.skt.wifiagent.AssistNetwork: int mScanSize>;
+
+        return i0;
+    }
+
+    static int access$9(com.skt.wifiagent.AssistNetwork)
+    {
+        int i0;
+        com.skt.wifiagent.AssistNetwork $r0;
+
+        $r0 := @parameter0: com.skt.wifiagent.AssistNetwork;
+
+        i0 = $r0.<com.skt.wifiagent.AssistNetwork: int cellId>;
+
+        return i0;
+    }
+
+    private byte[] getAppId(java.lang.String)
+    {
+        byte[] r2, $r3;
+        int $i0;
+        com.skt.wifiagent.AssistNetwork r0;
+        java.lang.String $r1;
+
+        r0 := @this: com.skt.wifiagent.AssistNetwork;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r2 = newarray (byte)[24];
+
+        if $r1 == null goto label3;
+
+        $i0 = virtualinvoke $r1.<java.lang.String: int length()>();
+
+        if $i0 <= 0 goto label3;
+
+        $r3 = virtualinvoke $r1.<java.lang.String: byte[] getBytes()>();
+
+        $i0 = virtualinvoke $r1.<java.lang.String: int length()>();
+
+        if $i0 <= 24 goto label2;
+
+        $i0 = 24;
+
+     label1:
+        staticinvoke <java.lang.System: void arraycopy(java.lang.Object,int,java.lang.Object,int,int)>($r3, 0, r2, 0, $i0);
+
+        return r2;
+
+     label2:
+        $i0 = virtualinvoke $r1.<java.lang.String: int length()>();
+
+        goto label1;
+
+     label3:
+        return r2;
+    }
+
+    private byte[] getEncryptMSID(boolean)
+    {
+        byte[] r1, r2;
+        android.content.Context $r3;
+        com.skt.wifiagent.AssistNetwork r0;
+        java.lang.Exception $r7;
+        android.telephony.TelephonyManager r5;
+        int $i0;
+        java.lang.Object $r4;
+        java.lang.String $r6;
+        boolean $z0;
+
+        r0 := @this: com.skt.wifiagent.AssistNetwork;
+
+        $z0 := @parameter0: boolean;
+
+        $r3 = r0.<com.skt.wifiagent.AssistNetwork: android.content.Context context>;
+
+        $r4 = virtualinvoke $r3.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("phone");
+
+        r5 = (android.telephony.TelephonyManager) $r4;
+
+        r2 = newarray (byte)[16];
+
+        if r5 == null goto label1;
+
+        $r6 = virtualinvoke r5.<android.telephony.TelephonyManager: java.lang.String getLine1Number()>();
+
+        if $r6 == null goto label1;
+
+        $r6 = virtualinvoke r5.<android.telephony.TelephonyManager: java.lang.String getLine1Number()>();
+
+        r1 = virtualinvoke $r6.<java.lang.String: byte[] getBytes()>();
+
+        $r6 = virtualinvoke r5.<android.telephony.TelephonyManager: java.lang.String getLine1Number()>();
+
+        $i0 = virtualinvoke $r6.<java.lang.String: int length()>();
+
+        staticinvoke <java.lang.System: void arraycopy(java.lang.Object,int,java.lang.Object,int,int)>(r1, 0, r2, 0, $i0);
+
+        if $z0 == 0 goto label1;
+
+        r1 = newarray (byte)[10];
+
+        r1[0] = 42;
+
+        r1[1] = 42;
+
+        r1[2] = 42;
+
+        r1[3] = 42;
+
+        r1[4] = 42;
+
+        r1[5] = 42;
+
+        r1[6] = 42;
+
+        r1[7] = 42;
+
+        r1[8] = 42;
+
+        r1[9] = 42;
+
+        $i0 = lengthof r1;
+
+        staticinvoke <java.lang.System: void arraycopy(java.lang.Object,int,java.lang.Object,int,int)>(r1, 0, r2, 0, $i0);
+
+     label1:
+        r1 = newarray (byte)[18];
+
+     label2:
+        r2 = staticinvoke <com.skt.wifiagent.AssistCrypto: byte[] encrypt(byte[])>(r2);
+
+        staticinvoke <java.lang.System: void arraycopy(java.lang.Object,int,java.lang.Object,int,int)>(r2, 0, r1, 0, 16);
+
+     label3:
+        return r1;
+
+     label4:
+        $r7 := @caughtexception;
+
+        virtualinvoke $r7.<java.lang.Exception: void printStackTrace()>();
+
+        return r1;
+
+        catch java.lang.Exception from label2 to label3 with label4;
+    }
+
+    private short getMCC()
+    {
+        android.content.Context $r1;
+        short s0;
+        android.telephony.TelephonyManager r3;
+        int $i1;
+        java.lang.Object $r2;
+        com.skt.wifiagent.AssistNetwork r0;
+        java.lang.String $r4;
+
+        r0 := @this: com.skt.wifiagent.AssistNetwork;
+
+        s0 = 450;
+
+        $r1 = r0.<com.skt.wifiagent.AssistNetwork: android.content.Context context>;
+
+        $r2 = virtualinvoke $r1.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("phone");
+
+        r3 = (android.telephony.TelephonyManager) $r2;
+
+        $r4 = virtualinvoke r3.<android.telephony.TelephonyManager: java.lang.String getNetworkOperator()>();
+
+        if $r4 == null goto label2;
+
+        $i1 = virtualinvoke $r4.<java.lang.String: int length()>();
+
+        if $i1 >= 5 goto label1;
+
+        return 450;
+
+     label1:
+        $r4 = virtualinvoke $r4.<java.lang.String: java.lang.String substring(int,int)>(0, 3);
+
+        s0 = staticinvoke <java.lang.Short: short parseShort(java.lang.String)>($r4);
+
+     label2:
+        return s0;
+    }
+
+    private byte[] getModel()
+    {
+        byte[] r1, $r2;
+        int $i0;
+        com.skt.wifiagent.AssistNetwork r0;
+        java.lang.String $r3;
+
+        r0 := @this: com.skt.wifiagent.AssistNetwork;
+
+        r1 = newarray (byte)[16];
+
+        $r3 = <android.os.Build: java.lang.String MODEL>;
+
+        $r2 = virtualinvoke $r3.<java.lang.String: byte[] getBytes()>();
+
+        $i0 = lengthof $r2;
+
+        if $i0 <= 16 goto label2;
+
+        $i0 = 16;
+
+     label1:
+        staticinvoke <java.lang.System: void arraycopy(java.lang.Object,int,java.lang.Object,int,int)>($r2, 0, r1, 0, $i0);
+
+        return r1;
+
+     label2:
+        $i0 = lengthof $r2;
+
+        goto label1;
+    }
+
+    private boolean getNetType()
+    {
+        android.content.Context $r1;
+        android.telephony.TelephonyManager r3;
+        int $i0;
+        java.lang.Object $r2;
+        com.skt.wifiagent.AssistNetwork r0;
+
+        r0 := @this: com.skt.wifiagent.AssistNetwork;
+
+        $r1 = r0.<com.skt.wifiagent.AssistNetwork: android.content.Context context>;
+
+        $r2 = virtualinvoke $r1.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("phone");
+
+        r3 = (android.telephony.TelephonyManager) $r2;
+
+        $i0 = virtualinvoke r3.<android.telephony.TelephonyManager: int getPhoneType()>();
+
+        if $i0 != 1 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    private byte[] getSsidWrap(java.lang.String)
+    {
+        byte[] r2, $r3;
+        int $i0;
+        com.skt.wifiagent.AssistNetwork r0;
+        java.lang.String $r1;
+
+        r0 := @this: com.skt.wifiagent.AssistNetwork;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r2 = newarray (byte)[32];
+
+        if $r1 == null goto label3;
+
+        $i0 = virtualinvoke $r1.<java.lang.String: int length()>();
+
+        if $i0 <= 0 goto label3;
+
+        $r3 = virtualinvoke $r1.<java.lang.String: byte[] getBytes()>();
+
+        $i0 = virtualinvoke $r1.<java.lang.String: int length()>();
+
+        if $i0 <= 32 goto label2;
+
+        $i0 = 32;
+
+     label1:
+        staticinvoke <java.lang.System: void arraycopy(java.lang.Object,int,java.lang.Object,int,int)>($r3, 0, r2, 0, $i0);
+
+        return r2;
+
+     label2:
+        $i0 = virtualinvoke $r1.<java.lang.String: int length()>();
+
+        goto label1;
+
+     label3:
+        return r2;
+    }
+
+    protected void closeInputStream()
+    {
+        java.io.DataInputStream $r2;
+        java.io.BufferedInputStream $r1;
+        com.skt.wifiagent.AssistNetwork r0;
+        java.lang.Exception $r3, $r4;
+
+        r0 := @this: com.skt.wifiagent.AssistNetwork;
+
+        $r1 = r0.<com.skt.wifiagent.AssistNetwork: java.io.BufferedInputStream mBufInStream>;
+
+        if $r1 == null goto label3;
+
+     label1:
+        $r1 = r0.<com.skt.wifiagent.AssistNetwork: java.io.BufferedInputStream mBufInStream>;
+
+        virtualinvoke $r1.<java.io.BufferedInputStream: void close()>();
+
+     label2:
+        r0.<com.skt.wifiagent.AssistNetwork: java.io.BufferedInputStream mBufInStream> = null;
+
+     label3:
+        $r2 = r0.<com.skt.wifiagent.AssistNetwork: java.io.DataInputStream mDataInStream>;
+
+        if $r2 == null goto label8;
+
+     label4:
+        $r2 = r0.<com.skt.wifiagent.AssistNetwork: java.io.DataInputStream mDataInStream>;
+
+        virtualinvoke $r2.<java.io.DataInputStream: void close()>();
+
+     label5:
+        r0.<com.skt.wifiagent.AssistNetwork: java.io.DataInputStream mDataInStream> = null;
+
+        return;
+
+     label6:
+        $r3 := @caughtexception;
+
+        goto label5;
+
+     label7:
+        $r4 := @caughtexception;
+
+        goto label2;
+
+     label8:
+        return;
+
+        catch java.lang.Exception from label1 to label2 with label7;
+        catch java.lang.Exception from label4 to label5 with label6;
+    }
+
+    protected void closeOutputStream()
+    {
+        java.io.DataOutputStream $r2;
+        com.skt.wifiagent.AssistNetwork r0;
+        java.lang.Exception $r3, $r4;
+        java.io.BufferedOutputStream $r1;
+
+        r0 := @this: com.skt.wifiagent.AssistNetwork;
+
+        $r1 = r0.<com.skt.wifiagent.AssistNetwork: java.io.BufferedOutputStream mBufOutStream>;
+
+        if $r1 == null goto label3;
+
+     label1:
+        $r1 = r0.<com.skt.wifiagent.AssistNetwork: java.io.BufferedOutputStream mBufOutStream>;
+
+        virtualinvoke $r1.<java.io.BufferedOutputStream: void close()>();
+
+     label2:
+        r0.<com.skt.wifiagent.AssistNetwork: java.io.BufferedOutputStream mBufOutStream> = null;
+
+     label3:
+        $r2 = r0.<com.skt.wifiagent.AssistNetwork: java.io.DataOutputStream mDataOutStream>;
+
+        if $r2 == null goto label8;
+
+     label4:
+        $r2 = r0.<com.skt.wifiagent.AssistNetwork: java.io.DataOutputStream mDataOutStream>;
+
+        virtualinvoke $r2.<java.io.DataOutputStream: void close()>();
+
+     label5:
+        r0.<com.skt.wifiagent.AssistNetwork: java.io.DataOutputStream mDataOutStream> = null;
+
+        return;
+
+     label6:
+        $r3 := @caughtexception;
+
+        goto label5;
+
+     label7:
+        $r4 := @caughtexception;
+
+        goto label2;
+
+     label8:
+        return;
+
+        catch java.lang.Exception from label1 to label2 with label7;
+        catch java.lang.Exception from label4 to label5 with label6;
+    }
+
+    protected int connect(int, java.lang.Object)
+    {
+        java.lang.Throwable $r14;
+        android.content.Context $r2;
+        java.net.Socket $r13;
+        long $l3;
+        com.skt.wifiagent.log.AgentLog $r9;
+        com.skt.wifiagent.AgentControl $r7;
+        java.lang.Thread $r8;
+        int $i0, i1, $i2;
+        java.lang.Boolean $r4;
+        java.lang.String $r11;
+        boolean $z0;
+        com.skt.wifiagent.AssistNetwork$ConnectThread $r12;
+        com.skt.wifiagent.AssistNetwork r0;
+        java.lang.Exception $r15;
+        com.skt.wifiagent.bean.LocationBeans$FixResult $r6;
+        java.lang.Object $r1, $r3;
+        java.lang.StringBuilder $r10;
+        com.skt.wifiagent.WifiAgent $r5;
+
+        r0 := @this: com.skt.wifiagent.AssistNetwork;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: java.lang.Object;
+
+        i1 = 0;
+
+        $r2 = r0.<com.skt.wifiagent.AssistNetwork: android.content.Context context>;
+
+        $r3 = staticinvoke <com.skt.wifiagent.AgentPreferences: java.lang.Object getValue(android.content.Context,java.lang.String)>($r2, "isWiFiModuleEnable");
+
+        $r4 = (java.lang.Boolean) $r3;
+
+        $z0 = virtualinvoke $r4.<java.lang.Boolean: boolean booleanValue()>();
+
+        if $z0 == 0 goto label16;
+
+     label01:
+        if 2 > i1 goto label03;
+
+     label02:
+        $z0 = r0.<com.skt.wifiagent.AssistNetwork: boolean isUserRequestCancel>;
+
+        if $z0 != 0 goto label17;
+
+        if 2 > i1 goto label17;
+
+        $r2 = r0.<com.skt.wifiagent.AssistNetwork: android.content.Context context>;
+
+        $r5 = staticinvoke <com.skt.wifiagent.WifiAgent: com.skt.wifiagent.WifiAgent getInstance(android.content.Context)>($r2);
+
+        $r6 = new com.skt.wifiagent.bean.LocationBeans$FixResult;
+
+        specialinvoke $r6.<com.skt.wifiagent.bean.LocationBeans$FixResult: void <init>(int,int,int,int,int,int,int,int,int,int)>(2, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+
+        virtualinvoke $r5.<com.skt.wifiagent.WifiAgent: void onChangeNotify(int,java.lang.Object)>(1, $r6);
+
+        $r7 = staticinvoke <com.skt.wifiagent.AgentControl: com.skt.wifiagent.AgentControl getInstance()>();
+
+        $r8 = $r7.<com.skt.wifiagent.AgentControl: java.lang.Thread MyAgent>;
+
+        virtualinvoke $r8.<java.lang.Thread: void interrupt()>();
+
+        return i1;
+
+     label03:
+        $z0 = r0.<com.skt.wifiagent.AssistNetwork: boolean isUserRequestCancel>;
+
+        if $z0 == 0 goto label05;
+
+        $r8 = r0.<com.skt.wifiagent.AssistNetwork: java.lang.Thread connThread>;
+
+        if $r8 == null goto label04;
+
+        $r8 = r0.<com.skt.wifiagent.AssistNetwork: java.lang.Thread connThread>;
+
+        virtualinvoke $r8.<java.lang.Thread: void interrupt()>();
+
+     label04:
+        $r8 = r0.<com.skt.wifiagent.AssistNetwork: java.lang.Thread recvThread>;
+
+        if $r8 == null goto label02;
+
+        $r8 = r0.<com.skt.wifiagent.AssistNetwork: java.lang.Thread recvThread>;
+
+        virtualinvoke $r8.<java.lang.Thread: void interrupt()>();
+
+        goto label02;
+
+     label05:
+        $r9 = r0.<com.skt.wifiagent.AssistNetwork: com.skt.wifiagent.log.AgentLog log>;
+
+        $r10 = new java.lang.StringBuilder;
+
+        $r11 = r0.<com.skt.wifiagent.AssistNetwork: java.lang.String TAG>;
+
+        $r11 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r11);
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>(java.lang.String)>($r11);
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" Connect tryTime: ");
+
+        $i2 = i1 + 1;
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i2);
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/");
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>(2);
+
+        $r11 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r9.<com.skt.wifiagent.log.AgentLog: void out(java.lang.String,int,java.lang.String,boolean)>("HPS_DEBUG", 2, $r11, 1);
+
+        $r8 = new java.lang.Thread;
+
+        $r12 = new com.skt.wifiagent.AssistNetwork$ConnectThread;
+
+        specialinvoke $r12.<com.skt.wifiagent.AssistNetwork$ConnectThread: void <init>(com.skt.wifiagent.AssistNetwork,com.skt.wifiagent.AssistNetwork$ConnectThread)>(r0, null);
+
+        specialinvoke $r8.<java.lang.Thread: void <init>(java.lang.Runnable)>($r12);
+
+        r0.<com.skt.wifiagent.AssistNetwork: java.lang.Thread connThread> = $r8;
+
+        $r8 = r0.<com.skt.wifiagent.AssistNetwork: java.lang.Thread connThread>;
+
+        virtualinvoke $r8.<java.lang.Thread: void setDaemon(boolean)>(1);
+
+        $r8 = r0.<com.skt.wifiagent.AssistNetwork: java.lang.Thread connThread>;
+
+        virtualinvoke $r8.<java.lang.Thread: void start()>();
+
+        $r8 = r0.<com.skt.wifiagent.AssistNetwork: java.lang.Thread connThread>;
+
+        $i2 = r0.<com.skt.wifiagent.AssistNetwork: int timeout>;
+
+        $l3 = (long) $i2;
+
+     label06:
+        virtualinvoke $r8.<java.lang.Thread: void join(long)>($l3);
+
+     label07:
+        $r13 = r0.<com.skt.wifiagent.AssistNetwork: java.net.Socket socket>;
+
+        if $r13 != null goto label10;
+
+        i1 = i1 + 1;
+
+        $r8 = r0.<com.skt.wifiagent.AssistNetwork: java.lang.Thread connThread>;
+
+        $z0 = virtualinvoke $r8.<java.lang.Thread: boolean isAlive()>();
+
+        if $z0 == 0 goto label08;
+
+        $r8 = r0.<com.skt.wifiagent.AssistNetwork: java.lang.Thread connThread>;
+
+        virtualinvoke $r8.<java.lang.Thread: void interrupt()>();
+
+     label08:
+        $r9 = r0.<com.skt.wifiagent.AssistNetwork: com.skt.wifiagent.log.AgentLog log>;
+
+        $r10 = new java.lang.StringBuilder;
+
+        $r11 = r0.<com.skt.wifiagent.AssistNetwork: java.lang.String TAG>;
+
+        $r11 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r11);
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>(java.lang.String)>($r11);
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" ConnectThread Connect FAILED!!");
+
+        $r11 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r9.<com.skt.wifiagent.log.AgentLog: void out(java.lang.String,int,java.lang.String,boolean)>("HPS_DEBUG", 4, $r11, 1);
+
+        virtualinvoke r0.<com.skt.wifiagent.AssistNetwork: boolean disconnect()>();
+
+        goto label01;
+
+     label09:
+        $r14 := @caughtexception;
+
+        $r8 = r0.<com.skt.wifiagent.AssistNetwork: java.lang.Thread connThread>;
+
+        virtualinvoke $r8.<java.lang.Thread: void interrupt()>();
+
+        goto label07;
+
+     label10:
+        $r2 = r0.<com.skt.wifiagent.AssistNetwork: android.content.Context context>;
+
+        $r3 = staticinvoke <com.skt.wifiagent.AgentPreferences: java.lang.Object getValue(android.content.Context,java.lang.String)>($r2, "isWiFiModuleEnable");
+
+        $r4 = (java.lang.Boolean) $r3;
+
+        $z0 = virtualinvoke $r4.<java.lang.Boolean: boolean booleanValue()>();
+
+        if $z0 == 0 goto label02;
+
+        $r9 = r0.<com.skt.wifiagent.AssistNetwork: com.skt.wifiagent.log.AgentLog log>;
+
+        $r10 = new java.lang.StringBuilder;
+
+        $r11 = r0.<com.skt.wifiagent.AssistNetwork: java.lang.String TAG>;
+
+        $r11 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r11);
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>(java.lang.String)>($r11);
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" ConnectThread Connect SUCCESS!!");
+
+        $r11 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r9.<com.skt.wifiagent.log.AgentLog: void out(java.lang.String,int,java.lang.String,boolean)>("HPS_DEBUG", 3, $r11, 1);
+
+     label11:
+        virtualinvoke r0.<com.skt.wifiagent.AssistNetwork: java.io.DataInputStream getInputStream()>();
+
+        virtualinvoke r0.<com.skt.wifiagent.AssistNetwork: java.io.DataOutputStream getOutputStream()>();
+
+        $z0 = virtualinvoke r0.<com.skt.wifiagent.AssistNetwork: boolean startReceiveThread()>();
+
+     label12:
+        if $z0 == 0 goto label02;
+
+     label13:
+        virtualinvoke r0.<com.skt.wifiagent.AssistNetwork: boolean transmitRequestLocationDefinition(java.lang.Object)>($r1);
+
+     label14:
+        goto label02;
+
+     label15:
+        $r15 := @caughtexception;
+
+        virtualinvoke $r15.<java.lang.Exception: void printStackTrace()>();
+
+        goto label02;
+
+     label16:
+        $r2 = r0.<com.skt.wifiagent.AssistNetwork: android.content.Context context>;
+
+        $r5 = staticinvoke <com.skt.wifiagent.WifiAgent: com.skt.wifiagent.WifiAgent getInstance(android.content.Context)>($r2);
+
+        $r6 = new com.skt.wifiagent.bean.LocationBeans$FixResult;
+
+        specialinvoke $r6.<com.skt.wifiagent.bean.LocationBeans$FixResult: void <init>(int,int,int,int,int,int,int,int,int,int)>(2, 0, 0, 0, 0, 0, 0, 0, 0, 0);
+
+        virtualinvoke $r5.<com.skt.wifiagent.WifiAgent: void onChangeNotify(int,java.lang.Object)>(1, $r6);
+
+        return 0;
+
+     label17:
+        return i1;
+
+        catch java.lang.InterruptedException from label06 to label07 with label09;
+        catch java.lang.Exception from label11 to label12 with label15;
+        catch java.lang.Exception from label13 to label14 with label15;
+    }
+
+    protected boolean disconnect()
+    {
+        java.lang.Throwable $r5;
+        java.net.Socket $r1;
+        java.io.IOException $r7;
+        com.skt.wifiagent.AssistNetwork r0;
+        com.skt.wifiagent.log.AgentLog $r2;
+        java.lang.StringBuilder $r3, $r6;
+        java.lang.String $r4;
+
+        r0 := @this: com.skt.wifiagent.AssistNetwork;
+
+     label1:
+        virtualinvoke r0.<com.skt.wifiagent.AssistNetwork: void closeOutputStream()>();
+
+        virtualinvoke r0.<com.skt.wifiagent.AssistNetwork: void closeInputStream()>();
+
+     label2:
+        $r1 = r0.<com.skt.wifiagent.AssistNetwork: java.net.Socket socket>;
+
+        if $r1 == null goto label4;
+
+        $r1 = r0.<com.skt.wifiagent.AssistNetwork: java.net.Socket socket>;
+
+     label3:
+        virtualinvoke $r1.<java.net.Socket: void close()>();
+
+     label4:
+        $r2 = r0.<com.skt.wifiagent.AssistNetwork: com.skt.wifiagent.log.AgentLog log>;
+
+        $r6 = new java.lang.StringBuilder;
+
+        $r4 = r0.<com.skt.wifiagent.AssistNetwork: java.lang.String TAG>;
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r4);
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" disconnect. success.\r\n\r\n");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r2.<com.skt.wifiagent.log.AgentLog: void out(java.lang.String,int,java.lang.String,boolean)>("HPS_DEBUG", 2, $r4, 1);
+
+        return 1;
+
+     label5:
+        $r5 := @caughtexception;
+
+        $r2 = r0.<com.skt.wifiagent.AssistNetwork: com.skt.wifiagent.log.AgentLog log>;
+
+        $r6 = new java.lang.StringBuilder;
+
+        $r4 = r0.<com.skt.wifiagent.AssistNetwork: java.lang.String TAG>;
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r4);
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" disconnect. fail");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r2.<com.skt.wifiagent.log.AgentLog: void out(java.lang.String,int,java.lang.String,boolean)>("HPS_DEBUG", 4, $r4, 1);
+
+        $r7 = (java.io.IOException) $r5;
+
+        virtualinvoke $r7.<java.io.IOException: void printStackTrace()>();
+
+        return 0;
+
+        catch java.io.IOException from label1 to label2 with label5;
+        catch java.io.IOException from label3 to label4 with label5;
+    }
+
+    public void doConnetionCancel(boolean)
+    {
+        com.skt.wifiagent.AssistNetwork r0;
+        boolean $z0;
+
+        r0 := @this: com.skt.wifiagent.AssistNetwork;
+
+        $z0 := @parameter0: boolean;
+
+        r0.<com.skt.wifiagent.AssistNetwork: boolean isUserRequestCancel> = $z0;
+
+        return;
+    }
+
+    protected com.skt.wifiagent.AssistNetwork getAZNetwork()
+    {
+        com.skt.wifiagent.AssistNetwork r0;
+
+        r0 := @this: com.skt.wifiagent.AssistNetwork;
+
+        return r0;
+    }
+
+    protected java.io.DataInputStream getInputStream()
+    {
+        java.io.DataInputStream $r3;
+        java.net.Socket $r2;
+        com.skt.wifiagent.AssistNetwork r0;
+        java.lang.Exception $r4;
+        java.io.InputStream $r1;
+
+        r0 := @this: com.skt.wifiagent.AssistNetwork;
+
+        $r2 = r0.<com.skt.wifiagent.AssistNetwork: java.net.Socket socket>;
+
+        if $r2 != null goto label1;
+
+        return null;
+
+     label1:
+        $r3 = new java.io.DataInputStream;
+
+     label2:
+        $r2 = r0.<com.skt.wifiagent.AssistNetwork: java.net.Socket socket>;
+
+        $r1 = virtualinvoke $r2.<java.net.Socket: java.io.InputStream getInputStream()>();
+
+        specialinvoke $r3.<java.io.DataInputStream: void <init>(java.io.InputStream)>($r1);
+
+        r0.<com.skt.wifiagent.AssistNetwork: java.io.DataInputStream mDataInStream> = $r3;
+
+     label3:
+        $r3 = r0.<com.skt.wifiagent.AssistNetwork: java.io.DataInputStream mDataInStream>;
+
+        return $r3;
+
+     label4:
+        $r4 := @caughtexception;
+
+        virtualinvoke $r4.<java.lang.Exception: void printStackTrace()>();
+
+        goto label3;
+
+        catch java.lang.Exception from label2 to label3 with label4;
+    }
+
+    protected java.io.DataOutputStream getOutputStream()
+    {
+        java.io.OutputStream $r1;
+        java.net.Socket $r2;
+        java.io.DataOutputStream $r4;
+        com.skt.wifiagent.AssistNetwork r0;
+        java.lang.Exception $r5;
+        java.io.BufferedOutputStream $r3;
+
+        r0 := @this: com.skt.wifiagent.AssistNetwork;
+
+        $r2 = r0.<com.skt.wifiagent.AssistNetwork: java.net.Socket socket>;
+
+        if $r2 != null goto label1;
+
+        return null;
+
+     label1:
+        $r3 = new java.io.BufferedOutputStream;
+
+     label2:
+        $r2 = r0.<com.skt.wifiagent.AssistNetwork: java.net.Socket socket>;
+
+        $r1 = virtualinvoke $r2.<java.net.Socket: java.io.OutputStream getOutputStream()>();
+
+        specialinvoke $r3.<java.io.BufferedOutputStream: void <init>(java.io.OutputStream,int)>($r1, 4096);
+
+        r0.<com.skt.wifiagent.AssistNetwork: java.io.BufferedOutputStream mBufOutStream> = $r3;
+
+     label3:
+        $r4 = new java.io.DataOutputStream;
+
+     label4:
+        $r3 = r0.<com.skt.wifiagent.AssistNetwork: java.io.BufferedOutputStream mBufOutStream>;
+
+        specialinvoke $r4.<java.io.DataOutputStream: void <init>(java.io.OutputStream)>($r3);
+
+        r0.<com.skt.wifiagent.AssistNetwork: java.io.DataOutputStream mDataOutStream> = $r4;
+
+     label5:
+        $r4 = r0.<com.skt.wifiagent.AssistNetwork: java.io.DataOutputStream mDataOutStream>;
+
+        return $r4;
+
+     label6:
+        $r5 := @caughtexception;
+
+        virtualinvoke $r5.<java.lang.Exception: void printStackTrace()>();
+
+        goto label5;
+
+        catch java.lang.Exception from label2 to label3 with label6;
+        catch java.lang.Exception from label4 to label5 with label6;
+    }
+
+    protected java.net.Socket getSocket()
+    {
+        java.net.Socket r1;
+        com.skt.wifiagent.AssistNetwork r0;
+
+        r0 := @this: com.skt.wifiagent.AssistNetwork;
+
+        r1 = r0.<com.skt.wifiagent.AssistNetwork: java.net.Socket socket>;
+
+        return r1;
+    }
+
+    protected boolean isConnected()
+    {
+        java.net.Socket $r1;
+        com.skt.wifiagent.AssistNetwork r0;
+        boolean $z0;
+
+        r0 := @this: com.skt.wifiagent.AssistNetwork;
+
+        $r1 = r0.<com.skt.wifiagent.AssistNetwork: java.net.Socket socket>;
+
+        $z0 = virtualinvoke $r1.<java.net.Socket: boolean isConnected()>();
+
+        return $z0;
+    }
+
+    public boolean killNetwork()
+    {
+        com.skt.wifiagent.AssistNetwork r0;
+        java.lang.Exception $r2;
+        java.lang.Thread $r1;
+
+        r0 := @this: com.skt.wifiagent.AssistNetwork;
+
+        r0.<com.skt.wifiagent.AssistNetwork: boolean isUserRequestCancel> = 1;
+
+     label1:
+        virtualinvoke r0.<com.skt.wifiagent.AssistNetwork: boolean disconnect()>();
+
+        $r1 = r0.<com.skt.wifiagent.AssistNetwork: java.lang.Thread connThread>;
+
+     label2:
+        if $r1 == null goto label4;
+
+     label3:
+        $r1 = r0.<com.skt.wifiagent.AssistNetwork: java.lang.Thread connThread>;
+
+        virtualinvoke $r1.<java.lang.Thread: void interrupt()>();
+
+     label4:
+        $r1 = r0.<com.skt.wifiagent.AssistNetwork: java.lang.Thread recvThread>;
+
+     label5:
+        if $r1 == null goto label7;
+
+     label6:
+        $r1 = r0.<com.skt.wifiagent.AssistNetwork: java.lang.Thread recvThread>;
+
+        virtualinvoke $r1.<java.lang.Thread: void interrupt()>();
+
+     label7:
+        return 1;
+
+     label8:
+        $r2 := @caughtexception;
+
+        return 0;
+
+        catch java.lang.Exception from label1 to label2 with label8;
+        catch java.lang.Exception from label3 to label5 with label8;
+        catch java.lang.Exception from label6 to label7 with label8;
+    }
+
+    public void onSharedPreferenceChanged(android.content.SharedPreferences, java.lang.String)
+    {
+        android.content.Context $r4;
+        com.skt.wifiagent.AssistNetwork r0;
+        com.skt.wifiagent.log.AgentLog $r3;
+        android.content.SharedPreferences $r1;
+        java.lang.Boolean $r6;
+        java.lang.Object $r5;
+        java.lang.String $r2;
+        boolean $z0;
+
+        r0 := @this: com.skt.wifiagent.AssistNetwork;
+
+        $r1 := @parameter0: android.content.SharedPreferences;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 = r0.<com.skt.wifiagent.AssistNetwork: com.skt.wifiagent.log.AgentLog log>;
+
+        virtualinvoke $r3.<com.skt.wifiagent.log.AgentLog: void out(java.lang.String,int,java.lang.String,boolean)>("HPS_DEBUG", 2, "onChangedddd", 1);
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>("isWiFiModuleEnable");
+
+        if $z0 == 0 goto label1;
+
+        $r4 = r0.<com.skt.wifiagent.AssistNetwork: android.content.Context context>;
+
+        $r5 = staticinvoke <com.skt.wifiagent.AgentPreferences: java.lang.Object getValue(android.content.Context,java.lang.String)>($r4, "isWiFiModuleEnable");
+
+        $r6 = (java.lang.Boolean) $r5;
+
+        $z0 = virtualinvoke $r6.<java.lang.Boolean: boolean booleanValue()>();
+
+        if $z0 != 0 goto label1;
+
+        r0.<com.skt.wifiagent.AssistNetwork: boolean isUserRequestCancel> = 1;
+
+     label1:
+        return;
+    }
+
+    protected void setSocketTimeout(int)
+    {
+        java.lang.Throwable $r5;
+        java.net.Socket $r1;
+        com.skt.wifiagent.AssistNetwork r0;
+        com.skt.wifiagent.log.AgentLog $r2;
+        java.net.SocketException $r7;
+        int $i0;
+        java.lang.StringBuilder $r3, $r6;
+        java.lang.String $r4;
+
+        r0 := @this: com.skt.wifiagent.AssistNetwork;
+
+        $i0 := @parameter0: int;
+
+        $r1 = r0.<com.skt.wifiagent.AssistNetwork: java.net.Socket socket>;
+
+     label1:
+        virtualinvoke $r1.<java.net.Socket: void setSoTimeout(int)>(10000);
+
+     label2:
+        $r2 = r0.<com.skt.wifiagent.AssistNetwork: com.skt.wifiagent.log.AgentLog log>;
+
+        $r6 = new java.lang.StringBuilder;
+
+        $r3 = $r6;
+
+        $r4 = r0.<com.skt.wifiagent.AssistNetwork: java.lang.String TAG>;
+
+     label3:
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r4);
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" SETUP, SocketTimeout:");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>(10000);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r2.<com.skt.wifiagent.log.AgentLog: void out(java.lang.String,int,java.lang.String,boolean)>("HPS_DEBUG", 4, $r4, 1);
+
+     label4:
+        return;
+
+     label5:
+        $r5 := @caughtexception;
+
+        $r2 = r0.<com.skt.wifiagent.AssistNetwork: com.skt.wifiagent.log.AgentLog log>;
+
+        $r6 = new java.lang.StringBuilder;
+
+        $r4 = r0.<com.skt.wifiagent.AssistNetwork: java.lang.String TAG>;
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r4);
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" SocketTimeout");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r2.<com.skt.wifiagent.log.AgentLog: void out(java.lang.String,int,java.lang.String,boolean)>("HPS_DEBUG", 2, $r4, 1);
+
+        $r7 = (java.net.SocketException) $r5;
+
+        virtualinvoke $r7.<java.net.SocketException: void printStackTrace()>();
+
+        return;
+
+        catch java.net.SocketException from label1 to label2 with label5;
+        catch java.net.SocketException from label3 to label4 with label5;
+    }
+
+    protected boolean startReceiveThread()
+    {
+        java.lang.Thread $r1;
+        com.skt.wifiagent.AssistNetwork$ReceiveThread $r2;
+        com.skt.wifiagent.AssistNetwork r0;
+        boolean $z0;
+
+        r0 := @this: com.skt.wifiagent.AssistNetwork;
+
+        $r1 = new java.lang.Thread;
+
+        $r2 = new com.skt.wifiagent.AssistNetwork$ReceiveThread;
+
+        specialinvoke $r2.<com.skt.wifiagent.AssistNetwork$ReceiveThread: void <init>(com.skt.wifiagent.AssistNetwork,com.skt.wifiagent.AssistNetwork$ReceiveThread)>(r0, null);
+
+        specialinvoke $r1.<java.lang.Thread: void <init>(java.lang.Runnable)>($r2);
+
+        r0.<com.skt.wifiagent.AssistNetwork: java.lang.Thread recvThread> = $r1;
+
+        $r1 = r0.<com.skt.wifiagent.AssistNetwork: java.lang.Thread recvThread>;
+
+        virtualinvoke $r1.<java.lang.Thread: void setDaemon(boolean)>(1);
+
+        $r1 = r0.<com.skt.wifiagent.AssistNetwork: java.lang.Thread recvThread>;
+
+        virtualinvoke $r1.<java.lang.Thread: void start()>();
+
+        $r1 = r0.<com.skt.wifiagent.AssistNetwork: java.lang.Thread recvThread>;
+
+        $z0 = virtualinvoke $r1.<java.lang.Thread: boolean isAlive()>();
+
+        return $z0;
+    }
+
+    protected boolean stopReceiveThread()
+    {
+        java.lang.Thread $r1;
+        com.skt.wifiagent.AssistNetwork r0;
+        java.lang.Exception $r2;
+        boolean $z0;
+
+        r0 := @this: com.skt.wifiagent.AssistNetwork;
+
+     label1:
+        $r1 = r0.<com.skt.wifiagent.AssistNetwork: java.lang.Thread recvThread>;
+
+        virtualinvoke $r1.<java.lang.Thread: void interrupt()>();
+
+     label2:
+        $r1 = r0.<com.skt.wifiagent.AssistNetwork: java.lang.Thread recvThread>;
+
+        $z0 = virtualinvoke $r1.<java.lang.Thread: boolean isAlive()>();
+
+        return $z0;
+
+     label3:
+        $r2 := @caughtexception;
+
+        virtualinvoke $r2.<java.lang.Exception: void printStackTrace()>();
+
+        goto label2;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+    }
+
+    public boolean transmitRequestLocationDefinition(java.lang.Object)
+    {
+        android.content.Context $r3;
+        byte[] $r11;
+        com.skt.wifiagent.common.AgentException $r16, $r19;
+        com.skt.wifiagent.log.AgentLog $r7;
+        java.util.ArrayList $r17;
+        com.skt.wifiagent.bean.LocationBeans$UserRequestBean $r2;
+        com.skt.wifiagent.AgentControl $r5;
+        short $s2;
+        java.io.DataOutputStream $r10;
+        byte $b1;
+        int $i0;
+        java.lang.Boolean $r4;
+        java.lang.String $r9;
+        boolean $z0;
+        double $d0;
+        java.util.Iterator $r12;
+        com.skt.wifiagent.AssistNetwork r0;
+        java.lang.Exception $r15;
+        java.util.List $r6;
+        float $f0;
+        java.lang.Object $r1;
+        java.lang.StringBuilder $r8, $r18;
+        com.skt.wifiagent.bean.WiFiBeans$APData r14;
+        android.location.Location $r13;
+
+        r0 := @this: com.skt.wifiagent.AssistNetwork;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 = (com.skt.wifiagent.bean.LocationBeans$UserRequestBean) $r1;
+
+        $r17 = new java.util.ArrayList;
+
+     label01:
+        specialinvoke $r17.<java.util.ArrayList: void <init>()>();
+
+        $r3 = r0.<com.skt.wifiagent.AssistNetwork: android.content.Context context>;
+
+        $r1 = staticinvoke <com.skt.wifiagent.AgentPreferences: java.lang.Object getValue(android.content.Context,java.lang.String)>($r3, "isWiFiAutoEnable");
+
+        $r4 = (java.lang.Boolean) $r1;
+
+        $z0 = virtualinvoke $r4.<java.lang.Boolean: boolean booleanValue()>();
+
+     label02:
+        if $z0 == 0 goto label35;
+
+     label03:
+        $r5 = staticinvoke <com.skt.wifiagent.AgentControl: com.skt.wifiagent.AgentControl getInstance()>();
+
+        $r6 = virtualinvoke $r5.<com.skt.wifiagent.AgentControl: java.util.List getRefinedScanResult()>();
+
+     label04:
+        $r1 = $r6;
+
+     label05:
+        $r7 = r0.<com.skt.wifiagent.AssistNetwork: com.skt.wifiagent.log.AgentLog log>;
+
+     label06:
+        $r18 = new java.lang.StringBuilder;
+
+        $r8 = $r18;
+
+     label07:
+        specialinvoke $r18.<java.lang.StringBuilder: void <init>(java.lang.String)>("mUserRequestBean: [Appid=");
+
+        $r9 = virtualinvoke $r2.<com.skt.wifiagent.bean.LocationBeans$UserRequestBean: java.lang.String getAppId()>();
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r9);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(", numSat=");
+
+        $i0 = virtualinvoke $r2.<com.skt.wifiagent.bean.LocationBeans$UserRequestBean: int getNumSat()>();
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(", gpsFixFlag=");
+
+        $z0 = virtualinvoke $r2.<com.skt.wifiagent.bean.LocationBeans$UserRequestBean: boolean isGpsFixFlag()>();
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(boolean)>($z0);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("]");
+
+        $r9 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r7.<com.skt.wifiagent.log.AgentLog: void out(java.lang.String,int,java.lang.String,boolean)>("HPS_DEBUG", 2, $r9, 1);
+
+        $r7 = r0.<com.skt.wifiagent.AssistNetwork: com.skt.wifiagent.log.AgentLog log>;
+
+     label08:
+        $r18 = new java.lang.StringBuilder;
+
+        $r8 = $r18;
+
+     label09:
+        specialinvoke $r18.<java.lang.StringBuilder: void <init>(java.lang.String)>("scan size:");
+
+        $r6 = (java.util.List) $r1;
+
+        $i0 = interfaceinvoke $r6.<java.util.List: int size()>();
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r9 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r7.<com.skt.wifiagent.log.AgentLog: void out(java.lang.String,int,java.lang.String,boolean)>("HPS_DEBUG", 2, $r9, 1);
+
+        $r6 = (java.util.List) $r1;
+
+        $i0 = interfaceinvoke $r6.<java.util.List: int size()>();
+
+        r0.<com.skt.wifiagent.AssistNetwork: int mScanSize> = $i0;
+
+        $r3 = r0.<com.skt.wifiagent.AssistNetwork: android.content.Context context>;
+
+        $i0 = staticinvoke <com.skt.wifiagent.common.CellContext: int getPhoneCellID(android.content.Context)>($r3);
+
+        r0.<com.skt.wifiagent.AssistNetwork: int cellId> = $i0;
+
+        $r10 = r0.<com.skt.wifiagent.AssistNetwork: java.io.DataOutputStream mDataOutStream>;
+
+        $r6 = (java.util.List) $r1;
+
+        $i0 = interfaceinvoke $r6.<java.util.List: int size()>();
+
+     label10:
+        $i0 = $i0 * 39;
+
+        $i0 = $i0 + 79;
+
+     label11:
+        $z0 = virtualinvoke $r2.<com.skt.wifiagent.bean.LocationBeans$UserRequestBean: boolean isGpsFixFlag()>();
+
+     label12:
+        if $z0 == 0 goto label38;
+
+        $b1 = 14;
+
+     label13:
+        $i0 = $i0 + $b1;
+
+     label14:
+        virtualinvoke $r10.<java.io.DataOutputStream: void writeShort(int)>($i0);
+
+        $r10 = r0.<com.skt.wifiagent.AssistNetwork: java.io.DataOutputStream mDataOutStream>;
+
+     label15:
+        virtualinvoke $r10.<java.io.DataOutputStream: void writeShort(int)>(47890);
+
+        $r10 = r0.<com.skt.wifiagent.AssistNetwork: java.io.DataOutputStream mDataOutStream>;
+
+        virtualinvoke $r10.<java.io.DataOutputStream: void writeInt(int)>(0);
+
+        $r10 = r0.<com.skt.wifiagent.AssistNetwork: java.io.DataOutputStream mDataOutStream>;
+
+        $z0 = virtualinvoke $r2.<com.skt.wifiagent.bean.LocationBeans$UserRequestBean: boolean isGpsFixFlag()>();
+
+        $r11 = specialinvoke r0.<com.skt.wifiagent.AssistNetwork: byte[] getEncryptMSID(boolean)>($z0);
+
+        virtualinvoke $r10.<java.io.DataOutputStream: void write(byte[])>($r11);
+
+        $r10 = r0.<com.skt.wifiagent.AssistNetwork: java.io.DataOutputStream mDataOutStream>;
+
+        virtualinvoke $r10.<java.io.DataOutputStream: void writeShort(int)>(258);
+
+        $r10 = r0.<com.skt.wifiagent.AssistNetwork: java.io.DataOutputStream mDataOutStream>;
+
+        $r11 = specialinvoke r0.<com.skt.wifiagent.AssistNetwork: byte[] getModel()>();
+
+        virtualinvoke $r10.<java.io.DataOutputStream: void write(byte[])>($r11);
+
+        $r10 = r0.<com.skt.wifiagent.AssistNetwork: java.io.DataOutputStream mDataOutStream>;
+
+        $i0 = r0.<com.skt.wifiagent.AssistNetwork: int cellId>;
+
+        virtualinvoke $r10.<java.io.DataOutputStream: void writeInt(int)>($i0);
+
+        $r10 = r0.<com.skt.wifiagent.AssistNetwork: java.io.DataOutputStream mDataOutStream>;
+
+        $s2 = specialinvoke r0.<com.skt.wifiagent.AssistNetwork: short getMCC()>();
+
+     label16:
+        $i0 = (int) $s2;
+
+     label17:
+        virtualinvoke $r10.<java.io.DataOutputStream: void writeShort(int)>($i0);
+
+        $r10 = r0.<com.skt.wifiagent.AssistNetwork: java.io.DataOutputStream mDataOutStream>;
+
+        $z0 = specialinvoke r0.<com.skt.wifiagent.AssistNetwork: boolean getNetType()>();
+
+     label18:
+        if $z0 == 0 goto label39;
+
+        $b1 = 1;
+
+     label19:
+        virtualinvoke $r10.<java.io.DataOutputStream: void writeByte(int)>($b1);
+
+        $r10 = r0.<com.skt.wifiagent.AssistNetwork: java.io.DataOutputStream mDataOutStream>;
+
+        $r9 = virtualinvoke $r2.<com.skt.wifiagent.bean.LocationBeans$UserRequestBean: java.lang.String getAppId()>();
+
+        $r11 = specialinvoke r0.<com.skt.wifiagent.AssistNetwork: byte[] getAppId(java.lang.String)>($r9);
+
+        virtualinvoke $r10.<java.io.DataOutputStream: void write(byte[])>($r11);
+
+        $r10 = r0.<com.skt.wifiagent.AssistNetwork: java.io.DataOutputStream mDataOutStream>;
+
+        virtualinvoke $r10.<java.io.DataOutputStream: void writeByte(int)>(0);
+
+        $r10 = r0.<com.skt.wifiagent.AssistNetwork: java.io.DataOutputStream mDataOutStream>;
+
+        virtualinvoke $r10.<java.io.DataOutputStream: void writeByte(int)>(0);
+
+        $r10 = r0.<com.skt.wifiagent.AssistNetwork: java.io.DataOutputStream mDataOutStream>;
+
+        virtualinvoke $r10.<java.io.DataOutputStream: void writeByte(int)>(0);
+
+        $r10 = r0.<com.skt.wifiagent.AssistNetwork: java.io.DataOutputStream mDataOutStream>;
+
+        $r6 = (java.util.List) $r1;
+
+        $i0 = interfaceinvoke $r6.<java.util.List: int size()>();
+
+        virtualinvoke $r10.<java.io.DataOutputStream: void writeByte(int)>($i0);
+
+        $r6 = (java.util.List) $r1;
+
+        $r12 = interfaceinvoke $r6.<java.util.List: java.util.Iterator iterator()>();
+
+     label20:
+        $z0 = interfaceinvoke $r12.<java.util.Iterator: boolean hasNext()>();
+
+     label21:
+        if $z0 != 0 goto label40;
+
+     label22:
+        $z0 = virtualinvoke $r2.<com.skt.wifiagent.bean.LocationBeans$UserRequestBean: boolean isGpsFixFlag()>();
+
+     label23:
+        if $z0 == 0 goto label33;
+
+     label24:
+        $r10 = r0.<com.skt.wifiagent.AssistNetwork: java.io.DataOutputStream mDataOutStream>;
+
+        $z0 = virtualinvoke $r2.<com.skt.wifiagent.bean.LocationBeans$UserRequestBean: boolean isGpsFixFlag()>();
+
+     label25:
+        if $z0 == 0 goto label45;
+
+        $b1 = 1;
+
+     label26:
+        virtualinvoke $r10.<java.io.DataOutputStream: void writeByte(int)>($b1);
+
+        $r10 = r0.<com.skt.wifiagent.AssistNetwork: java.io.DataOutputStream mDataOutStream>;
+
+        $r13 = virtualinvoke $r2.<com.skt.wifiagent.bean.LocationBeans$UserRequestBean: android.location.Location getGpsLocation()>();
+
+        $d0 = virtualinvoke $r13.<android.location.Location: double getLatitude()>();
+
+     label27:
+        $d0 = $d0 * 1000000.0;
+
+        $i0 = (int) $d0;
+
+     label28:
+        virtualinvoke $r10.<java.io.DataOutputStream: void writeInt(int)>($i0);
+
+        $r10 = r0.<com.skt.wifiagent.AssistNetwork: java.io.DataOutputStream mDataOutStream>;
+
+        $r13 = virtualinvoke $r2.<com.skt.wifiagent.bean.LocationBeans$UserRequestBean: android.location.Location getGpsLocation()>();
+
+        $d0 = virtualinvoke $r13.<android.location.Location: double getLongitude()>();
+
+     label29:
+        $d0 = $d0 * 1000000.0;
+
+        $i0 = (int) $d0;
+
+     label30:
+        virtualinvoke $r10.<java.io.DataOutputStream: void writeInt(int)>($i0);
+
+        $r10 = r0.<com.skt.wifiagent.AssistNetwork: java.io.DataOutputStream mDataOutStream>;
+
+        $i0 = virtualinvoke $r2.<com.skt.wifiagent.bean.LocationBeans$UserRequestBean: int getNumSat()>();
+
+        virtualinvoke $r10.<java.io.DataOutputStream: void writeByte(int)>($i0);
+
+        $r10 = r0.<com.skt.wifiagent.AssistNetwork: java.io.DataOutputStream mDataOutStream>;
+
+        $r13 = virtualinvoke $r2.<com.skt.wifiagent.bean.LocationBeans$UserRequestBean: android.location.Location getGpsLocation()>();
+
+        $f0 = virtualinvoke $r13.<android.location.Location: float getAccuracy()>();
+
+     label31:
+        $i0 = (int) $f0;
+
+     label32:
+        virtualinvoke $r10.<java.io.DataOutputStream: void writeInt(int)>($i0);
+
+     label33:
+        $r10 = r0.<com.skt.wifiagent.AssistNetwork: java.io.DataOutputStream mDataOutStream>;
+
+        virtualinvoke $r10.<java.io.DataOutputStream: void flush()>();
+
+        $r7 = r0.<com.skt.wifiagent.AssistNetwork: com.skt.wifiagent.log.AgentLog log>;
+
+        virtualinvoke $r7.<com.skt.wifiagent.log.AgentLog: void out(java.lang.String,int,java.lang.String,boolean)>("HPS_DEBUG", 2, "transmit to Server", 1);
+
+     label34:
+        return 1;
+
+     label35:
+        $r17 = new java.util.ArrayList;
+
+        $r1 = $r17;
+
+     label36:
+        specialinvoke $r17.<java.util.ArrayList: void <init>()>();
+
+     label37:
+        goto label05;
+
+     label38:
+        $b1 = 0;
+
+        goto label13;
+
+     label39:
+        $b1 = 0;
+
+        goto label19;
+
+     label40:
+        $r1 = interfaceinvoke $r12.<java.util.Iterator: java.lang.Object next()>();
+
+        r14 = (com.skt.wifiagent.bean.WiFiBeans$APData) $r1;
+
+        $r10 = r0.<com.skt.wifiagent.AssistNetwork: java.io.DataOutputStream mDataOutStream>;
+
+        $r9 = virtualinvoke r14.<com.skt.wifiagent.bean.WiFiBeans$APData: java.lang.String getBssid()>();
+
+        $r11 = staticinvoke <com.skt.wifiagent.common.BitConverter: byte[] getMacByteArray(java.lang.String)>($r9);
+
+        virtualinvoke $r10.<java.io.DataOutputStream: void write(byte[])>($r11);
+
+        $r10 = r0.<com.skt.wifiagent.AssistNetwork: java.io.DataOutputStream mDataOutStream>;
+
+        $i0 = virtualinvoke r14.<com.skt.wifiagent.bean.WiFiBeans$APData: int getLevel()>();
+
+        virtualinvoke $r10.<java.io.DataOutputStream: void writeByte(int)>($i0);
+
+        $r10 = r0.<com.skt.wifiagent.AssistNetwork: java.io.DataOutputStream mDataOutStream>;
+
+        $r9 = virtualinvoke r14.<com.skt.wifiagent.bean.WiFiBeans$APData: java.lang.String getSsid()>();
+
+        $r11 = specialinvoke r0.<com.skt.wifiagent.AssistNetwork: byte[] getSsidWrap(java.lang.String)>($r9);
+
+        virtualinvoke $r10.<java.io.DataOutputStream: void write(byte[])>($r11);
+
+     label41:
+        goto label20;
+
+     label42:
+        $r15 := @caughtexception;
+
+        $r19 = new com.skt.wifiagent.common.AgentException;
+
+        $r16 = $r19;
+
+     label43:
+        specialinvoke $r19.<com.skt.wifiagent.common.AgentException: void <init>()>();
+
+        throw $r16;
+
+     label44:
+        $r16 := @caughtexception;
+
+        virtualinvoke $r16.<com.skt.wifiagent.common.AgentException: void printStackTrace()>();
+
+        return 0;
+
+     label45:
+        $b1 = 0;
+
+        goto label26;
+
+        catch java.lang.Exception from label01 to label02 with label42;
+        catch java.lang.Exception from label03 to label04 with label42;
+        catch java.lang.Exception from label05 to label06 with label42;
+        catch java.lang.Exception from label07 to label08 with label42;
+        catch java.lang.Exception from label09 to label10 with label42;
+        catch java.lang.Exception from label11 to label12 with label42;
+        catch java.lang.Exception from label14 to label15 with label42;
+        catch java.lang.Exception from label15 to label16 with label42;
+        catch java.lang.Exception from label17 to label18 with label42;
+        catch java.lang.Exception from label19 to label21 with label42;
+        catch java.lang.Exception from label22 to label23 with label42;
+        catch java.lang.Exception from label24 to label25 with label42;
+        catch java.lang.Exception from label26 to label27 with label42;
+        catch java.lang.Exception from label28 to label29 with label42;
+        catch java.lang.Exception from label30 to label31 with label42;
+        catch java.lang.Exception from label32 to label34 with label42;
+        catch java.lang.Exception from label36 to label37 with label42;
+        catch java.lang.Exception from label40 to label41 with label42;
+        catch com.skt.wifiagent.common.AgentException from label43 to label44 with label44;
+    }
+}

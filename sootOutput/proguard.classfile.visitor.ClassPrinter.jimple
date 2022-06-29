@@ -1,0 +1,4058 @@
+public class proguard.classfile.visitor.ClassPrinter extends proguard.classfile.util.SimplifiedVisitor implements proguard.classfile.visitor.ClassVisitor, proguard.classfile.constant.visitor.ConstantVisitor, proguard.classfile.visitor.MemberVisitor, proguard.classfile.attribute.visitor.AttributeVisitor, proguard.classfile.attribute.visitor.ExceptionInfoVisitor, proguard.classfile.attribute.visitor.InnerClassesInfoVisitor, proguard.classfile.attribute.preverification.visitor.StackMapFrameVisitor, proguard.classfile.attribute.preverification.visitor.VerificationTypeVisitor, proguard.classfile.attribute.visitor.LineNumberInfoVisitor, proguard.classfile.attribute.visitor.LocalVariableInfoVisitor, proguard.classfile.attribute.visitor.LocalVariableTypeInfoVisitor, proguard.classfile.attribute.'annotation'.visitor.AnnotationVisitor, proguard.classfile.attribute.'annotation'.visitor.ElementValueVisitor, proguard.classfile.instruction.visitor.InstructionVisitor
+{
+    private static final java.lang.String INDENTATION;
+    private int indentation;
+    private final java.io.PrintStream ps;
+
+    public void <init>()
+    {
+        java.io.PrintStream $r1;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 = <java.lang.System: java.io.PrintStream out>;
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void <init>(java.io.PrintStream)>($r1);
+
+        return;
+    }
+
+    public void <init>(java.io.PrintStream)
+    {
+        java.io.PrintStream $r1;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: java.io.PrintStream;
+
+        specialinvoke r0.<proguard.classfile.util.SimplifiedVisitor: void <init>()>();
+
+        r0.<proguard.classfile.visitor.ClassPrinter: java.io.PrintStream ps> = $r1;
+
+        return;
+    }
+
+    private void indent()
+    {
+        int $i0;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $i0 = r0.<proguard.classfile.visitor.ClassPrinter: int indentation>;
+
+        $i0 = $i0 + 1;
+
+        r0.<proguard.classfile.visitor.ClassPrinter: int indentation> = $i0;
+
+        return;
+    }
+
+    private void outdent()
+    {
+        int $i0;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $i0 = r0.<proguard.classfile.visitor.ClassPrinter: int indentation>;
+
+        $i0 = $i0 - 1;
+
+        r0.<proguard.classfile.visitor.ClassPrinter: int indentation> = $i0;
+
+        return;
+    }
+
+    private void print(java.lang.String)
+    {
+        java.io.PrintStream $r2;
+        int $i0, $i1;
+        java.lang.String $r1;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $i0 = 0;
+
+     label1:
+        $i1 = r0.<proguard.classfile.visitor.ClassPrinter: int indentation>;
+
+        if $i0 >= $i1 goto label2;
+
+        $r2 = r0.<proguard.classfile.visitor.ClassPrinter: java.io.PrintStream ps>;
+
+        virtualinvoke $r2.<java.io.PrintStream: void print(java.lang.String)>("  ");
+
+        $i0 = $i0 + 1;
+
+        goto label1;
+
+     label2:
+        $r2 = r0.<proguard.classfile.visitor.ClassPrinter: java.io.PrintStream ps>;
+
+        virtualinvoke $r2.<java.io.PrintStream: void print(java.lang.String)>($r1);
+
+        return;
+    }
+
+    private void println()
+    {
+        java.io.PrintStream $r1;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 = r0.<proguard.classfile.visitor.ClassPrinter: java.io.PrintStream ps>;
+
+        virtualinvoke $r1.<java.io.PrintStream: void println()>();
+
+        return;
+    }
+
+    private void println(java.lang.String)
+    {
+        java.lang.String $r1;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void print(java.lang.String)>($r1);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println()>();
+
+        return;
+    }
+
+    private void visitMember(proguard.classfile.ProgramClass, proguard.classfile.ProgramMember)
+    {
+        proguard.classfile.ProgramMember $r2;
+        java.lang.StringBuffer $r3;
+        int $i0;
+        java.lang.String $r4;
+        proguard.classfile.visitor.ClassPrinter r0;
+        proguard.classfile.ProgramClass $r1;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.ProgramClass;
+
+        $r2 := @parameter1: proguard.classfile.ProgramMember;
+
+        $i0 = $r2.<proguard.classfile.ProgramMember: int u2attributesCount>;
+
+        if $i0 <= 0 goto label1;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Class member attributes (count = ");
+
+        $i0 = $r2.<proguard.classfile.ProgramMember: int u2attributesCount>;
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("):");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        virtualinvoke $r2.<proguard.classfile.ProgramMember: void attributesAccept(proguard.classfile.ProgramClass,proguard.classfile.attribute.visitor.AttributeVisitor)>($r1, r0);
+
+     label1:
+        return;
+    }
+
+    private java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)
+    {
+        java.lang.Object $r2;
+        proguard.classfile.VisitorAccepter $r1;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.VisitorAccepter;
+
+        $r2 = interfaceinvoke $r1.<proguard.classfile.VisitorAccepter: java.lang.Object getVisitorInfo()>();
+
+        if $r2 != null goto label1;
+
+        return "-";
+
+     label1:
+        return "+";
+    }
+
+    public void visitAnnotation(proguard.classfile.Clazz, proguard.classfile.attribute.'annotation'.Annotation)
+    {
+        proguard.classfile.attribute.'annotation'.Annotation $r2;
+        proguard.classfile.Clazz $r1;
+        java.lang.StringBuffer $r3;
+        int $i0;
+        java.lang.String $r4;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.'annotation'.Annotation;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r4 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r2);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Annotation [");
+
+        $i0 = $r2.<proguard.classfile.attribute.'annotation'.Annotation: int u2typeIndex>;
+
+        $r4 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getString(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]:");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        virtualinvoke $r2.<proguard.classfile.attribute.'annotation'.Annotation: void elementValuesAccept(proguard.classfile.Clazz,proguard.classfile.attribute.'annotation'.visitor.ElementValueVisitor)>($r1, r0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        return;
+    }
+
+    public void visitAnnotationDefaultAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.'annotation'.AnnotationDefaultAttribute)
+    {
+        proguard.classfile.Clazz $r1;
+        java.lang.StringBuffer $r4;
+        proguard.classfile.Method $r2;
+        proguard.classfile.attribute.'annotation'.AnnotationDefaultAttribute $r3;
+        java.lang.String $r5;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.'annotation'.AnnotationDefaultAttribute;
+
+        $r4 = new java.lang.StringBuffer;
+
+        specialinvoke $r4.<java.lang.StringBuffer: void <init>()>();
+
+        $r5 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r3);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r5);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Annotation default attribute:");
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r5);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        virtualinvoke $r3.<proguard.classfile.attribute.'annotation'.AnnotationDefaultAttribute: void defaultValueAccept(proguard.classfile.Clazz,proguard.classfile.attribute.'annotation'.visitor.ElementValueVisitor)>($r1, r0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        return;
+    }
+
+    public void visitAnnotationElementValue(proguard.classfile.Clazz, proguard.classfile.attribute.'annotation'.Annotation, proguard.classfile.attribute.'annotation'.AnnotationElementValue)
+    {
+        proguard.classfile.attribute.'annotation'.Annotation $r2;
+        proguard.classfile.Clazz $r1;
+        java.lang.StringBuffer $r4;
+        int $i0;
+        proguard.classfile.attribute.'annotation'.AnnotationElementValue $r3;
+        java.lang.String $r5;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.'annotation'.Annotation;
+
+        $r3 := @parameter2: proguard.classfile.attribute.'annotation'.AnnotationElementValue;
+
+        $r4 = new java.lang.StringBuffer;
+
+        specialinvoke $r4.<java.lang.StringBuffer: void <init>()>();
+
+        $r5 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r3);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r5);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Annotation element value [");
+
+        $i0 = $r3.<proguard.classfile.attribute.'annotation'.AnnotationElementValue: int u2elementNameIndex>;
+
+        if $i0 != 0 goto label2;
+
+        $r5 = "(default)";
+
+     label1:
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r5);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]:");
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r5);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        virtualinvoke $r3.<proguard.classfile.attribute.'annotation'.AnnotationElementValue: void annotationAccept(proguard.classfile.Clazz,proguard.classfile.attribute.'annotation'.visitor.AnnotationVisitor)>($r1, r0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        return;
+
+     label2:
+        $i0 = $r3.<proguard.classfile.attribute.'annotation'.AnnotationElementValue: int u2elementNameIndex>;
+
+        $r5 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getString(int)>($i0);
+
+        goto label1;
+    }
+
+    public void visitAnyInstruction(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.instruction.Instruction)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.instruction.Instruction $r4;
+        int $i0;
+        proguard.classfile.Method $r2;
+        java.lang.String $r5;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.instruction.Instruction;
+
+        $r5 = virtualinvoke $r4.<proguard.classfile.instruction.Instruction: java.lang.String toString(int)>($i0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r5);
+
+        return;
+    }
+
+    public void visitArrayElementValue(proguard.classfile.Clazz, proguard.classfile.attribute.'annotation'.Annotation, proguard.classfile.attribute.'annotation'.ArrayElementValue)
+    {
+        proguard.classfile.attribute.'annotation'.Annotation $r2;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.'annotation'.ArrayElementValue $r3;
+        java.lang.StringBuffer $r4;
+        int $i0;
+        java.lang.String $r5;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.'annotation'.Annotation;
+
+        $r3 := @parameter2: proguard.classfile.attribute.'annotation'.ArrayElementValue;
+
+        $r4 = new java.lang.StringBuffer;
+
+        specialinvoke $r4.<java.lang.StringBuffer: void <init>()>();
+
+        $r5 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r3);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r5);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Array element value [");
+
+        $i0 = $r3.<proguard.classfile.attribute.'annotation'.ArrayElementValue: int u2elementNameIndex>;
+
+        if $i0 != 0 goto label2;
+
+        $r5 = "(default)";
+
+     label1:
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r5);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]:");
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r5);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        virtualinvoke $r3.<proguard.classfile.attribute.'annotation'.ArrayElementValue: void elementValuesAccept(proguard.classfile.Clazz,proguard.classfile.attribute.'annotation'.Annotation,proguard.classfile.attribute.'annotation'.visitor.ElementValueVisitor)>($r1, $r2, r0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        return;
+
+     label2:
+        $i0 = $r3.<proguard.classfile.attribute.'annotation'.ArrayElementValue: int u2elementNameIndex>;
+
+        $r5 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getString(int)>($i0);
+
+        goto label1;
+    }
+
+    public void visitClassConstant(proguard.classfile.Clazz, proguard.classfile.constant.ClassConstant)
+    {
+        proguard.classfile.constant.ClassConstant $r2;
+        proguard.classfile.Clazz $r1;
+        java.lang.StringBuffer $r3;
+        int $i0;
+        java.lang.String $r4;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.constant.ClassConstant;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r4 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r2);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Class [");
+
+        $i0 = $r2.<proguard.classfile.constant.ClassConstant: int u2nameIndex>;
+
+        $r4 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getString(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        return;
+    }
+
+    public void visitClassElementValue(proguard.classfile.Clazz, proguard.classfile.attribute.'annotation'.Annotation, proguard.classfile.attribute.'annotation'.ClassElementValue)
+    {
+        proguard.classfile.attribute.'annotation'.Annotation $r2;
+        proguard.classfile.attribute.'annotation'.ClassElementValue $r3;
+        proguard.classfile.Clazz $r1;
+        java.lang.StringBuffer $r4;
+        int $i0;
+        java.lang.String $r5;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.'annotation'.Annotation;
+
+        $r3 := @parameter2: proguard.classfile.attribute.'annotation'.ClassElementValue;
+
+        $r4 = new java.lang.StringBuffer;
+
+        specialinvoke $r4.<java.lang.StringBuffer: void <init>()>();
+
+        $r5 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r3);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r5);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Class element value [");
+
+        $i0 = $r3.<proguard.classfile.attribute.'annotation'.ClassElementValue: int u2elementNameIndex>;
+
+        if $i0 != 0 goto label2;
+
+        $r5 = "(default)";
+
+     label1:
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r5);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(", ");
+
+        $i0 = $r3.<proguard.classfile.attribute.'annotation'.ClassElementValue: int u2classInfoIndex>;
+
+        $r5 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getString(int)>($i0);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r5);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r5);
+
+        return;
+
+     label2:
+        $i0 = $r3.<proguard.classfile.attribute.'annotation'.ClassElementValue: int u2elementNameIndex>;
+
+        $r5 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getString(int)>($i0);
+
+        goto label1;
+    }
+
+    public void visitCodeAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        java.lang.StringBuffer $r4;
+        int $i0;
+        proguard.classfile.Method $r2;
+        java.lang.String $r5;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 = new java.lang.StringBuffer;
+
+        specialinvoke $r4.<java.lang.StringBuffer: void <init>()>();
+
+        $r5 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r3);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r5);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Code attribute instructions (code length = ");
+
+        $i0 = $r3.<proguard.classfile.attribute.CodeAttribute: int u4codeLength>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(", locals = ");
+
+        $i0 = $r3.<proguard.classfile.attribute.CodeAttribute: int u2maxLocals>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(", stack = ");
+
+        $i0 = $r3.<proguard.classfile.attribute.CodeAttribute: int u2maxStack>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("):");
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r5);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        virtualinvoke $r3.<proguard.classfile.attribute.CodeAttribute: void instructionsAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.instruction.visitor.InstructionVisitor)>($r1, $r2, r0);
+
+        $r4 = new java.lang.StringBuffer;
+
+        specialinvoke $r4.<java.lang.StringBuffer: void <init>()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Code attribute exceptions (count = ");
+
+        $i0 = $r3.<proguard.classfile.attribute.CodeAttribute: int u2exceptionTableLength>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("):");
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r5);
+
+        virtualinvoke $r3.<proguard.classfile.attribute.CodeAttribute: void exceptionsAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.visitor.ExceptionInfoVisitor)>($r1, $r2, r0);
+
+        $r4 = new java.lang.StringBuffer;
+
+        specialinvoke $r4.<java.lang.StringBuffer: void <init>()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Code attribute attributes (attribute count = ");
+
+        $i0 = $r3.<proguard.classfile.attribute.CodeAttribute: int u2attributesCount>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("):");
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r5);
+
+        virtualinvoke $r3.<proguard.classfile.attribute.CodeAttribute: void attributesAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.visitor.AttributeVisitor)>($r1, $r2, r0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        return;
+    }
+
+    public void visitConstantElementValue(proguard.classfile.Clazz, proguard.classfile.attribute.'annotation'.Annotation, proguard.classfile.attribute.'annotation'.ConstantElementValue)
+    {
+        proguard.classfile.attribute.'annotation'.ConstantElementValue $r3;
+        proguard.classfile.attribute.'annotation'.Annotation $r2;
+        proguard.classfile.Clazz $r1;
+        java.lang.StringBuffer $r4;
+        int $i0;
+        java.lang.String $r5;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.'annotation'.Annotation;
+
+        $r3 := @parameter2: proguard.classfile.attribute.'annotation'.ConstantElementValue;
+
+        $r4 = new java.lang.StringBuffer;
+
+        specialinvoke $r4.<java.lang.StringBuffer: void <init>()>();
+
+        $r5 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r3);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r5);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Constant element value [");
+
+        $i0 = $r3.<proguard.classfile.attribute.'annotation'.ConstantElementValue: int u2elementNameIndex>;
+
+        if $i0 != 0 goto label2;
+
+        $r5 = "(default)";
+
+     label1:
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r5);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" \'");
+
+        $i0 = $r3.<proguard.classfile.attribute.'annotation'.ConstantElementValue: int u1tag>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("\']");
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r5);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        $i0 = $r3.<proguard.classfile.attribute.'annotation'.ConstantElementValue: int u2constantValueIndex>;
+
+        interfaceinvoke $r1.<proguard.classfile.Clazz: void constantPoolEntryAccept(int,proguard.classfile.constant.visitor.ConstantVisitor)>($i0, r0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        return;
+
+     label2:
+        $i0 = $r3.<proguard.classfile.attribute.'annotation'.ConstantElementValue: int u2elementNameIndex>;
+
+        $r5 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getString(int)>($i0);
+
+        goto label1;
+    }
+
+    public void visitConstantInstruction(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.instruction.ConstantInstruction)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int $i0;
+        proguard.classfile.instruction.ConstantInstruction $r4;
+        proguard.classfile.Method $r2;
+        java.lang.String $r5;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.instruction.ConstantInstruction;
+
+        $r5 = virtualinvoke $r4.<proguard.classfile.instruction.ConstantInstruction: java.lang.String toString(int)>($i0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r5);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        $i0 = $r4.<proguard.classfile.instruction.ConstantInstruction: int constantIndex>;
+
+        interfaceinvoke $r1.<proguard.classfile.Clazz: void constantPoolEntryAccept(int,proguard.classfile.constant.visitor.ConstantVisitor)>($i0, r0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        return;
+    }
+
+    public void visitConstantValueAttribute(proguard.classfile.Clazz, proguard.classfile.Field, proguard.classfile.attribute.ConstantValueAttribute)
+    {
+        proguard.classfile.Clazz $r1;
+        java.lang.StringBuffer $r4;
+        int $i0;
+        java.lang.String $r5;
+        proguard.classfile.Field $r2;
+        proguard.classfile.attribute.ConstantValueAttribute $r3;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Field;
+
+        $r3 := @parameter2: proguard.classfile.attribute.ConstantValueAttribute;
+
+        $r4 = new java.lang.StringBuffer;
+
+        specialinvoke $r4.<java.lang.StringBuffer: void <init>()>();
+
+        $r5 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r3);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r5);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Constant value attribute:");
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r5);
+
+        $i0 = $r3.<proguard.classfile.attribute.ConstantValueAttribute: int u2constantValueIndex>;
+
+        interfaceinvoke $r1.<proguard.classfile.Clazz: void constantPoolEntryAccept(int,proguard.classfile.constant.visitor.ConstantVisitor)>($i0, r0);
+
+        return;
+    }
+
+    public void visitDeprecatedAttribute(proguard.classfile.Clazz, proguard.classfile.attribute.DeprecatedAttribute)
+    {
+        proguard.classfile.Clazz $r1;
+        java.lang.StringBuffer $r3;
+        java.lang.String $r4;
+        proguard.classfile.attribute.DeprecatedAttribute $r2;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.DeprecatedAttribute;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r4 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r2);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Deprecated attribute");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        return;
+    }
+
+    public void visitDoubleConstant(proguard.classfile.Clazz, proguard.classfile.constant.DoubleConstant)
+    {
+        proguard.classfile.Clazz $r1;
+        java.lang.StringBuffer $r3;
+        java.lang.String $r4;
+        proguard.classfile.visitor.ClassPrinter r0;
+        proguard.classfile.constant.DoubleConstant $r2;
+        double $d0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.constant.DoubleConstant;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r4 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r2);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Double [");
+
+        $d0 = virtualinvoke $r2.<proguard.classfile.constant.DoubleConstant: double getValue()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(double)>($d0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        return;
+    }
+
+    public void visitDoubleType(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.attribute.preverification.DoubleType)
+    {
+        java.io.PrintStream $r5;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int $i0;
+        proguard.classfile.Method $r2;
+        proguard.classfile.attribute.preverification.DoubleType $r4;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.attribute.preverification.DoubleType;
+
+        $r5 = r0.<proguard.classfile.visitor.ClassPrinter: java.io.PrintStream ps>;
+
+        virtualinvoke $r5.<java.io.PrintStream: void print(java.lang.String)>("[d]");
+
+        return;
+    }
+
+    public void visitEnclosingMethodAttribute(proguard.classfile.Clazz, proguard.classfile.attribute.EnclosingMethodAttribute)
+    {
+        proguard.classfile.attribute.EnclosingMethodAttribute $r2;
+        proguard.classfile.Clazz $r1;
+        java.lang.StringBuffer $r3;
+        int $i0;
+        java.lang.String $r4;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.EnclosingMethodAttribute;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r4 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r2);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Enclosing method attribute:");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        $i0 = $r2.<proguard.classfile.attribute.EnclosingMethodAttribute: int u2classIndex>;
+
+        interfaceinvoke $r1.<proguard.classfile.Clazz: void constantPoolEntryAccept(int,proguard.classfile.constant.visitor.ConstantVisitor)>($i0, r0);
+
+        $i0 = $r2.<proguard.classfile.attribute.EnclosingMethodAttribute: int u2nameAndTypeIndex>;
+
+        if $i0 == 0 goto label1;
+
+        $i0 = $r2.<proguard.classfile.attribute.EnclosingMethodAttribute: int u2nameAndTypeIndex>;
+
+        interfaceinvoke $r1.<proguard.classfile.Clazz: void constantPoolEntryAccept(int,proguard.classfile.constant.visitor.ConstantVisitor)>($i0, r0);
+
+     label1:
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        return;
+    }
+
+    public void visitEnumConstantElementValue(proguard.classfile.Clazz, proguard.classfile.attribute.'annotation'.Annotation, proguard.classfile.attribute.'annotation'.EnumConstantElementValue)
+    {
+        proguard.classfile.attribute.'annotation'.Annotation $r2;
+        proguard.classfile.Clazz $r1;
+        java.lang.StringBuffer $r4;
+        int $i0;
+        proguard.classfile.attribute.'annotation'.EnumConstantElementValue $r3;
+        java.lang.String $r5;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.'annotation'.Annotation;
+
+        $r3 := @parameter2: proguard.classfile.attribute.'annotation'.EnumConstantElementValue;
+
+        $r4 = new java.lang.StringBuffer;
+
+        specialinvoke $r4.<java.lang.StringBuffer: void <init>()>();
+
+        $r5 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r3);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r5);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Enum constant element value [");
+
+        $i0 = $r3.<proguard.classfile.attribute.'annotation'.EnumConstantElementValue: int u2elementNameIndex>;
+
+        if $i0 != 0 goto label2;
+
+        $r5 = "(default)";
+
+     label1:
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r5);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(", ");
+
+        $i0 = $r3.<proguard.classfile.attribute.'annotation'.EnumConstantElementValue: int u2typeNameIndex>;
+
+        $r5 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getString(int)>($i0);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r5);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(", ");
+
+        $i0 = $r3.<proguard.classfile.attribute.'annotation'.EnumConstantElementValue: int u2constantNameIndex>;
+
+        $r5 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getString(int)>($i0);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r5);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r5);
+
+        return;
+
+     label2:
+        $i0 = $r3.<proguard.classfile.attribute.'annotation'.EnumConstantElementValue: int u2elementNameIndex>;
+
+        $r5 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getString(int)>($i0);
+
+        goto label1;
+    }
+
+    public void visitExceptionInfo(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, proguard.classfile.attribute.ExceptionInfo)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        java.lang.StringBuffer $r5;
+        int $i0;
+        proguard.classfile.Method $r2;
+        proguard.classfile.attribute.ExceptionInfo $r4;
+        java.lang.String $r6;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 := @parameter3: proguard.classfile.attribute.ExceptionInfo;
+
+        $r5 = new java.lang.StringBuffer;
+
+        specialinvoke $r5.<java.lang.StringBuffer: void <init>()>();
+
+        $r6 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r4);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r6);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" ExceptionInfo (");
+
+        $i0 = $r4.<proguard.classfile.attribute.ExceptionInfo: int u2startPC>;
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" -> ");
+
+        $i0 = $r4.<proguard.classfile.attribute.ExceptionInfo: int u2endPC>;
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(": ");
+
+        $i0 = $r4.<proguard.classfile.attribute.ExceptionInfo: int u2handlerPC>;
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("):");
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r6);
+
+        $i0 = $r4.<proguard.classfile.attribute.ExceptionInfo: int u2catchType>;
+
+        if $i0 == 0 goto label1;
+
+        $i0 = $r4.<proguard.classfile.attribute.ExceptionInfo: int u2catchType>;
+
+        interfaceinvoke $r1.<proguard.classfile.Clazz: void constantPoolEntryAccept(int,proguard.classfile.constant.visitor.ConstantVisitor)>($i0, r0);
+
+     label1:
+        return;
+    }
+
+    public void visitExceptionsAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.ExceptionsAttribute)
+    {
+        proguard.classfile.ProgramClass $r6;
+        proguard.classfile.Clazz $r3;
+        proguard.classfile.attribute.ExceptionsAttribute $r2;
+        java.lang.StringBuffer $r4;
+        int $i0;
+        proguard.classfile.Method $r1;
+        java.lang.String $r5;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r3 := @parameter0: proguard.classfile.Clazz;
+
+        $r1 := @parameter1: proguard.classfile.Method;
+
+        $r2 := @parameter2: proguard.classfile.attribute.ExceptionsAttribute;
+
+        $r4 = new java.lang.StringBuffer;
+
+        specialinvoke $r4.<java.lang.StringBuffer: void <init>()>();
+
+        $r5 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r2);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r5);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Exceptions attribute (count = ");
+
+        $i0 = $r2.<proguard.classfile.attribute.ExceptionsAttribute: int u2exceptionIndexTableLength>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(")");
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r5);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        $r6 = (proguard.classfile.ProgramClass) $r3;
+
+        virtualinvoke $r2.<proguard.classfile.attribute.ExceptionsAttribute: void exceptionEntriesAccept(proguard.classfile.ProgramClass,proguard.classfile.constant.visitor.ConstantVisitor)>($r6, r0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        return;
+    }
+
+    public void visitFieldrefConstant(proguard.classfile.Clazz, proguard.classfile.constant.FieldrefConstant)
+    {
+        proguard.classfile.Clazz $r1;
+        java.lang.StringBuffer $r3;
+        int $i0;
+        proguard.classfile.constant.FieldrefConstant $r2;
+        java.lang.String $r4;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.constant.FieldrefConstant;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r4 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r2);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Fieldref [");
+
+        $i0 = $r2.<proguard.classfile.constant.FieldrefConstant: int u2classIndex>;
+
+        $r4 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getClassName(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(".");
+
+        $i0 = $r2.<proguard.classfile.constant.FieldrefConstant: int u2nameAndTypeIndex>;
+
+        $r4 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getName(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" ");
+
+        $i0 = $r2.<proguard.classfile.constant.FieldrefConstant: int u2nameAndTypeIndex>;
+
+        $r4 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getType(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        return;
+    }
+
+    public void visitFloatConstant(proguard.classfile.Clazz, proguard.classfile.constant.FloatConstant)
+    {
+        proguard.classfile.constant.FloatConstant $r2;
+        proguard.classfile.Clazz $r1;
+        java.lang.StringBuffer $r3;
+        float $f0;
+        java.lang.String $r4;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.constant.FloatConstant;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r4 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r2);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Float [");
+
+        $f0 = virtualinvoke $r2.<proguard.classfile.constant.FloatConstant: float getValue()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(float)>($f0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        return;
+    }
+
+    public void visitFloatType(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.attribute.preverification.FloatType)
+    {
+        java.io.PrintStream $r5;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.attribute.preverification.FloatType $r4;
+        int $i0;
+        proguard.classfile.Method $r2;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.attribute.preverification.FloatType;
+
+        $r5 = r0.<proguard.classfile.visitor.ClassPrinter: java.io.PrintStream ps>;
+
+        virtualinvoke $r5.<java.io.PrintStream: void print(java.lang.String)>("[f]");
+
+        return;
+    }
+
+    public void visitFullFrame(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.attribute.preverification.FullFrame)
+    {
+        java.io.PrintStream $r7;
+        proguard.classfile.attribute.preverification.FullFrame $r4;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        java.lang.StringBuffer $r5;
+        int $i0;
+        proguard.classfile.Method $r2;
+        java.lang.String $r6;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.attribute.preverification.FullFrame;
+
+        $r5 = new java.lang.StringBuffer;
+
+        specialinvoke $r5.<java.lang.StringBuffer: void <init>()>();
+
+        $r6 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r4);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r6);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" [");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Var: ");
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void print(java.lang.String)>($r6);
+
+        virtualinvoke $r4.<proguard.classfile.attribute.preverification.FullFrame: void variablesAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,int,proguard.classfile.attribute.preverification.visitor.VerificationTypeVisitor)>($r1, $r2, $r3, $i0, r0);
+
+        $r7 = r0.<proguard.classfile.visitor.ClassPrinter: java.io.PrintStream ps>;
+
+        virtualinvoke $r7.<java.io.PrintStream: void print(java.lang.String)>(", Stack: ");
+
+        virtualinvoke $r4.<proguard.classfile.attribute.preverification.FullFrame: void stackAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,int,proguard.classfile.attribute.preverification.visitor.VerificationTypeVisitor)>($r1, $r2, $r3, $i0, r0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println()>();
+
+        return;
+    }
+
+    public void visitInnerClassesAttribute(proguard.classfile.Clazz, proguard.classfile.attribute.InnerClassesAttribute)
+    {
+        proguard.classfile.attribute.InnerClassesAttribute $r2;
+        proguard.classfile.Clazz $r1;
+        java.lang.StringBuffer $r3;
+        int $i0;
+        java.lang.String $r4;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.InnerClassesAttribute;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r4 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r2);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Inner classes attribute (count = ");
+
+        $i0 = $r2.<proguard.classfile.attribute.InnerClassesAttribute: int u2classesCount>;
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(")");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        virtualinvoke $r2.<proguard.classfile.attribute.InnerClassesAttribute: void innerClassEntriesAccept(proguard.classfile.Clazz,proguard.classfile.attribute.visitor.InnerClassesInfoVisitor)>($r1, r0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        return;
+    }
+
+    public void visitInnerClassesInfo(proguard.classfile.Clazz, proguard.classfile.attribute.InnerClassesInfo)
+    {
+        proguard.classfile.Clazz $r1;
+        java.lang.StringBuffer $r3;
+        int $i0;
+        java.lang.String $r4;
+        proguard.classfile.attribute.InnerClassesInfo $r2;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.InnerClassesInfo;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r4 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r2);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" InnerClassesInfo:");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Access flags:  0x");
+
+        $i0 = $r2.<proguard.classfile.attribute.InnerClassesInfo: int u2innerClassAccessFlags>;
+
+        $r4 = staticinvoke <java.lang.Integer: java.lang.String toHexString(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" = ");
+
+        $i0 = $r2.<proguard.classfile.attribute.InnerClassesInfo: int u2innerClassAccessFlags>;
+
+        $r4 = staticinvoke <proguard.classfile.util.ClassUtil: java.lang.String externalClassAccessFlags(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        virtualinvoke $r2.<proguard.classfile.attribute.InnerClassesInfo: void innerClassConstantAccept(proguard.classfile.Clazz,proguard.classfile.constant.visitor.ConstantVisitor)>($r1, r0);
+
+        virtualinvoke $r2.<proguard.classfile.attribute.InnerClassesInfo: void outerClassConstantAccept(proguard.classfile.Clazz,proguard.classfile.constant.visitor.ConstantVisitor)>($r1, r0);
+
+        virtualinvoke $r2.<proguard.classfile.attribute.InnerClassesInfo: void innerNameConstantAccept(proguard.classfile.Clazz,proguard.classfile.constant.visitor.ConstantVisitor)>($r1, r0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        return;
+    }
+
+    public void visitIntegerConstant(proguard.classfile.Clazz, proguard.classfile.constant.IntegerConstant)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.constant.IntegerConstant $r2;
+        java.lang.StringBuffer $r3;
+        int $i0;
+        java.lang.String $r4;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.constant.IntegerConstant;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r4 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r2);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Integer [");
+
+        $i0 = virtualinvoke $r2.<proguard.classfile.constant.IntegerConstant: int getValue()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        return;
+    }
+
+    public void visitIntegerType(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.attribute.preverification.IntegerType)
+    {
+        java.io.PrintStream $r5;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int $i0;
+        proguard.classfile.attribute.preverification.IntegerType $r4;
+        proguard.classfile.Method $r2;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.attribute.preverification.IntegerType;
+
+        $r5 = r0.<proguard.classfile.visitor.ClassPrinter: java.io.PrintStream ps>;
+
+        virtualinvoke $r5.<java.io.PrintStream: void print(java.lang.String)>("[i]");
+
+        return;
+    }
+
+    public void visitInterfaceMethodrefConstant(proguard.classfile.Clazz, proguard.classfile.constant.InterfaceMethodrefConstant)
+    {
+        proguard.classfile.Clazz $r1;
+        java.lang.StringBuffer $r3;
+        int $i0;
+        java.lang.String $r4;
+        proguard.classfile.constant.InterfaceMethodrefConstant $r2;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.constant.InterfaceMethodrefConstant;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r4 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r2);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" InterfaceMethodref [");
+
+        $i0 = $r2.<proguard.classfile.constant.InterfaceMethodrefConstant: int u2classIndex>;
+
+        $r4 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getClassName(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(".");
+
+        $i0 = $r2.<proguard.classfile.constant.InterfaceMethodrefConstant: int u2nameAndTypeIndex>;
+
+        $r4 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getName(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" ");
+
+        $i0 = $r2.<proguard.classfile.constant.InterfaceMethodrefConstant: int u2nameAndTypeIndex>;
+
+        $r4 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getType(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        return;
+    }
+
+    public void visitLessZeroFrame(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.attribute.preverification.LessZeroFrame)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        java.lang.StringBuffer $r5;
+        int $i0;
+        proguard.classfile.Method $r2;
+        java.lang.String $r6;
+        proguard.classfile.attribute.preverification.LessZeroFrame $r4;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.attribute.preverification.LessZeroFrame;
+
+        $r5 = new java.lang.StringBuffer;
+
+        specialinvoke $r5.<java.lang.StringBuffer: void <init>()>();
+
+        $r6 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r4);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r6);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" [");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Var: -");
+
+        $i0 = $r4.<proguard.classfile.attribute.preverification.LessZeroFrame: int choppedVariablesCount>;
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(", Stack: (empty)");
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r6);
+
+        return;
+    }
+
+    public void visitLibraryClass(proguard.classfile.LibraryClass)
+    {
+        proguard.classfile.Clazz[] $r4;
+        proguard.classfile.LibraryField[] $r7;
+        proguard.classfile.LibraryMethod[] $r8;
+        proguard.classfile.LibraryClass $r1;
+        proguard.classfile.Clazz $r5;
+        java.lang.StringBuffer $r2, $r6;
+        int $i0, $i1;
+        java.lang.String $r3;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.LibraryClass;
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>("_____________________________________________________________________");
+
+        $r2 = new java.lang.StringBuffer;
+
+        specialinvoke $r2.<java.lang.StringBuffer: void <init>()>();
+
+        $r3 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r1);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r3);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" ");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Library class: ");
+
+        $r3 = virtualinvoke $r1.<proguard.classfile.LibraryClass: java.lang.String getName()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r3);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        $r2 = new java.lang.StringBuffer;
+
+        specialinvoke $r2.<java.lang.StringBuffer: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Superclass:    ");
+
+        $r3 = virtualinvoke $r1.<proguard.classfile.LibraryClass: java.lang.String getSuperName()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r3);
+
+        $r2 = new java.lang.StringBuffer;
+
+        specialinvoke $r2.<java.lang.StringBuffer: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Access flags:  0x");
+
+        $i0 = $r1.<proguard.classfile.LibraryClass: int u2accessFlags>;
+
+        $r3 = staticinvoke <java.lang.Integer: java.lang.String toHexString(int)>($i0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r3);
+
+        $r2 = new java.lang.StringBuffer;
+
+        specialinvoke $r2.<java.lang.StringBuffer: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("  = ");
+
+        $i0 = $r1.<proguard.classfile.LibraryClass: int u2accessFlags>;
+
+        $i0 = $i0 & 8192;
+
+        if $i0 == 0 goto label06;
+
+        $r3 = "@ ";
+
+     label01:
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r3);
+
+        $i0 = $r1.<proguard.classfile.LibraryClass: int u2accessFlags>;
+
+        $r3 = staticinvoke <proguard.classfile.util.ClassUtil: java.lang.String externalClassAccessFlags(int)>($i0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r3);
+
+        $i0 = $r1.<proguard.classfile.LibraryClass: int u2accessFlags>;
+
+        $i0 = $i0 & 16384;
+
+        if $i0 == 0 goto label07;
+
+        $r3 = "enum ";
+
+     label02:
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r1.<proguard.classfile.LibraryClass: java.lang.String getName()>();
+
+        $r3 = staticinvoke <proguard.classfile.util.ClassUtil: java.lang.String externalClassName(java.lang.String)>($r3);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r1.<proguard.classfile.LibraryClass: java.lang.String getSuperName()>();
+
+        if $r3 != null goto label09;
+
+        $r3 = "";
+
+     label03:
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r3);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println()>();
+
+        $r2 = new java.lang.StringBuffer;
+
+        specialinvoke $r2.<java.lang.StringBuffer: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Interfaces (count = ");
+
+        $r4 = $r1.<proguard.classfile.LibraryClass: proguard.classfile.Clazz[] interfaceClasses>;
+
+        $i0 = lengthof $r4;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("):");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r3);
+
+        $i0 = 0;
+
+     label04:
+        $r4 = $r1.<proguard.classfile.LibraryClass: proguard.classfile.Clazz[] interfaceClasses>;
+
+        $i1 = lengthof $r4;
+
+        if $i0 >= $i1 goto label10;
+
+        $r4 = $r1.<proguard.classfile.LibraryClass: proguard.classfile.Clazz[] interfaceClasses>;
+
+        $r5 = $r4[$i0];
+
+        if $r5 == null goto label05;
+
+        $r2 = new java.lang.StringBuffer;
+
+        specialinvoke $r2.<java.lang.StringBuffer: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("  + ");
+
+        $r3 = interfaceinvoke $r5.<proguard.classfile.Clazz: java.lang.String getName()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r3);
+
+     label05:
+        $i0 = $i0 + 1;
+
+        goto label04;
+
+     label06:
+        $r3 = "";
+
+        goto label01;
+
+     label07:
+        $i0 = $r1.<proguard.classfile.LibraryClass: int u2accessFlags>;
+
+        $i0 = $i0 & 512;
+
+        if $i0 != 0 goto label08;
+
+        $r3 = "class ";
+
+        goto label02;
+
+     label08:
+        $r3 = "";
+
+        goto label02;
+
+     label09:
+        $r6 = new java.lang.StringBuffer;
+
+        specialinvoke $r6.<java.lang.StringBuffer: void <init>()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" extends ");
+
+        $r3 = virtualinvoke $r1.<proguard.classfile.LibraryClass: java.lang.String getSuperName()>();
+
+        $r3 = staticinvoke <proguard.classfile.util.ClassUtil: java.lang.String externalClassName(java.lang.String)>($r3);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        goto label03;
+
+     label10:
+        $r2 = new java.lang.StringBuffer;
+
+        specialinvoke $r2.<java.lang.StringBuffer: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Fields (count = ");
+
+        $r7 = $r1.<proguard.classfile.LibraryClass: proguard.classfile.LibraryField[] fields>;
+
+        $i0 = lengthof $r7;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("):");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r3);
+
+        virtualinvoke $r1.<proguard.classfile.LibraryClass: void fieldsAccept(proguard.classfile.visitor.MemberVisitor)>(r0);
+
+        $r2 = new java.lang.StringBuffer;
+
+        specialinvoke $r2.<java.lang.StringBuffer: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Methods (count = ");
+
+        $r8 = $r1.<proguard.classfile.LibraryClass: proguard.classfile.LibraryMethod[] methods>;
+
+        $i0 = lengthof $r8;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("):");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r3);
+
+        virtualinvoke $r1.<proguard.classfile.LibraryClass: void methodsAccept(proguard.classfile.visitor.MemberVisitor)>(r0);
+
+        return;
+    }
+
+    public void visitLibraryField(proguard.classfile.LibraryClass, proguard.classfile.LibraryField)
+    {
+        proguard.classfile.LibraryClass $r1;
+        java.lang.StringBuffer $r3;
+        proguard.classfile.LibraryField $r2;
+        int $i0;
+        java.lang.String $r4, $r5;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.LibraryClass;
+
+        $r2 := @parameter1: proguard.classfile.LibraryField;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r4 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r2);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" ");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Field:        ");
+
+        $r4 = virtualinvoke $r2.<proguard.classfile.LibraryField: java.lang.String getName(proguard.classfile.Clazz)>($r1);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" ");
+
+        $r4 = virtualinvoke $r2.<proguard.classfile.LibraryField: java.lang.String getDescriptor(proguard.classfile.Clazz)>($r1);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Access flags: 0x");
+
+        $i0 = $r2.<proguard.classfile.LibraryField: int u2accessFlags>;
+
+        $r4 = staticinvoke <java.lang.Integer: java.lang.String toHexString(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("  = ");
+
+        $i0 = $r2.<proguard.classfile.LibraryField: int u2accessFlags>;
+
+        $r4 = virtualinvoke $r2.<proguard.classfile.LibraryField: java.lang.String getName(proguard.classfile.Clazz)>($r1);
+
+        $r5 = virtualinvoke $r2.<proguard.classfile.LibraryField: java.lang.String getDescriptor(proguard.classfile.Clazz)>($r1);
+
+        $r4 = staticinvoke <proguard.classfile.util.ClassUtil: java.lang.String externalFullFieldDescription(int,java.lang.String,java.lang.String)>($i0, $r4, $r5);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        return;
+    }
+
+    public void visitLibraryMethod(proguard.classfile.LibraryClass, proguard.classfile.LibraryMethod)
+    {
+        proguard.classfile.LibraryClass $r1;
+        java.lang.StringBuffer $r3;
+        int $i0;
+        proguard.classfile.LibraryMethod $r2;
+        java.lang.String $r4, $r5, $r6;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.LibraryClass;
+
+        $r2 := @parameter1: proguard.classfile.LibraryMethod;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r4 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r2);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" ");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Method:       ");
+
+        $r4 = virtualinvoke $r2.<proguard.classfile.LibraryMethod: java.lang.String getName(proguard.classfile.Clazz)>($r1);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" ");
+
+        $r4 = virtualinvoke $r2.<proguard.classfile.LibraryMethod: java.lang.String getDescriptor(proguard.classfile.Clazz)>($r1);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Access flags: 0x");
+
+        $i0 = $r2.<proguard.classfile.LibraryMethod: int u2accessFlags>;
+
+        $r4 = staticinvoke <java.lang.Integer: java.lang.String toHexString(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("  = ");
+
+        $r4 = virtualinvoke $r1.<proguard.classfile.LibraryClass: java.lang.String getName()>();
+
+        $i0 = $r2.<proguard.classfile.LibraryMethod: int u2accessFlags>;
+
+        $r5 = virtualinvoke $r2.<proguard.classfile.LibraryMethod: java.lang.String getName(proguard.classfile.Clazz)>($r1);
+
+        $r6 = virtualinvoke $r2.<proguard.classfile.LibraryMethod: java.lang.String getDescriptor(proguard.classfile.Clazz)>($r1);
+
+        $r4 = staticinvoke <proguard.classfile.util.ClassUtil: java.lang.String externalFullMethodDescription(java.lang.String,int,java.lang.String,java.lang.String)>($r4, $i0, $r5, $r6);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        return;
+    }
+
+    public void visitLineNumberInfo(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, proguard.classfile.attribute.LineNumberInfo)
+    {
+        proguard.classfile.attribute.LineNumberInfo $r4;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        java.lang.StringBuffer $r5;
+        int $i0;
+        proguard.classfile.Method $r2;
+        java.lang.String $r6;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 := @parameter3: proguard.classfile.attribute.LineNumberInfo;
+
+        $r5 = new java.lang.StringBuffer;
+
+        specialinvoke $r5.<java.lang.StringBuffer: void <init>()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("[");
+
+        $i0 = $r4.<proguard.classfile.attribute.LineNumberInfo: int u2startPC>;
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("] -> line ");
+
+        $i0 = $r4.<proguard.classfile.attribute.LineNumberInfo: int u2lineNumber>;
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r6);
+
+        return;
+    }
+
+    public void visitLineNumberTableAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, proguard.classfile.attribute.LineNumberTableAttribute)
+    {
+        proguard.classfile.attribute.LineNumberTableAttribute $r4;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        java.lang.StringBuffer $r5;
+        int $i0;
+        proguard.classfile.Method $r2;
+        java.lang.String $r6;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 := @parameter3: proguard.classfile.attribute.LineNumberTableAttribute;
+
+        $r5 = new java.lang.StringBuffer;
+
+        specialinvoke $r5.<java.lang.StringBuffer: void <init>()>();
+
+        $r6 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r4);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r6);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Line number table attribute (count = ");
+
+        $i0 = $r4.<proguard.classfile.attribute.LineNumberTableAttribute: int u2lineNumberTableLength>;
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(")");
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r6);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        virtualinvoke $r4.<proguard.classfile.attribute.LineNumberTableAttribute: void lineNumbersAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,proguard.classfile.attribute.visitor.LineNumberInfoVisitor)>($r1, $r2, $r3, r0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        return;
+    }
+
+    public void visitLocalVariableInfo(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, proguard.classfile.attribute.LocalVariableInfo)
+    {
+        proguard.classfile.attribute.LocalVariableInfo $r4;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        java.lang.StringBuffer $r5;
+        int $i0, $i1;
+        proguard.classfile.Method $r2;
+        java.lang.String $r6;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 := @parameter3: proguard.classfile.attribute.LocalVariableInfo;
+
+        $r5 = new java.lang.StringBuffer;
+
+        specialinvoke $r5.<java.lang.StringBuffer: void <init>()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("v");
+
+        $i0 = $r4.<proguard.classfile.attribute.LocalVariableInfo: int u2index>;
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(": ");
+
+        $i0 = $r4.<proguard.classfile.attribute.LocalVariableInfo: int u2startPC>;
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" -> ");
+
+        $i1 = $r4.<proguard.classfile.attribute.LocalVariableInfo: int u2startPC>;
+
+        $i0 = $r4.<proguard.classfile.attribute.LocalVariableInfo: int u2length>;
+
+        $i0 = $i1 + $i0;
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" [");
+
+        $i0 = $r4.<proguard.classfile.attribute.LocalVariableInfo: int u2descriptorIndex>;
+
+        $r6 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getString(int)>($i0);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r6);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" ");
+
+        $i0 = $r4.<proguard.classfile.attribute.LocalVariableInfo: int u2nameIndex>;
+
+        $r6 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getString(int)>($i0);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r6);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r6);
+
+        return;
+    }
+
+    public void visitLocalVariableTableAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, proguard.classfile.attribute.LocalVariableTableAttribute)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        java.lang.StringBuffer $r5;
+        int $i0;
+        proguard.classfile.Method $r2;
+        java.lang.String $r6;
+        proguard.classfile.attribute.LocalVariableTableAttribute $r4;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 := @parameter3: proguard.classfile.attribute.LocalVariableTableAttribute;
+
+        $r5 = new java.lang.StringBuffer;
+
+        specialinvoke $r5.<java.lang.StringBuffer: void <init>()>();
+
+        $r6 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r4);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r6);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Local variable table attribute (count = ");
+
+        $i0 = $r4.<proguard.classfile.attribute.LocalVariableTableAttribute: int u2localVariableTableLength>;
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(")");
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r6);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        virtualinvoke $r4.<proguard.classfile.attribute.LocalVariableTableAttribute: void localVariablesAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,proguard.classfile.attribute.visitor.LocalVariableInfoVisitor)>($r1, $r2, $r3, r0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        return;
+    }
+
+    public void visitLocalVariableTypeInfo(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, proguard.classfile.attribute.LocalVariableTypeInfo)
+    {
+        proguard.classfile.attribute.LocalVariableTypeInfo $r4;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        java.lang.StringBuffer $r5;
+        int $i0, $i1;
+        proguard.classfile.Method $r2;
+        java.lang.String $r6;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 := @parameter3: proguard.classfile.attribute.LocalVariableTypeInfo;
+
+        $r5 = new java.lang.StringBuffer;
+
+        specialinvoke $r5.<java.lang.StringBuffer: void <init>()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("v");
+
+        $i0 = $r4.<proguard.classfile.attribute.LocalVariableTypeInfo: int u2index>;
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(": ");
+
+        $i0 = $r4.<proguard.classfile.attribute.LocalVariableTypeInfo: int u2startPC>;
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" -> ");
+
+        $i1 = $r4.<proguard.classfile.attribute.LocalVariableTypeInfo: int u2startPC>;
+
+        $i0 = $r4.<proguard.classfile.attribute.LocalVariableTypeInfo: int u2length>;
+
+        $i0 = $i1 + $i0;
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" [");
+
+        $i0 = $r4.<proguard.classfile.attribute.LocalVariableTypeInfo: int u2signatureIndex>;
+
+        $r6 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getString(int)>($i0);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r6);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" ");
+
+        $i0 = $r4.<proguard.classfile.attribute.LocalVariableTypeInfo: int u2nameIndex>;
+
+        $r6 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getString(int)>($i0);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r6);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r6);
+
+        return;
+    }
+
+    public void visitLocalVariableTypeTableAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, proguard.classfile.attribute.LocalVariableTypeTableAttribute)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        java.lang.StringBuffer $r5;
+        int $i0;
+        proguard.classfile.Method $r2;
+        java.lang.String $r6;
+        proguard.classfile.attribute.LocalVariableTypeTableAttribute $r4;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 := @parameter3: proguard.classfile.attribute.LocalVariableTypeTableAttribute;
+
+        $r5 = new java.lang.StringBuffer;
+
+        specialinvoke $r5.<java.lang.StringBuffer: void <init>()>();
+
+        $r6 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r4);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r6);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Local variable type table attribute (count = ");
+
+        $i0 = $r4.<proguard.classfile.attribute.LocalVariableTypeTableAttribute: int u2localVariableTypeTableLength>;
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(")");
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r6);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        virtualinvoke $r4.<proguard.classfile.attribute.LocalVariableTypeTableAttribute: void localVariablesAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,proguard.classfile.attribute.visitor.LocalVariableTypeInfoVisitor)>($r1, $r2, $r3, r0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        return;
+    }
+
+    public void visitLongConstant(proguard.classfile.Clazz, proguard.classfile.constant.LongConstant)
+    {
+        proguard.classfile.constant.LongConstant $r2;
+        proguard.classfile.Clazz $r1;
+        java.lang.StringBuffer $r3;
+        long $l0;
+        java.lang.String $r4;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.constant.LongConstant;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r4 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r2);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Long [");
+
+        $l0 = virtualinvoke $r2.<proguard.classfile.constant.LongConstant: long getValue()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(long)>($l0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        return;
+    }
+
+    public void visitLongType(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.attribute.preverification.LongType)
+    {
+        java.io.PrintStream $r5;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int $i0;
+        proguard.classfile.Method $r2;
+        proguard.classfile.attribute.preverification.LongType $r4;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.attribute.preverification.LongType;
+
+        $r5 = r0.<proguard.classfile.visitor.ClassPrinter: java.io.PrintStream ps>;
+
+        virtualinvoke $r5.<java.io.PrintStream: void print(java.lang.String)>("[l]");
+
+        return;
+    }
+
+    public void visitLookUpSwitchInstruction(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.instruction.LookUpSwitchInstruction)
+    {
+        proguard.classfile.instruction.LookUpSwitchInstruction $r4;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int[] $r6, $r7;
+        java.lang.StringBuffer $r8;
+        int $i0, $i1, $i2, $i3;
+        proguard.classfile.Method $r2;
+        java.lang.String $r5;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.instruction.LookUpSwitchInstruction;
+
+        $r5 = virtualinvoke $r4.<proguard.classfile.instruction.LookUpSwitchInstruction: java.lang.String toString(int)>($i0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r5);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        $r6 = $r4.<proguard.classfile.instruction.LookUpSwitchInstruction: int[] cases>;
+
+        $r7 = $r4.<proguard.classfile.instruction.LookUpSwitchInstruction: int[] jumpOffsets>;
+
+        $i1 = 0;
+
+     label1:
+        $i2 = lengthof $r7;
+
+        if $i1 >= $i2 goto label2;
+
+        $i2 = $r7[$i1];
+
+        $r8 = new java.lang.StringBuffer;
+
+        specialinvoke $r8.<java.lang.StringBuffer: void <init>()>();
+
+        $i3 = $r6[$i1];
+
+        $r5 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i3);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r5);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(": offset = ");
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i2);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(", target = ");
+
+        $i2 = $i2 + $i0;
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i2);
+
+        $r5 = virtualinvoke $r8.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r5);
+
+        $i1 = $i1 + 1;
+
+        goto label1;
+
+     label2:
+        $i1 = $r4.<proguard.classfile.instruction.LookUpSwitchInstruction: int defaultOffset>;
+
+        $r8 = new java.lang.StringBuffer;
+
+        specialinvoke $r8.<java.lang.StringBuffer: void <init>()>();
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("default: offset = ");
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i1);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(", target = ");
+
+        $i0 = $i1 + $i0;
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r5 = virtualinvoke $r8.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r5);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        return;
+    }
+
+    public void visitMethodrefConstant(proguard.classfile.Clazz, proguard.classfile.constant.MethodrefConstant)
+    {
+        proguard.classfile.Clazz $r1;
+        java.lang.StringBuffer $r3;
+        int $i0;
+        proguard.classfile.constant.MethodrefConstant $r2;
+        java.lang.String $r4;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.constant.MethodrefConstant;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r4 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r2);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Methodref [");
+
+        $i0 = $r2.<proguard.classfile.constant.MethodrefConstant: int u2classIndex>;
+
+        $r4 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getClassName(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(".");
+
+        $i0 = $r2.<proguard.classfile.constant.MethodrefConstant: int u2nameAndTypeIndex>;
+
+        $r4 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getName(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" ");
+
+        $i0 = $r2.<proguard.classfile.constant.MethodrefConstant: int u2nameAndTypeIndex>;
+
+        $r4 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getType(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        return;
+    }
+
+    public void visitMoreZeroFrame(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.attribute.preverification.MoreZeroFrame)
+    {
+        java.io.PrintStream $r7;
+        proguard.classfile.attribute.preverification.MoreZeroFrame $r4;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        java.lang.StringBuffer $r5;
+        int $i0;
+        proguard.classfile.Method $r2;
+        java.lang.String $r6;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.attribute.preverification.MoreZeroFrame;
+
+        $r5 = new java.lang.StringBuffer;
+
+        specialinvoke $r5.<java.lang.StringBuffer: void <init>()>();
+
+        $r6 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r4);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r6);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" [");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Var: ...");
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void print(java.lang.String)>($r6);
+
+        virtualinvoke $r4.<proguard.classfile.attribute.preverification.MoreZeroFrame: void additionalVariablesAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,int,proguard.classfile.attribute.preverification.visitor.VerificationTypeVisitor)>($r1, $r2, $r3, $i0, r0);
+
+        $r7 = r0.<proguard.classfile.visitor.ClassPrinter: java.io.PrintStream ps>;
+
+        virtualinvoke $r7.<java.io.PrintStream: void println(java.lang.String)>(", Stack: (empty)");
+
+        return;
+    }
+
+    public void visitNameAndTypeConstant(proguard.classfile.Clazz, proguard.classfile.constant.NameAndTypeConstant)
+    {
+        proguard.classfile.Clazz $r1;
+        java.lang.StringBuffer $r3;
+        int $i0;
+        proguard.classfile.constant.NameAndTypeConstant $r2;
+        java.lang.String $r4;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.constant.NameAndTypeConstant;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r4 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r2);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" NameAndType [");
+
+        $i0 = $r2.<proguard.classfile.constant.NameAndTypeConstant: int u2nameIndex>;
+
+        $r4 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getString(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" ");
+
+        $i0 = $r2.<proguard.classfile.constant.NameAndTypeConstant: int u2descriptorIndex>;
+
+        $r4 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getString(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        return;
+    }
+
+    public void visitNullType(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.attribute.preverification.NullType)
+    {
+        java.io.PrintStream $r5;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int $i0;
+        proguard.classfile.Method $r2;
+        proguard.classfile.attribute.preverification.NullType $r4;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.attribute.preverification.NullType;
+
+        $r5 = r0.<proguard.classfile.visitor.ClassPrinter: java.io.PrintStream ps>;
+
+        virtualinvoke $r5.<java.io.PrintStream: void print(java.lang.String)>("[n]");
+
+        return;
+    }
+
+    public void visitObjectType(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.attribute.preverification.ObjectType)
+    {
+        java.io.PrintStream $r5;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        java.lang.StringBuffer $r6;
+        int $i0;
+        proguard.classfile.Method $r2;
+        proguard.classfile.attribute.preverification.ObjectType $r4;
+        java.lang.String $r7;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.attribute.preverification.ObjectType;
+
+        $r5 = r0.<proguard.classfile.visitor.ClassPrinter: java.io.PrintStream ps>;
+
+        $r6 = new java.lang.StringBuffer;
+
+        specialinvoke $r6.<java.lang.StringBuffer: void <init>()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("[a:");
+
+        $i0 = $r4.<proguard.classfile.attribute.preverification.ObjectType: int u2classIndex>;
+
+        $r7 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getClassName(int)>($i0);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r7);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        virtualinvoke $r5.<java.io.PrintStream: void print(java.lang.String)>($r7);
+
+        return;
+    }
+
+    public void visitProgramClass(proguard.classfile.ProgramClass)
+    {
+        java.lang.StringBuffer $r2, $r4;
+        int $i0;
+        java.lang.String $r3;
+        proguard.classfile.visitor.ClassPrinter r0;
+        proguard.classfile.ProgramClass $r1;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.ProgramClass;
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>("_____________________________________________________________________");
+
+        $r2 = new java.lang.StringBuffer;
+
+        specialinvoke $r2.<java.lang.StringBuffer: void <init>()>();
+
+        $r3 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r1);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r3);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" ");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Program class: ");
+
+        $r3 = virtualinvoke $r1.<proguard.classfile.ProgramClass: java.lang.String getName()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r3);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        $r2 = new java.lang.StringBuffer;
+
+        specialinvoke $r2.<java.lang.StringBuffer: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Superclass:    ");
+
+        $r3 = virtualinvoke $r1.<proguard.classfile.ProgramClass: java.lang.String getSuperName()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r3);
+
+        $r2 = new java.lang.StringBuffer;
+
+        specialinvoke $r2.<java.lang.StringBuffer: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Major version: 0x");
+
+        $i0 = $r1.<proguard.classfile.ProgramClass: int u4version>;
+
+        $i0 = staticinvoke <proguard.classfile.util.ClassUtil: int internalMajorClassVersion(int)>($i0);
+
+        $r3 = staticinvoke <java.lang.Integer: java.lang.String toHexString(int)>($i0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r3);
+
+        $r2 = new java.lang.StringBuffer;
+
+        specialinvoke $r2.<java.lang.StringBuffer: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Minor version: 0x");
+
+        $i0 = $r1.<proguard.classfile.ProgramClass: int u4version>;
+
+        $i0 = staticinvoke <proguard.classfile.util.ClassUtil: int internalMinorClassVersion(int)>($i0);
+
+        $r3 = staticinvoke <java.lang.Integer: java.lang.String toHexString(int)>($i0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r3);
+
+        $r2 = new java.lang.StringBuffer;
+
+        specialinvoke $r2.<java.lang.StringBuffer: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Access flags:  0x");
+
+        $i0 = $r1.<proguard.classfile.ProgramClass: int u2accessFlags>;
+
+        $r3 = staticinvoke <java.lang.Integer: java.lang.String toHexString(int)>($i0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r3);
+
+        $r2 = new java.lang.StringBuffer;
+
+        specialinvoke $r2.<java.lang.StringBuffer: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("  = ");
+
+        $i0 = $r1.<proguard.classfile.ProgramClass: int u2accessFlags>;
+
+        $i0 = $i0 & 8192;
+
+        if $i0 == 0 goto label4;
+
+        $r3 = "@ ";
+
+     label1:
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r3);
+
+        $i0 = $r1.<proguard.classfile.ProgramClass: int u2accessFlags>;
+
+        $r3 = staticinvoke <proguard.classfile.util.ClassUtil: java.lang.String externalClassAccessFlags(int)>($i0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r3);
+
+        $i0 = $r1.<proguard.classfile.ProgramClass: int u2accessFlags>;
+
+        $i0 = $i0 & 16384;
+
+        if $i0 == 0 goto label5;
+
+        $r3 = "enum ";
+
+     label2:
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r1.<proguard.classfile.ProgramClass: java.lang.String getName()>();
+
+        $r3 = staticinvoke <proguard.classfile.util.ClassUtil: java.lang.String externalClassName(java.lang.String)>($r3);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r3);
+
+        $i0 = $r1.<proguard.classfile.ProgramClass: int u2superClass>;
+
+        if $i0 != 0 goto label7;
+
+        $r3 = "";
+
+     label3:
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r3);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println()>();
+
+        $r2 = new java.lang.StringBuffer;
+
+        specialinvoke $r2.<java.lang.StringBuffer: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Interfaces (count = ");
+
+        $i0 = $r1.<proguard.classfile.ProgramClass: int u2interfacesCount>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("):");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r3);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        virtualinvoke $r1.<proguard.classfile.ProgramClass: void interfaceConstantsAccept(proguard.classfile.constant.visitor.ConstantVisitor)>(r0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println()>();
+
+        $r2 = new java.lang.StringBuffer;
+
+        specialinvoke $r2.<java.lang.StringBuffer: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Constant Pool (count = ");
+
+        $i0 = $r1.<proguard.classfile.ProgramClass: int u2constantPoolCount>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("):");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r3);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        virtualinvoke $r1.<proguard.classfile.ProgramClass: void constantPoolEntriesAccept(proguard.classfile.constant.visitor.ConstantVisitor)>(r0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println()>();
+
+        $r2 = new java.lang.StringBuffer;
+
+        specialinvoke $r2.<java.lang.StringBuffer: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Fields (count = ");
+
+        $i0 = $r1.<proguard.classfile.ProgramClass: int u2fieldsCount>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("):");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r3);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        virtualinvoke $r1.<proguard.classfile.ProgramClass: void fieldsAccept(proguard.classfile.visitor.MemberVisitor)>(r0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println()>();
+
+        $r2 = new java.lang.StringBuffer;
+
+        specialinvoke $r2.<java.lang.StringBuffer: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Methods (count = ");
+
+        $i0 = $r1.<proguard.classfile.ProgramClass: int u2methodsCount>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("):");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r3);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        virtualinvoke $r1.<proguard.classfile.ProgramClass: void methodsAccept(proguard.classfile.visitor.MemberVisitor)>(r0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println()>();
+
+        $r2 = new java.lang.StringBuffer;
+
+        specialinvoke $r2.<java.lang.StringBuffer: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Class file attributes (count = ");
+
+        $i0 = $r1.<proguard.classfile.ProgramClass: int u2attributesCount>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("):");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r3);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        virtualinvoke $r1.<proguard.classfile.ProgramClass: void attributesAccept(proguard.classfile.attribute.visitor.AttributeVisitor)>(r0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println()>();
+
+        return;
+
+     label4:
+        $r3 = "";
+
+        goto label1;
+
+     label5:
+        $i0 = $r1.<proguard.classfile.ProgramClass: int u2accessFlags>;
+
+        $i0 = $i0 & 512;
+
+        if $i0 != 0 goto label6;
+
+        $r3 = "class ";
+
+        goto label2;
+
+     label6:
+        $r3 = "";
+
+        goto label2;
+
+     label7:
+        $r4 = new java.lang.StringBuffer;
+
+        specialinvoke $r4.<java.lang.StringBuffer: void <init>()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" extends ");
+
+        $r3 = virtualinvoke $r1.<proguard.classfile.ProgramClass: java.lang.String getSuperName()>();
+
+        $r3 = staticinvoke <proguard.classfile.util.ClassUtil: java.lang.String externalClassName(java.lang.String)>($r3);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        goto label3;
+    }
+
+    public void visitProgramField(proguard.classfile.ProgramClass, proguard.classfile.ProgramField)
+    {
+        proguard.classfile.ProgramField $r2;
+        java.lang.StringBuffer $r3;
+        int $i0;
+        java.lang.String $r4, $r5;
+        proguard.classfile.visitor.ClassPrinter r0;
+        proguard.classfile.ProgramClass $r1;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.ProgramClass;
+
+        $r2 := @parameter1: proguard.classfile.ProgramField;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r4 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r2);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" ");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Field:        ");
+
+        $r4 = virtualinvoke $r2.<proguard.classfile.ProgramField: java.lang.String getName(proguard.classfile.Clazz)>($r1);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" ");
+
+        $r4 = virtualinvoke $r2.<proguard.classfile.ProgramField: java.lang.String getDescriptor(proguard.classfile.Clazz)>($r1);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Access flags: 0x");
+
+        $i0 = $r2.<proguard.classfile.ProgramField: int u2accessFlags>;
+
+        $r4 = staticinvoke <java.lang.Integer: java.lang.String toHexString(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("  = ");
+
+        $i0 = $r2.<proguard.classfile.ProgramField: int u2accessFlags>;
+
+        $r4 = virtualinvoke $r2.<proguard.classfile.ProgramField: java.lang.String getName(proguard.classfile.Clazz)>($r1);
+
+        $r5 = virtualinvoke $r2.<proguard.classfile.ProgramField: java.lang.String getDescriptor(proguard.classfile.Clazz)>($r1);
+
+        $r4 = staticinvoke <proguard.classfile.util.ClassUtil: java.lang.String externalFullFieldDescription(int,java.lang.String,java.lang.String)>($i0, $r4, $r5);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void visitMember(proguard.classfile.ProgramClass,proguard.classfile.ProgramMember)>($r1, $r2);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        return;
+    }
+
+    public void visitProgramMethod(proguard.classfile.ProgramClass, proguard.classfile.ProgramMethod)
+    {
+        proguard.classfile.ProgramClass $r1;
+        java.lang.StringBuffer $r3;
+        proguard.classfile.ProgramMethod $r2;
+        int $i0;
+        java.lang.String $r4, $r5, $r6;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.ProgramClass;
+
+        $r2 := @parameter1: proguard.classfile.ProgramMethod;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r4 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r2);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" ");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Method:       ");
+
+        $r4 = virtualinvoke $r2.<proguard.classfile.ProgramMethod: java.lang.String getName(proguard.classfile.Clazz)>($r1);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r2.<proguard.classfile.ProgramMethod: java.lang.String getDescriptor(proguard.classfile.Clazz)>($r1);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Access flags: 0x");
+
+        $i0 = $r2.<proguard.classfile.ProgramMethod: int u2accessFlags>;
+
+        $r4 = staticinvoke <java.lang.Integer: java.lang.String toHexString(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("  = ");
+
+        $r4 = virtualinvoke $r1.<proguard.classfile.ProgramClass: java.lang.String getName()>();
+
+        $i0 = $r2.<proguard.classfile.ProgramMethod: int u2accessFlags>;
+
+        $r5 = virtualinvoke $r2.<proguard.classfile.ProgramMethod: java.lang.String getName(proguard.classfile.Clazz)>($r1);
+
+        $r6 = virtualinvoke $r2.<proguard.classfile.ProgramMethod: java.lang.String getDescriptor(proguard.classfile.Clazz)>($r1);
+
+        $r4 = staticinvoke <proguard.classfile.util.ClassUtil: java.lang.String externalFullMethodDescription(java.lang.String,int,java.lang.String,java.lang.String)>($r4, $i0, $r5, $r6);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void visitMember(proguard.classfile.ProgramClass,proguard.classfile.ProgramMember)>($r1, $r2);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        return;
+    }
+
+    public void visitRuntimeInvisibleAnnotationsAttribute(proguard.classfile.Clazz, proguard.classfile.attribute.'annotation'.RuntimeInvisibleAnnotationsAttribute)
+    {
+        proguard.classfile.Clazz $r1;
+        java.lang.StringBuffer $r3;
+        java.lang.String $r4;
+        proguard.classfile.visitor.ClassPrinter r0;
+        proguard.classfile.attribute.'annotation'.RuntimeInvisibleAnnotationsAttribute $r2;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.'annotation'.RuntimeInvisibleAnnotationsAttribute;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r4 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r2);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Runtime invisible annotations attribute:");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        virtualinvoke $r2.<proguard.classfile.attribute.'annotation'.RuntimeInvisibleAnnotationsAttribute: void annotationsAccept(proguard.classfile.Clazz,proguard.classfile.attribute.'annotation'.visitor.AnnotationVisitor)>($r1, r0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        return;
+    }
+
+    public void visitRuntimeInvisibleParameterAnnotationsAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.'annotation'.RuntimeInvisibleParameterAnnotationsAttribute)
+    {
+        proguard.classfile.Clazz $r1;
+        java.lang.StringBuffer $r4;
+        int $i0;
+        proguard.classfile.Method $r2;
+        java.lang.String $r5;
+        proguard.classfile.attribute.'annotation'.RuntimeInvisibleParameterAnnotationsAttribute $r3;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.'annotation'.RuntimeInvisibleParameterAnnotationsAttribute;
+
+        $r4 = new java.lang.StringBuffer;
+
+        specialinvoke $r4.<java.lang.StringBuffer: void <init>()>();
+
+        $r5 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r3);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r5);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Runtime invisible parameter annotations attribute (parameter count = ");
+
+        $i0 = $r3.<proguard.classfile.attribute.'annotation'.RuntimeInvisibleParameterAnnotationsAttribute: int u2parametersCount>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("):");
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r5);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        virtualinvoke $r3.<proguard.classfile.attribute.'annotation'.RuntimeInvisibleParameterAnnotationsAttribute: void annotationsAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.'annotation'.visitor.AnnotationVisitor)>($r1, $r2, r0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        return;
+    }
+
+    public void visitRuntimeVisibleAnnotationsAttribute(proguard.classfile.Clazz, proguard.classfile.attribute.'annotation'.RuntimeVisibleAnnotationsAttribute)
+    {
+        proguard.classfile.Clazz $r1;
+        java.lang.StringBuffer $r3;
+        proguard.classfile.attribute.'annotation'.RuntimeVisibleAnnotationsAttribute $r2;
+        java.lang.String $r4;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.'annotation'.RuntimeVisibleAnnotationsAttribute;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r4 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r2);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Runtime visible annotations attribute:");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        virtualinvoke $r2.<proguard.classfile.attribute.'annotation'.RuntimeVisibleAnnotationsAttribute: void annotationsAccept(proguard.classfile.Clazz,proguard.classfile.attribute.'annotation'.visitor.AnnotationVisitor)>($r1, r0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        return;
+    }
+
+    public void visitRuntimeVisibleParameterAnnotationsAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.'annotation'.RuntimeVisibleParameterAnnotationsAttribute)
+    {
+        proguard.classfile.Clazz $r1;
+        java.lang.StringBuffer $r4;
+        int $i0;
+        proguard.classfile.Method $r2;
+        proguard.classfile.attribute.'annotation'.RuntimeVisibleParameterAnnotationsAttribute $r3;
+        java.lang.String $r5;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.'annotation'.RuntimeVisibleParameterAnnotationsAttribute;
+
+        $r4 = new java.lang.StringBuffer;
+
+        specialinvoke $r4.<java.lang.StringBuffer: void <init>()>();
+
+        $r5 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r3);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r5);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Runtime visible parameter annotations attribute (parameter count = ");
+
+        $i0 = $r3.<proguard.classfile.attribute.'annotation'.RuntimeVisibleParameterAnnotationsAttribute: int u2parametersCount>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("):");
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r5);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        virtualinvoke $r3.<proguard.classfile.attribute.'annotation'.RuntimeVisibleParameterAnnotationsAttribute: void annotationsAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.'annotation'.visitor.AnnotationVisitor)>($r1, $r2, r0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        return;
+    }
+
+    public void visitSameOneFrame(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.attribute.preverification.SameOneFrame)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.attribute.preverification.SameOneFrame $r4;
+        java.lang.StringBuffer $r5;
+        int $i0;
+        proguard.classfile.Method $r2;
+        java.lang.String $r6;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.attribute.preverification.SameOneFrame;
+
+        $r5 = new java.lang.StringBuffer;
+
+        specialinvoke $r5.<java.lang.StringBuffer: void <init>()>();
+
+        $r6 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r4);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r6);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" [");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Var: ..., Stack: ");
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void print(java.lang.String)>($r6);
+
+        virtualinvoke $r4.<proguard.classfile.attribute.preverification.SameOneFrame: void stackItemAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,int,proguard.classfile.attribute.preverification.visitor.VerificationTypeVisitor)>($r1, $r2, $r3, $i0, r0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println()>();
+
+        return;
+    }
+
+    public void visitSameZeroFrame(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.attribute.preverification.SameZeroFrame)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        java.lang.StringBuffer $r5;
+        int $i0;
+        proguard.classfile.attribute.preverification.SameZeroFrame $r4;
+        proguard.classfile.Method $r2;
+        java.lang.String $r6;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.attribute.preverification.SameZeroFrame;
+
+        $r5 = new java.lang.StringBuffer;
+
+        specialinvoke $r5.<java.lang.StringBuffer: void <init>()>();
+
+        $r6 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r4);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r6);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" [");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Var: ..., Stack: (empty)");
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r6);
+
+        return;
+    }
+
+    public void visitSignatureAttribute(proguard.classfile.Clazz, proguard.classfile.attribute.SignatureAttribute)
+    {
+        proguard.classfile.Clazz $r1;
+        java.lang.StringBuffer $r3;
+        int $i0;
+        proguard.classfile.attribute.SignatureAttribute $r2;
+        java.lang.String $r4;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.SignatureAttribute;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r4 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r2);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Signature attribute:");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        $i0 = $r2.<proguard.classfile.attribute.SignatureAttribute: int u2signatureIndex>;
+
+        interfaceinvoke $r1.<proguard.classfile.Clazz: void constantPoolEntryAccept(int,proguard.classfile.constant.visitor.ConstantVisitor)>($i0, r0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        return;
+    }
+
+    public void visitSourceDirAttribute(proguard.classfile.Clazz, proguard.classfile.attribute.SourceDirAttribute)
+    {
+        proguard.classfile.attribute.SourceDirAttribute $r2;
+        proguard.classfile.Clazz $r1;
+        java.lang.StringBuffer $r3;
+        int $i0;
+        java.lang.String $r4;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.SourceDirAttribute;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r4 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r2);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Source dir attribute:");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        $i0 = $r2.<proguard.classfile.attribute.SourceDirAttribute: int u2sourceDirIndex>;
+
+        interfaceinvoke $r1.<proguard.classfile.Clazz: void constantPoolEntryAccept(int,proguard.classfile.constant.visitor.ConstantVisitor)>($i0, r0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        return;
+    }
+
+    public void visitSourceFileAttribute(proguard.classfile.Clazz, proguard.classfile.attribute.SourceFileAttribute)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.SourceFileAttribute $r2;
+        java.lang.StringBuffer $r3;
+        int $i0;
+        java.lang.String $r4;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.SourceFileAttribute;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r4 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r2);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Source file attribute:");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        $i0 = $r2.<proguard.classfile.attribute.SourceFileAttribute: int u2sourceFileIndex>;
+
+        interfaceinvoke $r1.<proguard.classfile.Clazz: void constantPoolEntryAccept(int,proguard.classfile.constant.visitor.ConstantVisitor)>($i0, r0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        return;
+    }
+
+    public void visitStackMapAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, proguard.classfile.attribute.preverification.StackMapAttribute)
+    {
+        proguard.classfile.attribute.preverification.StackMapAttribute $r4;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        java.lang.StringBuffer $r5;
+        int $i0;
+        proguard.classfile.Method $r2;
+        java.lang.String $r6;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 := @parameter3: proguard.classfile.attribute.preverification.StackMapAttribute;
+
+        $r5 = new java.lang.StringBuffer;
+
+        specialinvoke $r5.<java.lang.StringBuffer: void <init>()>();
+
+        $r6 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r3);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r6);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Stack map attribute (count = ");
+
+        $i0 = $r4.<proguard.classfile.attribute.preverification.StackMapAttribute: int u2stackMapFramesCount>;
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("):");
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r6);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        virtualinvoke $r4.<proguard.classfile.attribute.preverification.StackMapAttribute: void stackMapFramesAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,proguard.classfile.attribute.preverification.visitor.StackMapFrameVisitor)>($r1, $r2, $r3, r0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        return;
+    }
+
+    public void visitStackMapTableAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, proguard.classfile.attribute.preverification.StackMapTableAttribute)
+    {
+        proguard.classfile.attribute.preverification.StackMapTableAttribute $r4;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        java.lang.StringBuffer $r5;
+        int $i0;
+        proguard.classfile.Method $r2;
+        java.lang.String $r6;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 := @parameter3: proguard.classfile.attribute.preverification.StackMapTableAttribute;
+
+        $r5 = new java.lang.StringBuffer;
+
+        specialinvoke $r5.<java.lang.StringBuffer: void <init>()>();
+
+        $r6 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r3);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r6);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Stack map table attribute (count = ");
+
+        $i0 = $r4.<proguard.classfile.attribute.preverification.StackMapTableAttribute: int u2stackMapFramesCount>;
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("):");
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r6);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        virtualinvoke $r4.<proguard.classfile.attribute.preverification.StackMapTableAttribute: void stackMapFramesAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,proguard.classfile.attribute.preverification.visitor.StackMapFrameVisitor)>($r1, $r2, $r3, r0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        return;
+    }
+
+    public void visitStringConstant(proguard.classfile.Clazz, proguard.classfile.constant.StringConstant)
+    {
+        proguard.classfile.Clazz $r1;
+        java.lang.StringBuffer $r3;
+        proguard.classfile.constant.StringConstant $r2;
+        int $i0;
+        java.lang.String $r4;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.constant.StringConstant;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r4 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r2);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" String [");
+
+        $i0 = $r2.<proguard.classfile.constant.StringConstant: int u2stringIndex>;
+
+        $r4 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getString(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        return;
+    }
+
+    public void visitSyntheticAttribute(proguard.classfile.Clazz, proguard.classfile.attribute.SyntheticAttribute)
+    {
+        proguard.classfile.Clazz $r1;
+        java.lang.StringBuffer $r3;
+        proguard.classfile.attribute.SyntheticAttribute $r2;
+        java.lang.String $r4;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.SyntheticAttribute;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r4 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r2);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Synthetic attribute");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        return;
+    }
+
+    public void visitTableSwitchInstruction(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.instruction.TableSwitchInstruction)
+    {
+        proguard.classfile.instruction.TableSwitchInstruction $r4;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int[] $r6;
+        java.lang.StringBuffer $r7;
+        int $i0, $i1, $i2, $i3;
+        proguard.classfile.Method $r2;
+        java.lang.String $r5;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.instruction.TableSwitchInstruction;
+
+        $r5 = virtualinvoke $r4.<proguard.classfile.instruction.TableSwitchInstruction: java.lang.String toString(int)>($i0);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r5);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void indent()>();
+
+        $r6 = $r4.<proguard.classfile.instruction.TableSwitchInstruction: int[] jumpOffsets>;
+
+        $i1 = 0;
+
+     label1:
+        $i2 = lengthof $r6;
+
+        if $i1 >= $i2 goto label2;
+
+        $i2 = $r6[$i1];
+
+        $r7 = new java.lang.StringBuffer;
+
+        specialinvoke $r7.<java.lang.StringBuffer: void <init>()>();
+
+        $i3 = $r4.<proguard.classfile.instruction.TableSwitchInstruction: int lowCase>;
+
+        $i3 = $i3 + $i1;
+
+        $r5 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i3);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r5);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(": offset = ");
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i2);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(", target = ");
+
+        $i2 = $i2 + $i0;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i2);
+
+        $r5 = virtualinvoke $r7.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r5);
+
+        $i1 = $i1 + 1;
+
+        goto label1;
+
+     label2:
+        $i1 = $r4.<proguard.classfile.instruction.TableSwitchInstruction: int defaultOffset>;
+
+        $r7 = new java.lang.StringBuffer;
+
+        specialinvoke $r7.<java.lang.StringBuffer: void <init>()>();
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("default: offset = ");
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i1);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(", target = ");
+
+        $i0 = $i1 + $i0;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r5 = virtualinvoke $r7.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r5);
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void outdent()>();
+
+        return;
+    }
+
+    public void visitTopType(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.attribute.preverification.TopType)
+    {
+        java.io.PrintStream $r5;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int $i0;
+        proguard.classfile.Method $r2;
+        proguard.classfile.attribute.preverification.TopType $r4;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.attribute.preverification.TopType;
+
+        $r5 = r0.<proguard.classfile.visitor.ClassPrinter: java.io.PrintStream ps>;
+
+        virtualinvoke $r5.<java.io.PrintStream: void print(java.lang.String)>("[T]");
+
+        return;
+    }
+
+    public void visitUninitializedThisType(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.attribute.preverification.UninitializedThisType)
+    {
+        java.io.PrintStream $r5;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int $i0;
+        proguard.classfile.Method $r2;
+        proguard.classfile.attribute.preverification.UninitializedThisType $r4;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.attribute.preverification.UninitializedThisType;
+
+        $r5 = r0.<proguard.classfile.visitor.ClassPrinter: java.io.PrintStream ps>;
+
+        virtualinvoke $r5.<java.io.PrintStream: void print(java.lang.String)>("[u:this]");
+
+        return;
+    }
+
+    public void visitUninitializedType(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.attribute.preverification.UninitializedType)
+    {
+        java.io.PrintStream $r5;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        java.lang.StringBuffer $r6;
+        int $i0;
+        proguard.classfile.Method $r2;
+        proguard.classfile.attribute.preverification.UninitializedType $r4;
+        java.lang.String $r7;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.attribute.preverification.UninitializedType;
+
+        $r5 = r0.<proguard.classfile.visitor.ClassPrinter: java.io.PrintStream ps>;
+
+        $r6 = new java.lang.StringBuffer;
+
+        specialinvoke $r6.<java.lang.StringBuffer: void <init>()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("[u:");
+
+        $i0 = $r4.<proguard.classfile.attribute.preverification.UninitializedType: int u2newInstructionOffset>;
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(int)>($i0);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        virtualinvoke $r5.<java.io.PrintStream: void print(java.lang.String)>($r7);
+
+        return;
+    }
+
+    public void visitUnknownAttribute(proguard.classfile.Clazz, proguard.classfile.attribute.UnknownAttribute)
+    {
+        proguard.classfile.Clazz $r1;
+        java.lang.StringBuffer $r3;
+        int $i0;
+        proguard.classfile.attribute.UnknownAttribute $r2;
+        java.lang.String $r4;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.UnknownAttribute;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r4 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r2);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Unknown attribute (");
+
+        $i0 = $r2.<proguard.classfile.attribute.UnknownAttribute: int u2attributeNameIndex>;
+
+        $r4 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getString(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(")");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        return;
+    }
+
+    public void visitUtf8Constant(proguard.classfile.Clazz, proguard.classfile.constant.Utf8Constant)
+    {
+        proguard.classfile.Clazz $r1;
+        java.lang.StringBuffer $r3;
+        java.lang.String $r4;
+        proguard.classfile.constant.Utf8Constant $r2;
+        proguard.classfile.visitor.ClassPrinter r0;
+
+        r0 := @this: proguard.classfile.visitor.ClassPrinter;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.constant.Utf8Constant;
+
+        $r3 = new java.lang.StringBuffer;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+        $r4 = specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: java.lang.String visitorInfo(proguard.classfile.VisitorAccepter)>($r2);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(" Utf8 [");
+
+        $r4 = virtualinvoke $r2.<proguard.classfile.constant.Utf8Constant: java.lang.String getString()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("]");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke r0.<proguard.classfile.visitor.ClassPrinter: void println(java.lang.String)>($r4);
+
+        return;
+    }
+
+    public static void <clinit>()
+    {
+        <proguard.classfile.visitor.ClassPrinter: java.lang.String INDENTATION> = "  ";
+
+        return;
+    }
+}

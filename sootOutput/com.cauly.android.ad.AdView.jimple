@@ -1,0 +1,1949 @@
+public class com.cauly.android.ad.AdView extends android.widget.RelativeLayout implements android.location.LocationListener
+{
+    private static java.lang.String SAVE_PATH;
+    private static com.cauly.android.ad.AdCommon adCommon;
+    private static com.cauly.android.ad.AdData adData;
+    private static com.cauly.android.ad.AdHandler adHandler;
+    private static com.cauly.android.ad.AdLayout adLayout;
+    static double lat;
+    static double lng;
+    private static java.util.Timer reloadTimer;
+    private static android.os.Handler threadHandler;
+    private java.lang.String action;
+    private java.lang.String adtype;
+    private java.lang.String age;
+    private java.lang.String allowcall;
+    private java.lang.String appcode;
+    private java.lang.String effect;
+    private java.lang.String gender;
+    private java.lang.String gps;
+    private boolean isReload;
+    private java.lang.String lang;
+    private android.location.LocationManager lm;
+    private java.lang.String manufacturer;
+    private java.util.List messages;
+    private android.net.NetworkInfo$State mobile;
+    private java.lang.String model;
+    private java.lang.String provider;
+    private int reloadInterval;
+    public com.cauly.android.ad.Rotate3dAnimation rotation;
+    private java.lang.String udid;
+    private java.lang.String version;
+    private android.net.NetworkInfo$State wifi;
+    private android.net.wifi.WifiInfo wifiInfo;
+    private android.net.wifi.WifiManager wm;
+
+    static void <clinit>()
+    {
+        <com.cauly.android.ad.AdView: com.cauly.android.ad.AdData adData> = null;
+
+        <com.cauly.android.ad.AdView: com.cauly.android.ad.AdHandler adHandler> = null;
+
+        <com.cauly.android.ad.AdView: com.cauly.android.ad.AdCommon adCommon> = null;
+
+        <com.cauly.android.ad.AdView: com.cauly.android.ad.AdLayout adLayout> = null;
+
+        <com.cauly.android.ad.AdView: android.os.Handler threadHandler> = null;
+
+        <com.cauly.android.ad.AdView: double lat> = 37.565263;
+
+        <com.cauly.android.ad.AdView: double lng> = 126.980667;
+
+        <com.cauly.android.ad.AdView: java.util.Timer reloadTimer> = null;
+
+        return;
+    }
+
+    public void <init>(android.content.Context)
+    {
+        com.cauly.android.ad.AdView r0;
+        android.content.Context $r1;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke r0.<com.cauly.android.ad.AdView: void <init>(android.content.Context,android.util.AttributeSet,int)>($r1, null, 0);
+
+        return;
+    }
+
+    public void <init>(android.content.Context, android.util.AttributeSet)
+    {
+        com.cauly.android.ad.AdView r0;
+        android.content.Context $r1;
+        android.util.AttributeSet $r2;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.util.AttributeSet;
+
+        specialinvoke r0.<com.cauly.android.ad.AdView: void <init>(android.content.Context,android.util.AttributeSet,int)>($r1, $r2, 0);
+
+        return;
+    }
+
+    public void <init>(android.content.Context, android.util.AttributeSet, int)
+    {
+        android.net.wifi.WifiInfo $r19;
+        android.view.WindowManager $r10;
+        android.util.AttributeSet $r2;
+        java.util.Locale $r13;
+        android.os.Handler $r26;
+        android.view.Display $r11;
+        boolean $z0;
+        android.net.ConnectivityManager r15;
+        android.net.NetworkInfo $r16;
+        android.net.NetworkInfo$State $r17, $r18;
+        java.lang.Exception $r38, $r39, $r40;
+        java.lang.StringBuilder $r7;
+        android.location.Location $r21;
+        android.location.LocationManager $r20;
+        android.content.Context $r1;
+        int $i0, $i1;
+        java.lang.String $r8, $r12, $r27, $r28, $r29, $r30, $r31, $r32, $r33, $r34, $r35, $r36, $r37;
+        double $d0;
+        java.io.BufferedWriter r23;
+        java.io.FileWriter r22;
+        java.io.File r4, r5;
+        android.net.wifi.WifiManager $r14;
+        com.cauly.android.ad.AdView r0;
+        com.cauly.android.ad.AdCommon r24;
+        com.cauly.android.ad.AdData $r25;
+        java.lang.Object $r9;
+        java.io.BufferedReader r3;
+        java.io.FileReader r6;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.util.AttributeSet;
+
+        $i0 := @parameter2: int;
+
+        specialinvoke r0.<android.widget.RelativeLayout: void <init>(android.content.Context,android.util.AttributeSet,int)>($r1, $r2, $i0);
+
+        r0.<com.cauly.android.ad.AdView: boolean isReload> = 0;
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>(java.lang.String)>("/data/data/");
+
+        $r8 = virtualinvoke $r1.<android.content.Context: java.lang.String getPackageName()>();
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/cauly_ad_img/");
+
+        $r8 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        <com.cauly.android.ad.AdView: java.lang.String SAVE_PATH> = $r8;
+
+        $r9 = virtualinvoke $r1.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("window");
+
+        $r10 = (android.view.WindowManager) $r9;
+
+        $r11 = interfaceinvoke $r10.<android.view.WindowManager: android.view.Display getDefaultDisplay()>();
+
+        $i0 = virtualinvoke $r11.<android.view.Display: int getWidth()>();
+
+        virtualinvoke r0.<com.cauly.android.ad.AdView: void setFocusable(boolean)>(1);
+
+        virtualinvoke r0.<com.cauly.android.ad.AdView: void setClickable(boolean)>(1);
+
+        virtualinvoke r0.<com.cauly.android.ad.AdView: void setFocusableInTouchMode(boolean)>(1);
+
+        virtualinvoke r0.<com.cauly.android.ad.AdView: void setDescendantFocusability(int)>(262144);
+
+        if $r2 == null goto label25;
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>(java.lang.String)>("http://schemas.android.com/apk/res/");
+
+        $r8 = virtualinvoke $r1.<android.content.Context: java.lang.String getPackageName()>();
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r8 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $i1 = interfaceinvoke $r2.<android.util.AttributeSet: int getAttributeIntValue(java.lang.String,java.lang.String,int)>($r8, "reloadInterval", 0);
+
+        r0.<com.cauly.android.ad.AdView: int reloadInterval> = $i1;
+
+        $i1 = r0.<com.cauly.android.ad.AdView: int reloadInterval>;
+
+        if $i1 == 0 goto label01;
+
+        $i1 = r0.<com.cauly.android.ad.AdView: int reloadInterval>;
+
+        if $i1 >= 0 goto label38;
+
+        r0.<com.cauly.android.ad.AdView: int reloadInterval> = 0;
+
+     label01:
+        $r12 = interfaceinvoke $r2.<android.util.AttributeSet: java.lang.String getAttributeValue(java.lang.String,java.lang.String)>($r8, "action");
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String action> = $r12;
+
+        $r12 = interfaceinvoke $r2.<android.util.AttributeSet: java.lang.String getAttributeValue(java.lang.String,java.lang.String)>($r8, "appcode");
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String appcode> = $r12;
+
+        $r12 = interfaceinvoke $r2.<android.util.AttributeSet: java.lang.String getAttributeValue(java.lang.String,java.lang.String)>($r8, "adtype");
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String adtype> = $r12;
+
+        $r12 = interfaceinvoke $r2.<android.util.AttributeSet: java.lang.String getAttributeValue(java.lang.String,java.lang.String)>($r8, "gender");
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String gender> = $r12;
+
+        $r12 = interfaceinvoke $r2.<android.util.AttributeSet: java.lang.String getAttributeValue(java.lang.String,java.lang.String)>($r8, "age");
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String age> = $r12;
+
+        $r12 = interfaceinvoke $r2.<android.util.AttributeSet: java.lang.String getAttributeValue(java.lang.String,java.lang.String)>($r8, "gps");
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String gps> = $r12;
+
+        $r12 = <android.os.Build$VERSION: java.lang.String RELEASE>;
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String version> = $r12;
+
+        $r12 = interfaceinvoke $r2.<android.util.AttributeSet: java.lang.String getAttributeValue(java.lang.String,java.lang.String)>($r8, "effect");
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String effect> = $r12;
+
+        $r13 = staticinvoke <java.util.Locale: java.util.Locale getDefault()>();
+
+        $r12 = virtualinvoke $r13.<java.util.Locale: java.lang.String getLanguage()>();
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String lang> = $r12;
+
+        $r12 = <android.os.Build: java.lang.String MANUFACTURER>;
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String manufacturer> = $r12;
+
+        $r12 = r0.<com.cauly.android.ad.AdView: java.lang.String manufacturer>;
+
+        $r12 = virtualinvoke $r12.<java.lang.String: java.lang.String replace(java.lang.CharSequence,java.lang.CharSequence)>(" ", "_");
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String manufacturer> = $r12;
+
+        $r12 = <android.os.Build: java.lang.String MODEL>;
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String model> = $r12;
+
+        $r12 = r0.<com.cauly.android.ad.AdView: java.lang.String model>;
+
+        $r12 = virtualinvoke $r12.<java.lang.String: java.lang.String replace(java.lang.CharSequence,java.lang.CharSequence)>(" ", "_");
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String model> = $r12;
+
+     label02:
+        $r9 = virtualinvoke $r1.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("wifi");
+
+        $r14 = (android.net.wifi.WifiManager) $r9;
+
+        r0.<com.cauly.android.ad.AdView: android.net.wifi.WifiManager wm> = $r14;
+
+        $r9 = virtualinvoke $r1.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("connectivity");
+
+        r15 = (android.net.ConnectivityManager) $r9;
+
+        $r16 = virtualinvoke r15.<android.net.ConnectivityManager: android.net.NetworkInfo getNetworkInfo(int)>(0);
+
+        $r17 = virtualinvoke $r16.<android.net.NetworkInfo: android.net.NetworkInfo$State getState()>();
+
+        r0.<com.cauly.android.ad.AdView: android.net.NetworkInfo$State mobile> = $r17;
+
+        $r16 = virtualinvoke r15.<android.net.ConnectivityManager: android.net.NetworkInfo getNetworkInfo(int)>(1);
+
+        $r17 = virtualinvoke $r16.<android.net.NetworkInfo: android.net.NetworkInfo$State getState()>();
+
+        r0.<com.cauly.android.ad.AdView: android.net.NetworkInfo$State wifi> = $r17;
+
+     label03:
+        $r17 = r0.<com.cauly.android.ad.AdView: android.net.NetworkInfo$State mobile>;
+
+     label04:
+        $r18 = <android.net.NetworkInfo$State: android.net.NetworkInfo$State CONNECTED>;
+
+        if $r17 != $r18 goto label11;
+
+     label05:
+        $r17 = r0.<com.cauly.android.ad.AdView: android.net.NetworkInfo$State mobile>;
+
+     label06:
+        $r18 = <android.net.NetworkInfo$State: android.net.NetworkInfo$State CONNECTING>;
+
+        if $r17 != $r18 goto label11;
+
+     label07:
+        $r17 = r0.<com.cauly.android.ad.AdView: android.net.NetworkInfo$State wifi>;
+
+     label08:
+        $r18 = <android.net.NetworkInfo$State: android.net.NetworkInfo$State CONNECTED>;
+
+        if $r17 != $r18 goto label11;
+
+     label09:
+        $r17 = r0.<com.cauly.android.ad.AdView: android.net.NetworkInfo$State wifi>;
+
+     label10:
+        $r18 = <android.net.NetworkInfo$State: android.net.NetworkInfo$State CONNECTING>;
+
+        if $r17 == $r18 goto label42;
+
+     label11:
+        r0.<com.cauly.android.ad.AdView: java.lang.String udid> = "-";
+
+     label12:
+        $r12 = r0.<com.cauly.android.ad.AdView: java.lang.String udid>;
+
+        $z0 = virtualinvoke $r12.<java.lang.String: boolean equals(java.lang.Object)>("permission");
+
+     label13:
+        if $z0 != 0 goto label23;
+
+     label14:
+        $r17 = r0.<com.cauly.android.ad.AdView: android.net.NetworkInfo$State mobile>;
+
+     label15:
+        $r18 = <android.net.NetworkInfo$State: android.net.NetworkInfo$State CONNECTED>;
+
+        if $r17 != $r18 goto label23;
+
+     label16:
+        $r17 = r0.<com.cauly.android.ad.AdView: android.net.NetworkInfo$State mobile>;
+
+     label17:
+        $r18 = <android.net.NetworkInfo$State: android.net.NetworkInfo$State CONNECTING>;
+
+        if $r17 != $r18 goto label23;
+
+     label18:
+        $r17 = r0.<com.cauly.android.ad.AdView: android.net.NetworkInfo$State wifi>;
+
+     label19:
+        $r18 = <android.net.NetworkInfo$State: android.net.NetworkInfo$State CONNECTED>;
+
+        if $r17 != $r18 goto label23;
+
+     label20:
+        $r17 = r0.<com.cauly.android.ad.AdView: android.net.NetworkInfo$State wifi>;
+
+     label21:
+        $r18 = <android.net.NetworkInfo$State: android.net.NetworkInfo$State CONNECTING>;
+
+        if $r17 != $r18 goto label23;
+
+     label22:
+        $r14 = r0.<com.cauly.android.ad.AdView: android.net.wifi.WifiManager wm>;
+
+        $r19 = virtualinvoke $r14.<android.net.wifi.WifiManager: android.net.wifi.WifiInfo getConnectionInfo()>();
+
+        r0.<com.cauly.android.ad.AdView: android.net.wifi.WifiInfo wifiInfo> = $r19;
+
+        $r19 = r0.<com.cauly.android.ad.AdView: android.net.wifi.WifiInfo wifiInfo>;
+
+        $r12 = virtualinvoke $r19.<android.net.wifi.WifiInfo: java.lang.String getMacAddress()>();
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String udid> = $r12;
+
+        $r12 = r0.<com.cauly.android.ad.AdView: java.lang.String udid>;
+
+        $r12 = virtualinvoke $r12.<java.lang.String: java.lang.String replaceAll(java.lang.String,java.lang.String)>(":", "");
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String udid> = $r12;
+
+        $r12 = r0.<com.cauly.android.ad.AdView: java.lang.String udid>;
+
+        $r12 = virtualinvoke $r12.<java.lang.String: java.lang.String replaceAll(java.lang.String,java.lang.String)>("\\.", "");
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String udid> = $r12;
+
+     label23:
+        $r12 = r0.<com.cauly.android.ad.AdView: java.lang.String gps>;
+
+        $z0 = virtualinvoke $r12.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("auto");
+
+        if $z0 == 0 goto label50;
+
+        $r9 = virtualinvoke $r1.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("location");
+
+        $r20 = (android.location.LocationManager) $r9;
+
+        r0.<com.cauly.android.ad.AdView: android.location.LocationManager lm> = $r20;
+
+        $r20 = r0.<com.cauly.android.ad.AdView: android.location.LocationManager lm>;
+
+        virtualinvoke $r20.<android.location.LocationManager: void requestLocationUpdates(java.lang.String,long,float,android.location.LocationListener)>("network", 1000L, 500.0F, r0);
+
+        $r20 = r0.<com.cauly.android.ad.AdView: android.location.LocationManager lm>;
+
+        $r21 = virtualinvoke $r20.<android.location.LocationManager: android.location.Location getLastKnownLocation(java.lang.String)>("network");
+
+        $d0 = virtualinvoke $r21.<android.location.Location: double getLatitude()>();
+
+        <com.cauly.android.ad.AdView: double lat> = $d0;
+
+        $d0 = virtualinvoke $r21.<android.location.Location: double getLongitude()>();
+
+        <com.cauly.android.ad.AdView: double lng> = $d0;
+
+        $r7 = new java.lang.StringBuilder;
+
+        $d0 = <com.cauly.android.ad.AdView: double lat>;
+
+        $r12 = staticinvoke <java.lang.String: java.lang.String valueOf(double)>($d0);
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>(java.lang.String)>($r12);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(",");
+
+        $d0 = <com.cauly.android.ad.AdView: double lng>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(double)>($d0);
+
+        $r12 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String gps> = $r12;
+
+     label24:
+        $r8 = interfaceinvoke $r2.<android.util.AttributeSet: java.lang.String getAttributeValue(java.lang.String,java.lang.String)>($r8, "allowcall");
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String allowcall> = $r8;
+
+     label25:
+        $z0 = specialinvoke r0.<com.cauly.android.ad.AdView: boolean checkAttrs()>();
+
+        if $z0 == 0 goto label68;
+
+        r5 = new java.io.File;
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>(java.lang.String)>("/data/data/");
+
+        $r8 = virtualinvoke $r1.<android.content.Context: java.lang.String getPackageName()>();
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/cauly/DownloadCheck.txt");
+
+        $r8 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke r5.<java.io.File: void <init>(java.lang.String)>($r8);
+
+        r4 = new java.io.File;
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>(java.lang.String)>("/data/data/");
+
+        $r8 = virtualinvoke $r1.<android.content.Context: java.lang.String getPackageName()>();
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/cauly/");
+
+        $r8 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke r4.<java.io.File: void <init>(java.lang.String)>($r8);
+
+        $r8 = r0.<com.cauly.android.ad.AdView: java.lang.String udid>;
+
+        $z0 = virtualinvoke $r8.<java.lang.String: boolean equals(java.lang.Object)>("CAULY");
+
+        if $z0 != 0 goto label37;
+
+     label26:
+        $z0 = virtualinvoke r4.<java.io.File: boolean isDirectory()>();
+
+     label27:
+        if $z0 != 0 goto label51;
+
+     label28:
+        virtualinvoke r4.<java.io.File: boolean mkdir()>();
+
+        $z0 = virtualinvoke r5.<java.io.File: boolean exists()>();
+
+     label29:
+        if $z0 != 0 goto label37;
+
+     label30:
+        virtualinvoke r5.<java.io.File: boolean createNewFile()>();
+
+     label31:
+        r22 = new java.io.FileWriter;
+
+     label32:
+        specialinvoke r22.<java.io.FileWriter: void <init>(java.io.File)>(r5);
+
+     label33:
+        r23 = new java.io.BufferedWriter;
+
+     label34:
+        specialinvoke r23.<java.io.BufferedWriter: void <init>(java.io.Writer)>(r22);
+
+        virtualinvoke r23.<java.io.BufferedWriter: void write(java.lang.String)>("True");
+
+        virtualinvoke r23.<java.io.BufferedWriter: void close()>();
+
+        virtualinvoke r22.<java.io.FileWriter: void close()>();
+
+     label35:
+        r24 = new com.cauly.android.ad.AdCommon;
+
+     label36:
+        specialinvoke r24.<com.cauly.android.ad.AdCommon: void <init>()>();
+
+        $r8 = r0.<com.cauly.android.ad.AdView: java.lang.String udid>;
+
+        $r12 = r0.<com.cauly.android.ad.AdView: java.lang.String appcode>;
+
+        virtualinvoke r24.<com.cauly.android.ad.AdCommon: void Download_Info(java.lang.String,java.lang.String)>($r8, $r12);
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("Cauly Ads", "DownLoad Check OK!");
+
+     label37:
+        $r25 = new com.cauly.android.ad.AdData;
+
+        specialinvoke $r25.<com.cauly.android.ad.AdData: void <init>()>();
+
+        <com.cauly.android.ad.AdView: com.cauly.android.ad.AdData adData> = $r25;
+
+        r24 = new com.cauly.android.ad.AdCommon;
+
+        specialinvoke r24.<com.cauly.android.ad.AdCommon: void <init>()>();
+
+        <com.cauly.android.ad.AdView: com.cauly.android.ad.AdCommon adCommon> = r24;
+
+        $r26 = new android.os.Handler;
+
+        specialinvoke $r26.<android.os.Handler: void <init>()>();
+
+        <com.cauly.android.ad.AdView: android.os.Handler threadHandler> = $r26;
+
+        r24 = <com.cauly.android.ad.AdView: com.cauly.android.ad.AdCommon adCommon>;
+
+        $r8 = r0.<com.cauly.android.ad.AdView: java.lang.String action>;
+
+        $r12 = r0.<com.cauly.android.ad.AdView: java.lang.String adtype>;
+
+        $r27 = r0.<com.cauly.android.ad.AdView: java.lang.String appcode>;
+
+        $r28 = r0.<com.cauly.android.ad.AdView: java.lang.String gender>;
+
+        $r29 = r0.<com.cauly.android.ad.AdView: java.lang.String age>;
+
+        $r30 = r0.<com.cauly.android.ad.AdView: java.lang.String gps>;
+
+        $r31 = r0.<com.cauly.android.ad.AdView: java.lang.String udid>;
+
+        $r32 = r0.<com.cauly.android.ad.AdView: java.lang.String version>;
+
+        $r33 = r0.<com.cauly.android.ad.AdView: java.lang.String lang>;
+
+        $r34 = r0.<com.cauly.android.ad.AdView: java.lang.String provider>;
+
+        $r35 = r0.<com.cauly.android.ad.AdView: java.lang.String manufacturer>;
+
+        $r36 = r0.<com.cauly.android.ad.AdView: java.lang.String model>;
+
+        $r37 = r0.<com.cauly.android.ad.AdView: java.lang.String allowcall>;
+
+        virtualinvoke r24.<com.cauly.android.ad.AdCommon: void initCommon(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)>($r8, $r12, $r27, $r28, $r29, $r30, $r31, $r32, $r33, $r34, $r35, $r36, $r37);
+
+        $i1 = specialinvoke r0.<android.widget.RelativeLayout: int getVisibility()>();
+
+        if $i1 != 0 goto label68;
+
+        $r8 = r0.<com.cauly.android.ad.AdView: java.lang.String adtype>;
+
+        $z0 = virtualinvoke $r8.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("cpc");
+
+        if $z0 == 0 goto label67;
+
+        if $i0 < 320 goto label66;
+
+        virtualinvoke r0.<com.cauly.android.ad.AdView: void realodAD()>();
+
+        return;
+
+     label38:
+        $i1 = r0.<com.cauly.android.ad.AdView: int reloadInterval>;
+
+        if $i1 <= 0 goto label39;
+
+        $i1 = r0.<com.cauly.android.ad.AdView: int reloadInterval>;
+
+        if $i1 > 30 goto label39;
+
+        r0.<com.cauly.android.ad.AdView: int reloadInterval> = 30;
+
+        goto label01;
+
+     label39:
+        $i1 = r0.<com.cauly.android.ad.AdView: int reloadInterval>;
+
+        if $i1 <= 30 goto label40;
+
+        $i1 = r0.<com.cauly.android.ad.AdView: int reloadInterval>;
+
+        if $i1 > 60 goto label40;
+
+        r0.<com.cauly.android.ad.AdView: int reloadInterval> = 60;
+
+        goto label01;
+
+     label40:
+        $i1 = r0.<com.cauly.android.ad.AdView: int reloadInterval>;
+
+        if $i1 <= 60 goto label41;
+
+        $i1 = r0.<com.cauly.android.ad.AdView: int reloadInterval>;
+
+        if $i1 > 120 goto label41;
+
+        r0.<com.cauly.android.ad.AdView: int reloadInterval> = 120;
+
+        goto label01;
+
+     label41:
+        r0.<com.cauly.android.ad.AdView: int reloadInterval> = 120;
+
+        goto label01;
+
+     label42:
+        $r14 = r0.<com.cauly.android.ad.AdView: android.net.wifi.WifiManager wm>;
+
+        $r19 = virtualinvoke $r14.<android.net.wifi.WifiManager: android.net.wifi.WifiInfo getConnectionInfo()>();
+
+        r0.<com.cauly.android.ad.AdView: android.net.wifi.WifiInfo wifiInfo> = $r19;
+
+        $r19 = r0.<com.cauly.android.ad.AdView: android.net.wifi.WifiInfo wifiInfo>;
+
+        $r12 = virtualinvoke $r19.<android.net.wifi.WifiInfo: java.lang.String getMacAddress()>();
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String udid> = $r12;
+
+     label43:
+        goto label12;
+
+     label44:
+        $r38 := @caughtexception;
+
+     label45:
+        r0.<com.cauly.android.ad.AdView: java.lang.String udid> = "permission";
+
+     label46:
+        goto label12;
+
+     label47:
+        $r39 := @caughtexception;
+
+        $r17 = r0.<com.cauly.android.ad.AdView: android.net.NetworkInfo$State mobile>;
+
+        $r18 = <android.net.NetworkInfo$State: android.net.NetworkInfo$State CONNECTED>;
+
+        if $r17 == $r18 goto label48;
+
+        $r17 = r0.<com.cauly.android.ad.AdView: android.net.NetworkInfo$State mobile>;
+
+        $r18 = <android.net.NetworkInfo$State: android.net.NetworkInfo$State CONNECTING>;
+
+        if $r17 != $r18 goto label49;
+
+     label48:
+        r0.<com.cauly.android.ad.AdView: java.lang.String udid> = "-";
+
+        goto label23;
+
+     label49:
+        r0.<com.cauly.android.ad.AdView: java.lang.String udid> = "permission";
+
+        goto label23;
+
+     label50:
+        $r12 = r0.<com.cauly.android.ad.AdView: java.lang.String gps>;
+
+        $z0 = virtualinvoke $r12.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("off");
+
+        if $z0 == 0 goto label24;
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String gps> = "";
+
+        goto label24;
+
+     label51:
+        r6 = new java.io.FileReader;
+
+     label52:
+        specialinvoke r6.<java.io.FileReader: void <init>(java.io.File)>(r5);
+
+     label53:
+        r3 = new java.io.BufferedReader;
+
+     label54:
+        specialinvoke r3.<java.io.BufferedReader: void <init>(java.io.Reader)>(r6);
+
+     label55:
+        $r8 = virtualinvoke r3.<java.io.BufferedReader: java.lang.String readLine()>();
+
+        $z0 = virtualinvoke $r8.<java.lang.String: boolean equals(java.lang.Object)>("False");
+
+     label56:
+        if $z0 == 0 goto label62;
+
+        r22 = new java.io.FileWriter;
+
+     label57:
+        specialinvoke r22.<java.io.FileWriter: void <init>(java.io.File)>(r5);
+
+     label58:
+        r23 = new java.io.BufferedWriter;
+
+     label59:
+        specialinvoke r23.<java.io.BufferedWriter: void <init>(java.io.Writer)>(r22);
+
+        virtualinvoke r23.<java.io.BufferedWriter: void write(java.lang.String)>("True");
+
+        virtualinvoke r23.<java.io.BufferedWriter: void close()>();
+
+        virtualinvoke r22.<java.io.FileWriter: void close()>();
+
+     label60:
+        r24 = new com.cauly.android.ad.AdCommon;
+
+     label61:
+        specialinvoke r24.<com.cauly.android.ad.AdCommon: void <init>()>();
+
+        $r12 = r0.<com.cauly.android.ad.AdView: java.lang.String udid>;
+
+        $r27 = r0.<com.cauly.android.ad.AdView: java.lang.String appcode>;
+
+        virtualinvoke r24.<com.cauly.android.ad.AdCommon: void Download_Info(java.lang.String,java.lang.String)>($r12, $r27);
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("Cauly Ads", "DownLoad Check OK!");
+
+     label62:
+        if $r8 != null goto label55;
+
+     label63:
+        virtualinvoke r3.<java.io.BufferedReader: void close()>();
+
+        virtualinvoke r6.<java.io.FileReader: void close()>();
+
+     label64:
+        goto label37;
+
+     label65:
+        $r40 := @caughtexception;
+
+        goto label37;
+
+     label66:
+        r0.<com.cauly.android.ad.AdView: int reloadInterval> = 0;
+
+        return;
+
+     label67:
+        r0.<com.cauly.android.ad.AdView: int reloadInterval> = 0;
+
+        virtualinvoke r0.<com.cauly.android.ad.AdView: void realodAD()>();
+
+     label68:
+        return;
+
+        catch java.lang.Exception from label02 to label03 with label47;
+        catch java.lang.Exception from label03 to label04 with label44;
+        catch java.lang.Exception from label05 to label06 with label44;
+        catch java.lang.Exception from label07 to label08 with label44;
+        catch java.lang.Exception from label09 to label10 with label44;
+        catch java.lang.Exception from label11 to label12 with label44;
+        catch java.lang.Exception from label12 to label13 with label47;
+        catch java.lang.Exception from label14 to label15 with label47;
+        catch java.lang.Exception from label16 to label17 with label47;
+        catch java.lang.Exception from label18 to label19 with label47;
+        catch java.lang.Exception from label20 to label21 with label47;
+        catch java.lang.Exception from label22 to label23 with label47;
+        catch java.lang.Exception from label26 to label27 with label65;
+        catch java.lang.Exception from label28 to label29 with label65;
+        catch java.lang.Exception from label30 to label31 with label65;
+        catch java.lang.Exception from label32 to label33 with label65;
+        catch java.lang.Exception from label34 to label35 with label65;
+        catch java.lang.Exception from label36 to label37 with label65;
+        catch java.lang.Exception from label42 to label43 with label44;
+        catch java.lang.Exception from label45 to label46 with label47;
+        catch java.lang.Exception from label52 to label53 with label65;
+        catch java.lang.Exception from label54 to label56 with label65;
+        catch java.lang.Exception from label57 to label58 with label65;
+        catch java.lang.Exception from label59 to label60 with label65;
+        catch java.lang.Exception from label61 to label62 with label65;
+        catch java.lang.Exception from label63 to label64 with label65;
+    }
+
+    static com.cauly.android.ad.AdLayout access$0()
+    {
+        com.cauly.android.ad.AdLayout r0;
+
+        r0 = <com.cauly.android.ad.AdView: com.cauly.android.ad.AdLayout adLayout>;
+
+        return r0;
+    }
+
+    static com.cauly.android.ad.AdCommon access$1()
+    {
+        com.cauly.android.ad.AdCommon r0;
+
+        r0 = <com.cauly.android.ad.AdView: com.cauly.android.ad.AdCommon adCommon>;
+
+        return r0;
+    }
+
+    static void access$10(com.cauly.android.ad.AdLayout)
+    {
+        com.cauly.android.ad.AdLayout $r0;
+
+        $r0 := @parameter0: com.cauly.android.ad.AdLayout;
+
+        <com.cauly.android.ad.AdView: com.cauly.android.ad.AdLayout adLayout> = $r0;
+
+        return;
+    }
+
+    static android.os.Handler access$11()
+    {
+        android.os.Handler r0;
+
+        r0 = <com.cauly.android.ad.AdView: android.os.Handler threadHandler>;
+
+        return r0;
+    }
+
+    static java.lang.String access$12(com.cauly.android.ad.AdView)
+    {
+        com.cauly.android.ad.AdView $r0;
+        java.lang.String r1;
+
+        $r0 := @parameter0: com.cauly.android.ad.AdView;
+
+        r1 = $r0.<com.cauly.android.ad.AdView: java.lang.String adtype>;
+
+        return r1;
+    }
+
+    static void access$2(com.cauly.android.ad.AdHandler)
+    {
+        com.cauly.android.ad.AdHandler $r0;
+
+        $r0 := @parameter0: com.cauly.android.ad.AdHandler;
+
+        <com.cauly.android.ad.AdView: com.cauly.android.ad.AdHandler adHandler> = $r0;
+
+        return;
+    }
+
+    static com.cauly.android.ad.AdHandler access$3()
+    {
+        com.cauly.android.ad.AdHandler r0;
+
+        r0 = <com.cauly.android.ad.AdView: com.cauly.android.ad.AdHandler adHandler>;
+
+        return r0;
+    }
+
+    static void access$4(com.cauly.android.ad.AdView, java.util.List)
+    {
+        com.cauly.android.ad.AdView $r0;
+        java.util.List $r1;
+
+        $r0 := @parameter0: com.cauly.android.ad.AdView;
+
+        $r1 := @parameter1: java.util.List;
+
+        $r0.<com.cauly.android.ad.AdView: java.util.List messages> = $r1;
+
+        return;
+    }
+
+    static java.util.List access$5(com.cauly.android.ad.AdView)
+    {
+        com.cauly.android.ad.AdView $r0;
+        java.util.List r1;
+
+        $r0 := @parameter0: com.cauly.android.ad.AdView;
+
+        r1 = $r0.<com.cauly.android.ad.AdView: java.util.List messages>;
+
+        return r1;
+    }
+
+    static com.cauly.android.ad.AdData access$6()
+    {
+        com.cauly.android.ad.AdData r0;
+
+        r0 = <com.cauly.android.ad.AdView: com.cauly.android.ad.AdData adData>;
+
+        return r0;
+    }
+
+    static java.lang.String access$7()
+    {
+        java.lang.String r0;
+
+        r0 = <com.cauly.android.ad.AdView: java.lang.String SAVE_PATH>;
+
+        return r0;
+    }
+
+    static android.graphics.Bitmap access$8(java.lang.String, boolean, int) throws java.net.URISyntaxException, org.apache.http.client.ClientProtocolException, java.io.IOException
+    {
+        android.graphics.Bitmap $r1;
+        int $i0;
+        java.lang.String $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $z0 := @parameter1: boolean;
+
+        $i0 := @parameter2: int;
+
+        $r1 = staticinvoke <com.cauly.android.ad.AdView: android.graphics.Bitmap loadImage(java.lang.String,boolean,int)>($r0, 1, 1);
+
+        return $r1;
+    }
+
+    static java.lang.String access$9(com.cauly.android.ad.AdView)
+    {
+        com.cauly.android.ad.AdView $r0;
+        java.lang.String r1;
+
+        $r0 := @parameter0: com.cauly.android.ad.AdView;
+
+        r1 = $r0.<com.cauly.android.ad.AdView: java.lang.String effect>;
+
+        return r1;
+    }
+
+    private boolean checkAttrs()
+    {
+        int $i0;
+        com.cauly.android.ad.AdView r0;
+        java.lang.String $r1;
+        android.net.NetworkInfo$State $r2, $r3;
+        boolean $z0;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        $r1 = r0.<com.cauly.android.ad.AdView: java.lang.String udid>;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>("-");
+
+        if $z0 == 0 goto label03;
+
+        $r1 = <android.os.Build: java.lang.String BRAND>;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>("generic");
+
+        if $z0 == 0 goto label02;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("Cauly Ads", "Emulator!");
+
+     label01:
+        $r1 = r0.<com.cauly.android.ad.AdView: java.lang.String appcode>;
+
+        if $r1 != "" goto label04;
+
+        staticinvoke <com.cauly.android.ad.AdCommon: void alertError(java.lang.String)>("Input your appCode in AdView Layout parameter");
+
+        return 0;
+
+     label02:
+        $r2 = r0.<com.cauly.android.ad.AdView: android.net.NetworkInfo$State mobile>;
+
+        $r3 = <android.net.NetworkInfo$State: android.net.NetworkInfo$State CONNECTED>;
+
+        if $r2 == $r3 goto label01;
+
+        $r2 = <android.net.NetworkInfo$State: android.net.NetworkInfo$State CONNECTING>;
+
+        goto label01;
+
+     label03:
+        $r1 = r0.<com.cauly.android.ad.AdView: java.lang.String udid>;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>("permission");
+
+        if $z0 == 0 goto label01;
+
+        staticinvoke <com.cauly.android.ad.AdCommon: void alertError(java.lang.String)>("Need ACCESS_WIFI_STATE permission or Need ACCESS_NETWORK_STATE permission");
+
+        return 0;
+
+     label04:
+        $r1 = r0.<com.cauly.android.ad.AdView: java.lang.String appcode>;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>("CAULY");
+
+        if $z0 == 0 goto label05;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("Cauly Ads", "default app_code!");
+
+     label05:
+        $i0 = r0.<com.cauly.android.ad.AdView: int reloadInterval>;
+
+        if $i0 != 0 goto label11;
+
+        r0.<com.cauly.android.ad.AdView: boolean isReload> = 0;
+
+     label06:
+        $r1 = r0.<com.cauly.android.ad.AdView: java.lang.String gender>;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("male");
+
+        if $z0 != 0 goto label07;
+
+        $r1 = r0.<com.cauly.android.ad.AdView: java.lang.String gender>;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("female");
+
+        if $z0 != 0 goto label07;
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String gender> = "all";
+
+     label07:
+        $r1 = r0.<com.cauly.android.ad.AdView: java.lang.String age>;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>("10");
+
+        if $z0 != 0 goto label08;
+
+        $r1 = r0.<com.cauly.android.ad.AdView: java.lang.String age>;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>("20");
+
+        if $z0 != 0 goto label08;
+
+        $r1 = r0.<com.cauly.android.ad.AdView: java.lang.String age>;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>("30");
+
+        if $z0 != 0 goto label08;
+
+        $r1 = r0.<com.cauly.android.ad.AdView: java.lang.String age>;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>("40");
+
+        if $z0 != 0 goto label08;
+
+        $r1 = r0.<com.cauly.android.ad.AdView: java.lang.String age>;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>("50");
+
+        if $z0 != 0 goto label08;
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String age> = "all";
+
+     label08:
+        $r1 = r0.<com.cauly.android.ad.AdView: java.lang.String effect>;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>("circle");
+
+        if $z0 != 0 goto label09;
+
+        $r1 = r0.<com.cauly.android.ad.AdView: java.lang.String effect>;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>("half");
+
+        if $z0 != 0 goto label09;
+
+        $r1 = r0.<com.cauly.android.ad.AdView: java.lang.String effect>;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>("bottom_slide");
+
+        if $z0 != 0 goto label09;
+
+        $r1 = r0.<com.cauly.android.ad.AdView: java.lang.String effect>;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>("left_slide");
+
+        if $z0 != 0 goto label09;
+
+        $r1 = r0.<com.cauly.android.ad.AdView: java.lang.String effect>;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>("top_slide");
+
+        if $z0 != 0 goto label09;
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String effect> = "default";
+
+     label09:
+        $r1 = r0.<com.cauly.android.ad.AdView: java.lang.String allowcall>;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("yes");
+
+        if $z0 != 0 goto label10;
+
+        $r1 = r0.<com.cauly.android.ad.AdView: java.lang.String allowcall>;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("no");
+
+        if $z0 != 0 goto label10;
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String allowcall> = "yes";
+
+     label10:
+        return 1;
+
+     label11:
+        $i0 = r0.<com.cauly.android.ad.AdView: int reloadInterval>;
+
+        if $i0 >= 30 goto label12;
+
+        staticinvoke <com.cauly.android.ad.AdCommon: void alertError(java.lang.String)>("Reload Inteval must be lager than 30 sec");
+
+        return 0;
+
+     label12:
+        $i0 = r0.<com.cauly.android.ad.AdView: int reloadInterval>;
+
+        if $i0 <= 120 goto label13;
+
+        staticinvoke <com.cauly.android.ad.AdCommon: void alertError(java.lang.String)>("Reload Inteval must be smaller than 120 sec");
+
+        return 0;
+
+     label13:
+        $i0 = r0.<com.cauly.android.ad.AdView: int reloadInterval>;
+
+        $i0 = $i0 * 1000;
+
+        r0.<com.cauly.android.ad.AdView: int reloadInterval> = $i0;
+
+        r0.<com.cauly.android.ad.AdView: boolean isReload> = 1;
+
+        goto label06;
+    }
+
+    private static android.graphics.Bitmap loadImage(java.lang.String, boolean, int) throws java.net.URISyntaxException, org.apache.http.client.ClientProtocolException, java.io.IOException
+    {
+        org.apache.http.impl.client.DefaultHttpClient r3, $r31;
+        byte[] $r19;
+        java.io.BufferedInputStream r16, $r36;
+        org.apache.http.params.BasicHttpParams r2, $r30;
+        java.net.URL r13, $r35;
+        byte $b1;
+        boolean z0;
+        org.apache.http.util.ByteArrayBuffer r17, $r37;
+        org.apache.http.HttpEntity $r5;
+        org.apache.http.client.methods.HttpGet r1, $r29;
+        java.lang.StringBuilder r11, $r33;
+        org.apache.http.entity.BufferedHttpEntity r6, $r32;
+        java.lang.Throwable r20, r21, r22, r23, r24, r25, r26, r27, r28;
+        java.net.URLConnection $r14;
+        int i0;
+        java.lang.String r0, $r9, $r12;
+        java.io.FileOutputStream r18, $r38;
+        java.io.File r10, $r34;
+        android.graphics.Bitmap $r8;
+        org.apache.http.HttpResponse $r4;
+        java.io.InputStream $r7, $r15;
+
+        r0 := @parameter0: java.lang.String;
+
+        z0 := @parameter1: boolean;
+
+        i0 := @parameter2: int;
+
+        if r0 == null goto label55;
+
+     label01:
+        $r29 = new org.apache.http.client.methods.HttpGet;
+
+     label02:
+        r1 = $r29;
+
+     label03:
+        specialinvoke $r29.<org.apache.http.client.methods.HttpGet: void <init>(java.lang.String)>(r0);
+
+     label04:
+        $r30 = new org.apache.http.params.BasicHttpParams;
+
+     label05:
+        r2 = $r30;
+
+     label06:
+        specialinvoke $r30.<org.apache.http.params.BasicHttpParams: void <init>()>();
+
+        i0 = <com.cauly.android.ad.AdCommon: int AD_SERVER_CONNECT_TIMEOUT>;
+
+        staticinvoke <org.apache.http.params.HttpConnectionParams: void setConnectionTimeout(org.apache.http.params.HttpParams,int)>(r2, i0);
+
+        i0 = <com.cauly.android.ad.AdCommon: int AD_SERVER_READ_TIMEOUT>;
+
+        staticinvoke <org.apache.http.params.HttpConnectionParams: void setSoTimeout(org.apache.http.params.HttpParams,int)>(r2, i0);
+
+        $r31 = new org.apache.http.impl.client.DefaultHttpClient;
+
+     label07:
+        r3 = $r31;
+
+     label08:
+        specialinvoke $r31.<org.apache.http.impl.client.DefaultHttpClient: void <init>(org.apache.http.params.HttpParams)>(r2);
+
+        $r4 = interfaceinvoke r3.<org.apache.http.client.HttpClient: org.apache.http.HttpResponse execute(org.apache.http.client.methods.HttpUriRequest)>(r1);
+
+        $r5 = interfaceinvoke $r4.<org.apache.http.HttpResponse: org.apache.http.HttpEntity getEntity()>();
+
+        $r32 = new org.apache.http.entity.BufferedHttpEntity;
+
+     label09:
+        r6 = $r32;
+
+     label10:
+        specialinvoke $r32.<org.apache.http.entity.BufferedHttpEntity: void <init>(org.apache.http.HttpEntity)>($r5);
+
+        $r7 = virtualinvoke r6.<org.apache.http.entity.BufferedHttpEntity: java.io.InputStream getContent()>();
+
+     label11:
+        $r8 = staticinvoke <android.graphics.BitmapFactory: android.graphics.Bitmap decodeStream(java.io.InputStream)>($r7);
+
+     label12:
+        i0 = virtualinvoke r0.<java.lang.String: int lastIndexOf(java.lang.String)>("/");
+
+     label13:
+        i0 = i0 + 1;
+
+     label14:
+        $r9 = virtualinvoke r0.<java.lang.String: java.lang.String substring(int)>(i0);
+
+        $r34 = new java.io.File;
+
+     label15:
+        r10 = $r34;
+
+     label16:
+        $r33 = new java.lang.StringBuilder;
+
+     label17:
+        r11 = $r33;
+
+     label18:
+        $r12 = <com.cauly.android.ad.AdView: java.lang.String SAVE_PATH>;
+
+        $r12 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r12);
+
+        specialinvoke $r33.<java.lang.StringBuilder: void <init>(java.lang.String)>($r12);
+
+        r11 = virtualinvoke r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r9);
+
+        $r9 = virtualinvoke r11.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r34.<java.io.File: void <init>(java.lang.String)>($r9);
+
+        $r35 = new java.net.URL;
+
+     label19:
+        r13 = $r35;
+
+     label20:
+        specialinvoke $r35.<java.net.URL: void <init>(java.lang.String)>(r0);
+
+        $r14 = virtualinvoke r13.<java.net.URL: java.net.URLConnection openConnection()>();
+
+        $r15 = virtualinvoke $r14.<java.net.URLConnection: java.io.InputStream getInputStream()>();
+
+     label21:
+        $r36 = new java.io.BufferedInputStream;
+
+     label22:
+        r16 = $r36;
+
+     label23:
+        specialinvoke $r36.<java.io.BufferedInputStream: void <init>(java.io.InputStream)>($r15);
+
+        $r37 = new org.apache.http.util.ByteArrayBuffer;
+
+     label24:
+        r17 = $r37;
+
+     label25:
+        specialinvoke $r37.<org.apache.http.util.ByteArrayBuffer: void <init>(int)>(1024);
+
+     label26:
+        i0 = virtualinvoke r16.<java.io.BufferedInputStream: int read()>();
+
+     label27:
+        if i0 != -1 goto label34;
+
+     label28:
+        $r38 = new java.io.FileOutputStream;
+
+     label29:
+        r18 = $r38;
+
+     label30:
+        specialinvoke $r38.<java.io.FileOutputStream: void <init>(java.io.File)>(r10);
+
+        $r19 = virtualinvoke r17.<org.apache.http.util.ByteArrayBuffer: byte[] toByteArray()>();
+
+        virtualinvoke r18.<java.io.FileOutputStream: void write(byte[])>($r19);
+
+        virtualinvoke r18.<java.io.FileOutputStream: void close()>();
+
+     label31:
+        if $r15 == null goto label48;
+
+     label32:
+        virtualinvoke $r15.<java.io.InputStream: void close()>();
+
+     label33:
+        return $r8;
+
+     label34:
+        $b1 = (byte) i0;
+
+        i0 = (int) $b1;
+
+     label35:
+        virtualinvoke r17.<org.apache.http.util.ByteArrayBuffer: void append(int)>(i0);
+
+     label36:
+        goto label26;
+
+     label37:
+        r20 := @caughtexception;
+
+        $r7 = $r15;
+
+     label38:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("Cauly Ads", "Timeout on getting images.", null);
+
+     label39:
+        if $r7 == null goto label54;
+
+     label40:
+        virtualinvoke $r7.<java.io.InputStream: void close()>();
+
+     label41:
+        return $r8;
+
+     label42:
+        r21 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("Cauly Ads", "Socket Exception", r21);
+
+        return $r8;
+
+     label43:
+        if $r7 == null goto label45;
+
+     label44:
+        virtualinvoke $r7.<java.io.InputStream: void close()>();
+
+     label45:
+        throw r24;
+
+     label46:
+        r22 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("Cauly Ads", "Socket Exception", r22);
+
+        goto label45;
+
+     label47:
+        r23 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("Cauly Ads", "Socket Exception", r23);
+
+     label48:
+        return $r8;
+
+     label49:
+        r24 := @caughtexception;
+
+        goto label43;
+
+     label50:
+        r25 := @caughtexception;
+
+        $r8 = null;
+
+        $r7 = null;
+
+        goto label38;
+
+     label51:
+        r26 := @caughtexception;
+
+        $r8 = null;
+
+        $r7 = null;
+
+        goto label38;
+
+     label52:
+        r27 := @caughtexception;
+
+        $r8 = null;
+
+        goto label38;
+
+     label53:
+        r28 := @caughtexception;
+
+        goto label38;
+
+     label54:
+        return $r8;
+
+     label55:
+        return null;
+
+        catch java.lang.Throwable from label01 to label02 with label50;
+        catch java.lang.Throwable from label03 to label04 with label50;
+        catch java.lang.Throwable from label04 to label05 with label51;
+        catch java.lang.Throwable from label06 to label07 with label51;
+        catch java.lang.Throwable from label08 to label09 with label51;
+        catch java.lang.Throwable from label10 to label11 with label51;
+        catch java.lang.Throwable from label11 to label12 with label52;
+        catch java.lang.Throwable from label12 to label13 with label53;
+        catch java.lang.Throwable from label14 to label15 with label53;
+        catch java.lang.Throwable from label16 to label17 with label53;
+        catch java.lang.Throwable from label18 to label19 with label53;
+        catch java.lang.Throwable from label20 to label21 with label53;
+        catch java.lang.Throwable from label21 to label22 with label37;
+        catch java.lang.Throwable from label23 to label24 with label37;
+        catch java.lang.Throwable from label25 to label27 with label37;
+        catch java.lang.Throwable from label28 to label29 with label37;
+        catch java.lang.Throwable from label30 to label31 with label37;
+        catch java.io.IOException from label32 to label33 with label47;
+        catch java.lang.Throwable from label35 to label36 with label37;
+        catch java.lang.Throwable from label38 to label39 with label49;
+        catch java.io.IOException from label40 to label41 with label42;
+        catch java.io.IOException from label44 to label45 with label46;
+    }
+
+    private void startReloadTimer()
+    {
+        java.lang.Throwable $r3;
+        com.cauly.android.ad.AdView$2 $r1;
+        java.util.Timer $r2;
+        long $l1, $l2;
+        int $i0;
+        com.cauly.android.ad.AdView r0;
+        boolean $z0;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        entermonitor r0;
+
+     label1:
+        $z0 = r0.<com.cauly.android.ad.AdView: boolean isReload>;
+
+        if $z0 == 0 goto label5;
+
+        $i0 = r0.<com.cauly.android.ad.AdView: int reloadInterval>;
+
+        if $i0 <= 0 goto label5;
+
+        $r2 = <com.cauly.android.ad.AdView: java.util.Timer reloadTimer>;
+
+        if $r2 == null goto label2;
+
+        $r2 = <com.cauly.android.ad.AdView: java.util.Timer reloadTimer>;
+
+        virtualinvoke $r2.<java.util.Timer: void cancel()>();
+
+        <com.cauly.android.ad.AdView: java.util.Timer reloadTimer> = null;
+
+     label2:
+        $r2 = <com.cauly.android.ad.AdView: java.util.Timer reloadTimer>;
+
+        if $r2 != null goto label3;
+
+        $r2 = new java.util.Timer;
+
+        specialinvoke $r2.<java.util.Timer: void <init>()>();
+
+        <com.cauly.android.ad.AdView: java.util.Timer reloadTimer> = $r2;
+
+        $r2 = <com.cauly.android.ad.AdView: java.util.Timer reloadTimer>;
+
+        $r1 = new com.cauly.android.ad.AdView$2;
+
+        specialinvoke $r1.<com.cauly.android.ad.AdView$2: void <init>(com.cauly.android.ad.AdView)>(r0);
+
+        $i0 = r0.<com.cauly.android.ad.AdView: int reloadInterval>;
+
+        $l1 = (long) $i0;
+
+        $i0 = r0.<com.cauly.android.ad.AdView: int reloadInterval>;
+
+        $l2 = (long) $i0;
+
+        virtualinvoke $r2.<java.util.Timer: void schedule(java.util.TimerTask,long,long)>($r1, $l1, $l2);
+
+     label3:
+        exitmonitor r0;
+
+     label4:
+        return;
+
+     label5:
+        $z0 = r0.<com.cauly.android.ad.AdView: boolean isReload>;
+
+        if $z0 == 0 goto label6;
+
+        $i0 = r0.<com.cauly.android.ad.AdView: int reloadInterval>;
+
+        if $i0 != 0 goto label3;
+
+     label6:
+        $r2 = <com.cauly.android.ad.AdView: java.util.Timer reloadTimer>;
+
+        if $r2 == null goto label3;
+
+        $r2 = <com.cauly.android.ad.AdView: java.util.Timer reloadTimer>;
+
+        virtualinvoke $r2.<java.util.Timer: void cancel()>();
+
+        <com.cauly.android.ad.AdView: java.util.Timer reloadTimer> = null;
+
+        goto label3;
+
+     label7:
+        $r3 := @caughtexception;
+
+        exitmonitor r0;
+
+     label8:
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label4 with label7;
+        catch java.lang.Throwable from label5 to label8 with label7;
+    }
+
+    public java.lang.String getAction()
+    {
+        com.cauly.android.ad.AdView r0;
+        java.lang.String r1;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        r1 = r0.<com.cauly.android.ad.AdView: java.lang.String action>;
+
+        return r1;
+    }
+
+    public java.lang.String getAdtype()
+    {
+        com.cauly.android.ad.AdView r0;
+        java.lang.String r1;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        r1 = r0.<com.cauly.android.ad.AdView: java.lang.String adtype>;
+
+        return r1;
+    }
+
+    public java.lang.String getAge()
+    {
+        com.cauly.android.ad.AdView r0;
+        java.lang.String r1;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        r1 = r0.<com.cauly.android.ad.AdView: java.lang.String age>;
+
+        return r1;
+    }
+
+    public java.lang.String getAllowcall()
+    {
+        com.cauly.android.ad.AdView r0;
+        java.lang.String r1;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        r1 = r0.<com.cauly.android.ad.AdView: java.lang.String allowcall>;
+
+        return r1;
+    }
+
+    public java.lang.String getAppcode()
+    {
+        com.cauly.android.ad.AdView r0;
+        java.lang.String r1;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        r1 = r0.<com.cauly.android.ad.AdView: java.lang.String appcode>;
+
+        return r1;
+    }
+
+    public java.lang.String getEffect()
+    {
+        com.cauly.android.ad.AdView r0;
+        java.lang.String r1;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        r1 = r0.<com.cauly.android.ad.AdView: java.lang.String effect>;
+
+        return r1;
+    }
+
+    public java.lang.String getGender()
+    {
+        com.cauly.android.ad.AdView r0;
+        java.lang.String r1;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        r1 = r0.<com.cauly.android.ad.AdView: java.lang.String gender>;
+
+        return r1;
+    }
+
+    public java.lang.String getGps()
+    {
+        com.cauly.android.ad.AdView r0;
+        java.lang.String r1;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        r1 = r0.<com.cauly.android.ad.AdView: java.lang.String gps>;
+
+        return r1;
+    }
+
+    public int getReloadInterval()
+    {
+        int i0;
+        com.cauly.android.ad.AdView r0;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        i0 = r0.<com.cauly.android.ad.AdView: int reloadInterval>;
+
+        return i0;
+    }
+
+    public java.lang.String getUdid()
+    {
+        com.cauly.android.ad.AdView r0;
+        java.lang.String r1;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        r1 = r0.<com.cauly.android.ad.AdView: java.lang.String udid>;
+
+        return r1;
+    }
+
+    public java.lang.String getVersion()
+    {
+        com.cauly.android.ad.AdView r0;
+        java.lang.String r1;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        r1 = r0.<com.cauly.android.ad.AdView: java.lang.String version>;
+
+        return r1;
+    }
+
+    public void onLocationChanged(android.location.Location)
+    {
+        com.cauly.android.ad.AdView r0;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r3;
+        android.location.Location $r1;
+        double $d0;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        $r1 := @parameter0: android.location.Location;
+
+        if $r1 == null goto label1;
+
+        $d0 = virtualinvoke $r1.<android.location.Location: double getLatitude()>();
+
+        <com.cauly.android.ad.AdView: double lat> = $d0;
+
+        $d0 = virtualinvoke $r1.<android.location.Location: double getLongitude()>();
+
+        <com.cauly.android.ad.AdView: double lng> = $d0;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $d0 = <com.cauly.android.ad.AdView: double lat>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(double)>($d0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(",");
+
+        $d0 = <com.cauly.android.ad.AdView: double lng>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(double)>($d0);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String gps> = $r3;
+
+     label1:
+        return;
+    }
+
+    public void onProviderDisabled(java.lang.String)
+    {
+        com.cauly.android.ad.AdView r0;
+        java.lang.String $r1;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        $r1 := @parameter0: java.lang.String;
+
+        return;
+    }
+
+    public void onProviderEnabled(java.lang.String)
+    {
+        com.cauly.android.ad.AdView r0;
+        java.lang.String $r1;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        $r1 := @parameter0: java.lang.String;
+
+        return;
+    }
+
+    public void onStatusChanged(java.lang.String, int, android.os.Bundle)
+    {
+        android.os.Bundle $r2;
+        int $i0;
+        com.cauly.android.ad.AdView r0;
+        java.lang.String $r1;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $i0 := @parameter1: int;
+
+        $r2 := @parameter2: android.os.Bundle;
+
+        return;
+    }
+
+    public void onWindowFocusChanged(boolean)
+    {
+        int $i0;
+        com.cauly.android.ad.AdView r0;
+        boolean $z0;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        $z0 := @parameter0: boolean;
+
+        $i0 = r0.<com.cauly.android.ad.AdView: int reloadInterval>;
+
+        if $i0 <= 0 goto label1;
+
+        r0.<com.cauly.android.ad.AdView: boolean isReload> = $z0;
+
+     label1:
+        specialinvoke r0.<com.cauly.android.ad.AdView: void startReloadTimer()>();
+
+        return;
+    }
+
+    public void realodAD()
+    {
+        int $i0;
+        com.cauly.android.ad.AdView r0;
+        com.cauly.android.ad.AdView$1 $r1;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        $i0 = specialinvoke r0.<android.widget.RelativeLayout: int getVisibility()>();
+
+        if $i0 != 0 goto label1;
+
+        $r1 = new com.cauly.android.ad.AdView$1;
+
+        specialinvoke $r1.<com.cauly.android.ad.AdView$1: void <init>(com.cauly.android.ad.AdView)>(r0);
+
+        virtualinvoke $r1.<com.cauly.android.ad.AdView$1: void start()>();
+
+     label1:
+        return;
+    }
+
+    public void setAction(java.lang.String)
+    {
+        com.cauly.android.ad.AdView r0;
+        java.lang.String $r1;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String action> = $r1;
+
+        return;
+    }
+
+    public void setAdtype(java.lang.String)
+    {
+        com.cauly.android.ad.AdView r0;
+        java.lang.String $r1;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String adtype> = $r1;
+
+        return;
+    }
+
+    public void setAge(java.lang.String)
+    {
+        com.cauly.android.ad.AdView r0;
+        java.lang.String $r1;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String age> = $r1;
+
+        return;
+    }
+
+    public void setAllowcall(java.lang.String)
+    {
+        com.cauly.android.ad.AdView r0;
+        java.lang.String $r1;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String allowcall> = $r1;
+
+        return;
+    }
+
+    public void setAppcode(java.lang.String)
+    {
+        com.cauly.android.ad.AdView r0;
+        java.lang.String $r1;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String appcode> = $r1;
+
+        return;
+    }
+
+    public void setEffect(java.lang.String)
+    {
+        com.cauly.android.ad.AdView r0;
+        java.lang.String $r1;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String effect> = $r1;
+
+        return;
+    }
+
+    public void setGender(java.lang.String)
+    {
+        com.cauly.android.ad.AdView r0;
+        java.lang.String $r1;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String gender> = $r1;
+
+        return;
+    }
+
+    public void setGps(java.lang.String)
+    {
+        com.cauly.android.ad.AdView r0;
+        java.lang.String $r1;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String gps> = $r1;
+
+        return;
+    }
+
+    public void setReloadInterval(int)
+    {
+        int $i0;
+        com.cauly.android.ad.AdView r0;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        $i0 := @parameter0: int;
+
+        r0.<com.cauly.android.ad.AdView: int reloadInterval> = $i0;
+
+        return;
+    }
+
+    public void setUdid(java.lang.String)
+    {
+        com.cauly.android.ad.AdView r0;
+        java.lang.String $r1;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String udid> = $r1;
+
+        return;
+    }
+
+    public void setVersion(java.lang.String)
+    {
+        com.cauly.android.ad.AdView r0;
+        java.lang.String $r1;
+
+        r0 := @this: com.cauly.android.ad.AdView;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r0.<com.cauly.android.ad.AdView: java.lang.String version> = $r1;
+
+        return;
+    }
+}

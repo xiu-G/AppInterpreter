@@ -39,8 +39,6 @@ public class Main {
                 Configs.apkPath = args[++i];
             }else if("-android-jars".equals(s)){
                 Configs.platformPath = args[++i];
-            }else if("-dex-dir".equals(s)){
-                Configs.dexPath = args[++i];
             }else if("-dot-path".equals(s)){
                 Configs.dotPath = args[++i];
             }else if("-callback-path".equals(s)){
@@ -59,7 +57,7 @@ public class Main {
         config.setImplicitFlowMode(ImplicitFlowMode.AllImplicitFlows);
         config.setEnableReflection(true);
         config.setWriteOutputFiles(true);
-        Options.v().set_output_dir(Configs.dexPath);
+        // Options.v().set_output_dir(Configs.dexPath);
         SetupApplication analyzer = new SetupApplication(config);
         analyzer.setCallbackFile(Configs.callBackFile);
         analyzer.constructCallgraph();

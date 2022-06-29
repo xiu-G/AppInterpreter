@@ -1,0 +1,458 @@
+public class net.adlayout.ad.util.GetDeviceInfo extends java.lang.Object
+{
+
+    public void <init>()
+    {
+        net.adlayout.ad.util.GetDeviceInfo r0;
+
+        r0 := @this: net.adlayout.ad.util.GetDeviceInfo;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    private static android.location.Location getLocation(android.content.Context)
+    {
+        android.content.Context $r0;
+        java.lang.Object $r2;
+        java.lang.String $r5;
+        android.location.Location $r4;
+        android.location.LocationManager r3;
+        java.lang.Exception r1;
+        boolean $z0;
+
+        $r0 := @parameter0: android.content.Context;
+
+     label01:
+        $r2 = virtualinvoke $r0.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("location");
+
+        r3 = (android.location.LocationManager) $r2;
+
+        $z0 = staticinvoke <net.adlayout.ad.util.CheckPermission: boolean checkPermission(android.content.Context,java.lang.String)>($r0, "android.permission.ACCESS_FINE_LOCATION");
+
+     label02:
+        if $z0 == 0 goto label05;
+
+     label03:
+        $r4 = virtualinvoke r3.<android.location.LocationManager: android.location.Location getLastKnownLocation(java.lang.String)>("gps");
+
+     label04:
+        if $r4 == null goto label05;
+
+        return $r4;
+
+     label05:
+        $z0 = staticinvoke <net.adlayout.ad.util.CheckPermission: boolean checkPermission(android.content.Context,java.lang.String)>($r0, "android.permission.ACCESS_COARSE_LOCATION");
+
+     label06:
+        if $z0 == 0 goto label09;
+
+     label07:
+        $r4 = virtualinvoke r3.<android.location.LocationManager: android.location.Location getLastKnownLocation(java.lang.String)>("network");
+
+     label08:
+        if $r4 != null goto label12;
+
+     label09:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdLayout", "Can\'t get location from GPS or Cell-id, lack ACCESS_FINE_LOCATION or ACCESS_COARSE_LOCATION permission.");
+
+     label10:
+        return null;
+
+     label11:
+        r1 := @caughtexception;
+
+        $r5 = virtualinvoke r1.<java.lang.Exception: java.lang.String getMessage()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("AdLayout", $r5);
+
+        return null;
+
+     label12:
+        return $r4;
+
+        catch java.lang.Exception from label01 to label02 with label11;
+        catch java.lang.Exception from label03 to label04 with label11;
+        catch java.lang.Exception from label05 to label06 with label11;
+        catch java.lang.Exception from label07 to label08 with label11;
+        catch java.lang.Exception from label09 to label10 with label11;
+    }
+
+    public static net.adlayout.ad.manager.DeviceInfo initDeviceInfo(android.content.Context, java.lang.String)
+    {
+        android.content.pm.PackageManager $r13;
+        android.net.wifi.WifiInfo $r12;
+        android.view.WindowManager r20;
+        java.util.Locale $r17;
+        android.view.Display $r21;
+        java.lang.SecurityException $r29;
+        boolean $z0;
+        java.util.TimeZone $r19;
+        android.util.DisplayMetrics r3, $r27;
+        java.lang.Exception r4, r5, r6;
+        java.lang.StringBuilder $r22, $r28;
+        android.location.Location $r23;
+        java.lang.Throwable r7, r24, r25;
+        android.content.Context $r0;
+        android.content.pm.PackageInfo $r14;
+        net.adlayout.ad.manager.DeviceInfo r2, $r26;
+        java.util.Calendar $r18;
+        android.telephony.TelephonyManager r9;
+        int i0, $i1;
+        java.lang.String $r1, $r10;
+        double $d0;
+        android.net.wifi.WifiManager r11;
+        android.content.res.Configuration $r16;
+        java.lang.Object $r8;
+        android.content.res.Resources $r15;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r26 = new net.adlayout.ad.manager.DeviceInfo;
+
+        r2 = $r26;
+
+        specialinvoke $r26.<net.adlayout.ad.manager.DeviceInfo: void <init>()>();
+
+     label01:
+        $r8 = virtualinvoke $r0.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("phone");
+
+        r9 = (android.telephony.TelephonyManager) $r8;
+
+     label02:
+        if r9 != null goto label05;
+
+     label03:
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>("AdLayout", "AdLayout can\'t find IMEI.");
+
+     label04:
+        return r2;
+
+     label05:
+        virtualinvoke r2.<net.adlayout.ad.manager.DeviceInfo: void setVersion(java.lang.String)>("5");
+
+     label06:
+        $r1 = null;
+
+     label07:
+        $r10 = virtualinvoke r9.<android.telephony.TelephonyManager: java.lang.String getDeviceId()>();
+
+     label08:
+        $r1 = $r10;
+
+     label09:
+        if $r1 != null goto label14;
+
+     label10:
+        $r8 = virtualinvoke $r0.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("wifi");
+
+     label11:
+        r11 = (android.net.wifi.WifiManager) $r8;
+
+     label12:
+        $r12 = virtualinvoke r11.<android.net.wifi.WifiManager: android.net.wifi.WifiInfo getConnectionInfo()>();
+
+        $r10 = virtualinvoke $r12.<android.net.wifi.WifiInfo: java.lang.String getMacAddress()>();
+
+     label13:
+        $r1 = $r10;
+
+     label14:
+        if $r1 == null goto label17;
+
+     label15:
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>("");
+
+     label16:
+        if $z0 == 0 goto label56;
+
+     label17:
+        virtualinvoke r2.<net.adlayout.ad.manager.DeviceInfo: void setDeviceId(java.lang.String)>("000000000000000");
+
+     label18:
+        $r1 = virtualinvoke $r0.<android.content.Context: java.lang.String getPackageName()>();
+
+        virtualinvoke r2.<net.adlayout.ad.manager.DeviceInfo: void setPackageName(java.lang.String)>($r1);
+
+     label19:
+        $r13 = virtualinvoke $r0.<android.content.Context: android.content.pm.PackageManager getPackageManager()>();
+
+        $r1 = virtualinvoke $r0.<android.content.Context: java.lang.String getPackageName()>();
+
+        $r14 = virtualinvoke $r13.<android.content.pm.PackageManager: android.content.pm.PackageInfo getPackageInfo(java.lang.String,int)>($r1, 0);
+
+     label20:
+        $r1 = $r14.<android.content.pm.PackageInfo: java.lang.String versionName>;
+
+     label21:
+        virtualinvoke r2.<net.adlayout.ad.manager.DeviceInfo: void setAppVersion(java.lang.String)>($r1);
+
+     label22:
+        $r1 = <android.os.Build$VERSION: java.lang.String RELEASE>;
+
+     label23:
+        virtualinvoke r2.<net.adlayout.ad.manager.DeviceInfo: void setOsVersion(java.lang.String)>($r1);
+
+     label24:
+        $r1 = <android.os.Build: java.lang.String MODEL>;
+
+     label25:
+        virtualinvoke r2.<net.adlayout.ad.manager.DeviceInfo: void setDeviceModel(java.lang.String)>($r1);
+
+        $r15 = virtualinvoke $r0.<android.content.Context: android.content.res.Resources getResources()>();
+
+        $r16 = virtualinvoke $r15.<android.content.res.Resources: android.content.res.Configuration getConfiguration()>();
+
+     label26:
+        if $r16 == null goto label62;
+
+     label27:
+        $r17 = $r16.<android.content.res.Configuration: java.util.Locale locale>;
+
+     label28:
+        if $r17 == null goto label62;
+
+     label29:
+        $r17 = $r16.<android.content.res.Configuration: java.util.Locale locale>;
+
+        $r1 = virtualinvoke $r17.<java.util.Locale: java.lang.String getLanguage()>();
+
+     label30:
+        $r10 = $r1;
+
+        if $r1 == null goto label33;
+
+     label31:
+        i0 = virtualinvoke $r1.<java.lang.String: int length()>();
+
+     label32:
+        if i0 != 0 goto label34;
+
+     label33:
+        $r10 = "en";
+
+     label34:
+        virtualinvoke r2.<net.adlayout.ad.manager.DeviceInfo: void setLanguage(java.lang.String)>($r10);
+
+        $r17 = $r16.<android.content.res.Configuration: java.util.Locale locale>;
+
+        $r18 = staticinvoke <java.util.Calendar: java.util.Calendar getInstance(java.util.Locale)>($r17);
+
+     label35:
+        if $r18 == null goto label61;
+
+     label36:
+        $r19 = virtualinvoke $r18.<java.util.Calendar: java.util.TimeZone getTimeZone()>();
+
+        i0 = virtualinvoke $r19.<java.util.TimeZone: int getRawOffset()>();
+
+     label37:
+        i0 = i0 / 3600000;
+
+     label38:
+        $r1 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>(i0);
+
+        virtualinvoke r2.<net.adlayout.ad.manager.DeviceInfo: void setTimezone(java.lang.String)>($r1);
+
+     label39:
+        $r27 = new android.util.DisplayMetrics;
+
+        r3 = $r27;
+
+     label40:
+        specialinvoke $r27.<android.util.DisplayMetrics: void <init>()>();
+
+        $r8 = virtualinvoke $r0.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("window");
+
+        r20 = (android.view.WindowManager) $r8;
+
+        $r21 = interfaceinvoke r20.<android.view.WindowManager: android.view.Display getDefaultDisplay()>();
+
+        virtualinvoke $r21.<android.view.Display: void getMetrics(android.util.DisplayMetrics)>(r3);
+
+        $i1 = r3.<android.util.DisplayMetrics: int widthPixels>;
+
+        i0 = r3.<android.util.DisplayMetrics: int heightPixels>;
+
+     label41:
+        $r28 = new java.lang.StringBuilder;
+
+        $r22 = $r28;
+
+     label42:
+        $r1 = staticinvoke <java.lang.String: java.lang.String valueOf(int)>(i0);
+
+        $r1 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r1);
+
+        specialinvoke $r28.<java.lang.StringBuilder: void <init>(java.lang.String)>($r1);
+
+        $r22 = virtualinvoke $r22.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("*");
+
+        $r1 = staticinvoke <java.lang.String: java.lang.String valueOf(int)>($i1);
+
+        $r22 = virtualinvoke $r22.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r22.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke r2.<net.adlayout.ad.manager.DeviceInfo: void setResolution(java.lang.String)>($r1);
+
+     label43:
+        $r1 = virtualinvoke r9.<android.telephony.TelephonyManager: java.lang.String getNetworkOperatorName()>();
+
+        virtualinvoke r2.<net.adlayout.ad.manager.DeviceInfo: void setCarrier(java.lang.String)>($r1);
+
+     label44:
+        $r23 = staticinvoke <net.adlayout.ad.util.GetDeviceInfo: android.location.Location getLocation(android.content.Context)>($r0);
+
+     label45:
+        if $r23 == null goto label70;
+
+     label46:
+        $d0 = virtualinvoke $r23.<android.location.Location: double getLatitude()>();
+
+        $r1 = staticinvoke <java.lang.Double: java.lang.String toString(double)>($d0);
+
+        virtualinvoke r2.<net.adlayout.ad.manager.DeviceInfo: void setLat(java.lang.String)>($r1);
+
+        $d0 = virtualinvoke $r23.<android.location.Location: double getLongitude()>();
+
+        $r1 = staticinvoke <java.lang.Double: java.lang.String toString(double)>($d0);
+
+        virtualinvoke r2.<net.adlayout.ad.manager.DeviceInfo: void setLng(java.lang.String)>($r1);
+
+     label47:
+        $z0 = staticinvoke <net.adlayout.ad.util.CheckPermission: boolean checkApplication(android.content.Context,java.lang.String)>($r0, "com.android.vending");
+
+        virtualinvoke r2.<net.adlayout.ad.manager.DeviceInfo: void setExistMarket(boolean)>($z0);
+
+     label48:
+        return r2;
+
+     label49:
+        r5 := @caughtexception;
+
+        $r1 = virtualinvoke r5.<java.lang.Exception: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>("AdLayout", $r1);
+
+        return r2;
+
+     label50:
+        r24 := @caughtexception;
+
+     label51:
+        $r29 = (java.lang.SecurityException) r24;
+
+        $r10 = virtualinvoke $r29.<java.lang.SecurityException: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("AdLayout", $r10);
+
+     label52:
+        goto label09;
+
+     label53:
+        r25 := @caughtexception;
+
+     label54:
+        $r29 = (java.lang.SecurityException) r25;
+
+        $r10 = virtualinvoke $r29.<java.lang.SecurityException: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("AdLayout", $r10);
+
+     label55:
+        goto label14;
+
+     label56:
+        virtualinvoke r2.<net.adlayout.ad.manager.DeviceInfo: void setDeviceId(java.lang.String)>($r1);
+
+     label57:
+        goto label18;
+
+     label58:
+        r7 := @caughtexception;
+
+     label59:
+        virtualinvoke r2.<net.adlayout.ad.manager.DeviceInfo: void setAppVersion(java.lang.String)>("unknown");
+
+     label60:
+        goto label22;
+
+     label61:
+        i0 = 8;
+
+        goto label38;
+
+     label62:
+        virtualinvoke r2.<net.adlayout.ad.manager.DeviceInfo: void setLanguage(java.lang.String)>("default");
+
+        virtualinvoke r2.<net.adlayout.ad.manager.DeviceInfo: void setTimezone(java.lang.String)>("8");
+
+     label63:
+        goto label39;
+
+     label64:
+        r6 := @caughtexception;
+
+     label65:
+        virtualinvoke r2.<net.adlayout.ad.manager.DeviceInfo: void setResolution(java.lang.String)>("unknown");
+
+     label66:
+        goto label43;
+
+     label67:
+        r4 := @caughtexception;
+
+     label68:
+        virtualinvoke r2.<net.adlayout.ad.manager.DeviceInfo: void setCarrier(java.lang.String)>("unknown");
+
+     label69:
+        goto label44;
+
+     label70:
+        virtualinvoke r2.<net.adlayout.ad.manager.DeviceInfo: void setLat(java.lang.String)>("0");
+
+        virtualinvoke r2.<net.adlayout.ad.manager.DeviceInfo: void setLng(java.lang.String)>("0");
+
+     label71:
+        goto label47;
+
+        catch java.lang.Exception from label01 to label02 with label49;
+        catch java.lang.Exception from label03 to label04 with label49;
+        catch java.lang.Exception from label05 to label06 with label49;
+        catch java.lang.SecurityException from label07 to label08 with label50;
+        catch java.lang.Exception from label07 to label08 with label49;
+        catch java.lang.SecurityException from label10 to label11 with label53;
+        catch java.lang.SecurityException from label12 to label13 with label53;
+        catch java.lang.Exception from label10 to label13 with label49;
+        catch java.lang.Exception from label15 to label16 with label49;
+        catch java.lang.Exception from label17 to label19 with label49;
+        catch android.content.pm.PackageManager$NameNotFoundException from label19 to label20 with label58;
+        catch android.content.pm.PackageManager$NameNotFoundException from label21 to label22 with label58;
+        catch java.lang.Exception from label19 to label22 with label49;
+        catch java.lang.Exception from label23 to label24 with label49;
+        catch java.lang.Exception from label25 to label26 with label49;
+        catch java.lang.Exception from label27 to label28 with label49;
+        catch java.lang.Exception from label29 to label30 with label49;
+        catch java.lang.Exception from label31 to label32 with label49;
+        catch java.lang.Exception from label34 to label35 with label49;
+        catch java.lang.Exception from label36 to label37 with label49;
+        catch java.lang.Exception from label38 to label39 with label49;
+        catch java.lang.Exception from label40 to label41 with label64;
+        catch java.lang.Exception from label42 to label43 with label64;
+        catch java.lang.Exception from label43 to label44 with label67;
+        catch java.lang.Exception from label44 to label45 with label49;
+        catch java.lang.Exception from label46 to label48 with label49;
+        catch java.lang.Exception from label51 to label52 with label49;
+        catch java.lang.Exception from label54 to label55 with label49;
+        catch java.lang.Exception from label56 to label57 with label49;
+        catch java.lang.Exception from label59 to label60 with label49;
+        catch java.lang.Exception from label62 to label63 with label49;
+        catch java.lang.Exception from label65 to label66 with label49;
+        catch java.lang.Exception from label68 to label69 with label49;
+        catch java.lang.Exception from label70 to label71 with label49;
+    }
+}

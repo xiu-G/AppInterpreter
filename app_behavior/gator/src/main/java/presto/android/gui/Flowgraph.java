@@ -1494,7 +1494,7 @@ public class Flowgraph implements MethodNames {
       computeConcreteHandlers(handlers, handlerPrototypes, Collections.singleton(listenerClass));
       regToEventHandlers.putAll(s, handlers);
     } catch(Exception e){
-      System.out.println();
+      // System.out.println();
     }
     Stmt s = callSite != null ? callSite.getO1() : null; //need to change by me
     // Resolve event handlers: first get prototype, and then do virtual dispatch

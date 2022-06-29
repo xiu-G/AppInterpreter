@@ -1,0 +1,296 @@
+public class com.choochee.android.messenger.util.ComposingTimer extends java.lang.Object implements java.lang.Runnable
+{
+    private static final java.lang.String TAG;
+    private static com.choochee.android.messenger.util.ComposingTimer _instance;
+    private boolean isRunning;
+    private int mCountTypedKeys;
+    private long mInterval;
+    private android.os.Handler mPopTimerHandler;
+    private android.os.ResultReceiver receiver;
+
+    static void <clinit>()
+    {
+        <com.choochee.android.messenger.util.ComposingTimer: java.lang.String TAG> = "ComposingTimer";
+
+        <com.choochee.android.messenger.util.ComposingTimer: com.choochee.android.messenger.util.ComposingTimer _instance> = null;
+
+        return;
+    }
+
+    private void <init>()
+    {
+        com.choochee.android.messenger.util.ComposingTimer r0;
+        android.os.Handler $r1;
+
+        r0 := @this: com.choochee.android.messenger.util.ComposingTimer;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<com.choochee.android.messenger.util.ComposingTimer: boolean isRunning> = 0;
+
+        r0.<com.choochee.android.messenger.util.ComposingTimer: long mInterval> = 9223372036854775807L;
+
+        r0.<com.choochee.android.messenger.util.ComposingTimer: int mCountTypedKeys> = 0;
+
+        $r1 = new android.os.Handler;
+
+        specialinvoke $r1.<android.os.Handler: void <init>()>();
+
+        r0.<com.choochee.android.messenger.util.ComposingTimer: android.os.Handler mPopTimerHandler> = $r1;
+
+        r0.<com.choochee.android.messenger.util.ComposingTimer: android.os.ResultReceiver receiver> = null;
+
+        <com.choochee.android.messenger.util.ComposingTimer: com.choochee.android.messenger.util.ComposingTimer _instance> = r0;
+
+        virtualinvoke r0.<com.choochee.android.messenger.util.ComposingTimer: void resetTimer()>();
+
+        return;
+    }
+
+    public static com.choochee.android.messenger.util.ComposingTimer instance()
+    {
+        com.choochee.android.messenger.util.ComposingTimer $r0;
+
+        $r0 = <com.choochee.android.messenger.util.ComposingTimer: com.choochee.android.messenger.util.ComposingTimer _instance>;
+
+        if $r0 != null goto label1;
+
+        $r0 = new com.choochee.android.messenger.util.ComposingTimer;
+
+        specialinvoke $r0.<com.choochee.android.messenger.util.ComposingTimer: void <init>()>();
+
+     label1:
+        $r0 = <com.choochee.android.messenger.util.ComposingTimer: com.choochee.android.messenger.util.ComposingTimer _instance>;
+
+        return $r0;
+    }
+
+    public boolean isRunning()
+    {
+        com.choochee.android.messenger.util.ComposingTimer r0;
+        boolean z0;
+
+        r0 := @this: com.choochee.android.messenger.util.ComposingTimer;
+
+        z0 = r0.<com.choochee.android.messenger.util.ComposingTimer: boolean isRunning>;
+
+        return z0;
+    }
+
+    public void resetTimer()
+    {
+        android.os.Handler $r1;
+        int $i1;
+        long $l0;
+        com.choochee.android.messenger.util.ComposingTimer r0;
+        boolean $z0;
+
+        r0 := @this: com.choochee.android.messenger.util.ComposingTimer;
+
+        $z0 = <android.util.Config: boolean DEBUG>;
+
+        if $z0 == 0 goto label1;
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void i(java.lang.String,java.lang.String)>("ComposingTimer", "resetTimer");
+
+     label1:
+        $z0 = r0.<com.choochee.android.messenger.util.ComposingTimer: boolean isRunning>;
+
+        if $z0 != 0 goto label2;
+
+        $r1 = r0.<com.choochee.android.messenger.util.ComposingTimer: android.os.Handler mPopTimerHandler>;
+
+        $l0 = r0.<com.choochee.android.messenger.util.ComposingTimer: long mInterval>;
+
+        virtualinvoke $r1.<android.os.Handler: boolean postDelayed(java.lang.Runnable,long)>(r0, $l0);
+
+     label2:
+        $i1 = r0.<com.choochee.android.messenger.util.ComposingTimer: int mCountTypedKeys>;
+
+        $i1 = $i1 + 1;
+
+        r0.<com.choochee.android.messenger.util.ComposingTimer: int mCountTypedKeys> = $i1;
+
+        r0.<com.choochee.android.messenger.util.ComposingTimer: boolean isRunning> = 1;
+
+        return;
+    }
+
+    public void run()
+    {
+        android.os.Bundle $r5;
+        long $l1;
+        android.os.Handler $r3;
+        int $i0;
+        java.lang.StringBuilder $r1;
+        com.choochee.android.messenger.util.ComposingTimer r0;
+        java.lang.String $r2;
+        android.os.ResultReceiver $r4;
+        boolean $z0;
+
+        r0 := @this: com.choochee.android.messenger.util.ComposingTimer;
+
+        $z0 = <android.util.Config: boolean DEBUG>;
+
+        if $z0 == 0 goto label1;
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void d(java.lang.String,java.lang.String)>("ComposingTimer", "pop -- check for notification status");
+
+     label1:
+        $i0 = r0.<com.choochee.android.messenger.util.ComposingTimer: int mCountTypedKeys>;
+
+        if $i0 <= 0 goto label5;
+
+        $z0 = <android.util.Config: boolean DEBUG>;
+
+        if $z0 == 0 goto label2;
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void v(java.lang.String,java.lang.String)>("ComposingTimer", "\'continue typing\' here ...");
+
+     label2:
+        r0.<com.choochee.android.messenger.util.ComposingTimer: int mCountTypedKeys> = 0;
+
+     label3:
+        $z0 = virtualinvoke r0.<com.choochee.android.messenger.util.ComposingTimer: boolean isRunning()>();
+
+        if $z0 == 0 goto label7;
+
+        $z0 = <android.util.Config: boolean DEBUG>;
+
+        if $z0 == 0 goto label4;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("sleeping ...");
+
+        $l1 = r0.<com.choochee.android.messenger.util.ComposingTimer: long mInterval>;
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l1);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" msec");
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void v(java.lang.String,java.lang.String)>("ComposingTimer", $r2);
+
+     label4:
+        $r3 = r0.<com.choochee.android.messenger.util.ComposingTimer: android.os.Handler mPopTimerHandler>;
+
+        $l1 = r0.<com.choochee.android.messenger.util.ComposingTimer: long mInterval>;
+
+        virtualinvoke $r3.<android.os.Handler: boolean postDelayed(java.lang.Runnable,long)>(r0, $l1);
+
+        return;
+
+     label5:
+        $z0 = <android.util.Config: boolean DEBUG>;
+
+        if $z0 == 0 goto label6;
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void d(java.lang.String,java.lang.String)>("ComposingTimer", "notify of \'stopped typing\' here ...");
+
+     label6:
+        $r4 = r0.<com.choochee.android.messenger.util.ComposingTimer: android.os.ResultReceiver receiver>;
+
+        $r5 = <android.os.Bundle: android.os.Bundle EMPTY>;
+
+        virtualinvoke $r4.<android.os.ResultReceiver: void send(int,android.os.Bundle)>(38, $r5);
+
+        goto label3;
+
+     label7:
+        $z0 = <android.util.Config: boolean DEBUG>;
+
+        if $z0 == 0 goto label8;
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void d(java.lang.String,java.lang.String)>("ComposingTimer", "thread ending ...");
+
+     label8:
+        return;
+    }
+
+    public void setInterval(long)
+    {
+        long $l0;
+        java.lang.StringBuilder $r1;
+        com.choochee.android.messenger.util.ComposingTimer r0;
+        java.lang.String $r2;
+        boolean $z0;
+
+        r0 := @this: com.choochee.android.messenger.util.ComposingTimer;
+
+        $l0 := @parameter0: long;
+
+        $z0 = <android.util.Config: boolean DEBUG>;
+
+        if $z0 == 0 goto label1;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("setInterval: ");
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void i(java.lang.String,java.lang.String)>("ComposingTimer", $r2);
+
+     label1:
+        r0.<com.choochee.android.messenger.util.ComposingTimer: long mInterval> = $l0;
+
+        return;
+    }
+
+    public void setReceiver(android.os.ResultReceiver)
+    {
+        com.choochee.android.messenger.util.ComposingTimer r0;
+        android.os.ResultReceiver $r1;
+
+        r0 := @this: com.choochee.android.messenger.util.ComposingTimer;
+
+        $r1 := @parameter0: android.os.ResultReceiver;
+
+        r0.<com.choochee.android.messenger.util.ComposingTimer: android.os.ResultReceiver receiver> = $r1;
+
+        return;
+    }
+
+    public void setRunning(boolean)
+    {
+        com.choochee.android.messenger.util.ComposingTimer r0;
+        boolean $z0;
+
+        r0 := @this: com.choochee.android.messenger.util.ComposingTimer;
+
+        $z0 := @parameter0: boolean;
+
+        r0.<com.choochee.android.messenger.util.ComposingTimer: boolean isRunning> = $z0;
+
+        return;
+    }
+
+    public void stopTimer()
+    {
+        com.choochee.android.messenger.util.ComposingTimer r0;
+        boolean $z0;
+
+        r0 := @this: com.choochee.android.messenger.util.ComposingTimer;
+
+        $z0 = <android.util.Config: boolean DEBUG>;
+
+        if $z0 == 0 goto label1;
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void i(java.lang.String,java.lang.String)>("ComposingTimer", "stopTimer");
+
+     label1:
+        virtualinvoke r0.<com.choochee.android.messenger.util.ComposingTimer: void setRunning(boolean)>(0);
+
+        r0.<com.choochee.android.messenger.util.ComposingTimer: long mInterval> = 9223372036854775807L;
+
+        return;
+    }
+}

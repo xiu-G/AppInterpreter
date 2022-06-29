@@ -1,0 +1,994 @@
+public class proguard.classfile.editor.MemberReferenceFixer extends proguard.classfile.util.SimplifiedVisitor implements proguard.classfile.visitor.ClassVisitor, proguard.classfile.constant.visitor.ConstantVisitor, proguard.classfile.visitor.MemberVisitor, proguard.classfile.attribute.visitor.AttributeVisitor, proguard.classfile.attribute.'annotation'.visitor.AnnotationVisitor, proguard.classfile.attribute.'annotation'.visitor.ElementValueVisitor
+{
+    private static final boolean DEBUG;
+    private int constantIndex;
+    private boolean isInterfaceMethod;
+    private final proguard.classfile.editor.StackSizeUpdater stackSizeUpdater;
+    private boolean stackSizesMayHaveChanged;
+
+    public void <init>()
+    {
+        proguard.classfile.editor.MemberReferenceFixer r0;
+        proguard.classfile.editor.StackSizeUpdater $r1;
+
+        r0 := @this: proguard.classfile.editor.MemberReferenceFixer;
+
+        specialinvoke r0.<proguard.classfile.util.SimplifiedVisitor: void <init>()>();
+
+        $r1 = new proguard.classfile.editor.StackSizeUpdater;
+
+        specialinvoke $r1.<proguard.classfile.editor.StackSizeUpdater: void <init>()>();
+
+        r0.<proguard.classfile.editor.MemberReferenceFixer: proguard.classfile.editor.StackSizeUpdater stackSizeUpdater> = $r1;
+
+        return;
+    }
+
+    private void debug(proguard.classfile.Clazz, proguard.classfile.constant.RefConstant, proguard.classfile.Clazz, proguard.classfile.Member)
+    {
+        java.io.PrintStream $r5;
+        proguard.classfile.constant.RefConstant $r2;
+        proguard.classfile.Member $r4;
+        proguard.classfile.Clazz $r1, $r3;
+        java.lang.StringBuffer $r6;
+        proguard.classfile.editor.MemberReferenceFixer r0;
+        java.lang.String $r7;
+
+        r0 := @this: proguard.classfile.editor.MemberReferenceFixer;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.constant.RefConstant;
+
+        $r3 := @parameter2: proguard.classfile.Clazz;
+
+        $r4 := @parameter3: proguard.classfile.Member;
+
+        $r5 = <java.lang.System: java.io.PrintStream out>;
+
+        virtualinvoke $r5.<java.io.PrintStream: void println(java.lang.String)>("MemberReferenceFixer:");
+
+        $r5 = <java.lang.System: java.io.PrintStream out>;
+
+        $r6 = new java.lang.StringBuffer;
+
+        specialinvoke $r6.<java.lang.StringBuffer: void <init>()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("  Class file      = ");
+
+        $r7 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getName()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r7);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        virtualinvoke $r5.<java.io.PrintStream: void println(java.lang.String)>($r7);
+
+        $r5 = <java.lang.System: java.io.PrintStream out>;
+
+        $r6 = new java.lang.StringBuffer;
+
+        specialinvoke $r6.<java.lang.StringBuffer: void <init>()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("  Ref class       = ");
+
+        $r7 = interfaceinvoke $r3.<proguard.classfile.Clazz: java.lang.String getName()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r7);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        virtualinvoke $r5.<java.io.PrintStream: void println(java.lang.String)>($r7);
+
+        $r5 = <java.lang.System: java.io.PrintStream out>;
+
+        $r6 = new java.lang.StringBuffer;
+
+        specialinvoke $r6.<java.lang.StringBuffer: void <init>()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("  Ref member name = ");
+
+        $r7 = virtualinvoke $r2.<proguard.classfile.constant.RefConstant: java.lang.String getName(proguard.classfile.Clazz)>($r1);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r7);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        virtualinvoke $r5.<java.io.PrintStream: void println(java.lang.String)>($r7);
+
+        $r5 = <java.lang.System: java.io.PrintStream out>;
+
+        $r6 = new java.lang.StringBuffer;
+
+        specialinvoke $r6.<java.lang.StringBuffer: void <init>()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("                 -> ");
+
+        $r7 = interfaceinvoke $r4.<proguard.classfile.Member: java.lang.String getName(proguard.classfile.Clazz)>($r3);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r7);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        virtualinvoke $r5.<java.io.PrintStream: void println(java.lang.String)>($r7);
+
+        $r5 = <java.lang.System: java.io.PrintStream out>;
+
+        $r6 = new java.lang.StringBuffer;
+
+        specialinvoke $r6.<java.lang.StringBuffer: void <init>()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("  Ref descriptor  = ");
+
+        $r7 = virtualinvoke $r2.<proguard.classfile.constant.RefConstant: java.lang.String getType(proguard.classfile.Clazz)>($r1);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r7);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        virtualinvoke $r5.<java.io.PrintStream: void println(java.lang.String)>($r7);
+
+        $r5 = <java.lang.System: java.io.PrintStream out>;
+
+        $r6 = new java.lang.StringBuffer;
+
+        specialinvoke $r6.<java.lang.StringBuffer: void <init>()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("                 -> ");
+
+        $r7 = interfaceinvoke $r4.<proguard.classfile.Member: java.lang.String getDescriptor(proguard.classfile.Clazz)>($r3);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r7);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        virtualinvoke $r5.<java.io.PrintStream: void println(java.lang.String)>($r7);
+
+        return;
+    }
+
+    private void debug(proguard.classfile.Clazz, proguard.classfile.constant.StringConstant, proguard.classfile.Clazz, proguard.classfile.Member)
+    {
+        java.io.PrintStream $r5;
+        proguard.classfile.Member $r4;
+        proguard.classfile.Clazz $r1, $r3;
+        java.lang.StringBuffer $r6;
+        proguard.classfile.constant.StringConstant $r2;
+        proguard.classfile.editor.MemberReferenceFixer r0;
+        java.lang.String $r7;
+
+        r0 := @this: proguard.classfile.editor.MemberReferenceFixer;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.constant.StringConstant;
+
+        $r3 := @parameter2: proguard.classfile.Clazz;
+
+        $r4 := @parameter3: proguard.classfile.Member;
+
+        $r5 = <java.lang.System: java.io.PrintStream out>;
+
+        virtualinvoke $r5.<java.io.PrintStream: void println(java.lang.String)>("MemberReferenceFixer:");
+
+        $r5 = <java.lang.System: java.io.PrintStream out>;
+
+        $r6 = new java.lang.StringBuffer;
+
+        specialinvoke $r6.<java.lang.StringBuffer: void <init>()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("  Class file      = ");
+
+        $r7 = interfaceinvoke $r1.<proguard.classfile.Clazz: java.lang.String getName()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r7);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        virtualinvoke $r5.<java.io.PrintStream: void println(java.lang.String)>($r7);
+
+        $r5 = <java.lang.System: java.io.PrintStream out>;
+
+        $r6 = new java.lang.StringBuffer;
+
+        specialinvoke $r6.<java.lang.StringBuffer: void <init>()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("  Ref class       = ");
+
+        $r7 = interfaceinvoke $r3.<proguard.classfile.Clazz: java.lang.String getName()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r7);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        virtualinvoke $r5.<java.io.PrintStream: void println(java.lang.String)>($r7);
+
+        $r5 = <java.lang.System: java.io.PrintStream out>;
+
+        $r6 = new java.lang.StringBuffer;
+
+        specialinvoke $r6.<java.lang.StringBuffer: void <init>()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("  Ref member name = ");
+
+        $r7 = virtualinvoke $r2.<proguard.classfile.constant.StringConstant: java.lang.String getString(proguard.classfile.Clazz)>($r1);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r7);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        virtualinvoke $r5.<java.io.PrintStream: void println(java.lang.String)>($r7);
+
+        $r5 = <java.lang.System: java.io.PrintStream out>;
+
+        $r6 = new java.lang.StringBuffer;
+
+        specialinvoke $r6.<java.lang.StringBuffer: void <init>()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("                 -> ");
+
+        $r7 = interfaceinvoke $r4.<proguard.classfile.Member: java.lang.String getName(proguard.classfile.Clazz)>($r3);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r7);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        virtualinvoke $r5.<java.io.PrintStream: void println(java.lang.String)>($r7);
+
+        return;
+    }
+
+    private void fixElementValue(proguard.classfile.Clazz, proguard.classfile.attribute.'annotation'.Annotation, proguard.classfile.attribute.'annotation'.ElementValue)
+    {
+        proguard.classfile.attribute.'annotation'.Annotation $r1;
+        proguard.classfile.ProgramClass $r9;
+        proguard.classfile.attribute.'annotation'.ElementValue $r2;
+        proguard.classfile.Clazz $r3, $r4;
+        int $i0;
+        proguard.classfile.Method $r5;
+        proguard.classfile.editor.MemberReferenceFixer r0;
+        java.lang.String $r6, $r7;
+        proguard.classfile.editor.ConstantPoolEditor $r8;
+        boolean $z0;
+
+        r0 := @this: proguard.classfile.editor.MemberReferenceFixer;
+
+        $r4 := @parameter0: proguard.classfile.Clazz;
+
+        $r1 := @parameter1: proguard.classfile.attribute.'annotation'.Annotation;
+
+        $r2 := @parameter2: proguard.classfile.attribute.'annotation'.ElementValue;
+
+        $r5 = $r2.<proguard.classfile.attribute.'annotation'.ElementValue: proguard.classfile.Method referencedMethod>;
+
+        if $r5 == null goto label1;
+
+        $r6 = virtualinvoke $r2.<proguard.classfile.attribute.'annotation'.ElementValue: java.lang.String getMethodName(proguard.classfile.Clazz)>($r4);
+
+        $r3 = $r2.<proguard.classfile.attribute.'annotation'.ElementValue: proguard.classfile.Clazz referencedClass>;
+
+        $r7 = interfaceinvoke $r5.<proguard.classfile.Member: java.lang.String getName(proguard.classfile.Clazz)>($r3);
+
+        $z0 = virtualinvoke $r6.<java.lang.String: boolean equals(java.lang.Object)>($r7);
+
+        if $z0 != 0 goto label1;
+
+        $r8 = new proguard.classfile.editor.ConstantPoolEditor;
+
+        $r9 = (proguard.classfile.ProgramClass) $r4;
+
+        specialinvoke $r8.<proguard.classfile.editor.ConstantPoolEditor: void <init>(proguard.classfile.ProgramClass)>($r9);
+
+        $i0 = virtualinvoke $r8.<proguard.classfile.editor.ConstantPoolEditor: int addUtf8Constant(java.lang.String)>($r7);
+
+        $r2.<proguard.classfile.attribute.'annotation'.ElementValue: int u2elementNameIndex> = $i0;
+
+     label1:
+        return;
+    }
+
+    public void visitAnnotation(proguard.classfile.Clazz, proguard.classfile.attribute.'annotation'.Annotation)
+    {
+        proguard.classfile.attribute.'annotation'.Annotation $r2;
+        proguard.classfile.editor.MemberReferenceFixer r0;
+        proguard.classfile.Clazz $r1;
+
+        r0 := @this: proguard.classfile.editor.MemberReferenceFixer;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.'annotation'.Annotation;
+
+        virtualinvoke $r2.<proguard.classfile.attribute.'annotation'.Annotation: void elementValuesAccept(proguard.classfile.Clazz,proguard.classfile.attribute.'annotation'.visitor.ElementValueVisitor)>($r1, r0);
+
+        return;
+    }
+
+    public void visitAnnotationDefaultAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.'annotation'.AnnotationDefaultAttribute)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.Method $r2;
+        proguard.classfile.editor.MemberReferenceFixer r0;
+        proguard.classfile.attribute.'annotation'.AnnotationDefaultAttribute $r3;
+
+        r0 := @this: proguard.classfile.editor.MemberReferenceFixer;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.'annotation'.AnnotationDefaultAttribute;
+
+        virtualinvoke $r3.<proguard.classfile.attribute.'annotation'.AnnotationDefaultAttribute: void defaultValueAccept(proguard.classfile.Clazz,proguard.classfile.attribute.'annotation'.visitor.ElementValueVisitor)>($r1, r0);
+
+        return;
+    }
+
+    public void visitAnnotationElementValue(proguard.classfile.Clazz, proguard.classfile.attribute.'annotation'.Annotation, proguard.classfile.attribute.'annotation'.AnnotationElementValue)
+    {
+        proguard.classfile.attribute.'annotation'.Annotation $r2;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.editor.MemberReferenceFixer r0;
+        proguard.classfile.attribute.'annotation'.AnnotationElementValue $r3;
+
+        r0 := @this: proguard.classfile.editor.MemberReferenceFixer;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.'annotation'.Annotation;
+
+        $r3 := @parameter2: proguard.classfile.attribute.'annotation'.AnnotationElementValue;
+
+        specialinvoke r0.<proguard.classfile.editor.MemberReferenceFixer: void fixElementValue(proguard.classfile.Clazz,proguard.classfile.attribute.'annotation'.Annotation,proguard.classfile.attribute.'annotation'.ElementValue)>($r1, $r2, $r3);
+
+        virtualinvoke $r3.<proguard.classfile.attribute.'annotation'.AnnotationElementValue: void annotationAccept(proguard.classfile.Clazz,proguard.classfile.attribute.'annotation'.visitor.AnnotationVisitor)>($r1, r0);
+
+        return;
+    }
+
+    public void visitAnyAnnotationsAttribute(proguard.classfile.Clazz, proguard.classfile.attribute.'annotation'.AnnotationsAttribute)
+    {
+        proguard.classfile.attribute.'annotation'.AnnotationsAttribute $r2;
+        proguard.classfile.editor.MemberReferenceFixer r0;
+        proguard.classfile.Clazz $r1;
+
+        r0 := @this: proguard.classfile.editor.MemberReferenceFixer;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.'annotation'.AnnotationsAttribute;
+
+        virtualinvoke $r2.<proguard.classfile.attribute.'annotation'.AnnotationsAttribute: void annotationsAccept(proguard.classfile.Clazz,proguard.classfile.attribute.'annotation'.visitor.AnnotationVisitor)>($r1, r0);
+
+        return;
+    }
+
+    public void visitAnyAttribute(proguard.classfile.Clazz, proguard.classfile.attribute.Attribute)
+    {
+        proguard.classfile.editor.MemberReferenceFixer r0;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.Attribute $r2;
+
+        r0 := @this: proguard.classfile.editor.MemberReferenceFixer;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.Attribute;
+
+        return;
+    }
+
+    public void visitAnyConstant(proguard.classfile.Clazz, proguard.classfile.constant.Constant)
+    {
+        proguard.classfile.editor.MemberReferenceFixer r0;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.constant.Constant $r2;
+
+        r0 := @this: proguard.classfile.editor.MemberReferenceFixer;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.constant.Constant;
+
+        return;
+    }
+
+    public void visitAnyParameterAnnotationsAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.'annotation'.ParameterAnnotationsAttribute)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.Method $r2;
+        proguard.classfile.attribute.'annotation'.ParameterAnnotationsAttribute $r3;
+        proguard.classfile.editor.MemberReferenceFixer r0;
+
+        r0 := @this: proguard.classfile.editor.MemberReferenceFixer;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.'annotation'.ParameterAnnotationsAttribute;
+
+        virtualinvoke $r3.<proguard.classfile.attribute.'annotation'.ParameterAnnotationsAttribute: void annotationsAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.'annotation'.visitor.AnnotationVisitor)>($r1, $r2, r0);
+
+        return;
+    }
+
+    public void visitArrayElementValue(proguard.classfile.Clazz, proguard.classfile.attribute.'annotation'.Annotation, proguard.classfile.attribute.'annotation'.ArrayElementValue)
+    {
+        proguard.classfile.attribute.'annotation'.Annotation $r2;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.'annotation'.ArrayElementValue $r3;
+        proguard.classfile.editor.MemberReferenceFixer r0;
+
+        r0 := @this: proguard.classfile.editor.MemberReferenceFixer;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.'annotation'.Annotation;
+
+        $r3 := @parameter2: proguard.classfile.attribute.'annotation'.ArrayElementValue;
+
+        specialinvoke r0.<proguard.classfile.editor.MemberReferenceFixer: void fixElementValue(proguard.classfile.Clazz,proguard.classfile.attribute.'annotation'.Annotation,proguard.classfile.attribute.'annotation'.ElementValue)>($r1, $r2, $r3);
+
+        virtualinvoke $r3.<proguard.classfile.attribute.'annotation'.ArrayElementValue: void elementValuesAccept(proguard.classfile.Clazz,proguard.classfile.attribute.'annotation'.Annotation,proguard.classfile.attribute.'annotation'.visitor.ElementValueVisitor)>($r1, $r2, r0);
+
+        return;
+    }
+
+    public void visitClassConstant(proguard.classfile.Clazz, proguard.classfile.constant.ClassConstant)
+    {
+        proguard.classfile.constant.ClassConstant $r2;
+        proguard.classfile.Clazz $r1;
+        int $i0;
+        proguard.classfile.editor.MemberReferenceFixer r0;
+        java.lang.String $r3;
+        boolean $z0;
+
+        r0 := @this: proguard.classfile.editor.MemberReferenceFixer;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.constant.ClassConstant;
+
+        $r3 = virtualinvoke $r2.<proguard.classfile.constant.ClassConstant: java.lang.String getName(proguard.classfile.Clazz)>($r1);
+
+        $z0 = staticinvoke <proguard.classfile.util.ClassUtil: boolean isInternalArrayType(java.lang.String)>($r3);
+
+        if $z0 == 0 goto label1;
+
+        r0.<proguard.classfile.editor.MemberReferenceFixer: boolean isInterfaceMethod> = 0;
+
+        return;
+
+     label1:
+        $r1 = $r2.<proguard.classfile.constant.ClassConstant: proguard.classfile.Clazz referencedClass>;
+
+        if $r1 == null goto label4;
+
+        $i0 = interfaceinvoke $r1.<proguard.classfile.Clazz: int getAccessFlags()>();
+
+        $i0 = $i0 & 512;
+
+        if $i0 == 0 goto label3;
+
+        $z0 = 1;
+
+     label2:
+        r0.<proguard.classfile.editor.MemberReferenceFixer: boolean isInterfaceMethod> = $z0;
+
+        return;
+
+     label3:
+        $z0 = 0;
+
+        goto label2;
+
+     label4:
+        return;
+    }
+
+    public void visitClassElementValue(proguard.classfile.Clazz, proguard.classfile.attribute.'annotation'.Annotation, proguard.classfile.attribute.'annotation'.ClassElementValue)
+    {
+        proguard.classfile.attribute.'annotation'.Annotation $r2;
+        proguard.classfile.attribute.'annotation'.ClassElementValue $r3;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.editor.MemberReferenceFixer r0;
+
+        r0 := @this: proguard.classfile.editor.MemberReferenceFixer;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.'annotation'.Annotation;
+
+        $r3 := @parameter2: proguard.classfile.attribute.'annotation'.ClassElementValue;
+
+        specialinvoke r0.<proguard.classfile.editor.MemberReferenceFixer: void fixElementValue(proguard.classfile.Clazz,proguard.classfile.attribute.'annotation'.Annotation,proguard.classfile.attribute.'annotation'.ElementValue)>($r1, $r2, $r3);
+
+        return;
+    }
+
+    public void visitCodeAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.Method $r2;
+        proguard.classfile.editor.MemberReferenceFixer r0;
+        proguard.classfile.editor.StackSizeUpdater $r4;
+        boolean $z0;
+
+        r0 := @this: proguard.classfile.editor.MemberReferenceFixer;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $z0 = r0.<proguard.classfile.editor.MemberReferenceFixer: boolean stackSizesMayHaveChanged>;
+
+        if $z0 == 0 goto label1;
+
+        $r4 = r0.<proguard.classfile.editor.MemberReferenceFixer: proguard.classfile.editor.StackSizeUpdater stackSizeUpdater>;
+
+        virtualinvoke $r4.<proguard.classfile.editor.StackSizeUpdater: void visitCodeAttribute(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute)>($r1, $r2, $r3);
+
+     label1:
+        virtualinvoke $r3.<proguard.classfile.attribute.CodeAttribute: void attributesAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.visitor.AttributeVisitor)>($r1, $r2, r0);
+
+        return;
+    }
+
+    public void visitConstantElementValue(proguard.classfile.Clazz, proguard.classfile.attribute.'annotation'.Annotation, proguard.classfile.attribute.'annotation'.ConstantElementValue)
+    {
+        proguard.classfile.attribute.'annotation'.ConstantElementValue $r3;
+        proguard.classfile.attribute.'annotation'.Annotation $r2;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.editor.MemberReferenceFixer r0;
+
+        r0 := @this: proguard.classfile.editor.MemberReferenceFixer;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.'annotation'.Annotation;
+
+        $r3 := @parameter2: proguard.classfile.attribute.'annotation'.ConstantElementValue;
+
+        specialinvoke r0.<proguard.classfile.editor.MemberReferenceFixer: void fixElementValue(proguard.classfile.Clazz,proguard.classfile.attribute.'annotation'.Annotation,proguard.classfile.attribute.'annotation'.ElementValue)>($r1, $r2, $r3);
+
+        return;
+    }
+
+    public void visitEnclosingMethodAttribute(proguard.classfile.Clazz, proguard.classfile.attribute.EnclosingMethodAttribute)
+    {
+        proguard.classfile.attribute.EnclosingMethodAttribute $r1;
+        proguard.classfile.ProgramClass $r8;
+        proguard.classfile.Clazz $r2, $r3;
+        int $i0;
+        proguard.classfile.Method $r4;
+        proguard.classfile.editor.MemberReferenceFixer r0;
+        java.lang.String $r5, $r6;
+        proguard.classfile.editor.ConstantPoolEditor $r7;
+        boolean $z0;
+
+        r0 := @this: proguard.classfile.editor.MemberReferenceFixer;
+
+        $r3 := @parameter0: proguard.classfile.Clazz;
+
+        $r1 := @parameter1: proguard.classfile.attribute.EnclosingMethodAttribute;
+
+        $r4 = $r1.<proguard.classfile.attribute.EnclosingMethodAttribute: proguard.classfile.Method referencedMethod>;
+
+        if $r4 == null goto label3;
+
+        $r2 = $r1.<proguard.classfile.attribute.EnclosingMethodAttribute: proguard.classfile.Clazz referencedClass>;
+
+        $r5 = virtualinvoke $r1.<proguard.classfile.attribute.EnclosingMethodAttribute: java.lang.String getClassName(proguard.classfile.Clazz)>($r3);
+
+        $r6 = interfaceinvoke $r2.<proguard.classfile.Clazz: java.lang.String getName()>();
+
+        $z0 = virtualinvoke $r5.<java.lang.String: boolean equals(java.lang.Object)>($r6);
+
+        if $z0 != 0 goto label1;
+
+        $r7 = new proguard.classfile.editor.ConstantPoolEditor;
+
+        $r8 = (proguard.classfile.ProgramClass) $r3;
+
+        specialinvoke $r7.<proguard.classfile.editor.ConstantPoolEditor: void <init>(proguard.classfile.ProgramClass)>($r8);
+
+        $i0 = virtualinvoke $r7.<proguard.classfile.editor.ConstantPoolEditor: int addClassConstant(proguard.classfile.Clazz)>($r2);
+
+        $r1.<proguard.classfile.attribute.EnclosingMethodAttribute: int u2classIndex> = $i0;
+
+     label1:
+        $r5 = virtualinvoke $r1.<proguard.classfile.attribute.EnclosingMethodAttribute: java.lang.String getName(proguard.classfile.Clazz)>($r3);
+
+        $r6 = interfaceinvoke $r4.<proguard.classfile.Member: java.lang.String getName(proguard.classfile.Clazz)>($r2);
+
+        $z0 = virtualinvoke $r5.<java.lang.String: boolean equals(java.lang.Object)>($r6);
+
+        if $z0 == 0 goto label2;
+
+        $r5 = virtualinvoke $r1.<proguard.classfile.attribute.EnclosingMethodAttribute: java.lang.String getType(proguard.classfile.Clazz)>($r3);
+
+        $r6 = interfaceinvoke $r4.<proguard.classfile.Member: java.lang.String getDescriptor(proguard.classfile.Clazz)>($r2);
+
+        $z0 = virtualinvoke $r5.<java.lang.String: boolean equals(java.lang.Object)>($r6);
+
+        if $z0 != 0 goto label3;
+
+     label2:
+        $r7 = new proguard.classfile.editor.ConstantPoolEditor;
+
+        $r8 = (proguard.classfile.ProgramClass) $r3;
+
+        specialinvoke $r7.<proguard.classfile.editor.ConstantPoolEditor: void <init>(proguard.classfile.ProgramClass)>($r8);
+
+        $r5 = interfaceinvoke $r4.<proguard.classfile.Member: java.lang.String getName(proguard.classfile.Clazz)>($r2);
+
+        $r6 = interfaceinvoke $r4.<proguard.classfile.Member: java.lang.String getDescriptor(proguard.classfile.Clazz)>($r2);
+
+        $i0 = virtualinvoke $r7.<proguard.classfile.editor.ConstantPoolEditor: int addNameAndTypeConstant(java.lang.String,java.lang.String)>($r5, $r6);
+
+        $r1.<proguard.classfile.attribute.EnclosingMethodAttribute: int u2nameAndTypeIndex> = $i0;
+
+     label3:
+        return;
+    }
+
+    public void visitEnumConstantElementValue(proguard.classfile.Clazz, proguard.classfile.attribute.'annotation'.Annotation, proguard.classfile.attribute.'annotation'.EnumConstantElementValue)
+    {
+        proguard.classfile.attribute.'annotation'.Annotation $r2;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.'annotation'.EnumConstantElementValue $r3;
+        proguard.classfile.editor.MemberReferenceFixer r0;
+
+        r0 := @this: proguard.classfile.editor.MemberReferenceFixer;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.'annotation'.Annotation;
+
+        $r3 := @parameter2: proguard.classfile.attribute.'annotation'.EnumConstantElementValue;
+
+        specialinvoke r0.<proguard.classfile.editor.MemberReferenceFixer: void fixElementValue(proguard.classfile.Clazz,proguard.classfile.attribute.'annotation'.Annotation,proguard.classfile.attribute.'annotation'.ElementValue)>($r1, $r2, $r3);
+
+        return;
+    }
+
+    public void visitFieldrefConstant(proguard.classfile.Clazz, proguard.classfile.constant.FieldrefConstant)
+    {
+        proguard.classfile.constant.FieldrefConstant $r1;
+        proguard.classfile.ProgramClass $r9;
+        proguard.classfile.Member $r3;
+        proguard.classfile.Clazz $r2, $r4;
+        int $i0;
+        proguard.classfile.editor.MemberReferenceFixer r0;
+        java.lang.String $r5, $r6, $r7;
+        proguard.classfile.editor.ConstantPoolEditor $r8;
+        boolean $z0;
+
+        r0 := @this: proguard.classfile.editor.MemberReferenceFixer;
+
+        $r2 := @parameter0: proguard.classfile.Clazz;
+
+        $r1 := @parameter1: proguard.classfile.constant.FieldrefConstant;
+
+        $r3 = $r1.<proguard.classfile.constant.FieldrefConstant: proguard.classfile.Member referencedMember>;
+
+        if $r3 == null goto label2;
+
+        $r4 = $r1.<proguard.classfile.constant.FieldrefConstant: proguard.classfile.Clazz referencedClass>;
+
+        $r5 = interfaceinvoke $r3.<proguard.classfile.Member: java.lang.String getName(proguard.classfile.Clazz)>($r4);
+
+        $r6 = interfaceinvoke $r3.<proguard.classfile.Member: java.lang.String getDescriptor(proguard.classfile.Clazz)>($r4);
+
+        $r7 = virtualinvoke $r1.<proguard.classfile.constant.FieldrefConstant: java.lang.String getName(proguard.classfile.Clazz)>($r2);
+
+        $z0 = virtualinvoke $r7.<java.lang.String: boolean equals(java.lang.Object)>($r5);
+
+        if $z0 == 0 goto label1;
+
+        $r7 = virtualinvoke $r1.<proguard.classfile.constant.FieldrefConstant: java.lang.String getType(proguard.classfile.Clazz)>($r2);
+
+        $z0 = virtualinvoke $r7.<java.lang.String: boolean equals(java.lang.Object)>($r6);
+
+        if $z0 != 0 goto label2;
+
+     label1:
+        $r8 = new proguard.classfile.editor.ConstantPoolEditor;
+
+        $r9 = (proguard.classfile.ProgramClass) $r2;
+
+        specialinvoke $r8.<proguard.classfile.editor.ConstantPoolEditor: void <init>(proguard.classfile.ProgramClass)>($r9);
+
+        $i0 = virtualinvoke $r8.<proguard.classfile.editor.ConstantPoolEditor: int addNameAndTypeConstant(java.lang.String,java.lang.String)>($r5, $r6);
+
+        $r1.<proguard.classfile.constant.FieldrefConstant: int u2nameAndTypeIndex> = $i0;
+
+     label2:
+        return;
+    }
+
+    public void visitInterfaceMethodrefConstant(proguard.classfile.Clazz, proguard.classfile.constant.InterfaceMethodrefConstant)
+    {
+        proguard.classfile.constant.InterfaceMethodrefConstant $r1;
+        proguard.classfile.ProgramClass $r9;
+        proguard.classfile.Clazz $r3, $r4;
+        int $i0, $i1, $i2;
+        java.lang.String $r5, $r6, $r7;
+        proguard.classfile.editor.ConstantPoolEditor $r8;
+        boolean $z0;
+        proguard.classfile.constant.MethodrefConstant $r11;
+        proguard.classfile.Member $r2;
+        proguard.classfile.constant.Constant[] $r10;
+        proguard.classfile.editor.MemberReferenceFixer r0;
+
+        r0 := @this: proguard.classfile.editor.MemberReferenceFixer;
+
+        $r4 := @parameter0: proguard.classfile.Clazz;
+
+        $r1 := @parameter1: proguard.classfile.constant.InterfaceMethodrefConstant;
+
+        $r2 = $r1.<proguard.classfile.constant.InterfaceMethodrefConstant: proguard.classfile.Member referencedMember>;
+
+        if $r2 == null goto label3;
+
+        $r3 = $r1.<proguard.classfile.constant.InterfaceMethodrefConstant: proguard.classfile.Clazz referencedClass>;
+
+        $r5 = interfaceinvoke $r2.<proguard.classfile.Member: java.lang.String getName(proguard.classfile.Clazz)>($r3);
+
+        $r6 = interfaceinvoke $r2.<proguard.classfile.Member: java.lang.String getDescriptor(proguard.classfile.Clazz)>($r3);
+
+        $r7 = virtualinvoke $r1.<proguard.classfile.constant.InterfaceMethodrefConstant: java.lang.String getName(proguard.classfile.Clazz)>($r4);
+
+        $z0 = virtualinvoke $r7.<java.lang.String: boolean equals(java.lang.Object)>($r5);
+
+        if $z0 == 0 goto label1;
+
+        $r7 = virtualinvoke $r1.<proguard.classfile.constant.InterfaceMethodrefConstant: java.lang.String getType(proguard.classfile.Clazz)>($r4);
+
+        $z0 = virtualinvoke $r7.<java.lang.String: boolean equals(java.lang.Object)>($r6);
+
+        if $z0 != 0 goto label2;
+
+     label1:
+        $r8 = new proguard.classfile.editor.ConstantPoolEditor;
+
+        $r9 = (proguard.classfile.ProgramClass) $r4;
+
+        specialinvoke $r8.<proguard.classfile.editor.ConstantPoolEditor: void <init>(proguard.classfile.ProgramClass)>($r9);
+
+        $i0 = virtualinvoke $r8.<proguard.classfile.editor.ConstantPoolEditor: int addNameAndTypeConstant(java.lang.String,java.lang.String)>($r5, $r6);
+
+        $r1.<proguard.classfile.constant.InterfaceMethodrefConstant: int u2nameAndTypeIndex> = $i0;
+
+        r0.<proguard.classfile.editor.MemberReferenceFixer: boolean stackSizesMayHaveChanged> = 1;
+
+     label2:
+        r0.<proguard.classfile.editor.MemberReferenceFixer: boolean isInterfaceMethod> = 1;
+
+        $i0 = $r1.<proguard.classfile.constant.InterfaceMethodrefConstant: int u2classIndex>;
+
+        interfaceinvoke $r4.<proguard.classfile.Clazz: void constantPoolEntryAccept(int,proguard.classfile.constant.visitor.ConstantVisitor)>($i0, r0);
+
+        $z0 = r0.<proguard.classfile.editor.MemberReferenceFixer: boolean isInterfaceMethod>;
+
+        if $z0 != 0 goto label3;
+
+        $r9 = (proguard.classfile.ProgramClass) $r4;
+
+        $r10 = $r9.<proguard.classfile.ProgramClass: proguard.classfile.constant.Constant[] constantPool>;
+
+        $i0 = r0.<proguard.classfile.editor.MemberReferenceFixer: int constantIndex>;
+
+        $r11 = new proguard.classfile.constant.MethodrefConstant;
+
+        $i1 = $r1.<proguard.classfile.constant.InterfaceMethodrefConstant: int u2classIndex>;
+
+        $i2 = $r1.<proguard.classfile.constant.InterfaceMethodrefConstant: int u2nameAndTypeIndex>;
+
+        specialinvoke $r11.<proguard.classfile.constant.MethodrefConstant: void <init>(int,int,proguard.classfile.Clazz,proguard.classfile.Member)>($i1, $i2, $r3, $r2);
+
+        $r10[$i0] = $r11;
+
+     label3:
+        return;
+    }
+
+    public void visitMethodrefConstant(proguard.classfile.Clazz, proguard.classfile.constant.MethodrefConstant)
+    {
+        proguard.classfile.constant.InterfaceMethodrefConstant $r11;
+        proguard.classfile.ProgramClass $r9;
+        proguard.classfile.Clazz $r3, $r4;
+        int $i0, $i1, $i2;
+        java.lang.String $r5, $r6, $r7;
+        proguard.classfile.editor.ConstantPoolEditor $r8;
+        boolean $z0;
+        proguard.classfile.constant.MethodrefConstant $r1;
+        proguard.classfile.Member $r2;
+        proguard.classfile.constant.Constant[] $r10;
+        proguard.classfile.editor.MemberReferenceFixer r0;
+
+        r0 := @this: proguard.classfile.editor.MemberReferenceFixer;
+
+        $r4 := @parameter0: proguard.classfile.Clazz;
+
+        $r1 := @parameter1: proguard.classfile.constant.MethodrefConstant;
+
+        $r2 = $r1.<proguard.classfile.constant.MethodrefConstant: proguard.classfile.Member referencedMember>;
+
+        if $r2 == null goto label3;
+
+        $r3 = $r1.<proguard.classfile.constant.MethodrefConstant: proguard.classfile.Clazz referencedClass>;
+
+        $r5 = interfaceinvoke $r2.<proguard.classfile.Member: java.lang.String getName(proguard.classfile.Clazz)>($r3);
+
+        $r6 = interfaceinvoke $r2.<proguard.classfile.Member: java.lang.String getDescriptor(proguard.classfile.Clazz)>($r3);
+
+        $r7 = virtualinvoke $r1.<proguard.classfile.constant.MethodrefConstant: java.lang.String getName(proguard.classfile.Clazz)>($r4);
+
+        $z0 = virtualinvoke $r7.<java.lang.String: boolean equals(java.lang.Object)>($r5);
+
+        if $z0 == 0 goto label1;
+
+        $r7 = virtualinvoke $r1.<proguard.classfile.constant.MethodrefConstant: java.lang.String getType(proguard.classfile.Clazz)>($r4);
+
+        $z0 = virtualinvoke $r7.<java.lang.String: boolean equals(java.lang.Object)>($r6);
+
+        if $z0 != 0 goto label2;
+
+     label1:
+        $r8 = new proguard.classfile.editor.ConstantPoolEditor;
+
+        $r9 = (proguard.classfile.ProgramClass) $r4;
+
+        specialinvoke $r8.<proguard.classfile.editor.ConstantPoolEditor: void <init>(proguard.classfile.ProgramClass)>($r9);
+
+        $i0 = virtualinvoke $r8.<proguard.classfile.editor.ConstantPoolEditor: int addNameAndTypeConstant(java.lang.String,java.lang.String)>($r5, $r6);
+
+        $r1.<proguard.classfile.constant.MethodrefConstant: int u2nameAndTypeIndex> = $i0;
+
+        r0.<proguard.classfile.editor.MemberReferenceFixer: boolean stackSizesMayHaveChanged> = 1;
+
+     label2:
+        r0.<proguard.classfile.editor.MemberReferenceFixer: boolean isInterfaceMethod> = 0;
+
+        $i0 = $r1.<proguard.classfile.constant.MethodrefConstant: int u2classIndex>;
+
+        interfaceinvoke $r4.<proguard.classfile.Clazz: void constantPoolEntryAccept(int,proguard.classfile.constant.visitor.ConstantVisitor)>($i0, r0);
+
+        $z0 = r0.<proguard.classfile.editor.MemberReferenceFixer: boolean isInterfaceMethod>;
+
+        if $z0 == 0 goto label3;
+
+        $r9 = (proguard.classfile.ProgramClass) $r4;
+
+        $r10 = $r9.<proguard.classfile.ProgramClass: proguard.classfile.constant.Constant[] constantPool>;
+
+        $i1 = r0.<proguard.classfile.editor.MemberReferenceFixer: int constantIndex>;
+
+        $r11 = new proguard.classfile.constant.InterfaceMethodrefConstant;
+
+        $i2 = $r1.<proguard.classfile.constant.MethodrefConstant: int u2classIndex>;
+
+        $i0 = $r1.<proguard.classfile.constant.MethodrefConstant: int u2nameAndTypeIndex>;
+
+        specialinvoke $r11.<proguard.classfile.constant.InterfaceMethodrefConstant: void <init>(int,int,proguard.classfile.Clazz,proguard.classfile.Member)>($i2, $i0, $r3, $r2);
+
+        $r10[$i1] = $r11;
+
+     label3:
+        return;
+    }
+
+    public void visitProgramClass(proguard.classfile.ProgramClass)
+    {
+        proguard.classfile.constant.Constant $r3;
+        int $i0, $i1;
+        proguard.classfile.constant.Constant[] $r2;
+        proguard.classfile.editor.MemberReferenceFixer r0;
+        proguard.classfile.ProgramClass $r1;
+
+        r0 := @this: proguard.classfile.editor.MemberReferenceFixer;
+
+        $r1 := @parameter0: proguard.classfile.ProgramClass;
+
+        r0.<proguard.classfile.editor.MemberReferenceFixer: boolean stackSizesMayHaveChanged> = 0;
+
+        $i0 = 1;
+
+     label1:
+        $i1 = $r1.<proguard.classfile.ProgramClass: int u2constantPoolCount>;
+
+        if $i0 >= $i1 goto label3;
+
+        $r2 = $r1.<proguard.classfile.ProgramClass: proguard.classfile.constant.Constant[] constantPool>;
+
+        $r3 = $r2[$i0];
+
+        if $r3 == null goto label2;
+
+        r0.<proguard.classfile.editor.MemberReferenceFixer: int constantIndex> = $i0;
+
+        virtualinvoke $r3.<proguard.classfile.constant.Constant: void accept(proguard.classfile.Clazz,proguard.classfile.constant.visitor.ConstantVisitor)>($r1, r0);
+
+     label2:
+        $i0 = $i0 + 1;
+
+        goto label1;
+
+     label3:
+        virtualinvoke $r1.<proguard.classfile.ProgramClass: void fieldsAccept(proguard.classfile.visitor.MemberVisitor)>(r0);
+
+        virtualinvoke $r1.<proguard.classfile.ProgramClass: void methodsAccept(proguard.classfile.visitor.MemberVisitor)>(r0);
+
+        virtualinvoke $r1.<proguard.classfile.ProgramClass: void attributesAccept(proguard.classfile.attribute.visitor.AttributeVisitor)>(r0);
+
+        return;
+    }
+
+    public void visitProgramMember(proguard.classfile.ProgramClass, proguard.classfile.ProgramMember)
+    {
+        proguard.classfile.ProgramMember $r2;
+        proguard.classfile.editor.MemberReferenceFixer r0;
+        proguard.classfile.ProgramClass $r1;
+
+        r0 := @this: proguard.classfile.editor.MemberReferenceFixer;
+
+        $r1 := @parameter0: proguard.classfile.ProgramClass;
+
+        $r2 := @parameter1: proguard.classfile.ProgramMember;
+
+        virtualinvoke $r2.<proguard.classfile.ProgramMember: void attributesAccept(proguard.classfile.ProgramClass,proguard.classfile.attribute.visitor.AttributeVisitor)>($r1, r0);
+
+        return;
+    }
+
+    public void visitStringConstant(proguard.classfile.Clazz, proguard.classfile.constant.StringConstant)
+    {
+        proguard.classfile.ProgramClass $r8;
+        proguard.classfile.Member $r3;
+        proguard.classfile.Clazz $r2, $r4;
+        proguard.classfile.constant.StringConstant $r1;
+        int $i0;
+        proguard.classfile.editor.MemberReferenceFixer r0;
+        java.lang.String $r5, $r6;
+        proguard.classfile.editor.ConstantPoolEditor $r7;
+        boolean $z0;
+
+        r0 := @this: proguard.classfile.editor.MemberReferenceFixer;
+
+        $r2 := @parameter0: proguard.classfile.Clazz;
+
+        $r1 := @parameter1: proguard.classfile.constant.StringConstant;
+
+        $r3 = $r1.<proguard.classfile.constant.StringConstant: proguard.classfile.Member referencedMember>;
+
+        if $r3 == null goto label1;
+
+        $r4 = $r1.<proguard.classfile.constant.StringConstant: proguard.classfile.Clazz referencedClass>;
+
+        $r5 = interfaceinvoke $r3.<proguard.classfile.Member: java.lang.String getName(proguard.classfile.Clazz)>($r4);
+
+        $r6 = virtualinvoke $r1.<proguard.classfile.constant.StringConstant: java.lang.String getString(proguard.classfile.Clazz)>($r2);
+
+        $z0 = virtualinvoke $r6.<java.lang.String: boolean equals(java.lang.Object)>($r5);
+
+        if $z0 != 0 goto label1;
+
+        $r7 = new proguard.classfile.editor.ConstantPoolEditor;
+
+        $r8 = (proguard.classfile.ProgramClass) $r2;
+
+        specialinvoke $r7.<proguard.classfile.editor.ConstantPoolEditor: void <init>(proguard.classfile.ProgramClass)>($r8);
+
+        $i0 = virtualinvoke $r7.<proguard.classfile.editor.ConstantPoolEditor: int addUtf8Constant(java.lang.String)>($r5);
+
+        $r1.<proguard.classfile.constant.StringConstant: int u2stringIndex> = $i0;
+
+     label1:
+        return;
+    }
+}

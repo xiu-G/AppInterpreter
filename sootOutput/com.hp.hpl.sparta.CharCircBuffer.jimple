@@ -1,0 +1,254 @@
+class com.hp.hpl.sparta.CharCircBuffer extends java.lang.Object
+{
+    private final int[] buf_;
+    private boolean enabled_;
+    private int next_;
+    private int total_;
+
+    void <init>(int)
+    {
+        int $i0;
+        com.hp.hpl.sparta.CharCircBuffer r0;
+        int[] $r1;
+
+        r0 := @this: com.hp.hpl.sparta.CharCircBuffer;
+
+        $i0 := @parameter0: int;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<com.hp.hpl.sparta.CharCircBuffer: int next_> = 0;
+
+        r0.<com.hp.hpl.sparta.CharCircBuffer: int total_> = 0;
+
+        r0.<com.hp.hpl.sparta.CharCircBuffer: boolean enabled_> = 1;
+
+        $r1 = newarray (int)[$i0];
+
+        r0.<com.hp.hpl.sparta.CharCircBuffer: int[] buf_> = $r1;
+
+        return;
+    }
+
+    private void addRaw(int)
+    {
+        int[] $r1;
+        int $i0, $i1;
+        com.hp.hpl.sparta.CharCircBuffer r0;
+        boolean $z0;
+
+        r0 := @this: com.hp.hpl.sparta.CharCircBuffer;
+
+        $i0 := @parameter0: int;
+
+        $z0 = r0.<com.hp.hpl.sparta.CharCircBuffer: boolean enabled_>;
+
+        if $z0 == 0 goto label1;
+
+        $r1 = r0.<com.hp.hpl.sparta.CharCircBuffer: int[] buf_>;
+
+        $i1 = r0.<com.hp.hpl.sparta.CharCircBuffer: int next_>;
+
+        $r1[$i1] = $i0;
+
+        $i0 = r0.<com.hp.hpl.sparta.CharCircBuffer: int next_>;
+
+        $i0 = $i0 + 1;
+
+        $r1 = r0.<com.hp.hpl.sparta.CharCircBuffer: int[] buf_>;
+
+        $i1 = lengthof $r1;
+
+        $i0 = $i0 % $i1;
+
+        r0.<com.hp.hpl.sparta.CharCircBuffer: int next_> = $i0;
+
+        $i0 = r0.<com.hp.hpl.sparta.CharCircBuffer: int total_>;
+
+        $i0 = $i0 + 1;
+
+        r0.<com.hp.hpl.sparta.CharCircBuffer: int total_> = $i0;
+
+     label1:
+        return;
+    }
+
+    void addChar(char)
+    {
+        int $i1;
+        com.hp.hpl.sparta.CharCircBuffer r0;
+        char $c0;
+
+        r0 := @this: com.hp.hpl.sparta.CharCircBuffer;
+
+        $c0 := @parameter0: char;
+
+        $i1 = (int) $c0;
+
+        specialinvoke r0.<com.hp.hpl.sparta.CharCircBuffer: void addRaw(int)>($i1);
+
+        return;
+    }
+
+    void addInt(int)
+    {
+        int $i0;
+        com.hp.hpl.sparta.CharCircBuffer r0;
+
+        r0 := @this: com.hp.hpl.sparta.CharCircBuffer;
+
+        $i0 := @parameter0: int;
+
+        $i0 = 65536 + $i0;
+
+        specialinvoke r0.<com.hp.hpl.sparta.CharCircBuffer: void addRaw(int)>($i0);
+
+        return;
+    }
+
+    void addString(java.lang.String)
+    {
+        int $i0, $i2;
+        com.hp.hpl.sparta.CharCircBuffer r0;
+        char[] $r2;
+        char $c1;
+        java.lang.String $r1;
+
+        r0 := @this: com.hp.hpl.sparta.CharCircBuffer;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = virtualinvoke $r1.<java.lang.String: char[] toCharArray()>();
+
+        $i0 = lengthof $r2;
+
+        $i2 = 0;
+
+     label1:
+        if $i2 < $i0 goto label2;
+
+        return;
+
+     label2:
+        $c1 = $r2[$i2];
+
+        virtualinvoke r0.<com.hp.hpl.sparta.CharCircBuffer: void addChar(char)>($c1);
+
+        $i2 = $i2 + 1;
+
+        goto label1;
+    }
+
+    void disable()
+    {
+        com.hp.hpl.sparta.CharCircBuffer r0;
+
+        r0 := @this: com.hp.hpl.sparta.CharCircBuffer;
+
+        r0.<com.hp.hpl.sparta.CharCircBuffer: boolean enabled_> = 0;
+
+        return;
+    }
+
+    void enable()
+    {
+        com.hp.hpl.sparta.CharCircBuffer r0;
+
+        r0 := @this: com.hp.hpl.sparta.CharCircBuffer;
+
+        r0.<com.hp.hpl.sparta.CharCircBuffer: boolean enabled_> = 1;
+
+        return;
+    }
+
+    public java.lang.String toString()
+    {
+        char $c3;
+        int[] $r2;
+        java.lang.StringBuffer $r1;
+        int $i0, $i1, $i2;
+        com.hp.hpl.sparta.CharCircBuffer r0;
+        java.lang.String $r3;
+
+        r0 := @this: com.hp.hpl.sparta.CharCircBuffer;
+
+        $r1 = new java.lang.StringBuffer;
+
+        $r2 = r0.<com.hp.hpl.sparta.CharCircBuffer: int[] buf_>;
+
+        $i0 = lengthof $r2;
+
+        $i0 = $i0 * 11;
+
+        $i0 = $i0 / 10;
+
+        specialinvoke $r1.<java.lang.StringBuffer: void <init>(int)>($i0);
+
+        $i0 = r0.<com.hp.hpl.sparta.CharCircBuffer: int total_>;
+
+        $r2 = r0.<com.hp.hpl.sparta.CharCircBuffer: int[] buf_>;
+
+        $i1 = lengthof $r2;
+
+        if $i0 >= $i1 goto label2;
+
+        $r2 = r0.<com.hp.hpl.sparta.CharCircBuffer: int[] buf_>;
+
+        $i0 = lengthof $r2;
+
+        $i1 = r0.<com.hp.hpl.sparta.CharCircBuffer: int total_>;
+
+        $i0 = $i0 - $i1;
+
+     label1:
+        $r2 = r0.<com.hp.hpl.sparta.CharCircBuffer: int[] buf_>;
+
+        $i1 = lengthof $r2;
+
+        if $i0 < $i1 goto label3;
+
+        $r3 = virtualinvoke $r1.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        return $r3;
+
+     label2:
+        $i0 = 0;
+
+        goto label1;
+
+     label3:
+        $i1 = r0.<com.hp.hpl.sparta.CharCircBuffer: int next_>;
+
+        $i1 = $i1 + $i0;
+
+        $r2 = r0.<com.hp.hpl.sparta.CharCircBuffer: int[] buf_>;
+
+        $i2 = lengthof $r2;
+
+        $i1 = $i1 % $i2;
+
+        $r2 = r0.<com.hp.hpl.sparta.CharCircBuffer: int[] buf_>;
+
+        $i1 = $r2[$i1];
+
+        if $i1 >= 65536 goto label5;
+
+        $c3 = (char) $i1;
+
+        virtualinvoke $r1.<java.lang.StringBuffer: java.lang.StringBuffer append(char)>($c3);
+
+     label4:
+        $i0 = $i0 + 1;
+
+        goto label1;
+
+     label5:
+        $i1 = $i1 - 65536;
+
+        $r3 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i1);
+
+        virtualinvoke $r1.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r3);
+
+        goto label4;
+    }
+}

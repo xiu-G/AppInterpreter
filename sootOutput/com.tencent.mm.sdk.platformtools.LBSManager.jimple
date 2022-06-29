@@ -1,0 +1,445 @@
+public class com.tencent.mm.sdk.platformtools.LBSManager extends android.content.BroadcastReceiver
+{
+    private static com.tencent.mm.sdk.platformtools.a e;
+    boolean a;
+    boolean b;
+    boolean c;
+    int d;
+    private com.tencent.mm.sdk.platformtools.b f;
+    private android.content.Context g;
+    private com.tencent.mm.sdk.platformtools.e h;
+
+    private java.lang.String a()
+    {
+        android.net.wifi.ScanResult $r10;
+        android.content.Context $r5;
+        com.tencent.mm.sdk.platformtools.LBSManager r0;
+        android.net.wifi.WifiInfo $r8;
+        android.net.wifi.WifiManager $r7;
+        java.util.List $r9;
+        com.tencent.mm.sdk.platformtools.i $r2;
+        int $i0, $i1;
+        java.lang.StringBuilder $r4;
+        java.lang.Object $r6;
+        java.lang.String $r3, $r11;
+        java.util.LinkedList $r1;
+
+        r0 := @this: com.tencent.mm.sdk.platformtools.LBSManager;
+
+        $r5 = r0.<com.tencent.mm.sdk.platformtools.LBSManager: android.content.Context g>;
+
+        $r6 = virtualinvoke $r5.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("wifi");
+
+        $r7 = (android.net.wifi.WifiManager) $r6;
+
+        if $r7 != null goto label1;
+
+        staticinvoke <com.tencent.mm.sdk.platformtools.c: void a(java.lang.String,java.lang.String)>("MicroMsg.LBSManager", "no wifi service");
+
+        return "";
+
+     label1:
+        $r8 = virtualinvoke $r7.<android.net.wifi.WifiManager: android.net.wifi.WifiInfo getConnectionInfo()>();
+
+        if $r8 != null goto label2;
+
+        staticinvoke <com.tencent.mm.sdk.platformtools.c: void a(java.lang.String,java.lang.String)>("MicroMsg.LBSManager", "WIFILocation wifi info null");
+
+        return "";
+
+     label2:
+        $r1 = new java.util.LinkedList;
+
+        specialinvoke $r1.<java.util.LinkedList: void <init>()>();
+
+        $r9 = virtualinvoke $r7.<android.net.wifi.WifiManager: java.util.List getScanResults()>();
+
+        if $r9 == null goto label4;
+
+        $i0 = 0;
+
+     label3:
+        $i1 = interfaceinvoke $r9.<java.util.List: int size()>();
+
+        if $i0 >= $i1 goto label4;
+
+        $r2 = new com.tencent.mm.sdk.platformtools.i;
+
+        $r6 = interfaceinvoke $r9.<java.util.List: java.lang.Object get(int)>($i0);
+
+        $r10 = (android.net.wifi.ScanResult) $r6;
+
+        $r3 = $r10.<android.net.wifi.ScanResult: java.lang.String BSSID>;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r6 = interfaceinvoke $r9.<java.util.List: java.lang.Object get(int)>($i0);
+
+        $r10 = (android.net.wifi.ScanResult) $r6;
+
+        $i1 = $r10.<android.net.wifi.ScanResult: int level>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1);
+
+        $r11 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r2.<com.tencent.mm.sdk.platformtools.i: void <init>(java.lang.String,java.lang.String)>($r3, $r11);
+
+        interfaceinvoke $r1.<java.util.List: boolean add(java.lang.Object)>($r2);
+
+        $i0 = $i0 + 1;
+
+        goto label3;
+
+     label4:
+        $r3 = staticinvoke <com.tencent.mm.sdk.platformtools.g: java.lang.String a(java.util.List)>($r1);
+
+        return $r3;
+    }
+
+    public void onReceive(android.content.Context, android.content.Intent)
+    {
+        android.content.Context $r1;
+        android.os.Bundle $r3;
+        android.content.Intent $r2;
+        long $l2;
+        byte $b1;
+        int $i0;
+        java.lang.String $r6, $r7;
+        boolean $z0, $z1;
+        double $d0;
+        com.tencent.mm.sdk.platformtools.a $r9, $r14;
+        com.tencent.mm.sdk.platformtools.LBSManager r0;
+        java.util.List $r11;
+        float $f0, $f1, $f2;
+        java.lang.Object $r4;
+        java.lang.StringBuilder $r8, $r13;
+        android.location.Location $r5;
+        com.tencent.mm.sdk.platformtools.e $r12;
+        com.tencent.mm.sdk.platformtools.b $r10;
+
+        r0 := @this: com.tencent.mm.sdk.platformtools.LBSManager;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.content.Intent;
+
+        $r3 = virtualinvoke $r2.<android.content.Intent: android.os.Bundle getExtras()>();
+
+        $r4 = virtualinvoke $r3.<android.os.Bundle: java.lang.Object get(java.lang.String)>("location");
+
+        $r5 = (android.location.Location) $r4;
+
+        $i0 = r0.<com.tencent.mm.sdk.platformtools.LBSManager: int d>;
+
+        $i0 = $i0 + 1;
+
+        r0.<com.tencent.mm.sdk.platformtools.LBSManager: int d> = $i0;
+
+        if $r5 == null goto label10;
+
+        $r6 = "gps";
+
+        $r7 = virtualinvoke $r5.<android.location.Location: java.lang.String getProvider()>();
+
+        $z0 = virtualinvoke $r6.<java.lang.String: boolean equals(java.lang.Object)>($r7);
+
+        if $z0 == 0 goto label01;
+
+        $f0 = virtualinvoke $r5.<android.location.Location: float getAccuracy()>();
+
+        $b1 = $f0 cmpg 200.0F;
+
+        $i0 = (int) $b1;
+
+        if $i0 <= 0 goto label02;
+
+     label01:
+        if $z0 != 0 goto label10;
+
+        $f0 = virtualinvoke $r5.<android.location.Location: float getAccuracy()>();
+
+        $b1 = $f0 cmpg 1000.0F;
+
+        $i0 = (int) $b1;
+
+        if $i0 > 0 goto label10;
+
+     label02:
+        $f0 = virtualinvoke $r5.<android.location.Location: float getAccuracy()>();
+
+        $b1 = $f0 cmpl 0.0F;
+
+        $i0 = (int) $b1;
+
+        if $i0 <= 0 goto label10;
+
+        if $z0 == 0 goto label07;
+
+        $b1 = 0;
+
+     label03:
+        $d0 = virtualinvoke $r5.<android.location.Location: double getLatitude()>();
+
+        $f0 = (float) $d0;
+
+        $d0 = virtualinvoke $r5.<android.location.Location: double getLongitude()>();
+
+        $f1 = (float) $d0;
+
+        $f2 = virtualinvoke $r5.<android.location.Location: float getAccuracy()>();
+
+        $i0 = (int) $f2;
+
+        if $i0 == 0 goto label05;
+
+        $r13 = new java.lang.StringBuilder;
+
+        specialinvoke $r13.<java.lang.StringBuilder: void <init>(java.lang.String)>("setLocationCache [");
+
+        $r8 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.StringBuilder append(float)>($f0);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(",");
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(float)>($f1);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("] acc:");
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" source:");
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($b1);
+
+        $r6 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.tencent.mm.sdk.platformtools.c: void d(java.lang.String,java.lang.String)>("MicroMsg.LBSManager", $r6);
+
+        $r9 = <com.tencent.mm.sdk.platformtools.LBSManager: com.tencent.mm.sdk.platformtools.a e>;
+
+        if $r9 != null goto label04;
+
+        $r14 = new com.tencent.mm.sdk.platformtools.a;
+
+        specialinvoke $r14.<com.tencent.mm.sdk.platformtools.a: void <init>()>();
+
+        <com.tencent.mm.sdk.platformtools.LBSManager: com.tencent.mm.sdk.platformtools.a e> = $r14;
+
+     label04:
+        $r9 = <com.tencent.mm.sdk.platformtools.LBSManager: com.tencent.mm.sdk.platformtools.a e>;
+
+        $r9.<com.tencent.mm.sdk.platformtools.a: float a> = $f0;
+
+        $r9 = <com.tencent.mm.sdk.platformtools.LBSManager: com.tencent.mm.sdk.platformtools.a e>;
+
+        $r9.<com.tencent.mm.sdk.platformtools.a: float b> = $f1;
+
+        $r9 = <com.tencent.mm.sdk.platformtools.LBSManager: com.tencent.mm.sdk.platformtools.a e>;
+
+        $r9.<com.tencent.mm.sdk.platformtools.a: int c> = $i0;
+
+        $r9 = <com.tencent.mm.sdk.platformtools.LBSManager: com.tencent.mm.sdk.platformtools.a e>;
+
+        $l2 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $r9.<com.tencent.mm.sdk.platformtools.a: long d> = $l2;
+
+        $r9 = <com.tencent.mm.sdk.platformtools.LBSManager: com.tencent.mm.sdk.platformtools.a e>;
+
+        $r9.<com.tencent.mm.sdk.platformtools.a: int e> = $b1;
+
+     label05:
+        $r10 = r0.<com.tencent.mm.sdk.platformtools.LBSManager: com.tencent.mm.sdk.platformtools.b f>;
+
+        if $r10 == null goto label10;
+
+        $z1 = r0.<com.tencent.mm.sdk.platformtools.LBSManager: boolean a>;
+
+        if $z1 == 0 goto label06;
+
+        $z1 = r0.<com.tencent.mm.sdk.platformtools.LBSManager: boolean b>;
+
+        if $z1 == 0 goto label06;
+
+        $z1 = r0.<com.tencent.mm.sdk.platformtools.LBSManager: boolean c>;
+
+        if $z1 != 0 goto label10;
+
+     label06:
+        $r6 = specialinvoke r0.<com.tencent.mm.sdk.platformtools.LBSManager: java.lang.String a()>();
+
+        staticinvoke <com.tencent.mm.sdk.platformtools.o: java.lang.String a(java.lang.String)>($r6);
+
+        $r1 = r0.<com.tencent.mm.sdk.platformtools.LBSManager: android.content.Context g>;
+
+        $r11 = staticinvoke <com.tencent.mm.sdk.platformtools.g: java.util.List a(android.content.Context)>($r1);
+
+        $r6 = staticinvoke <com.tencent.mm.sdk.platformtools.g: java.lang.String b(java.util.List)>($r11);
+
+        staticinvoke <com.tencent.mm.sdk.platformtools.o: java.lang.String a(java.lang.String)>($r6);
+
+        $z1 = r0.<com.tencent.mm.sdk.platformtools.LBSManager: boolean a>;
+
+        if $z1 != 0 goto label08;
+
+        $r12 = r0.<com.tencent.mm.sdk.platformtools.LBSManager: com.tencent.mm.sdk.platformtools.e h>;
+
+        virtualinvoke $r12.<com.tencent.mm.sdk.platformtools.e: void a()>();
+
+        r0.<com.tencent.mm.sdk.platformtools.LBSManager: boolean a> = 1;
+
+        r0.<com.tencent.mm.sdk.platformtools.LBSManager: boolean a> = 1;
+
+        $r13 = new java.lang.StringBuilder;
+
+        specialinvoke $r13.<java.lang.StringBuilder: void <init>(java.lang.String)>("location by provider ok:[");
+
+        $d0 = virtualinvoke $r5.<android.location.Location: double getLatitude()>();
+
+        $r8 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.StringBuilder append(double)>($d0);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" , ");
+
+        $d0 = virtualinvoke $r5.<android.location.Location: double getLongitude()>();
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(double)>($d0);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("]  accuracy:");
+
+        $f0 = virtualinvoke $r5.<android.location.Location: float getAccuracy()>();
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(float)>($f0);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("  retry count:");
+
+        $i0 = r0.<com.tencent.mm.sdk.platformtools.LBSManager: int d>;
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" isGpsProvider:");
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(boolean)>($z0);
+
+        $r6 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.tencent.mm.sdk.platformtools.c: void d(java.lang.String,java.lang.String)>("MicroMsg.LBSManager", $r6);
+
+        virtualinvoke $r5.<android.location.Location: double getLatitude()>();
+
+        virtualinvoke $r5.<android.location.Location: double getLongitude()>();
+
+        virtualinvoke $r5.<android.location.Location: float getAccuracy()>();
+
+        return;
+
+     label07:
+        $b1 = 1;
+
+        goto label03;
+
+     label08:
+        $z1 = r0.<com.tencent.mm.sdk.platformtools.LBSManager: boolean b>;
+
+        if $z1 != 0 goto label09;
+
+        if $b1 != 0 goto label09;
+
+        r0.<com.tencent.mm.sdk.platformtools.LBSManager: boolean b> = 1;
+
+        $r13 = new java.lang.StringBuilder;
+
+        specialinvoke $r13.<java.lang.StringBuilder: void <init>(java.lang.String)>("report location by GPS ok:[");
+
+        $d0 = virtualinvoke $r5.<android.location.Location: double getLatitude()>();
+
+        $r8 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.StringBuilder append(double)>($d0);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" , ");
+
+        $d0 = virtualinvoke $r5.<android.location.Location: double getLongitude()>();
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(double)>($d0);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("]  accuracy:");
+
+        $f0 = virtualinvoke $r5.<android.location.Location: float getAccuracy()>();
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(float)>($f0);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("  retry count:");
+
+        $i0 = r0.<com.tencent.mm.sdk.platformtools.LBSManager: int d>;
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" isGpsProvider:");
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(boolean)>($z0);
+
+        $r6 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.tencent.mm.sdk.platformtools.c: void d(java.lang.String,java.lang.String)>("MicroMsg.LBSManager", $r6);
+
+        virtualinvoke $r5.<android.location.Location: double getLatitude()>();
+
+        virtualinvoke $r5.<android.location.Location: double getLongitude()>();
+
+        virtualinvoke $r5.<android.location.Location: float getAccuracy()>();
+
+        return;
+
+     label09:
+        $z1 = r0.<com.tencent.mm.sdk.platformtools.LBSManager: boolean c>;
+
+        if $z1 != 0 goto label10;
+
+        if $b1 != 1 goto label10;
+
+        r0.<com.tencent.mm.sdk.platformtools.LBSManager: boolean c> = 1;
+
+        $r13 = new java.lang.StringBuilder;
+
+        specialinvoke $r13.<java.lang.StringBuilder: void <init>(java.lang.String)>("report location by Network ok:[");
+
+        $d0 = virtualinvoke $r5.<android.location.Location: double getLatitude()>();
+
+        $r8 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.StringBuilder append(double)>($d0);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" , ");
+
+        $d0 = virtualinvoke $r5.<android.location.Location: double getLongitude()>();
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(double)>($d0);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("]  accuracy:");
+
+        $f0 = virtualinvoke $r5.<android.location.Location: float getAccuracy()>();
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(float)>($f0);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("  retry count:");
+
+        $i0 = r0.<com.tencent.mm.sdk.platformtools.LBSManager: int d>;
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" isGpsProvider:");
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(boolean)>($z0);
+
+        $r6 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.tencent.mm.sdk.platformtools.c: void d(java.lang.String,java.lang.String)>("MicroMsg.LBSManager", $r6);
+
+        virtualinvoke $r5.<android.location.Location: double getLatitude()>();
+
+        virtualinvoke $r5.<android.location.Location: double getLongitude()>();
+
+        virtualinvoke $r5.<android.location.Location: float getAccuracy()>();
+
+     label10:
+        return;
+    }
+}

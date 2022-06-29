@@ -1,0 +1,926 @@
+public class cn.trinea.android.common.service.impl.SimpleCache extends java.lang.Object implements cn.trinea.android.common.service.Cache, java.io.Serializable
+{
+    public static final int DEFAULT_MAX_SIZE;
+    private static final long serialVersionUID;
+    protected java.util.Map cache;
+    private cn.trinea.android.common.service.CacheFullRemoveType cacheFullRemoveType;
+    protected java.util.concurrent.atomic.AtomicLong hitCount;
+    private final int maxSize;
+    protected java.util.concurrent.atomic.AtomicLong missCount;
+    private long validTime;
+
+    public void <init>()
+    {
+        cn.trinea.android.common.service.impl.SimpleCache r0;
+
+        r0 := @this: cn.trinea.android.common.service.impl.SimpleCache;
+
+        specialinvoke r0.<cn.trinea.android.common.service.impl.SimpleCache: void <init>(int)>(64);
+
+        return;
+    }
+
+    public void <init>(int)
+    {
+        java.util.concurrent.atomic.AtomicLong $r1;
+        cn.trinea.android.common.service.impl.SimpleCache r0;
+        int $i0;
+        java.util.concurrent.ConcurrentHashMap $r4;
+        cn.trinea.android.common.service.impl.RemoveTypeEnterTimeFirst $r3;
+        java.lang.IllegalArgumentException $r2;
+
+        r0 := @this: cn.trinea.android.common.service.impl.SimpleCache;
+
+        $i0 := @parameter0: int;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        $r1 = new java.util.concurrent.atomic.AtomicLong;
+
+        specialinvoke $r1.<java.util.concurrent.atomic.AtomicLong: void <init>(long)>(0L);
+
+        r0.<cn.trinea.android.common.service.impl.SimpleCache: java.util.concurrent.atomic.AtomicLong hitCount> = $r1;
+
+        $r1 = new java.util.concurrent.atomic.AtomicLong;
+
+        specialinvoke $r1.<java.util.concurrent.atomic.AtomicLong: void <init>(long)>(0L);
+
+        r0.<cn.trinea.android.common.service.impl.SimpleCache: java.util.concurrent.atomic.AtomicLong missCount> = $r1;
+
+        if $i0 > 0 goto label1;
+
+        $r2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("The maxSize of cache must be greater than 0.");
+
+        throw $r2;
+
+     label1:
+        r0.<cn.trinea.android.common.service.impl.SimpleCache: int maxSize> = $i0;
+
+        $r3 = new cn.trinea.android.common.service.impl.RemoveTypeEnterTimeFirst;
+
+        specialinvoke $r3.<cn.trinea.android.common.service.impl.RemoveTypeEnterTimeFirst: void <init>()>();
+
+        r0.<cn.trinea.android.common.service.impl.SimpleCache: cn.trinea.android.common.service.CacheFullRemoveType cacheFullRemoveType> = $r3;
+
+        r0.<cn.trinea.android.common.service.impl.SimpleCache: long validTime> = -1L;
+
+        $r4 = new java.util.concurrent.ConcurrentHashMap;
+
+        specialinvoke $r4.<java.util.concurrent.ConcurrentHashMap: void <init>(int)>($i0);
+
+        r0.<cn.trinea.android.common.service.impl.SimpleCache: java.util.Map cache> = $r4;
+
+        return;
+    }
+
+    public static cn.trinea.android.common.service.impl.SimpleCache loadCache(java.lang.String)
+    {
+        java.lang.Object $r1;
+        cn.trinea.android.common.service.impl.SimpleCache $r2;
+        java.lang.String $r0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 = staticinvoke <cn.trinea.android.common.util.SerializeUtils: java.lang.Object deserialization(java.lang.String)>($r0);
+
+        $r2 = (cn.trinea.android.common.service.impl.SimpleCache) $r1;
+
+        return $r2;
+    }
+
+    public static void saveCache(java.lang.String, cn.trinea.android.common.service.impl.SimpleCache)
+    {
+        cn.trinea.android.common.service.impl.SimpleCache $r1;
+        java.lang.String $r0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: cn.trinea.android.common.service.impl.SimpleCache;
+
+        staticinvoke <cn.trinea.android.common.util.SerializeUtils: void serialization(java.lang.String,java.lang.Object)>($r0, $r1);
+
+        return;
+    }
+
+    public void clear()
+    {
+        cn.trinea.android.common.service.impl.SimpleCache r0;
+        java.util.Map $r1;
+
+        r0 := @this: cn.trinea.android.common.service.impl.SimpleCache;
+
+        $r1 = r0.<cn.trinea.android.common.service.impl.SimpleCache: java.util.Map cache>;
+
+        interfaceinvoke $r1.<java.util.Map: void clear()>();
+
+        return;
+    }
+
+    public boolean containsKey(java.lang.Object)
+    {
+        cn.trinea.android.common.service.impl.SimpleCache r0;
+        java.util.Map $r2;
+        java.lang.Object $r1;
+        boolean $z0;
+
+        r0 := @this: cn.trinea.android.common.service.impl.SimpleCache;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 = r0.<cn.trinea.android.common.service.impl.SimpleCache: java.util.Map cache>;
+
+        $z0 = interfaceinvoke $r2.<java.util.Map: boolean containsKey(java.lang.Object)>($r1);
+
+        if $z0 == 0 goto label1;
+
+        $z0 = virtualinvoke r0.<cn.trinea.android.common.service.impl.SimpleCache: boolean isExpired(java.lang.Object)>($r1);
+
+        if $z0 != 0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public java.util.Set entrySet()
+    {
+        java.util.Set $r1;
+        cn.trinea.android.common.service.impl.SimpleCache r0;
+        java.util.Map $r2;
+
+        r0 := @this: cn.trinea.android.common.service.impl.SimpleCache;
+
+        virtualinvoke r0.<cn.trinea.android.common.service.impl.SimpleCache: int removeExpired()>();
+
+        $r2 = r0.<cn.trinea.android.common.service.impl.SimpleCache: java.util.Map cache>;
+
+        $r1 = interfaceinvoke $r2.<java.util.Map: java.util.Set entrySet()>();
+
+        return $r1;
+    }
+
+    protected cn.trinea.android.common.entity.CacheObject fullRemoveOne()
+    {
+        java.util.Map$Entry $r8;
+        java.util.Iterator $r4;
+        java.util.Set $r3;
+        cn.trinea.android.common.service.CacheFullRemoveType $r1;
+        cn.trinea.android.common.service.impl.SimpleCache r0;
+        java.util.Map $r2;
+        int $i0;
+        java.lang.Object $r6, $r7;
+        cn.trinea.android.common.entity.CacheObject $r5, $r9;
+        boolean $z0;
+
+        r0 := @this: cn.trinea.android.common.service.impl.SimpleCache;
+
+        $r2 = r0.<cn.trinea.android.common.service.impl.SimpleCache: java.util.Map cache>;
+
+        $z0 = staticinvoke <cn.trinea.android.common.util.MapUtils: boolean isEmpty(java.util.Map)>($r2);
+
+        if $z0 != 0 goto label1;
+
+        $r1 = r0.<cn.trinea.android.common.service.impl.SimpleCache: cn.trinea.android.common.service.CacheFullRemoveType cacheFullRemoveType>;
+
+        $z0 = $r1 instanceof cn.trinea.android.common.service.impl.RemoveTypeNotRemove;
+
+        if $z0 == 0 goto label2;
+
+     label1:
+        return null;
+
+     label2:
+        $r2 = r0.<cn.trinea.android.common.service.impl.SimpleCache: java.util.Map cache>;
+
+        $r3 = interfaceinvoke $r2.<java.util.Map: java.util.Set entrySet()>();
+
+        $r4 = interfaceinvoke $r3.<java.util.Set: java.util.Iterator iterator()>();
+
+        $r5 = null;
+
+        $r6 = null;
+
+     label3:
+        $z0 = interfaceinvoke $r4.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 != 0 goto label4;
+
+        if $r6 == null goto label6;
+
+        $r2 = r0.<cn.trinea.android.common.service.impl.SimpleCache: java.util.Map cache>;
+
+        interfaceinvoke $r2.<java.util.Map: java.lang.Object remove(java.lang.Object)>($r6);
+
+        return $r5;
+
+     label4:
+        $r7 = interfaceinvoke $r4.<java.util.Iterator: java.lang.Object next()>();
+
+        $r8 = (java.util.Map$Entry) $r7;
+
+        if $r8 == null goto label3;
+
+        if $r5 != null goto label5;
+
+        $r6 = interfaceinvoke $r8.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+        $r5 = (cn.trinea.android.common.entity.CacheObject) $r6;
+
+        $r6 = interfaceinvoke $r8.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+        goto label3;
+
+     label5:
+        $r1 = r0.<cn.trinea.android.common.service.impl.SimpleCache: cn.trinea.android.common.service.CacheFullRemoveType cacheFullRemoveType>;
+
+        $r7 = interfaceinvoke $r8.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+        $r9 = (cn.trinea.android.common.entity.CacheObject) $r7;
+
+        $i0 = interfaceinvoke $r1.<cn.trinea.android.common.service.CacheFullRemoveType: int compare(cn.trinea.android.common.entity.CacheObject,cn.trinea.android.common.entity.CacheObject)>($r9, $r5);
+
+        if $i0 >= 0 goto label3;
+
+        $r6 = interfaceinvoke $r8.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+        $r5 = (cn.trinea.android.common.entity.CacheObject) $r6;
+
+        $r6 = interfaceinvoke $r8.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+        goto label3;
+
+     label6:
+        return $r5;
+    }
+
+    public cn.trinea.android.common.entity.CacheObject get(java.lang.Object)
+    {
+        java.util.concurrent.atomic.AtomicLong $r4;
+        cn.trinea.android.common.service.impl.SimpleCache r0;
+        java.util.Map $r2;
+        java.lang.Object $r1;
+        cn.trinea.android.common.entity.CacheObject $r3;
+        boolean $z0;
+
+        r0 := @this: cn.trinea.android.common.service.impl.SimpleCache;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 = r0.<cn.trinea.android.common.service.impl.SimpleCache: java.util.Map cache>;
+
+        $r1 = interfaceinvoke $r2.<java.util.Map: java.lang.Object get(java.lang.Object)>($r1);
+
+        $r3 = (cn.trinea.android.common.entity.CacheObject) $r1;
+
+        $z0 = virtualinvoke r0.<cn.trinea.android.common.service.impl.SimpleCache: boolean isExpired(cn.trinea.android.common.entity.CacheObject)>($r3);
+
+        if $z0 != 0 goto label1;
+
+        if $r3 == null goto label1;
+
+        $r4 = r0.<cn.trinea.android.common.service.impl.SimpleCache: java.util.concurrent.atomic.AtomicLong hitCount>;
+
+        virtualinvoke $r4.<java.util.concurrent.atomic.AtomicLong: long incrementAndGet()>();
+
+        virtualinvoke r0.<cn.trinea.android.common.service.impl.SimpleCache: void setUsedInfo(cn.trinea.android.common.entity.CacheObject)>($r3);
+
+        return $r3;
+
+     label1:
+        $r4 = r0.<cn.trinea.android.common.service.impl.SimpleCache: java.util.concurrent.atomic.AtomicLong missCount>;
+
+        virtualinvoke $r4.<java.util.concurrent.atomic.AtomicLong: long incrementAndGet()>();
+
+        return null;
+    }
+
+    public cn.trinea.android.common.service.CacheFullRemoveType getCacheFullRemoveType()
+    {
+        cn.trinea.android.common.service.CacheFullRemoveType r1;
+        cn.trinea.android.common.service.impl.SimpleCache r0;
+
+        r0 := @this: cn.trinea.android.common.service.impl.SimpleCache;
+
+        r1 = r0.<cn.trinea.android.common.service.impl.SimpleCache: cn.trinea.android.common.service.CacheFullRemoveType cacheFullRemoveType>;
+
+        return r1;
+    }
+
+    public long getHitCount()
+    {
+        java.util.concurrent.atomic.AtomicLong $r1;
+        cn.trinea.android.common.service.impl.SimpleCache r0;
+        long $l0;
+
+        r0 := @this: cn.trinea.android.common.service.impl.SimpleCache;
+
+        $r1 = r0.<cn.trinea.android.common.service.impl.SimpleCache: java.util.concurrent.atomic.AtomicLong hitCount>;
+
+        $l0 = virtualinvoke $r1.<java.util.concurrent.atomic.AtomicLong: long get()>();
+
+        return $l0;
+    }
+
+    public double getHitRate()
+    {
+        java.lang.Throwable $r2;
+        long $l0, $l1;
+        java.util.concurrent.atomic.AtomicLong $r1;
+        cn.trinea.android.common.service.impl.SimpleCache r0;
+        byte $b2;
+        double $d0, $d1;
+
+        r0 := @this: cn.trinea.android.common.service.impl.SimpleCache;
+
+        entermonitor r0;
+
+     label1:
+        $r1 = r0.<cn.trinea.android.common.service.impl.SimpleCache: java.util.concurrent.atomic.AtomicLong hitCount>;
+
+        $l0 = virtualinvoke $r1.<java.util.concurrent.atomic.AtomicLong: long get()>();
+
+        $r1 = r0.<cn.trinea.android.common.service.impl.SimpleCache: java.util.concurrent.atomic.AtomicLong missCount>;
+
+        $l1 = virtualinvoke $r1.<java.util.concurrent.atomic.AtomicLong: long get()>();
+
+     label2:
+        $l0 = $l0 + $l1;
+
+        $b2 = $l0 cmp 0L;
+
+        if $b2 != 0 goto label4;
+
+        $d0 = 0.0;
+
+     label3:
+        exitmonitor r0;
+
+        return $d0;
+
+     label4:
+        $r1 = r0.<cn.trinea.android.common.service.impl.SimpleCache: java.util.concurrent.atomic.AtomicLong hitCount>;
+
+        $l1 = virtualinvoke $r1.<java.util.concurrent.atomic.AtomicLong: long get()>();
+
+     label5:
+        $d0 = (double) $l1;
+
+        $d1 = (double) $l0;
+
+        $d0 = $d0 / $d1;
+
+        goto label3;
+
+     label6:
+        $r2 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label6;
+        catch java.lang.Throwable from label4 to label5 with label6;
+    }
+
+    public int getMaxSize()
+    {
+        int i0;
+        cn.trinea.android.common.service.impl.SimpleCache r0;
+
+        r0 := @this: cn.trinea.android.common.service.impl.SimpleCache;
+
+        i0 = r0.<cn.trinea.android.common.service.impl.SimpleCache: int maxSize>;
+
+        return i0;
+    }
+
+    public long getMissCount()
+    {
+        java.util.concurrent.atomic.AtomicLong $r1;
+        cn.trinea.android.common.service.impl.SimpleCache r0;
+        long $l0;
+
+        r0 := @this: cn.trinea.android.common.service.impl.SimpleCache;
+
+        $r1 = r0.<cn.trinea.android.common.service.impl.SimpleCache: java.util.concurrent.atomic.AtomicLong missCount>;
+
+        $l0 = virtualinvoke $r1.<java.util.concurrent.atomic.AtomicLong: long get()>();
+
+        return $l0;
+    }
+
+    public int getSize()
+    {
+        int $i0;
+        cn.trinea.android.common.service.impl.SimpleCache r0;
+        java.util.Map $r1;
+
+        r0 := @this: cn.trinea.android.common.service.impl.SimpleCache;
+
+        virtualinvoke r0.<cn.trinea.android.common.service.impl.SimpleCache: int removeExpired()>();
+
+        $r1 = r0.<cn.trinea.android.common.service.impl.SimpleCache: java.util.Map cache>;
+
+        $i0 = interfaceinvoke $r1.<java.util.Map: int size()>();
+
+        return $i0;
+    }
+
+    public long getValidTime()
+    {
+        cn.trinea.android.common.service.impl.SimpleCache r0;
+        long l0;
+
+        r0 := @this: cn.trinea.android.common.service.impl.SimpleCache;
+
+        l0 = r0.<cn.trinea.android.common.service.impl.SimpleCache: long validTime>;
+
+        return l0;
+    }
+
+    protected boolean isExpired(cn.trinea.android.common.entity.CacheObject)
+    {
+        cn.trinea.android.common.service.impl.SimpleCache r0;
+        byte $b1;
+        int $i3;
+        long $l0, $l2;
+        cn.trinea.android.common.entity.CacheObject $r1;
+        boolean $z0;
+
+        r0 := @this: cn.trinea.android.common.service.impl.SimpleCache;
+
+        $r1 := @parameter0: cn.trinea.android.common.entity.CacheObject;
+
+        $l0 = r0.<cn.trinea.android.common.service.impl.SimpleCache: long validTime>;
+
+        $b1 = $l0 cmp -1L;
+
+        if $b1 == 0 goto label3;
+
+        if $r1 == null goto label2;
+
+        $z0 = virtualinvoke $r1.<cn.trinea.android.common.entity.CacheObject: boolean isExpired()>();
+
+        if $z0 == 0 goto label1;
+
+        $z0 = virtualinvoke $r1.<cn.trinea.android.common.entity.CacheObject: boolean isForever()>();
+
+        if $z0 == 0 goto label2;
+
+     label1:
+        $l0 = virtualinvoke $r1.<cn.trinea.android.common.entity.CacheObject: long getEnterTime()>();
+
+        $l2 = r0.<cn.trinea.android.common.service.impl.SimpleCache: long validTime>;
+
+        $l0 = $l0 + $l2;
+
+        $l2 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $b1 = $l0 cmp $l2;
+
+        $i3 = (int) $b1;
+
+        if $i3 >= 0 goto label3;
+
+     label2:
+        return 1;
+
+     label3:
+        return 0;
+    }
+
+    protected boolean isExpired(java.lang.Object)
+    {
+        cn.trinea.android.common.service.impl.SimpleCache r0;
+        byte $b1;
+        java.util.Map $r2;
+        java.lang.Object $r1;
+        long $l0;
+        cn.trinea.android.common.entity.CacheObject $r3;
+        boolean $z0;
+
+        r0 := @this: cn.trinea.android.common.service.impl.SimpleCache;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $l0 = r0.<cn.trinea.android.common.service.impl.SimpleCache: long validTime>;
+
+        $b1 = $l0 cmp -1L;
+
+        if $b1 != 0 goto label1;
+
+        return 0;
+
+     label1:
+        $r2 = r0.<cn.trinea.android.common.service.impl.SimpleCache: java.util.Map cache>;
+
+        $r1 = interfaceinvoke $r2.<java.util.Map: java.lang.Object get(java.lang.Object)>($r1);
+
+        $r3 = (cn.trinea.android.common.entity.CacheObject) $r1;
+
+        $z0 = virtualinvoke r0.<cn.trinea.android.common.service.impl.SimpleCache: boolean isExpired(cn.trinea.android.common.entity.CacheObject)>($r3);
+
+        return $z0;
+    }
+
+    public java.util.Set keySet()
+    {
+        java.util.Set $r1;
+        cn.trinea.android.common.service.impl.SimpleCache r0;
+        java.util.Map $r2;
+
+        r0 := @this: cn.trinea.android.common.service.impl.SimpleCache;
+
+        virtualinvoke r0.<cn.trinea.android.common.service.impl.SimpleCache: int removeExpired()>();
+
+        $r2 = r0.<cn.trinea.android.common.service.impl.SimpleCache: java.util.Map cache>;
+
+        $r1 = interfaceinvoke $r2.<java.util.Map: java.util.Set keySet()>();
+
+        return $r1;
+    }
+
+    public cn.trinea.android.common.entity.CacheObject put(java.lang.Object, cn.trinea.android.common.entity.CacheObject)
+    {
+        java.lang.Throwable $r6;
+        long $l2;
+        cn.trinea.android.common.service.CacheFullRemoveType $r4;
+        cn.trinea.android.common.service.impl.SimpleCache r0;
+        java.util.Map $r3;
+        int $i0, $i1;
+        java.lang.Object $r1;
+        cn.trinea.android.common.entity.CacheObject $r2, $r5;
+        boolean $z0;
+
+        r0 := @this: cn.trinea.android.common.service.impl.SimpleCache;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 := @parameter1: cn.trinea.android.common.entity.CacheObject;
+
+        entermonitor r0;
+
+     label1:
+        $r3 = r0.<cn.trinea.android.common.service.impl.SimpleCache: java.util.Map cache>;
+
+        $i1 = interfaceinvoke $r3.<java.util.Map: int size()>();
+
+        $i0 = r0.<cn.trinea.android.common.service.impl.SimpleCache: int maxSize>;
+
+        if $i1 < $i0 goto label5;
+
+        $i0 = virtualinvoke r0.<cn.trinea.android.common.service.impl.SimpleCache: int removeExpired()>();
+
+        if $i0 > 0 goto label5;
+
+        $r4 = r0.<cn.trinea.android.common.service.impl.SimpleCache: cn.trinea.android.common.service.CacheFullRemoveType cacheFullRemoveType>;
+
+        $z0 = $r4 instanceof cn.trinea.android.common.service.impl.RemoveTypeNotRemove;
+
+     label2:
+        if $z0 == 0 goto label4;
+
+        $r2 = null;
+
+     label3:
+        exitmonitor r0;
+
+        return $r2;
+
+     label4:
+        $r5 = virtualinvoke r0.<cn.trinea.android.common.service.impl.SimpleCache: cn.trinea.android.common.entity.CacheObject fullRemoveOne()>();
+
+        if $r5 != null goto label5;
+
+        $r2 = null;
+
+        goto label3;
+
+     label5:
+        $l2 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        virtualinvoke $r2.<cn.trinea.android.common.entity.CacheObject: void setEnterTime(long)>($l2);
+
+        $r3 = r0.<cn.trinea.android.common.service.impl.SimpleCache: java.util.Map cache>;
+
+        interfaceinvoke $r3.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r1, $r2);
+
+     label6:
+        goto label3;
+
+     label7:
+        $r6 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r6;
+
+        catch java.lang.Throwable from label1 to label2 with label7;
+        catch java.lang.Throwable from label4 to label6 with label7;
+    }
+
+    public cn.trinea.android.common.entity.CacheObject put(java.lang.Object, java.lang.Object)
+    {
+        cn.trinea.android.common.service.impl.SimpleCache r0;
+        byte $b1;
+        java.lang.Object $r1, $r2;
+        long $l0;
+        cn.trinea.android.common.entity.CacheObject $r3;
+        boolean $z0;
+
+        r0 := @this: cn.trinea.android.common.service.impl.SimpleCache;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 := @parameter1: java.lang.Object;
+
+        $r3 = new cn.trinea.android.common.entity.CacheObject;
+
+        specialinvoke $r3.<cn.trinea.android.common.entity.CacheObject: void <init>()>();
+
+        virtualinvoke $r3.<cn.trinea.android.common.entity.CacheObject: void setData(java.lang.Object)>($r2);
+
+        $l0 = r0.<cn.trinea.android.common.service.impl.SimpleCache: long validTime>;
+
+        $b1 = $l0 cmp -1L;
+
+        if $b1 != 0 goto label2;
+
+        $z0 = 1;
+
+     label1:
+        virtualinvoke $r3.<cn.trinea.android.common.entity.CacheObject: void setForever(boolean)>($z0);
+
+        $r3 = virtualinvoke r0.<cn.trinea.android.common.service.impl.SimpleCache: cn.trinea.android.common.entity.CacheObject put(java.lang.Object,cn.trinea.android.common.entity.CacheObject)>($r1, $r3);
+
+        return $r3;
+
+     label2:
+        $z0 = 0;
+
+        goto label1;
+    }
+
+    public void putAll(cn.trinea.android.common.service.Cache)
+    {
+        cn.trinea.android.common.service.Cache $r1;
+        java.util.Map$Entry $r5;
+        java.util.Iterator $r3;
+        java.util.Set $r2;
+        cn.trinea.android.common.service.impl.SimpleCache r0;
+        java.lang.Object $r4, $r6;
+        cn.trinea.android.common.entity.CacheObject $r7;
+        boolean $z0;
+
+        r0 := @this: cn.trinea.android.common.service.impl.SimpleCache;
+
+        $r1 := @parameter0: cn.trinea.android.common.service.Cache;
+
+        $r2 = interfaceinvoke $r1.<cn.trinea.android.common.service.Cache: java.util.Set entrySet()>();
+
+        $r3 = interfaceinvoke $r2.<java.util.Set: java.util.Iterator iterator()>();
+
+     label1:
+        $z0 = interfaceinvoke $r3.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 != 0 goto label2;
+
+        return;
+
+     label2:
+        $r4 = interfaceinvoke $r3.<java.util.Iterator: java.lang.Object next()>();
+
+        $r5 = (java.util.Map$Entry) $r4;
+
+        if $r5 == null goto label1;
+
+        $r4 = interfaceinvoke $r5.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+        $r6 = interfaceinvoke $r5.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+        $r7 = (cn.trinea.android.common.entity.CacheObject) $r6;
+
+        virtualinvoke r0.<cn.trinea.android.common.service.impl.SimpleCache: cn.trinea.android.common.entity.CacheObject put(java.lang.Object,cn.trinea.android.common.entity.CacheObject)>($r4, $r7);
+
+        goto label1;
+    }
+
+    public cn.trinea.android.common.entity.CacheObject remove(java.lang.Object)
+    {
+        cn.trinea.android.common.service.impl.SimpleCache r0;
+        java.util.Map $r2;
+        java.lang.Object $r1;
+        cn.trinea.android.common.entity.CacheObject $r3;
+
+        r0 := @this: cn.trinea.android.common.service.impl.SimpleCache;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 = r0.<cn.trinea.android.common.service.impl.SimpleCache: java.util.Map cache>;
+
+        $r1 = interfaceinvoke $r2.<java.util.Map: java.lang.Object remove(java.lang.Object)>($r1);
+
+        $r3 = (cn.trinea.android.common.entity.CacheObject) $r1;
+
+        return $r3;
+    }
+
+    protected int removeExpired()
+    {
+        java.lang.Throwable $r7;
+        java.util.Map$Entry $r5;
+        java.util.Iterator $r3;
+        java.util.Set $r2;
+        long $l1;
+        cn.trinea.android.common.service.impl.SimpleCache r0;
+        byte $b2;
+        java.util.Map $r1;
+        int $i0;
+        java.lang.Object $r4;
+        cn.trinea.android.common.entity.CacheObject $r6;
+        boolean $z0;
+
+        r0 := @this: cn.trinea.android.common.service.impl.SimpleCache;
+
+        $i0 = 0;
+
+        entermonitor r0;
+
+     label1:
+        $l1 = r0.<cn.trinea.android.common.service.impl.SimpleCache: long validTime>;
+
+     label2:
+        $b2 = $l1 cmp -1L;
+
+        if $b2 != 0 goto label4;
+
+     label3:
+        exitmonitor r0;
+
+        return $i0;
+
+     label4:
+        $r1 = r0.<cn.trinea.android.common.service.impl.SimpleCache: java.util.Map cache>;
+
+        $r2 = interfaceinvoke $r1.<java.util.Map: java.util.Set entrySet()>();
+
+        $r3 = interfaceinvoke $r2.<java.util.Set: java.util.Iterator iterator()>();
+
+        $i0 = 0;
+
+     label5:
+        $z0 = interfaceinvoke $r3.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label3;
+
+        $r4 = interfaceinvoke $r3.<java.util.Iterator: java.lang.Object next()>();
+
+        $r5 = (java.util.Map$Entry) $r4;
+
+        if $r5 == null goto label5;
+
+        $r4 = interfaceinvoke $r5.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+        $r6 = (cn.trinea.android.common.entity.CacheObject) $r4;
+
+        $z0 = virtualinvoke r0.<cn.trinea.android.common.service.impl.SimpleCache: boolean isExpired(cn.trinea.android.common.entity.CacheObject)>($r6);
+
+        if $z0 == 0 goto label5;
+
+        $r1 = r0.<cn.trinea.android.common.service.impl.SimpleCache: java.util.Map cache>;
+
+        $r4 = interfaceinvoke $r5.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+        interfaceinvoke $r1.<java.util.Map: java.lang.Object remove(java.lang.Object)>($r4);
+
+     label6:
+        $i0 = $i0 + 1;
+
+        goto label5;
+
+     label7:
+        $r7 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r7;
+
+        catch java.lang.Throwable from label1 to label2 with label7;
+        catch java.lang.Throwable from label4 to label6 with label7;
+    }
+
+    public void setCacheFullRemoveType(cn.trinea.android.common.service.CacheFullRemoveType)
+    {
+        cn.trinea.android.common.service.CacheFullRemoveType $r1;
+        cn.trinea.android.common.service.impl.SimpleCache r0;
+        java.lang.IllegalArgumentException $r2;
+
+        r0 := @this: cn.trinea.android.common.service.impl.SimpleCache;
+
+        $r1 := @parameter0: cn.trinea.android.common.service.CacheFullRemoveType;
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("The cacheFullRemoveType of cache cannot be null.");
+
+        throw $r2;
+
+     label1:
+        r0.<cn.trinea.android.common.service.impl.SimpleCache: cn.trinea.android.common.service.CacheFullRemoveType cacheFullRemoveType> = $r1;
+
+        return;
+    }
+
+    protected void setUsedInfo(cn.trinea.android.common.entity.CacheObject)
+    {
+        java.lang.Throwable $r2;
+        cn.trinea.android.common.service.impl.SimpleCache r0;
+        long $l0;
+        cn.trinea.android.common.entity.CacheObject $r1;
+
+        r0 := @this: cn.trinea.android.common.service.impl.SimpleCache;
+
+        $r1 := @parameter0: cn.trinea.android.common.entity.CacheObject;
+
+        entermonitor r0;
+
+        if $r1 == null goto label2;
+
+     label1:
+        virtualinvoke $r1.<cn.trinea.android.common.entity.CacheObject: long getAndIncrementUsedCount()>();
+
+        $l0 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        virtualinvoke $r1.<cn.trinea.android.common.entity.CacheObject: void setLastUsedTime(long)>($l0);
+
+     label2:
+        exitmonitor r0;
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void setValidTime(long)
+    {
+        cn.trinea.android.common.service.impl.SimpleCache r0;
+        byte $b1;
+        int $i2;
+        long $l0;
+
+        r0 := @this: cn.trinea.android.common.service.impl.SimpleCache;
+
+        $l0 := @parameter0: long;
+
+        $b1 = $l0 cmp 0L;
+
+        $i2 = (int) $b1;
+
+        if $i2 > 0 goto label1;
+
+        $l0 = -1L;
+
+     label1:
+        r0.<cn.trinea.android.common.service.impl.SimpleCache: long validTime> = $l0;
+
+        return;
+    }
+
+    public java.util.Collection values()
+    {
+        cn.trinea.android.common.service.impl.SimpleCache r0;
+        java.util.Collection $r1;
+        java.util.Map $r2;
+
+        r0 := @this: cn.trinea.android.common.service.impl.SimpleCache;
+
+        virtualinvoke r0.<cn.trinea.android.common.service.impl.SimpleCache: int removeExpired()>();
+
+        $r2 = r0.<cn.trinea.android.common.service.impl.SimpleCache: java.util.Map cache>;
+
+        $r1 = interfaceinvoke $r2.<java.util.Map: java.util.Collection values()>();
+
+        return $r1;
+    }
+
+    public static void <clinit>()
+    {
+        <cn.trinea.android.common.service.impl.SimpleCache: long serialVersionUID> = 1L;
+
+        <cn.trinea.android.common.service.impl.SimpleCache: int DEFAULT_MAX_SIZE> = 64;
+
+        return;
+    }
+}

@@ -1,0 +1,1111 @@
+public class proguard.optimize.peephole.MethodInliner extends proguard.classfile.util.SimplifiedVisitor implements proguard.classfile.attribute.visitor.AttributeVisitor, proguard.classfile.instruction.visitor.InstructionVisitor, proguard.classfile.constant.visitor.ConstantVisitor, proguard.classfile.visitor.MemberVisitor
+{
+    private static final boolean DEBUG;
+    private static final int MAXIMUM_CODE_EXPANSION;
+    private static final int MAXIMUM_EXTRA_CODE_LENGTH;
+    private static final int MAXIMUM_INLINED_CODE_LENGTH;
+    private static final int MAXIMUM_RESULTING_CODE_LENGTH_JME;
+    private static final int MAXIMUM_RESULTING_CODE_LENGTH_JSE;
+    private final proguard.optimize.info.AccessMethodMarker accessMethodMarker;
+    private final boolean allowAccessModification;
+    private final proguard.optimize.info.CatchExceptionMarker catchExceptionMarker;
+    private final proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer;
+    private proguard.classfile.editor.ConstantAdder constantAdder;
+    private boolean emptyInvokingStack;
+    private int estimatedResultingCodeLength;
+    private proguard.classfile.editor.ExceptionInfoAdder exceptionInfoAdder;
+    private final proguard.classfile.instruction.visitor.InstructionVisitor extraInlinedInvocationVisitor;
+    private final boolean inlineSingleInvocations;
+    private boolean inlined;
+    private boolean inlinedAny;
+    private boolean inlining;
+    private java.util.Stack inliningMethods;
+    private final boolean microEdition;
+    private final proguard.classfile.attribute.visitor.StackSizeComputer stackSizeComputer;
+    private proguard.classfile.ProgramClass targetClass;
+    private proguard.classfile.ProgramMethod targetMethod;
+    private int uninitializedObjectCount;
+    private int variableOffset;
+
+    static void <clinit>()
+    {
+        int $i0;
+        java.lang.String $r0;
+
+        <proguard.optimize.peephole.MethodInliner: int MAXIMUM_EXTRA_CODE_LENGTH> = 128;
+
+        <proguard.optimize.peephole.MethodInliner: int MAXIMUM_CODE_EXPANSION> = 2;
+
+        <proguard.optimize.peephole.MethodInliner: boolean DEBUG> = 0;
+
+        $r0 = staticinvoke <java.lang.System: java.lang.String getProperty(java.lang.String,java.lang.String)>("maximum.inlined.code.length", "8");
+
+        $i0 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String)>($r0);
+
+        <proguard.optimize.peephole.MethodInliner: int MAXIMUM_INLINED_CODE_LENGTH> = $i0;
+
+        $r0 = staticinvoke <java.lang.System: java.lang.String getProperty(java.lang.String,java.lang.String)>("maximum.resulting.code.length", "7000");
+
+        $i0 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String)>($r0);
+
+        <proguard.optimize.peephole.MethodInliner: int MAXIMUM_RESULTING_CODE_LENGTH_JSE> = $i0;
+
+        $r0 = staticinvoke <java.lang.System: java.lang.String getProperty(java.lang.String,java.lang.String)>("maximum.resulting.code.length", "2000");
+
+        $i0 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String)>($r0);
+
+        <proguard.optimize.peephole.MethodInliner: int MAXIMUM_RESULTING_CODE_LENGTH_JME> = $i0;
+
+        return;
+    }
+
+    public void <init>(boolean, boolean, boolean)
+    {
+        proguard.optimize.peephole.MethodInliner r0;
+        boolean $z0, $z1, $z2;
+
+        r0 := @this: proguard.optimize.peephole.MethodInliner;
+
+        $z0 := @parameter0: boolean;
+
+        $z1 := @parameter1: boolean;
+
+        $z2 := @parameter2: boolean;
+
+        specialinvoke r0.<proguard.optimize.peephole.MethodInliner: void <init>(boolean,boolean,boolean,proguard.classfile.instruction.visitor.InstructionVisitor)>($z0, $z1, $z2, null);
+
+        return;
+    }
+
+    public void <init>(boolean, boolean, boolean, proguard.classfile.instruction.visitor.InstructionVisitor)
+    {
+        proguard.optimize.info.CatchExceptionMarker $r4;
+        proguard.optimize.peephole.MethodInliner r0;
+        proguard.classfile.editor.CodeAttributeComposer $r2;
+        java.util.Stack $r6;
+        proguard.classfile.instruction.visitor.InstructionVisitor $r1;
+        proguard.optimize.info.AccessMethodMarker $r3;
+        proguard.classfile.attribute.visitor.StackSizeComputer $r5;
+        boolean $z0, $z1, $z2;
+
+        r0 := @this: proguard.optimize.peephole.MethodInliner;
+
+        $z0 := @parameter0: boolean;
+
+        $z1 := @parameter1: boolean;
+
+        $z2 := @parameter2: boolean;
+
+        $r1 := @parameter3: proguard.classfile.instruction.visitor.InstructionVisitor;
+
+        specialinvoke r0.<proguard.classfile.util.SimplifiedVisitor: void <init>()>();
+
+        $r2 = new proguard.classfile.editor.CodeAttributeComposer;
+
+        specialinvoke $r2.<proguard.classfile.editor.CodeAttributeComposer: void <init>()>();
+
+        r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer> = $r2;
+
+        $r3 = new proguard.optimize.info.AccessMethodMarker;
+
+        specialinvoke $r3.<proguard.optimize.info.AccessMethodMarker: void <init>()>();
+
+        r0.<proguard.optimize.peephole.MethodInliner: proguard.optimize.info.AccessMethodMarker accessMethodMarker> = $r3;
+
+        $r4 = new proguard.optimize.info.CatchExceptionMarker;
+
+        specialinvoke $r4.<proguard.optimize.info.CatchExceptionMarker: void <init>()>();
+
+        r0.<proguard.optimize.peephole.MethodInliner: proguard.optimize.info.CatchExceptionMarker catchExceptionMarker> = $r4;
+
+        $r5 = new proguard.classfile.attribute.visitor.StackSizeComputer;
+
+        specialinvoke $r5.<proguard.classfile.attribute.visitor.StackSizeComputer: void <init>()>();
+
+        r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.attribute.visitor.StackSizeComputer stackSizeComputer> = $r5;
+
+        $r6 = new java.util.Stack;
+
+        specialinvoke $r6.<java.util.Stack: void <init>()>();
+
+        r0.<proguard.optimize.peephole.MethodInliner: java.util.Stack inliningMethods> = $r6;
+
+        r0.<proguard.optimize.peephole.MethodInliner: boolean microEdition> = $z0;
+
+        r0.<proguard.optimize.peephole.MethodInliner: boolean allowAccessModification> = $z1;
+
+        r0.<proguard.optimize.peephole.MethodInliner: boolean inlineSingleInvocations> = $z2;
+
+        r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.instruction.visitor.InstructionVisitor extraInlinedInvocationVisitor> = $r1;
+
+        return;
+    }
+
+    private void copyCode(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.editor.ExceptionInfoAdder $r5;
+        proguard.optimize.peephole.MethodInliner r0;
+        int $i0;
+        proguard.classfile.Method $r2;
+        proguard.classfile.editor.CodeAttributeComposer $r4;
+
+        r0 := @this: proguard.optimize.peephole.MethodInliner;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer>;
+
+        $i0 = $r3.<proguard.classfile.attribute.CodeAttribute: int u4codeLength>;
+
+        virtualinvoke $r4.<proguard.classfile.editor.CodeAttributeComposer: void beginCodeFragment(int)>($i0);
+
+        virtualinvoke $r3.<proguard.classfile.attribute.CodeAttribute: void instructionsAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.instruction.visitor.InstructionVisitor)>($r1, $r2, r0);
+
+        $r5 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.editor.ExceptionInfoAdder exceptionInfoAdder>;
+
+        virtualinvoke $r3.<proguard.classfile.attribute.CodeAttribute: void exceptionsAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.visitor.ExceptionInfoVisitor)>($r1, $r2, $r5);
+
+        $r4 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer>;
+
+        $i0 = $r3.<proguard.classfile.attribute.CodeAttribute: int u4codeLength>;
+
+        virtualinvoke $r4.<proguard.classfile.editor.CodeAttributeComposer: void appendLabel(int)>($i0);
+
+        $r4 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer>;
+
+        virtualinvoke $r4.<proguard.classfile.editor.CodeAttributeComposer: void endCodeFragment()>();
+
+        return;
+    }
+
+    private void storeParameters(proguard.classfile.Clazz, proguard.classfile.Method)
+    {
+        proguard.optimize.peephole.MethodInliner r0;
+        java.lang.String[] $r3;
+        proguard.classfile.editor.CodeAttributeComposer $r6;
+        byte $b4;
+        proguard.classfile.Clazz $r1;
+        int $i0, $i1, $i2, $i5;
+        java.lang.String $r4;
+        boolean $z0, $z1;
+        char $c3;
+        proguard.classfile.instruction.VariableInstruction $r9;
+        proguard.classfile.util.InternalTypeEnumeration $r5, $r8;
+        proguard.classfile.instruction.Instruction $r7;
+        proguard.classfile.Method $r2;
+
+        r0 := @this: proguard.optimize.peephole.MethodInliner;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r4 = interfaceinvoke $r2.<proguard.classfile.Method: java.lang.String getDescriptor(proguard.classfile.Clazz)>($r1);
+
+        $i0 = interfaceinvoke $r2.<proguard.classfile.Method: int getAccessFlags()>();
+
+        $i0 = $i0 & 8;
+
+        if $i0 == 0 goto label05;
+
+        $z0 = 1;
+
+     label01:
+        staticinvoke <proguard.classfile.util.ClassUtil: int internalMethodParameterCount(java.lang.String)>($r4);
+
+        $i0 = staticinvoke <proguard.classfile.util.ClassUtil: int internalMethodParameterSize(java.lang.String)>($r4);
+
+        if $z0 == 0 goto label06;
+
+        $z1 = 0;
+
+     label02:
+        $r3 = newarray (java.lang.String)[$i0];
+
+        $r8 = new proguard.classfile.util.InternalTypeEnumeration;
+
+        $r5 = $r8;
+
+        specialinvoke $r8.<proguard.classfile.util.InternalTypeEnumeration: void <init>(java.lang.String)>($r4);
+
+        $i1 = 0;
+
+     label03:
+        if $i1 >= $i0 goto label07;
+
+        $r4 = virtualinvoke $r5.<proguard.classfile.util.InternalTypeEnumeration: java.lang.String nextType()>();
+
+        $r3[$i1] = $r4;
+
+        $i2 = staticinvoke <proguard.classfile.util.ClassUtil: int internalTypeSize(java.lang.String)>($r4);
+
+        if $i2 != 2 goto label04;
+
+        $i1 = $i1 + 1;
+
+     label04:
+        $i1 = $i1 + 1;
+
+        goto label03;
+
+     label05:
+        $z0 = 0;
+
+        goto label01;
+
+     label06:
+        $z1 = 1;
+
+        goto label02;
+
+     label07:
+        $r6 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer>;
+
+        $i1 = $i0 + 1;
+
+        virtualinvoke $r6.<proguard.classfile.editor.CodeAttributeComposer: void beginCodeFragment(int)>($i1);
+
+        $i1 = $i0 - 1;
+
+     label08:
+        if $i1 < 0 goto label16;
+
+        $r4 = $r3[$i1];
+
+        if $r4 == null goto label11;
+
+        $c3 = virtualinvoke $r4.<java.lang.String: char charAt(int)>(0);
+
+        $i2 = (int) $c3;
+
+        lookupswitch($i2)
+        {
+            case 66: goto label12;
+            case 67: goto label12;
+            case 68: goto label15;
+            case 70: goto label14;
+            case 73: goto label12;
+            case 74: goto label13;
+            case 83: goto label12;
+            case 90: goto label12;
+            default: goto label09;
+        };
+
+     label09:
+        $b4 = 58;
+
+     label10:
+        $r6 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer>;
+
+        $i2 = $i0 - $i1;
+
+        $i2 = $i2 - 1;
+
+        $r9 = new proguard.classfile.instruction.VariableInstruction;
+
+        $i5 = r0.<proguard.optimize.peephole.MethodInliner: int variableOffset>;
+
+        $i5 = $i5 + $z1;
+
+        $i5 = $i5 + $i1;
+
+        specialinvoke $r9.<proguard.classfile.instruction.VariableInstruction: void <init>(byte,int)>($b4, $i5);
+
+        $r7 = virtualinvoke $r9.<proguard.classfile.instruction.VariableInstruction: proguard.classfile.instruction.Instruction shrink()>();
+
+        virtualinvoke $r6.<proguard.classfile.editor.CodeAttributeComposer: void appendInstruction(int,proguard.classfile.instruction.Instruction)>($i2, $r7);
+
+     label11:
+        $i1 = $i1 + -1;
+
+        goto label08;
+
+     label12:
+        $b4 = 54;
+
+        goto label10;
+
+     label13:
+        $b4 = 55;
+
+        goto label10;
+
+     label14:
+        $b4 = 56;
+
+        goto label10;
+
+     label15:
+        $b4 = 57;
+
+        goto label10;
+
+     label16:
+        if $z0 != 0 goto label17;
+
+        $r6 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer>;
+
+        $r9 = new proguard.classfile.instruction.VariableInstruction;
+
+        $i1 = r0.<proguard.optimize.peephole.MethodInliner: int variableOffset>;
+
+        specialinvoke $r9.<proguard.classfile.instruction.VariableInstruction: void <init>(byte,int)>(58, $i1);
+
+        $r7 = virtualinvoke $r9.<proguard.classfile.instruction.VariableInstruction: proguard.classfile.instruction.Instruction shrink()>();
+
+        virtualinvoke $r6.<proguard.classfile.editor.CodeAttributeComposer: void appendInstruction(int,proguard.classfile.instruction.Instruction)>($i0, $r7);
+
+     label17:
+        $r6 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer>;
+
+        virtualinvoke $r6.<proguard.classfile.editor.CodeAttributeComposer: void endCodeFragment()>();
+
+        return;
+    }
+
+    public void visitAnyAttribute(proguard.classfile.Clazz, proguard.classfile.attribute.Attribute)
+    {
+        proguard.optimize.peephole.MethodInliner r0;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.Attribute $r2;
+
+        r0 := @this: proguard.optimize.peephole.MethodInliner;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.Attribute;
+
+        return;
+    }
+
+    public void visitAnyInstruction(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.instruction.Instruction)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.instruction.Instruction $r4;
+        proguard.optimize.peephole.MethodInliner r0;
+        int $i0;
+        proguard.classfile.Method $r2;
+        proguard.classfile.editor.CodeAttributeComposer $r5;
+
+        r0 := @this: proguard.optimize.peephole.MethodInliner;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.instruction.Instruction;
+
+        $r5 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer>;
+
+        $r4 = virtualinvoke $r4.<proguard.classfile.instruction.Instruction: proguard.classfile.instruction.Instruction shrink()>();
+
+        virtualinvoke $r5.<proguard.classfile.editor.CodeAttributeComposer: void appendInstruction(int,proguard.classfile.instruction.Instruction)>($i0, $r4);
+
+        return;
+    }
+
+    public void visitAnyMember(proguard.classfile.Clazz, proguard.classfile.Member)
+    {
+        proguard.optimize.peephole.MethodInliner r0;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.Member $r2;
+
+        r0 := @this: proguard.optimize.peephole.MethodInliner;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Member;
+
+        return;
+    }
+
+    public void visitCodeAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute)
+    {
+        proguard.optimize.peephole.MethodInliner r0;
+        proguard.classfile.editor.CodeAttributeComposer $r4;
+        proguard.classfile.ProgramClass $r5;
+        java.util.Stack $r9;
+        byte $b1;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.ProgramMethod $r6;
+        int $i0, $i2;
+        java.lang.String $r10;
+        boolean $z0;
+        proguard.classfile.editor.ConstantAdder $r7;
+        proguard.optimize.info.CatchExceptionMarker $r13;
+        proguard.optimize.info.AccessMethodMarker $r12;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.editor.ExceptionInfoAdder $r8;
+        proguard.classfile.Method $r2;
+        proguard.classfile.attribute.visitor.StackSizeComputer $r11;
+
+        r0 := @this: proguard.optimize.peephole.MethodInliner;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $z0 = r0.<proguard.optimize.peephole.MethodInliner: boolean inlining>;
+
+        if $z0 != 0 goto label3;
+
+        $r5 = (proguard.classfile.ProgramClass) $r1;
+
+        r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.ProgramClass targetClass> = $r5;
+
+        $r6 = (proguard.classfile.ProgramMethod) $r2;
+
+        r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.ProgramMethod targetMethod> = $r6;
+
+        $r7 = new proguard.classfile.editor.ConstantAdder;
+
+        $r5 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.ProgramClass targetClass>;
+
+        specialinvoke $r7.<proguard.classfile.editor.ConstantAdder: void <init>(proguard.classfile.ProgramClass)>($r5);
+
+        r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.editor.ConstantAdder constantAdder> = $r7;
+
+        $r8 = new proguard.classfile.editor.ExceptionInfoAdder;
+
+        $r5 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.ProgramClass targetClass>;
+
+        $r4 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer>;
+
+        specialinvoke $r8.<proguard.classfile.editor.ExceptionInfoAdder: void <init>(proguard.classfile.ProgramClass,proguard.classfile.editor.CodeAttributeComposer)>($r5, $r4);
+
+        r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.editor.ExceptionInfoAdder exceptionInfoAdder> = $r8;
+
+        $i0 = $r3.<proguard.classfile.attribute.CodeAttribute: int u4codeLength>;
+
+        r0.<proguard.optimize.peephole.MethodInliner: int estimatedResultingCodeLength> = $i0;
+
+        $r9 = r0.<proguard.optimize.peephole.MethodInliner: java.util.Stack inliningMethods>;
+
+        virtualinvoke $r9.<java.util.Stack: void clear()>();
+
+        $r10 = interfaceinvoke $r2.<proguard.classfile.Method: java.lang.String getName(proguard.classfile.Clazz)>($r1);
+
+        $z0 = virtualinvoke $r10.<java.lang.String: boolean equals(java.lang.Object)>("<init>");
+
+        if $z0 == 0 goto label2;
+
+        $b1 = 1;
+
+     label1:
+        r0.<proguard.optimize.peephole.MethodInliner: int uninitializedObjectCount> = $b1;
+
+        r0.<proguard.optimize.peephole.MethodInliner: boolean inlinedAny> = 0;
+
+        $r4 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer>;
+
+        virtualinvoke $r4.<proguard.classfile.editor.CodeAttributeComposer: void reset()>();
+
+        $r11 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.attribute.visitor.StackSizeComputer stackSizeComputer>;
+
+        virtualinvoke $r11.<proguard.classfile.attribute.visitor.StackSizeComputer: void visitCodeAttribute(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute)>($r1, $r2, $r3);
+
+        specialinvoke r0.<proguard.optimize.peephole.MethodInliner: void copyCode(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute)>($r1, $r2, $r3);
+
+        r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.ProgramClass targetClass> = null;
+
+        r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.ProgramMethod targetMethod> = null;
+
+        r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.editor.ConstantAdder constantAdder> = null;
+
+        $z0 = r0.<proguard.optimize.peephole.MethodInliner: boolean inlinedAny>;
+
+        if $z0 == 0 goto label8;
+
+        $r4 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer>;
+
+        virtualinvoke $r4.<proguard.classfile.editor.CodeAttributeComposer: void visitCodeAttribute(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute)>($r1, $r2, $r3);
+
+        $r12 = r0.<proguard.optimize.peephole.MethodInliner: proguard.optimize.info.AccessMethodMarker accessMethodMarker>;
+
+        virtualinvoke $r3.<proguard.classfile.attribute.CodeAttribute: void instructionsAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.instruction.visitor.InstructionVisitor)>($r1, $r2, $r12);
+
+        $r13 = r0.<proguard.optimize.peephole.MethodInliner: proguard.optimize.info.CatchExceptionMarker catchExceptionMarker>;
+
+        virtualinvoke $r13.<proguard.optimize.info.CatchExceptionMarker: void visitCodeAttribute(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute)>($r1, $r2, $r3);
+
+        return;
+
+     label2:
+        $b1 = 0;
+
+        goto label1;
+
+     label3:
+        $z0 = r0.<proguard.optimize.peephole.MethodInliner: boolean inlineSingleInvocations>;
+
+        if $z0 == 0 goto label6;
+
+        $i0 = staticinvoke <proguard.optimize.info.MethodInvocationMarker: int getInvocationCount(proguard.classfile.Method)>($r2);
+
+        if $i0 != 1 goto label8;
+
+     label4:
+        $i0 = r0.<proguard.optimize.peephole.MethodInliner: int estimatedResultingCodeLength>;
+
+        $i2 = $r3.<proguard.classfile.attribute.CodeAttribute: int u4codeLength>;
+
+        $i0 = $i0 + $i2;
+
+        $z0 = r0.<proguard.optimize.peephole.MethodInliner: boolean microEdition>;
+
+        if $z0 == 0 goto label7;
+
+        $i2 = <proguard.optimize.peephole.MethodInliner: int MAXIMUM_RESULTING_CODE_LENGTH_JME>;
+
+     label5:
+        if $i0 >= $i2 goto label8;
+
+        $i0 = r0.<proguard.optimize.peephole.MethodInliner: int estimatedResultingCodeLength>;
+
+        $i2 = $r3.<proguard.classfile.attribute.CodeAttribute: int u4codeLength>;
+
+        $i0 = $i0 + $i2;
+
+        r0.<proguard.optimize.peephole.MethodInliner: int estimatedResultingCodeLength> = $i0;
+
+        specialinvoke r0.<proguard.optimize.peephole.MethodInliner: void storeParameters(proguard.classfile.Clazz,proguard.classfile.Method)>($r1, $r2);
+
+        specialinvoke r0.<proguard.optimize.peephole.MethodInliner: void copyCode(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute)>($r1, $r2, $r3);
+
+        r0.<proguard.optimize.peephole.MethodInliner: boolean inlined> = 1;
+
+        r0.<proguard.optimize.peephole.MethodInliner: boolean inlinedAny> = 1;
+
+        return;
+
+     label6:
+        $i0 = $r3.<proguard.classfile.attribute.CodeAttribute: int u4codeLength>;
+
+        $i2 = <proguard.optimize.peephole.MethodInliner: int MAXIMUM_INLINED_CODE_LENGTH>;
+
+        if $i0 > $i2 goto label8;
+
+        goto label4;
+
+     label7:
+        $i2 = <proguard.optimize.peephole.MethodInliner: int MAXIMUM_RESULTING_CODE_LENGTH_JSE>;
+
+        goto label5;
+
+     label8:
+        return;
+    }
+
+    public void visitConstantInstruction(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.instruction.ConstantInstruction)
+    {
+        proguard.classfile.editor.ConstantAdder $r5;
+        proguard.optimize.peephole.MethodInliner r0;
+        proguard.classfile.editor.CodeAttributeComposer $r6;
+        proguard.classfile.instruction.visitor.InstructionVisitor $r9;
+        byte $b1;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.instruction.Instruction $r7;
+        int $i0, $i2, $i3;
+        proguard.classfile.instruction.ConstantInstruction $r4;
+        proguard.classfile.Method $r2;
+        proguard.classfile.attribute.visitor.StackSizeComputer $r8;
+        boolean $z0;
+
+        r0 := @this: proguard.optimize.peephole.MethodInliner;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.instruction.ConstantInstruction;
+
+        $b1 = $r4.<proguard.classfile.instruction.ConstantInstruction: byte opcode>;
+
+        $i2 = (int) $b1;
+
+        lookupswitch($i2)
+        {
+            case -74: goto label4;
+            case -73: goto label4;
+            case -72: goto label4;
+            case -71: goto label4;
+            case -70: goto label1;
+            case -69: goto label3;
+            default: goto label1;
+        };
+
+     label1:
+        $z0 = r0.<proguard.optimize.peephole.MethodInliner: boolean inlining>;
+
+        if $z0 == 0 goto label2;
+
+        $r5 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.editor.ConstantAdder constantAdder>;
+
+        $i2 = $r4.<proguard.classfile.instruction.ConstantInstruction: int constantIndex>;
+
+        $i2 = virtualinvoke $r5.<proguard.classfile.editor.ConstantAdder: int addConstant(proguard.classfile.Clazz,int)>($r1, $i2);
+
+        $r4.<proguard.classfile.instruction.ConstantInstruction: int constantIndex> = $i2;
+
+     label2:
+        $r6 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer>;
+
+        $r7 = virtualinvoke $r4.<proguard.classfile.instruction.ConstantInstruction: proguard.classfile.instruction.Instruction shrink()>();
+
+        virtualinvoke $r6.<proguard.classfile.editor.CodeAttributeComposer: void appendInstruction(int,proguard.classfile.instruction.Instruction)>($i0, $r7);
+
+        return;
+
+     label3:
+        $i2 = r0.<proguard.optimize.peephole.MethodInliner: int uninitializedObjectCount>;
+
+        $i2 = $i2 + 1;
+
+        r0.<proguard.optimize.peephole.MethodInliner: int uninitializedObjectCount> = $i2;
+
+        goto label1;
+
+     label4:
+        r0.<proguard.optimize.peephole.MethodInliner: boolean inlined> = 0;
+
+        $r6 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer>;
+
+        virtualinvoke $r6.<proguard.classfile.editor.CodeAttributeComposer: void appendLabel(int)>($i0);
+
+        $z0 = r0.<proguard.optimize.peephole.MethodInliner: boolean inlining>;
+
+        if $z0 != 0 goto label6;
+
+        $r8 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.attribute.visitor.StackSizeComputer stackSizeComputer>;
+
+        $z0 = virtualinvoke $r8.<proguard.classfile.attribute.visitor.StackSizeComputer: boolean isReachable(int)>($i0);
+
+        if $z0 == 0 goto label6;
+
+        $r8 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.attribute.visitor.StackSizeComputer stackSizeComputer>;
+
+        $i2 = virtualinvoke $r8.<proguard.classfile.attribute.visitor.StackSizeComputer: int getStackSize(int)>($i0);
+
+        if $i2 != 0 goto label6;
+
+        $z0 = 1;
+
+     label5:
+        r0.<proguard.optimize.peephole.MethodInliner: boolean emptyInvokingStack> = $z0;
+
+        $i2 = r0.<proguard.optimize.peephole.MethodInliner: int variableOffset>;
+
+        $i3 = $r3.<proguard.classfile.attribute.CodeAttribute: int u2maxLocals>;
+
+        $i2 = $i2 + $i3;
+
+        r0.<proguard.optimize.peephole.MethodInliner: int variableOffset> = $i2;
+
+        $i2 = $r4.<proguard.classfile.instruction.ConstantInstruction: int constantIndex>;
+
+        interfaceinvoke $r1.<proguard.classfile.Clazz: void constantPoolEntryAccept(int,proguard.classfile.constant.visitor.ConstantVisitor)>($i2, r0);
+
+        $i2 = r0.<proguard.optimize.peephole.MethodInliner: int variableOffset>;
+
+        $i3 = $r3.<proguard.classfile.attribute.CodeAttribute: int u2maxLocals>;
+
+        $i2 = $i2 - $i3;
+
+        r0.<proguard.optimize.peephole.MethodInliner: int variableOffset> = $i2;
+
+        $z0 = r0.<proguard.optimize.peephole.MethodInliner: boolean inlined>;
+
+        if $z0 == 0 goto label1;
+
+        $r9 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.instruction.visitor.InstructionVisitor extraInlinedInvocationVisitor>;
+
+        if $r9 == null goto label7;
+
+        $r9 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.instruction.visitor.InstructionVisitor extraInlinedInvocationVisitor>;
+
+        interfaceinvoke $r9.<proguard.classfile.instruction.visitor.InstructionVisitor: void visitConstantInstruction(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,int,proguard.classfile.instruction.ConstantInstruction)>($r1, $r2, $r3, $i0, $r4);
+
+        return;
+
+     label6:
+        $z0 = 0;
+
+        goto label5;
+
+     label7:
+        return;
+    }
+
+    public void visitInterfaceMethodrefConstant(proguard.classfile.Clazz, proguard.classfile.constant.InterfaceMethodrefConstant)
+    {
+        proguard.optimize.peephole.MethodInliner r0;
+        proguard.classfile.constant.InterfaceMethodrefConstant $r2;
+        proguard.classfile.Clazz $r1;
+
+        r0 := @this: proguard.optimize.peephole.MethodInliner;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.constant.InterfaceMethodrefConstant;
+
+        return;
+    }
+
+    public void visitMethodrefConstant(proguard.classfile.Clazz, proguard.classfile.constant.MethodrefConstant)
+    {
+        proguard.optimize.peephole.MethodInliner r0;
+        proguard.classfile.constant.MethodrefConstant $r2;
+        proguard.classfile.Clazz $r1;
+
+        r0 := @this: proguard.optimize.peephole.MethodInliner;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.constant.MethodrefConstant;
+
+        virtualinvoke $r2.<proguard.classfile.constant.MethodrefConstant: void referencedMemberAccept(proguard.classfile.visitor.MemberVisitor)>(r0);
+
+        return;
+    }
+
+    public void visitProgramMethod(proguard.classfile.ProgramClass, proguard.classfile.ProgramMethod)
+    {
+        proguard.optimize.peephole.MethodInliner r0;
+        proguard.classfile.ProgramClass $r1, $r5;
+        java.util.Stack $r6;
+        proguard.classfile.ProgramMethod $r2, $r4;
+        int $i0, $i1;
+        proguard.classfile.Method $r8;
+        java.lang.String $r3, $r7;
+        proguard.optimize.info.MethodOptimizationInfo $r9, $r10;
+        boolean $z0;
+
+        r0 := @this: proguard.optimize.peephole.MethodInliner;
+
+        $r1 := @parameter0: proguard.classfile.ProgramClass;
+
+        $r2 := @parameter1: proguard.classfile.ProgramMethod;
+
+        $i0 = virtualinvoke $r2.<proguard.classfile.ProgramMethod: int getAccessFlags()>();
+
+        $i1 = $i0 & 26;
+
+        if $i1 == 0 goto label10;
+
+        $i0 = $i0 & 1824;
+
+        if $i0 != 0 goto label10;
+
+        $r3 = virtualinvoke $r2.<proguard.classfile.ProgramMethod: java.lang.String getName(proguard.classfile.Clazz)>($r1);
+
+        $z0 = virtualinvoke $r3.<java.lang.String: boolean equals(java.lang.Object)>("<init>");
+
+        if $z0 != 0 goto label10;
+
+        $r4 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.ProgramMethod targetMethod>;
+
+        $z0 = virtualinvoke $r2.<java.lang.Object: boolean equals(java.lang.Object)>($r4);
+
+        if $z0 == 0 goto label01;
+
+        $r5 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.ProgramClass targetClass>;
+
+        $z0 = virtualinvoke $r1.<java.lang.Object: boolean equals(java.lang.Object)>($r5);
+
+        if $z0 != 0 goto label10;
+
+     label01:
+        $r6 = r0.<proguard.optimize.peephole.MethodInliner: java.util.Stack inliningMethods>;
+
+        $z0 = virtualinvoke $r6.<java.util.Stack: boolean contains(java.lang.Object)>($r2);
+
+        if $z0 != 0 goto label10;
+
+        $r5 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.ProgramClass targetClass>;
+
+        $i0 = $r5.<proguard.classfile.ProgramClass: int u4version>;
+
+        $i1 = $r1.<proguard.classfile.ProgramClass: int u4version>;
+
+        if $i0 < $i1 goto label10;
+
+        $z0 = staticinvoke <proguard.optimize.info.SuperInvocationMarker: boolean invokesSuperMethods(proguard.classfile.Method)>($r2);
+
+        if $z0 == 0 goto label02;
+
+        $r5 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.ProgramClass targetClass>;
+
+        $z0 = virtualinvoke $r1.<java.lang.Object: boolean equals(java.lang.Object)>($r5);
+
+        if $z0 == 0 goto label10;
+
+     label02:
+        $z0 = staticinvoke <proguard.optimize.info.BackwardBranchMarker: boolean branchesBackward(proguard.classfile.Method)>($r2);
+
+        if $z0 == 0 goto label03;
+
+        $i0 = r0.<proguard.optimize.peephole.MethodInliner: int uninitializedObjectCount>;
+
+        if $i0 != 0 goto label10;
+
+     label03:
+        $z0 = r0.<proguard.optimize.peephole.MethodInliner: boolean allowAccessModification>;
+
+        if $z0 != 0 goto label05;
+
+        $z0 = staticinvoke <proguard.optimize.info.AccessMethodMarker: boolean accessesPrivateCode(proguard.classfile.Method)>($r2);
+
+        if $z0 == 0 goto label04;
+
+        $r5 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.ProgramClass targetClass>;
+
+        $z0 = virtualinvoke $r1.<java.lang.Object: boolean equals(java.lang.Object)>($r5);
+
+        if $z0 == 0 goto label10;
+
+     label04:
+        $z0 = staticinvoke <proguard.optimize.info.AccessMethodMarker: boolean accessesPackageCode(proguard.classfile.Method)>($r2);
+
+        if $z0 == 0 goto label05;
+
+        $r3 = virtualinvoke $r1.<proguard.classfile.ProgramClass: java.lang.String getName()>();
+
+        $r3 = staticinvoke <proguard.classfile.util.ClassUtil: java.lang.String internalPackageName(java.lang.String)>($r3);
+
+        $r5 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.ProgramClass targetClass>;
+
+        $r7 = virtualinvoke $r5.<proguard.classfile.ProgramClass: java.lang.String getName()>();
+
+        $r7 = staticinvoke <proguard.classfile.util.ClassUtil: java.lang.String internalPackageName(java.lang.String)>($r7);
+
+        $z0 = virtualinvoke $r3.<java.lang.String: boolean equals(java.lang.Object)>($r7);
+
+        if $z0 == 0 goto label10;
+
+     label05:
+        $z0 = staticinvoke <proguard.optimize.info.AccessMethodMarker: boolean accessesProtectedCode(proguard.classfile.Method)>($r2);
+
+        if $z0 == 0 goto label06;
+
+        $r5 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.ProgramClass targetClass>;
+
+        $z0 = virtualinvoke $r1.<java.lang.Object: boolean equals(java.lang.Object)>($r5);
+
+        if $z0 == 0 goto label10;
+
+     label06:
+        $z0 = staticinvoke <proguard.optimize.info.CatchExceptionMarker: boolean catchesExceptions(proguard.classfile.Method)>($r2);
+
+        if $z0 == 0 goto label07;
+
+        $z0 = r0.<proguard.optimize.peephole.MethodInliner: boolean emptyInvokingStack>;
+
+        if $z0 == 0 goto label10;
+
+     label07:
+        $r5 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.ProgramClass targetClass>;
+
+        $z0 = virtualinvoke $r1.<java.lang.Object: boolean equals(java.lang.Object)>($r5);
+
+        if $z0 != 0 goto label08;
+
+        $r8 = virtualinvoke $r1.<proguard.classfile.ProgramClass: proguard.classfile.Method findMethod(java.lang.String,java.lang.String)>("<clinit>", "()V");
+
+        if $r8 != null goto label10;
+
+     label08:
+        $z0 = r0.<proguard.optimize.peephole.MethodInliner: boolean inlining>;
+
+        r0.<proguard.optimize.peephole.MethodInliner: boolean inlining> = 1;
+
+        $r6 = r0.<proguard.optimize.peephole.MethodInliner: java.util.Stack inliningMethods>;
+
+        virtualinvoke $r6.<java.util.Stack: java.lang.Object push(java.lang.Object)>($r2);
+
+        virtualinvoke $r2.<proguard.classfile.ProgramMethod: void attributesAccept(proguard.classfile.ProgramClass,proguard.classfile.attribute.visitor.AttributeVisitor)>($r1, r0);
+
+        $r4 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.ProgramMethod targetMethod>;
+
+        $r9 = staticinvoke <proguard.optimize.info.MethodOptimizationInfo: proguard.optimize.info.MethodOptimizationInfo getMethodOptimizationInfo(proguard.classfile.Method)>($r4);
+
+        if $r9 == null goto label09;
+
+        $r10 = staticinvoke <proguard.optimize.info.MethodOptimizationInfo: proguard.optimize.info.MethodOptimizationInfo getMethodOptimizationInfo(proguard.classfile.Method)>($r2);
+
+        virtualinvoke $r9.<proguard.optimize.info.MethodOptimizationInfo: void merge(proguard.optimize.info.MethodOptimizationInfo)>($r10);
+
+     label09:
+        r0.<proguard.optimize.peephole.MethodInliner: boolean inlining> = $z0;
+
+        $r6 = r0.<proguard.optimize.peephole.MethodInliner: java.util.Stack inliningMethods>;
+
+        virtualinvoke $r6.<java.util.Stack: java.lang.Object pop()>();
+
+        return;
+
+     label10:
+        $r3 = virtualinvoke $r2.<proguard.classfile.ProgramMethod: java.lang.String getName(proguard.classfile.Clazz)>($r1);
+
+        $z0 = virtualinvoke $r3.<java.lang.String: boolean equals(java.lang.Object)>("<init>");
+
+        if $z0 == 0 goto label11;
+
+        $i0 = r0.<proguard.optimize.peephole.MethodInliner: int uninitializedObjectCount>;
+
+        $i0 = $i0 - 1;
+
+        r0.<proguard.optimize.peephole.MethodInliner: int uninitializedObjectCount> = $i0;
+
+     label11:
+        return;
+    }
+
+    public void visitSimpleInstruction(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.instruction.SimpleInstruction)
+    {
+        proguard.optimize.peephole.MethodInliner r0;
+        proguard.classfile.instruction.BranchInstruction $r7;
+        proguard.classfile.instruction.SimpleInstruction $r4;
+        proguard.classfile.editor.CodeAttributeComposer $r5;
+        byte $b1;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.instruction.Instruction $r6;
+        int $i0, $i2;
+        proguard.classfile.Method $r2;
+        boolean $z0;
+
+        r0 := @this: proguard.optimize.peephole.MethodInliner;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.instruction.SimpleInstruction;
+
+        $z0 = r0.<proguard.optimize.peephole.MethodInliner: boolean inlining>;
+
+        if $z0 == 0 goto label1;
+
+        $b1 = $r4.<proguard.classfile.instruction.SimpleInstruction: byte opcode>;
+
+        $i2 = (int) $b1;
+
+        lookupswitch($i2)
+        {
+            case -84: goto label2;
+            case -83: goto label2;
+            case -82: goto label2;
+            case -81: goto label2;
+            case -80: goto label2;
+            case -79: goto label2;
+            default: goto label1;
+        };
+
+     label1:
+        $r5 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer>;
+
+        $r6 = virtualinvoke $r4.<proguard.classfile.instruction.SimpleInstruction: proguard.classfile.instruction.Instruction shrink()>();
+
+        virtualinvoke $r5.<proguard.classfile.editor.CodeAttributeComposer: void appendInstruction(int,proguard.classfile.instruction.Instruction)>($i0, $r6);
+
+        return;
+
+     label2:
+        $i2 = $r3.<proguard.classfile.attribute.CodeAttribute: int u4codeLength>;
+
+        $i2 = $i2 - 1;
+
+        if $i0 >= $i2 goto label3;
+
+        $r7 = new proguard.classfile.instruction.BranchInstruction;
+
+        $i2 = $r3.<proguard.classfile.attribute.CodeAttribute: int u4codeLength>;
+
+        $i2 = $i2 - $i0;
+
+        specialinvoke $r7.<proguard.classfile.instruction.BranchInstruction: void <init>(byte,int)>(-56, $i2);
+
+        $r5 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer>;
+
+        $r6 = virtualinvoke $r7.<proguard.classfile.instruction.Instruction: proguard.classfile.instruction.Instruction shrink()>();
+
+        virtualinvoke $r5.<proguard.classfile.editor.CodeAttributeComposer: void appendInstruction(int,proguard.classfile.instruction.Instruction)>($i0, $r6);
+
+        return;
+
+     label3:
+        $r5 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer>;
+
+        virtualinvoke $r5.<proguard.classfile.editor.CodeAttributeComposer: void appendLabel(int)>($i0);
+
+        return;
+    }
+
+    public void visitVariableInstruction(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.instruction.VariableInstruction)
+    {
+        proguard.optimize.peephole.MethodInliner r0;
+        proguard.classfile.instruction.VariableInstruction $r4;
+        proguard.classfile.editor.CodeAttributeComposer $r6;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.instruction.Instruction $r5;
+        int $i0, $i1, $i2;
+        proguard.classfile.Method $r2;
+        boolean $z0;
+
+        r0 := @this: proguard.optimize.peephole.MethodInliner;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.instruction.VariableInstruction;
+
+        $z0 = r0.<proguard.optimize.peephole.MethodInliner: boolean inlining>;
+
+        if $z0 == 0 goto label1;
+
+        $i1 = $r4.<proguard.classfile.instruction.VariableInstruction: int variableIndex>;
+
+        $i2 = r0.<proguard.optimize.peephole.MethodInliner: int variableOffset>;
+
+        $i1 = $i1 + $i2;
+
+        $r4.<proguard.classfile.instruction.VariableInstruction: int variableIndex> = $i1;
+
+     label1:
+        $r6 = r0.<proguard.optimize.peephole.MethodInliner: proguard.classfile.editor.CodeAttributeComposer codeAttributeComposer>;
+
+        $r5 = virtualinvoke $r4.<proguard.classfile.instruction.VariableInstruction: proguard.classfile.instruction.Instruction shrink()>();
+
+        virtualinvoke $r6.<proguard.classfile.editor.CodeAttributeComposer: void appendInstruction(int,proguard.classfile.instruction.Instruction)>($i0, $r5);
+
+        return;
+    }
+}

@@ -1,0 +1,295 @@
+public class jp.Adlantis.Android.AsyncImageLoader extends java.lang.Object
+{
+    private java.util.HashMap imageCache;
+
+    public void <init>()
+    {
+        java.util.HashMap $r1;
+        jp.Adlantis.Android.AsyncImageLoader r0;
+
+        r0 := @this: jp.Adlantis.Android.AsyncImageLoader;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        $r1 = new java.util.HashMap;
+
+        specialinvoke $r1.<java.util.HashMap: void <init>()>();
+
+        r0.<jp.Adlantis.Android.AsyncImageLoader: java.util.HashMap imageCache> = $r1;
+
+        return;
+    }
+
+    protected static java.io.InputStream inputStreamForUrl(java.lang.String) throws java.io.IOException, java.net.MalformedURLException
+    {
+        java.lang.String $r0;
+        java.net.URL $r2;
+        java.io.InputStream $r1;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r2 = new java.net.URL;
+
+        specialinvoke $r2.<java.net.URL: void <init>(java.lang.String)>($r0);
+
+        $r1 = virtualinvoke $r2.<java.net.URL: java.io.InputStream openStream()>();
+
+        return $r1;
+    }
+
+    public static android.graphics.drawable.Drawable loadImageFromUrl(java.lang.String)
+    {
+        java.lang.Throwable $r5;
+        java.io.PrintStream $r6;
+        android.graphics.drawable.Drawable $r4;
+        java.lang.StringBuilder $r1;
+        java.lang.String $r0, $r2;
+        java.lang.OutOfMemoryError $r7;
+        java.io.InputStream $r3;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("loadImageFromUrl=");
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r0);
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("AsyncImageLoader", $r2);
+
+        if $r0 != null goto label1;
+
+        return null;
+
+     label1:
+        $r3 = staticinvoke <jp.Adlantis.Android.AsyncImageLoader: java.io.InputStream inputStreamForUrl(java.lang.String)>($r0);
+
+     label2:
+        if $r3 == null goto label7;
+
+     label3:
+        $r4 = staticinvoke <android.graphics.drawable.Drawable: android.graphics.drawable.Drawable createFromStream(java.io.InputStream,java.lang.String)>($r3, "src");
+
+     label4:
+        return $r4;
+
+     label5:
+        $r5 := @caughtexception;
+
+        $r6 = <java.lang.System: java.io.PrintStream out>;
+
+        virtualinvoke $r6.<java.io.PrintStream: void println(java.lang.Object)>($r5);
+
+        $r3 = null;
+
+        goto label2;
+
+     label6:
+        $r7 := @caughtexception;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("exception calling Drawable.createFromStream() ");
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r7);
+
+        $r0 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("AsyncImageLoader", $r0);
+
+     label7:
+        return null;
+
+        catch java.io.IOException from label1 to label2 with label5;
+        catch java.lang.OutOfMemoryError from label3 to label4 with label6;
+    }
+
+    public void clear()
+    {
+        java.util.HashMap $r1;
+        jp.Adlantis.Android.AsyncImageLoader r0;
+
+        r0 := @this: jp.Adlantis.Android.AsyncImageLoader;
+
+        $r1 = r0.<jp.Adlantis.Android.AsyncImageLoader: java.util.HashMap imageCache>;
+
+        virtualinvoke $r1.<java.util.HashMap: void clear()>();
+
+        return;
+    }
+
+    public android.graphics.drawable.Drawable loadDrawable(android.content.Context, java.lang.String, jp.Adlantis.Android.AsyncImageLoader$ImageLoadedCallback)
+    {
+        java.lang.Throwable $r11, $r18;
+        android.content.Context $r1;
+        android.net.Uri $r8;
+        java.util.HashMap $r4;
+        android.graphics.drawable.Drawable $r7, $r10;
+        jp.Adlantis.Android.AsyncImageLoader$ImageLoadedCallback $r3;
+        android.os.Looper $r16;
+        java.lang.String $r2, $r14;
+        java.lang.ref.SoftReference $r6;
+        jp.Adlantis.Android.AsyncImageLoader r0;
+        boolean $z0;
+        jp.Adlantis.Android.AsyncImageLoader$2 $r17;
+        jp.Adlantis.Android.AsyncImageLoader$1 $r15;
+        java.lang.Object $r5;
+        java.lang.Class $r12;
+        java.lang.StringBuilder $r13;
+        java.io.InputStream $r9;
+
+        r0 := @this: jp.Adlantis.Android.AsyncImageLoader;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: jp.Adlantis.Android.AsyncImageLoader$ImageLoadedCallback;
+
+        $r4 = r0.<jp.Adlantis.Android.AsyncImageLoader: java.util.HashMap imageCache>;
+
+        $z0 = virtualinvoke $r4.<java.util.HashMap: boolean containsKey(java.lang.Object)>($r2);
+
+        if $z0 == 0 goto label1;
+
+        $r4 = r0.<jp.Adlantis.Android.AsyncImageLoader: java.util.HashMap imageCache>;
+
+        $r5 = virtualinvoke $r4.<java.util.HashMap: java.lang.Object get(java.lang.Object)>($r2);
+
+        $r6 = (java.lang.ref.SoftReference) $r5;
+
+        $r5 = virtualinvoke $r6.<java.lang.ref.SoftReference: java.lang.Object get()>();
+
+        $r7 = (android.graphics.drawable.Drawable) $r5;
+
+        if $r7 == null goto label1;
+
+        return $r7;
+
+     label1:
+        if $r1 == null goto label8;
+
+        $z0 = staticinvoke <jp.Adlantis.Android.ADLAssetUtils: boolean isAssetUrl(java.lang.String)>($r2);
+
+        if $z0 == 0 goto label8;
+
+     label2:
+        $r8 = staticinvoke <android.net.Uri: android.net.Uri parse(java.lang.String)>($r2);
+
+        $r9 = staticinvoke <jp.Adlantis.Android.ADLAssetUtils: java.io.InputStream inputStreamFromAssetUri(android.content.Context,android.net.Uri)>($r1, $r8);
+
+        $r7 = staticinvoke <android.graphics.drawable.Drawable: android.graphics.drawable.Drawable createFromStream(java.io.InputStream,java.lang.String)>($r9, $r2);
+
+     label3:
+        $r10 = $r7;
+
+     label4:
+        virtualinvoke r0.<jp.Adlantis.Android.AsyncImageLoader: void putDrawableInCache(java.lang.String,android.graphics.drawable.Drawable)>($r2, $r7);
+
+     label5:
+        return $r7;
+
+     label6:
+        $r11 := @caughtexception;
+
+     label7:
+        $r12 = virtualinvoke r0.<java.lang.Object: java.lang.Class getClass()>();
+
+        $r2 = virtualinvoke $r12.<java.lang.Class: java.lang.String getSimpleName()>();
+
+        $r13 = new java.lang.StringBuilder;
+
+        specialinvoke $r13.<java.lang.StringBuilder: void <init>()>();
+
+        $r13 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("exception calling Drawable.createFromStream() ");
+
+        $r13 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r11);
+
+        $r14 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>($r2, $r14);
+
+        return $r10;
+
+     label8:
+        $r15 = new jp.Adlantis.Android.AsyncImageLoader$1;
+
+        $r16 = staticinvoke <android.os.Looper: android.os.Looper getMainLooper()>();
+
+        specialinvoke $r15.<jp.Adlantis.Android.AsyncImageLoader$1: void <init>(jp.Adlantis.Android.AsyncImageLoader,android.os.Looper,jp.Adlantis.Android.AsyncImageLoader$ImageLoadedCallback,java.lang.String)>(r0, $r16, $r3, $r2);
+
+        $r17 = new jp.Adlantis.Android.AsyncImageLoader$2;
+
+        specialinvoke $r17.<jp.Adlantis.Android.AsyncImageLoader$2: void <init>(jp.Adlantis.Android.AsyncImageLoader,java.lang.String,android.os.Handler)>(r0, $r2, $r15);
+
+        virtualinvoke $r17.<jp.Adlantis.Android.AsyncImageLoader$2: void start()>();
+
+        return null;
+
+     label9:
+        $r18 := @caughtexception;
+
+        $r10 = null;
+
+        $r11 = $r18;
+
+        goto label7;
+
+        catch java.io.IOException from label2 to label3 with label9;
+        catch java.io.IOException from label4 to label5 with label6;
+    }
+
+    public void putDrawableInCache(java.lang.String, android.graphics.drawable.Drawable)
+    {
+        java.util.HashMap $r3;
+        android.graphics.drawable.Drawable $r2;
+        int $i0;
+        java.lang.Class $r5;
+        java.lang.StringBuilder $r6;
+        java.lang.String $r1, $r7;
+        java.lang.ref.SoftReference $r4;
+        jp.Adlantis.Android.AsyncImageLoader r0;
+
+        r0 := @this: jp.Adlantis.Android.AsyncImageLoader;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: android.graphics.drawable.Drawable;
+
+        $r3 = r0.<jp.Adlantis.Android.AsyncImageLoader: java.util.HashMap imageCache>;
+
+        $r4 = new java.lang.ref.SoftReference;
+
+        specialinvoke $r4.<java.lang.ref.SoftReference: void <init>(java.lang.Object)>($r2);
+
+        virtualinvoke $r3.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r1, $r4);
+
+        $r5 = virtualinvoke r0.<java.lang.Object: java.lang.Class getClass()>();
+
+        $r1 = virtualinvoke $r5.<java.lang.Class: java.lang.String getSimpleName()>();
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("imageCache.size()=");
+
+        $r3 = r0.<jp.Adlantis.Android.AsyncImageLoader: java.util.HashMap imageCache>;
+
+        $i0 = virtualinvoke $r3.<java.util.HashMap: int size()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>($r1, $r7);
+
+        return;
+    }
+}

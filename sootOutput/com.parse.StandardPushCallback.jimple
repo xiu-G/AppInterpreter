@@ -1,0 +1,241 @@
+public class com.parse.StandardPushCallback extends com.parse.PushCallback
+{
+    static boolean disableNotifications;
+    static int totalNotifications;
+
+    static void <clinit>()
+    {
+        <com.parse.StandardPushCallback: int totalNotifications> = 0;
+
+        <com.parse.StandardPushCallback: boolean disableNotifications> = 0;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        com.parse.StandardPushCallback r0;
+
+        r0 := @this: com.parse.StandardPushCallback;
+
+        specialinvoke r0.<com.parse.PushCallback: void <init>()>();
+
+        return;
+    }
+
+    private android.os.Bundle makeBundle()
+    {
+        android.os.Bundle $r1;
+        org.json.JSONObject $r3;
+        com.parse.StandardPushCallback r0;
+        java.lang.String $r2;
+
+        r0 := @this: com.parse.StandardPushCallback;
+
+        $r1 = new android.os.Bundle;
+
+        specialinvoke $r1.<android.os.Bundle: void <init>()>();
+
+        $r3 = r0.<com.parse.StandardPushCallback: org.json.JSONObject pushData>;
+
+        $r2 = virtualinvoke $r3.<org.json.JSONObject: java.lang.String toString()>();
+
+        virtualinvoke $r1.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("com.parse.Data", $r2);
+
+        $r2 = r0.<com.parse.StandardPushCallback: java.lang.String channel>;
+
+        virtualinvoke $r1.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("com.parse.Channel", $r2);
+
+        return $r1;
+    }
+
+    public void run()
+    {
+        java.lang.Throwable $r15;
+        android.content.Context $r6;
+        android.os.Bundle $r3;
+        android.content.Intent $r2, $r16;
+        long $l1;
+        java.util.Random $r19;
+        android.app.PendingIntent $r11;
+        org.json.JSONObject $r1, $r7;
+        int $i0;
+        java.lang.String $r4, $r8, $r9, $r10;
+        boolean $z0;
+        android.app.NotificationManager $r14;
+        com.parse.StandardPushCallback r0;
+        android.content.ComponentName $r17;
+        android.app.Service $r5;
+        android.app.Notification $r12, $r18;
+        java.lang.Object $r13;
+
+        r0 := @this: com.parse.StandardPushCallback;
+
+        $i0 = <com.parse.StandardPushCallback: int totalNotifications>;
+
+        $i0 = $i0 + 1;
+
+        <com.parse.StandardPushCallback: int totalNotifications> = $i0;
+
+        $z0 = <com.parse.StandardPushCallback: boolean disableNotifications>;
+
+        if $z0 == 0 goto label1;
+
+        return;
+
+     label1:
+        $r1 = r0.<com.parse.StandardPushCallback: org.json.JSONObject pushData>;
+
+        if $r1 != null goto label2;
+
+        $r7 = new org.json.JSONObject;
+
+        specialinvoke $r7.<org.json.JSONObject: void <init>()>();
+
+        r0.<com.parse.StandardPushCallback: org.json.JSONObject pushData> = $r7;
+
+     label2:
+        $r1 = r0.<com.parse.StandardPushCallback: org.json.JSONObject pushData>;
+
+        $z0 = virtualinvoke $r1.<org.json.JSONObject: boolean has(java.lang.String)>("action");
+
+        if $z0 == 0 goto label3;
+
+        $r16 = new android.content.Intent;
+
+        $r2 = $r16;
+
+        specialinvoke $r16.<android.content.Intent: void <init>()>();
+
+        $r3 = specialinvoke r0.<com.parse.StandardPushCallback: android.os.Bundle makeBundle()>();
+
+        virtualinvoke $r2.<android.content.Intent: android.content.Intent putExtras(android.os.Bundle)>($r3);
+
+        $r1 = r0.<com.parse.StandardPushCallback: org.json.JSONObject pushData>;
+
+        $r4 = virtualinvoke $r1.<org.json.JSONObject: java.lang.String optString(java.lang.String)>("action");
+
+        virtualinvoke $r2.<android.content.Intent: android.content.Intent setAction(java.lang.String)>($r4);
+
+        $r5 = r0.<com.parse.StandardPushCallback: android.app.Service service>;
+
+        $r6 = virtualinvoke $r5.<android.app.Service: android.content.Context getBaseContext()>();
+
+        virtualinvoke $r6.<android.content.Context: void sendBroadcast(android.content.Intent)>($r2);
+
+        $r1 = r0.<com.parse.StandardPushCallback: org.json.JSONObject pushData>;
+
+        $z0 = virtualinvoke $r1.<org.json.JSONObject: boolean has(java.lang.String)>("alert");
+
+        if $z0 != 0 goto label3;
+
+        $r1 = r0.<com.parse.StandardPushCallback: org.json.JSONObject pushData>;
+
+        $z0 = virtualinvoke $r1.<org.json.JSONObject: boolean has(java.lang.String)>("title");
+
+        if $z0 == 0 goto label7;
+
+     label3:
+        $r1 = r0.<com.parse.StandardPushCallback: org.json.JSONObject pushData>;
+
+        $r4 = virtualinvoke $r1.<org.json.JSONObject: java.lang.String optString(java.lang.String,java.lang.String)>("alert", "Notification received.");
+
+        $r1 = r0.<com.parse.StandardPushCallback: org.json.JSONObject pushData>;
+
+        $r7 = r0.<com.parse.StandardPushCallback: org.json.JSONObject localData>;
+
+        $r8 = virtualinvoke $r7.<org.json.JSONObject: java.lang.String optString(java.lang.String)>("appName");
+
+        $r8 = virtualinvoke $r1.<org.json.JSONObject: java.lang.String optString(java.lang.String,java.lang.String)>("title", $r8);
+
+        $r17 = new android.content.ComponentName;
+
+        $r1 = r0.<com.parse.StandardPushCallback: org.json.JSONObject localData>;
+
+        $r9 = virtualinvoke $r1.<org.json.JSONObject: java.lang.String optString(java.lang.String)>("activityPackage");
+
+        $r1 = r0.<com.parse.StandardPushCallback: org.json.JSONObject localData>;
+
+        $r10 = virtualinvoke $r1.<org.json.JSONObject: java.lang.String optString(java.lang.String)>("activityClass");
+
+        specialinvoke $r17.<android.content.ComponentName: void <init>(java.lang.String,java.lang.String)>($r9, $r10);
+
+        $r16 = new android.content.Intent;
+
+        $r2 = $r16;
+
+        specialinvoke $r16.<android.content.Intent: void <init>()>();
+
+        virtualinvoke $r2.<android.content.Intent: android.content.Intent setComponent(android.content.ComponentName)>($r17);
+
+        virtualinvoke $r2.<android.content.Intent: android.content.Intent setFlags(int)>(268435456);
+
+        $r3 = specialinvoke r0.<com.parse.StandardPushCallback: android.os.Bundle makeBundle()>();
+
+        virtualinvoke $r2.<android.content.Intent: android.content.Intent putExtras(android.os.Bundle)>($r3);
+
+        $r5 = r0.<com.parse.StandardPushCallback: android.app.Service service>;
+
+        $r11 = staticinvoke <android.app.PendingIntent: android.app.PendingIntent getActivity(android.content.Context,int,android.content.Intent,int)>($r5, 0, $r2, 0);
+
+        $l1 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $r18 = new android.app.Notification;
+
+        $r12 = $r18;
+
+        $r1 = r0.<com.parse.StandardPushCallback: org.json.JSONObject localData>;
+
+        $i0 = virtualinvoke $r1.<org.json.JSONObject: int optInt(java.lang.String)>("icon");
+
+        specialinvoke $r18.<android.app.Notification: void <init>(int,java.lang.CharSequence,long)>($i0, $r4, $l1);
+
+        $i0 = $r12.<android.app.Notification: int flags>;
+
+        $i0 = $i0 | 16;
+
+        $r12.<android.app.Notification: int flags> = $i0;
+
+        $i0 = $r12.<android.app.Notification: int defaults>;
+
+        $i0 = $i0 | -1;
+
+        $r12.<android.app.Notification: int defaults> = $i0;
+
+        $r5 = r0.<com.parse.StandardPushCallback: android.app.Service service>;
+
+        virtualinvoke $r12.<android.app.Notification: void setLatestEventInfo(android.content.Context,java.lang.CharSequence,java.lang.CharSequence,android.app.PendingIntent)>($r5, $r8, $r4, $r11);
+
+        $r5 = r0.<com.parse.StandardPushCallback: android.app.Service service>;
+
+        $r13 = virtualinvoke $r5.<android.app.Service: java.lang.Object getSystemService(java.lang.String)>("notification");
+
+        $r14 = (android.app.NotificationManager) $r13;
+
+        $r19 = new java.util.Random;
+
+        specialinvoke $r19.<java.util.Random: void <init>()>();
+
+        $i0 = virtualinvoke $r19.<java.util.Random: int nextInt(int)>(1000000);
+
+        $i0 = $i0 + 7000000;
+
+     label4:
+        virtualinvoke $r14.<android.app.NotificationManager: void notify(int,android.app.Notification)>($i0, $r12);
+
+     label5:
+        return;
+
+     label6:
+        $r15 := @caughtexception;
+
+        $r12.<android.app.Notification: int defaults> = 5;
+
+        virtualinvoke $r14.<android.app.NotificationManager: void notify(int,android.app.Notification)>($i0, $r12);
+
+     label7:
+        return;
+
+        catch java.lang.SecurityException from label4 to label5 with label6;
+    }
+}

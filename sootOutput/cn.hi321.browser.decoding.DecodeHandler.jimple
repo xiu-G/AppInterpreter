@@ -1,0 +1,278 @@
+final class cn.hi321.browser.decoding.DecodeHandler extends android.os.Handler
+{
+    private static final java.lang.String TAG;
+    private final cn.hi321.browser.camera.CaptureActivity activity;
+    private final com.google.zxing.MultiFormatReader multiFormatReader;
+
+    static void <clinit>()
+    {
+        java.lang.Class $r1;
+        java.lang.String $r0;
+
+        $r1 = class "Lcn/hi321/browser/decoding/DecodeHandler;";
+
+        $r0 = virtualinvoke $r1.<java.lang.Class: java.lang.String getSimpleName()>();
+
+        <cn.hi321.browser.decoding.DecodeHandler: java.lang.String TAG> = $r0;
+
+        return;
+    }
+
+    void <init>(cn.hi321.browser.camera.CaptureActivity, java.util.Hashtable)
+    {
+        com.google.zxing.MultiFormatReader $r3;
+        cn.hi321.browser.camera.CaptureActivity $r1;
+        cn.hi321.browser.decoding.DecodeHandler r0;
+        java.util.Hashtable r2;
+
+        r0 := @this: cn.hi321.browser.decoding.DecodeHandler;
+
+        $r1 := @parameter0: cn.hi321.browser.camera.CaptureActivity;
+
+        r2 := @parameter1: java.util.Hashtable;
+
+        specialinvoke r0.<android.os.Handler: void <init>()>();
+
+        $r3 = new com.google.zxing.MultiFormatReader;
+
+        specialinvoke $r3.<com.google.zxing.MultiFormatReader: void <init>()>();
+
+        r0.<cn.hi321.browser.decoding.DecodeHandler: com.google.zxing.MultiFormatReader multiFormatReader> = $r3;
+
+        $r3 = r0.<cn.hi321.browser.decoding.DecodeHandler: com.google.zxing.MultiFormatReader multiFormatReader>;
+
+        virtualinvoke $r3.<com.google.zxing.MultiFormatReader: void setHints(java.util.Hashtable)>(r2);
+
+        r0.<cn.hi321.browser.decoding.DecodeHandler: cn.hi321.browser.camera.CaptureActivity activity> = $r1;
+
+        return;
+    }
+
+    private void decode(byte[], int, int)
+    {
+        com.google.zxing.Result r5, $r9;
+        byte[] $r1, r4;
+        android.os.Bundle r3, $r22;
+        cn.hi321.browser.camera.PlanarYUVLuminanceSource $r7;
+        byte $b8;
+        android.os.Handler $r14;
+        com.google.zxing.common.HybridBinarizer $r19;
+        android.os.Message $r15;
+        java.lang.StringBuilder $r11, $r21;
+        cn.hi321.browser.camera.CameraManager $r6;
+        java.lang.Throwable $r18;
+        com.google.zxing.MultiFormatReader $r8;
+        long $l2, $l4;
+        cn.hi321.browser.decoding.DecodeHandler r0;
+        int $i0, $i1, $i3, i5, $i6, $i7;
+        cn.hi321.browser.camera.CaptureActivity $r13;
+        java.lang.String $r10, $r12;
+        android.graphics.Bitmap $r16;
+        com.google.zxing.BinaryBitmap r2, $r20;
+        com.google.zxing.ReaderException $r17;
+
+        r0 := @this: cn.hi321.browser.decoding.DecodeHandler;
+
+        $r1 := @parameter0: byte[];
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $l2 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        r5 = null;
+
+        $i3 = lengthof $r1;
+
+        r4 = newarray (byte)[$i3];
+
+        $i3 = 0;
+
+     label01:
+        if $i3 < $i1 goto label06;
+
+        $r6 = staticinvoke <cn.hi321.browser.camera.CameraManager: cn.hi321.browser.camera.CameraManager get()>();
+
+        $r7 = virtualinvoke $r6.<cn.hi321.browser.camera.CameraManager: cn.hi321.browser.camera.PlanarYUVLuminanceSource buildLuminanceSource(byte[],int,int)>(r4, $i1, $i0);
+
+        $r20 = new com.google.zxing.BinaryBitmap;
+
+        r2 = $r20;
+
+        $r19 = new com.google.zxing.common.HybridBinarizer;
+
+        specialinvoke $r19.<com.google.zxing.common.HybridBinarizer: void <init>(com.google.zxing.LuminanceSource)>($r7);
+
+        specialinvoke $r20.<com.google.zxing.BinaryBitmap: void <init>(com.google.zxing.Binarizer)>($r19);
+
+     label02:
+        $r8 = r0.<cn.hi321.browser.decoding.DecodeHandler: com.google.zxing.MultiFormatReader multiFormatReader>;
+
+     label03:
+        $r9 = virtualinvoke $r8.<com.google.zxing.MultiFormatReader: com.google.zxing.Result decodeWithState(com.google.zxing.BinaryBitmap)>(r2);
+
+     label04:
+        r5 = $r9;
+
+        $r8 = r0.<cn.hi321.browser.decoding.DecodeHandler: com.google.zxing.MultiFormatReader multiFormatReader>;
+
+        virtualinvoke $r8.<com.google.zxing.MultiFormatReader: void reset()>();
+
+     label05:
+        if r5 == null goto label11;
+
+        $l4 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $r10 = <cn.hi321.browser.decoding.DecodeHandler: java.lang.String TAG>;
+
+        $r21 = new java.lang.StringBuilder;
+
+        specialinvoke $r21.<java.lang.StringBuilder: void <init>(java.lang.String)>("Found barcode (");
+
+        $l2 = $l4 - $l2;
+
+        $r11 = virtualinvoke $r21.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l2);
+
+        $r11 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" ms):\n");
+
+        $r12 = virtualinvoke r5.<com.google.zxing.Result: java.lang.String toString()>();
+
+        $r11 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r12);
+
+        $r12 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>($r10, $r12);
+
+        $r13 = r0.<cn.hi321.browser.decoding.DecodeHandler: cn.hi321.browser.camera.CaptureActivity activity>;
+
+        $r14 = virtualinvoke $r13.<cn.hi321.browser.camera.CaptureActivity: android.os.Handler getHandler()>();
+
+        $r15 = staticinvoke <android.os.Message: android.os.Message obtain(android.os.Handler,int,java.lang.Object)>($r14, 2131296265, r5);
+
+        $r22 = new android.os.Bundle;
+
+        r3 = $r22;
+
+        specialinvoke $r22.<android.os.Bundle: void <init>()>();
+
+        $r16 = virtualinvoke $r7.<cn.hi321.browser.camera.PlanarYUVLuminanceSource: android.graphics.Bitmap renderCroppedGreyscaleBitmap()>();
+
+        virtualinvoke r3.<android.os.Bundle: void putParcelable(java.lang.String,android.os.Parcelable)>("barcode_bitmap", $r16);
+
+        virtualinvoke $r15.<android.os.Message: void setData(android.os.Bundle)>(r3);
+
+        virtualinvoke $r15.<android.os.Message: void sendToTarget()>();
+
+        return;
+
+     label06:
+        i5 = 0;
+
+     label07:
+        if i5 < $i0 goto label08;
+
+        $i3 = $i3 + 1;
+
+        goto label01;
+
+     label08:
+        $i6 = i5 * $i1;
+
+        $i6 = $i6 + $i1;
+
+        $i6 = $i6 - $i3;
+
+        $i6 = $i6 + -1;
+
+        $i7 = $i3 * $i0;
+
+        $i7 = $i7 + i5;
+
+        $b8 = $r1[$i7];
+
+        r4[$i6] = $b8;
+
+        i5 = i5 + 1;
+
+        goto label07;
+
+     label09:
+        $r17 := @caughtexception;
+
+        $r8 = r0.<cn.hi321.browser.decoding.DecodeHandler: com.google.zxing.MultiFormatReader multiFormatReader>;
+
+        virtualinvoke $r8.<com.google.zxing.MultiFormatReader: void reset()>();
+
+        goto label05;
+
+     label10:
+        $r18 := @caughtexception;
+
+        $r8 = r0.<cn.hi321.browser.decoding.DecodeHandler: com.google.zxing.MultiFormatReader multiFormatReader>;
+
+        virtualinvoke $r8.<com.google.zxing.MultiFormatReader: void reset()>();
+
+        throw $r18;
+
+     label11:
+        $r13 = r0.<cn.hi321.browser.decoding.DecodeHandler: cn.hi321.browser.camera.CaptureActivity activity>;
+
+        $r14 = virtualinvoke $r13.<cn.hi321.browser.camera.CaptureActivity: android.os.Handler getHandler()>();
+
+        $r15 = staticinvoke <android.os.Message: android.os.Message obtain(android.os.Handler,int)>($r14, 2131296264);
+
+        virtualinvoke $r15.<android.os.Message: void sendToTarget()>();
+
+        return;
+
+        catch com.google.zxing.ReaderException from label03 to label04 with label09;
+        catch java.lang.Throwable from label02 to label04 with label10;
+    }
+
+    public void handleMessage(android.os.Message)
+    {
+        byte[] $r4;
+        android.os.Message $r1;
+        android.os.Looper $r2;
+        int $i0, $i1;
+        java.lang.Object $r3;
+        cn.hi321.browser.decoding.DecodeHandler r0;
+
+        r0 := @this: cn.hi321.browser.decoding.DecodeHandler;
+
+        $r1 := @parameter0: android.os.Message;
+
+        $i0 = $r1.<android.os.Message: int what>;
+
+        lookupswitch($i0)
+        {
+            case 2131296263: goto label2;
+            case 2131296269: goto label3;
+            default: goto label1;
+        };
+
+     label1:
+        return;
+
+     label2:
+        $r3 = $r1.<android.os.Message: java.lang.Object obj>;
+
+        $r4 = (byte[]) $r3;
+
+        $i0 = $r1.<android.os.Message: int arg1>;
+
+        $i1 = $r1.<android.os.Message: int arg2>;
+
+        specialinvoke r0.<cn.hi321.browser.decoding.DecodeHandler: void decode(byte[],int,int)>($r4, $i0, $i1);
+
+        return;
+
+     label3:
+        $r2 = staticinvoke <android.os.Looper: android.os.Looper myLooper()>();
+
+        virtualinvoke $r2.<android.os.Looper: void quit()>();
+
+        return;
+    }
+}

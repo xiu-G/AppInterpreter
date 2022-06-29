@@ -1,0 +1,363 @@
+public class com.snowbee.core.Contact.ContactAPIV2Factory extends com.snowbee.core.Contact.ContactAPIAbstractFactory
+{
+    private static final java.lang.String[] CALLER_ID_PROJECTION;
+    private static final java.lang.String CALLER_ID_SELECTION;
+    private static final int CONTACT_ID_COLUMN;
+    private static final int CONTACT_NAME_COLUMN;
+    private static final int CONTACT_PRESENCE_COLUMN;
+    private static final int CONTACT_STATUS_COLUMN;
+    private static final int EMAIL_CONTACT_NAME_COLUMN;
+    private static final int EMAIL_ID_COLUMN;
+    private static final int EMAIL_NAME_COLUMN;
+    private static final java.lang.String[] EMAIL_PROJECTION;
+    private static final java.lang.String EMAIL_SELECTION;
+    private static final int EMAIL_STATUS_COLUMN;
+    private static final android.net.Uri EMAIL_WITH_PRESENCE_URI;
+    private static final android.net.Uri PHONES_WITH_PRESENCE_URI;
+    private static final int PHONE_LABEL_COLUMN;
+    private static final int PHONE_NUMBER_COLUMN;
+
+    static void <clinit>()
+    {
+        android.net.Uri $r0;
+        java.lang.String[] $r1;
+
+        <com.snowbee.core.Contact.ContactAPIV2Factory: int PHONE_LABEL_COLUMN> = 1;
+
+        <com.snowbee.core.Contact.ContactAPIV2Factory: int EMAIL_STATUS_COLUMN> = 1;
+
+        <com.snowbee.core.Contact.ContactAPIV2Factory: java.lang.String EMAIL_SELECTION> = "UPPER(data1)=UPPER(?) AND mimetype=\'vnd.android.cursor.item/email_v2\'";
+
+        <com.snowbee.core.Contact.ContactAPIV2Factory: int EMAIL_NAME_COLUMN> = 0;
+
+        <com.snowbee.core.Contact.ContactAPIV2Factory: int EMAIL_ID_COLUMN> = 2;
+
+        <com.snowbee.core.Contact.ContactAPIV2Factory: int EMAIL_CONTACT_NAME_COLUMN> = 3;
+
+        <com.snowbee.core.Contact.ContactAPIV2Factory: int CONTACT_STATUS_COLUMN> = 5;
+
+        <com.snowbee.core.Contact.ContactAPIV2Factory: int CONTACT_PRESENCE_COLUMN> = 4;
+
+        <com.snowbee.core.Contact.ContactAPIV2Factory: int CONTACT_NAME_COLUMN> = 2;
+
+        <com.snowbee.core.Contact.ContactAPIV2Factory: int CONTACT_ID_COLUMN> = 3;
+
+        <com.snowbee.core.Contact.ContactAPIV2Factory: java.lang.String CALLER_ID_SELECTION> = "PHONE_NUMBERS_EQUAL(data1,?) AND mimetype=\'vnd.android.cursor.item/phone_v2\' AND raw_contact_id IN (SELECT raw_contact_id  FROM phone_lookup WHERE normalized_number GLOB(\'+*\'))";
+
+        $r0 = <android.provider.ContactsContract$Data: android.net.Uri CONTENT_URI>;
+
+        <com.snowbee.core.Contact.ContactAPIV2Factory: android.net.Uri PHONES_WITH_PRESENCE_URI> = $r0;
+
+        $r1 = newarray (java.lang.String)[6];
+
+        $r1[0] = "data1";
+
+        $r1[1] = "data3";
+
+        $r1[2] = "display_name";
+
+        $r1[3] = "contact_id";
+
+        $r1[4] = "contact_presence";
+
+        $r1[5] = "contact_status";
+
+        <com.snowbee.core.Contact.ContactAPIV2Factory: java.lang.String[] CALLER_ID_PROJECTION> = $r1;
+
+        $r0 = <android.provider.ContactsContract$Data: android.net.Uri CONTENT_URI>;
+
+        <com.snowbee.core.Contact.ContactAPIV2Factory: android.net.Uri EMAIL_WITH_PRESENCE_URI> = $r0;
+
+        $r1 = newarray (java.lang.String)[4];
+
+        $r1[0] = "data4";
+
+        $r1[1] = "contact_presence";
+
+        $r1[2] = "contact_id";
+
+        $r1[3] = "display_name";
+
+        <com.snowbee.core.Contact.ContactAPIV2Factory: java.lang.String[] EMAIL_PROJECTION> = $r1;
+
+        return;
+    }
+
+    public void <init>(android.content.Context)
+    {
+        android.content.Context $r1;
+        com.snowbee.core.Contact.ContactAPIV2Factory r0;
+
+        r0 := @this: com.snowbee.core.Contact.ContactAPIV2Factory;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke r0.<com.snowbee.core.Contact.ContactAPIAbstractFactory: void <init>(android.content.Context)>($r1);
+
+        return;
+    }
+
+    public com.snowbee.core.Contact.Contact getContactInfoForEmailAddress(java.lang.String)
+    {
+        java.lang.Throwable $r11, $r12, $r13;
+        android.content.Context $r5;
+        byte[] $r10;
+        com.snowbee.core.Contact.ContactAPIV2Factory r0;
+        android.net.Uri $r2;
+        java.lang.String[] $r3, $r7;
+        long $l0;
+        android.content.ContentResolver $r6;
+        java.lang.String $r1, r9;
+        android.database.Cursor $r8;
+        boolean $z0, $z1;
+        com.snowbee.core.Contact.Contact r4;
+
+        r0 := @this: com.snowbee.core.Contact.ContactAPIV2Factory;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r4 = new com.snowbee.core.Contact.Contact;
+
+        specialinvoke r4.<com.snowbee.core.Contact.Contact: void <init>(java.lang.String)>($r1);
+
+        $r5 = r0.<com.snowbee.core.Contact.ContactAPIV2Factory: android.content.Context mContext>;
+
+        $r6 = virtualinvoke $r5.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        $r2 = <com.snowbee.core.Contact.ContactAPIV2Factory: android.net.Uri EMAIL_WITH_PRESENCE_URI>;
+
+        $r3 = <com.snowbee.core.Contact.ContactAPIV2Factory: java.lang.String[] EMAIL_PROJECTION>;
+
+        $r7 = newarray (java.lang.String)[1];
+
+        $r7[0] = $r1;
+
+        $r8 = virtualinvoke $r6.<android.content.ContentResolver: android.database.Cursor query(android.net.Uri,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String)>($r2, $r3, "UPPER(data1)=UPPER(?) AND mimetype=\'vnd.android.cursor.item/email_v2\'", $r7, null);
+
+        if $r8 == null goto label19;
+
+     label01:
+        $z0 = interfaceinvoke $r8.<android.database.Cursor: boolean moveToNext()>();
+
+     label02:
+        if $z0 != 0 goto label04;
+
+     label03:
+        interfaceinvoke $r8.<android.database.Cursor: void close()>();
+
+        return r4;
+
+     label04:
+        $z0 = 0;
+
+     label05:
+        entermonitor r4;
+
+     label06:
+        $l0 = interfaceinvoke $r8.<android.database.Cursor: long getLong(int)>(2);
+
+        virtualinvoke r4.<com.snowbee.core.Contact.Contact: void setPersonId(long)>($l0);
+
+        $r1 = interfaceinvoke $r8.<android.database.Cursor: java.lang.String getString(int)>(0);
+
+        r9 = $r1;
+
+        $z1 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r1);
+
+        if $z1 == 0 goto label07;
+
+        r9 = interfaceinvoke $r8.<android.database.Cursor: java.lang.String getString(int)>(3);
+
+     label07:
+        $z1 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>(r9);
+
+        if $z1 != 0 goto label08;
+
+        virtualinvoke r4.<com.snowbee.core.Contact.Contact: void setName(java.lang.String)>(r9);
+
+        $z0 = 1;
+
+     label08:
+        exitmonitor r4;
+
+     label09:
+        if $z0 == 0 goto label01;
+
+     label10:
+        $r10 = virtualinvoke r0.<com.snowbee.core.Contact.ContactAPIV2Factory: byte[] loadAvatarData(com.snowbee.core.Contact.Contact)>(r4);
+
+        entermonitor r4;
+
+     label11:
+        virtualinvoke r4.<com.snowbee.core.Contact.Contact: void setAvatarData(byte[])>($r10);
+
+        exitmonitor r4;
+
+     label12:
+        goto label03;
+
+     label13:
+        $r11 := @caughtexception;
+
+        exitmonitor r4;
+
+     label14:
+        throw $r11;
+
+     label15:
+        $r12 := @caughtexception;
+
+        interfaceinvoke $r8.<android.database.Cursor: void close()>();
+
+        throw $r12;
+
+     label16:
+        $r13 := @caughtexception;
+
+     label17:
+        exitmonitor r4;
+
+     label18:
+        throw $r13;
+
+     label19:
+        return r4;
+
+        catch java.lang.Throwable from label01 to label02 with label15;
+        catch java.lang.Throwable from label05 to label06 with label15;
+        catch java.lang.Throwable from label06 to label09 with label16;
+        catch java.lang.Throwable from label10 to label11 with label15;
+        catch java.lang.Throwable from label11 to label12 with label13;
+        catch java.lang.Throwable from label13 to label14 with label13;
+        catch java.lang.Throwable from label14 to label15 with label15;
+        catch java.lang.Throwable from label17 to label18 with label16;
+        catch java.lang.Throwable from label18 to label19 with label15;
+    }
+
+    public com.snowbee.core.Contact.Contact getContactInfoForPhoneNumber(java.lang.String)
+    {
+        java.lang.Throwable $r12, $r13, $r14;
+        android.content.Context $r5;
+        byte[] $r11;
+        com.snowbee.core.Contact.ContactAPIV2Factory r0;
+        android.net.Uri $r7;
+        java.lang.String[] $r8, $r9;
+        long $l0;
+        android.content.ContentResolver $r6;
+        java.lang.String $r2, $r3, $r4;
+        android.database.Cursor $r10;
+        boolean $z0;
+        com.snowbee.core.Contact.Contact r1;
+
+        r0 := @this: com.snowbee.core.Contact.ContactAPIV2Factory;
+
+        $r2 := @parameter0: java.lang.String;
+
+        r1 = new com.snowbee.core.Contact.Contact;
+
+        specialinvoke r1.<com.snowbee.core.Contact.Contact: void <init>(java.lang.String)>($r2);
+
+        $r2 = staticinvoke <android.telephony.PhoneNumberUtils: java.lang.String stripSeparators(java.lang.String)>($r2);
+
+        $r3 = "PHONE_NUMBERS_EQUAL(data1,?) AND mimetype=\'vnd.android.cursor.item/phone_v2\' AND raw_contact_id IN (SELECT raw_contact_id  FROM phone_lookup WHERE normalized_number GLOB(\'+*\'))";
+
+        $r4 = staticinvoke <android.telephony.PhoneNumberUtils: java.lang.String toCallerIDMinMatch(java.lang.String)>($r2);
+
+        $r3 = virtualinvoke $r3.<java.lang.String: java.lang.String replace(java.lang.CharSequence,java.lang.CharSequence)>("+", $r4);
+
+        $r5 = r0.<com.snowbee.core.Contact.ContactAPIV2Factory: android.content.Context mContext>;
+
+        $r6 = virtualinvoke $r5.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        $r7 = <com.snowbee.core.Contact.ContactAPIV2Factory: android.net.Uri PHONES_WITH_PRESENCE_URI>;
+
+        $r8 = <com.snowbee.core.Contact.ContactAPIV2Factory: java.lang.String[] CALLER_ID_PROJECTION>;
+
+        $r9 = newarray (java.lang.String)[1];
+
+        $r9[0] = $r2;
+
+        $r10 = virtualinvoke $r6.<android.content.ContentResolver: android.database.Cursor query(android.net.Uri,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String)>($r7, $r8, $r3, $r9, null);
+
+        if $r10 != null goto label01;
+
+        return r1;
+
+     label01:
+        $z0 = interfaceinvoke $r10.<android.database.Cursor: boolean moveToFirst()>();
+
+     label02:
+        if $z0 == 0 goto label07;
+
+     label03:
+        entermonitor r1;
+
+     label04:
+        $r2 = interfaceinvoke $r10.<android.database.Cursor: java.lang.String getString(int)>(1);
+
+        virtualinvoke r1.<com.snowbee.core.Contact.Contact: void setLabel(java.lang.String)>($r2);
+
+        $r2 = interfaceinvoke $r10.<android.database.Cursor: java.lang.String getString(int)>(2);
+
+        virtualinvoke r1.<com.snowbee.core.Contact.Contact: void setName(java.lang.String)>($r2);
+
+        $l0 = interfaceinvoke $r10.<android.database.Cursor: long getLong(int)>(3);
+
+        virtualinvoke r1.<com.snowbee.core.Contact.Contact: void setPersonId(long)>($l0);
+
+        exitmonitor r1;
+
+     label05:
+        $r11 = virtualinvoke r0.<com.snowbee.core.Contact.ContactAPIV2Factory: byte[] loadAvatarData(com.snowbee.core.Contact.Contact)>(r1);
+
+        entermonitor r1;
+
+     label06:
+        virtualinvoke r1.<com.snowbee.core.Contact.Contact: void setAvatarData(byte[])>($r11);
+
+        exitmonitor r1;
+
+     label07:
+        interfaceinvoke $r10.<android.database.Cursor: void close()>();
+
+        return r1;
+
+     label08:
+        $r12 := @caughtexception;
+
+     label09:
+        exitmonitor r1;
+
+     label10:
+        throw $r12;
+
+     label11:
+        $r13 := @caughtexception;
+
+        interfaceinvoke $r10.<android.database.Cursor: void close()>();
+
+        throw $r13;
+
+     label12:
+        $r14 := @caughtexception;
+
+     label13:
+        exitmonitor r1;
+
+     label14:
+        throw $r14;
+
+     label15:
+        nop;
+
+        catch java.lang.Throwable from label01 to label02 with label11;
+        catch java.lang.Throwable from label03 to label04 with label11;
+        catch java.lang.Throwable from label04 to label05 with label08;
+        catch java.lang.Throwable from label05 to label06 with label11;
+        catch java.lang.Throwable from label06 to label07 with label12;
+        catch java.lang.Throwable from label09 to label10 with label08;
+        catch java.lang.Throwable from label10 to label11 with label11;
+        catch java.lang.Throwable from label13 to label14 with label12;
+        catch java.lang.Throwable from label14 to label15 with label11;
+    }
+}

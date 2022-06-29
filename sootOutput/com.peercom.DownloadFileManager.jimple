@@ -1,0 +1,924 @@
+public class com.peercom.DownloadFileManager extends java.lang.Object
+{
+    private static final java.lang.String FILEDOWNSIZE;
+    private static final java.lang.String FILELINK;
+    private static final java.lang.String FILEMEDIATYPE;
+    private static final java.lang.String FILENAME;
+    private static final java.lang.String FILESDLINK;
+    private static final java.lang.String FILETOTALSIZE;
+    private static final java.lang.String STATUS;
+    private static volatile com.peercom.DownloadFileManager uniqueInstance;
+    private java.lang.String _FileDownSize;
+    private java.lang.String _FileLink;
+    private java.lang.String _FileMediaType;
+    private java.lang.String _FileName;
+    private java.lang.String _FileSDLink;
+    private java.lang.String _FileTotalSize;
+    private java.lang.String _Status;
+    private java.util.ArrayList downList;
+    public android.os.Handler mHandler;
+    public android.os.Handler mPhandler;
+    public android.os.Handler mRestartHandler;
+    public android.os.Handler mSleepHandler;
+    public android.os.Handler mStopHandler;
+
+    private void <init>()
+    {
+        com.peercom.DownloadFileManager r0;
+        java.util.ArrayList $r1;
+
+        r0 := @this: com.peercom.DownloadFileManager;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<com.peercom.DownloadFileManager: java.lang.String _FileName> = "";
+
+        r0.<com.peercom.DownloadFileManager: java.lang.String _FileLink> = "";
+
+        r0.<com.peercom.DownloadFileManager: java.lang.String _FileSDLink> = "";
+
+        r0.<com.peercom.DownloadFileManager: java.lang.String _Status> = "";
+
+        r0.<com.peercom.DownloadFileManager: java.lang.String _FileTotalSize> = "";
+
+        r0.<com.peercom.DownloadFileManager: java.lang.String _FileDownSize> = "";
+
+        r0.<com.peercom.DownloadFileManager: java.lang.String _FileMediaType> = "";
+
+        $r1 = new java.util.ArrayList;
+
+        specialinvoke $r1.<java.util.ArrayList: void <init>()>();
+
+        r0.<com.peercom.DownloadFileManager: java.util.ArrayList downList> = $r1;
+
+        return;
+    }
+
+    public static void destory()
+    {
+        <com.peercom.DownloadFileManager: com.peercom.DownloadFileManager uniqueInstance> = null;
+
+        staticinvoke <java.lang.System: void gc()>();
+
+        return;
+    }
+
+    private java.lang.String findValue(java.lang.String, java.lang.String)
+    {
+        int i0, $i1;
+        com.peercom.DownloadFileManager r0;
+        java.lang.String $r1, $r2;
+
+        r0 := @this: com.peercom.DownloadFileManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        i0 = virtualinvoke $r1.<java.lang.String: int indexOf(java.lang.String)>($r2);
+
+        $i1 = virtualinvoke $r2.<java.lang.String: int length()>();
+
+        i0 = i0 + $i1;
+
+        $i1 = virtualinvoke $r1.<java.lang.String: int indexOf(java.lang.String,int)>("|", i0);
+
+        $r1 = virtualinvoke $r1.<java.lang.String: java.lang.String substring(int,int)>(i0, $i1);
+
+        return $r1;
+    }
+
+    public static com.peercom.DownloadFileManager getInstance()
+    {
+        java.lang.Throwable $r1;
+        com.peercom.DownloadFileManager $r0;
+
+        $r0 = <com.peercom.DownloadFileManager: com.peercom.DownloadFileManager uniqueInstance>;
+
+        if $r0 != null goto label3;
+
+        entermonitor class "Lcom/peercom/DownloadFileManager;";
+
+     label1:
+        $r0 = <com.peercom.DownloadFileManager: com.peercom.DownloadFileManager uniqueInstance>;
+
+        if $r0 != null goto label2;
+
+        $r0 = new com.peercom.DownloadFileManager;
+
+        specialinvoke $r0.<com.peercom.DownloadFileManager: void <init>()>();
+
+        <com.peercom.DownloadFileManager: com.peercom.DownloadFileManager uniqueInstance> = $r0;
+
+     label2:
+        exitmonitor class "Lcom/peercom/DownloadFileManager;";
+
+     label3:
+        $r0 = <com.peercom.DownloadFileManager: com.peercom.DownloadFileManager uniqueInstance>;
+
+        return $r0;
+
+     label4:
+        $r1 := @caughtexception;
+
+     label5:
+        exitmonitor class "Lcom/peercom/DownloadFileManager;";
+
+     label6:
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+        catch java.lang.Throwable from label5 to label6 with label4;
+    }
+
+    public void addDownList(kr.co.iShoot.DownloadFileInfo)
+    {
+        com.peercom.DownloadFileManager r0;
+        kr.co.iShoot.DownloadFileInfo $r1;
+        java.util.ArrayList $r2;
+
+        r0 := @this: com.peercom.DownloadFileManager;
+
+        $r1 := @parameter0: kr.co.iShoot.DownloadFileInfo;
+
+        $r2 = r0.<com.peercom.DownloadFileManager: java.util.ArrayList downList>;
+
+        virtualinvoke $r2.<java.util.ArrayList: boolean add(java.lang.Object)>($r1);
+
+        return;
+    }
+
+    public void clearDownList()
+    {
+        com.peercom.DownloadFileManager r0;
+        java.util.ArrayList $r1;
+
+        r0 := @this: com.peercom.DownloadFileManager;
+
+        $r1 = r0.<com.peercom.DownloadFileManager: java.util.ArrayList downList>;
+
+        virtualinvoke $r1.<java.util.ArrayList: void clear()>();
+
+        return;
+    }
+
+    public kr.co.iShoot.DownloadFileInfo getCurrentDownFileInfo()
+    {
+        kr.co.iShoot.DownloadFileInfo r1;
+        com.peercom.DownloadFileManager r0;
+        java.lang.String $r2, $r3, $r4, $r5, $r6, $r7, $r8;
+
+        r0 := @this: com.peercom.DownloadFileManager;
+
+        r1 = new kr.co.iShoot.DownloadFileInfo;
+
+        $r2 = virtualinvoke r0.<com.peercom.DownloadFileManager: java.lang.String getFileName()>();
+
+        $r3 = virtualinvoke r0.<com.peercom.DownloadFileManager: java.lang.String getFileLink()>();
+
+        $r4 = virtualinvoke r0.<com.peercom.DownloadFileManager: java.lang.String getFileSDLink()>();
+
+        $r5 = virtualinvoke r0.<com.peercom.DownloadFileManager: java.lang.String getStatus()>();
+
+        $r6 = virtualinvoke r0.<com.peercom.DownloadFileManager: java.lang.String getFileTotalSize()>();
+
+        $r7 = virtualinvoke r0.<com.peercom.DownloadFileManager: java.lang.String getFileDownSize()>();
+
+        $r8 = virtualinvoke r0.<com.peercom.DownloadFileManager: java.lang.String getFileMediaType()>();
+
+        specialinvoke r1.<kr.co.iShoot.DownloadFileInfo: void <init>(java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)>($r2, $r3, $r4, $r5, $r6, $r7, $r8);
+
+        return r1;
+    }
+
+    public java.util.ArrayList getDownList()
+    {
+        com.peercom.DownloadFileManager r0;
+        java.util.ArrayList r1;
+
+        r0 := @this: com.peercom.DownloadFileManager;
+
+        r1 = r0.<com.peercom.DownloadFileManager: java.util.ArrayList downList>;
+
+        return r1;
+    }
+
+    public int getDownListCount()
+    {
+        int $i0;
+        com.peercom.DownloadFileManager r0;
+        java.util.ArrayList $r1;
+
+        r0 := @this: com.peercom.DownloadFileManager;
+
+        $r1 = r0.<com.peercom.DownloadFileManager: java.util.ArrayList downList>;
+
+        $i0 = virtualinvoke $r1.<java.util.ArrayList: int size()>();
+
+        return $i0;
+    }
+
+    public java.lang.String getFileDownSize()
+    {
+        com.peercom.DownloadFileManager r0;
+        java.lang.String r1;
+
+        r0 := @this: com.peercom.DownloadFileManager;
+
+        r1 = r0.<com.peercom.DownloadFileManager: java.lang.String _FileDownSize>;
+
+        return r1;
+    }
+
+    public java.lang.String getFileLink()
+    {
+        com.peercom.DownloadFileManager r0;
+        java.lang.String r1;
+
+        r0 := @this: com.peercom.DownloadFileManager;
+
+        r1 = r0.<com.peercom.DownloadFileManager: java.lang.String _FileLink>;
+
+        return r1;
+    }
+
+    public java.lang.String getFileMediaType()
+    {
+        com.peercom.DownloadFileManager r0;
+        java.lang.String r1;
+
+        r0 := @this: com.peercom.DownloadFileManager;
+
+        r1 = r0.<com.peercom.DownloadFileManager: java.lang.String _FileMediaType>;
+
+        return r1;
+    }
+
+    public java.lang.String getFileName()
+    {
+        com.peercom.DownloadFileManager r0;
+        java.lang.String r1;
+
+        r0 := @this: com.peercom.DownloadFileManager;
+
+        r1 = r0.<com.peercom.DownloadFileManager: java.lang.String _FileName>;
+
+        return r1;
+    }
+
+    public java.lang.String getFileSDLink()
+    {
+        com.peercom.DownloadFileManager r0;
+        java.lang.String r1;
+
+        r0 := @this: com.peercom.DownloadFileManager;
+
+        r1 = r0.<com.peercom.DownloadFileManager: java.lang.String _FileSDLink>;
+
+        return r1;
+    }
+
+    public java.lang.String getFileTotalSize()
+    {
+        com.peercom.DownloadFileManager r0;
+        java.lang.String r1;
+
+        r0 := @this: com.peercom.DownloadFileManager;
+
+        r1 = r0.<com.peercom.DownloadFileManager: java.lang.String _FileTotalSize>;
+
+        return r1;
+    }
+
+    public java.lang.String getStatus()
+    {
+        com.peercom.DownloadFileManager r0;
+        java.lang.String r1;
+
+        r0 := @this: com.peercom.DownloadFileManager;
+
+        r1 = r0.<com.peercom.DownloadFileManager: java.lang.String _Status>;
+
+        return r1;
+    }
+
+    public void loadFileInfo(android.content.Context)
+    {
+        java.lang.Throwable $r9;
+        android.content.Context $r1;
+        byte[] r2;
+        java.io.FileInputStream r4, $r5;
+        java.lang.Exception $r7, $r8, $r10, $r11, $r12;
+        int $i0, $i1;
+        com.peercom.DownloadFileManager r0;
+        java.lang.String r3, $r6;
+
+        r0 := @this: com.peercom.DownloadFileManager;
+
+        $r1 := @parameter0: android.content.Context;
+
+        r4 = null;
+
+     label01:
+        $r5 = virtualinvoke $r1.<android.content.Context: java.io.FileInputStream openFileInput(java.lang.String)>("currentfile.dat");
+
+     label02:
+        r4 = $r5;
+
+     label03:
+        $i0 = virtualinvoke $r5.<java.io.FileInputStream: int available()>();
+
+     label04:
+        r2 = newarray (byte)[$i0];
+
+     label05:
+        $i0 = virtualinvoke $r5.<java.io.FileInputStream: int read(byte[])>(r2);
+
+     label06:
+        $i1 = -1;
+
+        if $i0 != $i1 goto label05;
+
+     label07:
+        $r6 = new java.lang.String;
+
+     label08:
+        r3 = $r6;
+
+     label09:
+        specialinvoke $r6.<java.lang.String: void <init>(byte[])>(r2);
+
+     label10:
+        $r6 = specialinvoke r0.<com.peercom.DownloadFileManager: java.lang.String findValue(java.lang.String,java.lang.String)>(r3, "FileName");
+
+        virtualinvoke r0.<com.peercom.DownloadFileManager: void setFileName(java.lang.String)>($r6);
+
+        $r6 = specialinvoke r0.<com.peercom.DownloadFileManager: java.lang.String findValue(java.lang.String,java.lang.String)>(r3, "FileLink");
+
+        virtualinvoke r0.<com.peercom.DownloadFileManager: void setFileLink(java.lang.String)>($r6);
+
+        $r6 = specialinvoke r0.<com.peercom.DownloadFileManager: java.lang.String findValue(java.lang.String,java.lang.String)>(r3, "FileSDLink");
+
+        virtualinvoke r0.<com.peercom.DownloadFileManager: void setFileSDLink(java.lang.String)>($r6);
+
+        $r6 = specialinvoke r0.<com.peercom.DownloadFileManager: java.lang.String findValue(java.lang.String,java.lang.String)>(r3, "Status");
+
+        virtualinvoke r0.<com.peercom.DownloadFileManager: void setStatus(java.lang.String)>($r6);
+
+        $r6 = specialinvoke r0.<com.peercom.DownloadFileManager: java.lang.String findValue(java.lang.String,java.lang.String)>(r3, "FileTotalSize");
+
+        virtualinvoke r0.<com.peercom.DownloadFileManager: void setFileTotalSize(java.lang.String)>($r6);
+
+        $r6 = specialinvoke r0.<com.peercom.DownloadFileManager: java.lang.String findValue(java.lang.String,java.lang.String)>(r3, "FileDownSize");
+
+        virtualinvoke r0.<com.peercom.DownloadFileManager: void setFileDownSize(java.lang.String)>($r6);
+
+        r3 = specialinvoke r0.<com.peercom.DownloadFileManager: java.lang.String findValue(java.lang.String,java.lang.String)>(r3, "FileMediaType");
+
+        virtualinvoke r0.<com.peercom.DownloadFileManager: void setFileMediaType(java.lang.String)>(r3);
+
+     label11:
+        if $r5 == null goto label27;
+
+     label12:
+        virtualinvoke $r5.<java.io.FileInputStream: void close()>();
+
+     label13:
+        return;
+
+     label14:
+        $r7 := @caughtexception;
+
+     label15:
+        if r4 == null goto label27;
+
+     label16:
+        virtualinvoke r4.<java.io.FileInputStream: void close()>();
+
+     label17:
+        return;
+
+     label18:
+        $r8 := @caughtexception;
+
+        return;
+
+     label19:
+        $r9 := @caughtexception;
+
+     label20:
+        if r4 == null goto label22;
+
+     label21:
+        virtualinvoke r4.<java.io.FileInputStream: void close()>();
+
+     label22:
+        throw $r9;
+
+     label23:
+        $r10 := @caughtexception;
+
+        return;
+
+     label24:
+        $r11 := @caughtexception;
+
+        goto label22;
+
+     label25:
+        $r9 := @caughtexception;
+
+        goto label20;
+
+     label26:
+        $r12 := @caughtexception;
+
+        goto label15;
+
+     label27:
+        return;
+
+        catch java.lang.Exception from label01 to label02 with label14;
+        catch java.lang.Exception from label03 to label06 with label14;
+        catch java.lang.Exception from label09 to label10 with label14;
+        catch java.lang.Throwable from label01 to label02 with label19;
+        catch java.lang.Throwable from label03 to label04 with label19;
+        catch java.lang.Throwable from label05 to label06 with label19;
+        catch java.lang.Throwable from label07 to label08 with label19;
+        catch java.lang.Throwable from label09 to label10 with label19;
+        catch java.lang.Exception from label10 to label11 with label26;
+        catch java.lang.Throwable from label10 to label11 with label25;
+        catch java.lang.Exception from label12 to label13 with label23;
+        catch java.lang.Exception from label16 to label17 with label18;
+        catch java.lang.Exception from label21 to label22 with label24;
+    }
+
+    public void removeDownList(kr.co.iShoot.DownloadFileInfo)
+    {
+        com.peercom.DownloadFileManager r0;
+        kr.co.iShoot.DownloadFileInfo $r1;
+        java.util.ArrayList $r2;
+
+        r0 := @this: com.peercom.DownloadFileManager;
+
+        $r1 := @parameter0: kr.co.iShoot.DownloadFileInfo;
+
+        $r2 = r0.<com.peercom.DownloadFileManager: java.util.ArrayList downList>;
+
+        virtualinvoke $r2.<java.util.ArrayList: boolean remove(java.lang.Object)>($r1);
+
+        return;
+    }
+
+    public void saveFileInfo(android.content.Context, kr.co.iShoot.DownloadFileInfo)
+    {
+        java.lang.Throwable $r10;
+        android.content.Context $r1;
+        byte[] $r7;
+        java.io.FileOutputStream r5, $r6;
+        kr.co.iShoot.DownloadFileInfo $r2;
+        java.lang.Exception $r8, $r9, $r11, $r12;
+        com.peercom.DownloadFileManager r0;
+        java.lang.StringBuilder $r3;
+        java.lang.String $r4;
+
+        r0 := @this: com.peercom.DownloadFileManager;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: kr.co.iShoot.DownloadFileInfo;
+
+        virtualinvoke $r2.<kr.co.iShoot.DownloadFileInfo: java.lang.String getFileName()>();
+
+        $r3 = new java.lang.StringBuilder;
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>(null);
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("FileName");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = new java.lang.StringBuilder;
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r4);
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r2.<kr.co.iShoot.DownloadFileInfo: java.lang.String getFileName()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = new java.lang.StringBuilder;
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r4);
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("|");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = new java.lang.StringBuilder;
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r4);
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("FileLink");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = new java.lang.StringBuilder;
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r4);
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r2.<kr.co.iShoot.DownloadFileInfo: java.lang.String getFileLink()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = new java.lang.StringBuilder;
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r4);
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("|");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = new java.lang.StringBuilder;
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r4);
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("FileSDLink");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = new java.lang.StringBuilder;
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r4);
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r2.<kr.co.iShoot.DownloadFileInfo: java.lang.String getFileLink()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = new java.lang.StringBuilder;
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r4);
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("|");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = new java.lang.StringBuilder;
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r4);
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Status");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = new java.lang.StringBuilder;
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r4);
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r2.<kr.co.iShoot.DownloadFileInfo: java.lang.String getStatus()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = new java.lang.StringBuilder;
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r4);
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("|");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = new java.lang.StringBuilder;
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r4);
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("FileTotalSize");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = new java.lang.StringBuilder;
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r4);
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r2.<kr.co.iShoot.DownloadFileInfo: java.lang.String getFileTotalSize()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = new java.lang.StringBuilder;
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r4);
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("|");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = new java.lang.StringBuilder;
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r4);
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("FileDownSize");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = new java.lang.StringBuilder;
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r4);
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r2.<kr.co.iShoot.DownloadFileInfo: java.lang.String getFileDownSize()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = new java.lang.StringBuilder;
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r4);
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("|");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = new java.lang.StringBuilder;
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r4);
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("FileMediaType");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = new java.lang.StringBuilder;
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r4);
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r2.<kr.co.iShoot.DownloadFileInfo: java.lang.String getFileMediaType()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = new java.lang.StringBuilder;
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r4);
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("|");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        r5 = null;
+
+     label01:
+        $r6 = virtualinvoke $r1.<android.content.Context: java.io.FileOutputStream openFileOutput(java.lang.String,int)>("currentfile.dat", 0);
+
+     label02:
+        r5 = $r6;
+
+     label03:
+        $r7 = virtualinvoke $r4.<java.lang.String: byte[] getBytes()>();
+
+        virtualinvoke $r6.<java.io.FileOutputStream: void write(byte[])>($r7);
+
+     label04:
+        if $r6 == null goto label16;
+
+     label05:
+        virtualinvoke $r6.<java.io.FileOutputStream: void flush()>();
+
+        virtualinvoke $r6.<java.io.FileOutputStream: void close()>();
+
+     label06:
+        return;
+
+     label07:
+        $r8 := @caughtexception;
+
+        if r5 == null goto label16;
+
+     label08:
+        virtualinvoke r5.<java.io.FileOutputStream: void flush()>();
+
+        virtualinvoke r5.<java.io.FileOutputStream: void close()>();
+
+     label09:
+        return;
+
+     label10:
+        $r9 := @caughtexception;
+
+        return;
+
+     label11:
+        $r10 := @caughtexception;
+
+        if r5 == null goto label13;
+
+     label12:
+        virtualinvoke r5.<java.io.FileOutputStream: void flush()>();
+
+        virtualinvoke r5.<java.io.FileOutputStream: void close()>();
+
+     label13:
+        throw $r10;
+
+     label14:
+        $r11 := @caughtexception;
+
+        return;
+
+     label15:
+        $r12 := @caughtexception;
+
+        goto label13;
+
+     label16:
+        return;
+
+        catch java.lang.Exception from label01 to label02 with label07;
+        catch java.lang.Exception from label03 to label04 with label07;
+        catch java.lang.Throwable from label01 to label02 with label11;
+        catch java.lang.Throwable from label03 to label04 with label11;
+        catch java.lang.Exception from label05 to label06 with label14;
+        catch java.lang.Exception from label08 to label09 with label10;
+        catch java.lang.Exception from label12 to label13 with label15;
+    }
+
+    public void setDownList(java.util.ArrayList)
+    {
+        com.peercom.DownloadFileManager r0;
+        java.util.ArrayList r1;
+
+        r0 := @this: com.peercom.DownloadFileManager;
+
+        r1 := @parameter0: java.util.ArrayList;
+
+        r0.<com.peercom.DownloadFileManager: java.util.ArrayList downList> = r1;
+
+        return;
+    }
+
+    public void setFileDownSize(java.lang.String)
+    {
+        com.peercom.DownloadFileManager r0;
+        java.lang.String $r1;
+
+        r0 := @this: com.peercom.DownloadFileManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r0.<com.peercom.DownloadFileManager: java.lang.String _FileDownSize> = $r1;
+
+        return;
+    }
+
+    public void setFileLink(java.lang.String)
+    {
+        com.peercom.DownloadFileManager r0;
+        java.lang.String $r1;
+
+        r0 := @this: com.peercom.DownloadFileManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r0.<com.peercom.DownloadFileManager: java.lang.String _FileLink> = $r1;
+
+        return;
+    }
+
+    public void setFileMediaType(java.lang.String)
+    {
+        com.peercom.DownloadFileManager r0;
+        java.lang.String $r1;
+
+        r0 := @this: com.peercom.DownloadFileManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r0.<com.peercom.DownloadFileManager: java.lang.String _FileMediaType> = $r1;
+
+        return;
+    }
+
+    public void setFileName(java.lang.String)
+    {
+        com.peercom.DownloadFileManager r0;
+        java.lang.String $r1;
+
+        r0 := @this: com.peercom.DownloadFileManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r0.<com.peercom.DownloadFileManager: java.lang.String _FileName> = $r1;
+
+        return;
+    }
+
+    public void setFileSDLink(java.lang.String)
+    {
+        com.peercom.DownloadFileManager r0;
+        java.lang.String $r1;
+
+        r0 := @this: com.peercom.DownloadFileManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r0.<com.peercom.DownloadFileManager: java.lang.String _FileSDLink> = $r1;
+
+        return;
+    }
+
+    public void setFileTotalSize(java.lang.String)
+    {
+        com.peercom.DownloadFileManager r0;
+        java.lang.String $r1;
+
+        r0 := @this: com.peercom.DownloadFileManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r0.<com.peercom.DownloadFileManager: java.lang.String _FileTotalSize> = $r1;
+
+        return;
+    }
+
+    public void setStatus(java.lang.String)
+    {
+        com.peercom.DownloadFileManager r0;
+        java.lang.String $r1;
+
+        r0 := @this: com.peercom.DownloadFileManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r0.<com.peercom.DownloadFileManager: java.lang.String _Status> = $r1;
+
+        return;
+    }
+
+    public static void <clinit>()
+    {
+        <com.peercom.DownloadFileManager: java.lang.String STATUS> = "Status";
+
+        <com.peercom.DownloadFileManager: java.lang.String FILETOTALSIZE> = "FileTotalSize";
+
+        <com.peercom.DownloadFileManager: java.lang.String FILESDLINK> = "FileSDLink";
+
+        <com.peercom.DownloadFileManager: java.lang.String FILENAME> = "FileName";
+
+        <com.peercom.DownloadFileManager: java.lang.String FILEMEDIATYPE> = "FileMediaType";
+
+        <com.peercom.DownloadFileManager: java.lang.String FILELINK> = "FileLink";
+
+        <com.peercom.DownloadFileManager: java.lang.String FILEDOWNSIZE> = "FileDownSize";
+
+        return;
+    }
+}

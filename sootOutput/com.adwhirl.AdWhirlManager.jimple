@@ -1,0 +1,1363 @@
+public class com.adwhirl.AdWhirlManager extends java.lang.Object
+{
+    private static final java.lang.String PREFS_STRING_CONFIG;
+    private static final java.lang.String PREFS_STRING_TIMESTAMP;
+    private static long configExpireTimeout;
+    private java.lang.ref.WeakReference contextReference;
+    public java.lang.String deviceIDHash;
+    private com.adwhirl.obj.Extra extra;
+    public java.lang.String keyAdWhirl;
+    public java.lang.String localeString;
+    public android.location.Location location;
+    private java.util.List rationsList;
+    java.util.Iterator rollovers;
+    private double totalWeight;
+
+    static void <clinit>()
+    {
+        <com.adwhirl.AdWhirlManager: java.lang.String PREFS_STRING_TIMESTAMP> = "timestamp";
+
+        <com.adwhirl.AdWhirlManager: java.lang.String PREFS_STRING_CONFIG> = "config";
+
+        <com.adwhirl.AdWhirlManager: long configExpireTimeout> = 1800000L;
+
+        return;
+    }
+
+    public void <init>(java.lang.ref.WeakReference, java.lang.String)
+    {
+        java.lang.Throwable $r8;
+        byte[] $r7;
+        java.security.MessageDigest $r5;
+        com.adwhirl.AdWhirlManager r0;
+        java.util.Locale $r3;
+        java.lang.StringBuffer $r6;
+        java.lang.StringBuilder $r4;
+        java.lang.String $r2;
+        java.lang.ref.WeakReference $r1;
+
+        r0 := @this: com.adwhirl.AdWhirlManager;
+
+        $r1 := @parameter0: java.lang.ref.WeakReference;
+
+        $r2 := @parameter1: java.lang.String;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<com.adwhirl.AdWhirlManager: double totalWeight> = 0.0;
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdWhirl SDK", "Creating adWhirlManager...");
+
+        r0.<com.adwhirl.AdWhirlManager: java.lang.ref.WeakReference contextReference> = $r1;
+
+        r0.<com.adwhirl.AdWhirlManager: java.lang.String keyAdWhirl> = $r2;
+
+        $r3 = staticinvoke <java.util.Locale: java.util.Locale getDefault()>();
+
+        $r2 = virtualinvoke $r3.<java.util.Locale: java.lang.String toString()>();
+
+        r0.<com.adwhirl.AdWhirlManager: java.lang.String localeString> = $r2;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>(java.lang.String)>("Locale is: ");
+
+        $r2 = r0.<com.adwhirl.AdWhirlManager: java.lang.String localeString>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r2 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("AdWhirl SDK", $r2);
+
+     label1:
+        $r5 = staticinvoke <java.security.MessageDigest: java.security.MessageDigest getInstance(java.lang.String)>("MD5");
+
+     label2:
+        $r6 = new java.lang.StringBuffer;
+
+     label3:
+        specialinvoke $r6.<java.lang.StringBuffer: void <init>(java.lang.String)>("android_id");
+
+        virtualinvoke $r6.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("AdWhirl");
+
+        $r2 = virtualinvoke $r6.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        $r7 = virtualinvoke $r2.<java.lang.String: byte[] getBytes()>();
+
+        $r7 = virtualinvoke $r5.<java.security.MessageDigest: byte[] digest(byte[])>($r7);
+
+        $r2 = staticinvoke <com.adwhirl.util.AdWhirlUtil: java.lang.String convertToHex(byte[])>($r7);
+
+     label4:
+        r0.<com.adwhirl.AdWhirlManager: java.lang.String deviceIDHash> = $r2;
+
+     label5:
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>(java.lang.String)>("Hashed device ID is: ");
+
+        $r2 = r0.<com.adwhirl.AdWhirlManager: java.lang.String deviceIDHash>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r2 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("AdWhirl SDK", $r2);
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdWhirl SDK", "Finished creating adWhirlManager");
+
+        return;
+
+     label6:
+        $r8 := @caughtexception;
+
+        r0.<com.adwhirl.AdWhirlManager: java.lang.String deviceIDHash> = "00000000000000000000000000000000";
+
+        goto label5;
+
+        catch java.security.NoSuchAlgorithmException from label1 to label2 with label6;
+        catch java.security.NoSuchAlgorithmException from label3 to label4 with label6;
+    }
+
+    private java.lang.String convertStreamToString(java.io.InputStream)
+    {
+        java.lang.Throwable $r7, $r8, $r9, $r10, $r11;
+        java.io.InputStreamReader $r4;
+        com.adwhirl.AdWhirlManager r0;
+        java.lang.StringBuilder $r2, $r5;
+        java.io.BufferedReader $r3;
+        java.lang.String $r6;
+        java.io.InputStream $r1;
+
+        r0 := @this: com.adwhirl.AdWhirlManager;
+
+        $r1 := @parameter0: java.io.InputStream;
+
+        $r3 = new java.io.BufferedReader;
+
+        $r4 = new java.io.InputStreamReader;
+
+        specialinvoke $r4.<java.io.InputStreamReader: void <init>(java.io.InputStream)>($r1);
+
+        specialinvoke $r3.<java.io.BufferedReader: void <init>(java.io.Reader,int)>($r4, 8192);
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+     label01:
+        $r6 = virtualinvoke $r3.<java.io.BufferedReader: java.lang.String readLine()>();
+
+     label02:
+        if $r6 != null goto label05;
+
+     label03:
+        virtualinvoke $r1.<java.io.InputStream: void close()>();
+
+     label04:
+        $r6 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r6;
+
+     label05:
+        $r2 = new java.lang.StringBuilder;
+
+     label06:
+        $r6 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r6);
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>($r6);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\n");
+
+        $r6 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+     label07:
+        goto label01;
+
+     label08:
+        $r7 := @caughtexception;
+
+     label09:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("AdWhirl SDK", "Caught IOException in convertStreamToString()", $r7);
+
+     label10:
+        virtualinvoke $r1.<java.io.InputStream: void close()>();
+
+     label11:
+        return null;
+
+     label12:
+        $r8 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("AdWhirl SDK", "Caught IOException in convertStreamToString()", $r8);
+
+        return null;
+
+     label13:
+        $r9 := @caughtexception;
+
+     label14:
+        virtualinvoke $r1.<java.io.InputStream: void close()>();
+
+     label15:
+        throw $r9;
+
+     label16:
+        $r10 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("AdWhirl SDK", "Caught IOException in convertStreamToString()", $r10);
+
+        return null;
+
+     label17:
+        $r11 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("AdWhirl SDK", "Caught IOException in convertStreamToString()", $r11);
+
+        return null;
+
+        catch java.io.IOException from label01 to label02 with label08;
+        catch java.lang.Throwable from label01 to label02 with label13;
+        catch java.io.IOException from label03 to label04 with label17;
+        catch java.io.IOException from label06 to label07 with label08;
+        catch java.lang.Throwable from label05 to label07 with label13;
+        catch java.lang.Throwable from label09 to label10 with label13;
+        catch java.io.IOException from label10 to label11 with label12;
+        catch java.io.IOException from label14 to label15 with label16;
+    }
+
+    private android.graphics.drawable.Drawable fetchImage(java.lang.String)
+    {
+        com.adwhirl.AdWhirlManager r0;
+        java.net.URL $r2;
+        java.lang.Object $r3;
+        java.lang.String $r1;
+        android.graphics.drawable.Drawable $r5;
+        java.lang.Exception $r6;
+        java.io.InputStream $r4;
+
+        r0 := @this: com.adwhirl.AdWhirlManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = new java.net.URL;
+
+     label1:
+        specialinvoke $r2.<java.net.URL: void <init>(java.lang.String)>($r1);
+
+        $r3 = virtualinvoke $r2.<java.net.URL: java.lang.Object getContent()>();
+
+        $r4 = (java.io.InputStream) $r3;
+
+        $r5 = staticinvoke <android.graphics.drawable.Drawable: android.graphics.drawable.Drawable createFromStream(java.io.InputStream,java.lang.String)>($r4, "src");
+
+     label2:
+        return $r5;
+
+     label3:
+        $r6 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("AdWhirl SDK", "Unable to fetchImage(): ", $r6);
+
+        return null;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+    }
+
+    private void parseConfigurationString(java.lang.String)
+    {
+        com.adwhirl.obj.Extra $r8;
+        java.lang.NullPointerException $r9;
+        org.json.JSONException $r7;
+        org.json.JSONObject $r4, $r5;
+        com.adwhirl.AdWhirlManager r0;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r1, $r3;
+        org.json.JSONArray $r6;
+
+        r0 := @this: com.adwhirl.AdWhirlManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("Received jsonString: ");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("AdWhirl SDK", $r3);
+
+        $r4 = new org.json.JSONObject;
+
+     label1:
+        specialinvoke $r4.<org.json.JSONObject: void <init>(java.lang.String)>($r1);
+
+        $r5 = virtualinvoke $r4.<org.json.JSONObject: org.json.JSONObject getJSONObject(java.lang.String)>("extra");
+
+        specialinvoke r0.<com.adwhirl.AdWhirlManager: void parseExtraJson(org.json.JSONObject)>($r5);
+
+        $r6 = virtualinvoke $r4.<org.json.JSONObject: org.json.JSONArray getJSONArray(java.lang.String)>("rations");
+
+        specialinvoke r0.<com.adwhirl.AdWhirlManager: void parseRationsJson(org.json.JSONArray)>($r6);
+
+     label2:
+        return;
+
+     label3:
+        $r7 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("AdWhirl SDK", "Unable to parse response from JSON. This may or may not be fatal.", $r7);
+
+        $r8 = new com.adwhirl.obj.Extra;
+
+        specialinvoke $r8.<com.adwhirl.obj.Extra: void <init>()>();
+
+        r0.<com.adwhirl.AdWhirlManager: com.adwhirl.obj.Extra extra> = $r8;
+
+        return;
+
+     label4:
+        $r9 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("AdWhirl SDK", "Unable to parse response from JSON. This may or may not be fatal.", $r9);
+
+        $r8 = new com.adwhirl.obj.Extra;
+
+        specialinvoke $r8.<com.adwhirl.obj.Extra: void <init>()>();
+
+        r0.<com.adwhirl.AdWhirlManager: com.adwhirl.obj.Extra extra> = $r8;
+
+        return;
+
+        catch org.json.JSONException from label1 to label2 with label3;
+        catch java.lang.NullPointerException from label1 to label2 with label4;
+    }
+
+    private com.adwhirl.obj.Custom parseCustomJsonString(java.lang.String)
+    {
+        android.content.Context $r9;
+        android.view.WindowManager $r10;
+        com.adwhirl.obj.Custom $r4;
+        android.graphics.drawable.Drawable $r12;
+        org.json.JSONException $r13, $r14;
+        org.json.JSONObject $r5;
+        byte $b1;
+        com.adwhirl.AdWhirlManager r0;
+        int $i0;
+        android.view.Display $r11;
+        java.lang.String $r1, $r3;
+        java.lang.ref.WeakReference $r7;
+        double $d0;
+        android.util.DisplayMetrics $r6;
+        float $f0;
+        java.lang.StringBuilder $r2;
+        java.lang.Object $r8;
+
+        r0 := @this: com.adwhirl.AdWhirlManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("Received custom jsonString: ");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("AdWhirl SDK", $r3);
+
+        $r4 = new com.adwhirl.obj.Custom;
+
+        specialinvoke $r4.<com.adwhirl.obj.Custom: void <init>()>();
+
+        $r5 = new org.json.JSONObject;
+
+     label01:
+        specialinvoke $r5.<org.json.JSONObject: void <init>(java.lang.String)>($r1);
+
+        $i0 = virtualinvoke $r5.<org.json.JSONObject: int getInt(java.lang.String)>("ad_type");
+
+     label02:
+        $r4.<com.adwhirl.obj.Custom: int type> = $i0;
+
+     label03:
+        $r1 = virtualinvoke $r5.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("img_url");
+
+     label04:
+        $r4.<com.adwhirl.obj.Custom: java.lang.String imageLink> = $r1;
+
+     label05:
+        $r1 = virtualinvoke $r5.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("redirect_url");
+
+     label06:
+        $r4.<com.adwhirl.obj.Custom: java.lang.String link> = $r1;
+
+     label07:
+        $r1 = virtualinvoke $r5.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("ad_text");
+
+     label08:
+        $r4.<com.adwhirl.obj.Custom: java.lang.String description> = $r1;
+
+     label09:
+        $r1 = virtualinvoke $r5.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("img_url_480x75");
+
+     label10:
+        $r4.<com.adwhirl.obj.Custom: java.lang.String imageLink480x75> = $r1;
+
+     label11:
+        $r6 = new android.util.DisplayMetrics;
+
+     label12:
+        specialinvoke $r6.<android.util.DisplayMetrics: void <init>()>();
+
+     label13:
+        $r7 = r0.<com.adwhirl.AdWhirlManager: java.lang.ref.WeakReference contextReference>;
+
+     label14:
+        $r8 = virtualinvoke $r7.<java.lang.ref.WeakReference: java.lang.Object get()>();
+
+     label15:
+        $r9 = (android.content.Context) $r8;
+
+     label16:
+        $r8 = virtualinvoke $r9.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("window");
+
+     label17:
+        $r10 = (android.view.WindowManager) $r8;
+
+     label18:
+        $r11 = interfaceinvoke $r10.<android.view.WindowManager: android.view.Display getDefaultDisplay()>();
+
+        virtualinvoke $r11.<android.view.Display: void getMetrics(android.util.DisplayMetrics)>($r6);
+
+     label19:
+        $f0 = $r6.<android.util.DisplayMetrics: float density>;
+
+        $d0 = (double) $f0;
+
+        $b1 = $d0 cmpl 1.5;
+
+        if $b1 != 0 goto label27;
+
+        $i0 = $r4.<com.adwhirl.obj.Custom: int type>;
+
+        if $i0 != 1 goto label27;
+
+        $r1 = $r4.<com.adwhirl.obj.Custom: java.lang.String imageLink480x75>;
+
+        if $r1 == null goto label27;
+
+        $r1 = $r4.<com.adwhirl.obj.Custom: java.lang.String imageLink480x75>;
+
+     label20:
+        $i0 = virtualinvoke $r1.<java.lang.String: int length()>();
+
+     label21:
+        if $i0 == 0 goto label27;
+
+        $r1 = $r4.<com.adwhirl.obj.Custom: java.lang.String imageLink480x75>;
+
+     label22:
+        $r12 = specialinvoke r0.<com.adwhirl.AdWhirlManager: android.graphics.drawable.Drawable fetchImage(java.lang.String)>($r1);
+
+     label23:
+        $r4.<com.adwhirl.obj.Custom: android.graphics.drawable.Drawable image> = $r12;
+
+     label24:
+        return $r4;
+
+     label25:
+        $r13 := @caughtexception;
+
+        $r4.<com.adwhirl.obj.Custom: java.lang.String imageLink480x75> = null;
+
+        goto label11;
+
+     label26:
+        $r14 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("AdWhirl SDK", "Caught JSONException in parseCustomJsonString()", $r14);
+
+        return null;
+
+     label27:
+        $r1 = $r4.<com.adwhirl.obj.Custom: java.lang.String imageLink>;
+
+     label28:
+        $r12 = specialinvoke r0.<com.adwhirl.AdWhirlManager: android.graphics.drawable.Drawable fetchImage(java.lang.String)>($r1);
+
+     label29:
+        $r4.<com.adwhirl.obj.Custom: android.graphics.drawable.Drawable image> = $r12;
+
+        goto label24;
+
+        catch org.json.JSONException from label01 to label02 with label26;
+        catch org.json.JSONException from label03 to label04 with label26;
+        catch org.json.JSONException from label05 to label06 with label26;
+        catch org.json.JSONException from label07 to label08 with label26;
+        catch org.json.JSONException from label09 to label10 with label25;
+        catch org.json.JSONException from label12 to label13 with label26;
+        catch org.json.JSONException from label14 to label15 with label26;
+        catch org.json.JSONException from label16 to label17 with label26;
+        catch org.json.JSONException from label18 to label19 with label26;
+        catch org.json.JSONException from label20 to label21 with label26;
+        catch org.json.JSONException from label22 to label23 with label26;
+        catch org.json.JSONException from label28 to label29 with label26;
+    }
+
+    private void parseExtraJson(org.json.JSONObject)
+    {
+        org.json.JSONException $r4;
+        org.json.JSONObject $r1, $r3;
+        com.adwhirl.AdWhirlManager r0;
+        int $i0;
+        com.adwhirl.obj.Extra $r2;
+
+        r0 := @this: com.adwhirl.AdWhirlManager;
+
+        $r1 := @parameter0: org.json.JSONObject;
+
+        $r2 = new com.adwhirl.obj.Extra;
+
+        specialinvoke $r2.<com.adwhirl.obj.Extra: void <init>()>();
+
+     label01:
+        $i0 = virtualinvoke $r1.<org.json.JSONObject: int getInt(java.lang.String)>("cycle_time");
+
+     label02:
+        $r2.<com.adwhirl.obj.Extra: int cycleTime> = $i0;
+
+     label03:
+        $i0 = virtualinvoke $r1.<org.json.JSONObject: int getInt(java.lang.String)>("location_on");
+
+     label04:
+        $r2.<com.adwhirl.obj.Extra: int locationOn> = $i0;
+
+     label05:
+        $i0 = virtualinvoke $r1.<org.json.JSONObject: int getInt(java.lang.String)>("transition");
+
+     label06:
+        $r2.<com.adwhirl.obj.Extra: int transition> = $i0;
+
+     label07:
+        $r3 = virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject getJSONObject(java.lang.String)>("background_color_rgb");
+
+        $i0 = virtualinvoke $r3.<org.json.JSONObject: int getInt(java.lang.String)>("red");
+
+     label08:
+        $r2.<com.adwhirl.obj.Extra: int bgRed> = $i0;
+
+     label09:
+        $i0 = virtualinvoke $r3.<org.json.JSONObject: int getInt(java.lang.String)>("green");
+
+     label10:
+        $r2.<com.adwhirl.obj.Extra: int bgGreen> = $i0;
+
+     label11:
+        $i0 = virtualinvoke $r3.<org.json.JSONObject: int getInt(java.lang.String)>("blue");
+
+     label12:
+        $r2.<com.adwhirl.obj.Extra: int bgBlue> = $i0;
+
+     label13:
+        $i0 = virtualinvoke $r3.<org.json.JSONObject: int getInt(java.lang.String)>("alpha");
+
+     label14:
+        $i0 = $i0 * 255;
+
+        $r2.<com.adwhirl.obj.Extra: int bgAlpha> = $i0;
+
+     label15:
+        $r1 = virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject getJSONObject(java.lang.String)>("text_color_rgb");
+
+        $i0 = virtualinvoke $r1.<org.json.JSONObject: int getInt(java.lang.String)>("red");
+
+     label16:
+        $r2.<com.adwhirl.obj.Extra: int fgRed> = $i0;
+
+     label17:
+        $i0 = virtualinvoke $r1.<org.json.JSONObject: int getInt(java.lang.String)>("green");
+
+     label18:
+        $r2.<com.adwhirl.obj.Extra: int fgGreen> = $i0;
+
+     label19:
+        $i0 = virtualinvoke $r1.<org.json.JSONObject: int getInt(java.lang.String)>("blue");
+
+     label20:
+        $r2.<com.adwhirl.obj.Extra: int fgBlue> = $i0;
+
+     label21:
+        $i0 = virtualinvoke $r1.<org.json.JSONObject: int getInt(java.lang.String)>("alpha");
+
+     label22:
+        $i0 = $i0 * 255;
+
+        $r2.<com.adwhirl.obj.Extra: int fgAlpha> = $i0;
+
+     label23:
+        r0.<com.adwhirl.AdWhirlManager: com.adwhirl.obj.Extra extra> = $r2;
+
+        return;
+
+     label24:
+        $r4 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("AdWhirl SDK", "Exception in parsing config.extra JSON. This may or may not be fatal.", $r4);
+
+        goto label23;
+
+        catch org.json.JSONException from label01 to label02 with label24;
+        catch org.json.JSONException from label03 to label04 with label24;
+        catch org.json.JSONException from label05 to label06 with label24;
+        catch org.json.JSONException from label07 to label08 with label24;
+        catch org.json.JSONException from label09 to label10 with label24;
+        catch org.json.JSONException from label11 to label12 with label24;
+        catch org.json.JSONException from label13 to label14 with label24;
+        catch org.json.JSONException from label15 to label16 with label24;
+        catch org.json.JSONException from label17 to label18 with label24;
+        catch org.json.JSONException from label19 to label20 with label24;
+        catch org.json.JSONException from label21 to label22 with label24;
+    }
+
+    private void parseRationsJson(org.json.JSONArray)
+    {
+        java.util.Iterator $r4;
+        java.util.ArrayList $r2;
+        java.util.List $r3;
+        org.json.JSONException $r8;
+        org.json.JSONObject $r5;
+        com.adwhirl.AdWhirlManager r0;
+        int $i0, $i1;
+        com.adwhirl.obj.Ration $r6;
+        java.lang.String $r7;
+        org.json.JSONArray $r1;
+        double $d0, $d1;
+
+        r0 := @this: com.adwhirl.AdWhirlManager;
+
+        $r1 := @parameter0: org.json.JSONArray;
+
+        $r2 = new java.util.ArrayList;
+
+        specialinvoke $r2.<java.util.ArrayList: void <init>()>();
+
+        r0.<com.adwhirl.AdWhirlManager: double totalWeight> = 0.0;
+
+        $i0 = 0;
+
+     label01:
+        $i1 = virtualinvoke $r1.<org.json.JSONArray: int length()>();
+
+     label02:
+        if $i0 < $i1 goto label04;
+
+     label03:
+        staticinvoke <java.util.Collections: void sort(java.util.List)>($r2);
+
+        r0.<com.adwhirl.AdWhirlManager: java.util.List rationsList> = $r2;
+
+        $r3 = r0.<com.adwhirl.AdWhirlManager: java.util.List rationsList>;
+
+        $r4 = interfaceinvoke $r3.<java.util.List: java.util.Iterator iterator()>();
+
+        r0.<com.adwhirl.AdWhirlManager: java.util.Iterator rollovers> = $r4;
+
+        return;
+
+     label04:
+        $r5 = virtualinvoke $r1.<org.json.JSONArray: org.json.JSONObject getJSONObject(int)>($i0);
+
+     label05:
+        if $r5 != null goto label07;
+
+     label06:
+        $i0 = $i0 + 1;
+
+        goto label01;
+
+     label07:
+        $r6 = new com.adwhirl.obj.Ration;
+
+     label08:
+        specialinvoke $r6.<com.adwhirl.obj.Ration: void <init>()>();
+
+        $r7 = virtualinvoke $r5.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("nid");
+
+     label09:
+        $r6.<com.adwhirl.obj.Ration: java.lang.String nid> = $r7;
+
+     label10:
+        $i1 = virtualinvoke $r5.<org.json.JSONObject: int getInt(java.lang.String)>("type");
+
+     label11:
+        $r6.<com.adwhirl.obj.Ration: int type> = $i1;
+
+     label12:
+        $r7 = virtualinvoke $r5.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("nname");
+
+     label13:
+        $r6.<com.adwhirl.obj.Ration: java.lang.String name> = $r7;
+
+     label14:
+        $i1 = virtualinvoke $r5.<org.json.JSONObject: int getInt(java.lang.String)>("weight");
+
+     label15:
+        $d0 = (double) $i1;
+
+        $r6.<com.adwhirl.obj.Ration: double weight> = $d0;
+
+     label16:
+        $i1 = virtualinvoke $r5.<org.json.JSONObject: int getInt(java.lang.String)>("priority");
+
+     label17:
+        $r6.<com.adwhirl.obj.Ration: int priority> = $i1;
+
+        $i1 = $r6.<com.adwhirl.obj.Ration: int type>;
+
+        lookupswitch($i1)
+        {
+            case 8: goto label24;
+            default: goto label18;
+        };
+
+     label18:
+        $r7 = virtualinvoke $r5.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("key");
+
+     label19:
+        $r6.<com.adwhirl.obj.Ration: java.lang.String key> = $r7;
+
+     label20:
+        $d1 = r0.<com.adwhirl.AdWhirlManager: double totalWeight>;
+
+        $d0 = $r6.<com.adwhirl.obj.Ration: double weight>;
+
+        $d0 = $d1 + $d0;
+
+        r0.<com.adwhirl.AdWhirlManager: double totalWeight> = $d0;
+
+     label21:
+        interfaceinvoke $r2.<java.util.List: boolean add(java.lang.Object)>($r6);
+
+     label22:
+        goto label06;
+
+     label23:
+        $r8 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("AdWhirl SDK", "JSONException in parsing config.rations JSON. This may or may not be fatal.", $r8);
+
+        goto label03;
+
+     label24:
+        $r5 = virtualinvoke $r5.<org.json.JSONObject: org.json.JSONObject getJSONObject(java.lang.String)>("key");
+
+        $r7 = virtualinvoke $r5.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("siteID");
+
+     label25:
+        $r6.<com.adwhirl.obj.Ration: java.lang.String key> = $r7;
+
+     label26:
+        $r7 = virtualinvoke $r5.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("publisherID");
+
+     label27:
+        $r6.<com.adwhirl.obj.Ration: java.lang.String key2> = $r7;
+
+        goto label20;
+
+        catch org.json.JSONException from label01 to label02 with label23;
+        catch org.json.JSONException from label04 to label05 with label23;
+        catch org.json.JSONException from label08 to label09 with label23;
+        catch org.json.JSONException from label10 to label11 with label23;
+        catch org.json.JSONException from label12 to label13 with label23;
+        catch org.json.JSONException from label14 to label15 with label23;
+        catch org.json.JSONException from label16 to label17 with label23;
+        catch org.json.JSONException from label18 to label19 with label23;
+        catch org.json.JSONException from label21 to label22 with label23;
+        catch org.json.JSONException from label24 to label25 with label23;
+        catch org.json.JSONException from label26 to label27 with label23;
+    }
+
+    public static void setConfigExpireTimeout(long)
+    {
+        long $l0;
+
+        $l0 := @parameter0: long;
+
+        <com.adwhirl.AdWhirlManager: long configExpireTimeout> = $l0;
+
+        return;
+    }
+
+    public void fetchConfig()
+    {
+        org.apache.http.impl.client.DefaultHttpClient $r9, $r21;
+        android.content.SharedPreferences$Editor $r17;
+        java.lang.Throwable $r18, $r19;
+        android.content.Context $r3;
+        java.lang.Object[] $r10;
+        long $l0, $l1, $l3;
+        java.lang.Integer $r11;
+        org.apache.http.StatusLine $r14;
+        byte $b2;
+        com.adwhirl.AdWhirlManager r0;
+        int $i4;
+        java.lang.String $r4, $r6, $r8;
+        java.lang.ref.WeakReference $r1;
+        org.apache.http.HttpEntity $r15;
+        android.content.SharedPreferences $r5;
+        org.apache.http.client.methods.HttpGet $r12, $r22;
+        org.apache.http.HttpResponse $r13;
+        java.lang.Object $r2;
+        java.lang.StringBuilder $r7, $r20;
+        java.io.InputStream $r16;
+
+        r0 := @this: com.adwhirl.AdWhirlManager;
+
+        $r1 = r0.<com.adwhirl.AdWhirlManager: java.lang.ref.WeakReference contextReference>;
+
+        $r2 = virtualinvoke $r1.<java.lang.ref.WeakReference: java.lang.Object get()>();
+
+        $r3 = (android.content.Context) $r2;
+
+        if $r3 != null goto label01;
+
+        return;
+
+     label01:
+        $r4 = r0.<com.adwhirl.AdWhirlManager: java.lang.String keyAdWhirl>;
+
+        $r5 = virtualinvoke $r3.<android.content.Context: android.content.SharedPreferences getSharedPreferences(java.lang.String,int)>($r4, 0);
+
+        $r6 = interfaceinvoke $r5.<android.content.SharedPreferences: java.lang.String getString(java.lang.String,java.lang.String)>("config", null);
+
+        $r4 = $r6;
+
+        $l0 = interfaceinvoke $r5.<android.content.SharedPreferences: long getLong(java.lang.String,long)>("timestamp", -1L);
+
+        $r20 = new java.lang.StringBuilder;
+
+        specialinvoke $r20.<java.lang.StringBuilder: void <init>(java.lang.String)>("Prefs{");
+
+        $r8 = r0.<com.adwhirl.AdWhirlManager: java.lang.String keyAdWhirl>;
+
+        $r7 = virtualinvoke $r20.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("}: {\"");
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("config");
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\": \"");
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\", \"");
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("timestamp");
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\": ");
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("}");
+
+        $r8 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("AdWhirl SDK", $r8);
+
+        if $r6 == null goto label02;
+
+        $l1 = <com.adwhirl.AdWhirlManager: long configExpireTimeout>;
+
+        $b2 = $l1 cmp -1L;
+
+        if $b2 == 0 goto label02;
+
+        $l1 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $l3 = <com.adwhirl.AdWhirlManager: long configExpireTimeout>;
+
+        $l0 = $l0 + $l3;
+
+        $b2 = $l1 cmp $l0;
+
+        $i4 = (int) $b2;
+
+        if $i4 < 0 goto label11;
+
+     label02:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdWhirl SDK", "Stored config info not present or expired, fetching fresh data");
+
+        $r21 = new org.apache.http.impl.client.DefaultHttpClient;
+
+        $r9 = $r21;
+
+        specialinvoke $r21.<org.apache.http.impl.client.DefaultHttpClient: void <init>()>();
+
+        $r10 = newarray (java.lang.Object)[2];
+
+        $r6 = r0.<com.adwhirl.AdWhirlManager: java.lang.String keyAdWhirl>;
+
+        $r10[0] = $r6;
+
+        $r11 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(300);
+
+        $r10[1] = $r11;
+
+        $r6 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("http://mob.adwhirl.com/getInfo.php?appid=%s&appver=%d&client=2", $r10);
+
+        $r22 = new org.apache.http.client.methods.HttpGet;
+
+        $r12 = $r22;
+
+        specialinvoke $r22.<org.apache.http.client.methods.HttpGet: void <init>(java.lang.String)>($r6);
+
+     label03:
+        $r13 = interfaceinvoke $r9.<org.apache.http.client.HttpClient: org.apache.http.HttpResponse execute(org.apache.http.client.methods.HttpUriRequest)>($r12);
+
+        $r14 = interfaceinvoke $r13.<org.apache.http.HttpResponse: org.apache.http.StatusLine getStatusLine()>();
+
+        $r6 = virtualinvoke $r14.<java.lang.Object: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("AdWhirl SDK", $r6);
+
+        $r15 = interfaceinvoke $r13.<org.apache.http.HttpResponse: org.apache.http.HttpEntity getEntity()>();
+
+     label04:
+        if $r15 == null goto label08;
+
+     label05:
+        $r16 = interfaceinvoke $r15.<org.apache.http.HttpEntity: java.io.InputStream getContent()>();
+
+        $r6 = specialinvoke r0.<com.adwhirl.AdWhirlManager: java.lang.String convertStreamToString(java.io.InputStream)>($r16);
+
+     label06:
+        $r4 = $r6;
+
+     label07:
+        $r17 = interfaceinvoke $r5.<android.content.SharedPreferences: android.content.SharedPreferences$Editor edit()>();
+
+        interfaceinvoke $r17.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putString(java.lang.String,java.lang.String)>("config", $r6);
+
+        $l0 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        interfaceinvoke $r17.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putLong(java.lang.String,long)>("timestamp", $l0);
+
+        interfaceinvoke $r17.<android.content.SharedPreferences$Editor: boolean commit()>();
+
+     label08:
+        specialinvoke r0.<com.adwhirl.AdWhirlManager: void parseConfigurationString(java.lang.String)>($r4);
+
+        return;
+
+     label09:
+        $r18 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("AdWhirl SDK", "Caught ClientProtocolException in fetchConfig()", $r18);
+
+        goto label08;
+
+     label10:
+        $r19 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("AdWhirl SDK", "Caught IOException in fetchConfig()", $r19);
+
+        goto label08;
+
+     label11:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdWhirl SDK", "Using stored config data");
+
+        goto label08;
+
+        catch org.apache.http.client.ClientProtocolException from label03 to label04 with label09;
+        catch org.apache.http.client.ClientProtocolException from label05 to label06 with label09;
+        catch org.apache.http.client.ClientProtocolException from label07 to label08 with label09;
+        catch java.io.IOException from label03 to label04 with label10;
+        catch java.io.IOException from label05 to label06 with label10;
+        catch java.io.IOException from label07 to label08 with label10;
+    }
+
+    public com.adwhirl.obj.Custom getCustom(java.lang.String)
+    {
+        org.apache.http.impl.client.DefaultHttpClient $r2;
+        java.lang.Throwable $r17, $r18;
+        java.lang.Object[] $r5;
+        java.lang.Double $r6;
+        com.adwhirl.obj.Custom $r16;
+        long $l1;
+        java.lang.Integer $r10;
+        org.apache.http.StatusLine $r13;
+        com.adwhirl.obj.Extra $r3;
+        com.adwhirl.AdWhirlManager r0;
+        java.lang.Long $r7;
+        int $i0;
+        java.lang.String $r1, $r8, $r9;
+        double $d0;
+        org.apache.http.HttpEntity $r14;
+        org.apache.http.client.methods.HttpGet $r11;
+        org.apache.http.HttpResponse $r12;
+        android.location.Location $r4;
+        java.io.InputStream $r15;
+
+        r0 := @this: com.adwhirl.AdWhirlManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = new org.apache.http.impl.client.DefaultHttpClient;
+
+        specialinvoke $r2.<org.apache.http.impl.client.DefaultHttpClient: void <init>()>();
+
+        $r3 = r0.<com.adwhirl.AdWhirlManager: com.adwhirl.obj.Extra extra>;
+
+        $i0 = $r3.<com.adwhirl.obj.Extra: int locationOn>;
+
+        if $i0 != 1 goto label07;
+
+        $r4 = virtualinvoke r0.<com.adwhirl.AdWhirlManager: android.location.Location getLocation()>();
+
+        r0.<com.adwhirl.AdWhirlManager: android.location.Location location> = $r4;
+
+        $r4 = r0.<com.adwhirl.AdWhirlManager: android.location.Location location>;
+
+        if $r4 == null goto label06;
+
+        $r5 = newarray (java.lang.Object)[3];
+
+        $r4 = r0.<com.adwhirl.AdWhirlManager: android.location.Location location>;
+
+        $d0 = virtualinvoke $r4.<android.location.Location: double getLatitude()>();
+
+        $r6 = staticinvoke <java.lang.Double: java.lang.Double valueOf(double)>($d0);
+
+        $r5[0] = $r6;
+
+        $r4 = r0.<com.adwhirl.AdWhirlManager: android.location.Location location>;
+
+        $d0 = virtualinvoke $r4.<android.location.Location: double getLongitude()>();
+
+        $r6 = staticinvoke <java.lang.Double: java.lang.Double valueOf(double)>($d0);
+
+        $r5[1] = $r6;
+
+        $r4 = r0.<com.adwhirl.AdWhirlManager: android.location.Location location>;
+
+        $l1 = virtualinvoke $r4.<android.location.Location: long getTime()>();
+
+        $r7 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l1);
+
+        $r5[2] = $r7;
+
+        $r8 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("&location=%f,%f&location_timestamp=%d", $r5);
+
+     label01:
+        $r5 = newarray (java.lang.Object)[6];
+
+        $r9 = r0.<com.adwhirl.AdWhirlManager: java.lang.String keyAdWhirl>;
+
+        $r5[0] = $r9;
+
+        $r5[1] = $r1;
+
+        $r1 = r0.<com.adwhirl.AdWhirlManager: java.lang.String deviceIDHash>;
+
+        $r5[2] = $r1;
+
+        $r1 = r0.<com.adwhirl.AdWhirlManager: java.lang.String localeString>;
+
+        $r5[3] = $r1;
+
+        $r5[4] = $r8;
+
+        $r10 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(300);
+
+        $r5[5] = $r10;
+
+        $r1 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("http://cus.adwhirl.com/custom.php?appid=%s&nid=%s&uuid=%s&country_code=%s%s&appver=%d&client=2", $r5);
+
+        $r11 = new org.apache.http.client.methods.HttpGet;
+
+        specialinvoke $r11.<org.apache.http.client.methods.HttpGet: void <init>(java.lang.String)>($r1);
+
+     label02:
+        $r12 = interfaceinvoke $r2.<org.apache.http.client.HttpClient: org.apache.http.HttpResponse execute(org.apache.http.client.methods.HttpUriRequest)>($r11);
+
+        $r13 = interfaceinvoke $r12.<org.apache.http.HttpResponse: org.apache.http.StatusLine getStatusLine()>();
+
+        $r1 = virtualinvoke $r13.<java.lang.Object: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("AdWhirl SDK", $r1);
+
+        $r14 = interfaceinvoke $r12.<org.apache.http.HttpResponse: org.apache.http.HttpEntity getEntity()>();
+
+     label03:
+        if $r14 == null goto label09;
+
+     label04:
+        $r15 = interfaceinvoke $r14.<org.apache.http.HttpEntity: java.io.InputStream getContent()>();
+
+        $r1 = specialinvoke r0.<com.adwhirl.AdWhirlManager: java.lang.String convertStreamToString(java.io.InputStream)>($r15);
+
+        $r16 = specialinvoke r0.<com.adwhirl.AdWhirlManager: com.adwhirl.obj.Custom parseCustomJsonString(java.lang.String)>($r1);
+
+     label05:
+        return $r16;
+
+     label06:
+        $r8 = "";
+
+        goto label01;
+
+     label07:
+        r0.<com.adwhirl.AdWhirlManager: android.location.Location location> = null;
+
+        $r8 = "";
+
+        goto label01;
+
+     label08:
+        $r17 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("AdWhirl SDK", "Caught ClientProtocolException in getCustom()", $r17);
+
+     label09:
+        return null;
+
+     label10:
+        $r18 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("AdWhirl SDK", "Caught IOException in getCustom()", $r18);
+
+        goto label09;
+
+        catch org.apache.http.client.ClientProtocolException from label02 to label03 with label08;
+        catch org.apache.http.client.ClientProtocolException from label04 to label05 with label08;
+        catch java.io.IOException from label02 to label03 with label10;
+        catch java.io.IOException from label04 to label05 with label10;
+    }
+
+    public com.adwhirl.obj.Extra getExtra()
+    {
+        byte $b0;
+        com.adwhirl.AdWhirlManager r0;
+        int $i1;
+        com.adwhirl.obj.Extra r1;
+        double $d0;
+
+        r0 := @this: com.adwhirl.AdWhirlManager;
+
+        $d0 = r0.<com.adwhirl.AdWhirlManager: double totalWeight>;
+
+        $b0 = $d0 cmpg 0.0;
+
+        $i1 = (int) $b0;
+
+        if $i1 > 0 goto label1;
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("AdWhirl SDK", "Sum of ration weights is 0 - no ads to be shown");
+
+        return null;
+
+     label1:
+        r1 = r0.<com.adwhirl.AdWhirlManager: com.adwhirl.obj.Extra extra>;
+
+        return r1;
+    }
+
+    public android.location.Location getLocation()
+    {
+        android.content.Context $r3;
+        com.adwhirl.AdWhirlManager r0;
+        int $i0;
+        java.lang.Object $r2;
+        java.lang.ref.WeakReference $r1;
+        android.location.Location $r5;
+        android.location.LocationManager $r4;
+
+        r0 := @this: com.adwhirl.AdWhirlManager;
+
+        $r1 = r0.<com.adwhirl.AdWhirlManager: java.lang.ref.WeakReference contextReference>;
+
+        if $r1 != null goto label1;
+
+        return null;
+
+     label1:
+        $r1 = r0.<com.adwhirl.AdWhirlManager: java.lang.ref.WeakReference contextReference>;
+
+        $r2 = virtualinvoke $r1.<java.lang.ref.WeakReference: java.lang.Object get()>();
+
+        $r3 = (android.content.Context) $r2;
+
+        if $r3 == null goto label5;
+
+        $i0 = virtualinvoke $r3.<android.content.Context: int checkCallingOrSelfPermission(java.lang.String)>("android.permission.ACCESS_FINE_LOCATION");
+
+        if $i0 != 0 goto label3;
+
+        $r2 = virtualinvoke $r3.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("location");
+
+        $r4 = (android.location.LocationManager) $r2;
+
+        $r5 = virtualinvoke $r4.<android.location.LocationManager: android.location.Location getLastKnownLocation(java.lang.String)>("gps");
+
+     label2:
+        return $r5;
+
+     label3:
+        $i0 = virtualinvoke $r3.<android.content.Context: int checkCallingOrSelfPermission(java.lang.String)>("android.permission.ACCESS_COARSE_LOCATION");
+
+        if $i0 != 0 goto label4;
+
+        $r2 = virtualinvoke $r3.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("location");
+
+        $r4 = (android.location.LocationManager) $r2;
+
+        $r5 = virtualinvoke $r4.<android.location.LocationManager: android.location.Location getLastKnownLocation(java.lang.String)>("network");
+
+        goto label2;
+
+     label4:
+        $r5 = null;
+
+        goto label2;
+
+     label5:
+        return null;
+    }
+
+    public com.adwhirl.obj.Ration getRation()
+    {
+        java.util.Iterator $r4;
+        java.util.Random $r7;
+        java.util.List $r3;
+        byte $b0;
+        com.adwhirl.AdWhirlManager r0;
+        int $i1;
+        java.lang.StringBuilder $r1, $r8;
+        java.lang.Object $r6;
+        java.lang.String $r2;
+        com.adwhirl.obj.Ration $r5;
+        double $d0, $d1, $d2;
+        boolean $z0;
+
+        r0 := @this: com.adwhirl.AdWhirlManager;
+
+        $r7 = new java.util.Random;
+
+        specialinvoke $r7.<java.util.Random: void <init>()>();
+
+        $d1 = virtualinvoke $r7.<java.util.Random: double nextDouble()>();
+
+        $d0 = r0.<com.adwhirl.AdWhirlManager: double totalWeight>;
+
+        $d0 = $d1 * $d0;
+
+        $d1 = 0.0;
+
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>(java.lang.String)>("Dart is <");
+
+        $r1 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(double)>($d0);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("> of <");
+
+        $d2 = r0.<com.adwhirl.AdWhirlManager: double totalWeight>;
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(double)>($d2);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(">");
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("AdWhirl SDK", $r2);
+
+        $r3 = r0.<com.adwhirl.AdWhirlManager: java.util.List rationsList>;
+
+        $r4 = interfaceinvoke $r3.<java.util.List: java.util.Iterator iterator()>();
+
+        $r5 = null;
+
+     label1:
+        $z0 = interfaceinvoke $r4.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 != 0 goto label2;
+
+        return $r5;
+
+     label2:
+        $r6 = interfaceinvoke $r4.<java.util.Iterator: java.lang.Object next()>();
+
+        $r5 = (com.adwhirl.obj.Ration) $r6;
+
+        $d2 = $r5.<com.adwhirl.obj.Ration: double weight>;
+
+        $d1 = $d1 + $d2;
+
+        $b0 = $d1 cmpl $d0;
+
+        $i1 = (int) $b0;
+
+        if $i1 < 0 goto label1;
+
+        return $r5;
+    }
+
+    public com.adwhirl.obj.Ration getRollover()
+    {
+        java.util.Iterator $r1;
+        com.adwhirl.AdWhirlManager r0;
+        java.lang.Object $r2;
+        com.adwhirl.obj.Ration $r3;
+        boolean $z0;
+
+        r0 := @this: com.adwhirl.AdWhirlManager;
+
+        $r1 = r0.<com.adwhirl.AdWhirlManager: java.util.Iterator rollovers>;
+
+        if $r1 != null goto label1;
+
+        return null;
+
+     label1:
+        $r1 = r0.<com.adwhirl.AdWhirlManager: java.util.Iterator rollovers>;
+
+        $z0 = interfaceinvoke $r1.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label2;
+
+        $r1 = r0.<com.adwhirl.AdWhirlManager: java.util.Iterator rollovers>;
+
+        $r2 = interfaceinvoke $r1.<java.util.Iterator: java.lang.Object next()>();
+
+        $r3 = (com.adwhirl.obj.Ration) $r2;
+
+        return $r3;
+
+     label2:
+        return null;
+    }
+
+    public void resetRollover()
+    {
+        java.util.List $r2;
+        java.util.Iterator $r1;
+        com.adwhirl.AdWhirlManager r0;
+
+        r0 := @this: com.adwhirl.AdWhirlManager;
+
+        $r2 = r0.<com.adwhirl.AdWhirlManager: java.util.List rationsList>;
+
+        $r1 = interfaceinvoke $r2.<java.util.List: java.util.Iterator iterator()>();
+
+        r0.<com.adwhirl.AdWhirlManager: java.util.Iterator rollovers> = $r1;
+
+        return;
+    }
+}

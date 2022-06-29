@@ -1,0 +1,789 @@
+public class com.nexage.android.reports.AdService extends java.lang.Object
+{
+    private static int s_ServiceID;
+    private com.nexage.android.reports.AdEvent adEvents;
+    private final java.util.ArrayList adNetRequests;
+    final int cached;
+    com.nexage.android.NexageAdView m_AdView;
+    private boolean m_EventCheckPoint;
+    boolean m_OkToReport;
+    private boolean m_RequestCheckPoint;
+    int m_ServiceID;
+    final java.lang.String position;
+    int responseTime;
+    int status;
+    long timestamp;
+
+    static void <clinit>()
+    {
+        <com.nexage.android.reports.AdService: int s_ServiceID> = 0;
+
+        return;
+    }
+
+    void <init>(java.lang.String)
+    {
+        com.nexage.android.reports.AdService r0;
+        int $i1;
+        long $l0;
+        java.lang.String $r1;
+        java.util.ArrayList $r2;
+
+        r0 := @this: com.nexage.android.reports.AdService;
+
+        $r1 := @parameter0: java.lang.String;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        $r2 = new java.util.ArrayList;
+
+        specialinvoke $r2.<java.util.ArrayList: void <init>()>();
+
+        r0.<com.nexage.android.reports.AdService: java.util.ArrayList adNetRequests> = $r2;
+
+        r0.<com.nexage.android.reports.AdService: com.nexage.android.NexageAdView m_AdView> = null;
+
+        r0.<com.nexage.android.reports.AdService: java.lang.String position> = $r1;
+
+        $i1 = -1;
+
+        r0.<com.nexage.android.reports.AdService: int status> = $i1;
+
+        $l0 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        r0.<com.nexage.android.reports.AdService: long timestamp> = $l0;
+
+        r0.<com.nexage.android.reports.AdService: int cached> = 0;
+
+        $i1 = -1;
+
+        r0.<com.nexage.android.reports.AdService: int responseTime> = $i1;
+
+        $i1 = staticinvoke <com.nexage.android.reports.AdService: int getSequence()>();
+
+        r0.<com.nexage.android.reports.AdService: int m_ServiceID> = $i1;
+
+        return;
+    }
+
+    private static void checkSequence(int)
+    {
+        int $i0, $i1;
+        java.lang.Throwable $r0;
+
+        $i0 := @parameter0: int;
+
+        entermonitor class "Lcom/nexage/android/reports/AdService;";
+
+     label1:
+        $i1 = <com.nexage.android.reports.AdService: int s_ServiceID>;
+
+        if $i0 <= $i1 goto label2;
+
+        $i0 = $i0 + 1;
+
+        <com.nexage.android.reports.AdService: int s_ServiceID> = $i0;
+
+     label2:
+        exitmonitor class "Lcom/nexage/android/reports/AdService;";
+
+        return;
+
+     label3:
+        $r0 := @caughtexception;
+
+        exitmonitor class "Lcom/nexage/android/reports/AdService;";
+
+        throw $r0;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    private static int getSequence()
+    {
+        int $i0, $i1;
+        java.lang.Throwable $r0;
+
+        entermonitor class "Lcom/nexage/android/reports/AdService;";
+
+     label1:
+        $i1 = <com.nexage.android.reports.AdService: int s_ServiceID>;
+
+        $i0 = $i1 + 1;
+
+        <com.nexage.android.reports.AdService: int s_ServiceID> = $i0;
+
+     label2:
+        exitmonitor class "Lcom/nexage/android/reports/AdService;";
+
+        return $i1;
+
+     label3:
+        $r0 := @caughtexception;
+
+        exitmonitor class "Lcom/nexage/android/reports/AdService;";
+
+        throw $r0;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public boolean addEvent(com.nexage.android.reports.AdEvent)
+    {
+        java.lang.Throwable $r5;
+        java.util.ArrayList $r3;
+        com.nexage.android.reports.AdService r0;
+        int $i0, $i1;
+        java.lang.String $r4;
+        com.nexage.android.reports.AdEvent $r1, $r2;
+        boolean $z0;
+
+        r0 := @this: com.nexage.android.reports.AdService;
+
+        $r1 := @parameter0: com.nexage.android.reports.AdEvent;
+
+        entermonitor r0;
+
+     label1:
+        $r2 = r0.<com.nexage.android.reports.AdService: com.nexage.android.reports.AdEvent adEvents>;
+
+        if $r2 != null goto label2;
+
+        $z0 = r0.<com.nexage.android.reports.AdService: boolean m_EventCheckPoint>;
+
+        if $z0 != 0 goto label2;
+
+        $r3 = r0.<com.nexage.android.reports.AdService: java.util.ArrayList adNetRequests>;
+
+        $z0 = virtualinvoke $r3.<java.util.ArrayList: boolean isEmpty()>();
+
+        if $z0 == 0 goto label5;
+
+     label2:
+        $r4 = r0.<com.nexage.android.reports.AdService: java.lang.String position>;
+
+        staticinvoke <com.nexage.android.NexageLog: void i(java.lang.String,java.lang.String)>($r4, "AD Clicked again. Stats will only reflect the first click.");
+
+     label3:
+        $z0 = 0;
+
+     label4:
+        exitmonitor r0;
+
+        return $z0;
+
+     label5:
+        $i0 = $r1.<com.nexage.android.reports.AdEvent: int clickSequence>;
+
+        $i1 = -1;
+
+        if $i0 != $i1 goto label6;
+
+        $z0 = staticinvoke <com.nexage.android.reports.AdReport: boolean isRestoring()>();
+
+        if $z0 != 0 goto label6;
+
+        staticinvoke <com.nexage.android.reports.ReportMgr: void insert(com.nexage.android.reports.AdService,com.nexage.android.reports.AdEvent)>(r0, $r1);
+
+     label6:
+        r0.<com.nexage.android.reports.AdService: com.nexage.android.reports.AdEvent adEvents> = $r1;
+
+        $r4 = r0.<com.nexage.android.reports.AdService: java.lang.String position>;
+
+        staticinvoke <com.nexage.android.NexageLog: void i(java.lang.String,java.lang.String)>($r4, "AD Clicked");
+
+        $r3 = r0.<com.nexage.android.reports.AdService: java.util.ArrayList adNetRequests>;
+
+        $z0 = virtualinvoke $r3.<java.util.ArrayList: boolean isEmpty()>();
+
+        if $z0 != 0 goto label7;
+
+        staticinvoke <com.nexage.android.reports.AdReport: void add(com.nexage.android.reports.AdService)>(r0);
+
+     label7:
+        $z0 = 1;
+
+        goto label4;
+
+     label8:
+        $r5 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r5;
+
+        catch java.lang.Throwable from label1 to label3 with label8;
+        catch java.lang.Throwable from label5 to label7 with label8;
+    }
+
+    public void addRequest(com.nexage.android.reports.AdRequest)
+    {
+        java.lang.Throwable $r3;
+        com.nexage.android.reports.AdService r0;
+        com.nexage.android.reports.AdRequest $r1;
+        int $i0, $i1;
+        java.util.ArrayList $r2;
+
+        r0 := @this: com.nexage.android.reports.AdService;
+
+        $r1 := @parameter0: com.nexage.android.reports.AdRequest;
+
+        entermonitor r0;
+
+     label1:
+        $i0 = $r1.<com.nexage.android.reports.AdRequest: int adSequence>;
+
+        $i1 = -1;
+
+        if $i0 != $i1 goto label2;
+
+        $i0 = r0.<com.nexage.android.reports.AdService: int status>;
+
+        $i1 = -1;
+
+        if $i0 != $i1 goto label2;
+
+        $i0 = $r1.<com.nexage.android.reports.AdRequest: int m_Status>;
+
+        if $i0 != 1 goto label2;
+
+        r0.<com.nexage.android.reports.AdService: int status> = 1;
+
+     label2:
+        $r2 = r0.<com.nexage.android.reports.AdService: java.util.ArrayList adNetRequests>;
+
+        virtualinvoke $r2.<java.util.ArrayList: boolean add(java.lang.Object)>($r1);
+
+     label3:
+        exitmonitor r0;
+
+        return;
+
+     label4:
+        $r3 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+    }
+
+    boolean commitCheckPoint()
+    {
+        java.lang.Throwable $r3;
+        com.nexage.android.reports.AdService r0;
+        com.nexage.android.reports.AdEvent $r2;
+        boolean $z0;
+        java.util.ArrayList $r1;
+
+        r0 := @this: com.nexage.android.reports.AdService;
+
+        entermonitor r0;
+
+     label1:
+        $z0 = r0.<com.nexage.android.reports.AdService: boolean m_RequestCheckPoint>;
+
+        if $z0 == 0 goto label2;
+
+        $r1 = r0.<com.nexage.android.reports.AdService: java.util.ArrayList adNetRequests>;
+
+        virtualinvoke $r1.<java.util.ArrayList: void clear()>();
+
+     label2:
+        $z0 = r0.<com.nexage.android.reports.AdService: boolean m_EventCheckPoint>;
+
+        if $z0 == 0 goto label3;
+
+        r0.<com.nexage.android.reports.AdService: com.nexage.android.reports.AdEvent adEvents> = null;
+
+     label3:
+        $z0 = r0.<com.nexage.android.reports.AdService: boolean m_RequestCheckPoint>;
+
+        if $z0 == 0 goto label6;
+
+        $r2 = r0.<com.nexage.android.reports.AdService: com.nexage.android.reports.AdEvent adEvents>;
+
+     label4:
+        if $r2 != null goto label6;
+
+        $z0 = 1;
+
+     label5:
+        exitmonitor r0;
+
+        return $z0;
+
+     label6:
+        $z0 = 0;
+
+        goto label5;
+
+     label7:
+        $r3 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label4 with label7;
+    }
+
+    void commitRestore()
+    {
+        java.lang.Throwable $r5;
+        java.util.Iterator $r2;
+        com.nexage.android.reports.AdRequest r4;
+        java.util.ArrayList $r1;
+        com.nexage.android.reports.AdService r0;
+        int $i0, $i1;
+        java.lang.Object $r3;
+        com.nexage.android.reports.AdEvent $r6;
+        boolean $z0;
+
+        r0 := @this: com.nexage.android.reports.AdService;
+
+        entermonitor r0;
+
+     label1:
+        $r1 = r0.<com.nexage.android.reports.AdService: java.util.ArrayList adNetRequests>;
+
+        $r2 = virtualinvoke $r1.<java.util.ArrayList: java.util.Iterator iterator()>();
+
+     label2:
+        $z0 = interfaceinvoke $r2.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label5;
+
+        $r3 = interfaceinvoke $r2.<java.util.Iterator: java.lang.Object next()>();
+
+        r4 = (com.nexage.android.reports.AdRequest) $r3;
+
+        $i0 = r4.<com.nexage.android.reports.AdRequest: int adSequence>;
+
+        $i1 = -1;
+
+        if $i0 != $i1 goto label2;
+
+        staticinvoke <com.nexage.android.reports.ReportMgr: void insert(com.nexage.android.reports.AdService,com.nexage.android.reports.AdRequest)>(r0, r4);
+
+     label3:
+        goto label2;
+
+     label4:
+        $r5 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r5;
+
+     label5:
+        $r6 = r0.<com.nexage.android.reports.AdService: com.nexage.android.reports.AdEvent adEvents>;
+
+        if $r6 == null goto label6;
+
+        $r6 = r0.<com.nexage.android.reports.AdService: com.nexage.android.reports.AdEvent adEvents>;
+
+        $i0 = $r6.<com.nexage.android.reports.AdEvent: int clickSequence>;
+
+        $i1 = -1;
+
+        if $i0 != $i1 goto label6;
+
+        $r6 = r0.<com.nexage.android.reports.AdService: com.nexage.android.reports.AdEvent adEvents>;
+
+        staticinvoke <com.nexage.android.reports.ReportMgr: void insert(com.nexage.android.reports.AdService,com.nexage.android.reports.AdEvent)>(r0, $r6);
+
+     label6:
+        exitmonitor r0;
+
+        return;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+        catch java.lang.Throwable from label5 to label6 with label4;
+    }
+
+    public com.nexage.android.NexageAdView getAdView()
+    {
+        com.nexage.android.reports.AdService r0;
+        com.nexage.android.NexageAdView r1;
+
+        r0 := @this: com.nexage.android.reports.AdService;
+
+        r1 = r0.<com.nexage.android.reports.AdService: com.nexage.android.NexageAdView m_AdView>;
+
+        return r1;
+    }
+
+    boolean isEmpty()
+    {
+        com.nexage.android.reports.AdService r0;
+        com.nexage.android.reports.AdEvent $r2;
+        boolean $z0;
+        java.util.ArrayList $r1;
+
+        r0 := @this: com.nexage.android.reports.AdService;
+
+        $r1 = r0.<com.nexage.android.reports.AdService: java.util.ArrayList adNetRequests>;
+
+        $z0 = virtualinvoke $r1.<java.util.ArrayList: boolean isEmpty()>();
+
+        if $z0 == 0 goto label1;
+
+        $r2 = r0.<com.nexage.android.reports.AdService: com.nexage.android.reports.AdEvent adEvents>;
+
+        if $r2 != null goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    void persist()
+    {
+        com.nexage.android.reports.AdService r0;
+        java.util.Iterator $r2;
+        com.nexage.android.reports.AdRequest r4;
+        java.lang.Object $r3;
+        java.util.ArrayList $r1;
+        boolean $z0;
+
+        r0 := @this: com.nexage.android.reports.AdService;
+
+        $r1 = r0.<com.nexage.android.reports.AdService: java.util.ArrayList adNetRequests>;
+
+        $r2 = virtualinvoke $r1.<java.util.ArrayList: java.util.Iterator iterator()>();
+
+     label1:
+        $z0 = interfaceinvoke $r2.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label2;
+
+        $r3 = interfaceinvoke $r2.<java.util.Iterator: java.lang.Object next()>();
+
+        r4 = (com.nexage.android.reports.AdRequest) $r3;
+
+        staticinvoke <com.nexage.android.reports.ReportMgr: void insert(com.nexage.android.reports.AdService,com.nexage.android.reports.AdRequest)>(r0, r4);
+
+        goto label1;
+
+     label2:
+        return;
+    }
+
+    void prepare()
+    {
+        com.nexage.android.reports.AdService r0;
+        int $i1, $i3;
+        long $l0, $l2;
+        com.nexage.android.NexageAdView $r1;
+        boolean $z0;
+
+        r0 := @this: com.nexage.android.reports.AdService;
+
+        $i1 = r0.<com.nexage.android.reports.AdService: int responseTime>;
+
+        $i3 = -1;
+
+        if $i1 != $i3 goto label1;
+
+        $l2 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $l0 = r0.<com.nexage.android.reports.AdService: long timestamp>;
+
+        $l0 = $l2 - $l0;
+
+        $i1 = (int) $l0;
+
+        r0.<com.nexage.android.reports.AdService: int responseTime> = $i1;
+
+     label1:
+        $r1 = r0.<com.nexage.android.reports.AdService: com.nexage.android.NexageAdView m_AdView>;
+
+        if $r1 == null goto label2;
+
+        $z0 = r0.<com.nexage.android.reports.AdService: boolean m_OkToReport>;
+
+        if $z0 != 0 goto label2;
+
+        $r1 = r0.<com.nexage.android.reports.AdService: com.nexage.android.NexageAdView m_AdView>;
+
+        $z0 = staticinvoke <com.nexage.android.Ad: boolean readyToReport(com.nexage.android.NexageBaseAdView)>($r1);
+
+        if $z0 == 0 goto label2;
+
+        virtualinvoke r0.<com.nexage.android.reports.AdService: void readyToReport()>();
+
+     label2:
+        return;
+    }
+
+    public void readyToReport()
+    {
+        com.nexage.android.reports.AdService r0;
+
+        r0 := @this: com.nexage.android.reports.AdService;
+
+        r0.<com.nexage.android.reports.AdService: boolean m_OkToReport> = 1;
+
+        r0.<com.nexage.android.reports.AdService: com.nexage.android.NexageAdView m_AdView> = null;
+
+        return;
+    }
+
+    public void requestCompleted()
+    {
+        com.nexage.android.reports.AdService r0;
+        int $i2;
+        long $l0, $l1;
+
+        r0 := @this: com.nexage.android.reports.AdService;
+
+        $l1 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $l0 = r0.<com.nexage.android.reports.AdService: long timestamp>;
+
+        $l0 = $l1 - $l0;
+
+        $i2 = (int) $l0;
+
+        r0.<com.nexage.android.reports.AdService: int responseTime> = $i2;
+
+        return;
+    }
+
+    void rollback()
+    {
+        java.lang.Throwable $r1;
+        com.nexage.android.reports.AdService r0;
+
+        r0 := @this: com.nexage.android.reports.AdService;
+
+        entermonitor r0;
+
+     label1:
+        r0.<com.nexage.android.reports.AdService: boolean m_RequestCheckPoint> = 0;
+
+        r0.<com.nexage.android.reports.AdService: boolean m_EventCheckPoint> = 0;
+
+     label2:
+        exitmonitor r0;
+
+        return;
+
+     label3:
+        $r1 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void setAdView(com.nexage.android.NexageAdView)
+    {
+        com.nexage.android.reports.AdService r0;
+        long $l0;
+        com.nexage.android.NexageAdView $r1;
+
+        r0 := @this: com.nexage.android.reports.AdService;
+
+        $r1 := @parameter0: com.nexage.android.NexageAdView;
+
+        r0.<com.nexage.android.reports.AdService: com.nexage.android.NexageAdView m_AdView> = $r1;
+
+        $l0 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        r0.<com.nexage.android.reports.AdService: long timestamp> = $l0;
+
+        return;
+    }
+
+    void setSequence(int)
+    {
+        int $i0;
+        com.nexage.android.reports.AdService r0;
+
+        r0 := @this: com.nexage.android.reports.AdService;
+
+        $i0 := @parameter0: int;
+
+        r0.<com.nexage.android.reports.AdService: int m_ServiceID> = $i0;
+
+        staticinvoke <com.nexage.android.reports.AdService: void checkSequence(int)>($i0);
+
+        return;
+    }
+
+    org.json.JSONObject toJson(boolean) throws org.json.JSONException
+    {
+        java.lang.Throwable $r10;
+        com.nexage.android.reports.AdRequest r7;
+        long $l1;
+        java.util.ArrayList $r3;
+        com.nexage.android.reports.AdService r0;
+        org.json.JSONObject r2, $r8;
+        int $i0, $i2, $i3;
+        java.lang.String $r4;
+        boolean $z0, $z1;
+        java.util.Iterator $r5;
+        java.lang.Object $r6;
+        com.nexage.android.reports.AdEvent $r9;
+        org.json.JSONArray r1;
+
+        r0 := @this: com.nexage.android.reports.AdService;
+
+        $z0 := @parameter0: boolean;
+
+        r2 = null;
+
+        entermonitor r0;
+
+     label01:
+        $r3 = r0.<com.nexage.android.reports.AdService: java.util.ArrayList adNetRequests>;
+
+        $z1 = virtualinvoke $r3.<java.util.ArrayList: boolean isEmpty()>();
+
+     label02:
+        if $z1 == 0 goto label04;
+
+     label03:
+        exitmonitor r0;
+
+        return r2;
+
+     label04:
+        $i0 = r0.<com.nexage.android.reports.AdService: int status>;
+
+        if $i0 != 1 goto label05;
+
+        $z1 = r0.<com.nexage.android.reports.AdService: boolean m_OkToReport>;
+
+        if $z1 != 0 goto label05;
+
+        if $z0 == 0 goto label03;
+
+     label05:
+        r2 = new org.json.JSONObject;
+
+        specialinvoke r2.<org.json.JSONObject: void <init>()>();
+
+        $r4 = r0.<com.nexage.android.reports.AdService: java.lang.String position>;
+
+        virtualinvoke r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("position", $r4);
+
+        $i0 = r0.<com.nexage.android.reports.AdService: int status>;
+
+        virtualinvoke r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("status", $i0);
+
+        $l1 = r0.<com.nexage.android.reports.AdService: long timestamp>;
+
+        virtualinvoke r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,long)>("timestamp", $l1);
+
+        $i0 = r0.<com.nexage.android.reports.AdService: int responseTime>;
+
+        virtualinvoke r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("responseTime", $i0);
+
+        $i0 = r0.<com.nexage.android.reports.AdService: int cached>;
+
+        virtualinvoke r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("cached", $i0);
+
+        $r3 = r0.<com.nexage.android.reports.AdService: java.util.ArrayList adNetRequests>;
+
+        $z0 = virtualinvoke $r3.<java.util.ArrayList: boolean isEmpty()>();
+
+        if $z0 != 0 goto label09;
+
+        r1 = new org.json.JSONArray;
+
+        specialinvoke r1.<org.json.JSONArray: void <init>()>();
+
+        r0.<com.nexage.android.reports.AdService: boolean m_RequestCheckPoint> = 1;
+
+        $r3 = r0.<com.nexage.android.reports.AdService: java.util.ArrayList adNetRequests>;
+
+        $r5 = virtualinvoke $r3.<java.util.ArrayList: java.util.Iterator iterator()>();
+
+        $i0 = 0;
+
+     label06:
+        $z0 = interfaceinvoke $r5.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label08;
+
+        $r6 = interfaceinvoke $r5.<java.util.Iterator: java.lang.Object next()>();
+
+        r7 = (com.nexage.android.reports.AdRequest) $r6;
+
+        $r8 = virtualinvoke r7.<com.nexage.android.reports.AdRequest: org.json.JSONObject toJson()>();
+
+        $i2 = r7.<com.nexage.android.reports.AdRequest: int adSequence>;
+
+        $i3 = <com.nexage.android.reports.AdReport: int s_AdCheckPoint>;
+
+        if $i2 <= $i3 goto label07;
+
+        $i2 = r7.<com.nexage.android.reports.AdRequest: int adSequence>;
+
+        <com.nexage.android.reports.AdReport: int s_AdCheckPoint> = $i2;
+
+     label07:
+        virtualinvoke r1.<org.json.JSONArray: org.json.JSONArray put(int,java.lang.Object)>($i0, $r8);
+
+        $i0 = $i0 + 1;
+
+        goto label06;
+
+     label08:
+        virtualinvoke r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("adNetRequests", r1);
+
+     label09:
+        $r9 = r0.<com.nexage.android.reports.AdService: com.nexage.android.reports.AdEvent adEvents>;
+
+        if $r9 == null goto label03;
+
+        r1 = new org.json.JSONArray;
+
+        specialinvoke r1.<org.json.JSONArray: void <init>()>();
+
+        r0.<com.nexage.android.reports.AdService: boolean m_EventCheckPoint> = 1;
+
+        $r9 = r0.<com.nexage.android.reports.AdService: com.nexage.android.reports.AdEvent adEvents>;
+
+        $r8 = virtualinvoke $r9.<com.nexage.android.reports.AdEvent: org.json.JSONObject toJson()>();
+
+        $r9 = r0.<com.nexage.android.reports.AdService: com.nexage.android.reports.AdEvent adEvents>;
+
+        $i0 = $r9.<com.nexage.android.reports.AdEvent: int clickSequence>;
+
+        $i2 = <com.nexage.android.reports.AdReport: int s_ClickCheckPoint>;
+
+        if $i0 <= $i2 goto label10;
+
+        $r9 = r0.<com.nexage.android.reports.AdService: com.nexage.android.reports.AdEvent adEvents>;
+
+        $i0 = $r9.<com.nexage.android.reports.AdEvent: int clickSequence>;
+
+        <com.nexage.android.reports.AdReport: int s_ClickCheckPoint> = $i0;
+
+     label10:
+        virtualinvoke r1.<org.json.JSONArray: org.json.JSONArray put(int,java.lang.Object)>(0, $r8);
+
+        virtualinvoke r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("adEvents", r1);
+
+     label11:
+        goto label03;
+
+     label12:
+        $r10 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r10;
+
+        catch java.lang.Throwable from label01 to label02 with label12;
+        catch java.lang.Throwable from label04 to label11 with label12;
+    }
+}

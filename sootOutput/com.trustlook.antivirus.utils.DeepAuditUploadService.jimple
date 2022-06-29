@@ -1,0 +1,241 @@
+public class com.trustlook.antivirus.utils.DeepAuditUploadService extends android.app.IntentService
+{
+    java.lang.String a;
+    public android.content.Intent ipcIntent;
+    public android.os.IBinder ipcBinder_0;
+
+    public void <init>()
+    {
+        com.trustlook.antivirus.utils.DeepAuditUploadService r0;
+
+        r0 := @this: com.trustlook.antivirus.utils.DeepAuditUploadService;
+
+        specialinvoke r0.<android.app.IntentService: void <init>(java.lang.String)>("DeepAuditUploadService");
+
+        return;
+    }
+
+    public static boolean a(java.lang.String)
+    {
+        org.json.JSONException $r3;
+        org.json.JSONObject $r1;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r0;
+        java.lang.Exception $r4;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 = new org.json.JSONObject;
+
+     label1:
+        specialinvoke $r1.<org.json.JSONObject: void <init>(java.lang.String)>($r0);
+
+        $z0 = virtualinvoke $r1.<org.json.JSONObject: boolean getBoolean(java.lang.String)>("success");
+
+     label2:
+        if $z0 != 1 goto label3;
+
+        return 1;
+
+     label3:
+        $r2 = new java.lang.StringBuilder;
+
+     label4:
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("DeepAudit Upload Fail - ");
+
+        $r0 = virtualinvoke $r1.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("message");
+
+        virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r0);
+
+     label5:
+        return 0;
+
+     label6:
+        $r3 := @caughtexception;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("DeepAudit Upload Parsing error - ");
+
+        $r0 = virtualinvoke $r3.<org.json.JSONException: java.lang.String toString()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r0);
+
+        $r0 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("AV", $r0);
+
+        return 0;
+
+     label7:
+        $r4 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("AV", "DeepAudit Upload Error");
+
+        return 0;
+
+        catch org.json.JSONException from label1 to label2 with label6;
+        catch org.json.JSONException from label4 to label5 with label6;
+        catch java.lang.Exception from label1 to label2 with label7;
+        catch java.lang.Exception from label4 to label5 with label7;
+    }
+
+    protected void onHandleIntent(android.content.Intent)
+    {
+        com.trustlook.antivirus.utils.DeepAuditUploadService r0;
+        com.trustlook.sdk.TRUSTLOOK $r4;
+        android.content.Intent $r1;
+        byte $b1;
+        int $i0;
+        java.lang.String $r2, $r8;
+        boolean $z0;
+        java.util.Iterator $r5;
+        com.trustlook.antivirus.utils.at $r11;
+        com.trustlook.antivirus.utils.f $r9;
+        java.util.List $r3;
+        com.trustlook.antivirus.utils.e $r7;
+        float $f0;
+        java.lang.Object $r6;
+        java.lang.StringBuilder $r10;
+
+        r0 := @this: com.trustlook.antivirus.utils.DeepAuditUploadService;
+
+        $r1 := @parameter0: android.content.Intent;
+
+        $r1 = virtualinvoke r0.<com.trustlook.antivirus.utils.DeepAuditUploadService: android.content.Intent getIntent()>();
+
+        if $r1 == null goto label6;
+
+        $r2 = virtualinvoke $r1.<android.content.Intent: java.lang.String getStringExtra(java.lang.String)>("action_category");
+
+     label1:
+        $r3 = staticinvoke <com.trustlook.antivirus.utils.Utility: java.util.List Q()>();
+
+        $r4 = staticinvoke <com.trustlook.antivirus.utils.Utility: com.trustlook.sdk.TRUSTLOOK f(android.content.Context)>(r0);
+
+        if $r3 == null goto label5;
+
+        $i0 = interfaceinvoke $r3.<java.util.List: int size()>();
+
+        if $i0 <= 0 goto label7;
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>(java.lang.String)>("Total: Submitted apks = ");
+
+        $i0 = interfaceinvoke $r3.<java.util.List: int size()>();
+
+        virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r5 = interfaceinvoke $r3.<java.util.List: java.util.Iterator iterator()>();
+
+     label2:
+        $z0 = interfaceinvoke $r5.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label7;
+
+        $r6 = interfaceinvoke $r5.<java.util.Iterator: java.lang.Object next()>();
+
+        $r7 = (com.trustlook.antivirus.utils.e) $r6;
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>("APK_UPLOAD_RESUME");
+
+        if $z0 == 0 goto label3;
+
+        $f0 = virtualinvoke $r7.<com.trustlook.antivirus.utils.e: float f()>();
+
+        $b1 = $f0 cmpl 0.0F;
+
+        $i0 = (int) $b1;
+
+        if $i0 > 0 goto label2;
+
+     label3:
+        $r8 = virtualinvoke $r7.<com.trustlook.antivirus.utils.e: java.lang.String s()>();
+
+        $r8 = virtualinvoke $r4.<com.trustlook.sdk.TRUSTLOOK: java.lang.String Scan(java.lang.String)>($r8);
+
+        r0.<com.trustlook.antivirus.utils.DeepAuditUploadService: java.lang.String a> = $r8;
+
+        $r8 = r0.<com.trustlook.antivirus.utils.DeepAuditUploadService: java.lang.String a>;
+
+        if $r8 == null goto label4;
+
+        $r9 = <com.trustlook.antivirus.utils.f: com.trustlook.antivirus.utils.f d>;
+
+        virtualinvoke $r7.<com.trustlook.antivirus.utils.e: void a(com.trustlook.antivirus.utils.f)>($r9);
+
+        virtualinvoke $r7.<com.trustlook.antivirus.utils.e: void a(boolean)>(0);
+
+        $r8 = r0.<com.trustlook.antivirus.utils.DeepAuditUploadService: java.lang.String a>;
+
+        virtualinvoke $r7.<com.trustlook.antivirus.utils.e: void a(java.lang.String)>($r8);
+
+        virtualinvoke $r7.<com.trustlook.antivirus.utils.e: void a(int)>(1);
+
+        staticinvoke <com.trustlook.antivirus.utils.Utility: long b(com.trustlook.antivirus.utils.e)>($r7);
+
+        goto label2;
+
+     label4:
+        $r8 = staticinvoke <com.trustlook.antivirus.findmydevice.bu: java.lang.String a(android.content.Context)>(r0);
+
+        $r11 = new com.trustlook.antivirus.utils.at;
+
+        specialinvoke $r11.<com.trustlook.antivirus.utils.at: void <init>(com.trustlook.antivirus.utils.DeepAuditUploadService,com.trustlook.antivirus.utils.e,java.lang.String)>(r0, $r7, $r8);
+
+        virtualinvoke $r11.<com.trustlook.antivirus.utils.at: void start()>();
+
+        goto label2;
+
+     label5:
+        return;
+
+     label6:
+        $r2 = "";
+
+        goto label1;
+
+     label7:
+        return;
+    }
+
+    public android.os.IBinder onBind(android.content.Intent)
+    {
+        com.trustlook.antivirus.utils.DeepAuditUploadService this;
+        android.content.Intent parameter0;
+
+        this := @this: com.trustlook.antivirus.utils.DeepAuditUploadService;
+
+        parameter0 := @parameter0: android.content.Intent;
+
+        parameter0 = virtualinvoke this.<com.trustlook.antivirus.utils.DeepAuditUploadService: android.content.Intent getIntent()>();
+
+        this.<com.trustlook.antivirus.utils.DeepAuditUploadService: android.os.IBinder ipcBinder_0> = parameter0;
+
+        this.<com.trustlook.antivirus.utils.DeepAuditUploadService: android.os.IBinder ipcBinder_0> = parameter0;
+
+        this.<com.trustlook.antivirus.utils.DeepAuditUploadService: android.os.IBinder ipcBinder_0> = parameter0;
+
+        this.<com.trustlook.antivirus.utils.DeepAuditUploadService: android.os.IBinder ipcBinder_0> = parameter0;
+
+        this.<com.trustlook.antivirus.utils.DeepAuditUploadService: android.os.IBinder ipcBinder_0> = parameter0;
+
+        this.<com.trustlook.antivirus.utils.DeepAuditUploadService: android.os.IBinder ipcBinder_0> = parameter0;
+
+        return parameter0;
+    }
+
+    public android.content.Intent getIntent()
+    {
+        com.trustlook.antivirus.utils.DeepAuditUploadService this;
+        android.content.Intent $r0;
+
+        this := @this: com.trustlook.antivirus.utils.DeepAuditUploadService;
+
+        $r0 = this.<com.trustlook.antivirus.utils.DeepAuditUploadService: android.content.Intent ipcIntent>;
+
+        return $r0;
+    }
+}

@@ -1,5 +1,7 @@
 package runcode;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Paths;
 
 public class Configs {
@@ -14,13 +16,13 @@ public class Configs {
     public static String inputCSVPath;
     public static String permissionOutput;
     public static String ic3;
-    public static String dexPath;
+    // public static String dexPath;
     public static String libsPath;
     public static int callBackTimeOut;
     public static int callBackMaxDepth;
 
-    public static void initArgs(){
-        // projectDir = new File(".").getCanonicalPath();
+    public static void initArgs() throws IOException{
+        projectDir = new File(".").getCanonicalPath();
         // projectDir = "/home/data/xiu/code-translation/code/DeepIntent";
         dotPath = Paths.get(projectDir, "data", "dot_output").toString();
         dotPathFlowdroid = Paths.get(projectDir, "data", "dot_output").toString();

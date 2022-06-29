@@ -1,0 +1,616 @@
+public class cn.mobgo.linlingo.db.LinLinGoProvider extends android.content.ContentProvider
+{
+    public static final int CLOSE;
+    public static final java.lang.String DB_ALMANAC_NAME;
+    public static final java.lang.String DB_LINLINGO_NAME;
+    public static final java.lang.String DB_ZHOUGONG_NAME;
+    public static final int ITEM_ALMANAC;
+    public static final int ITEM_BIHUA;
+    public static final int ITEM_LOT;
+    public static final int ITEM_ZHOUGONG;
+    public static final int ITEM_ZHUGE;
+    public static final int OPEN;
+    public static final android.content.UriMatcher uriMatcher;
+    private android.database.sqlite.SQLiteDatabase mDBAlmanac;
+    private android.database.sqlite.SQLiteDatabase mDBLinLinGo;
+    private android.database.sqlite.SQLiteDatabase mDBZhouGong;
+    public android.content.Intent ipcIntent;
+
+    static void <clinit>()
+    {
+        android.content.UriMatcher $r0, $r1;
+
+        <cn.mobgo.linlingo.db.LinLinGoProvider: int ITEM_ZHUGE> = 3;
+
+        <cn.mobgo.linlingo.db.LinLinGoProvider: int ITEM_ZHOUGONG> = 6;
+
+        <cn.mobgo.linlingo.db.LinLinGoProvider: int ITEM_LOT> = 2;
+
+        <cn.mobgo.linlingo.db.LinLinGoProvider: int ITEM_BIHUA> = 4;
+
+        <cn.mobgo.linlingo.db.LinLinGoProvider: int ITEM_ALMANAC> = 5;
+
+        <cn.mobgo.linlingo.db.LinLinGoProvider: java.lang.String DB_ZHOUGONG_NAME> = "jiemeng.db";
+
+        <cn.mobgo.linlingo.db.LinLinGoProvider: java.lang.String DB_LINLINGO_NAME> = "linlingo.db";
+
+        <cn.mobgo.linlingo.db.LinLinGoProvider: java.lang.String DB_ALMANAC_NAME> = "zheji.db";
+
+        <cn.mobgo.linlingo.db.LinLinGoProvider: int CLOSE> = 1;
+
+        $r1 = new android.content.UriMatcher;
+
+        specialinvoke $r1.<android.content.UriMatcher: void <init>(int)>(-1);
+
+        <cn.mobgo.linlingo.db.LinLinGoProvider: android.content.UriMatcher uriMatcher> = $r1;
+
+        $r0 = <cn.mobgo.linlingo.db.LinLinGoProvider: android.content.UriMatcher uriMatcher>;
+
+        virtualinvoke $r0.<android.content.UriMatcher: void addURI(java.lang.String,java.lang.String,int)>("cn.mobgo.linlingo", "open", 0);
+
+        $r0 = <cn.mobgo.linlingo.db.LinLinGoProvider: android.content.UriMatcher uriMatcher>;
+
+        virtualinvoke $r0.<android.content.UriMatcher: void addURI(java.lang.String,java.lang.String,int)>("cn.mobgo.linlingo", "close", 1);
+
+        $r0 = <cn.mobgo.linlingo.db.LinLinGoProvider: android.content.UriMatcher uriMatcher>;
+
+        virtualinvoke $r0.<android.content.UriMatcher: void addURI(java.lang.String,java.lang.String,int)>("cn.mobgo.linlingo", "lot", 2);
+
+        $r0 = <cn.mobgo.linlingo.db.LinLinGoProvider: android.content.UriMatcher uriMatcher>;
+
+        virtualinvoke $r0.<android.content.UriMatcher: void addURI(java.lang.String,java.lang.String,int)>("cn.mobgo.linlingo", "zhuge", 3);
+
+        $r0 = <cn.mobgo.linlingo.db.LinLinGoProvider: android.content.UriMatcher uriMatcher>;
+
+        virtualinvoke $r0.<android.content.UriMatcher: void addURI(java.lang.String,java.lang.String,int)>("cn.mobgo.linlingo", "bihua", 4);
+
+        $r0 = <cn.mobgo.linlingo.db.LinLinGoProvider: android.content.UriMatcher uriMatcher>;
+
+        virtualinvoke $r0.<android.content.UriMatcher: void addURI(java.lang.String,java.lang.String,int)>("cn.mobgo.linlingo", "zheji", 5);
+
+        $r0 = <cn.mobgo.linlingo.db.LinLinGoProvider: android.content.UriMatcher uriMatcher>;
+
+        virtualinvoke $r0.<android.content.UriMatcher: void addURI(java.lang.String,java.lang.String,int)>("cn.mobgo.linlingo", "zgjm", 6);
+
+        return;
+    }
+
+    public void <init>()
+    {
+        cn.mobgo.linlingo.db.LinLinGoProvider r0;
+
+        r0 := @this: cn.mobgo.linlingo.db.LinLinGoProvider;
+
+        specialinvoke r0.<android.content.ContentProvider: void <init>()>();
+
+        return;
+    }
+
+    private java.io.File copyDatabase(java.lang.String)
+    {
+        java.lang.Throwable $r11, $r12, $r13, $r14, $r15, $r16, $r17, $r18, $r19;
+        byte[] r2;
+        android.content.Context $r5;
+        android.content.res.AssetManager $r7;
+        int i0;
+        java.lang.String $r1;
+        boolean $z0;
+        java.io.FileOutputStream r4, r9, $r21;
+        java.io.File r3, $r6, $r20;
+        cn.mobgo.linlingo.db.LinLinGoProvider r0;
+        java.io.InputStream r8, $r10;
+
+        r0 := @this: cn.mobgo.linlingo.db.LinLinGoProvider;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r5 = virtualinvoke r0.<cn.mobgo.linlingo.db.LinLinGoProvider: android.content.Context getContext()>();
+
+        $r20 = new java.io.File;
+
+        r3 = $r20;
+
+        $r6 = virtualinvoke $r5.<android.content.Context: java.io.File getFilesDir()>();
+
+        specialinvoke $r20.<java.io.File: void <init>(java.io.File,java.lang.String)>($r6, $r1);
+
+        $z0 = virtualinvoke r3.<java.io.File: boolean exists()>();
+
+        if $z0 != 0 goto label40;
+
+        $r7 = virtualinvoke $r5.<android.content.Context: android.content.res.AssetManager getAssets()>();
+
+        r8 = null;
+
+        r9 = null;
+
+     label01:
+        $r6 = virtualinvoke r3.<java.io.File: java.io.File getParentFile()>();
+
+        $z0 = virtualinvoke $r6.<java.io.File: boolean exists()>();
+
+     label02:
+        if $z0 != 0 goto label04;
+
+     label03:
+        $r6 = virtualinvoke r3.<java.io.File: java.io.File getParentFile()>();
+
+        virtualinvoke $r6.<java.io.File: boolean mkdirs()>();
+
+     label04:
+        $r10 = virtualinvoke $r7.<android.content.res.AssetManager: java.io.InputStream open(java.lang.String)>($r1);
+
+     label05:
+        r8 = $r10;
+
+     label06:
+        $r21 = new java.io.FileOutputStream;
+
+     label07:
+        r4 = $r21;
+
+     label08:
+        $r1 = virtualinvoke r3.<java.io.File: java.lang.String getAbsolutePath()>();
+
+        specialinvoke $r21.<java.io.FileOutputStream: void <init>(java.lang.String)>($r1);
+
+     label09:
+        r2 = newarray (byte)[8192];
+
+        i0 = 0;
+
+     label10:
+        if i0 == -1 goto label13;
+
+     label11:
+        virtualinvoke r4.<java.io.FileOutputStream: void write(byte[],int,int)>(r2, 0, i0);
+
+        i0 = virtualinvoke $r10.<java.io.InputStream: int read(byte[])>(r2);
+
+     label12:
+        goto label10;
+
+     label13:
+        virtualinvoke r4.<java.io.FileOutputStream: void flush()>();
+
+     label14:
+        if $r10 == null goto label16;
+
+     label15:
+        virtualinvoke $r10.<java.io.InputStream: void close()>();
+
+     label16:
+        if r4 == null goto label40;
+
+     label17:
+        virtualinvoke r4.<java.io.FileOutputStream: void close()>();
+
+     label18:
+        return r3;
+
+     label19:
+        $r11 := @caughtexception;
+
+     label20:
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>("LinLinGo", "failed to copy database file");
+
+     label21:
+        if r8 == null goto label23;
+
+     label22:
+        virtualinvoke r8.<java.io.InputStream: void close()>();
+
+     label23:
+        if r9 == null goto label40;
+
+     label24:
+        virtualinvoke r9.<java.io.FileOutputStream: void close()>();
+
+     label25:
+        return r3;
+
+     label26:
+        $r12 := @caughtexception;
+
+        return r3;
+
+     label27:
+        $r13 := @caughtexception;
+
+     label28:
+        if r8 == null goto label30;
+
+     label29:
+        virtualinvoke r8.<java.io.InputStream: void close()>();
+
+     label30:
+        if r9 == null goto label32;
+
+     label31:
+        virtualinvoke r9.<java.io.FileOutputStream: void close()>();
+
+     label32:
+        throw $r13;
+
+     label33:
+        $r14 := @caughtexception;
+
+        goto label16;
+
+     label34:
+        $r15 := @caughtexception;
+
+        return r3;
+
+     label35:
+        $r16 := @caughtexception;
+
+        goto label23;
+
+     label36:
+        $r17 := @caughtexception;
+
+        goto label30;
+
+     label37:
+        $r18 := @caughtexception;
+
+        goto label32;
+
+     label38:
+        $r13 := @caughtexception;
+
+        r9 = r4;
+
+        goto label28;
+
+     label39:
+        $r19 := @caughtexception;
+
+        r9 = r4;
+
+        goto label20;
+
+     label40:
+        return r3;
+
+        catch java.io.IOException from label01 to label02 with label19;
+        catch java.io.IOException from label03 to label05 with label19;
+        catch java.io.IOException from label08 to label09 with label19;
+        catch java.lang.Throwable from label01 to label02 with label27;
+        catch java.lang.Throwable from label03 to label05 with label27;
+        catch java.lang.Throwable from label06 to label07 with label27;
+        catch java.lang.Throwable from label08 to label09 with label27;
+        catch java.io.IOException from label11 to label12 with label39;
+        catch java.io.IOException from label13 to label14 with label39;
+        catch java.lang.Throwable from label11 to label12 with label38;
+        catch java.lang.Throwable from label13 to label14 with label38;
+        catch java.io.IOException from label15 to label16 with label33;
+        catch java.io.IOException from label17 to label18 with label34;
+        catch java.lang.Throwable from label20 to label21 with label27;
+        catch java.io.IOException from label22 to label23 with label35;
+        catch java.io.IOException from label24 to label25 with label26;
+        catch java.io.IOException from label29 to label30 with label36;
+        catch java.io.IOException from label31 to label32 with label37;
+    }
+
+    private void open()
+    {
+        android.database.sqlite.SQLiteDatabase $r1;
+        cn.mobgo.linlingo.db.LinLinGoProvider r0;
+        java.lang.String $r3;
+        java.io.File $r2;
+
+        r0 := @this: cn.mobgo.linlingo.db.LinLinGoProvider;
+
+        $r1 = r0.<cn.mobgo.linlingo.db.LinLinGoProvider: android.database.sqlite.SQLiteDatabase mDBLinLinGo>;
+
+        if $r1 != null goto label1;
+
+        $r2 = specialinvoke r0.<cn.mobgo.linlingo.db.LinLinGoProvider: java.io.File copyDatabase(java.lang.String)>("linlingo.db");
+
+        $r3 = virtualinvoke $r2.<java.io.File: java.lang.String getAbsolutePath()>();
+
+        $r1 = staticinvoke <android.database.sqlite.SQLiteDatabase: android.database.sqlite.SQLiteDatabase openDatabase(java.lang.String,android.database.sqlite.SQLiteDatabase$CursorFactory,int)>($r3, null, 17);
+
+        r0.<cn.mobgo.linlingo.db.LinLinGoProvider: android.database.sqlite.SQLiteDatabase mDBLinLinGo> = $r1;
+
+     label1:
+        $r1 = r0.<cn.mobgo.linlingo.db.LinLinGoProvider: android.database.sqlite.SQLiteDatabase mDBAlmanac>;
+
+        if $r1 != null goto label2;
+
+        $r2 = specialinvoke r0.<cn.mobgo.linlingo.db.LinLinGoProvider: java.io.File copyDatabase(java.lang.String)>("zheji.db");
+
+        $r3 = virtualinvoke $r2.<java.io.File: java.lang.String getAbsolutePath()>();
+
+        $r1 = staticinvoke <android.database.sqlite.SQLiteDatabase: android.database.sqlite.SQLiteDatabase openDatabase(java.lang.String,android.database.sqlite.SQLiteDatabase$CursorFactory,int)>($r3, null, 17);
+
+        r0.<cn.mobgo.linlingo.db.LinLinGoProvider: android.database.sqlite.SQLiteDatabase mDBAlmanac> = $r1;
+
+     label2:
+        $r1 = r0.<cn.mobgo.linlingo.db.LinLinGoProvider: android.database.sqlite.SQLiteDatabase mDBZhouGong>;
+
+        if $r1 != null goto label3;
+
+        $r2 = specialinvoke r0.<cn.mobgo.linlingo.db.LinLinGoProvider: java.io.File copyDatabase(java.lang.String)>("jiemeng.db");
+
+        $r3 = virtualinvoke $r2.<java.io.File: java.lang.String getAbsolutePath()>();
+
+        $r1 = staticinvoke <android.database.sqlite.SQLiteDatabase: android.database.sqlite.SQLiteDatabase openDatabase(java.lang.String,android.database.sqlite.SQLiteDatabase$CursorFactory,int)>($r3, null, 17);
+
+        r0.<cn.mobgo.linlingo.db.LinLinGoProvider: android.database.sqlite.SQLiteDatabase mDBZhouGong> = $r1;
+
+     label3:
+        return;
+    }
+
+    public int bulkInsert(android.net.Uri, android.content.ContentValues[])
+    {
+        android.net.Uri $r1;
+        cn.mobgo.linlingo.db.LinLinGoProvider r0;
+        android.content.ContentValues[] $r2;
+
+        r0 := @this: cn.mobgo.linlingo.db.LinLinGoProvider;
+
+        $r1 := @parameter0: android.net.Uri;
+
+        $r2 := @parameter1: android.content.ContentValues[];
+
+        return 0;
+    }
+
+    public int delete(android.net.Uri, java.lang.String, java.lang.String[])
+    {
+        cn.mobgo.linlingo.db.LinLinGoProvider r0;
+        android.net.Uri $r1;
+        java.lang.String[] $r3;
+        java.lang.String $r2;
+
+        r0 := @this: cn.mobgo.linlingo.db.LinLinGoProvider;
+
+        $r1 := @parameter0: android.net.Uri;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: java.lang.String[];
+
+        return 0;
+    }
+
+    public java.lang.String getType(android.net.Uri)
+    {
+        cn.mobgo.linlingo.db.LinLinGoProvider r0;
+        android.net.Uri $r1;
+        cn.mobgo.linlingo.db.SqlArguments r2;
+        java.lang.StringBuilder $r4;
+        java.lang.String $r3;
+        boolean $z0;
+
+        r0 := @this: cn.mobgo.linlingo.db.LinLinGoProvider;
+
+        $r1 := @parameter0: android.net.Uri;
+
+        r2 = new cn.mobgo.linlingo.db.SqlArguments;
+
+        specialinvoke r2.<cn.mobgo.linlingo.db.SqlArguments: void <init>(android.net.Uri,java.lang.String,java.lang.String[])>($r1, null, null);
+
+        $r3 = r2.<cn.mobgo.linlingo.db.SqlArguments: java.lang.String where>;
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r3);
+
+        if $z0 == 0 goto label1;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("vnd.android.cursor.dir/");
+
+        $r3 = r2.<cn.mobgo.linlingo.db.SqlArguments: java.lang.String table>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r3;
+
+     label1:
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("vnd.android.cursor.item/");
+
+        $r3 = r2.<cn.mobgo.linlingo.db.SqlArguments: java.lang.String table>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r3;
+    }
+
+    public android.net.Uri insert(android.net.Uri, android.content.ContentValues)
+    {
+        android.net.Uri $r1;
+        cn.mobgo.linlingo.db.LinLinGoProvider r0;
+        android.content.ContentValues $r2;
+
+        r0 := @this: cn.mobgo.linlingo.db.LinLinGoProvider;
+
+        $r1 := @parameter0: android.net.Uri;
+
+        $r2 := @parameter1: android.content.ContentValues;
+
+        return null;
+    }
+
+    public boolean onCreate()
+    {
+        cn.mobgo.linlingo.db.LinLinGoProvider r0;
+
+        r0 := @this: cn.mobgo.linlingo.db.LinLinGoProvider;
+
+        specialinvoke r0.<cn.mobgo.linlingo.db.LinLinGoProvider: void open()>();
+
+        return 1;
+    }
+
+    public android.database.Cursor query(android.net.Uri, java.lang.String[], java.lang.String, java.lang.String[], java.lang.String)
+    {
+        android.content.Context $r11;
+        android.database.sqlite.SQLiteQueryBuilder r6;
+        android.net.Uri $r1;
+        java.lang.String[] $r2, $r4;
+        android.content.UriMatcher $r8;
+        android.database.sqlite.SQLiteDatabase $r9;
+        cn.mobgo.linlingo.db.LinLinGoProvider r0;
+        android.content.ContentResolver $r12;
+        cn.mobgo.linlingo.db.SqlArguments r7;
+        int $i0;
+        java.lang.String $r3, $r5;
+        android.database.Cursor $r10;
+
+        r0 := @this: cn.mobgo.linlingo.db.LinLinGoProvider;
+
+        $r1 := @parameter0: android.net.Uri;
+
+        $r2 := @parameter1: java.lang.String[];
+
+        $r3 := @parameter2: java.lang.String;
+
+        $r4 := @parameter3: java.lang.String[];
+
+        $r5 := @parameter4: java.lang.String;
+
+        r7 = new cn.mobgo.linlingo.db.SqlArguments;
+
+        specialinvoke r7.<cn.mobgo.linlingo.db.SqlArguments: void <init>(android.net.Uri,java.lang.String,java.lang.String[])>($r1, $r3, $r4);
+
+        r6 = new android.database.sqlite.SQLiteQueryBuilder;
+
+        specialinvoke r6.<android.database.sqlite.SQLiteQueryBuilder: void <init>()>();
+
+        $r3 = r7.<cn.mobgo.linlingo.db.SqlArguments: java.lang.String table>;
+
+        virtualinvoke r6.<android.database.sqlite.SQLiteQueryBuilder: void setTables(java.lang.String)>($r3);
+
+        $r8 = <cn.mobgo.linlingo.db.LinLinGoProvider: android.content.UriMatcher uriMatcher>;
+
+        $i0 = virtualinvoke $r8.<android.content.UriMatcher: int match(android.net.Uri)>($r1);
+
+        lookupswitch($i0)
+        {
+            case 0: goto label2;
+            case 1: goto label3;
+            case 2: goto label4;
+            case 3: goto label4;
+            case 4: goto label4;
+            case 5: goto label5;
+            case 6: goto label6;
+            default: goto label1;
+        };
+
+     label1:
+        return null;
+
+     label2:
+        specialinvoke r0.<cn.mobgo.linlingo.db.LinLinGoProvider: void open()>();
+
+        return null;
+
+     label3:
+        $r9 = r0.<cn.mobgo.linlingo.db.LinLinGoProvider: android.database.sqlite.SQLiteDatabase mDBLinLinGo>;
+
+        virtualinvoke $r9.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+        r0.<cn.mobgo.linlingo.db.LinLinGoProvider: android.database.sqlite.SQLiteDatabase mDBLinLinGo> = null;
+
+        $r9 = r0.<cn.mobgo.linlingo.db.LinLinGoProvider: android.database.sqlite.SQLiteDatabase mDBAlmanac>;
+
+        virtualinvoke $r9.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+        r0.<cn.mobgo.linlingo.db.LinLinGoProvider: android.database.sqlite.SQLiteDatabase mDBAlmanac> = null;
+
+        $r9 = r0.<cn.mobgo.linlingo.db.LinLinGoProvider: android.database.sqlite.SQLiteDatabase mDBZhouGong>;
+
+        virtualinvoke $r9.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+        r0.<cn.mobgo.linlingo.db.LinLinGoProvider: android.database.sqlite.SQLiteDatabase mDBZhouGong> = null;
+
+        return null;
+
+     label4:
+        $r9 = r0.<cn.mobgo.linlingo.db.LinLinGoProvider: android.database.sqlite.SQLiteDatabase mDBLinLinGo>;
+
+        $r3 = r7.<cn.mobgo.linlingo.db.SqlArguments: java.lang.String where>;
+
+        $r4 = r7.<cn.mobgo.linlingo.db.SqlArguments: java.lang.String[] args>;
+
+        $r10 = virtualinvoke r6.<android.database.sqlite.SQLiteQueryBuilder: android.database.Cursor query(android.database.sqlite.SQLiteDatabase,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String,java.lang.String,java.lang.String)>($r9, $r2, $r3, $r4, null, null, $r5);
+
+        $r11 = virtualinvoke r0.<cn.mobgo.linlingo.db.LinLinGoProvider: android.content.Context getContext()>();
+
+        $r12 = virtualinvoke $r11.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        interfaceinvoke $r10.<android.database.Cursor: void setNotificationUri(android.content.ContentResolver,android.net.Uri)>($r12, $r1);
+
+        return $r10;
+
+     label5:
+        $r9 = r0.<cn.mobgo.linlingo.db.LinLinGoProvider: android.database.sqlite.SQLiteDatabase mDBAlmanac>;
+
+        $r3 = r7.<cn.mobgo.linlingo.db.SqlArguments: java.lang.String where>;
+
+        $r4 = r7.<cn.mobgo.linlingo.db.SqlArguments: java.lang.String[] args>;
+
+        $r10 = virtualinvoke r6.<android.database.sqlite.SQLiteQueryBuilder: android.database.Cursor query(android.database.sqlite.SQLiteDatabase,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String,java.lang.String,java.lang.String)>($r9, $r2, $r3, $r4, null, null, $r5);
+
+        $r11 = virtualinvoke r0.<cn.mobgo.linlingo.db.LinLinGoProvider: android.content.Context getContext()>();
+
+        $r12 = virtualinvoke $r11.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        interfaceinvoke $r10.<android.database.Cursor: void setNotificationUri(android.content.ContentResolver,android.net.Uri)>($r12, $r1);
+
+        return $r10;
+
+     label6:
+        $r9 = r0.<cn.mobgo.linlingo.db.LinLinGoProvider: android.database.sqlite.SQLiteDatabase mDBZhouGong>;
+
+        $r3 = r7.<cn.mobgo.linlingo.db.SqlArguments: java.lang.String where>;
+
+        $r4 = r7.<cn.mobgo.linlingo.db.SqlArguments: java.lang.String[] args>;
+
+        $r10 = virtualinvoke r6.<android.database.sqlite.SQLiteQueryBuilder: android.database.Cursor query(android.database.sqlite.SQLiteDatabase,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String,java.lang.String,java.lang.String)>($r9, $r2, $r3, $r4, null, null, $r5);
+
+        $r11 = virtualinvoke r0.<cn.mobgo.linlingo.db.LinLinGoProvider: android.content.Context getContext()>();
+
+        $r12 = virtualinvoke $r11.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        interfaceinvoke $r10.<android.database.Cursor: void setNotificationUri(android.content.ContentResolver,android.net.Uri)>($r12, $r1);
+
+        return $r10;
+    }
+
+    public int update(android.net.Uri, android.content.ContentValues, java.lang.String, java.lang.String[])
+    {
+        cn.mobgo.linlingo.db.LinLinGoProvider r0;
+        android.net.Uri $r1;
+        java.lang.String[] $r4;
+        android.content.ContentValues $r2;
+        java.lang.String $r3;
+
+        r0 := @this: cn.mobgo.linlingo.db.LinLinGoProvider;
+
+        $r1 := @parameter0: android.net.Uri;
+
+        $r2 := @parameter1: android.content.ContentValues;
+
+        $r3 := @parameter2: java.lang.String;
+
+        $r4 := @parameter3: java.lang.String[];
+
+        return 0;
+    }
+}

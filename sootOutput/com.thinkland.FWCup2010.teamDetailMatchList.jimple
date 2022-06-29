@@ -1,0 +1,675 @@
+public class com.thinkland.FWCup2010.teamDetailMatchList extends android.app.ListActivity
+{
+    public static final int ITEM0;
+    static final java.lang.String TAG;
+    protected static final int threadF;
+    protected static final int threadS;
+    com.thinkland.FWCup2010.data.fwCupDbHelper dbHelper;
+    android.content.Context mContext;
+    android.widget.TextView mainTeamDetailMatchCoachBorn;
+    android.widget.TextView mainTeamDetailMatchCoachName;
+    android.widget.TextView mainTeamDetailMatchCoachNation;
+    android.widget.ImageView mainTeamDetailMatchIcon;
+    android.widget.TextView mainTeamDetailMatchName;
+    android.widget.ImageView main_team_detail_match_bt01;
+    android.widget.ImageView main_team_detail_match_bt02;
+    android.widget.ImageView main_team_detail_match_bt03;
+    android.widget.ImageView main_team_detail_match_bt04;
+    android.widget.ImageView main_team_detail_match_bt05;
+    android.widget.ImageView main_team_detail_match_bt06;
+    private android.os.Handler messageListener;
+    android.app.ProgressDialog pd;
+    long teamNo;
+    public android.content.Intent ipcIntent;
+    public android.content.Intent ipcResultIntent;
+
+    public void <init>()
+    {
+        com.thinkland.FWCup2010.teamDetailMatchList$1 $r1;
+        com.thinkland.FWCup2010.teamDetailMatchList r0;
+
+        r0 := @this: com.thinkland.FWCup2010.teamDetailMatchList;
+
+        specialinvoke r0.<android.app.ListActivity: void <init>()>();
+
+        $r1 = new com.thinkland.FWCup2010.teamDetailMatchList$1;
+
+        specialinvoke $r1.<com.thinkland.FWCup2010.teamDetailMatchList$1: void <init>(com.thinkland.FWCup2010.teamDetailMatchList)>(r0);
+
+        r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.os.Handler messageListener> = $r1;
+
+        return;
+    }
+
+    static android.os.Handler access$0(com.thinkland.FWCup2010.teamDetailMatchList)
+    {
+        com.thinkland.FWCup2010.teamDetailMatchList $r0;
+        android.os.Handler r1;
+
+        $r0 := @parameter0: com.thinkland.FWCup2010.teamDetailMatchList;
+
+        r1 = $r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.os.Handler messageListener>;
+
+        return r1;
+    }
+
+    public static boolean hasInternet(android.content.Context)
+    {
+        android.net.ConnectivityManager r3;
+        android.content.Context $r0;
+        android.net.NetworkInfo $r5;
+        android.net.NetworkInfo$State $r1, $r6;
+        int i0, $i1;
+        java.lang.Object $r2;
+        android.net.NetworkInfo[] $r4;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r2 = virtualinvoke $r0.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("connectivity");
+
+        r3 = (android.net.ConnectivityManager) $r2;
+
+        if r3 != null goto label1;
+
+        return 0;
+
+     label1:
+        $r4 = virtualinvoke r3.<android.net.ConnectivityManager: android.net.NetworkInfo[] getAllNetworkInfo()>();
+
+        if $r4 == null goto label3;
+
+        i0 = 0;
+
+     label2:
+        $i1 = lengthof $r4;
+
+        if i0 < $i1 goto label4;
+
+     label3:
+        return 0;
+
+     label4:
+        $r5 = $r4[i0];
+
+        $r6 = virtualinvoke $r5.<android.net.NetworkInfo: android.net.NetworkInfo$State getState()>();
+
+        $r1 = <android.net.NetworkInfo$State: android.net.NetworkInfo$State CONNECTED>;
+
+        if $r6 != $r1 goto label5;
+
+        return 1;
+
+     label5:
+        i0 = i0 + 1;
+
+        goto label2;
+    }
+
+    public void actionClickMenuItem0()
+    {
+        android.content.Intent r1;
+        com.thinkland.FWCup2010.teamDetailMatchList r0;
+
+        r0 := @this: com.thinkland.FWCup2010.teamDetailMatchList;
+
+        r1 = new android.content.Intent;
+
+        specialinvoke r1.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>(r0, class "Lcom/thinkland/FWCup2010/about;");
+
+        virtualinvoke r0.<com.thinkland.FWCup2010.teamDetailMatchList: void startActivity(android.content.Intent)>(r1);
+
+        return;
+    }
+
+    public void actionClickMenuItem1()
+    {
+        com.thinkland.FWCup2010.teamDetailMatchList r0;
+
+        r0 := @this: com.thinkland.FWCup2010.teamDetailMatchList;
+
+        <com.thinkland.FWCup2010.common.ActivitySetting: boolean isCloseAll> = 1;
+
+        virtualinvoke r0.<com.thinkland.FWCup2010.teamDetailMatchList: void finish()>();
+
+        return;
+    }
+
+    public void displayPart1(android.content.Context)
+    {
+        android.content.Context $r1;
+        com.thinkland.FWCup2010.teamDetailMatchList r0;
+        com.thinkland.FWCup2010.data.fwCupDbHelper $r3;
+        android.widget.ImageView $r7;
+        long $l0;
+        java.lang.String[] $r9;
+        android.widget.TextView $r8;
+        int $i1, $i2;
+        java.lang.String $r2, $r5, $r6, $r10;
+        android.database.Cursor $r4;
+        boolean $z0;
+
+        r0 := @this: com.thinkland.FWCup2010.teamDetailMatchList;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $l0 = r0.<com.thinkland.FWCup2010.teamDetailMatchList: long teamNo>;
+
+        $r2 = staticinvoke <java.lang.String: java.lang.String valueOf(long)>($l0);
+
+        $i1 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String)>($r2);
+
+        $r3 = r0.<com.thinkland.FWCup2010.teamDetailMatchList: com.thinkland.FWCup2010.data.fwCupDbHelper dbHelper>;
+
+        $l0 = r0.<com.thinkland.FWCup2010.teamDetailMatchList: long teamNo>;
+
+        $r2 = staticinvoke <java.lang.String: java.lang.String valueOf(long)>($l0);
+
+        $r4 = virtualinvoke $r3.<com.thinkland.FWCup2010.data.fwCupDbHelper: android.database.Cursor getCoachDetailByTeamNo(java.lang.String)>($r2);
+
+        virtualinvoke r0.<com.thinkland.FWCup2010.teamDetailMatchList: void startManagingCursor(android.database.Cursor)>($r4);
+
+        interfaceinvoke $r4.<android.database.Cursor: boolean moveToFirst()>();
+
+     label1:
+        $i2 = interfaceinvoke $r4.<android.database.Cursor: int getColumnIndex(java.lang.String)>("COACH_NAME");
+
+        $r2 = interfaceinvoke $r4.<android.database.Cursor: java.lang.String getString(int)>($i2);
+
+        $i2 = interfaceinvoke $r4.<android.database.Cursor: int getColumnIndex(java.lang.String)>("COACH_NATION");
+
+        $r5 = interfaceinvoke $r4.<android.database.Cursor: java.lang.String getString(int)>($i2);
+
+        $i2 = interfaceinvoke $r4.<android.database.Cursor: int getColumnIndex(java.lang.String)>("COACH_BORN");
+
+        $r6 = interfaceinvoke $r4.<android.database.Cursor: java.lang.String getString(int)>($i2);
+
+        $z0 = interfaceinvoke $r4.<android.database.Cursor: boolean moveToNext()>();
+
+        if $z0 != 0 goto label1;
+
+        $r7 = r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.widget.ImageView mainTeamDetailMatchIcon>;
+
+        staticinvoke <com.thinkland.FWCup2010.util.teamIcon02Helper: void setTeamIcon(android.widget.ImageView,int)>($r7, $i1);
+
+        $r8 = r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.widget.TextView mainTeamDetailMatchName>;
+
+        $r9 = <com.thinkland.FWCup2010.common.fwCup2010Array: java.lang.String[] teamNames>;
+
+        $i1 = $i1 - 1;
+
+        $r10 = $r9[$i1];
+
+        virtualinvoke $r8.<android.widget.TextView: void setText(java.lang.CharSequence)>($r10);
+
+        $r8 = r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.widget.TextView mainTeamDetailMatchCoachName>;
+
+        virtualinvoke $r8.<android.widget.TextView: void setText(java.lang.CharSequence)>($r2);
+
+        $r8 = r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.widget.TextView mainTeamDetailMatchCoachNation>;
+
+        virtualinvoke $r8.<android.widget.TextView: void setText(java.lang.CharSequence)>($r5);
+
+        $r8 = r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.widget.TextView mainTeamDetailMatchCoachBorn>;
+
+        virtualinvoke $r8.<android.widget.TextView: void setText(java.lang.CharSequence)>($r6);
+
+        return;
+    }
+
+    public void displayPart2(android.content.Context)
+    {
+        android.content.Context $r1;
+        com.thinkland.FWCup2010.teamDetailMatchList r0;
+        com.thinkland.FWCup2010.data.fwCupDbHelper $r4;
+        long $l0;
+        java.lang.String[] $r7;
+        com.thinkland.FWCup2010.common.matchesCursorAdapter r2;
+        int[] $r3;
+        java.lang.String $r5;
+        android.database.Cursor $r6;
+
+        r0 := @this: com.thinkland.FWCup2010.teamDetailMatchList;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r4 = r0.<com.thinkland.FWCup2010.teamDetailMatchList: com.thinkland.FWCup2010.data.fwCupDbHelper dbHelper>;
+
+        $l0 = r0.<com.thinkland.FWCup2010.teamDetailMatchList: long teamNo>;
+
+        $r5 = staticinvoke <java.lang.String: java.lang.String valueOf(long)>($l0);
+
+        $r6 = virtualinvoke $r4.<com.thinkland.FWCup2010.data.fwCupDbHelper: android.database.Cursor getMatchesByTeamNo(java.lang.String)>($r5);
+
+        virtualinvoke r0.<com.thinkland.FWCup2010.teamDetailMatchList: void startManagingCursor(android.database.Cursor)>($r6);
+
+        interfaceinvoke $r6.<android.database.Cursor: boolean moveToFirst()>();
+
+        r2 = new com.thinkland.FWCup2010.common.matchesCursorAdapter;
+
+        $r7 = newarray (java.lang.String)[6];
+
+        $r7[0] = "MATCH_NO";
+
+        $r7[1] = "MATCH_SCORE";
+
+        $r7[2] = "MATCH_DATE";
+
+        $r7[3] = "MATCH_TIME";
+
+        $r7[4] = "MATCH_TV";
+
+        $r7[5] = "TEAM_A_NO";
+
+        $r3 = newarray (int)[6];
+
+        $r3[0] = 2131230796;
+
+        $r3[1] = 2131230798;
+
+        $r3[2] = 2131230801;
+
+        $r3[3] = 2131230802;
+
+        $r3[4] = 2131230803;
+
+        $r3[5] = 2131230797;
+
+        specialinvoke r2.<com.thinkland.FWCup2010.common.matchesCursorAdapter: void <init>(android.content.Context,int,android.database.Cursor,java.lang.String[],int[])>(r0, 2130903047, $r6, $r7, $r3);
+
+        virtualinvoke r0.<com.thinkland.FWCup2010.teamDetailMatchList: void setListAdapter(android.widget.ListAdapter)>(r2);
+
+        return;
+    }
+
+    public void formatTitleImgButton(android.content.Context)
+    {
+        android.content.Context $r1;
+        com.thinkland.FWCup2010.teamDetailMatchList r0;
+        android.widget.ImageView $r2;
+        com.thinkland.FWCup2010.teamDetailMatchList$3 $r4;
+        com.thinkland.FWCup2010.teamDetailMatchList$4 $r5;
+        com.thinkland.FWCup2010.teamDetailMatchList$2 $r3;
+        com.thinkland.FWCup2010.teamDetailMatchList$7 $r8;
+        com.thinkland.FWCup2010.teamDetailMatchList$5 $r6;
+        com.thinkland.FWCup2010.teamDetailMatchList$6 $r7;
+
+        r0 := @this: com.thinkland.FWCup2010.teamDetailMatchList;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 = r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.widget.ImageView main_team_detail_match_bt01>;
+
+        $r3 = new com.thinkland.FWCup2010.teamDetailMatchList$2;
+
+        specialinvoke $r3.<com.thinkland.FWCup2010.teamDetailMatchList$2: void <init>(com.thinkland.FWCup2010.teamDetailMatchList)>(r0);
+
+        virtualinvoke $r2.<android.widget.ImageView: void setOnClickListener(android.view.View$OnClickListener)>($r3);
+
+        $r2 = r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.widget.ImageView main_team_detail_match_bt02>;
+
+        $r4 = new com.thinkland.FWCup2010.teamDetailMatchList$3;
+
+        specialinvoke $r4.<com.thinkland.FWCup2010.teamDetailMatchList$3: void <init>(com.thinkland.FWCup2010.teamDetailMatchList)>(r0);
+
+        virtualinvoke $r2.<android.widget.ImageView: void setOnClickListener(android.view.View$OnClickListener)>($r4);
+
+        $r2 = r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.widget.ImageView main_team_detail_match_bt03>;
+
+        $r5 = new com.thinkland.FWCup2010.teamDetailMatchList$4;
+
+        specialinvoke $r5.<com.thinkland.FWCup2010.teamDetailMatchList$4: void <init>(com.thinkland.FWCup2010.teamDetailMatchList)>(r0);
+
+        virtualinvoke $r2.<android.widget.ImageView: void setOnClickListener(android.view.View$OnClickListener)>($r5);
+
+        $r2 = r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.widget.ImageView main_team_detail_match_bt04>;
+
+        virtualinvoke $r2.<android.widget.ImageView: void setImageResource(int)>(2130837675);
+
+        $r2 = r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.widget.ImageView main_team_detail_match_bt04>;
+
+        $r6 = new com.thinkland.FWCup2010.teamDetailMatchList$5;
+
+        specialinvoke $r6.<com.thinkland.FWCup2010.teamDetailMatchList$5: void <init>(com.thinkland.FWCup2010.teamDetailMatchList)>(r0);
+
+        virtualinvoke $r2.<android.widget.ImageView: void setOnClickListener(android.view.View$OnClickListener)>($r6);
+
+        $r2 = r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.widget.ImageView main_team_detail_match_bt05>;
+
+        $r7 = new com.thinkland.FWCup2010.teamDetailMatchList$6;
+
+        specialinvoke $r7.<com.thinkland.FWCup2010.teamDetailMatchList$6: void <init>(com.thinkland.FWCup2010.teamDetailMatchList)>(r0);
+
+        virtualinvoke $r2.<android.widget.ImageView: void setOnClickListener(android.view.View$OnClickListener)>($r7);
+
+        $r2 = r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.widget.ImageView main_team_detail_match_bt06>;
+
+        $r8 = new com.thinkland.FWCup2010.teamDetailMatchList$7;
+
+        specialinvoke $r8.<com.thinkland.FWCup2010.teamDetailMatchList$7: void <init>(com.thinkland.FWCup2010.teamDetailMatchList)>(r0);
+
+        virtualinvoke $r2.<android.widget.ImageView: void setOnClickListener(android.view.View$OnClickListener)>($r8);
+
+        return;
+    }
+
+    public void formatViewObject(android.content.Context)
+    {
+        android.content.Context $r1;
+        android.widget.TextView $r4;
+        com.thinkland.FWCup2010.teamDetailMatchList r0;
+        android.widget.ImageView $r3;
+        android.view.View $r2;
+
+        r0 := @this: com.thinkland.FWCup2010.teamDetailMatchList;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 = virtualinvoke r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.view.View findViewById(int)>(2131230834);
+
+        $r3 = (android.widget.ImageView) $r2;
+
+        r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.widget.ImageView main_team_detail_match_bt01> = $r3;
+
+        $r2 = virtualinvoke r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.view.View findViewById(int)>(2131230835);
+
+        $r3 = (android.widget.ImageView) $r2;
+
+        r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.widget.ImageView main_team_detail_match_bt02> = $r3;
+
+        $r2 = virtualinvoke r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.view.View findViewById(int)>(2131230836);
+
+        $r3 = (android.widget.ImageView) $r2;
+
+        r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.widget.ImageView main_team_detail_match_bt03> = $r3;
+
+        $r2 = virtualinvoke r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.view.View findViewById(int)>(2131230837);
+
+        $r3 = (android.widget.ImageView) $r2;
+
+        r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.widget.ImageView main_team_detail_match_bt04> = $r3;
+
+        $r2 = virtualinvoke r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.view.View findViewById(int)>(2131230838);
+
+        $r3 = (android.widget.ImageView) $r2;
+
+        r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.widget.ImageView main_team_detail_match_bt05> = $r3;
+
+        $r2 = virtualinvoke r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.view.View findViewById(int)>(2131230839);
+
+        $r3 = (android.widget.ImageView) $r2;
+
+        r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.widget.ImageView main_team_detail_match_bt06> = $r3;
+
+        $r2 = virtualinvoke r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.view.View findViewById(int)>(2131230841);
+
+        $r3 = (android.widget.ImageView) $r2;
+
+        r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.widget.ImageView mainTeamDetailMatchIcon> = $r3;
+
+        $r2 = virtualinvoke r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.view.View findViewById(int)>(2131230843);
+
+        $r4 = (android.widget.TextView) $r2;
+
+        r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.widget.TextView mainTeamDetailMatchName> = $r4;
+
+        $r2 = virtualinvoke r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.view.View findViewById(int)>(2131230844);
+
+        $r4 = (android.widget.TextView) $r2;
+
+        r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.widget.TextView mainTeamDetailMatchCoachName> = $r4;
+
+        $r2 = virtualinvoke r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.view.View findViewById(int)>(2131230845);
+
+        $r4 = (android.widget.TextView) $r2;
+
+        r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.widget.TextView mainTeamDetailMatchCoachNation> = $r4;
+
+        $r2 = virtualinvoke r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.view.View findViewById(int)>(2131230846);
+
+        $r4 = (android.widget.TextView) $r2;
+
+        r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.widget.TextView mainTeamDetailMatchCoachBorn> = $r4;
+
+        return;
+    }
+
+    public void onCreate(android.os.Bundle)
+    {
+        android.content.Context $r2;
+        android.os.Bundle $r1;
+        com.thinkland.FWCup2010.teamDetailMatchList r0;
+        com.thinkland.FWCup2010.data.fwCupDbHelper $r3;
+        android.content.Intent $r4;
+        long $l0;
+
+        r0 := @this: com.thinkland.FWCup2010.teamDetailMatchList;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke r0.<android.app.ListActivity: void onCreate(android.os.Bundle)>($r1);
+
+        virtualinvoke r0.<com.thinkland.FWCup2010.teamDetailMatchList: boolean requestWindowFeature(int)>(1);
+
+        virtualinvoke r0.<com.thinkland.FWCup2010.teamDetailMatchList: void setContentView(int)>(2130903051);
+
+        r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.content.Context mContext> = r0;
+
+        $r3 = r0.<com.thinkland.FWCup2010.teamDetailMatchList: com.thinkland.FWCup2010.data.fwCupDbHelper dbHelper>;
+
+        if $r3 == null goto label1;
+
+        $r3 = r0.<com.thinkland.FWCup2010.teamDetailMatchList: com.thinkland.FWCup2010.data.fwCupDbHelper dbHelper>;
+
+        virtualinvoke $r3.<com.thinkland.FWCup2010.data.fwCupDbHelper: void close()>();
+
+     label1:
+        $r3 = new com.thinkland.FWCup2010.data.fwCupDbHelper;
+
+        $r2 = r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.content.Context mContext>;
+
+        specialinvoke $r3.<com.thinkland.FWCup2010.data.fwCupDbHelper: void <init>(android.content.Context)>($r2);
+
+        r0.<com.thinkland.FWCup2010.teamDetailMatchList: com.thinkland.FWCup2010.data.fwCupDbHelper dbHelper> = $r3;
+
+        $r3 = r0.<com.thinkland.FWCup2010.teamDetailMatchList: com.thinkland.FWCup2010.data.fwCupDbHelper dbHelper>;
+
+        virtualinvoke $r3.<com.thinkland.FWCup2010.data.fwCupDbHelper: com.thinkland.FWCup2010.data.fwCupDbHelper open()>();
+
+        $r4 = virtualinvoke r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.content.Intent getIntent()>();
+
+        $r1 = virtualinvoke $r4.<android.content.Intent: android.os.Bundle getExtras()>();
+
+        $l0 = virtualinvoke $r1.<android.os.Bundle: long getLong(java.lang.String)>("teamNo");
+
+        r0.<com.thinkland.FWCup2010.teamDetailMatchList: long teamNo> = $l0;
+
+        virtualinvoke r0.<com.thinkland.FWCup2010.teamDetailMatchList: void formatViewObject(android.content.Context)>(r0);
+
+        virtualinvoke r0.<com.thinkland.FWCup2010.teamDetailMatchList: void formatTitleImgButton(android.content.Context)>(r0);
+
+        virtualinvoke r0.<com.thinkland.FWCup2010.teamDetailMatchList: void displayPart1(android.content.Context)>(r0);
+
+        virtualinvoke r0.<com.thinkland.FWCup2010.teamDetailMatchList: void displayPart2(android.content.Context)>(r0);
+
+        return;
+    }
+
+    public boolean onCreateOptionsMenu(android.view.Menu)
+    {
+        android.view.Menu $r1;
+        com.thinkland.FWCup2010.teamDetailMatchList r0;
+        android.view.MenuItem $r2;
+
+        r0 := @this: com.thinkland.FWCup2010.teamDetailMatchList;
+
+        $r1 := @parameter0: android.view.Menu;
+
+        specialinvoke r0.<android.app.ListActivity: boolean onCreateOptionsMenu(android.view.Menu)>($r1);
+
+        interfaceinvoke $r1.<android.view.Menu: android.view.MenuItem add(int,int,int,java.lang.CharSequence)>(0, 1, 0, "\u5173\u4e8e\u6211\u4eec");
+
+        $r2 = interfaceinvoke $r1.<android.view.Menu: android.view.MenuItem findItem(int)>(1);
+
+        interfaceinvoke $r2.<android.view.MenuItem: android.view.MenuItem setIcon(int)>(2130837508);
+
+        return 1;
+    }
+
+    protected void onDestroy()
+    {
+        com.thinkland.FWCup2010.teamDetailMatchList r0;
+        com.thinkland.FWCup2010.data.fwCupDbHelper $r1;
+
+        r0 := @this: com.thinkland.FWCup2010.teamDetailMatchList;
+
+        specialinvoke r0.<android.app.ListActivity: void onDestroy()>();
+
+        $r1 = r0.<com.thinkland.FWCup2010.teamDetailMatchList: com.thinkland.FWCup2010.data.fwCupDbHelper dbHelper>;
+
+        virtualinvoke $r1.<com.thinkland.FWCup2010.data.fwCupDbHelper: void close()>();
+
+        return;
+    }
+
+    protected void onListItemClick(android.widget.ListView, android.view.View, int, long)
+    {
+        com.thinkland.FWCup2010.teamDetailMatchList r0;
+        int $i0;
+        android.view.View $r2;
+        long $l1;
+        android.widget.ListView $r1;
+
+        r0 := @this: com.thinkland.FWCup2010.teamDetailMatchList;
+
+        $r1 := @parameter0: android.widget.ListView;
+
+        $r2 := @parameter1: android.view.View;
+
+        $i0 := @parameter2: int;
+
+        $l1 := @parameter3: long;
+
+        specialinvoke r0.<android.app.ListActivity: void onListItemClick(android.widget.ListView,android.view.View,int,long)>($r1, $r2, $i0, $l1);
+
+        return;
+    }
+
+    public boolean onOptionsItemSelected(android.view.MenuItem)
+    {
+        com.thinkland.FWCup2010.teamDetailMatchList r0;
+        int $i0;
+        android.view.MenuItem $r1;
+        boolean $z0;
+
+        r0 := @this: com.thinkland.FWCup2010.teamDetailMatchList;
+
+        $r1 := @parameter0: android.view.MenuItem;
+
+        $i0 = interfaceinvoke $r1.<android.view.MenuItem: int getItemId()>();
+
+        lookupswitch($i0)
+        {
+            case 1: goto label2;
+            default: goto label1;
+        };
+
+     label1:
+        $z0 = specialinvoke r0.<android.app.ListActivity: boolean onOptionsItemSelected(android.view.MenuItem)>($r1);
+
+        return $z0;
+
+     label2:
+        virtualinvoke r0.<com.thinkland.FWCup2010.teamDetailMatchList: void actionClickMenuItem0()>();
+
+        goto label1;
+    }
+
+    public void onResume()
+    {
+        com.thinkland.FWCup2010.teamDetailMatchList r0;
+        boolean $z0;
+
+        r0 := @this: com.thinkland.FWCup2010.teamDetailMatchList;
+
+        specialinvoke r0.<android.app.ListActivity: void onResume()>();
+
+        $z0 = <com.thinkland.FWCup2010.common.ActivitySetting: boolean isCloseAll>;
+
+        if $z0 == 0 goto label1;
+
+        virtualinvoke r0.<com.thinkland.FWCup2010.teamDetailMatchList: void finish()>();
+
+     label1:
+        return;
+    }
+
+    public void startLoadingDialog()
+    {
+        android.app.ProgressDialog $r1;
+        com.thinkland.FWCup2010.teamDetailMatchList r0;
+
+        r0 := @this: com.thinkland.FWCup2010.teamDetailMatchList;
+
+        $r1 = staticinvoke <android.app.ProgressDialog: android.app.ProgressDialog show(android.content.Context,java.lang.CharSequence,java.lang.CharSequence,boolean,boolean)>(r0, null, "\u7f51\u7edc\u6570\u636e\u66f4\u65b0\u4e2d\uff0c\u8bf7\u7a0d\u540e...", 1, 1);
+
+        r0.<com.thinkland.FWCup2010.teamDetailMatchList: android.app.ProgressDialog pd> = $r1;
+
+        return;
+    }
+
+    public android.content.Intent getIntent()
+    {
+        android.content.Intent $r0;
+        com.thinkland.FWCup2010.teamDetailMatchList this;
+
+        this := @this: com.thinkland.FWCup2010.teamDetailMatchList;
+
+        $r0 = this.<com.thinkland.FWCup2010.teamDetailMatchList: android.content.Intent ipcIntent>;
+
+        return $r0;
+    }
+
+    public void setIntent(android.content.Intent)
+    {
+        android.content.Intent parameter0;
+        com.thinkland.FWCup2010.teamDetailMatchList this;
+
+        this := @this: com.thinkland.FWCup2010.teamDetailMatchList;
+
+        parameter0 := @parameter0: android.content.Intent;
+
+        this.<com.thinkland.FWCup2010.teamDetailMatchList: android.content.Intent ipcIntent> = parameter0;
+
+        return;
+    }
+
+    public void setResult(int, android.content.Intent)
+    {
+        int parameter0;
+        android.content.Intent parameter1;
+        com.thinkland.FWCup2010.teamDetailMatchList this;
+
+        this := @this: com.thinkland.FWCup2010.teamDetailMatchList;
+
+        parameter0 := @parameter0: int;
+
+        parameter1 := @parameter1: android.content.Intent;
+
+        this.<com.thinkland.FWCup2010.teamDetailMatchList: android.content.Intent ipcResultIntent> = parameter1;
+
+        return;
+    }
+
+    public static void <clinit>()
+    {
+        <com.thinkland.FWCup2010.teamDetailMatchList: int threadS> = 4369;
+
+        <com.thinkland.FWCup2010.teamDetailMatchList: int threadF> = 4368;
+
+        <com.thinkland.FWCup2010.teamDetailMatchList: java.lang.String TAG> = "teamDetailMatchList";
+
+        <com.thinkland.FWCup2010.teamDetailMatchList: int ITEM0> = 1;
+
+        return;
+    }
+}

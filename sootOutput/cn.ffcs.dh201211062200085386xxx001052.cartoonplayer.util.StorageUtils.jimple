@@ -1,0 +1,447 @@
+public class cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.util.StorageUtils extends java.lang.Object
+{
+    public static final java.lang.String FILE_ROOT;
+    private static final long LOW_STORAGE_THRESHOLD;
+    private static final java.lang.String SDCARD_ROOT;
+
+    static void <clinit>()
+    {
+        java.lang.StringBuilder $r0;
+        java.lang.String $r2;
+        java.io.File $r1;
+
+        <cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.util.StorageUtils: long LOW_STORAGE_THRESHOLD> = 10485760L;
+
+        $r0 = new java.lang.StringBuilder;
+
+        specialinvoke $r0.<java.lang.StringBuilder: void <init>()>();
+
+        $r1 = staticinvoke <android.os.Environment: java.io.File getExternalStorageDirectory()>();
+
+        $r2 = virtualinvoke $r1.<java.io.File: java.lang.String getAbsolutePath()>();
+
+        $r0 = virtualinvoke $r0.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r0 = virtualinvoke $r0.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/");
+
+        $r2 = virtualinvoke $r0.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        <cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.util.StorageUtils: java.lang.String SDCARD_ROOT> = $r2;
+
+        $r0 = new java.lang.StringBuilder;
+
+        specialinvoke $r0.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = <cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.util.StorageUtils: java.lang.String SDCARD_ROOT>;
+
+        $r0 = virtualinvoke $r0.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r0 = virtualinvoke $r0.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("CartoonPlayer_MovieCache/");
+
+        $r2 = virtualinvoke $r0.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        <cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.util.StorageUtils: java.lang.String FILE_ROOT> = $r2;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.util.StorageUtils r0;
+
+        r0 := @this: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.util.StorageUtils;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    public static boolean checkAvailableStorage()
+    {
+        int $i2;
+        long $l0;
+        byte $b1;
+
+        $l0 = staticinvoke <cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.util.StorageUtils: long getAvailableStorage()>();
+
+        $b1 = $l0 cmp 10485760L;
+
+        $i2 = (int) $b1;
+
+        if $i2 >= 0 goto label1;
+
+        return 0;
+
+     label1:
+        return 1;
+    }
+
+    public static boolean delete(java.io.File)
+    {
+        int i0, i1;
+        java.io.File[] $r2;
+        java.io.File $r0, r1;
+        boolean z0, $z1;
+
+        $r0 := @parameter0: java.io.File;
+
+        z0 = 1;
+
+        $z1 = virtualinvoke $r0.<java.io.File: boolean exists()>();
+
+        if $z1 == 0 goto label6;
+
+        $z1 = virtualinvoke $r0.<java.io.File: boolean isDirectory()>();
+
+        if $z1 == 0 goto label3;
+
+        $r2 = virtualinvoke $r0.<java.io.File: java.io.File[] listFiles()>();
+
+        i0 = lengthof $r2;
+
+        i1 = 0;
+
+     label1:
+        if i1 >= i0 goto label2;
+
+        r1 = $r2[i1];
+
+        $z1 = staticinvoke <cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.util.StorageUtils: boolean delete(java.io.File)>(r1);
+
+        z0 = z0 & $z1;
+
+        i1 = i1 + 1;
+
+        goto label1;
+
+     label2:
+        $z1 = virtualinvoke $r0.<java.io.File: boolean delete()>();
+
+        z0 = z0 & $z1;
+
+     label3:
+        $z1 = virtualinvoke $r0.<java.io.File: boolean isFile()>();
+
+        if $z1 == 0 goto label4;
+
+        $z1 = virtualinvoke $r0.<java.io.File: boolean delete()>();
+
+        z0 = z0 & $z1;
+
+     label4:
+        if z0 != 0 goto label5;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>(null, "Delete failed;");
+
+     label5:
+        return z0;
+
+     label6:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>(null, "File does not exist.");
+
+        return 0;
+    }
+
+    public static long getAvailableStorage()
+    {
+        android.os.StatFs r1;
+        int $i0;
+        long $l1, $l2;
+        java.lang.RuntimeException r0;
+        java.lang.String $r3;
+        java.io.File $r2;
+
+        $r2 = staticinvoke <android.os.Environment: java.io.File getExternalStorageDirectory()>();
+
+        $r3 = virtualinvoke $r2.<java.io.File: java.lang.String toString()>();
+
+        r1 = new android.os.StatFs;
+
+     label1:
+        specialinvoke r1.<android.os.StatFs: void <init>(java.lang.String)>($r3);
+
+        $i0 = virtualinvoke r1.<android.os.StatFs: int getAvailableBlocks()>();
+
+     label2:
+        $l1 = (long) $i0;
+
+     label3:
+        $i0 = virtualinvoke r1.<android.os.StatFs: int getBlockSize()>();
+
+     label4:
+        $l2 = (long) $i0;
+
+        $l1 = $l1 * $l2;
+
+        return $l1;
+
+     label5:
+        r0 := @caughtexception;
+
+        return 0L;
+
+        catch java.lang.RuntimeException from label1 to label2 with label5;
+        catch java.lang.RuntimeException from label3 to label4 with label5;
+    }
+
+    public static android.graphics.Bitmap getLoacalBitmap(java.lang.String)
+    {
+        java.lang.Throwable r1;
+        android.graphics.Bitmap $r3;
+        java.lang.String $r0;
+        java.io.FileInputStream r2, $r4;
+        java.io.FileNotFoundException $r5;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r4 = new java.io.FileInputStream;
+
+        r2 = $r4;
+
+     label1:
+        specialinvoke $r4.<java.io.FileInputStream: void <init>(java.lang.String)>($r0);
+
+        $r3 = staticinvoke <android.graphics.BitmapFactory: android.graphics.Bitmap decodeStream(java.io.InputStream)>(r2);
+
+     label2:
+        return $r3;
+
+     label3:
+        r1 := @caughtexception;
+
+        $r5 = (java.io.FileNotFoundException) r1;
+
+        virtualinvoke $r5.<java.io.FileNotFoundException: void printStackTrace()>();
+
+        return null;
+
+        catch java.io.FileNotFoundException from label1 to label2 with label3;
+    }
+
+    public static void installAPK(android.content.Context, java.lang.String)
+    {
+        android.content.Context $r0;
+        android.net.Uri $r6;
+        android.content.Intent r2;
+        java.lang.StringBuilder $r3;
+        java.lang.String $r1, $r4;
+        java.io.File $r5;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        r2 = new android.content.Intent;
+
+        specialinvoke r2.<android.content.Intent: void <init>(java.lang.String)>("android.intent.action.VIEW");
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = <cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.util.StorageUtils: java.lang.String FILE_ROOT>;
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r1 = staticinvoke <cn.ffcs.lib.utils.NetworkUtils: java.lang.String getFileNameFromUrl(java.lang.String)>($r1);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r5 = new java.io.File;
+
+        specialinvoke $r5.<java.io.File: void <init>(java.lang.String)>($r1);
+
+        $r6 = staticinvoke <android.net.Uri: android.net.Uri fromFile(java.io.File)>($r5);
+
+        virtualinvoke r2.<android.content.Intent: android.content.Intent setDataAndType(android.net.Uri,java.lang.String)>($r6, "application/vnd.android.package-archive");
+
+        virtualinvoke r2.<android.content.Intent: android.content.Intent addFlags(int)>(1);
+
+        virtualinvoke r2.<android.content.Intent: android.content.Intent setClassName(java.lang.String,java.lang.String)>("com.android.packageinstaller", "com.android.packageinstaller.PackageInstallerActivity");
+
+        virtualinvoke $r0.<android.content.Context: void startActivity(android.content.Intent)>(r2);
+
+        return;
+    }
+
+    public static boolean isSDCardPresent()
+    {
+        java.lang.String $r0;
+        boolean $z0;
+
+        $r0 = staticinvoke <android.os.Environment: java.lang.String getExternalStorageState()>();
+
+        $z0 = virtualinvoke $r0.<java.lang.String: boolean equals(java.lang.Object)>("mounted");
+
+        return $z0;
+    }
+
+    public static boolean isSdCardWrittenable()
+    {
+        java.lang.String $r0;
+        boolean $z0;
+
+        $r0 = staticinvoke <android.os.Environment: java.lang.String getExternalStorageState()>();
+
+        $z0 = virtualinvoke $r0.<java.lang.String: boolean equals(java.lang.Object)>("mounted");
+
+        if $z0 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public static void mkdir() throws java.io.IOException
+    {
+        java.lang.String $r1;
+        java.io.File r0;
+        boolean $z0;
+
+        r0 = new java.io.File;
+
+        $r1 = <cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.util.StorageUtils: java.lang.String FILE_ROOT>;
+
+        specialinvoke r0.<java.io.File: void <init>(java.lang.String)>($r1);
+
+        $z0 = virtualinvoke r0.<java.io.File: boolean exists()>();
+
+        if $z0 == 0 goto label1;
+
+        $z0 = virtualinvoke r0.<java.io.File: boolean isDirectory()>();
+
+        if $z0 != 0 goto label2;
+
+     label1:
+        virtualinvoke r0.<java.io.File: boolean mkdir()>();
+
+     label2:
+        return;
+    }
+
+    public static java.lang.String size(long)
+    {
+        java.text.DecimalFormat $r2;
+        long $l0, $l1;
+        byte $b2;
+        int $i3;
+        float $f0;
+        java.lang.StringBuilder $r0, $r3;
+        java.lang.String $r1;
+        double $d0;
+
+        $l0 := @parameter0: long;
+
+        $l1 = $l0 / 1073741824L;
+
+        $b2 = $l1 cmp 0L;
+
+        $i3 = (int) $b2;
+
+        if $i3 <= 0 goto label1;
+
+        $f0 = (float) $l0;
+
+        $f0 = $f0 / 1.07374182E9F;
+
+        $r2 = new java.text.DecimalFormat;
+
+        specialinvoke $r2.<java.text.DecimalFormat: void <init>(java.lang.String)>("#.##");
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r0 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("");
+
+        $d0 = (double) $f0;
+
+        $r1 = virtualinvoke $r2.<java.text.DecimalFormat: java.lang.String format(double)>($d0);
+
+        $r0 = virtualinvoke $r0.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r0 = virtualinvoke $r0.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("GB");
+
+        $r1 = virtualinvoke $r0.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r1;
+
+     label1:
+        $l1 = $l0 / 1048576L;
+
+        $b2 = $l1 cmp 0L;
+
+        $i3 = (int) $b2;
+
+        if $i3 <= 0 goto label2;
+
+        $f0 = (float) $l0;
+
+        $f0 = $f0 / 1048576.0F;
+
+        $r2 = new java.text.DecimalFormat;
+
+        specialinvoke $r2.<java.text.DecimalFormat: void <init>(java.lang.String)>("#.##");
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r0 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("");
+
+        $d0 = (double) $f0;
+
+        $r1 = virtualinvoke $r2.<java.text.DecimalFormat: java.lang.String format(double)>($d0);
+
+        $r0 = virtualinvoke $r0.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r0 = virtualinvoke $r0.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("MB");
+
+        $r1 = virtualinvoke $r0.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r1;
+
+     label2:
+        $l1 = $l0 / 1024L;
+
+        $b2 = $l1 cmp 0L;
+
+        $i3 = (int) $b2;
+
+        if $i3 <= 0 goto label3;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r0 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("");
+
+        $l0 = $l0 / 1024L;
+
+        $r0 = virtualinvoke $r0.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+        $r0 = virtualinvoke $r0.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("KB");
+
+        $r1 = virtualinvoke $r0.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r1;
+
+     label3:
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r0 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("");
+
+        $r0 = virtualinvoke $r0.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+        $r0 = virtualinvoke $r0.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("B");
+
+        $r1 = virtualinvoke $r0.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r1;
+    }
+}

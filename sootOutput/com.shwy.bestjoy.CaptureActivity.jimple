@@ -1,0 +1,1426 @@
+public final class com.shwy.bestjoy.CaptureActivity extends android.app.Activity implements android.view.SurfaceHolder$Callback
+{
+    private static final java.util.regex.Pattern COMMA_PATTERN;
+    static final java.util.Vector DATA_MATRIX_FORMATS;
+    private static final int HELP_ID;
+    private static final int HISTORY_ID;
+    private static final int INPUT_ID;
+    private static final long INTENT_RESULT_DURATION;
+    private static final int MAX_RESULT_IMAGE_SIZE;
+    static final java.util.Vector ONE_D_FORMATS;
+    static final java.util.Vector PRODUCT_FORMATS;
+    static final java.util.Vector QR_CODE_FORMATS;
+    private static final int SETTINGS_ID;
+    private static final java.lang.String TAG;
+    private static final long VIBRATE_DURATION;
+    private java.lang.String BIDUri;
+    private final android.media.MediaPlayer$OnCompletionListener beepListener;
+    private java.lang.String characterSet;
+    private java.util.Vector decodeFormats;
+    private boolean dialReturnStatus;
+    private android.app.ProgressDialog downloadDialog;
+    private boolean downloadStatus;
+    private java.lang.Thread downloadThread;
+    private final int getBIDUriRequest;
+    private com.shwy.bestjoy.CaptureActivityHandler handler;
+    private boolean hasSurface;
+    private com.google.zxing.client.android.history.HistoryManager historyManager;
+    private boolean isEnterpriseCard;
+    private boolean isProductVerify;
+    private com.google.zxing.Result lastResult;
+    private com.shwy.bestjoy.BeepAndVibrate media;
+    private android.view.View resultView;
+    private android.view.View statusView;
+    private android.widget.ToggleButton status_view_flashlight;
+    private com.shwy.bestjoy.ViewfinderView viewfinderView;
+    public android.content.Intent ipcIntent;
+    public android.content.Intent ipcResultIntent;
+
+    static void <clinit>()
+    {
+        java.util.Vector $r1, $r3;
+        int $i0;
+        java.util.regex.Pattern $r0;
+        com.google.zxing.BarcodeFormat $r2;
+
+        <com.shwy.bestjoy.CaptureActivity: long VIBRATE_DURATION> = 200L;
+
+        <com.shwy.bestjoy.CaptureActivity: java.lang.String TAG> = "CaptureActivity";
+
+        <com.shwy.bestjoy.CaptureActivity: int SETTINGS_ID> = 3;
+
+        <com.shwy.bestjoy.CaptureActivity: int MAX_RESULT_IMAGE_SIZE> = 150;
+
+        <com.shwy.bestjoy.CaptureActivity: long INTENT_RESULT_DURATION> = 1500L;
+
+        <com.shwy.bestjoy.CaptureActivity: int INPUT_ID> = 1;
+
+        <com.shwy.bestjoy.CaptureActivity: int HISTORY_ID> = 2;
+
+        <com.shwy.bestjoy.CaptureActivity: int HELP_ID> = 4;
+
+        $r0 = staticinvoke <java.util.regex.Pattern: java.util.regex.Pattern compile(java.lang.String)>(",");
+
+        <com.shwy.bestjoy.CaptureActivity: java.util.regex.Pattern COMMA_PATTERN> = $r0;
+
+        $r1 = new java.util.Vector;
+
+        specialinvoke $r1.<java.util.Vector: void <init>(int)>(5);
+
+        <com.shwy.bestjoy.CaptureActivity: java.util.Vector PRODUCT_FORMATS> = $r1;
+
+        $r1 = <com.shwy.bestjoy.CaptureActivity: java.util.Vector PRODUCT_FORMATS>;
+
+        $r2 = <com.google.zxing.BarcodeFormat: com.google.zxing.BarcodeFormat UPC_A>;
+
+        virtualinvoke $r1.<java.util.Vector: boolean add(java.lang.Object)>($r2);
+
+        $r1 = <com.shwy.bestjoy.CaptureActivity: java.util.Vector PRODUCT_FORMATS>;
+
+        $r2 = <com.google.zxing.BarcodeFormat: com.google.zxing.BarcodeFormat UPC_E>;
+
+        virtualinvoke $r1.<java.util.Vector: boolean add(java.lang.Object)>($r2);
+
+        $r1 = <com.shwy.bestjoy.CaptureActivity: java.util.Vector PRODUCT_FORMATS>;
+
+        $r2 = <com.google.zxing.BarcodeFormat: com.google.zxing.BarcodeFormat EAN_13>;
+
+        virtualinvoke $r1.<java.util.Vector: boolean add(java.lang.Object)>($r2);
+
+        $r1 = <com.shwy.bestjoy.CaptureActivity: java.util.Vector PRODUCT_FORMATS>;
+
+        $r2 = <com.google.zxing.BarcodeFormat: com.google.zxing.BarcodeFormat EAN_8>;
+
+        virtualinvoke $r1.<java.util.Vector: boolean add(java.lang.Object)>($r2);
+
+        $r1 = new java.util.Vector;
+
+        $r3 = <com.shwy.bestjoy.CaptureActivity: java.util.Vector PRODUCT_FORMATS>;
+
+        $i0 = virtualinvoke $r3.<java.util.Vector: int size()>();
+
+        $i0 = $i0 + 3;
+
+        specialinvoke $r1.<java.util.Vector: void <init>(int)>($i0);
+
+        <com.shwy.bestjoy.CaptureActivity: java.util.Vector ONE_D_FORMATS> = $r1;
+
+        $r1 = <com.shwy.bestjoy.CaptureActivity: java.util.Vector ONE_D_FORMATS>;
+
+        $r3 = <com.shwy.bestjoy.CaptureActivity: java.util.Vector PRODUCT_FORMATS>;
+
+        virtualinvoke $r1.<java.util.Vector: boolean addAll(java.util.Collection)>($r3);
+
+        $r1 = <com.shwy.bestjoy.CaptureActivity: java.util.Vector ONE_D_FORMATS>;
+
+        $r2 = <com.google.zxing.BarcodeFormat: com.google.zxing.BarcodeFormat CODE_39>;
+
+        virtualinvoke $r1.<java.util.Vector: boolean add(java.lang.Object)>($r2);
+
+        $r1 = <com.shwy.bestjoy.CaptureActivity: java.util.Vector ONE_D_FORMATS>;
+
+        $r2 = <com.google.zxing.BarcodeFormat: com.google.zxing.BarcodeFormat CODE_128>;
+
+        virtualinvoke $r1.<java.util.Vector: boolean add(java.lang.Object)>($r2);
+
+        $r1 = <com.shwy.bestjoy.CaptureActivity: java.util.Vector ONE_D_FORMATS>;
+
+        $r2 = <com.google.zxing.BarcodeFormat: com.google.zxing.BarcodeFormat ITF>;
+
+        virtualinvoke $r1.<java.util.Vector: boolean add(java.lang.Object)>($r2);
+
+        $r1 = new java.util.Vector;
+
+        specialinvoke $r1.<java.util.Vector: void <init>(int)>(1);
+
+        <com.shwy.bestjoy.CaptureActivity: java.util.Vector QR_CODE_FORMATS> = $r1;
+
+        $r1 = <com.shwy.bestjoy.CaptureActivity: java.util.Vector QR_CODE_FORMATS>;
+
+        $r2 = <com.google.zxing.BarcodeFormat: com.google.zxing.BarcodeFormat QR_CODE>;
+
+        virtualinvoke $r1.<java.util.Vector: boolean add(java.lang.Object)>($r2);
+
+        $r1 = new java.util.Vector;
+
+        specialinvoke $r1.<java.util.Vector: void <init>(int)>(1);
+
+        <com.shwy.bestjoy.CaptureActivity: java.util.Vector DATA_MATRIX_FORMATS> = $r1;
+
+        $r1 = <com.shwy.bestjoy.CaptureActivity: java.util.Vector DATA_MATRIX_FORMATS>;
+
+        $r2 = <com.google.zxing.BarcodeFormat: com.google.zxing.BarcodeFormat DATA_MATRIX>;
+
+        virtualinvoke $r1.<java.util.Vector: boolean add(java.lang.Object)>($r2);
+
+        return;
+    }
+
+    public void <init>()
+    {
+        com.shwy.bestjoy.CaptureActivity r0;
+        com.shwy.bestjoy.CaptureActivity$BeepListener $r1;
+
+        r0 := @this: com.shwy.bestjoy.CaptureActivity;
+
+        specialinvoke r0.<android.app.Activity: void <init>()>();
+
+        r0.<com.shwy.bestjoy.CaptureActivity: java.lang.String BIDUri> = null;
+
+        r0.<com.shwy.bestjoy.CaptureActivity: boolean downloadStatus> = 0;
+
+        r0.<com.shwy.bestjoy.CaptureActivity: boolean dialReturnStatus> = 0;
+
+        r0.<com.shwy.bestjoy.CaptureActivity: int getBIDUriRequest> = 10;
+
+        r0.<com.shwy.bestjoy.CaptureActivity: boolean isProductVerify> = 0;
+
+        r0.<com.shwy.bestjoy.CaptureActivity: boolean isEnterpriseCard> = 0;
+
+        $r1 = new com.shwy.bestjoy.CaptureActivity$BeepListener;
+
+        specialinvoke $r1.<com.shwy.bestjoy.CaptureActivity$BeepListener: void <init>(com.shwy.bestjoy.CaptureActivity$BeepListener)>(null);
+
+        r0.<com.shwy.bestjoy.CaptureActivity: android.media.MediaPlayer$OnCompletionListener beepListener> = $r1;
+
+        return;
+    }
+
+    private void displayFrameworkBugMessageAndExit()
+    {
+        com.shwy.bestjoy.CaptureActivity$2 $r2;
+        com.shwy.bestjoy.CaptureActivity r0;
+        android.app.AlertDialog$Builder r1;
+        java.lang.String $r3;
+
+        r0 := @this: com.shwy.bestjoy.CaptureActivity;
+
+        r1 = new android.app.AlertDialog$Builder;
+
+        specialinvoke r1.<android.app.AlertDialog$Builder: void <init>(android.content.Context)>(r0);
+
+        $r3 = virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: java.lang.String getString(int)>(2131165310);
+
+        virtualinvoke r1.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setTitle(java.lang.CharSequence)>($r3);
+
+        $r3 = virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: java.lang.String getString(int)>(2131165378);
+
+        virtualinvoke r1.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setMessage(java.lang.CharSequence)>($r3);
+
+        $r2 = new com.shwy.bestjoy.CaptureActivity$2;
+
+        specialinvoke $r2.<com.shwy.bestjoy.CaptureActivity$2: void <init>(com.shwy.bestjoy.CaptureActivity)>(r0);
+
+        virtualinvoke r1.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setPositiveButton(int,android.content.DialogInterface$OnClickListener)>(2131165334, $r2);
+
+        virtualinvoke r1.<android.app.AlertDialog$Builder: android.app.AlertDialog show()>();
+
+        return;
+    }
+
+    private void drawResultPoints(android.graphics.Bitmap, com.google.zxing.Result)
+    {
+        com.google.zxing.Result $r2;
+        android.graphics.Rect r5;
+        com.google.zxing.ResultPoint r6;
+        com.shwy.bestjoy.CaptureActivity r0;
+        android.graphics.Paint$Style $r9;
+        int $i0, $i1;
+        android.graphics.Canvas r3;
+        com.google.zxing.ResultPoint[] $r7;
+        android.graphics.Bitmap $r1;
+        float $f0, $f1, $f2, $f3;
+        android.graphics.Paint r4;
+        android.content.res.Resources $r8;
+
+        r0 := @this: com.shwy.bestjoy.CaptureActivity;
+
+        $r1 := @parameter0: android.graphics.Bitmap;
+
+        $r2 := @parameter1: com.google.zxing.Result;
+
+        $r7 = virtualinvoke $r2.<com.google.zxing.Result: com.google.zxing.ResultPoint[] getResultPoints()>();
+
+        if $r7 == null goto label3;
+
+        $i0 = lengthof $r7;
+
+        if $i0 <= 0 goto label3;
+
+        r3 = new android.graphics.Canvas;
+
+        specialinvoke r3.<android.graphics.Canvas: void <init>(android.graphics.Bitmap)>($r1);
+
+        r4 = new android.graphics.Paint;
+
+        specialinvoke r4.<android.graphics.Paint: void <init>()>();
+
+        $r8 = virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: android.content.res.Resources getResources()>();
+
+        $i0 = virtualinvoke $r8.<android.content.res.Resources: int getColor(int)>(2131427368);
+
+        virtualinvoke r4.<android.graphics.Paint: void setColor(int)>($i0);
+
+        virtualinvoke r4.<android.graphics.Paint: void setStrokeWidth(float)>(3.0F);
+
+        $r9 = <android.graphics.Paint$Style: android.graphics.Paint$Style STROKE>;
+
+        virtualinvoke r4.<android.graphics.Paint: void setStyle(android.graphics.Paint$Style)>($r9);
+
+        r5 = new android.graphics.Rect;
+
+        $i0 = virtualinvoke $r1.<android.graphics.Bitmap: int getWidth()>();
+
+        $i0 = $i0 - 2;
+
+        $i1 = virtualinvoke $r1.<android.graphics.Bitmap: int getHeight()>();
+
+        $i1 = $i1 - 2;
+
+        specialinvoke r5.<android.graphics.Rect: void <init>(int,int,int,int)>(2, 2, $i0, $i1);
+
+        virtualinvoke r3.<android.graphics.Canvas: void drawRect(android.graphics.Rect,android.graphics.Paint)>(r5, r4);
+
+        $r8 = virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: android.content.res.Resources getResources()>();
+
+        $i0 = virtualinvoke $r8.<android.content.res.Resources: int getColor(int)>(2131427370);
+
+        virtualinvoke r4.<android.graphics.Paint: void setColor(int)>($i0);
+
+        $i0 = lengthof $r7;
+
+        if $i0 != 2 goto label1;
+
+        virtualinvoke r4.<android.graphics.Paint: void setStrokeWidth(float)>(4.0F);
+
+        r6 = $r7[0];
+
+        $f0 = virtualinvoke r6.<com.google.zxing.ResultPoint: float getX()>();
+
+        r6 = $r7[0];
+
+        $f1 = virtualinvoke r6.<com.google.zxing.ResultPoint: float getY()>();
+
+        r6 = $r7[1];
+
+        $f2 = virtualinvoke r6.<com.google.zxing.ResultPoint: float getX()>();
+
+        r6 = $r7[1];
+
+        $f3 = virtualinvoke r6.<com.google.zxing.ResultPoint: float getY()>();
+
+        virtualinvoke r3.<android.graphics.Canvas: void drawLine(float,float,float,float,android.graphics.Paint)>($f0, $f1, $f2, $f3, r4);
+
+        return;
+
+     label1:
+        virtualinvoke r4.<android.graphics.Paint: void setStrokeWidth(float)>(10.0F);
+
+        $i0 = lengthof $r7;
+
+        $i1 = 0;
+
+     label2:
+        if $i1 >= $i0 goto label3;
+
+        r6 = $r7[$i1];
+
+        $f0 = virtualinvoke r6.<com.google.zxing.ResultPoint: float getX()>();
+
+        $f1 = virtualinvoke r6.<com.google.zxing.ResultPoint: float getY()>();
+
+        virtualinvoke r3.<android.graphics.Canvas: void drawPoint(float,float,android.graphics.Paint)>($f0, $f1, r4);
+
+        $i1 = $i1 + 1;
+
+        goto label2;
+
+     label3:
+        return;
+    }
+
+    private void handleDecodeInternally(com.google.zxing.Result, android.graphics.Bitmap)
+    {
+        com.google.zxing.Result r2;
+        com.shwy.bestjoy.CaptureActivity r0;
+        com.google.zxing.client.result.ParsedResult $r16;
+        android.widget.ImageView r9;
+        android.text.style.UnderlineSpan $r20;
+        android.graphics.drawable.Drawable $r7;
+        com.google.zxing.client.result.ResultButtonListener $r23;
+        com.shwy.bestjoy.ViewfinderView $r5;
+        android.text.SpannableStringBuilder r1;
+        int $i0, i1, $i2;
+        android.view.View $r4;
+        com.google.zxing.client.result.AddressBookParsedResult r17;
+        java.lang.String $r12, $r19;
+        com.google.zxing.client.result.ParsedResultType $r18;
+        com.google.zxing.client.result.ResultHandler $r15;
+        boolean $z0;
+        java.lang.CharSequence $r21;
+        com.shwy.bestjoy.BeepAndVibrate $r14;
+        android.graphics.drawable.BitmapDrawable r8;
+        android.view.ViewGroup r22;
+        android.widget.TextView r10;
+        android.graphics.Bitmap r3;
+        java.lang.StringBuilder $r11;
+        com.google.zxing.BarcodeFormat $r13;
+        android.content.res.Resources $r6;
+
+        r0 := @this: com.shwy.bestjoy.CaptureActivity;
+
+        r2 := @parameter0: com.google.zxing.Result;
+
+        r3 := @parameter1: android.graphics.Bitmap;
+
+        $r4 = r0.<com.shwy.bestjoy.CaptureActivity: android.view.View statusView>;
+
+        virtualinvoke $r4.<android.view.View: void setVisibility(int)>(8);
+
+        $r5 = r0.<com.shwy.bestjoy.CaptureActivity: com.shwy.bestjoy.ViewfinderView viewfinderView>;
+
+        virtualinvoke $r5.<com.shwy.bestjoy.ViewfinderView: void setVisibility(int)>(8);
+
+        $r4 = r0.<com.shwy.bestjoy.CaptureActivity: android.view.View resultView>;
+
+        virtualinvoke $r4.<android.view.View: void setVisibility(int)>(0);
+
+        if r3 != null goto label1;
+
+        $r6 = virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: android.content.res.Resources getResources()>();
+
+        $r7 = virtualinvoke $r6.<android.content.res.Resources: android.graphics.drawable.Drawable getDrawable(int)>(2130837668);
+
+        r8 = (android.graphics.drawable.BitmapDrawable) $r7;
+
+        r3 = virtualinvoke r8.<android.graphics.drawable.BitmapDrawable: android.graphics.Bitmap getBitmap()>();
+
+     label1:
+        $r4 = virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: android.view.View findViewById(int)>(2131492920);
+
+        r9 = (android.widget.ImageView) $r4;
+
+        virtualinvoke r9.<android.widget.ImageView: void setVisibility(int)>(0);
+
+        virtualinvoke r9.<android.widget.ImageView: void setMaxWidth(int)>(150);
+
+        virtualinvoke r9.<android.widget.ImageView: void setMaxHeight(int)>(150);
+
+        virtualinvoke r9.<android.widget.ImageView: void setImageBitmap(android.graphics.Bitmap)>(r3);
+
+        $r4 = virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: android.view.View findViewById(int)>(2131492921);
+
+        r10 = (android.widget.TextView) $r4;
+
+        virtualinvoke r10.<android.widget.TextView: void setVisibility(int)>(0);
+
+        $r11 = new java.lang.StringBuilder;
+
+        $r12 = virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: java.lang.String getString(int)>(2131165380);
+
+        $r12 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r12);
+
+        specialinvoke $r11.<java.lang.StringBuilder: void <init>(java.lang.String)>($r12);
+
+        $r11 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(": ");
+
+        $r13 = virtualinvoke r2.<com.google.zxing.Result: com.google.zxing.BarcodeFormat getBarcodeFormat()>();
+
+        $r12 = virtualinvoke $r13.<com.google.zxing.BarcodeFormat: java.lang.String toString()>();
+
+        $r11 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r12);
+
+        $r12 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke r10.<android.widget.TextView: void setText(java.lang.CharSequence)>($r12);
+
+        $r14 = r0.<com.shwy.bestjoy.CaptureActivity: com.shwy.bestjoy.BeepAndVibrate media>;
+
+        $r15 = staticinvoke <com.google.zxing.client.result.ResultHandlerFactory: com.google.zxing.client.result.ResultHandler makeResultHandler(android.app.Activity,com.google.zxing.Result,com.shwy.bestjoy.BeepAndVibrate)>(r0, r2, $r14);
+
+        $r16 = virtualinvoke $r15.<com.google.zxing.client.result.ResultHandler: com.google.zxing.client.result.ParsedResult getResult()>();
+
+        $z0 = $r16 instanceof com.google.zxing.client.result.AddressBookParsedResult;
+
+        if $z0 == 0 goto label6;
+
+        $r16 = virtualinvoke $r15.<com.google.zxing.client.result.ResultHandler: com.google.zxing.client.result.ParsedResult getResult()>();
+
+        r17 = (com.google.zxing.client.result.AddressBookParsedResult) $r16;
+
+        $r12 = virtualinvoke r17.<com.google.zxing.client.result.AddressBookParsedResult: java.lang.String getBid()>();
+
+        r0.<com.shwy.bestjoy.CaptureActivity: java.lang.String BIDUri> = $r12;
+
+     label2:
+        $r16 = virtualinvoke $r15.<com.google.zxing.client.result.ResultHandler: com.google.zxing.client.result.ParsedResult getResult()>();
+
+        $z0 = $r16 instanceof com.google.zxing.client.result.ProductVerifyParsedResult;
+
+        if $z0 == 0 goto label3;
+
+        r0.<com.shwy.bestjoy.CaptureActivity: boolean isProductVerify> = 1;
+
+     label3:
+        $r16 = virtualinvoke $r15.<com.google.zxing.client.result.ResultHandler: com.google.zxing.client.result.ParsedResult getResult()>();
+
+        $z0 = $r16 instanceof com.google.zxing.client.result.EnterpriseCardParsedResult;
+
+        if $z0 == 0 goto label4;
+
+        r0.<com.shwy.bestjoy.CaptureActivity: boolean isEnterpriseCard> = 1;
+
+     label4:
+        $r4 = virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: android.view.View findViewById(int)>(2131492922);
+
+        r10 = (android.widget.TextView) $r4;
+
+        $r18 = virtualinvoke $r15.<com.google.zxing.client.result.ResultHandler: com.google.zxing.client.result.ParsedResultType getType()>();
+
+        $r12 = virtualinvoke $r18.<com.google.zxing.client.result.ParsedResultType: java.lang.String toString()>();
+
+        $r11 = new java.lang.StringBuilder;
+
+        $r19 = virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: java.lang.String getString(int)>(2131165388);
+
+        $r19 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r19);
+
+        specialinvoke $r11.<java.lang.StringBuilder: void <init>(java.lang.String)>($r19);
+
+        $r11 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(": ");
+
+        $r11 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r12);
+
+        $r12 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke r10.<android.widget.TextView: void setText(java.lang.CharSequence)>($r12);
+
+        $r4 = virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: android.view.View findViewById(int)>(2131492923);
+
+        r10 = (android.widget.TextView) $r4;
+
+        $i0 = virtualinvoke $r15.<com.google.zxing.client.result.ResultHandler: int getDisplayTitle()>();
+
+        $r12 = virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: java.lang.String getString(int)>($i0);
+
+        r1 = new android.text.SpannableStringBuilder;
+
+        $r11 = new java.lang.StringBuilder;
+
+        specialinvoke $r11.<java.lang.StringBuilder: void <init>()>();
+
+        $r11 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r12);
+
+        $r11 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\n\n");
+
+        $r19 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke r1.<android.text.SpannableStringBuilder: void <init>(java.lang.CharSequence)>($r19);
+
+        $r20 = new android.text.style.UnderlineSpan;
+
+        specialinvoke $r20.<android.text.style.UnderlineSpan: void <init>()>();
+
+        $i0 = interfaceinvoke $r12.<java.lang.CharSequence: int length()>();
+
+        virtualinvoke r1.<android.text.SpannableStringBuilder: void setSpan(java.lang.Object,int,int,int)>($r20, 0, $i0, 0);
+
+        $r21 = virtualinvoke $r15.<com.google.zxing.client.result.ResultHandler: java.lang.CharSequence getDisplayContents()>();
+
+        virtualinvoke r1.<android.text.SpannableStringBuilder: android.text.SpannableStringBuilder append(java.lang.CharSequence)>($r21);
+
+        virtualinvoke r10.<android.widget.TextView: void setText(java.lang.CharSequence)>(r1);
+
+        $i0 = virtualinvoke $r15.<com.google.zxing.client.result.ResultHandler: int getButtonCount()>();
+
+        $r4 = virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: android.view.View findViewById(int)>(2131492924);
+
+        r22 = (android.view.ViewGroup) $r4;
+
+        virtualinvoke r22.<android.view.ViewGroup: boolean requestFocus()>();
+
+        i1 = 0;
+
+     label5:
+        if i1 < 5 goto label7;
+
+        return;
+
+     label6:
+        r0.<com.shwy.bestjoy.CaptureActivity: java.lang.String BIDUri> = null;
+
+        goto label2;
+
+     label7:
+        $r4 = virtualinvoke r22.<android.view.ViewGroup: android.view.View getChildAt(int)>(i1);
+
+        r10 = (android.widget.TextView) $r4;
+
+        if i1 >= $i0 goto label9;
+
+        virtualinvoke r10.<android.widget.TextView: void setVisibility(int)>(0);
+
+        $i2 = virtualinvoke $r15.<com.google.zxing.client.result.ResultHandler: int getButtonText(int)>(i1);
+
+        virtualinvoke r10.<android.widget.TextView: void setText(int)>($i2);
+
+        $r23 = new com.google.zxing.client.result.ResultButtonListener;
+
+        specialinvoke $r23.<com.google.zxing.client.result.ResultButtonListener: void <init>(com.google.zxing.client.result.ResultHandler,int)>($r15, i1);
+
+        virtualinvoke r10.<android.widget.TextView: void setOnClickListener(android.view.View$OnClickListener)>($r23);
+
+     label8:
+        i1 = i1 + 1;
+
+        goto label5;
+
+     label9:
+        virtualinvoke r10.<android.widget.TextView: void setVisibility(int)>(8);
+
+        goto label8;
+    }
+
+    private void initCamera(android.view.SurfaceHolder)
+    {
+        com.google.zxing.Result $r5;
+        java.lang.Throwable $r7;
+        com.shwy.bestjoy.CaptureActivity r0;
+        java.lang.RuntimeException $r8;
+        com.shwy.bestjoy.CaptureActivityHandler $r4;
+        java.util.Vector $r6;
+        java.lang.String $r2;
+        com.google.zxing.client.android.camera.CameraManager $r3;
+        android.view.SurfaceHolder $r1;
+        boolean z0;
+
+        r0 := @this: com.shwy.bestjoy.CaptureActivity;
+
+        $r1 := @parameter0: android.view.SurfaceHolder;
+
+     label1:
+        $r3 = staticinvoke <com.google.zxing.client.android.camera.CameraManager: com.google.zxing.client.android.camera.CameraManager get()>();
+
+        virtualinvoke $r3.<com.google.zxing.client.android.camera.CameraManager: void openDriver(android.view.SurfaceHolder)>($r1);
+
+     label2:
+        $r4 = r0.<com.shwy.bestjoy.CaptureActivity: com.shwy.bestjoy.CaptureActivityHandler handler>;
+
+        if $r4 != null goto label7;
+
+        $r5 = r0.<com.shwy.bestjoy.CaptureActivity: com.google.zxing.Result lastResult>;
+
+        if $r5 != null goto label6;
+
+        z0 = 1;
+
+     label3:
+        $r4 = new com.shwy.bestjoy.CaptureActivityHandler;
+
+        $r6 = r0.<com.shwy.bestjoy.CaptureActivity: java.util.Vector decodeFormats>;
+
+        $r2 = r0.<com.shwy.bestjoy.CaptureActivity: java.lang.String characterSet>;
+
+        specialinvoke $r4.<com.shwy.bestjoy.CaptureActivityHandler: void <init>(com.shwy.bestjoy.CaptureActivity,java.util.Vector,java.lang.String,boolean)>(r0, $r6, $r2, z0);
+
+        r0.<com.shwy.bestjoy.CaptureActivity: com.shwy.bestjoy.CaptureActivityHandler handler> = $r4;
+
+        return;
+
+     label4:
+        $r7 := @caughtexception;
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.Throwable)>("CaptureActivity", $r7);
+
+        specialinvoke r0.<com.shwy.bestjoy.CaptureActivity: void displayFrameworkBugMessageAndExit()>();
+
+        return;
+
+     label5:
+        $r8 := @caughtexception;
+
+        $r2 = virtualinvoke $r8.<java.lang.RuntimeException: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("CaptureActivity", $r2);
+
+        specialinvoke r0.<com.shwy.bestjoy.CaptureActivity: void displayFrameworkBugMessageAndExit()>();
+
+        return;
+
+     label6:
+        z0 = 0;
+
+        goto label3;
+
+     label7:
+        return;
+
+        catch java.io.IOException from label1 to label2 with label4;
+        catch java.lang.RuntimeException from label1 to label2 with label5;
+    }
+
+    private void setDownloadView()
+    {
+        android.view.View $r1;
+        com.shwy.bestjoy.CaptureActivity r0;
+        com.shwy.bestjoy.ViewfinderView $r2;
+
+        r0 := @this: com.shwy.bestjoy.CaptureActivity;
+
+        $r1 = r0.<com.shwy.bestjoy.CaptureActivity: android.view.View statusView>;
+
+        virtualinvoke $r1.<android.view.View: void setVisibility(int)>(8);
+
+        $r2 = r0.<com.shwy.bestjoy.CaptureActivity: com.shwy.bestjoy.ViewfinderView viewfinderView>;
+
+        virtualinvoke $r2.<com.shwy.bestjoy.ViewfinderView: void setVisibility(int)>(8);
+
+        $r1 = r0.<com.shwy.bestjoy.CaptureActivity: android.view.View resultView>;
+
+        virtualinvoke $r1.<android.view.View: void setVisibility(int)>(8);
+
+        return;
+    }
+
+    public void download(com.google.zxing.client.result.ParsedResult, com.google.zxing.client.result.ResultHandler)
+    {
+        com.shwy.bestjoy.CaptureActivity r0;
+        com.google.zxing.client.result.ParsedResult $r1;
+        com.shwy.bestjoy.BeepAndVibrate $r4;
+        android.app.ProgressDialog $r3;
+        java.lang.Thread $r8;
+        java.lang.String $r5, $r6;
+        com.shwy.bestjoy.DownloadThread $r7;
+        com.google.zxing.client.result.ResultHandler $r2;
+
+        r0 := @this: com.shwy.bestjoy.CaptureActivity;
+
+        $r1 := @parameter0: com.google.zxing.client.result.ParsedResult;
+
+        $r2 := @parameter1: com.google.zxing.client.result.ResultHandler;
+
+        $r5 = virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: java.lang.String getString(int)>(2131165381);
+
+        $r6 = virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: java.lang.String getString(int)>(2131165382);
+
+        $r3 = staticinvoke <android.app.ProgressDialog: android.app.ProgressDialog show(android.content.Context,java.lang.CharSequence,java.lang.CharSequence,boolean,boolean)>(r0, $r5, $r6, 1, 1);
+
+        r0.<com.shwy.bestjoy.CaptureActivity: android.app.ProgressDialog downloadDialog> = $r3;
+
+        $r7 = new com.shwy.bestjoy.DownloadThread;
+
+        $r3 = r0.<com.shwy.bestjoy.CaptureActivity: android.app.ProgressDialog downloadDialog>;
+
+        $r4 = r0.<com.shwy.bestjoy.CaptureActivity: com.shwy.bestjoy.BeepAndVibrate media>;
+
+        specialinvoke $r7.<com.shwy.bestjoy.DownloadThread: void <init>(android.app.Activity,android.app.ProgressDialog,com.google.zxing.client.result.ParsedResult,com.google.zxing.client.result.ResultHandler,com.shwy.bestjoy.BeepAndVibrate)>(r0, $r3, $r1, $r2, $r4);
+
+        r0.<com.shwy.bestjoy.CaptureActivity: java.lang.Thread downloadThread> = $r7;
+
+        $r8 = r0.<com.shwy.bestjoy.CaptureActivity: java.lang.Thread downloadThread>;
+
+        virtualinvoke $r8.<java.lang.Thread: void setDaemon(boolean)>(1);
+
+        $r8 = r0.<com.shwy.bestjoy.CaptureActivity: java.lang.Thread downloadThread>;
+
+        virtualinvoke $r8.<java.lang.Thread: void start()>();
+
+        return;
+    }
+
+    public void downloadManually(com.google.zxing.client.result.ResultHandler, java.lang.String)
+    {
+        com.shwy.bestjoy.CaptureActivity r0;
+        com.shwy.bestjoy.BeepAndVibrate $r3;
+        android.app.ProgressDialog $r6;
+        java.lang.Thread $r8;
+        java.lang.String $r2, $r4, $r5;
+        com.shwy.bestjoy.DownloadThread $r7;
+        com.google.zxing.client.result.ResultHandler $r1;
+
+        r0 := @this: com.shwy.bestjoy.CaptureActivity;
+
+        $r1 := @parameter0: com.google.zxing.client.result.ResultHandler;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r4 = virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: java.lang.String getString(int)>(2131165381);
+
+        $r5 = virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: java.lang.String getString(int)>(2131165382);
+
+        $r6 = staticinvoke <android.app.ProgressDialog: android.app.ProgressDialog show(android.content.Context,java.lang.CharSequence,java.lang.CharSequence,boolean,boolean)>(r0, $r4, $r5, 1, 0);
+
+        r0.<com.shwy.bestjoy.CaptureActivity: android.app.ProgressDialog downloadDialog> = $r6;
+
+        $r7 = new com.shwy.bestjoy.DownloadThread;
+
+        $r6 = r0.<com.shwy.bestjoy.CaptureActivity: android.app.ProgressDialog downloadDialog>;
+
+        $r3 = r0.<com.shwy.bestjoy.CaptureActivity: com.shwy.bestjoy.BeepAndVibrate media>;
+
+        specialinvoke $r7.<com.shwy.bestjoy.DownloadThread: void <init>(android.app.Activity,android.app.ProgressDialog,java.lang.String,com.google.zxing.client.result.ResultHandler,com.shwy.bestjoy.BeepAndVibrate)>(r0, $r6, $r2, $r1, $r3);
+
+        r0.<com.shwy.bestjoy.CaptureActivity: java.lang.Thread downloadThread> = $r7;
+
+        $r8 = r0.<com.shwy.bestjoy.CaptureActivity: java.lang.Thread downloadThread>;
+
+        virtualinvoke $r8.<java.lang.Thread: void setDaemon(boolean)>(1);
+
+        $r8 = r0.<com.shwy.bestjoy.CaptureActivity: java.lang.Thread downloadThread>;
+
+        virtualinvoke $r8.<java.lang.Thread: void start()>();
+
+        return;
+    }
+
+    public void drawViewfinder()
+    {
+        com.shwy.bestjoy.CaptureActivity r0;
+        com.shwy.bestjoy.ViewfinderView $r1;
+
+        r0 := @this: com.shwy.bestjoy.CaptureActivity;
+
+        $r1 = r0.<com.shwy.bestjoy.CaptureActivity: com.shwy.bestjoy.ViewfinderView viewfinderView>;
+
+        virtualinvoke $r1.<com.shwy.bestjoy.ViewfinderView: void drawViewfinder()>();
+
+        return;
+    }
+
+    public android.os.Handler getHandler()
+    {
+        com.shwy.bestjoy.CaptureActivity r0;
+        com.shwy.bestjoy.CaptureActivityHandler r1;
+
+        r0 := @this: com.shwy.bestjoy.CaptureActivity;
+
+        r1 = r0.<com.shwy.bestjoy.CaptureActivity: com.shwy.bestjoy.CaptureActivityHandler handler>;
+
+        return r1;
+    }
+
+    com.shwy.bestjoy.ViewfinderView getViewfinderView()
+    {
+        com.shwy.bestjoy.CaptureActivity r0;
+        com.shwy.bestjoy.ViewfinderView r1;
+
+        r0 := @this: com.shwy.bestjoy.CaptureActivity;
+
+        r1 = r0.<com.shwy.bestjoy.CaptureActivity: com.shwy.bestjoy.ViewfinderView viewfinderView>;
+
+        return r1;
+    }
+
+    public void handleDecode(com.google.zxing.Result, android.graphics.Bitmap)
+    {
+        com.google.zxing.Result $r1;
+        com.shwy.bestjoy.CaptureActivity r0;
+        com.shwy.bestjoy.BeepAndVibrate $r4;
+        android.graphics.Bitmap $r2;
+        com.google.zxing.client.android.history.HistoryManager $r3;
+
+        r0 := @this: com.shwy.bestjoy.CaptureActivity;
+
+        $r1 := @parameter0: com.google.zxing.Result;
+
+        $r2 := @parameter1: android.graphics.Bitmap;
+
+        r0.<com.shwy.bestjoy.CaptureActivity: com.google.zxing.Result lastResult> = $r1;
+
+        $r3 = r0.<com.shwy.bestjoy.CaptureActivity: com.google.zxing.client.android.history.HistoryManager historyManager>;
+
+        virtualinvoke $r3.<com.google.zxing.client.android.history.HistoryManager: void addHistoryItem(com.google.zxing.Result)>($r1);
+
+        $r4 = r0.<com.shwy.bestjoy.CaptureActivity: com.shwy.bestjoy.BeepAndVibrate media>;
+
+        virtualinvoke $r4.<com.shwy.bestjoy.BeepAndVibrate: void playBeepSoundAndVibrate()>();
+
+        specialinvoke r0.<com.shwy.bestjoy.CaptureActivity: void drawResultPoints(android.graphics.Bitmap,com.google.zxing.Result)>($r2, $r1);
+
+        specialinvoke r0.<com.shwy.bestjoy.CaptureActivity: void handleDecodeInternally(com.google.zxing.Result,android.graphics.Bitmap)>($r1, $r2);
+
+        return;
+    }
+
+    protected void onActivityResult(int, int, android.content.Intent)
+    {
+        com.google.zxing.client.result.InputManuallyResultHandler $r3;
+        com.shwy.bestjoy.CaptureActivity r0;
+        int $i0, $i1;
+        android.content.Intent $r1;
+        java.lang.String $r2;
+
+        r0 := @this: com.shwy.bestjoy.CaptureActivity;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $r1 := @parameter2: android.content.Intent;
+
+        $r1 = virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: android.content.Intent getIntent()>();
+
+        specialinvoke r0.<android.app.Activity: void onActivityResult(int,int,android.content.Intent)>($i0, $i1, $r1);
+
+        if $i0 != 10 goto label1;
+
+        if $i1 != -1 goto label1;
+
+        $r2 = virtualinvoke $r1.<android.content.Intent: java.lang.String getStringExtra(java.lang.String)>("bidUri");
+
+        r0.<com.shwy.bestjoy.CaptureActivity: java.lang.String BIDUri> = $r2;
+
+        $r3 = new com.google.zxing.client.result.InputManuallyResultHandler;
+
+        specialinvoke $r3.<com.google.zxing.client.result.InputManuallyResultHandler: void <init>(android.app.Activity,com.google.zxing.client.result.ParsedResult)>(r0, null);
+
+        $r2 = r0.<com.shwy.bestjoy.CaptureActivity: java.lang.String BIDUri>;
+
+        virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: void downloadManually(com.google.zxing.client.result.ResultHandler,java.lang.String)>($r3, $r2);
+
+     label1:
+        return;
+    }
+
+    public void onConfigurationChanged(android.content.res.Configuration)
+    {
+        com.shwy.bestjoy.CaptureActivity r0;
+        android.content.res.Configuration $r1;
+
+        r0 := @this: com.shwy.bestjoy.CaptureActivity;
+
+        $r1 := @parameter0: android.content.res.Configuration;
+
+        specialinvoke r0.<android.app.Activity: void onConfigurationChanged(android.content.res.Configuration)>($r1);
+
+        return;
+    }
+
+    public void onCreate(android.os.Bundle)
+    {
+        com.shwy.bestjoy.CaptureActivity r0;
+        android.os.Bundle $r1;
+        com.shwy.bestjoy.CaptureActivity$1 $r2;
+        com.shwy.bestjoy.ViewfinderView $r6;
+        android.app.Application $r4;
+        android.view.View $r5;
+        android.view.Window $r3;
+        android.widget.ToggleButton $r7;
+        com.google.zxing.client.android.history.HistoryManager $r8;
+
+        r0 := @this: com.shwy.bestjoy.CaptureActivity;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke r0.<android.app.Activity: void onCreate(android.os.Bundle)>($r1);
+
+        $r3 = virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: android.view.Window getWindow()>();
+
+        virtualinvoke $r3.<android.view.Window: void addFlags(int)>(128);
+
+        virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: void setContentView(int)>(2130903043);
+
+        $r4 = virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: android.app.Application getApplication()>();
+
+        staticinvoke <com.google.zxing.client.android.camera.CameraManager: void init(android.content.Context)>($r4);
+
+        $r5 = virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: android.view.View findViewById(int)>(2131492918);
+
+        $r6 = (com.shwy.bestjoy.ViewfinderView) $r5;
+
+        r0.<com.shwy.bestjoy.CaptureActivity: com.shwy.bestjoy.ViewfinderView viewfinderView> = $r6;
+
+        $r5 = virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: android.view.View findViewById(int)>(2131492919);
+
+        r0.<com.shwy.bestjoy.CaptureActivity: android.view.View resultView> = $r5;
+
+        $r5 = virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: android.view.View findViewById(int)>(2131492926);
+
+        r0.<com.shwy.bestjoy.CaptureActivity: android.view.View statusView> = $r5;
+
+        $r5 = virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: android.view.View findViewById(int)>(2131492928);
+
+        $r7 = (android.widget.ToggleButton) $r5;
+
+        r0.<com.shwy.bestjoy.CaptureActivity: android.widget.ToggleButton status_view_flashlight> = $r7;
+
+        $r7 = r0.<com.shwy.bestjoy.CaptureActivity: android.widget.ToggleButton status_view_flashlight>;
+
+        $r2 = new com.shwy.bestjoy.CaptureActivity$1;
+
+        specialinvoke $r2.<com.shwy.bestjoy.CaptureActivity$1: void <init>(com.shwy.bestjoy.CaptureActivity)>(r0);
+
+        virtualinvoke $r7.<android.widget.ToggleButton: void setOnCheckedChangeListener(android.widget.CompoundButton$OnCheckedChangeListener)>($r2);
+
+        r0.<com.shwy.bestjoy.CaptureActivity: com.shwy.bestjoy.CaptureActivityHandler handler> = null;
+
+        r0.<com.shwy.bestjoy.CaptureActivity: com.google.zxing.Result lastResult> = null;
+
+        r0.<com.shwy.bestjoy.CaptureActivity: boolean hasSurface> = 0;
+
+        $r8 = new com.google.zxing.client.android.history.HistoryManager;
+
+        specialinvoke $r8.<com.google.zxing.client.android.history.HistoryManager: void <init>(com.shwy.bestjoy.CaptureActivity)>(r0);
+
+        r0.<com.shwy.bestjoy.CaptureActivity: com.google.zxing.client.android.history.HistoryManager historyManager> = $r8;
+
+        $r8 = r0.<com.shwy.bestjoy.CaptureActivity: com.google.zxing.client.android.history.HistoryManager historyManager>;
+
+        virtualinvoke $r8.<com.google.zxing.client.android.history.HistoryManager: void trimHistory()>();
+
+        return;
+    }
+
+    public boolean onCreateOptionsMenu(android.view.Menu)
+    {
+        android.view.Menu $r1;
+        com.shwy.bestjoy.CaptureActivity r0;
+        android.view.MenuItem $r2;
+
+        r0 := @this: com.shwy.bestjoy.CaptureActivity;
+
+        $r1 := @parameter0: android.view.Menu;
+
+        specialinvoke r0.<android.app.Activity: boolean onCreateOptionsMenu(android.view.Menu)>($r1);
+
+        $r2 = interfaceinvoke $r1.<android.view.Menu: android.view.MenuItem add(int,int,int,int)>(0, 1, 0, 2131165371);
+
+        interfaceinvoke $r2.<android.view.MenuItem: android.view.MenuItem setIcon(int)>(17301586);
+
+        $r2 = interfaceinvoke $r1.<android.view.Menu: android.view.MenuItem add(int,int,int,int)>(0, 2, 0, 2131165370);
+
+        interfaceinvoke $r2.<android.view.MenuItem: android.view.MenuItem setIcon(int)>(17301578);
+
+        $r2 = interfaceinvoke $r1.<android.view.Menu: android.view.MenuItem add(int,int,int,int)>(0, 3, 0, 2131165368);
+
+        interfaceinvoke $r2.<android.view.MenuItem: android.view.MenuItem setIcon(int)>(17301577);
+
+        $r2 = interfaceinvoke $r1.<android.view.Menu: android.view.MenuItem add(int,int,int,int)>(0, 4, 0, 2131165366);
+
+        interfaceinvoke $r2.<android.view.MenuItem: android.view.MenuItem setIcon(int)>(17301568);
+
+        return 1;
+    }
+
+    public boolean onKeyDown(int, android.view.KeyEvent)
+    {
+        com.google.zxing.Result $r2;
+        com.shwy.bestjoy.CaptureActivity r0;
+        android.view.KeyEvent $r1;
+        int $i0;
+        com.shwy.bestjoy.CaptureActivityHandler $r3;
+        boolean $z0;
+
+        r0 := @this: com.shwy.bestjoy.CaptureActivity;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: android.view.KeyEvent;
+
+        if $i0 != 4 goto label2;
+
+        r0.<com.shwy.bestjoy.CaptureActivity: boolean isProductVerify> = 0;
+
+        r0.<com.shwy.bestjoy.CaptureActivity: boolean isEnterpriseCard> = 0;
+
+        $r2 = r0.<com.shwy.bestjoy.CaptureActivity: com.google.zxing.Result lastResult>;
+
+        if $r2 == null goto label4;
+
+        virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: void resetStatusView()>();
+
+        $r3 = r0.<com.shwy.bestjoy.CaptureActivity: com.shwy.bestjoy.CaptureActivityHandler handler>;
+
+        if $r3 == null goto label1;
+
+        $r3 = r0.<com.shwy.bestjoy.CaptureActivity: com.shwy.bestjoy.CaptureActivityHandler handler>;
+
+        virtualinvoke $r3.<com.shwy.bestjoy.CaptureActivityHandler: boolean sendEmptyMessage(int)>(2131492872);
+
+     label1:
+        return 1;
+
+     label2:
+        if $i0 == 80 goto label3;
+
+        if $i0 != 27 goto label4;
+
+     label3:
+        return 1;
+
+     label4:
+        $z0 = specialinvoke r0.<android.app.Activity: boolean onKeyDown(int,android.view.KeyEvent)>($i0, $r1);
+
+        return $z0;
+    }
+
+    public boolean onOptionsItemSelected(android.view.MenuItem)
+    {
+        com.shwy.bestjoy.CaptureActivity r0;
+        android.content.Intent r2;
+        android.view.MenuItem $r1;
+        android.app.AlertDialog $r4;
+        int $i0;
+        java.lang.Class $r5;
+        java.lang.String $r6;
+        com.google.zxing.client.android.history.HistoryManager $r3;
+        boolean $z0;
+
+        r0 := @this: com.shwy.bestjoy.CaptureActivity;
+
+        $r1 := @parameter0: android.view.MenuItem;
+
+        $i0 = interfaceinvoke $r1.<android.view.MenuItem: int getItemId()>();
+
+        lookupswitch($i0)
+        {
+            case 1: goto label2;
+            case 2: goto label3;
+            case 3: goto label4;
+            case 4: goto label5;
+            default: goto label1;
+        };
+
+     label1:
+        $z0 = specialinvoke r0.<android.app.Activity: boolean onOptionsItemSelected(android.view.MenuItem)>($r1);
+
+        return $z0;
+
+     label2:
+        r2 = new android.content.Intent;
+
+        specialinvoke r2.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>(r0, class "Lcom/shwy/bestjoy/KeyInputActivity;");
+
+        virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: void startActivityForResult(android.content.Intent,int)>(r2, 10);
+
+        goto label1;
+
+     label3:
+        $r3 = r0.<com.shwy.bestjoy.CaptureActivity: com.google.zxing.client.android.history.HistoryManager historyManager>;
+
+        $r4 = virtualinvoke $r3.<com.google.zxing.client.android.history.HistoryManager: android.app.AlertDialog buildAlert()>();
+
+        virtualinvoke $r4.<android.app.AlertDialog: void show()>();
+
+        goto label1;
+
+     label4:
+        r2 = new android.content.Intent;
+
+        specialinvoke r2.<android.content.Intent: void <init>(java.lang.String)>("android.intent.action.VIEW");
+
+        virtualinvoke r2.<android.content.Intent: android.content.Intent addFlags(int)>(524288);
+
+        $r5 = class "Lcom/shwy/bestjoy/PreferencesActivity;";
+
+        $r6 = virtualinvoke $r5.<java.lang.Class: java.lang.String getName()>();
+
+        virtualinvoke r2.<android.content.Intent: android.content.Intent setClassName(android.content.Context,java.lang.String)>(r0, $r6);
+
+        virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: void startActivity(android.content.Intent)>(r2);
+
+        goto label1;
+
+     label5:
+        r2 = new android.content.Intent;
+
+        specialinvoke r2.<android.content.Intent: void <init>(java.lang.String)>("android.intent.action.VIEW");
+
+        virtualinvoke r2.<android.content.Intent: android.content.Intent addFlags(int)>(524288);
+
+        $r5 = class "Lcom/shwy/bestjoy/HelpActivity;";
+
+        $r6 = virtualinvoke $r5.<java.lang.Class: java.lang.String getName()>();
+
+        virtualinvoke r2.<android.content.Intent: android.content.Intent setClassName(android.content.Context,java.lang.String)>(r0, $r6);
+
+        virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: void startActivity(android.content.Intent)>(r2);
+
+        goto label1;
+    }
+
+    protected void onPause()
+    {
+        com.shwy.bestjoy.CaptureActivity r0;
+        com.google.zxing.client.android.camera.CameraManager $r1;
+        com.shwy.bestjoy.CaptureActivityHandler $r2;
+
+        r0 := @this: com.shwy.bestjoy.CaptureActivity;
+
+        specialinvoke r0.<android.app.Activity: void onPause()>();
+
+        $r2 = r0.<com.shwy.bestjoy.CaptureActivity: com.shwy.bestjoy.CaptureActivityHandler handler>;
+
+        if $r2 == null goto label1;
+
+        $r2 = r0.<com.shwy.bestjoy.CaptureActivity: com.shwy.bestjoy.CaptureActivityHandler handler>;
+
+        virtualinvoke $r2.<com.shwy.bestjoy.CaptureActivityHandler: void quitSynchronously()>();
+
+        r0.<com.shwy.bestjoy.CaptureActivity: com.shwy.bestjoy.CaptureActivityHandler handler> = null;
+
+     label1:
+        $r1 = staticinvoke <com.google.zxing.client.android.camera.CameraManager: com.google.zxing.client.android.camera.CameraManager get()>();
+
+        virtualinvoke $r1.<com.google.zxing.client.android.camera.CameraManager: void closeDriver()>();
+
+        return;
+    }
+
+    public boolean onPrepareOptionsMenu(android.view.Menu)
+    {
+        android.view.Menu $r1;
+        com.shwy.bestjoy.CaptureActivity r0;
+
+        r0 := @this: com.shwy.bestjoy.CaptureActivity;
+
+        $r1 := @parameter0: android.view.Menu;
+
+        specialinvoke r0.<android.app.Activity: boolean onPrepareOptionsMenu(android.view.Menu)>($r1);
+
+        return 1;
+    }
+
+    protected void onResume()
+    {
+        com.shwy.bestjoy.CaptureActivity r0;
+        android.view.SurfaceView r2;
+        com.shwy.bestjoy.BeepAndVibrate $r4;
+        com.shwy.bestjoy.CaptureActivityHandler $r6;
+        android.view.View $r1;
+        java.lang.String $r5;
+        android.view.SurfaceHolder $r3;
+        boolean $z0;
+
+        r0 := @this: com.shwy.bestjoy.CaptureActivity;
+
+        specialinvoke r0.<android.app.Activity: void onResume()>();
+
+        $r1 = virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: android.view.View findViewById(int)>(2131492917);
+
+        r2 = (android.view.SurfaceView) $r1;
+
+        $r3 = virtualinvoke r2.<android.view.SurfaceView: android.view.SurfaceHolder getHolder()>();
+
+        $z0 = r0.<com.shwy.bestjoy.CaptureActivity: boolean hasSurface>;
+
+        if $z0 == 0 goto label2;
+
+        specialinvoke r0.<com.shwy.bestjoy.CaptureActivity: void initCamera(android.view.SurfaceHolder)>($r3);
+
+     label1:
+        r0.<com.shwy.bestjoy.CaptureActivity: java.util.Vector decodeFormats> = null;
+
+        r0.<com.shwy.bestjoy.CaptureActivity: java.lang.String characterSet> = "UTF8";
+
+        $r4 = new com.shwy.bestjoy.BeepAndVibrate;
+
+        specialinvoke $r4.<com.shwy.bestjoy.BeepAndVibrate: void <init>(android.app.Activity,int)>(r0, 2131099648);
+
+        r0.<com.shwy.bestjoy.CaptureActivity: com.shwy.bestjoy.BeepAndVibrate media> = $r4;
+
+        $z0 = r0.<com.shwy.bestjoy.CaptureActivity: boolean dialReturnStatus>;
+
+        if $z0 == 0 goto label3;
+
+        r0.<com.shwy.bestjoy.CaptureActivity: boolean dialReturnStatus> = 0;
+
+        return;
+
+     label2:
+        interfaceinvoke $r3.<android.view.SurfaceHolder: void addCallback(android.view.SurfaceHolder$Callback)>(r0);
+
+        interfaceinvoke $r3.<android.view.SurfaceHolder: void setType(int)>(3);
+
+        goto label1;
+
+     label3:
+        $z0 = r0.<com.shwy.bestjoy.CaptureActivity: boolean isProductVerify>;
+
+        if $z0 != 0 goto label6;
+
+        $z0 = r0.<com.shwy.bestjoy.CaptureActivity: boolean isEnterpriseCard>;
+
+        if $z0 != 0 goto label6;
+
+        $r5 = r0.<com.shwy.bestjoy.CaptureActivity: java.lang.String BIDUri>;
+
+        if $r5 == null goto label4;
+
+        $z0 = r0.<com.shwy.bestjoy.CaptureActivity: boolean downloadStatus>;
+
+        if $z0 != 0 goto label5;
+
+     label4:
+        virtualinvoke r0.<com.shwy.bestjoy.CaptureActivity: void resetStatusView()>();
+
+        $r6 = r0.<com.shwy.bestjoy.CaptureActivity: com.shwy.bestjoy.CaptureActivityHandler handler>;
+
+        if $r6 == null goto label6;
+
+        $r6 = r0.<com.shwy.bestjoy.CaptureActivity: com.shwy.bestjoy.CaptureActivityHandler handler>;
+
+        virtualinvoke $r6.<com.shwy.bestjoy.CaptureActivityHandler: boolean sendEmptyMessage(int)>(2131492872);
+
+        return;
+
+     label5:
+        r0.<com.shwy.bestjoy.CaptureActivity: java.lang.String BIDUri> = null;
+
+        specialinvoke r0.<com.shwy.bestjoy.CaptureActivity: void setDownloadView()>();
+
+     label6:
+        return;
+    }
+
+    public void resetStatusView()
+    {
+        android.view.View $r1;
+        com.shwy.bestjoy.CaptureActivity r0;
+        com.shwy.bestjoy.ViewfinderView $r2;
+
+        r0 := @this: com.shwy.bestjoy.CaptureActivity;
+
+        $r1 = r0.<com.shwy.bestjoy.CaptureActivity: android.view.View resultView>;
+
+        virtualinvoke $r1.<android.view.View: void setVisibility(int)>(8);
+
+        $r1 = r0.<com.shwy.bestjoy.CaptureActivity: android.view.View statusView>;
+
+        virtualinvoke $r1.<android.view.View: void setVisibility(int)>(0);
+
+        $r2 = r0.<com.shwy.bestjoy.CaptureActivity: com.shwy.bestjoy.ViewfinderView viewfinderView>;
+
+        virtualinvoke $r2.<com.shwy.bestjoy.ViewfinderView: void setVisibility(int)>(0);
+
+        r0.<com.shwy.bestjoy.CaptureActivity: com.google.zxing.Result lastResult> = null;
+
+        return;
+    }
+
+    public void setDialReturnStatus(boolean)
+    {
+        com.shwy.bestjoy.CaptureActivity r0;
+        boolean $z0;
+
+        r0 := @this: com.shwy.bestjoy.CaptureActivity;
+
+        $z0 := @parameter0: boolean;
+
+        r0.<com.shwy.bestjoy.CaptureActivity: boolean dialReturnStatus> = $z0;
+
+        return;
+    }
+
+    public void setDownloadStatus(boolean)
+    {
+        com.shwy.bestjoy.CaptureActivity r0;
+        boolean $z0;
+
+        r0 := @this: com.shwy.bestjoy.CaptureActivity;
+
+        $z0 := @parameter0: boolean;
+
+        r0.<com.shwy.bestjoy.CaptureActivity: boolean downloadStatus> = $z0;
+
+        return;
+    }
+
+    public void surfaceChanged(android.view.SurfaceHolder, int, int, int)
+    {
+        com.shwy.bestjoy.CaptureActivity r0;
+        int $i0, $i1, $i2;
+        android.view.SurfaceHolder $r1;
+
+        r0 := @this: com.shwy.bestjoy.CaptureActivity;
+
+        $r1 := @parameter0: android.view.SurfaceHolder;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $i2 := @parameter3: int;
+
+        return;
+    }
+
+    public void surfaceCreated(android.view.SurfaceHolder)
+    {
+        com.shwy.bestjoy.CaptureActivity r0;
+        android.view.SurfaceHolder $r1;
+        boolean $z0;
+
+        r0 := @this: com.shwy.bestjoy.CaptureActivity;
+
+        $r1 := @parameter0: android.view.SurfaceHolder;
+
+        $z0 = r0.<com.shwy.bestjoy.CaptureActivity: boolean hasSurface>;
+
+        if $z0 != 0 goto label1;
+
+        r0.<com.shwy.bestjoy.CaptureActivity: boolean hasSurface> = 1;
+
+        specialinvoke r0.<com.shwy.bestjoy.CaptureActivity: void initCamera(android.view.SurfaceHolder)>($r1);
+
+     label1:
+        return;
+    }
+
+    public void surfaceDestroyed(android.view.SurfaceHolder)
+    {
+        com.shwy.bestjoy.CaptureActivity r0;
+        android.view.SurfaceHolder $r1;
+
+        r0 := @this: com.shwy.bestjoy.CaptureActivity;
+
+        $r1 := @parameter0: android.view.SurfaceHolder;
+
+        r0.<com.shwy.bestjoy.CaptureActivity: boolean hasSurface> = 0;
+
+        return;
+    }
+
+    public android.content.Intent getIntent()
+    {
+        android.content.Intent $r0;
+        com.shwy.bestjoy.CaptureActivity this;
+
+        this := @this: com.shwy.bestjoy.CaptureActivity;
+
+        $r0 = this.<com.shwy.bestjoy.CaptureActivity: android.content.Intent ipcIntent>;
+
+        return $r0;
+    }
+
+    public void setIntent(android.content.Intent)
+    {
+        android.content.Intent parameter0;
+        com.shwy.bestjoy.CaptureActivity this;
+
+        this := @this: com.shwy.bestjoy.CaptureActivity;
+
+        parameter0 := @parameter0: android.content.Intent;
+
+        this.<com.shwy.bestjoy.CaptureActivity: android.content.Intent ipcIntent> = parameter0;
+
+        return;
+    }
+
+    public void setResult(int, android.content.Intent)
+    {
+        int parameter0;
+        android.content.Intent parameter1;
+        com.shwy.bestjoy.CaptureActivity this;
+
+        this := @this: com.shwy.bestjoy.CaptureActivity;
+
+        parameter0 := @parameter0: int;
+
+        parameter1 := @parameter1: android.content.Intent;
+
+        this.<com.shwy.bestjoy.CaptureActivity: android.content.Intent ipcResultIntent> = parameter1;
+
+        return;
+    }
+}

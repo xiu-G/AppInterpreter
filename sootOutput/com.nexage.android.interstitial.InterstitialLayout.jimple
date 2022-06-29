@@ -1,0 +1,878 @@
+public class com.nexage.android.interstitial.InterstitialLayout extends java.lang.Object
+{
+    private static java.util.ArrayList s_List;
+    private static volatile int s_Sequence;
+    private com.nexage.android.Ad m_Ad;
+    private android.app.Activity m_AppActivity;
+    private com.nexage.android.NexageInterstitialCloseListener m_CloseListener;
+    private java.lang.Runnable m_DisplayTask;
+    private int m_ID;
+    private android.content.Intent m_Intent;
+    private android.content.Intent m_IntentData;
+    private com.nexage.android.NexageInterstitial m_Interstitial;
+    private android.app.PendingIntent m_PendingResult;
+    private final java.lang.String m_Position;
+    private com.nexage.android.interstitial.InterstitialLayout$InterstitialType m_Type;
+    private com.nexage.android.interstitial.InterstitialView m_View;
+
+    static void <clinit>()
+    {
+        java.util.ArrayList $r0;
+
+        <com.nexage.android.interstitial.InterstitialLayout: int s_Sequence> = 0;
+
+        $r0 = new java.util.ArrayList;
+
+        specialinvoke $r0.<java.util.ArrayList: void <init>()>();
+
+        <com.nexage.android.interstitial.InterstitialLayout: java.util.ArrayList s_List> = $r0;
+
+        return;
+    }
+
+    public void <init>(java.lang.String)
+    {
+        java.lang.String $r1;
+        com.nexage.android.interstitial.InterstitialLayout r0;
+
+        r0 := @this: com.nexage.android.interstitial.InterstitialLayout;
+
+        $r1 := @parameter0: java.lang.String;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<com.nexage.android.interstitial.InterstitialLayout: java.lang.String m_Position> = $r1;
+
+        return;
+    }
+
+    private boolean add()
+    {
+        java.util.Iterator $r3;
+        com.nexage.android.interstitial.InterstitialLayout r0, r5;
+        java.util.ArrayList $r2;
+        int i0;
+        java.lang.Object $r4;
+        java.lang.String $r1, $r6;
+        boolean $z0;
+
+        r0 := @this: com.nexage.android.interstitial.InterstitialLayout;
+
+        i0 = 0;
+
+        $r2 = <com.nexage.android.interstitial.InterstitialLayout: java.util.ArrayList s_List>;
+
+        $r3 = virtualinvoke $r2.<java.util.ArrayList: java.util.Iterator iterator()>();
+
+     label1:
+        $z0 = interfaceinvoke $r3.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label2;
+
+        $r4 = interfaceinvoke $r3.<java.util.Iterator: java.lang.Object next()>();
+
+        r5 = (com.nexage.android.interstitial.InterstitialLayout) $r4;
+
+        $r6 = r0.<com.nexage.android.interstitial.InterstitialLayout: java.lang.String m_Position>;
+
+        $r1 = r5.<com.nexage.android.interstitial.InterstitialLayout: java.lang.String m_Position>;
+
+        $z0 = virtualinvoke $r6.<java.lang.String: boolean equals(java.lang.Object)>($r1);
+
+        if $z0 == 0 goto label1;
+
+        i0 = i0 + 1;
+
+        goto label1;
+
+     label2:
+        $r2 = <com.nexage.android.interstitial.InterstitialLayout: java.util.ArrayList s_List>;
+
+        virtualinvoke $r2.<java.util.ArrayList: boolean add(java.lang.Object)>(r0);
+
+        $z0 = staticinvoke <com.nexage.android.NexageActivity: boolean lock()>();
+
+        if $z0 == 0 goto label3;
+
+        staticinvoke <com.nexage.android.interstitial.InterstitialLayout: boolean displayNext(com.nexage.android.interstitial.InterstitialLayout)>(r0);
+
+     label3:
+        if i0 <= 0 goto label4;
+
+        return 1;
+
+     label4:
+        return 0;
+    }
+
+    public static com.nexage.android.interstitial.InterstitialLayout display(com.nexage.android.NexageActivity, int)
+    {
+        java.lang.Throwable $r13;
+        com.nexage.android.interstitial.InterstitialLayout r1, r5;
+        android.content.Intent $r10, $r18;
+        com.nexage.android.interstitial.InterstitialLayout$InterstitialType $r8;
+        android.app.PendingIntent $r12;
+        java.lang.Runnable $r6;
+        java.util.ArrayList $r2;
+        int[] $r7;
+        int $i0, $i1;
+        android.view.View $r17;
+        com.nexage.android.Ad $r15;
+        boolean $z0;
+        com.nexage.android.NexageActivity $r0;
+        java.util.Iterator $r3;
+        com.nexage.android.NexageInterstitialCloseListener $r9;
+        com.nexage.android.AdLayout $r16;
+        com.nexage.android.interstitial.InterstitialView $r14;
+        java.lang.Object $r4;
+        android.app.Activity $r11;
+
+        $r0 := @parameter0: com.nexage.android.NexageActivity;
+
+        $i0 := @parameter1: int;
+
+        entermonitor class "Lcom/nexage/android/interstitial/InterstitialLayout;";
+
+        r1 = null;
+
+     label01:
+        $r2 = <com.nexage.android.interstitial.InterstitialLayout: java.util.ArrayList s_List>;
+
+        $r3 = virtualinvoke $r2.<java.util.ArrayList: java.util.Iterator iterator()>();
+
+     label02:
+        $z0 = interfaceinvoke $r3.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label04;
+
+        $r4 = interfaceinvoke $r3.<java.util.Iterator: java.lang.Object next()>();
+
+        r5 = (com.nexage.android.interstitial.InterstitialLayout) $r4;
+
+        $i1 = r5.<com.nexage.android.interstitial.InterstitialLayout: int m_ID>;
+
+     label03:
+        if $i0 != $i1 goto label02;
+
+        r1 = r5;
+
+     label04:
+        if r1 != null goto label06;
+
+        r1 = null;
+
+     label05:
+        exitmonitor class "Lcom/nexage/android/interstitial/InterstitialLayout;";
+
+        return r1;
+
+     label06:
+        $r6 = r1.<com.nexage.android.interstitial.InterstitialLayout: java.lang.Runnable m_DisplayTask>;
+
+        if $r6 == null goto label07;
+
+        $r6 = r1.<com.nexage.android.interstitial.InterstitialLayout: java.lang.Runnable m_DisplayTask>;
+
+        interfaceinvoke $r6.<java.lang.Runnable: void run()>();
+
+     label07:
+        $i0 = -2;
+
+        r1.<com.nexage.android.interstitial.InterstitialLayout: int m_ID> = $i0;
+
+        $r2 = <com.nexage.android.interstitial.InterstitialLayout: java.util.ArrayList s_List>;
+
+        virtualinvoke $r2.<java.util.ArrayList: boolean remove(java.lang.Object)>(r1);
+
+        $r7 = <com.nexage.android.interstitial.InterstitialLayout$1: int[] $SwitchMap$com$nexage$android$interstitial$InterstitialLayout$InterstitialType>;
+
+        $r8 = r1.<com.nexage.android.interstitial.InterstitialLayout: com.nexage.android.interstitial.InterstitialLayout$InterstitialType m_Type>;
+
+        $i0 = virtualinvoke $r8.<com.nexage.android.interstitial.InterstitialLayout$InterstitialType: int ordinal()>();
+
+        $i0 = $r7[$i0];
+
+        lookupswitch($i0)
+        {
+            case 1: goto label12;
+            case 2: goto label13;
+            case 3: goto label14;
+            default: goto label08;
+        };
+
+     label08:
+        $r9 = r1.<com.nexage.android.interstitial.InterstitialLayout: com.nexage.android.NexageInterstitialCloseListener m_CloseListener>;
+
+        if $r9 != null goto label09;
+
+        $r18 = new android.content.Intent;
+
+        specialinvoke $r18.<android.content.Intent: void <init>()>();
+
+        r1.<com.nexage.android.interstitial.InterstitialLayout: android.content.Intent m_IntentData> = $r18;
+
+        $r11 = r1.<com.nexage.android.interstitial.InterstitialLayout: android.app.Activity m_AppActivity>;
+
+        $r10 = r1.<com.nexage.android.interstitial.InterstitialLayout: android.content.Intent m_IntentData>;
+
+        $r12 = virtualinvoke $r11.<android.app.Activity: android.app.PendingIntent createPendingResult(int,android.content.Intent,int)>(0, $r10, 1073741824);
+
+        r1.<com.nexage.android.interstitial.InterstitialLayout: android.app.PendingIntent m_PendingResult> = $r12;
+
+        $r10 = r1.<com.nexage.android.interstitial.InterstitialLayout: android.content.Intent m_IntentData>;
+
+        virtualinvoke $r10.<android.content.Intent: android.content.Intent putExtra(java.lang.String,boolean)>("com.nexage.NexageActivity", 1);
+
+     label09:
+        staticinvoke <com.nexage.android.NexageActivity: boolean lock()>();
+
+     label10:
+        goto label05;
+
+     label11:
+        $r13 := @caughtexception;
+
+        exitmonitor class "Lcom/nexage/android/interstitial/InterstitialLayout;";
+
+        throw $r13;
+
+     label12:
+        $r14 = r1.<com.nexage.android.interstitial.InterstitialLayout: com.nexage.android.interstitial.InterstitialView m_View>;
+
+        virtualinvoke $r0.<com.nexage.android.NexageActivity: void setInterstitialContentView(com.nexage.android.interstitial.InterstitialView)>($r14);
+
+        goto label08;
+
+     label13:
+        $r15 = r1.<com.nexage.android.interstitial.InterstitialLayout: com.nexage.android.Ad m_Ad>;
+
+        virtualinvoke $r15.<com.nexage.android.Ad: void init(com.nexage.android.NexageActivity)>($r0);
+
+        $r10 = r1.<com.nexage.android.interstitial.InterstitialLayout: android.content.Intent m_Intent>;
+
+        if $r10 == null goto label08;
+
+        $r10 = r1.<com.nexage.android.interstitial.InterstitialLayout: android.content.Intent m_Intent>;
+
+        virtualinvoke $r0.<com.nexage.android.NexageActivity: void startActivityForResult(android.content.Intent,int)>($r10, 134217728);
+
+        goto label08;
+
+     label14:
+        $r15 = r1.<com.nexage.android.interstitial.InterstitialLayout: com.nexage.android.Ad m_Ad>;
+
+        virtualinvoke $r15.<com.nexage.android.Ad: void init(com.nexage.android.NexageActivity)>($r0);
+
+        $r15 = r1.<com.nexage.android.interstitial.InterstitialLayout: com.nexage.android.Ad m_Ad>;
+
+        $r16 = virtualinvoke $r15.<com.nexage.android.Ad: com.nexage.android.AdLayout getLayout(android.app.Activity)>($r0);
+
+        $r17 = virtualinvoke $r16.<com.nexage.android.AdLayout: android.view.View getView()>();
+
+        $r14 = r1.<com.nexage.android.interstitial.InterstitialLayout: com.nexage.android.interstitial.InterstitialView m_View>;
+
+        virtualinvoke $r14.<com.nexage.android.interstitial.InterstitialView: void addView(android.view.View)>($r17);
+
+        $r14 = r1.<com.nexage.android.interstitial.InterstitialLayout: com.nexage.android.interstitial.InterstitialView m_View>;
+
+        virtualinvoke $r0.<com.nexage.android.NexageActivity: void setContentView(android.view.View)>($r14);
+
+     label15:
+        goto label08;
+
+        catch java.lang.Throwable from label01 to label03 with label11;
+        catch java.lang.Throwable from label06 to label10 with label11;
+        catch java.lang.Throwable from label12 to label15 with label11;
+    }
+
+    public static boolean displayNext(com.nexage.android.interstitial.InterstitialLayout)
+    {
+        java.lang.Throwable $r11;
+        com.nexage.android.interstitial.InterstitialLayout r1;
+        android.content.Intent r0, $r12;
+        android.app.PendingIntent $r8;
+        java.lang.Runnable $r6;
+        java.util.ArrayList $r3;
+        int i0, $i1;
+        java.lang.String $r5;
+        boolean $z0, $z1;
+        com.nexage.android.NexageInterstitialCloseListener $r7;
+        android.content.res.Configuration $r10;
+        java.lang.Object $r4;
+        android.app.Activity $r2;
+        android.content.res.Resources $r9;
+
+        r1 := @parameter0: com.nexage.android.interstitial.InterstitialLayout;
+
+        $z0 = 1;
+
+        entermonitor class "Lcom/nexage/android/interstitial/InterstitialLayout;";
+
+        if r1 == null goto label02;
+
+     label01:
+        $r2 = r1.<com.nexage.android.interstitial.InterstitialLayout: android.app.Activity m_AppActivity>;
+
+        if $r2 != null goto label04;
+
+     label02:
+        r1 = null;
+
+     label03:
+        $r3 = <com.nexage.android.interstitial.InterstitialLayout: java.util.ArrayList s_List>;
+
+        $z1 = virtualinvoke $r3.<java.util.ArrayList: boolean isEmpty()>();
+
+        if $z1 != 0 goto label04;
+
+        $r3 = <com.nexage.android.interstitial.InterstitialLayout: java.util.ArrayList s_List>;
+
+        $r4 = virtualinvoke $r3.<java.util.ArrayList: java.lang.Object get(int)>(0);
+
+        r1 = (com.nexage.android.interstitial.InterstitialLayout) $r4;
+
+        if r1 == null goto label09;
+
+        $r2 = r1.<com.nexage.android.interstitial.InterstitialLayout: android.app.Activity m_AppActivity>;
+
+        if $r2 == null goto label09;
+
+     label04:
+        if r1 == null goto label13;
+
+        $r2 = r1.<com.nexage.android.interstitial.InterstitialLayout: android.app.Activity m_AppActivity>;
+
+        $z1 = staticinvoke <com.nexage.android.rules.AdMaxPosition: boolean isLowMemory(android.app.Activity)>($r2);
+
+        if $z1 == 0 goto label10;
+
+        $r5 = r1.<com.nexage.android.interstitial.InterstitialLayout: java.lang.String m_Position>;
+
+        staticinvoke <com.nexage.android.NexageLog: void w(java.lang.String,java.lang.String)>($r5, "Low memory: discard interstitial display");
+
+        $r6 = r1.<com.nexage.android.interstitial.InterstitialLayout: java.lang.Runnable m_DisplayTask>;
+
+        if $r6 == null goto label05;
+
+        $r6 = r1.<com.nexage.android.interstitial.InterstitialLayout: java.lang.Runnable m_DisplayTask>;
+
+        interfaceinvoke $r6.<java.lang.Runnable: void run()>();
+
+     label05:
+        r1.<com.nexage.android.interstitial.InterstitialLayout: int m_ID> = -2;
+
+        $r3 = <com.nexage.android.interstitial.InterstitialLayout: java.util.ArrayList s_List>;
+
+        virtualinvoke $r3.<java.util.ArrayList: boolean remove(java.lang.Object)>(r1);
+
+        $r7 = r1.<com.nexage.android.interstitial.InterstitialLayout: com.nexage.android.NexageInterstitialCloseListener m_CloseListener>;
+
+        if $r7 != null goto label06;
+
+        $r12 = new android.content.Intent;
+
+        specialinvoke $r12.<android.content.Intent: void <init>()>();
+
+        r1.<com.nexage.android.interstitial.InterstitialLayout: android.content.Intent m_IntentData> = $r12;
+
+        $r2 = r1.<com.nexage.android.interstitial.InterstitialLayout: android.app.Activity m_AppActivity>;
+
+        r0 = r1.<com.nexage.android.interstitial.InterstitialLayout: android.content.Intent m_IntentData>;
+
+        $r8 = virtualinvoke $r2.<android.app.Activity: android.app.PendingIntent createPendingResult(int,android.content.Intent,int)>(0, r0, 1073741824);
+
+        r1.<com.nexage.android.interstitial.InterstitialLayout: android.app.PendingIntent m_PendingResult> = $r8;
+
+        r0 = r1.<com.nexage.android.interstitial.InterstitialLayout: android.content.Intent m_IntentData>;
+
+        virtualinvoke r0.<android.content.Intent: android.content.Intent putExtra(java.lang.String,boolean)>("com.nexage.NexageActivity", 1);
+
+     label06:
+        virtualinvoke r1.<com.nexage.android.interstitial.InterstitialLayout: void sendResult()>();
+
+        staticinvoke <com.nexage.android.NexageActivity: void unlock()>();
+
+     label07:
+        if r1 == null goto label13;
+
+     label08:
+        exitmonitor class "Lcom/nexage/android/interstitial/InterstitialLayout;";
+
+        return $z0;
+
+     label09:
+        $r3 = <com.nexage.android.interstitial.InterstitialLayout: java.util.ArrayList s_List>;
+
+        virtualinvoke $r3.<java.util.ArrayList: java.lang.Object remove(int)>(0);
+
+        r1 = null;
+
+        goto label03;
+
+     label10:
+        $r2 = r1.<com.nexage.android.interstitial.InterstitialLayout: android.app.Activity m_AppActivity>;
+
+        $r9 = virtualinvoke $r2.<android.app.Activity: android.content.res.Resources getResources()>();
+
+        $r10 = virtualinvoke $r9.<android.content.res.Resources: android.content.res.Configuration getConfiguration()>();
+
+        i0 = $r10.<android.content.res.Configuration: int orientation>;
+
+        $r12 = new android.content.Intent;
+
+        r0 = $r12;
+
+        $r2 = r1.<com.nexage.android.interstitial.InterstitialLayout: android.app.Activity m_AppActivity>;
+
+        specialinvoke $r12.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>($r2, class "Lcom/nexage/android/NexageActivity;");
+
+        $i1 = r1.<com.nexage.android.interstitial.InterstitialLayout: int m_ID>;
+
+        virtualinvoke r0.<android.content.Intent: android.content.Intent putExtra(java.lang.String,int)>("com.nexage.InterstitialAdID", $i1);
+
+        virtualinvoke r0.<android.content.Intent: android.content.Intent putExtra(java.lang.String,int)>("com.nexage.Orientation", i0);
+
+        staticinvoke <com.nexage.android.NexageLog: void d(java.lang.String)>("InterstitialLaytout startActivity");
+
+        $r2 = r1.<com.nexage.android.interstitial.InterstitialLayout: android.app.Activity m_AppActivity>;
+
+        virtualinvoke $r2.<android.app.Activity: void startActivity(android.content.Intent)>(r0);
+
+     label11:
+        goto label07;
+
+     label12:
+        $r11 := @caughtexception;
+
+        exitmonitor class "Lcom/nexage/android/interstitial/InterstitialLayout;";
+
+        throw $r11;
+
+     label13:
+        $z0 = 0;
+
+        goto label08;
+
+        catch java.lang.Throwable from label01 to label07 with label12;
+        catch java.lang.Throwable from label09 to label11 with label12;
+    }
+
+    private void init(android.app.Activity, android.content.Intent, com.nexage.android.Ad)
+    {
+        com.nexage.android.interstitial.InterstitialLayout r0;
+        int $i0, $i1;
+        android.content.Intent $r2;
+        com.nexage.android.Ad $r3;
+        com.nexage.android.interstitial.InterstitialLayout$InterstitialType $r4;
+        android.app.Activity $r1;
+
+        r0 := @this: com.nexage.android.interstitial.InterstitialLayout;
+
+        $r1 := @parameter0: android.app.Activity;
+
+        $r2 := @parameter1: android.content.Intent;
+
+        $r3 := @parameter2: com.nexage.android.Ad;
+
+        $i1 = <com.nexage.android.interstitial.InterstitialLayout: int s_Sequence>;
+
+        $i0 = $i1 + 1;
+
+        <com.nexage.android.interstitial.InterstitialLayout: int s_Sequence> = $i0;
+
+        r0.<com.nexage.android.interstitial.InterstitialLayout: int m_ID> = $i1;
+
+        r0.<com.nexage.android.interstitial.InterstitialLayout: android.content.Intent m_Intent> = $r2;
+
+        r0.<com.nexage.android.interstitial.InterstitialLayout: com.nexage.android.Ad m_Ad> = $r3;
+
+        $r4 = <com.nexage.android.interstitial.InterstitialLayout$InterstitialType: com.nexage.android.interstitial.InterstitialLayout$InterstitialType Extern>;
+
+        r0.<com.nexage.android.interstitial.InterstitialLayout: com.nexage.android.interstitial.InterstitialLayout$InterstitialType m_Type> = $r4;
+
+        r0.<com.nexage.android.interstitial.InterstitialLayout: android.app.Activity m_AppActivity> = $r1;
+
+        return;
+    }
+
+    private void init(android.app.Activity, com.nexage.android.interstitial.InterstitialView)
+    {
+        com.nexage.android.interstitial.InterstitialLayout r0;
+        com.nexage.android.interstitial.InterstitialView $r2;
+        int $i0, $i1;
+        com.nexage.android.interstitial.InterstitialLayout$InterstitialType $r3;
+        android.app.Activity $r1;
+
+        r0 := @this: com.nexage.android.interstitial.InterstitialLayout;
+
+        $r1 := @parameter0: android.app.Activity;
+
+        $r2 := @parameter1: com.nexage.android.interstitial.InterstitialView;
+
+        $i1 = <com.nexage.android.interstitial.InterstitialLayout: int s_Sequence>;
+
+        $i0 = $i1 + 1;
+
+        <com.nexage.android.interstitial.InterstitialLayout: int s_Sequence> = $i0;
+
+        r0.<com.nexage.android.interstitial.InterstitialLayout: int m_ID> = $i1;
+
+        r0.<com.nexage.android.interstitial.InterstitialLayout: com.nexage.android.interstitial.InterstitialView m_View> = $r2;
+
+        $r3 = <com.nexage.android.interstitial.InterstitialLayout$InterstitialType: com.nexage.android.interstitial.InterstitialLayout$InterstitialType View>;
+
+        r0.<com.nexage.android.interstitial.InterstitialLayout: com.nexage.android.interstitial.InterstitialLayout$InterstitialType m_Type> = $r3;
+
+        r0.<com.nexage.android.interstitial.InterstitialLayout: android.app.Activity m_AppActivity> = $r1;
+
+        return;
+    }
+
+    private void init(android.app.Activity, com.nexage.android.interstitial.InterstitialView, com.nexage.android.interstitial.VideoAd)
+    {
+        com.nexage.android.interstitial.InterstitialLayout r0;
+        com.nexage.android.interstitial.InterstitialView $r2;
+        com.nexage.android.interstitial.VideoAd $r3;
+        int $i0, $i1;
+        com.nexage.android.interstitial.InterstitialLayout$InterstitialType $r4;
+        android.app.Activity $r1;
+
+        r0 := @this: com.nexage.android.interstitial.InterstitialLayout;
+
+        $r1 := @parameter0: android.app.Activity;
+
+        $r2 := @parameter1: com.nexage.android.interstitial.InterstitialView;
+
+        $r3 := @parameter2: com.nexage.android.interstitial.VideoAd;
+
+        $i1 = <com.nexage.android.interstitial.InterstitialLayout: int s_Sequence>;
+
+        $i0 = $i1 + 1;
+
+        <com.nexage.android.interstitial.InterstitialLayout: int s_Sequence> = $i0;
+
+        r0.<com.nexage.android.interstitial.InterstitialLayout: int m_ID> = $i1;
+
+        r0.<com.nexage.android.interstitial.InterstitialLayout: com.nexage.android.interstitial.InterstitialView m_View> = $r2;
+
+        r0.<com.nexage.android.interstitial.InterstitialLayout: com.nexage.android.Ad m_Ad> = $r3;
+
+        $r4 = <com.nexage.android.interstitial.InterstitialLayout$InterstitialType: com.nexage.android.interstitial.InterstitialLayout$InterstitialType Video>;
+
+        r0.<com.nexage.android.interstitial.InterstitialLayout: com.nexage.android.interstitial.InterstitialLayout$InterstitialType m_Type> = $r4;
+
+        r0.<com.nexage.android.interstitial.InterstitialLayout: android.app.Activity m_AppActivity> = $r1;
+
+        return;
+    }
+
+    public boolean add(android.app.Activity, android.content.Intent, com.nexage.android.Ad)
+    {
+        java.lang.Throwable $r4;
+        com.nexage.android.interstitial.InterstitialLayout r0;
+        android.content.Intent $r2;
+        com.nexage.android.Ad $r3;
+        android.app.Activity $r1;
+        boolean $z0;
+
+        r0 := @this: com.nexage.android.interstitial.InterstitialLayout;
+
+        $r1 := @parameter0: android.app.Activity;
+
+        $r2 := @parameter1: android.content.Intent;
+
+        $r3 := @parameter2: com.nexage.android.Ad;
+
+        entermonitor r0;
+
+     label1:
+        specialinvoke r0.<com.nexage.android.interstitial.InterstitialLayout: void init(android.app.Activity,android.content.Intent,com.nexage.android.Ad)>($r1, $r2, $r3);
+
+        $z0 = specialinvoke r0.<com.nexage.android.interstitial.InterstitialLayout: boolean add()>();
+
+     label2:
+        exitmonitor r0;
+
+        return $z0;
+
+     label3:
+        $r4 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r4;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public boolean add(android.app.Activity, com.nexage.android.interstitial.InterstitialView)
+    {
+        java.lang.Throwable $r3;
+        com.nexage.android.interstitial.InterstitialLayout r0;
+        com.nexage.android.interstitial.InterstitialView $r2;
+        android.app.Activity $r1;
+        boolean $z0;
+
+        r0 := @this: com.nexage.android.interstitial.InterstitialLayout;
+
+        $r1 := @parameter0: android.app.Activity;
+
+        $r2 := @parameter1: com.nexage.android.interstitial.InterstitialView;
+
+        entermonitor r0;
+
+     label1:
+        specialinvoke r0.<com.nexage.android.interstitial.InterstitialLayout: void init(android.app.Activity,com.nexage.android.interstitial.InterstitialView)>($r1, $r2);
+
+        $z0 = specialinvoke r0.<com.nexage.android.interstitial.InterstitialLayout: boolean add()>();
+
+     label2:
+        exitmonitor r0;
+
+        return $z0;
+
+     label3:
+        $r3 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public boolean add(android.app.Activity, com.nexage.android.interstitial.InterstitialView, com.nexage.android.interstitial.VideoAd)
+    {
+        java.lang.Throwable $r4;
+        com.nexage.android.interstitial.InterstitialLayout r0;
+        com.nexage.android.interstitial.InterstitialView $r2;
+        com.nexage.android.interstitial.VideoAd $r3;
+        android.app.Activity $r1;
+        boolean $z0;
+
+        r0 := @this: com.nexage.android.interstitial.InterstitialLayout;
+
+        $r1 := @parameter0: android.app.Activity;
+
+        $r2 := @parameter1: com.nexage.android.interstitial.InterstitialView;
+
+        $r3 := @parameter2: com.nexage.android.interstitial.VideoAd;
+
+        entermonitor r0;
+
+     label1:
+        specialinvoke r0.<com.nexage.android.interstitial.InterstitialLayout: void init(android.app.Activity,com.nexage.android.interstitial.InterstitialView,com.nexage.android.interstitial.VideoAd)>($r1, $r2, $r3);
+
+        $z0 = specialinvoke r0.<com.nexage.android.interstitial.InterstitialLayout: boolean add()>();
+
+     label2:
+        exitmonitor r0;
+
+        return $z0;
+
+     label3:
+        $r4 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r4;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public boolean checkResult(int, android.content.Intent)
+    {
+        com.nexage.android.interstitial.InterstitialLayout r0;
+        int $i0;
+        android.content.Intent $r1;
+        com.nexage.android.Ad $r2;
+        boolean $z0;
+
+        r0 := @this: com.nexage.android.interstitial.InterstitialLayout;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: android.content.Intent;
+
+        if $i0 == 134217728 goto label1;
+
+        $r2 = r0.<com.nexage.android.interstitial.InterstitialLayout: com.nexage.android.Ad m_Ad>;
+
+        $z0 = virtualinvoke $r2.<com.nexage.android.Ad: boolean activityFinished(android.content.Intent)>($r1);
+
+        if $z0 == 0 goto label2;
+
+     label1:
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    public void dismiss()
+    {
+        com.nexage.android.interstitial.InterstitialLayout r0;
+        com.nexage.android.interstitial.VideoAd $r4;
+        com.nexage.android.interstitial.InterstitialView $r5;
+        com.nexage.android.Ad $r3;
+        com.nexage.android.interstitial.InterstitialLayout$InterstitialType $r1, $r2;
+
+        r0 := @this: com.nexage.android.interstitial.InterstitialLayout;
+
+        $r1 = r0.<com.nexage.android.interstitial.InterstitialLayout: com.nexage.android.interstitial.InterstitialLayout$InterstitialType m_Type>;
+
+        $r2 = <com.nexage.android.interstitial.InterstitialLayout$InterstitialType: com.nexage.android.interstitial.InterstitialLayout$InterstitialType Video>;
+
+        if $r1 != $r2 goto label1;
+
+        $r3 = r0.<com.nexage.android.interstitial.InterstitialLayout: com.nexage.android.Ad m_Ad>;
+
+        $r4 = (com.nexage.android.interstitial.VideoAd) $r3;
+
+        virtualinvoke $r4.<com.nexage.android.interstitial.VideoAd: void dismiss()>();
+
+        return;
+
+     label1:
+        $r1 = r0.<com.nexage.android.interstitial.InterstitialLayout: com.nexage.android.interstitial.InterstitialLayout$InterstitialType m_Type>;
+
+        $r2 = <com.nexage.android.interstitial.InterstitialLayout$InterstitialType: com.nexage.android.interstitial.InterstitialLayout$InterstitialType View>;
+
+        if $r1 != $r2 goto label2;
+
+        $r5 = r0.<com.nexage.android.interstitial.InterstitialLayout: com.nexage.android.interstitial.InterstitialView m_View>;
+
+        if $r5 == null goto label2;
+
+        $r5 = r0.<com.nexage.android.interstitial.InterstitialLayout: com.nexage.android.interstitial.InterstitialView m_View>;
+
+        virtualinvoke $r5.<com.nexage.android.interstitial.InterstitialView: void cleanView()>();
+
+     label2:
+        return;
+    }
+
+    public void sendResult()
+    {
+        java.lang.Throwable $r7, $r8;
+        com.nexage.android.interstitial.InterstitialLayout r0;
+        android.content.Intent $r1;
+        com.nexage.android.NexageInterstitialCloseListener $r4;
+        android.app.PendingIntent $r2;
+        java.lang.Exception $r6;
+        com.nexage.android.NexageInterstitial $r5;
+        android.app.Activity $r3;
+
+        r0 := @this: com.nexage.android.interstitial.InterstitialLayout;
+
+        entermonitor r0;
+
+     label01:
+        staticinvoke <com.nexage.android.NexageLog: void d(java.lang.String)>("InterstitialLayout sendResult");
+
+        $r2 = r0.<com.nexage.android.interstitial.InterstitialLayout: android.app.PendingIntent m_PendingResult>;
+
+     label02:
+        if $r2 == null goto label09;
+
+     label03:
+        staticinvoke <com.nexage.android.NexageLog: void d(java.lang.String)>("call m_PendingResult.send");
+
+     label04:
+        $r2 = r0.<com.nexage.android.interstitial.InterstitialLayout: android.app.PendingIntent m_PendingResult>;
+
+        $r3 = r0.<com.nexage.android.interstitial.InterstitialLayout: android.app.Activity m_AppActivity>;
+
+        $r1 = r0.<com.nexage.android.interstitial.InterstitialLayout: android.content.Intent m_IntentData>;
+
+     label05:
+        virtualinvoke $r2.<android.app.PendingIntent: void send(android.content.Context,int,android.content.Intent)>($r3, 0, $r1);
+
+     label06:
+        r0.<com.nexage.android.interstitial.InterstitialLayout: android.app.PendingIntent m_PendingResult> = null;
+
+     label07:
+        r0.<com.nexage.android.interstitial.InterstitialLayout: android.app.Activity m_AppActivity> = null;
+
+        r0.<com.nexage.android.interstitial.InterstitialLayout: android.content.Intent m_IntentData> = null;
+
+        r0.<com.nexage.android.interstitial.InterstitialLayout: com.nexage.android.Ad m_Ad> = null;
+
+        r0.<com.nexage.android.interstitial.InterstitialLayout: java.lang.Runnable m_DisplayTask> = null;
+
+        r0.<com.nexage.android.interstitial.InterstitialLayout: com.nexage.android.interstitial.InterstitialView m_View> = null;
+
+     label08:
+        exitmonitor r0;
+
+        return;
+
+     label09:
+        $r4 = r0.<com.nexage.android.interstitial.InterstitialLayout: com.nexage.android.NexageInterstitialCloseListener m_CloseListener>;
+
+     label10:
+        if $r4 == null goto label07;
+
+     label11:
+        staticinvoke <com.nexage.android.NexageLog: void d(java.lang.String)>("call m_CloseListener.onInterstitialClose");
+
+        $r4 = r0.<com.nexage.android.interstitial.InterstitialLayout: com.nexage.android.NexageInterstitialCloseListener m_CloseListener>;
+
+        $r5 = r0.<com.nexage.android.interstitial.InterstitialLayout: com.nexage.android.NexageInterstitial m_Interstitial>;
+
+        interfaceinvoke $r4.<com.nexage.android.NexageInterstitialCloseListener: void onInterstitialClose(com.nexage.android.NexageInterstitial)>($r5);
+
+     label12:
+        goto label07;
+
+     label13:
+        $r6 := @caughtexception;
+
+        goto label07;
+
+     label14:
+        $r7 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r7;
+
+     label15:
+        $r8 := @caughtexception;
+
+        goto label07;
+
+        catch java.lang.Throwable from label01 to label02 with label14;
+        catch android.app.PendingIntent$CanceledException from label03 to label04 with label15;
+        catch android.app.PendingIntent$CanceledException from label05 to label06 with label15;
+        catch java.lang.Throwable from label03 to label07 with label14;
+        catch java.lang.Throwable from label07 to label08 with label14;
+        catch java.lang.Throwable from label09 to label10 with label14;
+        catch java.lang.Exception from label11 to label12 with label13;
+        catch java.lang.Throwable from label11 to label12 with label14;
+    }
+
+    public void setDisplayTask(java.lang.Runnable, com.nexage.android.NexageInterstitialCloseListener, com.nexage.android.NexageInterstitial)
+    {
+        com.nexage.android.NexageInterstitial $r3;
+        com.nexage.android.interstitial.InterstitialLayout r0;
+        com.nexage.android.NexageInterstitialCloseListener $r2;
+        java.lang.Runnable $r1;
+
+        r0 := @this: com.nexage.android.interstitial.InterstitialLayout;
+
+        $r1 := @parameter0: java.lang.Runnable;
+
+        $r2 := @parameter1: com.nexage.android.NexageInterstitialCloseListener;
+
+        $r3 := @parameter2: com.nexage.android.NexageInterstitial;
+
+        r0.<com.nexage.android.interstitial.InterstitialLayout: java.lang.Runnable m_DisplayTask> = $r1;
+
+        r0.<com.nexage.android.interstitial.InterstitialLayout: com.nexage.android.NexageInterstitialCloseListener m_CloseListener> = $r2;
+
+        r0.<com.nexage.android.interstitial.InterstitialLayout: com.nexage.android.NexageInterstitial m_Interstitial> = $r3;
+
+        return;
+    }
+}

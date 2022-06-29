@@ -1,0 +1,557 @@
+public class com.mobclix.android.sdk.MobclixAnalytics extends java.lang.Object
+{
+    private static java.lang.String MC_ANALYTICS_DIRECTORY;
+    private static java.lang.String MC_DIRECTORY;
+    private static final java.lang.String MC_KEY_APPLICATION_ID;
+    private static final java.lang.String MC_KEY_APPLICATION_VERSION;
+    private static final java.lang.String MC_KEY_DEVICE_HARDWARE_MODEL;
+    private static final java.lang.String MC_KEY_DEVICE_ID;
+    private static final java.lang.String MC_KEY_DEVICE_MODEL;
+    private static final java.lang.String MC_KEY_DEVICE_SYSTEM_VERSION;
+    private static final java.lang.String MC_KEY_MOBCLIX_LIBRARY_VERSION;
+    private static final java.lang.String MC_KEY_PLATFORM_ID;
+    private static final java.lang.String MC_KEY_USER_LANGUAGE_PREFERENCE;
+    private static final java.lang.String MC_KEY_USER_LOCALE_PREFERENCE;
+    private static int MC_MAX_ANALYTICS_FILES;
+    private static int MC_MAX_EVENTS_PER_FILE;
+    static int SYNC_ERROR;
+    static int SYNC_READY;
+    static int SYNC_RUNNING;
+    private static final java.lang.String TAG;
+    private static com.mobclix.android.sdk.Mobclix controller;
+    private static java.io.File currentFile;
+    private static boolean fileCreated;
+    private static boolean loggingEvent;
+    private static int numLinesWritten;
+    private static java.lang.String syncContents;
+    private static int syncStatus;
+
+    static void <clinit>()
+    {
+        com.mobclix.android.sdk.Mobclix $r0;
+
+        <com.mobclix.android.sdk.MobclixAnalytics: java.lang.String TAG> = "MobclixAnalytics";
+
+        <com.mobclix.android.sdk.MobclixAnalytics: java.lang.String MC_KEY_USER_LOCALE_PREFERENCE> = "lo";
+
+        <com.mobclix.android.sdk.MobclixAnalytics: java.lang.String MC_KEY_USER_LANGUAGE_PREFERENCE> = "lg";
+
+        <com.mobclix.android.sdk.MobclixAnalytics: java.lang.String MC_KEY_PLATFORM_ID> = "p";
+
+        <com.mobclix.android.sdk.MobclixAnalytics: java.lang.String MC_KEY_MOBCLIX_LIBRARY_VERSION> = "m";
+
+        <com.mobclix.android.sdk.MobclixAnalytics: java.lang.String MC_KEY_DEVICE_SYSTEM_VERSION> = "dv";
+
+        <com.mobclix.android.sdk.MobclixAnalytics: java.lang.String MC_KEY_DEVICE_MODEL> = "dm";
+
+        <com.mobclix.android.sdk.MobclixAnalytics: java.lang.String MC_KEY_DEVICE_ID> = "d";
+
+        <com.mobclix.android.sdk.MobclixAnalytics: java.lang.String MC_KEY_DEVICE_HARDWARE_MODEL> = "hwdm";
+
+        <com.mobclix.android.sdk.MobclixAnalytics: java.lang.String MC_KEY_APPLICATION_VERSION> = "v";
+
+        <com.mobclix.android.sdk.MobclixAnalytics: java.lang.String MC_KEY_APPLICATION_ID> = "a";
+
+        $r0 = staticinvoke <com.mobclix.android.sdk.Mobclix: com.mobclix.android.sdk.Mobclix getInstance()>();
+
+        <com.mobclix.android.sdk.MobclixAnalytics: com.mobclix.android.sdk.Mobclix controller> = $r0;
+
+        <com.mobclix.android.sdk.MobclixAnalytics: java.lang.String MC_DIRECTORY> = "mobclix";
+
+        <com.mobclix.android.sdk.MobclixAnalytics: java.lang.String MC_ANALYTICS_DIRECTORY> = "analytics";
+
+        <com.mobclix.android.sdk.MobclixAnalytics: int MC_MAX_ANALYTICS_FILES> = 100;
+
+        <com.mobclix.android.sdk.MobclixAnalytics: int MC_MAX_EVENTS_PER_FILE> = 5;
+
+        <com.mobclix.android.sdk.MobclixAnalytics: java.io.File currentFile> = null;
+
+        <com.mobclix.android.sdk.MobclixAnalytics: boolean fileCreated> = 0;
+
+        <com.mobclix.android.sdk.MobclixAnalytics: boolean loggingEvent> = 0;
+
+        <com.mobclix.android.sdk.MobclixAnalytics: int numLinesWritten> = 0;
+
+        <com.mobclix.android.sdk.MobclixAnalytics: java.lang.String syncContents> = null;
+
+        <com.mobclix.android.sdk.MobclixAnalytics: int syncStatus> = 0;
+
+        <com.mobclix.android.sdk.MobclixAnalytics: int SYNC_READY> = 0;
+
+        <com.mobclix.android.sdk.MobclixAnalytics: int SYNC_RUNNING> = 1;
+
+        <com.mobclix.android.sdk.MobclixAnalytics: int SYNC_ERROR> = -1;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        com.mobclix.android.sdk.MobclixAnalytics r0;
+
+        r0 := @this: com.mobclix.android.sdk.MobclixAnalytics;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    private static boolean OpenAnalyticsFile()
+    {
+        android.content.Context $r8;
+        byte[] $r13;
+        java.lang.String[] $r6;
+        long $l2;
+        org.json.JSONObject r3, $r5;
+        int $i0, $i1;
+        com.mobclix.android.sdk.Mobclix $r4;
+        java.lang.String $r7;
+        java.io.FileOutputStream r2;
+        java.io.File r0, $r9;
+        java.lang.Exception r1, $r12;
+        java.lang.StringBuilder $r10;
+        java.io.File[] $r11;
+
+        <com.mobclix.android.sdk.MobclixAnalytics: int numLinesWritten> = 1;
+
+        $r4 = <com.mobclix.android.sdk.MobclixAnalytics: com.mobclix.android.sdk.Mobclix controller>;
+
+        virtualinvoke $r4.<com.mobclix.android.sdk.Mobclix: void updateSession()>();
+
+        r3 = new org.json.JSONObject;
+
+        $r4 = <com.mobclix.android.sdk.MobclixAnalytics: com.mobclix.android.sdk.Mobclix controller>;
+
+     label01:
+        $r5 = $r4.<com.mobclix.android.sdk.Mobclix: org.json.JSONObject session>;
+
+     label02:
+        $r6 = newarray (java.lang.String)[3];
+
+     label03:
+        $r6[0] = "ll";
+
+        $r6[1] = "g";
+
+        $r6[2] = "id";
+
+        specialinvoke r3.<org.json.JSONObject: void <init>(org.json.JSONObject,java.lang.String[])>($r5, $r6);
+
+     label04:
+        $r4 = <com.mobclix.android.sdk.MobclixAnalytics: com.mobclix.android.sdk.Mobclix controller>;
+
+     label05:
+        $r7 = virtualinvoke $r4.<com.mobclix.android.sdk.Mobclix: java.lang.String getApplicationId()>();
+
+        $r7 = staticinvoke <java.net.URLEncoder: java.lang.String encode(java.lang.String,java.lang.String)>($r7, "UTF-8");
+
+        virtualinvoke r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("a", $r7);
+
+     label06:
+        $r4 = <com.mobclix.android.sdk.MobclixAnalytics: com.mobclix.android.sdk.Mobclix controller>;
+
+     label07:
+        $r7 = virtualinvoke $r4.<com.mobclix.android.sdk.Mobclix: java.lang.String getPlatform()>();
+
+        $r7 = staticinvoke <java.net.URLEncoder: java.lang.String encode(java.lang.String,java.lang.String)>($r7, "UTF-8");
+
+        virtualinvoke r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("p", $r7);
+
+     label08:
+        $r4 = <com.mobclix.android.sdk.MobclixAnalytics: com.mobclix.android.sdk.Mobclix controller>;
+
+     label09:
+        staticinvoke <FLOWDROID_EXCEPTIONS: void throw_java_lang_Exception_0()>();
+
+        $r7 = staticinvoke <java.net.URLEncoder: java.lang.String encode(java.lang.String)>("3.1.1");
+
+        virtualinvoke r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("m", $r7);
+
+     label10:
+        $r4 = <com.mobclix.android.sdk.MobclixAnalytics: com.mobclix.android.sdk.Mobclix controller>;
+
+     label11:
+        $r7 = virtualinvoke $r4.<com.mobclix.android.sdk.Mobclix: java.lang.String getApplicationVersion()>();
+
+        $r7 = staticinvoke <java.net.URLEncoder: java.lang.String encode(java.lang.String,java.lang.String)>($r7, "UTF-8");
+
+        virtualinvoke r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("v", $r7);
+
+     label12:
+        $r4 = <com.mobclix.android.sdk.MobclixAnalytics: com.mobclix.android.sdk.Mobclix controller>;
+
+     label13:
+        $r7 = virtualinvoke $r4.<com.mobclix.android.sdk.Mobclix: java.lang.String getDeviceId()>();
+
+        $r7 = staticinvoke <java.net.URLEncoder: java.lang.String encode(java.lang.String,java.lang.String)>($r7, "UTF-8");
+
+        virtualinvoke r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("d", $r7);
+
+     label14:
+        $r4 = <com.mobclix.android.sdk.MobclixAnalytics: com.mobclix.android.sdk.Mobclix controller>;
+
+     label15:
+        $r7 = virtualinvoke $r4.<com.mobclix.android.sdk.Mobclix: java.lang.String getDeviceModel()>();
+
+        $r7 = staticinvoke <java.net.URLEncoder: java.lang.String encode(java.lang.String,java.lang.String)>($r7, "UTF-8");
+
+        virtualinvoke r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("dm", $r7);
+
+     label16:
+        $r4 = <com.mobclix.android.sdk.MobclixAnalytics: com.mobclix.android.sdk.Mobclix controller>;
+
+     label17:
+        $r7 = virtualinvoke $r4.<com.mobclix.android.sdk.Mobclix: java.lang.String getAndroidVersion()>();
+
+        $r7 = staticinvoke <java.net.URLEncoder: java.lang.String encode(java.lang.String,java.lang.String)>($r7, "UTF-8");
+
+        virtualinvoke r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("dv", $r7);
+
+     label18:
+        $r4 = <com.mobclix.android.sdk.MobclixAnalytics: com.mobclix.android.sdk.Mobclix controller>;
+
+     label19:
+        $r7 = virtualinvoke $r4.<com.mobclix.android.sdk.Mobclix: java.lang.String getDeviceHardwareModel()>();
+
+        $r7 = staticinvoke <java.net.URLEncoder: java.lang.String encode(java.lang.String,java.lang.String)>($r7, "UTF-8");
+
+        virtualinvoke r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("hwdm", $r7);
+
+        $r7 = staticinvoke <java.net.URLEncoder: java.lang.String encode(java.lang.String,java.lang.String)>("3.1.1", "UTF-8");
+
+        virtualinvoke r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("m", $r7);
+
+     label20:
+        $r4 = <com.mobclix.android.sdk.MobclixAnalytics: com.mobclix.android.sdk.Mobclix controller>;
+
+     label21:
+        $r7 = virtualinvoke $r4.<com.mobclix.android.sdk.Mobclix: java.lang.String getLanguage()>();
+
+        $r7 = staticinvoke <java.net.URLEncoder: java.lang.String encode(java.lang.String,java.lang.String)>($r7, "UTF-8");
+
+        virtualinvoke r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("lg", $r7);
+
+     label22:
+        $r4 = <com.mobclix.android.sdk.MobclixAnalytics: com.mobclix.android.sdk.Mobclix controller>;
+
+     label23:
+        $r7 = virtualinvoke $r4.<com.mobclix.android.sdk.Mobclix: java.lang.String getLocale()>();
+
+        $r7 = staticinvoke <java.net.URLEncoder: java.lang.String encode(java.lang.String,java.lang.String)>($r7, "UTF-8");
+
+        virtualinvoke r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("lo", $r7);
+
+     label24:
+        $r4 = <com.mobclix.android.sdk.MobclixAnalytics: com.mobclix.android.sdk.Mobclix controller>;
+
+     label25:
+        $r8 = virtualinvoke $r4.<com.mobclix.android.sdk.Mobclix: android.content.Context getContext()>();
+
+     label26:
+        $r7 = <com.mobclix.android.sdk.MobclixAnalytics: java.lang.String MC_DIRECTORY>;
+
+     label27:
+        $r9 = virtualinvoke $r8.<android.content.Context: java.io.File getDir(java.lang.String,int)>($r7, 0);
+
+     label28:
+        r0 = new java.io.File;
+
+        $r10 = new java.lang.StringBuilder;
+
+     label29:
+        $r7 = virtualinvoke $r9.<java.io.File: java.lang.String getAbsolutePath()>();
+
+        $r7 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r7);
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>(java.lang.String)>($r7);
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/");
+
+     label30:
+        $r7 = <com.mobclix.android.sdk.MobclixAnalytics: java.lang.String MC_ANALYTICS_DIRECTORY>;
+
+     label31:
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $r7 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke r0.<java.io.File: void <init>(java.lang.String)>($r7);
+
+        virtualinvoke r0.<java.io.File: boolean mkdir()>();
+
+     label32:
+        $r11 = virtualinvoke r0.<java.io.File: java.io.File[] listFiles()>();
+
+        $i0 = lengthof $r11;
+
+     label33:
+        $i1 = <com.mobclix.android.sdk.MobclixAnalytics: int MC_MAX_ANALYTICS_FILES>;
+
+        if $i0 < $i1 goto label35;
+
+        return 0;
+
+     label34:
+        $r12 := @caughtexception;
+
+     label35:
+        $r9 = new java.io.File;
+
+        $r10 = new java.lang.StringBuilder;
+
+     label36:
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>()>();
+
+        r0 = virtualinvoke r0.<java.io.File: java.io.File getAbsoluteFile()>();
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>(r0);
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/");
+
+        $l2 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l2);
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(".log");
+
+        $r7 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r9.<java.io.File: void <init>(java.lang.String)>($r7);
+
+     label37:
+        <com.mobclix.android.sdk.MobclixAnalytics: java.io.File currentFile> = $r9;
+
+        r0 = <com.mobclix.android.sdk.MobclixAnalytics: java.io.File currentFile>;
+
+     label38:
+        virtualinvoke r0.<java.io.File: boolean createNewFile()>();
+
+     label39:
+        r2 = new java.io.FileOutputStream;
+
+        r0 = <com.mobclix.android.sdk.MobclixAnalytics: java.io.File currentFile>;
+
+     label40:
+        specialinvoke r2.<java.io.FileOutputStream: void <init>(java.io.File)>(r0);
+
+     label41:
+        $r7 = "[{\"hb\":";
+
+     label42:
+        $r13 = virtualinvoke $r7.<java.lang.String: byte[] getBytes()>();
+
+        virtualinvoke r2.<java.io.FileOutputStream: void write(byte[])>($r13);
+
+        $r7 = virtualinvoke r3.<org.json.JSONObject: java.lang.String toString()>();
+
+        $r13 = virtualinvoke $r7.<java.lang.String: byte[] getBytes()>();
+
+        virtualinvoke r2.<java.io.FileOutputStream: void write(byte[])>($r13);
+
+     label43:
+        $r7 = ",\"ev\":[";
+
+     label44:
+        $r13 = virtualinvoke $r7.<java.lang.String: byte[] getBytes()>();
+
+        virtualinvoke r2.<java.io.FileOutputStream: void write(byte[])>($r13);
+
+        virtualinvoke r2.<java.io.FileOutputStream: void close()>();
+
+     label45:
+        <com.mobclix.android.sdk.MobclixAnalytics: boolean fileCreated> = 1;
+
+        return 1;
+
+     label46:
+        r1 := @caughtexception;
+
+        return 0;
+
+        catch java.lang.Exception from label01 to label02 with label46;
+        catch java.lang.Exception from label03 to label04 with label46;
+        catch java.lang.Exception from label05 to label06 with label46;
+        catch java.lang.Exception from label07 to label08 with label46;
+        catch java.lang.Exception from label09 to label10 with label46;
+        catch java.lang.Exception from label11 to label12 with label46;
+        catch java.lang.Exception from label13 to label14 with label46;
+        catch java.lang.Exception from label15 to label16 with label46;
+        catch java.lang.Exception from label17 to label18 with label46;
+        catch java.lang.Exception from label19 to label20 with label46;
+        catch java.lang.Exception from label21 to label22 with label46;
+        catch java.lang.Exception from label23 to label24 with label46;
+        catch java.lang.Exception from label25 to label26 with label46;
+        catch java.lang.Exception from label27 to label28 with label46;
+        catch java.lang.Exception from label29 to label30 with label46;
+        catch java.lang.Exception from label31 to label32 with label46;
+        catch java.lang.Exception from label32 to label33 with label34;
+        catch java.lang.Exception from label36 to label37 with label46;
+        catch java.lang.Exception from label38 to label39 with label46;
+        catch java.lang.Exception from label40 to label41 with label46;
+        catch java.lang.Exception from label42 to label43 with label46;
+        catch java.lang.Exception from label44 to label45 with label46;
+    }
+
+    static boolean access$0()
+    {
+        boolean z0;
+
+        z0 = <com.mobclix.android.sdk.MobclixAnalytics: boolean loggingEvent>;
+
+        return z0;
+    }
+
+    static int access$1()
+    {
+        int i0;
+
+        i0 = <com.mobclix.android.sdk.MobclixAnalytics: int syncStatus>;
+
+        return i0;
+    }
+
+    static void access$10(boolean)
+    {
+        boolean $z0;
+
+        $z0 := @parameter0: boolean;
+
+        <com.mobclix.android.sdk.MobclixAnalytics: boolean fileCreated> = 0;
+
+        return;
+    }
+
+    static void access$11(int)
+    {
+        int $i0;
+
+        $i0 := @parameter0: int;
+
+        <com.mobclix.android.sdk.MobclixAnalytics: int syncStatus> = $i0;
+
+        return;
+    }
+
+    static java.lang.String access$12()
+    {
+        java.lang.String r0;
+
+        r0 = <com.mobclix.android.sdk.MobclixAnalytics: java.lang.String MC_DIRECTORY>;
+
+        return r0;
+    }
+
+    static java.lang.String access$13()
+    {
+        java.lang.String r0;
+
+        r0 = <com.mobclix.android.sdk.MobclixAnalytics: java.lang.String MC_ANALYTICS_DIRECTORY>;
+
+        return r0;
+    }
+
+    static void access$14(java.lang.String)
+    {
+        java.lang.String $r0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        <com.mobclix.android.sdk.MobclixAnalytics: java.lang.String syncContents> = $r0;
+
+        return;
+    }
+
+    static java.lang.String access$15()
+    {
+        java.lang.String r0;
+
+        r0 = <com.mobclix.android.sdk.MobclixAnalytics: java.lang.String syncContents>;
+
+        return r0;
+    }
+
+    static void access$2(boolean)
+    {
+        boolean $z0;
+
+        $z0 := @parameter0: boolean;
+
+        <com.mobclix.android.sdk.MobclixAnalytics: boolean loggingEvent> = $z0;
+
+        return;
+    }
+
+    static boolean access$3()
+    {
+        boolean z0;
+
+        z0 = <com.mobclix.android.sdk.MobclixAnalytics: boolean fileCreated>;
+
+        return z0;
+    }
+
+    static boolean access$4()
+    {
+        boolean $z0;
+
+        $z0 = staticinvoke <com.mobclix.android.sdk.MobclixAnalytics: boolean OpenAnalyticsFile()>();
+
+        return $z0;
+    }
+
+    static com.mobclix.android.sdk.Mobclix access$5()
+    {
+        com.mobclix.android.sdk.Mobclix r0;
+
+        r0 = <com.mobclix.android.sdk.MobclixAnalytics: com.mobclix.android.sdk.Mobclix controller>;
+
+        return r0;
+    }
+
+    static java.io.File access$6()
+    {
+        java.io.File r0;
+
+        r0 = <com.mobclix.android.sdk.MobclixAnalytics: java.io.File currentFile>;
+
+        return r0;
+    }
+
+    static int access$7()
+    {
+        int i0;
+
+        i0 = <com.mobclix.android.sdk.MobclixAnalytics: int numLinesWritten>;
+
+        return i0;
+    }
+
+    static void access$8(int)
+    {
+        int $i0;
+
+        $i0 := @parameter0: int;
+
+        <com.mobclix.android.sdk.MobclixAnalytics: int numLinesWritten> = $i0;
+
+        return;
+    }
+
+    static int access$9()
+    {
+        int i0;
+
+        i0 = <com.mobclix.android.sdk.MobclixAnalytics: int MC_MAX_EVENTS_PER_FILE>;
+
+        return i0;
+    }
+
+    static int getSyncStatus()
+    {
+        int i0;
+
+        i0 = <com.mobclix.android.sdk.MobclixAnalytics: int syncStatus>;
+
+        return i0;
+    }
+}

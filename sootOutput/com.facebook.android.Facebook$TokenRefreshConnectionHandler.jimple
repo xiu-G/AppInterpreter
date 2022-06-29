@@ -1,0 +1,179 @@
+class com.facebook.android.Facebook$TokenRefreshConnectionHandler extends android.os.Handler
+{
+    java.lang.ref.WeakReference connectionWeakReference;
+    java.lang.ref.WeakReference facebookWeakReference;
+
+    void <init>(com.facebook.android.Facebook, com.facebook.android.Facebook$TokenRefreshServiceConnection)
+    {
+        com.facebook.android.Facebook$TokenRefreshConnectionHandler r0;
+        com.facebook.android.Facebook$TokenRefreshServiceConnection $r2;
+        java.lang.ref.WeakReference $r3;
+        com.facebook.android.Facebook $r1;
+
+        r0 := @this: com.facebook.android.Facebook$TokenRefreshConnectionHandler;
+
+        $r1 := @parameter0: com.facebook.android.Facebook;
+
+        $r2 := @parameter1: com.facebook.android.Facebook$TokenRefreshServiceConnection;
+
+        specialinvoke r0.<android.os.Handler: void <init>()>();
+
+        $r3 = new java.lang.ref.WeakReference;
+
+        specialinvoke $r3.<java.lang.ref.WeakReference: void <init>(java.lang.Object)>($r1);
+
+        r0.<com.facebook.android.Facebook$TokenRefreshConnectionHandler: java.lang.ref.WeakReference facebookWeakReference> = $r3;
+
+        $r3 = new java.lang.ref.WeakReference;
+
+        specialinvoke $r3.<java.lang.ref.WeakReference: void <init>(java.lang.Object)>($r2);
+
+        r0.<com.facebook.android.Facebook$TokenRefreshConnectionHandler: java.lang.ref.WeakReference connectionWeakReference> = $r3;
+
+        return;
+    }
+
+    public void handleMessage(android.os.Message)
+    {
+        android.content.Context $r10;
+        android.os.Bundle $r6;
+        com.facebook.android.Facebook$TokenRefreshConnectionHandler r0;
+        java.lang.Error $r13;
+        long $l0;
+        com.facebook.android.Facebook $r4;
+        int $i1;
+        java.lang.String $r7, $r11;
+        java.lang.ref.WeakReference $r2;
+        com.facebook.android.Facebook$ServiceListener $r9;
+        boolean $z0;
+        com.facebook.android.Facebook$TokenRefreshServiceConnection $r5;
+        com.facebook.android.FacebookError $r12;
+        android.os.Message $r1;
+        com.facebook.Session $r8;
+        java.lang.Object $r3;
+
+        r0 := @this: com.facebook.android.Facebook$TokenRefreshConnectionHandler;
+
+        $r1 := @parameter0: android.os.Message;
+
+        $r2 = r0.<com.facebook.android.Facebook$TokenRefreshConnectionHandler: java.lang.ref.WeakReference facebookWeakReference>;
+
+        $r3 = virtualinvoke $r2.<java.lang.ref.WeakReference: java.lang.Object get()>();
+
+        $r4 = (com.facebook.android.Facebook) $r3;
+
+        $r2 = r0.<com.facebook.android.Facebook$TokenRefreshConnectionHandler: java.lang.ref.WeakReference connectionWeakReference>;
+
+        $r3 = virtualinvoke $r2.<java.lang.ref.WeakReference: java.lang.Object get()>();
+
+        $r5 = (com.facebook.android.Facebook$TokenRefreshServiceConnection) $r3;
+
+        if $r4 == null goto label8;
+
+        if $r5 != null goto label1;
+
+        return;
+
+     label1:
+        $r6 = virtualinvoke $r1.<android.os.Message: android.os.Bundle getData()>();
+
+        $r7 = virtualinvoke $r6.<android.os.Bundle: java.lang.String getString(java.lang.String)>("access_token");
+
+        $r6 = virtualinvoke $r1.<android.os.Message: android.os.Bundle getData()>();
+
+        $l0 = virtualinvoke $r6.<android.os.Bundle: long getLong(java.lang.String)>("expires_in");
+
+        $l0 = $l0 * 1000L;
+
+        if $r7 == null goto label4;
+
+        virtualinvoke $r4.<com.facebook.android.Facebook: void setAccessToken(java.lang.String)>($r7);
+
+        virtualinvoke $r4.<com.facebook.android.Facebook: void setAccessExpires(long)>($l0);
+
+        $r8 = staticinvoke <com.facebook.android.Facebook: com.facebook.Session access$1(com.facebook.android.Facebook)>($r4);
+
+        if $r8 == null goto label2;
+
+        $r6 = virtualinvoke $r1.<android.os.Message: android.os.Bundle getData()>();
+
+        staticinvoke <com.facebook.LegacyHelper: void extendTokenCompleted(com.facebook.Session,android.os.Bundle)>($r8, $r6);
+
+     label2:
+        $r9 = $r5.<com.facebook.android.Facebook$TokenRefreshServiceConnection: com.facebook.android.Facebook$ServiceListener serviceListener>;
+
+        if $r9 == null goto label3;
+
+        $r6 = virtualinvoke $r1.<android.os.Message: android.os.Bundle getData()>();
+
+        $r3 = virtualinvoke $r6.<android.os.Bundle: java.lang.Object clone()>();
+
+        $r6 = (android.os.Bundle) $r3;
+
+        virtualinvoke $r6.<android.os.Bundle: void putLong(java.lang.String,long)>("expires_in", $l0);
+
+        $r9 = $r5.<com.facebook.android.Facebook$TokenRefreshServiceConnection: com.facebook.android.Facebook$ServiceListener serviceListener>;
+
+        interfaceinvoke $r9.<com.facebook.android.Facebook$ServiceListener: void onComplete(android.os.Bundle)>($r6);
+
+     label3:
+        $r10 = $r5.<com.facebook.android.Facebook$TokenRefreshServiceConnection: android.content.Context applicationsContext>;
+
+        virtualinvoke $r10.<android.content.Context: void unbindService(android.content.ServiceConnection)>($r5);
+
+        return;
+
+     label4:
+        $r9 = $r5.<com.facebook.android.Facebook$TokenRefreshServiceConnection: com.facebook.android.Facebook$ServiceListener serviceListener>;
+
+        if $r9 == null goto label3;
+
+        $r6 = virtualinvoke $r1.<android.os.Message: android.os.Bundle getData()>();
+
+        $r7 = virtualinvoke $r6.<android.os.Bundle: java.lang.String getString(java.lang.String)>("error");
+
+        $r11 = $r7;
+
+        $r6 = virtualinvoke $r1.<android.os.Message: android.os.Bundle getData()>();
+
+        $z0 = virtualinvoke $r6.<android.os.Bundle: boolean containsKey(java.lang.String)>("error_code");
+
+        if $z0 == 0 goto label5;
+
+        $r6 = virtualinvoke $r1.<android.os.Message: android.os.Bundle getData()>();
+
+        $i1 = virtualinvoke $r6.<android.os.Bundle: int getInt(java.lang.String)>("error_code");
+
+        $r9 = $r5.<com.facebook.android.Facebook$TokenRefreshServiceConnection: com.facebook.android.Facebook$ServiceListener serviceListener>;
+
+        $r12 = new com.facebook.android.FacebookError;
+
+        specialinvoke $r12.<com.facebook.android.FacebookError: void <init>(java.lang.String,java.lang.String,int)>($r7, null, $i1);
+
+        interfaceinvoke $r9.<com.facebook.android.Facebook$ServiceListener: void onFacebookError(com.facebook.android.FacebookError)>($r12);
+
+        goto label3;
+
+     label5:
+        $r9 = $r5.<com.facebook.android.Facebook$TokenRefreshServiceConnection: com.facebook.android.Facebook$ServiceListener serviceListener>;
+
+        $r13 = new java.lang.Error;
+
+        if $r7 == null goto label7;
+
+     label6:
+        specialinvoke $r13.<java.lang.Error: void <init>(java.lang.String)>($r11);
+
+        interfaceinvoke $r9.<com.facebook.android.Facebook$ServiceListener: void onError(java.lang.Error)>($r13);
+
+        goto label3;
+
+     label7:
+        $r11 = "Unknown service error";
+
+        goto label6;
+
+     label8:
+        return;
+    }
+}

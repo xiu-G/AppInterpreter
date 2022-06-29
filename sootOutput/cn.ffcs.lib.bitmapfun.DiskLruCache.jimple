@@ -1,0 +1,787 @@
+public class cn.ffcs.lib.bitmapfun.DiskLruCache extends java.lang.Object
+{
+    private static final java.lang.String CACHE_FILENAME_PREFIX;
+    private static final int INITIAL_CAPACITY;
+    private static final float LOAD_FACTOR;
+    private static final int MAX_REMOVALS;
+    private static final java.lang.String TAG;
+    private static final java.io.FilenameFilter cacheFileFilter;
+    private int cacheByteSize;
+    private int cacheSize;
+    private final java.io.File mCacheDir;
+    private android.graphics.Bitmap$CompressFormat mCompressFormat;
+    private int mCompressQuality;
+    private final java.util.Map mLinkedHashMap;
+    private long maxCacheByteSize;
+    private final int maxCacheItemSize;
+
+    static void <clinit>()
+    {
+        cn.ffcs.lib.bitmapfun.DiskLruCache$1 $r0;
+
+        <cn.ffcs.lib.bitmapfun.DiskLruCache: java.lang.String TAG> = "DiskLruCache";
+
+        <cn.ffcs.lib.bitmapfun.DiskLruCache: int MAX_REMOVALS> = 4;
+
+        <cn.ffcs.lib.bitmapfun.DiskLruCache: float LOAD_FACTOR> = 0.75F;
+
+        <cn.ffcs.lib.bitmapfun.DiskLruCache: int INITIAL_CAPACITY> = 32;
+
+        <cn.ffcs.lib.bitmapfun.DiskLruCache: java.lang.String CACHE_FILENAME_PREFIX> = "cache_";
+
+        $r0 = new cn.ffcs.lib.bitmapfun.DiskLruCache$1;
+
+        specialinvoke $r0.<cn.ffcs.lib.bitmapfun.DiskLruCache$1: void <init>()>();
+
+        <cn.ffcs.lib.bitmapfun.DiskLruCache: java.io.FilenameFilter cacheFileFilter> = $r0;
+
+        return;
+    }
+
+    private void <init>(java.io.File, long)
+    {
+        java.util.LinkedHashMap $r4;
+        java.util.Map $r2;
+        long $l0;
+        android.graphics.Bitmap$CompressFormat $r3;
+        cn.ffcs.lib.bitmapfun.DiskLruCache r0;
+        java.io.File $r1;
+
+        r0 := @this: cn.ffcs.lib.bitmapfun.DiskLruCache;
+
+        $r1 := @parameter0: java.io.File;
+
+        $l0 := @parameter1: long;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: int cacheSize> = 0;
+
+        r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: int cacheByteSize> = 0;
+
+        r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: int maxCacheItemSize> = 64;
+
+        r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: long maxCacheByteSize> = 5242880L;
+
+        $r3 = <android.graphics.Bitmap$CompressFormat: android.graphics.Bitmap$CompressFormat JPEG>;
+
+        r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: android.graphics.Bitmap$CompressFormat mCompressFormat> = $r3;
+
+        r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: int mCompressQuality> = 70;
+
+        $r4 = new java.util.LinkedHashMap;
+
+        specialinvoke $r4.<java.util.LinkedHashMap: void <init>(int,float,boolean)>(32, 0.75F, 1);
+
+        $r2 = staticinvoke <java.util.Collections: java.util.Map synchronizedMap(java.util.Map)>($r4);
+
+        r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: java.util.Map mLinkedHashMap> = $r2;
+
+        r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: java.io.File mCacheDir> = $r1;
+
+        r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: long maxCacheByteSize> = $l0;
+
+        return;
+    }
+
+    public static void clearCache(android.content.Context, java.lang.String)
+    {
+        android.content.Context $r0;
+        java.lang.String $r1;
+        java.io.File $r2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 = staticinvoke <cn.ffcs.lib.bitmapfun.DiskLruCache: java.io.File getDiskCacheDir(android.content.Context,java.lang.String)>($r0, $r1);
+
+        staticinvoke <cn.ffcs.lib.bitmapfun.DiskLruCache: void clearCache(java.io.File)>($r2);
+
+        return;
+    }
+
+    private static void clearCache(java.io.File)
+    {
+        java.io.FilenameFilter $r2;
+        int i0, $i1;
+        java.io.File[] $r1;
+        java.io.File $r0;
+
+        $r0 := @parameter0: java.io.File;
+
+        $r2 = <cn.ffcs.lib.bitmapfun.DiskLruCache: java.io.FilenameFilter cacheFileFilter>;
+
+        $r1 = virtualinvoke $r0.<java.io.File: java.io.File[] listFiles(java.io.FilenameFilter)>($r2);
+
+        i0 = 0;
+
+     label1:
+        $i1 = lengthof $r1;
+
+        if i0 >= $i1 goto label2;
+
+        $r0 = $r1[i0];
+
+        virtualinvoke $r0.<java.io.File: boolean delete()>();
+
+        i0 = i0 + 1;
+
+        goto label1;
+
+     label2:
+        return;
+    }
+
+    public static java.lang.String createFilePath(java.io.File, java.lang.String)
+    {
+        java.lang.Throwable r2;
+        java.lang.StringBuilder $r3;
+        java.lang.String $r1, $r4;
+        java.io.File $r0;
+
+        $r0 := @parameter0: java.io.File;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r3 = new java.lang.StringBuilder;
+
+     label1:
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r0.<java.io.File: java.lang.String getAbsolutePath()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+     label2:
+        $r4 = <java.io.File: java.lang.String separator>;
+
+     label3:
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("cache_");
+
+        $r1 = virtualinvoke $r1.<java.lang.String: java.lang.String replace(java.lang.CharSequence,java.lang.CharSequence)>("*", "");
+
+        $r1 = staticinvoke <java.net.URLEncoder: java.lang.String encode(java.lang.String,java.lang.String)>($r1, "UTF-8");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label4:
+        return $r1;
+
+     label5:
+        r2 := @caughtexception;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("createFilePath - ");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>(r2);
+
+        $r1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("DiskLruCache", $r1);
+
+        return null;
+
+        catch java.io.UnsupportedEncodingException from label1 to label2 with label5;
+        catch java.io.UnsupportedEncodingException from label3 to label4 with label5;
+    }
+
+    private void flushCache()
+    {
+        java.util.Map$Entry r6;
+        java.util.Iterator $r4;
+        java.util.Set $r3;
+        long $l0, $l3;
+        java.io.File r1, $r8;
+        byte $b4;
+        java.util.Map $r2;
+        int i1, $i2;
+        java.lang.Object $r5;
+        java.lang.String $r7;
+        cn.ffcs.lib.bitmapfun.DiskLruCache r0;
+
+        r0 := @this: cn.ffcs.lib.bitmapfun.DiskLruCache;
+
+        i1 = 0;
+
+     label1:
+        if i1 >= 4 goto label3;
+
+        $i2 = r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: int cacheSize>;
+
+        if $i2 > 64 goto label2;
+
+        $i2 = r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: int cacheByteSize>;
+
+        $l3 = (long) $i2;
+
+        $l0 = r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: long maxCacheByteSize>;
+
+        $b4 = $l3 cmp $l0;
+
+        $i2 = (int) $b4;
+
+        if $i2 <= 0 goto label3;
+
+     label2:
+        $r2 = r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: java.util.Map mLinkedHashMap>;
+
+        $r3 = interfaceinvoke $r2.<java.util.Map: java.util.Set entrySet()>();
+
+        $r4 = interfaceinvoke $r3.<java.util.Set: java.util.Iterator iterator()>();
+
+        $r5 = interfaceinvoke $r4.<java.util.Iterator: java.lang.Object next()>();
+
+        r6 = (java.util.Map$Entry) $r5;
+
+        $r8 = new java.io.File;
+
+        r1 = $r8;
+
+        $r5 = interfaceinvoke r6.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+        $r7 = (java.lang.String) $r5;
+
+        specialinvoke $r8.<java.io.File: void <init>(java.lang.String)>($r7);
+
+        $l0 = virtualinvoke r1.<java.io.File: long length()>();
+
+        $r2 = r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: java.util.Map mLinkedHashMap>;
+
+        $r5 = interfaceinvoke r6.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+        interfaceinvoke $r2.<java.util.Map: java.lang.Object remove(java.lang.Object)>($r5);
+
+        virtualinvoke r1.<java.io.File: boolean delete()>();
+
+        $r2 = r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: java.util.Map mLinkedHashMap>;
+
+        $i2 = interfaceinvoke $r2.<java.util.Map: int size()>();
+
+        r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: int cacheSize> = $i2;
+
+        $i2 = r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: int cacheByteSize>;
+
+        $l3 = (long) $i2;
+
+        $l0 = $l3 - $l0;
+
+        $i2 = (int) $l0;
+
+        r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: int cacheByteSize> = $i2;
+
+        i1 = i1 + 1;
+
+        goto label1;
+
+     label3:
+        return;
+    }
+
+    public static java.io.File getDiskCacheDir(android.content.Context, java.lang.String)
+    {
+        android.content.Context $r0;
+        java.lang.StringBuilder $r4;
+        java.lang.String $r1, $r2;
+        java.io.File $r3;
+        boolean $z0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 = staticinvoke <android.os.Environment: java.lang.String getExternalStorageState()>();
+
+        if $r2 == "mounted" goto label1;
+
+        $z0 = staticinvoke <cn.ffcs.lib.bitmapfun.Utils: boolean isExternalStorageRemovable()>();
+
+        if $z0 != 0 goto label3;
+
+     label1:
+        $r3 = staticinvoke <cn.ffcs.lib.bitmapfun.Utils: java.io.File getExternalCacheDir(android.content.Context)>($r0);
+
+        $r2 = virtualinvoke $r3.<java.io.File: java.lang.String getPath()>();
+
+     label2:
+        $r3 = new java.io.File;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r2 = <java.io.File: java.lang.String separator>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r3.<java.io.File: void <init>(java.lang.String)>($r1);
+
+        return $r3;
+
+     label3:
+        $r3 = virtualinvoke $r0.<android.content.Context: java.io.File getCacheDir()>();
+
+        $r2 = virtualinvoke $r3.<java.io.File: java.lang.String getPath()>();
+
+        goto label2;
+    }
+
+    public static cn.ffcs.lib.bitmapfun.DiskLruCache openCache(android.content.Context, java.io.File, long)
+    {
+        android.content.Context $r0;
+        long $l0, $l1;
+        java.io.File $r1;
+        byte $b2;
+        int $i3;
+        cn.ffcs.lib.bitmapfun.DiskLruCache $r2;
+        boolean $z0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.io.File;
+
+        $l0 := @parameter2: long;
+
+        $z0 = virtualinvoke $r1.<java.io.File: boolean exists()>();
+
+        if $z0 != 0 goto label1;
+
+        virtualinvoke $r1.<java.io.File: boolean mkdir()>();
+
+     label1:
+        $z0 = virtualinvoke $r1.<java.io.File: boolean isDirectory()>();
+
+        if $z0 == 0 goto label2;
+
+        $z0 = virtualinvoke $r1.<java.io.File: boolean canWrite()>();
+
+        if $z0 == 0 goto label2;
+
+        $l1 = staticinvoke <cn.ffcs.lib.bitmapfun.Utils: long getUsableSpace(java.io.File)>($r1);
+
+        $b2 = $l1 cmp $l0;
+
+        $i3 = (int) $b2;
+
+        if $i3 <= 0 goto label2;
+
+        $r2 = new cn.ffcs.lib.bitmapfun.DiskLruCache;
+
+        specialinvoke $r2.<cn.ffcs.lib.bitmapfun.DiskLruCache: void <init>(java.io.File,long)>($r1, $l0);
+
+        return $r2;
+
+     label2:
+        return null;
+    }
+
+    private void put(java.lang.String, java.lang.String)
+    {
+        long $l1, $l2;
+        java.io.File $r4;
+        java.util.Map $r3;
+        int $i0;
+        java.lang.String $r1, $r2;
+        cn.ffcs.lib.bitmapfun.DiskLruCache r0;
+
+        r0 := @this: cn.ffcs.lib.bitmapfun.DiskLruCache;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 = r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: java.util.Map mLinkedHashMap>;
+
+        interfaceinvoke $r3.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r1, $r2);
+
+        $r3 = r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: java.util.Map mLinkedHashMap>;
+
+        $i0 = interfaceinvoke $r3.<java.util.Map: int size()>();
+
+        r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: int cacheSize> = $i0;
+
+        $i0 = r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: int cacheByteSize>;
+
+        $l1 = (long) $i0;
+
+        $r4 = new java.io.File;
+
+        specialinvoke $r4.<java.io.File: void <init>(java.lang.String)>($r2);
+
+        $l2 = virtualinvoke $r4.<java.io.File: long length()>();
+
+        $l1 = $l1 + $l2;
+
+        $i0 = (int) $l1;
+
+        r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: int cacheByteSize> = $i0;
+
+        return;
+    }
+
+    private boolean writeBitmapToFile(android.graphics.Bitmap, java.lang.String) throws java.io.IOException, java.io.FileNotFoundException
+    {
+        java.lang.Throwable $r7;
+        java.io.FileOutputStream $r5;
+        java.io.BufferedOutputStream r3, r4;
+        android.graphics.Bitmap $r1;
+        int $i0;
+        android.graphics.Bitmap$CompressFormat $r6;
+        java.lang.String $r2;
+        cn.ffcs.lib.bitmapfun.DiskLruCache r0;
+        boolean $z0;
+
+        r0 := @this: cn.ffcs.lib.bitmapfun.DiskLruCache;
+
+        $r1 := @parameter0: android.graphics.Bitmap;
+
+        $r2 := @parameter1: java.lang.String;
+
+        r4 = null;
+
+     label1:
+        r3 = new java.io.BufferedOutputStream;
+
+        $r5 = new java.io.FileOutputStream;
+
+        specialinvoke $r5.<java.io.FileOutputStream: void <init>(java.lang.String)>($r2);
+
+        specialinvoke r3.<java.io.BufferedOutputStream: void <init>(java.io.OutputStream,int)>($r5, 8192);
+
+     label2:
+        $r6 = r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: android.graphics.Bitmap$CompressFormat mCompressFormat>;
+
+        $i0 = r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: int mCompressQuality>;
+
+        $z0 = virtualinvoke $r1.<android.graphics.Bitmap: boolean compress(android.graphics.Bitmap$CompressFormat,int,java.io.OutputStream)>($r6, $i0, r3);
+
+     label3:
+        if r3 == null goto label8;
+
+        virtualinvoke r3.<java.io.OutputStream: void close()>();
+
+        return $z0;
+
+     label4:
+        $r7 := @caughtexception;
+
+     label5:
+        if r4 == null goto label6;
+
+        virtualinvoke r4.<java.io.OutputStream: void close()>();
+
+     label6:
+        throw $r7;
+
+     label7:
+        $r7 := @caughtexception;
+
+        r4 = r3;
+
+        goto label5;
+
+     label8:
+        return $z0;
+
+        catch java.lang.Throwable from label1 to label2 with label4;
+        catch java.lang.Throwable from label2 to label3 with label7;
+    }
+
+    public void clearCache()
+    {
+        cn.ffcs.lib.bitmapfun.DiskLruCache r0;
+        java.io.File $r1;
+
+        r0 := @this: cn.ffcs.lib.bitmapfun.DiskLruCache;
+
+        $r1 = r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: java.io.File mCacheDir>;
+
+        staticinvoke <cn.ffcs.lib.bitmapfun.DiskLruCache: void clearCache(java.io.File)>($r1);
+
+        return;
+    }
+
+    public boolean containsKey(java.lang.String)
+    {
+        java.util.Map $r2;
+        java.lang.String $r1, $r4;
+        cn.ffcs.lib.bitmapfun.DiskLruCache r0;
+        java.io.File $r3;
+        boolean $z0;
+
+        r0 := @this: cn.ffcs.lib.bitmapfun.DiskLruCache;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: java.util.Map mLinkedHashMap>;
+
+        $z0 = interfaceinvoke $r2.<java.util.Map: boolean containsKey(java.lang.Object)>($r1);
+
+        if $z0 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        $r3 = r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: java.io.File mCacheDir>;
+
+        $r4 = staticinvoke <cn.ffcs.lib.bitmapfun.DiskLruCache: java.lang.String createFilePath(java.io.File,java.lang.String)>($r3, $r1);
+
+        $r3 = new java.io.File;
+
+        specialinvoke $r3.<java.io.File: void <init>(java.lang.String)>($r4);
+
+        $z0 = virtualinvoke $r3.<java.io.File: boolean exists()>();
+
+        if $z0 == 0 goto label2;
+
+        specialinvoke r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: void put(java.lang.String,java.lang.String)>($r1, $r4);
+
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    public java.lang.String createFilePath(java.lang.String)
+    {
+        java.lang.String $r1;
+        cn.ffcs.lib.bitmapfun.DiskLruCache r0;
+        java.io.File $r2;
+
+        r0 := @this: cn.ffcs.lib.bitmapfun.DiskLruCache;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: java.io.File mCacheDir>;
+
+        $r1 = staticinvoke <cn.ffcs.lib.bitmapfun.DiskLruCache: java.lang.String createFilePath(java.io.File,java.lang.String)>($r2, $r1);
+
+        return $r1;
+    }
+
+    public android.graphics.Bitmap get(java.lang.String)
+    {
+        java.lang.Throwable $r8;
+        java.io.File $r7;
+        android.graphics.Bitmap $r6;
+        java.util.Map $r2, $r3;
+        java.lang.Object $r4;
+        java.lang.String $r1, r5;
+        cn.ffcs.lib.bitmapfun.DiskLruCache r0;
+        boolean $z0;
+
+        r0 := @this: cn.ffcs.lib.bitmapfun.DiskLruCache;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: java.util.Map mLinkedHashMap>;
+
+        entermonitor $r2;
+
+     label1:
+        $r3 = r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: java.util.Map mLinkedHashMap>;
+
+        $r4 = interfaceinvoke $r3.<java.util.Map: java.lang.Object get(java.lang.Object)>($r1);
+
+        r5 = (java.lang.String) $r4;
+
+        if r5 == null goto label3;
+
+        $r6 = staticinvoke <android.graphics.BitmapFactory: android.graphics.Bitmap decodeFile(java.lang.String)>(r5);
+
+        exitmonitor $r2;
+
+     label2:
+        return $r6;
+
+     label3:
+        $r7 = r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: java.io.File mCacheDir>;
+
+        r5 = staticinvoke <cn.ffcs.lib.bitmapfun.DiskLruCache: java.lang.String createFilePath(java.io.File,java.lang.String)>($r7, $r1);
+
+        $r7 = new java.io.File;
+
+        specialinvoke $r7.<java.io.File: void <init>(java.lang.String)>(r5);
+
+        $z0 = virtualinvoke $r7.<java.io.File: boolean exists()>();
+
+        if $z0 == 0 goto label7;
+
+        specialinvoke r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: void put(java.lang.String,java.lang.String)>($r1, r5);
+
+        $r6 = staticinvoke <android.graphics.BitmapFactory: android.graphics.Bitmap decodeFile(java.lang.String)>(r5);
+
+        exitmonitor $r2;
+
+     label4:
+        return $r6;
+
+     label5:
+        $r8 := @caughtexception;
+
+        exitmonitor $r2;
+
+     label6:
+        throw $r8;
+
+     label7:
+        exitmonitor $r2;
+
+     label8:
+        return null;
+
+        catch java.lang.Throwable from label1 to label2 with label5;
+        catch java.lang.Throwable from label3 to label4 with label5;
+        catch java.lang.Throwable from label5 to label6 with label5;
+        catch java.lang.Throwable from label7 to label8 with label5;
+    }
+
+    public void put(java.lang.String, android.graphics.Bitmap)
+    {
+        java.lang.Throwable r8, $r10, r11;
+        java.util.Map $r3, $r4;
+        java.lang.String $r1, $r7;
+        cn.ffcs.lib.bitmapfun.DiskLruCache r0;
+        boolean $z0;
+        java.io.IOException $r14;
+        java.io.File $r6;
+        java.io.FileNotFoundException $r13;
+        android.graphics.Bitmap $r2;
+        java.lang.Object $r5;
+        java.lang.StringBuilder $r9, $r12;
+
+        r0 := @this: cn.ffcs.lib.bitmapfun.DiskLruCache;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: android.graphics.Bitmap;
+
+        $r3 = r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: java.util.Map mLinkedHashMap>;
+
+        entermonitor $r3;
+
+     label01:
+        $r4 = r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: java.util.Map mLinkedHashMap>;
+
+        $r5 = interfaceinvoke $r4.<java.util.Map: java.lang.Object get(java.lang.Object)>($r1);
+
+     label02:
+        if $r5 != null goto label07;
+
+     label03:
+        $r6 = r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: java.io.File mCacheDir>;
+
+     label04:
+        $r7 = staticinvoke <cn.ffcs.lib.bitmapfun.DiskLruCache: java.lang.String createFilePath(java.io.File,java.lang.String)>($r6, $r1);
+
+        $z0 = specialinvoke r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: boolean writeBitmapToFile(android.graphics.Bitmap,java.lang.String)>($r2, $r7);
+
+     label05:
+        if $z0 == 0 goto label07;
+
+     label06:
+        specialinvoke r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: void put(java.lang.String,java.lang.String)>($r1, $r7);
+
+        specialinvoke r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: void flushCache()>();
+
+     label07:
+        exitmonitor $r3;
+
+     label08:
+        return;
+
+     label09:
+        r8 := @caughtexception;
+
+        $r12 = new java.lang.StringBuilder;
+
+        specialinvoke $r12.<java.lang.StringBuilder: void <init>()>();
+
+        $r9 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Error in put: ");
+
+        $r13 = (java.io.FileNotFoundException) r8;
+
+        $r1 = virtualinvoke $r13.<java.io.FileNotFoundException: java.lang.String getMessage()>();
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("DiskLruCache", $r1);
+
+        goto label07;
+
+     label10:
+        $r10 := @caughtexception;
+
+        exitmonitor $r3;
+
+     label11:
+        throw $r10;
+
+     label12:
+        r11 := @caughtexception;
+
+     label13:
+        $r12 = new java.lang.StringBuilder;
+
+        specialinvoke $r12.<java.lang.StringBuilder: void <init>()>();
+
+        $r9 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Error in put: ");
+
+        $r14 = (java.io.IOException) r11;
+
+        $r1 = virtualinvoke $r14.<java.io.IOException: java.lang.String getMessage()>();
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("DiskLruCache", $r1);
+
+     label14:
+        goto label07;
+
+        catch java.lang.Throwable from label01 to label02 with label10;
+        catch java.io.FileNotFoundException from label04 to label05 with label09;
+        catch java.io.FileNotFoundException from label06 to label07 with label09;
+        catch java.io.IOException from label04 to label05 with label12;
+        catch java.io.IOException from label06 to label07 with label12;
+        catch java.lang.Throwable from label03 to label07 with label10;
+        catch java.lang.Throwable from label07 to label08 with label10;
+        catch java.lang.Throwable from label09 to label11 with label10;
+        catch java.lang.Throwable from label13 to label14 with label10;
+    }
+
+    public void setCompressParams(android.graphics.Bitmap$CompressFormat, int)
+    {
+        int $i0;
+        android.graphics.Bitmap$CompressFormat $r1;
+        cn.ffcs.lib.bitmapfun.DiskLruCache r0;
+
+        r0 := @this: cn.ffcs.lib.bitmapfun.DiskLruCache;
+
+        $r1 := @parameter0: android.graphics.Bitmap$CompressFormat;
+
+        $i0 := @parameter1: int;
+
+        r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: android.graphics.Bitmap$CompressFormat mCompressFormat> = $r1;
+
+        r0.<cn.ffcs.lib.bitmapfun.DiskLruCache: int mCompressQuality> = $i0;
+
+        return;
+    }
+}

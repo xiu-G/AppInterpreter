@@ -1,0 +1,589 @@
+public abstract class com.parse.signpost.AbstractOAuthConsumer extends java.lang.Object implements com.parse.signpost.OAuthConsumer
+{
+    private static final long serialVersionUID;
+    private com.parse.signpost.http.HttpParameters additionalParameters;
+    private java.lang.String consumerKey;
+    private java.lang.String consumerSecret;
+    private com.parse.signpost.signature.OAuthMessageSigner messageSigner;
+    private com.parse.signpost.http.HttpParameters requestParameters;
+    private boolean sendEmptyTokens;
+    private com.parse.signpost.signature.SigningStrategy signingStrategy;
+    private java.lang.String token;
+
+    public void <init>(java.lang.String, java.lang.String)
+    {
+        com.parse.signpost.AbstractOAuthConsumer r0;
+        com.parse.signpost.signature.AuthorizationHeaderSigningStrategy $r4;
+        com.parse.signpost.signature.HmacSha1MessageSigner $r3;
+        java.lang.String $r1, $r2;
+
+        r0 := @this: com.parse.signpost.AbstractOAuthConsumer;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<com.parse.signpost.AbstractOAuthConsumer: java.lang.String consumerKey> = $r1;
+
+        r0.<com.parse.signpost.AbstractOAuthConsumer: java.lang.String consumerSecret> = $r2;
+
+        $r3 = new com.parse.signpost.signature.HmacSha1MessageSigner;
+
+        specialinvoke $r3.<com.parse.signpost.signature.HmacSha1MessageSigner: void <init>()>();
+
+        virtualinvoke r0.<com.parse.signpost.AbstractOAuthConsumer: void setMessageSigner(com.parse.signpost.signature.OAuthMessageSigner)>($r3);
+
+        $r4 = new com.parse.signpost.signature.AuthorizationHeaderSigningStrategy;
+
+        specialinvoke $r4.<com.parse.signpost.signature.AuthorizationHeaderSigningStrategy: void <init>()>();
+
+        virtualinvoke r0.<com.parse.signpost.AbstractOAuthConsumer: void setSigningStrategy(com.parse.signpost.signature.SigningStrategy)>($r4);
+
+        return;
+    }
+
+    protected void collectBodyParameters(com.parse.signpost.http.HttpRequest, com.parse.signpost.http.HttpParameters)
+    {
+        com.parse.signpost.http.HttpParameters $r2, $r5;
+        com.parse.signpost.http.HttpRequest $r1;
+        com.parse.signpost.AbstractOAuthConsumer r0;
+        java.lang.String $r3;
+        boolean $z0;
+        java.io.InputStream $r4;
+
+        r0 := @this: com.parse.signpost.AbstractOAuthConsumer;
+
+        $r1 := @parameter0: com.parse.signpost.http.HttpRequest;
+
+        $r2 := @parameter1: com.parse.signpost.http.HttpParameters;
+
+        $r3 = interfaceinvoke $r1.<com.parse.signpost.http.HttpRequest: java.lang.String getContentType()>();
+
+        if $r3 == null goto label1;
+
+        $z0 = virtualinvoke $r3.<java.lang.String: boolean startsWith(java.lang.String)>("application/x-www-form-urlencoded");
+
+        if $z0 == 0 goto label1;
+
+        $r4 = interfaceinvoke $r1.<com.parse.signpost.http.HttpRequest: java.io.InputStream getMessagePayload()>();
+
+        $r5 = staticinvoke <com.parse.signpost.OAuth: com.parse.signpost.http.HttpParameters decodeForm(java.io.InputStream)>($r4);
+
+        virtualinvoke $r2.<com.parse.signpost.http.HttpParameters: void putAll(java.util.Map,boolean)>($r5, 1);
+
+     label1:
+        return;
+    }
+
+    protected void collectHeaderParameters(com.parse.signpost.http.HttpRequest, com.parse.signpost.http.HttpParameters)
+    {
+        com.parse.signpost.http.HttpParameters $r2, $r4;
+        com.parse.signpost.http.HttpRequest $r1;
+        com.parse.signpost.AbstractOAuthConsumer r0;
+        java.lang.String $r3;
+
+        r0 := @this: com.parse.signpost.AbstractOAuthConsumer;
+
+        $r1 := @parameter0: com.parse.signpost.http.HttpRequest;
+
+        $r2 := @parameter1: com.parse.signpost.http.HttpParameters;
+
+        $r3 = interfaceinvoke $r1.<com.parse.signpost.http.HttpRequest: java.lang.String getHeader(java.lang.String)>("Authorization");
+
+        $r4 = staticinvoke <com.parse.signpost.OAuth: com.parse.signpost.http.HttpParameters oauthHeaderToParamsMap(java.lang.String)>($r3);
+
+        virtualinvoke $r2.<com.parse.signpost.http.HttpParameters: void putAll(java.util.Map,boolean)>($r4, 0);
+
+        return;
+    }
+
+    protected void collectQueryParameters(com.parse.signpost.http.HttpRequest, com.parse.signpost.http.HttpParameters)
+    {
+        com.parse.signpost.http.HttpParameters $r2, $r4;
+        com.parse.signpost.http.HttpRequest $r1;
+        com.parse.signpost.AbstractOAuthConsumer r0;
+        int $i0;
+        java.lang.String $r3;
+
+        r0 := @this: com.parse.signpost.AbstractOAuthConsumer;
+
+        $r1 := @parameter0: com.parse.signpost.http.HttpRequest;
+
+        $r2 := @parameter1: com.parse.signpost.http.HttpParameters;
+
+        $r3 = interfaceinvoke $r1.<com.parse.signpost.http.HttpRequest: java.lang.String getRequestUrl()>();
+
+        $i0 = virtualinvoke $r3.<java.lang.String: int indexOf(int)>(63);
+
+        if $i0 < 0 goto label1;
+
+        $i0 = $i0 + 1;
+
+        $r3 = virtualinvoke $r3.<java.lang.String: java.lang.String substring(int)>($i0);
+
+        $r4 = staticinvoke <com.parse.signpost.OAuth: com.parse.signpost.http.HttpParameters decodeForm(java.lang.String)>($r3);
+
+        virtualinvoke $r2.<com.parse.signpost.http.HttpParameters: void putAll(java.util.Map,boolean)>($r4, 1);
+
+     label1:
+        return;
+    }
+
+    protected void completeOAuthParameters(com.parse.signpost.http.HttpParameters)
+    {
+        com.parse.signpost.http.HttpParameters $r1;
+        com.parse.signpost.AbstractOAuthConsumer r0;
+        java.lang.String $r2;
+        com.parse.signpost.signature.OAuthMessageSigner $r3;
+        boolean $z0;
+
+        r0 := @this: com.parse.signpost.AbstractOAuthConsumer;
+
+        $r1 := @parameter0: com.parse.signpost.http.HttpParameters;
+
+        $z0 = virtualinvoke $r1.<com.parse.signpost.http.HttpParameters: boolean containsKey(java.lang.Object)>("oauth_consumer_key");
+
+        if $z0 != 0 goto label1;
+
+        $r2 = r0.<com.parse.signpost.AbstractOAuthConsumer: java.lang.String consumerKey>;
+
+        virtualinvoke $r1.<com.parse.signpost.http.HttpParameters: java.lang.String put(java.lang.String,java.lang.String,boolean)>("oauth_consumer_key", $r2, 1);
+
+     label1:
+        $z0 = virtualinvoke $r1.<com.parse.signpost.http.HttpParameters: boolean containsKey(java.lang.Object)>("oauth_signature_method");
+
+        if $z0 != 0 goto label2;
+
+        $r3 = r0.<com.parse.signpost.AbstractOAuthConsumer: com.parse.signpost.signature.OAuthMessageSigner messageSigner>;
+
+        $r2 = virtualinvoke $r3.<com.parse.signpost.signature.OAuthMessageSigner: java.lang.String getSignatureMethod()>();
+
+        virtualinvoke $r1.<com.parse.signpost.http.HttpParameters: java.lang.String put(java.lang.String,java.lang.String,boolean)>("oauth_signature_method", $r2, 1);
+
+     label2:
+        $z0 = virtualinvoke $r1.<com.parse.signpost.http.HttpParameters: boolean containsKey(java.lang.Object)>("oauth_timestamp");
+
+        if $z0 != 0 goto label3;
+
+        $r2 = virtualinvoke r0.<com.parse.signpost.AbstractOAuthConsumer: java.lang.String generateTimestamp()>();
+
+        virtualinvoke $r1.<com.parse.signpost.http.HttpParameters: java.lang.String put(java.lang.String,java.lang.String,boolean)>("oauth_timestamp", $r2, 1);
+
+     label3:
+        $z0 = virtualinvoke $r1.<com.parse.signpost.http.HttpParameters: boolean containsKey(java.lang.Object)>("oauth_nonce");
+
+        if $z0 != 0 goto label4;
+
+        $r2 = virtualinvoke r0.<com.parse.signpost.AbstractOAuthConsumer: java.lang.String generateNonce()>();
+
+        virtualinvoke $r1.<com.parse.signpost.http.HttpParameters: java.lang.String put(java.lang.String,java.lang.String,boolean)>("oauth_nonce", $r2, 1);
+
+     label4:
+        $z0 = virtualinvoke $r1.<com.parse.signpost.http.HttpParameters: boolean containsKey(java.lang.Object)>("oauth_version");
+
+        if $z0 != 0 goto label5;
+
+        virtualinvoke $r1.<com.parse.signpost.http.HttpParameters: java.lang.String put(java.lang.String,java.lang.String,boolean)>("oauth_version", "1.0", 1);
+
+     label5:
+        $z0 = virtualinvoke $r1.<com.parse.signpost.http.HttpParameters: boolean containsKey(java.lang.Object)>("oauth_token");
+
+        if $z0 != 0 goto label8;
+
+        $r2 = r0.<com.parse.signpost.AbstractOAuthConsumer: java.lang.String token>;
+
+        if $r2 == null goto label6;
+
+        $r2 = r0.<com.parse.signpost.AbstractOAuthConsumer: java.lang.String token>;
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>("");
+
+        if $z0 == 0 goto label7;
+
+     label6:
+        $z0 = r0.<com.parse.signpost.AbstractOAuthConsumer: boolean sendEmptyTokens>;
+
+        if $z0 == 0 goto label8;
+
+     label7:
+        $r2 = r0.<com.parse.signpost.AbstractOAuthConsumer: java.lang.String token>;
+
+        virtualinvoke $r1.<com.parse.signpost.http.HttpParameters: java.lang.String put(java.lang.String,java.lang.String,boolean)>("oauth_token", $r2, 1);
+
+     label8:
+        return;
+    }
+
+    protected java.lang.String generateNonce()
+    {
+        com.parse.signpost.AbstractOAuthConsumer r0;
+        java.util.Random $r1;
+        long $l0;
+        java.lang.String $r2;
+
+        r0 := @this: com.parse.signpost.AbstractOAuthConsumer;
+
+        $r1 = new java.util.Random;
+
+        specialinvoke $r1.<java.util.Random: void <init>()>();
+
+        $l0 = virtualinvoke $r1.<java.util.Random: long nextLong()>();
+
+        $r2 = staticinvoke <java.lang.Long: java.lang.String toString(long)>($l0);
+
+        return $r2;
+    }
+
+    protected java.lang.String generateTimestamp()
+    {
+        long $l0;
+        com.parse.signpost.AbstractOAuthConsumer r0;
+        java.lang.String $r1;
+
+        r0 := @this: com.parse.signpost.AbstractOAuthConsumer;
+
+        $l0 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $l0 = $l0 / 1000L;
+
+        $r1 = staticinvoke <java.lang.Long: java.lang.String toString(long)>($l0);
+
+        return $r1;
+    }
+
+    public java.lang.String getConsumerKey()
+    {
+        com.parse.signpost.AbstractOAuthConsumer r0;
+        java.lang.String r1;
+
+        r0 := @this: com.parse.signpost.AbstractOAuthConsumer;
+
+        r1 = r0.<com.parse.signpost.AbstractOAuthConsumer: java.lang.String consumerKey>;
+
+        return r1;
+    }
+
+    public java.lang.String getConsumerSecret()
+    {
+        com.parse.signpost.AbstractOAuthConsumer r0;
+        java.lang.String r1;
+
+        r0 := @this: com.parse.signpost.AbstractOAuthConsumer;
+
+        r1 = r0.<com.parse.signpost.AbstractOAuthConsumer: java.lang.String consumerSecret>;
+
+        return r1;
+    }
+
+    public com.parse.signpost.http.HttpParameters getRequestParameters()
+    {
+        com.parse.signpost.http.HttpParameters r1;
+        com.parse.signpost.AbstractOAuthConsumer r0;
+
+        r0 := @this: com.parse.signpost.AbstractOAuthConsumer;
+
+        r1 = r0.<com.parse.signpost.AbstractOAuthConsumer: com.parse.signpost.http.HttpParameters requestParameters>;
+
+        return r1;
+    }
+
+    public java.lang.String getToken()
+    {
+        com.parse.signpost.AbstractOAuthConsumer r0;
+        java.lang.String r1;
+
+        r0 := @this: com.parse.signpost.AbstractOAuthConsumer;
+
+        r1 = r0.<com.parse.signpost.AbstractOAuthConsumer: java.lang.String token>;
+
+        return r1;
+    }
+
+    public java.lang.String getTokenSecret()
+    {
+        com.parse.signpost.AbstractOAuthConsumer r0;
+        java.lang.String $r1;
+        com.parse.signpost.signature.OAuthMessageSigner $r2;
+
+        r0 := @this: com.parse.signpost.AbstractOAuthConsumer;
+
+        $r2 = r0.<com.parse.signpost.AbstractOAuthConsumer: com.parse.signpost.signature.OAuthMessageSigner messageSigner>;
+
+        $r1 = virtualinvoke $r2.<com.parse.signpost.signature.OAuthMessageSigner: java.lang.String getTokenSecret()>();
+
+        return $r1;
+    }
+
+    public void setAdditionalParameters(com.parse.signpost.http.HttpParameters)
+    {
+        com.parse.signpost.http.HttpParameters $r1;
+        com.parse.signpost.AbstractOAuthConsumer r0;
+
+        r0 := @this: com.parse.signpost.AbstractOAuthConsumer;
+
+        $r1 := @parameter0: com.parse.signpost.http.HttpParameters;
+
+        r0.<com.parse.signpost.AbstractOAuthConsumer: com.parse.signpost.http.HttpParameters additionalParameters> = $r1;
+
+        return;
+    }
+
+    public void setMessageSigner(com.parse.signpost.signature.OAuthMessageSigner)
+    {
+        com.parse.signpost.AbstractOAuthConsumer r0;
+        com.parse.signpost.signature.OAuthMessageSigner $r1;
+        java.lang.String $r2;
+
+        r0 := @this: com.parse.signpost.AbstractOAuthConsumer;
+
+        $r1 := @parameter0: com.parse.signpost.signature.OAuthMessageSigner;
+
+        r0.<com.parse.signpost.AbstractOAuthConsumer: com.parse.signpost.signature.OAuthMessageSigner messageSigner> = $r1;
+
+        $r2 = r0.<com.parse.signpost.AbstractOAuthConsumer: java.lang.String consumerSecret>;
+
+        virtualinvoke $r1.<com.parse.signpost.signature.OAuthMessageSigner: void setConsumerSecret(java.lang.String)>($r2);
+
+        return;
+    }
+
+    public void setSendEmptyTokens(boolean)
+    {
+        com.parse.signpost.AbstractOAuthConsumer r0;
+        boolean $z0;
+
+        r0 := @this: com.parse.signpost.AbstractOAuthConsumer;
+
+        $z0 := @parameter0: boolean;
+
+        r0.<com.parse.signpost.AbstractOAuthConsumer: boolean sendEmptyTokens> = $z0;
+
+        return;
+    }
+
+    public void setSigningStrategy(com.parse.signpost.signature.SigningStrategy)
+    {
+        com.parse.signpost.AbstractOAuthConsumer r0;
+        com.parse.signpost.signature.SigningStrategy $r1;
+
+        r0 := @this: com.parse.signpost.AbstractOAuthConsumer;
+
+        $r1 := @parameter0: com.parse.signpost.signature.SigningStrategy;
+
+        r0.<com.parse.signpost.AbstractOAuthConsumer: com.parse.signpost.signature.SigningStrategy signingStrategy> = $r1;
+
+        return;
+    }
+
+    public void setTokenWithSecret(java.lang.String, java.lang.String)
+    {
+        com.parse.signpost.AbstractOAuthConsumer r0;
+        java.lang.String $r1, $r2;
+        com.parse.signpost.signature.OAuthMessageSigner $r3;
+
+        r0 := @this: com.parse.signpost.AbstractOAuthConsumer;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        r0.<com.parse.signpost.AbstractOAuthConsumer: java.lang.String token> = null;
+
+        $r3 = r0.<com.parse.signpost.AbstractOAuthConsumer: com.parse.signpost.signature.OAuthMessageSigner messageSigner>;
+
+        virtualinvoke $r3.<com.parse.signpost.signature.OAuthMessageSigner: void setTokenSecret(java.lang.String)>("");
+
+        return;
+    }
+
+    public com.parse.signpost.http.HttpRequest sign(com.parse.signpost.http.HttpRequest)
+    {
+        java.lang.Throwable $r7;
+        com.parse.signpost.AbstractOAuthConsumer r0;
+        com.parse.signpost.exception.OAuthExpectationFailedException $r8;
+        com.parse.signpost.signature.SigningStrategy $r6;
+        java.lang.Exception $r10;
+        com.parse.signpost.http.HttpParameters $r3, $r4;
+        com.parse.signpost.http.HttpRequest $r1;
+        com.parse.signpost.exception.OAuthCommunicationException $r9;
+        java.lang.String $r2;
+        com.parse.signpost.signature.OAuthMessageSigner $r5;
+
+        r0 := @this: com.parse.signpost.AbstractOAuthConsumer;
+
+        $r1 := @parameter0: com.parse.signpost.http.HttpRequest;
+
+        $r2 = r0.<com.parse.signpost.AbstractOAuthConsumer: java.lang.String consumerKey>;
+
+        if $r2 != null goto label01;
+
+        $r8 = new com.parse.signpost.exception.OAuthExpectationFailedException;
+
+        specialinvoke $r8.<com.parse.signpost.exception.OAuthExpectationFailedException: void <init>(java.lang.String)>("consumer key not set");
+
+        throw $r8;
+
+     label01:
+        $r2 = r0.<com.parse.signpost.AbstractOAuthConsumer: java.lang.String consumerSecret>;
+
+        if $r2 != null goto label02;
+
+        $r8 = new com.parse.signpost.exception.OAuthExpectationFailedException;
+
+        specialinvoke $r8.<com.parse.signpost.exception.OAuthExpectationFailedException: void <init>(java.lang.String)>("consumer secret not set");
+
+        throw $r8;
+
+     label02:
+        $r4 = new com.parse.signpost.http.HttpParameters;
+
+        specialinvoke $r4.<com.parse.signpost.http.HttpParameters: void <init>()>();
+
+        r0.<com.parse.signpost.AbstractOAuthConsumer: com.parse.signpost.http.HttpParameters requestParameters> = $r4;
+
+        $r3 = r0.<com.parse.signpost.AbstractOAuthConsumer: com.parse.signpost.http.HttpParameters additionalParameters>;
+
+        if $r3 == null goto label04;
+
+        $r3 = r0.<com.parse.signpost.AbstractOAuthConsumer: com.parse.signpost.http.HttpParameters requestParameters>;
+
+        $r4 = r0.<com.parse.signpost.AbstractOAuthConsumer: com.parse.signpost.http.HttpParameters additionalParameters>;
+
+     label03:
+        virtualinvoke $r3.<com.parse.signpost.http.HttpParameters: void putAll(java.util.Map,boolean)>($r4, 0);
+
+     label04:
+        $r3 = r0.<com.parse.signpost.AbstractOAuthConsumer: com.parse.signpost.http.HttpParameters requestParameters>;
+
+     label05:
+        virtualinvoke r0.<com.parse.signpost.AbstractOAuthConsumer: void collectHeaderParameters(com.parse.signpost.http.HttpRequest,com.parse.signpost.http.HttpParameters)>($r1, $r3);
+
+     label06:
+        $r3 = r0.<com.parse.signpost.AbstractOAuthConsumer: com.parse.signpost.http.HttpParameters requestParameters>;
+
+     label07:
+        virtualinvoke r0.<com.parse.signpost.AbstractOAuthConsumer: void collectQueryParameters(com.parse.signpost.http.HttpRequest,com.parse.signpost.http.HttpParameters)>($r1, $r3);
+
+     label08:
+        $r3 = r0.<com.parse.signpost.AbstractOAuthConsumer: com.parse.signpost.http.HttpParameters requestParameters>;
+
+     label09:
+        virtualinvoke r0.<com.parse.signpost.AbstractOAuthConsumer: void collectBodyParameters(com.parse.signpost.http.HttpRequest,com.parse.signpost.http.HttpParameters)>($r1, $r3);
+
+     label10:
+        $r3 = r0.<com.parse.signpost.AbstractOAuthConsumer: com.parse.signpost.http.HttpParameters requestParameters>;
+
+     label11:
+        virtualinvoke r0.<com.parse.signpost.AbstractOAuthConsumer: void completeOAuthParameters(com.parse.signpost.http.HttpParameters)>($r3);
+
+     label12:
+        $r3 = r0.<com.parse.signpost.AbstractOAuthConsumer: com.parse.signpost.http.HttpParameters requestParameters>;
+
+     label13:
+        virtualinvoke $r3.<com.parse.signpost.http.HttpParameters: java.util.SortedSet remove(java.lang.Object)>("oauth_signature");
+
+     label14:
+        $r5 = r0.<com.parse.signpost.AbstractOAuthConsumer: com.parse.signpost.signature.OAuthMessageSigner messageSigner>;
+
+        $r3 = r0.<com.parse.signpost.AbstractOAuthConsumer: com.parse.signpost.http.HttpParameters requestParameters>;
+
+        $r2 = virtualinvoke $r5.<com.parse.signpost.signature.OAuthMessageSigner: java.lang.String sign(com.parse.signpost.http.HttpRequest,com.parse.signpost.http.HttpParameters)>($r1, $r3);
+
+        staticinvoke <com.parse.signpost.OAuth: void debugOut(java.lang.String,java.lang.String)>("signature", $r2);
+
+        $r6 = r0.<com.parse.signpost.AbstractOAuthConsumer: com.parse.signpost.signature.SigningStrategy signingStrategy>;
+
+        $r3 = r0.<com.parse.signpost.AbstractOAuthConsumer: com.parse.signpost.http.HttpParameters requestParameters>;
+
+        interfaceinvoke $r6.<com.parse.signpost.signature.SigningStrategy: java.lang.String writeSignature(java.lang.String,com.parse.signpost.http.HttpRequest,com.parse.signpost.http.HttpParameters)>($r2, $r1, $r3);
+
+        $r2 = interfaceinvoke $r1.<com.parse.signpost.http.HttpRequest: java.lang.String getHeader(java.lang.String)>("Authorization");
+
+        staticinvoke <com.parse.signpost.OAuth: void debugOut(java.lang.String,java.lang.String)>("Auth header", $r2);
+
+        $r2 = interfaceinvoke $r1.<com.parse.signpost.http.HttpRequest: java.lang.String getRequestUrl()>();
+
+        staticinvoke <com.parse.signpost.OAuth: void debugOut(java.lang.String,java.lang.String)>("Request URL", $r2);
+
+        return $r1;
+
+     label15:
+        $r7 := @caughtexception;
+
+        $r9 = new com.parse.signpost.exception.OAuthCommunicationException;
+
+        $r10 = (java.lang.Exception) $r7;
+
+        specialinvoke $r9.<com.parse.signpost.exception.OAuthCommunicationException: void <init>(java.lang.Exception)>($r10);
+
+        throw $r9;
+
+        catch java.io.IOException from label03 to label04 with label15;
+        catch java.io.IOException from label05 to label06 with label15;
+        catch java.io.IOException from label07 to label08 with label15;
+        catch java.io.IOException from label09 to label10 with label15;
+        catch java.io.IOException from label11 to label12 with label15;
+        catch java.io.IOException from label13 to label14 with label15;
+    }
+
+    public com.parse.signpost.http.HttpRequest sign(java.lang.Object)
+    {
+        com.parse.signpost.http.HttpRequest $r2;
+        java.lang.Object $r1;
+        com.parse.signpost.AbstractOAuthConsumer r0;
+
+        r0 := @this: com.parse.signpost.AbstractOAuthConsumer;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 = virtualinvoke r0.<com.parse.signpost.AbstractOAuthConsumer: com.parse.signpost.http.HttpRequest wrap(java.lang.Object)>($r1);
+
+        $r2 = virtualinvoke r0.<com.parse.signpost.AbstractOAuthConsumer: com.parse.signpost.http.HttpRequest sign(com.parse.signpost.http.HttpRequest)>($r2);
+
+        return $r2;
+    }
+
+    public java.lang.String sign(java.lang.String)
+    {
+        com.parse.signpost.AbstractOAuthConsumer r0;
+        com.parse.signpost.signature.QueryStringSigningStrategy $r3;
+        java.lang.String $r1;
+        com.parse.signpost.signature.SigningStrategy $r2;
+        com.parse.signpost.basic.UrlStringRequestAdapter $r4;
+
+        r0 := @this: com.parse.signpost.AbstractOAuthConsumer;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r4 = new com.parse.signpost.basic.UrlStringRequestAdapter;
+
+        specialinvoke $r4.<com.parse.signpost.basic.UrlStringRequestAdapter: void <init>(java.lang.String)>($r1);
+
+        $r2 = r0.<com.parse.signpost.AbstractOAuthConsumer: com.parse.signpost.signature.SigningStrategy signingStrategy>;
+
+        $r3 = new com.parse.signpost.signature.QueryStringSigningStrategy;
+
+        specialinvoke $r3.<com.parse.signpost.signature.QueryStringSigningStrategy: void <init>()>();
+
+        r0.<com.parse.signpost.AbstractOAuthConsumer: com.parse.signpost.signature.SigningStrategy signingStrategy> = $r3;
+
+        virtualinvoke r0.<com.parse.signpost.AbstractOAuthConsumer: com.parse.signpost.http.HttpRequest sign(com.parse.signpost.http.HttpRequest)>($r4);
+
+        r0.<com.parse.signpost.AbstractOAuthConsumer: com.parse.signpost.signature.SigningStrategy signingStrategy> = $r2;
+
+        $r1 = interfaceinvoke $r4.<com.parse.signpost.http.HttpRequest: java.lang.String getRequestUrl()>();
+
+        return $r1;
+    }
+
+    protected abstract com.parse.signpost.http.HttpRequest wrap(java.lang.Object);
+
+    public static void <clinit>()
+    {
+        <com.parse.signpost.AbstractOAuthConsumer: long serialVersionUID> = 1L;
+
+        return;
+    }
+}

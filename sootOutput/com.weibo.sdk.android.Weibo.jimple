@@ -1,0 +1,621 @@
+public class com.weibo.sdk.android.Weibo extends java.lang.Object
+{
+    private static final int AUTH_CODE;
+    private static final int AUTH_ONCMPLT;
+    private static final int AUTH_ONRR;
+    private static final int AUTH_TOKEN;
+    private static final java.lang.String KEY_EXPIRES;
+    private static final java.lang.String KEY_REFRESHTOKEN;
+    private static final java.lang.String KEY_TOKEN;
+    private static final java.lang.String SCOPE_DIRECT_MESSAGES_READ;
+    private static final java.lang.String SCOPE_DIRECT_MESSAGES_WRITE;
+    private static final java.lang.String SCOPE_EMAIL;
+    private static final java.lang.String SCOPE_FOLLOW_APP_OFFICIAL_MICROBLOG;
+    private static final java.lang.String SCOPE_FRIENDSHIPS_GROUPS_READ;
+    private static final java.lang.String SCOPE_FRIENDSHIPS_GROUPS_WRITE;
+    private static final java.lang.String SCOPE_STATUSES_TO_ME_READ;
+    public static final java.lang.String TAG;
+    private static java.lang.String URL_OAUTH2_ACCESS_AUTHORIZE;
+    private static java.lang.String app_key;
+    private static java.lang.String app_secret;
+    private static boolean isWifi;
+    private static java.lang.String mPackagename;
+    private static com.weibo.sdk.android.Weibo mWeiboInstance;
+    private static java.lang.String mkeyHash;
+    private static java.lang.String redirecturl;
+    private static java.lang.String scope;
+    private com.weibo.sdk.android.Oauth2AccessToken accessToken;
+    private android.content.Context ct;
+    private android.os.Handler mWeiboHandler;
+    private com.weibo.sdk.android.WeiboAuthListener mlistener;
+
+    static void <clinit>()
+    {
+        <com.weibo.sdk.android.Weibo: java.lang.String TAG> = "WEIBO_SDK_LOGIN";
+
+        <com.weibo.sdk.android.Weibo: java.lang.String SCOPE_STATUSES_TO_ME_READ> = "statuses_to_me_read";
+
+        <com.weibo.sdk.android.Weibo: java.lang.String SCOPE_FRIENDSHIPS_GROUPS_WRITE> = "friendships_groups_write";
+
+        <com.weibo.sdk.android.Weibo: java.lang.String SCOPE_FRIENDSHIPS_GROUPS_READ> = "friendships_groups_read";
+
+        <com.weibo.sdk.android.Weibo: java.lang.String SCOPE_FOLLOW_APP_OFFICIAL_MICROBLOG> = "follow_app_official_microblog";
+
+        <com.weibo.sdk.android.Weibo: java.lang.String SCOPE_EMAIL> = "email";
+
+        <com.weibo.sdk.android.Weibo: java.lang.String SCOPE_DIRECT_MESSAGES_WRITE> = "direct_messages_write";
+
+        <com.weibo.sdk.android.Weibo: java.lang.String SCOPE_DIRECT_MESSAGES_READ> = "direct_messages_read";
+
+        <com.weibo.sdk.android.Weibo: java.lang.String KEY_TOKEN> = "access_token";
+
+        <com.weibo.sdk.android.Weibo: java.lang.String KEY_REFRESHTOKEN> = "refresh_token";
+
+        <com.weibo.sdk.android.Weibo: java.lang.String KEY_EXPIRES> = "expires_in";
+
+        <com.weibo.sdk.android.Weibo: int AUTH_TOKEN> = 1;
+
+        <com.weibo.sdk.android.Weibo: int AUTH_ONRR> = 1001;
+
+        <com.weibo.sdk.android.Weibo: int AUTH_ONCMPLT> = 1000;
+
+        <com.weibo.sdk.android.Weibo: int AUTH_CODE> = 0;
+
+        <com.weibo.sdk.android.Weibo: java.lang.String URL_OAUTH2_ACCESS_AUTHORIZE> = "https://open.weibo.cn/oauth2";
+
+        <com.weibo.sdk.android.Weibo: com.weibo.sdk.android.Weibo mWeiboInstance> = null;
+
+        <com.weibo.sdk.android.Weibo: java.lang.String app_key> = "";
+
+        <com.weibo.sdk.android.Weibo: java.lang.String redirecturl> = "";
+
+        <com.weibo.sdk.android.Weibo: java.lang.String scope> = "";
+
+        <com.weibo.sdk.android.Weibo: java.lang.String app_secret> = "";
+
+        <com.weibo.sdk.android.Weibo: boolean isWifi> = 0;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        com.weibo.sdk.android.Weibo r0;
+        com.weibo.sdk.android.Weibo$1 $r1;
+
+        r0 := @this: com.weibo.sdk.android.Weibo;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<com.weibo.sdk.android.Weibo: com.weibo.sdk.android.Oauth2AccessToken accessToken> = null;
+
+        $r1 = new com.weibo.sdk.android.Weibo$1;
+
+        specialinvoke $r1.<com.weibo.sdk.android.Weibo$1: void <init>(com.weibo.sdk.android.Weibo)>(r0);
+
+        r0.<com.weibo.sdk.android.Weibo: android.os.Handler mWeiboHandler> = $r1;
+
+        return;
+    }
+
+    private void FtchAccessToken(java.lang.String)
+    {
+        com.weibo.sdk.android.Weibo r0;
+        com.weibo.sdk.android.Weibo$3 $r3;
+        com.weibo.sdk.android.WeiboParameters r2;
+        java.lang.StringBuilder $r5;
+        java.lang.String $r1, $r4;
+
+        r0 := @this: com.weibo.sdk.android.Weibo;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r2 = new com.weibo.sdk.android.WeiboParameters;
+
+        specialinvoke r2.<com.weibo.sdk.android.WeiboParameters: void <init>()>();
+
+        $r4 = <com.weibo.sdk.android.Weibo: java.lang.String app_key>;
+
+        virtualinvoke r2.<com.weibo.sdk.android.WeiboParameters: void add(java.lang.String,java.lang.String)>("client_id", $r4);
+
+        $r4 = <com.weibo.sdk.android.Weibo: java.lang.String app_secret>;
+
+        virtualinvoke r2.<com.weibo.sdk.android.WeiboParameters: void add(java.lang.String,java.lang.String)>("client_secret", $r4);
+
+        virtualinvoke r2.<com.weibo.sdk.android.WeiboParameters: void add(java.lang.String,java.lang.String)>("grant_type", "authorization_code");
+
+        virtualinvoke r2.<com.weibo.sdk.android.WeiboParameters: void add(java.lang.String,java.lang.String)>("code", $r1);
+
+        $r1 = <com.weibo.sdk.android.Weibo: java.lang.String redirecturl>;
+
+        virtualinvoke r2.<com.weibo.sdk.android.WeiboParameters: void add(java.lang.String,java.lang.String)>("redirect_uri", $r1);
+
+        $r5 = new java.lang.StringBuilder;
+
+        $r1 = <com.weibo.sdk.android.Weibo: java.lang.String URL_OAUTH2_ACCESS_AUTHORIZE>;
+
+        $r1 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r1);
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>(java.lang.String)>($r1);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/access_token");
+
+        $r1 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = new com.weibo.sdk.android.Weibo$3;
+
+        specialinvoke $r3.<com.weibo.sdk.android.Weibo$3: void <init>(com.weibo.sdk.android.Weibo)>(r0);
+
+        staticinvoke <com.weibo.sdk.android.net.AsyncWeiboRunner: void request(java.lang.String,com.weibo.sdk.android.WeiboParameters,java.lang.String,com.weibo.sdk.android.net.RequestListener)>($r1, r2, "POST", $r3);
+
+        return;
+    }
+
+    private void KeepAccessToken(android.os.Bundle, com.weibo.sdk.android.WeiboAuthListener)
+    {
+        com.weibo.sdk.android.Oauth2AccessToken r3;
+        com.weibo.sdk.android.WeiboException r4;
+        android.content.Context $r7;
+        android.os.Bundle $r1;
+        com.weibo.sdk.android.WeiboAuthListener $r2;
+        com.weibo.sdk.android.Weibo r0;
+        java.lang.String $r5, $r6;
+        boolean $z0;
+
+        r0 := @this: com.weibo.sdk.android.Weibo;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        $r2 := @parameter1: com.weibo.sdk.android.WeiboAuthListener;
+
+        $r5 = virtualinvoke $r1.<android.os.Bundle: java.lang.String getString(java.lang.String)>("code");
+
+        if $r5 == null goto label1;
+
+        interfaceinvoke $r2.<com.weibo.sdk.android.WeiboAuthListener: void onComplete(android.os.Bundle)>($r1);
+
+        return;
+
+     label1:
+        $r5 = virtualinvoke $r1.<android.os.Bundle: java.lang.String getString(java.lang.String)>("access_token");
+
+        $r6 = virtualinvoke $r1.<android.os.Bundle: java.lang.String getString(java.lang.String)>("expires_in");
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r5);
+
+        if $z0 != 0 goto label2;
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r6);
+
+        if $z0 == 0 goto label3;
+
+     label2:
+        r4 = new com.weibo.sdk.android.WeiboException;
+
+        specialinvoke r4.<com.weibo.sdk.android.WeiboException: void <init>(java.lang.String)>("\u6388\u6743\u5931\u8d25\uff01");
+
+        interfaceinvoke $r2.<com.weibo.sdk.android.WeiboAuthListener: void onWeiboException(com.weibo.sdk.android.WeiboException)>(r4);
+
+        return;
+
+     label3:
+        r3 = new com.weibo.sdk.android.Oauth2AccessToken;
+
+        specialinvoke r3.<com.weibo.sdk.android.Oauth2AccessToken: void <init>(java.lang.String,java.lang.String)>($r5, $r6);
+
+        $z0 = virtualinvoke r3.<com.weibo.sdk.android.Oauth2AccessToken: boolean isSessionValid()>();
+
+        if $z0 == 0 goto label4;
+
+        $r7 = r0.<com.weibo.sdk.android.Weibo: android.content.Context ct>;
+
+        staticinvoke <com.weibo.sdk.android.util.AccessTokenKeeper: void keepAccessToken(android.content.Context,com.weibo.sdk.android.Oauth2AccessToken)>($r7, r3);
+
+        interfaceinvoke $r2.<com.weibo.sdk.android.WeiboAuthListener: void onComplete(android.os.Bundle)>($r1);
+
+     label4:
+        return;
+    }
+
+    static com.weibo.sdk.android.WeiboAuthListener access$0(com.weibo.sdk.android.Weibo)
+    {
+        com.weibo.sdk.android.Weibo $r0;
+        com.weibo.sdk.android.WeiboAuthListener r1;
+
+        $r0 := @parameter0: com.weibo.sdk.android.Weibo;
+
+        r1 = $r0.<com.weibo.sdk.android.Weibo: com.weibo.sdk.android.WeiboAuthListener mlistener>;
+
+        return r1;
+    }
+
+    static void access$1(com.weibo.sdk.android.Weibo, java.lang.String)
+    {
+        com.weibo.sdk.android.Weibo $r0;
+        java.lang.String $r1;
+
+        $r0 := @parameter0: com.weibo.sdk.android.Weibo;
+
+        $r1 := @parameter1: java.lang.String;
+
+        specialinvoke $r0.<com.weibo.sdk.android.Weibo: void FtchAccessToken(java.lang.String)>($r1);
+
+        return;
+    }
+
+    static com.weibo.sdk.android.Oauth2AccessToken access$2(com.weibo.sdk.android.Weibo)
+    {
+        com.weibo.sdk.android.Weibo $r0;
+        com.weibo.sdk.android.Oauth2AccessToken r1;
+
+        $r0 := @parameter0: com.weibo.sdk.android.Weibo;
+
+        r1 = $r0.<com.weibo.sdk.android.Weibo: com.weibo.sdk.android.Oauth2AccessToken accessToken>;
+
+        return r1;
+    }
+
+    static void access$3(com.weibo.sdk.android.Weibo, com.weibo.sdk.android.Oauth2AccessToken)
+    {
+        com.weibo.sdk.android.Weibo $r0;
+        com.weibo.sdk.android.Oauth2AccessToken $r1;
+
+        $r0 := @parameter0: com.weibo.sdk.android.Weibo;
+
+        $r1 := @parameter1: com.weibo.sdk.android.Oauth2AccessToken;
+
+        $r0.<com.weibo.sdk.android.Weibo: com.weibo.sdk.android.Oauth2AccessToken accessToken> = $r1;
+
+        return;
+    }
+
+    static void access$4(com.weibo.sdk.android.Weibo, int, android.os.Bundle, java.lang.Exception)
+    {
+        com.weibo.sdk.android.Weibo $r0;
+        android.os.Bundle $r1;
+        int $i0;
+        java.lang.Exception $r2;
+
+        $r0 := @parameter0: com.weibo.sdk.android.Weibo;
+
+        $i0 := @parameter1: int;
+
+        $r1 := @parameter2: android.os.Bundle;
+
+        $r2 := @parameter3: java.lang.Exception;
+
+        specialinvoke $r0.<com.weibo.sdk.android.Weibo: void handleListItemEvent(int,android.os.Bundle,java.lang.Exception)>($i0, $r1, null);
+
+        return;
+    }
+
+    public static java.lang.String getApp_key()
+    {
+        java.lang.String r0;
+
+        r0 = <com.weibo.sdk.android.Weibo: java.lang.String app_key>;
+
+        return r0;
+    }
+
+    public static com.weibo.sdk.android.Weibo getInstance(java.lang.String, java.lang.String, java.lang.String)
+    {
+        java.lang.Throwable $r4;
+        java.lang.RuntimeException $r3;
+        com.weibo.sdk.android.Weibo $r5;
+        java.lang.String $r0, $r1, $r2;
+        boolean $z0, $z1;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 := @parameter2: java.lang.String;
+
+        entermonitor class "Lcom/weibo/sdk/android/Weibo;";
+
+     label1:
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r0);
+
+        $z1 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r1);
+
+        $z0 = $z0 | $z1;
+
+        if $z0 == 0 goto label3;
+
+        $r3 = new java.lang.RuntimeException;
+
+        specialinvoke $r3.<java.lang.RuntimeException: void <init>(java.lang.String)>("Parameter is not complete, please fill complete appkey and redirectUrl.");
+
+        throw $r3;
+
+     label2:
+        $r4 := @caughtexception;
+
+        exitmonitor class "Lcom/weibo/sdk/android/Weibo;";
+
+        throw $r4;
+
+     label3:
+        $r5 = <com.weibo.sdk.android.Weibo: com.weibo.sdk.android.Weibo mWeiboInstance>;
+
+        if $r5 != null goto label4;
+
+        $r5 = new com.weibo.sdk.android.Weibo;
+
+        specialinvoke $r5.<com.weibo.sdk.android.Weibo: void <init>()>();
+
+        <com.weibo.sdk.android.Weibo: com.weibo.sdk.android.Weibo mWeiboInstance> = $r5;
+
+     label4:
+        <com.weibo.sdk.android.Weibo: java.lang.String app_key> = $r0;
+
+        <com.weibo.sdk.android.Weibo: java.lang.String redirecturl> = $r1;
+
+        <com.weibo.sdk.android.Weibo: java.lang.String scope> = $r2;
+
+        $r5 = <com.weibo.sdk.android.Weibo: com.weibo.sdk.android.Weibo mWeiboInstance>;
+
+     label5:
+        exitmonitor class "Lcom/weibo/sdk/android/Weibo;";
+
+        return $r5;
+
+        catch java.lang.Throwable from label1 to label2 with label2;
+        catch java.lang.Throwable from label3 to label5 with label2;
+    }
+
+    public static java.lang.String getRedirecturl()
+    {
+        java.lang.String r0;
+
+        r0 = <com.weibo.sdk.android.Weibo: java.lang.String redirecturl>;
+
+        return r0;
+    }
+
+    public static java.lang.String getScope()
+    {
+        java.lang.String r0;
+
+        r0 = <com.weibo.sdk.android.Weibo: java.lang.String scope>;
+
+        return r0;
+    }
+
+    private void handleListItemEvent(int, android.os.Bundle, java.lang.Exception)
+    {
+        com.weibo.sdk.android.Weibo r0;
+        android.os.Bundle $r1;
+        android.os.Message $r4;
+        android.os.Handler $r3;
+        int $i0;
+        java.lang.Exception $r2;
+
+        r0 := @this: com.weibo.sdk.android.Weibo;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: android.os.Bundle;
+
+        $r2 := @parameter2: java.lang.Exception;
+
+        $r4 = staticinvoke <android.os.Message: android.os.Message obtain()>();
+
+        $r4.<android.os.Message: int what> = $i0;
+
+        lookupswitch($i0)
+        {
+            case 1000: goto label2;
+            case 1001: goto label3;
+            default: goto label1;
+        };
+
+     label1:
+        $r3 = r0.<com.weibo.sdk.android.Weibo: android.os.Handler mWeiboHandler>;
+
+        virtualinvoke $r3.<android.os.Handler: boolean sendMessage(android.os.Message)>($r4);
+
+        return;
+
+     label2:
+        if $r1 == null goto label1;
+
+        virtualinvoke $r4.<android.os.Message: void setData(android.os.Bundle)>($r1);
+
+        goto label1;
+
+     label3:
+        if $r1 == null goto label1;
+
+        virtualinvoke $r4.<android.os.Message: void setData(android.os.Bundle)>($r1);
+
+        goto label1;
+    }
+
+    public static boolean isWifi()
+    {
+        boolean z0;
+
+        z0 = <com.weibo.sdk.android.Weibo: boolean isWifi>;
+
+        return z0;
+    }
+
+    public static void setWifi(boolean)
+    {
+        boolean $z0;
+
+        $z0 := @parameter0: boolean;
+
+        <com.weibo.sdk.android.Weibo: boolean isWifi> = $z0;
+
+        return;
+    }
+
+    private void startDialog(android.content.Context, com.weibo.sdk.android.WeiboParameters, com.weibo.sdk.android.WeiboAuthListener)
+    {
+        android.content.Context $r1;
+        com.weibo.sdk.android.WeiboParameters $r2;
+        com.weibo.sdk.android.WeiboAuthListener $r3;
+        com.weibo.sdk.android.Weibo r0;
+        int $i0;
+        java.lang.StringBuilder $r5;
+        java.lang.String $r4;
+        com.weibo.sdk.android.WeiboDialog $r6;
+
+        r0 := @this: com.weibo.sdk.android.Weibo;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: com.weibo.sdk.android.WeiboParameters;
+
+        $r3 := @parameter2: com.weibo.sdk.android.WeiboAuthListener;
+
+        $r4 = <com.weibo.sdk.android.Weibo: java.lang.String app_key>;
+
+        virtualinvoke $r2.<com.weibo.sdk.android.WeiboParameters: void add(java.lang.String,java.lang.String)>("client_id", $r4);
+
+        virtualinvoke $r2.<com.weibo.sdk.android.WeiboParameters: void add(java.lang.String,java.lang.String)>("response_type", "code");
+
+        $r4 = <com.weibo.sdk.android.Weibo: java.lang.String redirecturl>;
+
+        virtualinvoke $r2.<com.weibo.sdk.android.WeiboParameters: void add(java.lang.String,java.lang.String)>("redirect_uri", $r4);
+
+        virtualinvoke $r2.<com.weibo.sdk.android.WeiboParameters: void add(java.lang.String,java.lang.String)>("display", "mobile");
+
+        $r4 = <com.weibo.sdk.android.Weibo: java.lang.String scope>;
+
+        virtualinvoke $r2.<com.weibo.sdk.android.WeiboParameters: void add(java.lang.String,java.lang.String)>("scope", $r4);
+
+        $r4 = <com.weibo.sdk.android.Weibo: java.lang.String mPackagename>;
+
+        virtualinvoke $r2.<com.weibo.sdk.android.WeiboParameters: void add(java.lang.String,java.lang.String)>("packagename", $r4);
+
+        $r4 = <com.weibo.sdk.android.Weibo: java.lang.String mPackagename>;
+
+        $r4 = staticinvoke <com.weibo.sdk.android.util.Utility: java.lang.String getSign(android.content.Context,java.lang.String)>($r1, $r4);
+
+        virtualinvoke $r2.<com.weibo.sdk.android.WeiboParameters: void add(java.lang.String,java.lang.String)>("key_hash", $r4);
+
+        $r5 = new java.lang.StringBuilder;
+
+        $r4 = <com.weibo.sdk.android.Weibo: java.lang.String URL_OAUTH2_ACCESS_AUTHORIZE>;
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r4);
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/authorize?");
+
+        $r4 = staticinvoke <com.weibo.sdk.android.util.Utility: java.lang.String encodeUrl(com.weibo.sdk.android.WeiboParameters)>($r2);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $i0 = virtualinvoke $r1.<android.content.Context: int checkCallingOrSelfPermission(java.lang.String)>("android.permission.INTERNET");
+
+        if $i0 == 0 goto label1;
+
+        staticinvoke <com.weibo.sdk.android.util.Utility: void showAlert(android.content.Context,java.lang.String,java.lang.String)>($r1, "Error", "Application requires permission to access the Internet");
+
+        return;
+
+     label1:
+        $r6 = new com.weibo.sdk.android.WeiboDialog;
+
+        specialinvoke $r6.<com.weibo.sdk.android.WeiboDialog: void <init>(android.content.Context,java.lang.String,com.weibo.sdk.android.WeiboAuthListener)>($r1, $r4, $r3);
+
+        virtualinvoke $r6.<com.weibo.sdk.android.WeiboDialog: void show()>();
+
+        return;
+    }
+
+    public void anthorize(android.content.Context, com.weibo.sdk.android.WeiboAuthListener)
+    {
+        com.weibo.sdk.android.Weibo r0;
+        android.content.Context $r1, $r3;
+        com.weibo.sdk.android.WeiboAuthListener $r2;
+        java.lang.String $r4;
+        boolean $z0;
+
+        r0 := @this: com.weibo.sdk.android.Weibo;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: com.weibo.sdk.android.WeiboAuthListener;
+
+        r0.<com.weibo.sdk.android.Weibo: com.weibo.sdk.android.WeiboAuthListener mlistener> = $r2;
+
+        r0.<com.weibo.sdk.android.Weibo: android.content.Context ct> = $r1;
+
+        $r3 = r0.<com.weibo.sdk.android.Weibo: android.content.Context ct>;
+
+        $r3 = virtualinvoke $r3.<android.content.Context: android.content.Context getApplicationContext()>();
+
+        $r4 = virtualinvoke $r3.<android.content.Context: java.lang.String getPackageName()>();
+
+        <com.weibo.sdk.android.Weibo: java.lang.String mPackagename> = $r4;
+
+        $r3 = r0.<com.weibo.sdk.android.Weibo: android.content.Context ct>;
+
+        $z0 = staticinvoke <com.weibo.sdk.android.util.Utility: boolean isWifi(android.content.Context)>($r3);
+
+        <com.weibo.sdk.android.Weibo: boolean isWifi> = $z0;
+
+        virtualinvoke r0.<com.weibo.sdk.android.Weibo: void startAuthDialog(android.content.Context,com.weibo.sdk.android.WeiboAuthListener,int)>($r1, $r2, 0);
+
+        return;
+    }
+
+    public void setupConsumerConfig(java.lang.String, java.lang.String)
+    {
+        com.weibo.sdk.android.Weibo r0;
+        java.lang.String $r1, $r2;
+
+        r0 := @this: com.weibo.sdk.android.Weibo;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        <com.weibo.sdk.android.Weibo: java.lang.String app_key> = $r1;
+
+        <com.weibo.sdk.android.Weibo: java.lang.String redirecturl> = $r2;
+
+        return;
+    }
+
+    public void startAuthDialog(android.content.Context, com.weibo.sdk.android.WeiboAuthListener, int)
+    {
+        com.weibo.sdk.android.Weibo r0;
+        android.content.Context $r1;
+        com.weibo.sdk.android.WeiboParameters r3;
+        com.weibo.sdk.android.Weibo$2 $r4;
+        com.weibo.sdk.android.WeiboAuthListener $r2;
+        int $i0;
+
+        r0 := @this: com.weibo.sdk.android.Weibo;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: com.weibo.sdk.android.WeiboAuthListener;
+
+        $i0 := @parameter2: int;
+
+        r3 = new com.weibo.sdk.android.WeiboParameters;
+
+        specialinvoke r3.<com.weibo.sdk.android.WeiboParameters: void <init>()>();
+
+        staticinvoke <android.webkit.CookieSyncManager: android.webkit.CookieSyncManager createInstance(android.content.Context)>($r1);
+
+        $r4 = new com.weibo.sdk.android.Weibo$2;
+
+        specialinvoke $r4.<com.weibo.sdk.android.Weibo$2: void <init>(com.weibo.sdk.android.Weibo,int,com.weibo.sdk.android.WeiboAuthListener)>(r0, 0, $r2);
+
+        specialinvoke r0.<com.weibo.sdk.android.Weibo: void startDialog(android.content.Context,com.weibo.sdk.android.WeiboParameters,com.weibo.sdk.android.WeiboAuthListener)>($r1, r3, $r4);
+
+        return;
+    }
+}

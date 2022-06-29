@@ -1,0 +1,838 @@
+public class proguard.optimize.peephole.TargetClassChanger extends proguard.classfile.util.SimplifiedVisitor implements proguard.classfile.visitor.ClassVisitor, proguard.classfile.constant.visitor.ConstantVisitor, proguard.classfile.visitor.MemberVisitor, proguard.classfile.attribute.visitor.AttributeVisitor, proguard.classfile.attribute.visitor.LocalVariableInfoVisitor, proguard.classfile.attribute.visitor.LocalVariableTypeInfoVisitor, proguard.classfile.attribute.'annotation'.visitor.AnnotationVisitor, proguard.classfile.attribute.'annotation'.visitor.ElementValueVisitor
+{
+
+    public void <init>()
+    {
+        proguard.optimize.peephole.TargetClassChanger r0;
+
+        r0 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        specialinvoke r0.<proguard.classfile.util.SimplifiedVisitor: void <init>()>();
+
+        return;
+    }
+
+    private int addNewClassConstant(proguard.classfile.ProgramClass, java.lang.String, proguard.classfile.Clazz)
+    {
+        proguard.classfile.constant.ClassConstant $r4;
+        proguard.optimize.peephole.TargetClassChanger r0;
+        proguard.classfile.Clazz $r3;
+        int $i0;
+        java.lang.String $r2;
+        proguard.classfile.editor.ConstantPoolEditor $r5;
+        proguard.classfile.ProgramClass $r1;
+
+        r0 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        $r1 := @parameter0: proguard.classfile.ProgramClass;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: proguard.classfile.Clazz;
+
+        $r5 = new proguard.classfile.editor.ConstantPoolEditor;
+
+        specialinvoke $r5.<proguard.classfile.editor.ConstantPoolEditor: void <init>(proguard.classfile.ProgramClass)>($r1);
+
+        $i0 = virtualinvoke $r5.<proguard.classfile.editor.ConstantPoolEditor: int addUtf8Constant(java.lang.String)>($r2);
+
+        $r4 = new proguard.classfile.constant.ClassConstant;
+
+        specialinvoke $r4.<proguard.classfile.constant.ClassConstant: void <init>(int,proguard.classfile.Clazz)>($i0, $r3);
+
+        $i0 = virtualinvoke $r5.<proguard.classfile.editor.ConstantPoolEditor: int addConstant(proguard.classfile.constant.Constant)>($r4);
+
+        return $i0;
+    }
+
+    private proguard.classfile.Clazz updateReferencedClass(proguard.classfile.Clazz)
+    {
+        proguard.optimize.peephole.TargetClassChanger r0;
+        proguard.classfile.Clazz $r1, $r2;
+
+        r0 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        if $r1 != null goto label1;
+
+        return null;
+
+     label1:
+        $r2 = staticinvoke <proguard.optimize.peephole.ClassMerger: proguard.classfile.Clazz getTargetClass(proguard.classfile.Clazz)>($r1);
+
+        if $r2 != null goto label2;
+
+        return $r1;
+
+     label2:
+        return $r2;
+    }
+
+    private void updateReferencedClasses(proguard.classfile.Clazz[])
+    {
+        proguard.classfile.Clazz[] $r1;
+        proguard.optimize.peephole.TargetClassChanger r0;
+        proguard.classfile.Clazz $r2;
+        int $i0, $i1;
+
+        r0 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        $r1 := @parameter0: proguard.classfile.Clazz[];
+
+        if $r1 != null goto label1;
+
+        return;
+
+     label1:
+        $i0 = 0;
+
+     label2:
+        $i1 = lengthof $r1;
+
+        if $i0 >= $i1 goto label3;
+
+        $r2 = $r1[$i0];
+
+        $r2 = specialinvoke r0.<proguard.optimize.peephole.TargetClassChanger: proguard.classfile.Clazz updateReferencedClass(proguard.classfile.Clazz)>($r2);
+
+        $r1[$i0] = $r2;
+
+        $i0 = $i0 + 1;
+
+        goto label2;
+
+     label3:
+        return;
+    }
+
+    private proguard.classfile.Member updateReferencedMember(proguard.classfile.Member, java.lang.String, java.lang.String, proguard.classfile.Clazz)
+    {
+        proguard.classfile.Field $r5;
+        proguard.classfile.Member $r1;
+        proguard.optimize.peephole.TargetClassChanger r0;
+        proguard.classfile.Clazz $r4;
+        proguard.classfile.Method $r6;
+        java.lang.String $r2, $r3;
+        boolean $z0;
+
+        r0 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        $r1 := @parameter0: proguard.classfile.Member;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: java.lang.String;
+
+        $r4 := @parameter3: proguard.classfile.Clazz;
+
+        if $r1 != null goto label1;
+
+        return null;
+
+     label1:
+        $z0 = $r1 instanceof proguard.classfile.Field;
+
+        if $z0 == 0 goto label2;
+
+        $r5 = interfaceinvoke $r4.<proguard.classfile.Clazz: proguard.classfile.Field findField(java.lang.String,java.lang.String)>($r2, $r3);
+
+        return $r5;
+
+     label2:
+        $r6 = interfaceinvoke $r4.<proguard.classfile.Clazz: proguard.classfile.Method findMethod(java.lang.String,java.lang.String)>($r2, $r3);
+
+        return $r6;
+    }
+
+    public void visitAnnotation(proguard.classfile.Clazz, proguard.classfile.attribute.'annotation'.Annotation)
+    {
+        proguard.classfile.attribute.'annotation'.Annotation $r2;
+        proguard.classfile.Clazz[] $r3;
+        proguard.optimize.peephole.TargetClassChanger r0;
+        proguard.classfile.Clazz $r1;
+
+        r0 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.'annotation'.Annotation;
+
+        $r3 = $r2.<proguard.classfile.attribute.'annotation'.Annotation: proguard.classfile.Clazz[] referencedClasses>;
+
+        specialinvoke r0.<proguard.optimize.peephole.TargetClassChanger: void updateReferencedClasses(proguard.classfile.Clazz[])>($r3);
+
+        virtualinvoke $r2.<proguard.classfile.attribute.'annotation'.Annotation: void elementValuesAccept(proguard.classfile.Clazz,proguard.classfile.attribute.'annotation'.visitor.ElementValueVisitor)>($r1, r0);
+
+        return;
+    }
+
+    public void visitAnnotationDefaultAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.'annotation'.AnnotationDefaultAttribute)
+    {
+        proguard.optimize.peephole.TargetClassChanger r0;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.Method $r2;
+        proguard.classfile.attribute.'annotation'.AnnotationDefaultAttribute $r3;
+
+        r0 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.'annotation'.AnnotationDefaultAttribute;
+
+        virtualinvoke $r3.<proguard.classfile.attribute.'annotation'.AnnotationDefaultAttribute: void defaultValueAccept(proguard.classfile.Clazz,proguard.classfile.attribute.'annotation'.visitor.ElementValueVisitor)>($r1, r0);
+
+        return;
+    }
+
+    public void visitAnnotationElementValue(proguard.classfile.Clazz, proguard.classfile.attribute.'annotation'.Annotation, proguard.classfile.attribute.'annotation'.AnnotationElementValue)
+    {
+        proguard.classfile.attribute.'annotation'.Annotation $r2;
+        proguard.optimize.peephole.TargetClassChanger r0;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.'annotation'.AnnotationElementValue $r3;
+
+        r0 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.'annotation'.Annotation;
+
+        $r3 := @parameter2: proguard.classfile.attribute.'annotation'.AnnotationElementValue;
+
+        virtualinvoke r0.<proguard.optimize.peephole.TargetClassChanger: void visitAnyElementValue(proguard.classfile.Clazz,proguard.classfile.attribute.'annotation'.Annotation,proguard.classfile.attribute.'annotation'.ElementValue)>($r1, $r2, $r3);
+
+        virtualinvoke $r3.<proguard.classfile.attribute.'annotation'.AnnotationElementValue: void annotationAccept(proguard.classfile.Clazz,proguard.classfile.attribute.'annotation'.visitor.AnnotationVisitor)>($r1, r0);
+
+        return;
+    }
+
+    public void visitAnyAnnotationsAttribute(proguard.classfile.Clazz, proguard.classfile.attribute.'annotation'.AnnotationsAttribute)
+    {
+        proguard.classfile.attribute.'annotation'.AnnotationsAttribute $r2;
+        proguard.optimize.peephole.TargetClassChanger r0;
+        proguard.classfile.Clazz $r1;
+
+        r0 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.'annotation'.AnnotationsAttribute;
+
+        virtualinvoke $r2.<proguard.classfile.attribute.'annotation'.AnnotationsAttribute: void annotationsAccept(proguard.classfile.Clazz,proguard.classfile.attribute.'annotation'.visitor.AnnotationVisitor)>($r1, r0);
+
+        return;
+    }
+
+    public void visitAnyAttribute(proguard.classfile.Clazz, proguard.classfile.attribute.Attribute)
+    {
+        proguard.optimize.peephole.TargetClassChanger r0;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.Attribute $r2;
+
+        r0 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.Attribute;
+
+        return;
+    }
+
+    public void visitAnyConstant(proguard.classfile.Clazz, proguard.classfile.constant.Constant)
+    {
+        proguard.optimize.peephole.TargetClassChanger r0;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.constant.Constant $r2;
+
+        r0 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.constant.Constant;
+
+        return;
+    }
+
+    public void visitAnyElementValue(proguard.classfile.Clazz, proguard.classfile.attribute.'annotation'.Annotation, proguard.classfile.attribute.'annotation'.ElementValue)
+    {
+        proguard.classfile.attribute.'annotation'.Annotation $r1;
+        proguard.classfile.Member $r8;
+        proguard.optimize.peephole.TargetClassChanger r3;
+        proguard.classfile.attribute.'annotation'.ElementValue $r2;
+        proguard.classfile.Clazz $r0, $r4, $r5;
+        proguard.classfile.Method $r6;
+        java.lang.String $r7;
+
+        r3 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        $r0 := @parameter0: proguard.classfile.Clazz;
+
+        $r1 := @parameter1: proguard.classfile.attribute.'annotation'.Annotation;
+
+        $r2 := @parameter2: proguard.classfile.attribute.'annotation'.ElementValue;
+
+        $r4 = $r2.<proguard.classfile.attribute.'annotation'.ElementValue: proguard.classfile.Clazz referencedClass>;
+
+        $r5 = specialinvoke r3.<proguard.optimize.peephole.TargetClassChanger: proguard.classfile.Clazz updateReferencedClass(proguard.classfile.Clazz)>($r4);
+
+        if $r4 == $r5 goto label1;
+
+        $r2.<proguard.classfile.attribute.'annotation'.ElementValue: proguard.classfile.Clazz referencedClass> = $r5;
+
+        $r6 = $r2.<proguard.classfile.attribute.'annotation'.ElementValue: proguard.classfile.Method referencedMethod>;
+
+        $r7 = virtualinvoke $r2.<proguard.classfile.attribute.'annotation'.ElementValue: java.lang.String getMethodName(proguard.classfile.Clazz)>($r0);
+
+        $r8 = specialinvoke r3.<proguard.optimize.peephole.TargetClassChanger: proguard.classfile.Member updateReferencedMember(proguard.classfile.Member,java.lang.String,java.lang.String,proguard.classfile.Clazz)>($r6, $r7, null, $r5);
+
+        $r6 = (proguard.classfile.Method) $r8;
+
+        $r2.<proguard.classfile.attribute.'annotation'.ElementValue: proguard.classfile.Method referencedMethod> = $r6;
+
+     label1:
+        return;
+    }
+
+    public void visitAnyParameterAnnotationsAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.'annotation'.ParameterAnnotationsAttribute)
+    {
+        proguard.optimize.peephole.TargetClassChanger r0;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.Method $r2;
+        proguard.classfile.attribute.'annotation'.ParameterAnnotationsAttribute $r3;
+
+        r0 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.'annotation'.ParameterAnnotationsAttribute;
+
+        virtualinvoke $r3.<proguard.classfile.attribute.'annotation'.ParameterAnnotationsAttribute: void annotationsAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.'annotation'.visitor.AnnotationVisitor)>($r1, $r2, r0);
+
+        return;
+    }
+
+    public void visitAnyRefConstant(proguard.classfile.Clazz, proguard.classfile.constant.RefConstant)
+    {
+        proguard.classfile.constant.RefConstant $r2;
+        proguard.classfile.Member $r5;
+        proguard.optimize.peephole.TargetClassChanger r0;
+        proguard.classfile.Clazz $r1, $r3, $r4;
+        java.lang.String $r6, $r7;
+
+        r0 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.constant.RefConstant;
+
+        $r3 = $r2.<proguard.classfile.constant.RefConstant: proguard.classfile.Clazz referencedClass>;
+
+        $r4 = specialinvoke r0.<proguard.optimize.peephole.TargetClassChanger: proguard.classfile.Clazz updateReferencedClass(proguard.classfile.Clazz)>($r3);
+
+        if $r3 == $r4 goto label1;
+
+        $r2.<proguard.classfile.constant.RefConstant: proguard.classfile.Clazz referencedClass> = $r4;
+
+        $r5 = $r2.<proguard.classfile.constant.RefConstant: proguard.classfile.Member referencedMember>;
+
+        $r6 = virtualinvoke $r2.<proguard.classfile.constant.RefConstant: java.lang.String getName(proguard.classfile.Clazz)>($r1);
+
+        $r7 = virtualinvoke $r2.<proguard.classfile.constant.RefConstant: java.lang.String getType(proguard.classfile.Clazz)>($r1);
+
+        $r5 = specialinvoke r0.<proguard.optimize.peephole.TargetClassChanger: proguard.classfile.Member updateReferencedMember(proguard.classfile.Member,java.lang.String,java.lang.String,proguard.classfile.Clazz)>($r5, $r6, $r7, $r4);
+
+        $r2.<proguard.classfile.constant.RefConstant: proguard.classfile.Member referencedMember> = $r5;
+
+     label1:
+        return;
+    }
+
+    public void visitArrayElementValue(proguard.classfile.Clazz, proguard.classfile.attribute.'annotation'.Annotation, proguard.classfile.attribute.'annotation'.ArrayElementValue)
+    {
+        proguard.classfile.attribute.'annotation'.Annotation $r2;
+        proguard.optimize.peephole.TargetClassChanger r0;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.'annotation'.ArrayElementValue $r3;
+
+        r0 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.'annotation'.Annotation;
+
+        $r3 := @parameter2: proguard.classfile.attribute.'annotation'.ArrayElementValue;
+
+        virtualinvoke r0.<proguard.optimize.peephole.TargetClassChanger: void visitAnyElementValue(proguard.classfile.Clazz,proguard.classfile.attribute.'annotation'.Annotation,proguard.classfile.attribute.'annotation'.ElementValue)>($r1, $r2, $r3);
+
+        virtualinvoke $r3.<proguard.classfile.attribute.'annotation'.ArrayElementValue: void elementValuesAccept(proguard.classfile.Clazz,proguard.classfile.attribute.'annotation'.Annotation,proguard.classfile.attribute.'annotation'.visitor.ElementValueVisitor)>($r1, $r2, r0);
+
+        return;
+    }
+
+    public void visitClassConstant(proguard.classfile.Clazz, proguard.classfile.constant.ClassConstant)
+    {
+        proguard.classfile.constant.ClassConstant $r2;
+        proguard.optimize.peephole.TargetClassChanger r0;
+        proguard.classfile.Clazz $r1;
+
+        r0 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.constant.ClassConstant;
+
+        $r1 = $r2.<proguard.classfile.constant.ClassConstant: proguard.classfile.Clazz referencedClass>;
+
+        $r1 = specialinvoke r0.<proguard.optimize.peephole.TargetClassChanger: proguard.classfile.Clazz updateReferencedClass(proguard.classfile.Clazz)>($r1);
+
+        $r2.<proguard.classfile.constant.ClassConstant: proguard.classfile.Clazz referencedClass> = $r1;
+
+        return;
+    }
+
+    public void visitClassElementValue(proguard.classfile.Clazz, proguard.classfile.attribute.'annotation'.Annotation, proguard.classfile.attribute.'annotation'.ClassElementValue)
+    {
+        proguard.classfile.attribute.'annotation'.Annotation $r2;
+        proguard.classfile.Clazz[] $r4;
+        proguard.optimize.peephole.TargetClassChanger r0;
+        proguard.classfile.attribute.'annotation'.ClassElementValue $r3;
+        proguard.classfile.Clazz $r1;
+
+        r0 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.'annotation'.Annotation;
+
+        $r3 := @parameter2: proguard.classfile.attribute.'annotation'.ClassElementValue;
+
+        virtualinvoke r0.<proguard.optimize.peephole.TargetClassChanger: void visitAnyElementValue(proguard.classfile.Clazz,proguard.classfile.attribute.'annotation'.Annotation,proguard.classfile.attribute.'annotation'.ElementValue)>($r1, $r2, $r3);
+
+        $r4 = $r3.<proguard.classfile.attribute.'annotation'.ClassElementValue: proguard.classfile.Clazz[] referencedClasses>;
+
+        specialinvoke r0.<proguard.optimize.peephole.TargetClassChanger: void updateReferencedClasses(proguard.classfile.Clazz[])>($r4);
+
+        return;
+    }
+
+    public void visitCodeAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute)
+    {
+        proguard.optimize.peephole.TargetClassChanger r0;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.Method $r2;
+
+        r0 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        virtualinvoke $r3.<proguard.classfile.attribute.CodeAttribute: void attributesAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.visitor.AttributeVisitor)>($r1, $r2, r0);
+
+        return;
+    }
+
+    public void visitConstantElementValue(proguard.classfile.Clazz, proguard.classfile.attribute.'annotation'.Annotation, proguard.classfile.attribute.'annotation'.ConstantElementValue)
+    {
+        proguard.classfile.attribute.'annotation'.ConstantElementValue $r3;
+        proguard.classfile.attribute.'annotation'.Annotation $r2;
+        proguard.optimize.peephole.TargetClassChanger r0;
+        proguard.classfile.Clazz $r1;
+
+        r0 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.'annotation'.Annotation;
+
+        $r3 := @parameter2: proguard.classfile.attribute.'annotation'.ConstantElementValue;
+
+        virtualinvoke r0.<proguard.optimize.peephole.TargetClassChanger: void visitAnyElementValue(proguard.classfile.Clazz,proguard.classfile.attribute.'annotation'.Annotation,proguard.classfile.attribute.'annotation'.ElementValue)>($r1, $r2, $r3);
+
+        return;
+    }
+
+    public void visitEnumConstantElementValue(proguard.classfile.Clazz, proguard.classfile.attribute.'annotation'.Annotation, proguard.classfile.attribute.'annotation'.EnumConstantElementValue)
+    {
+        proguard.classfile.attribute.'annotation'.Annotation $r2;
+        proguard.classfile.Clazz[] $r4;
+        proguard.optimize.peephole.TargetClassChanger r0;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.'annotation'.EnumConstantElementValue $r3;
+
+        r0 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.'annotation'.Annotation;
+
+        $r3 := @parameter2: proguard.classfile.attribute.'annotation'.EnumConstantElementValue;
+
+        virtualinvoke r0.<proguard.optimize.peephole.TargetClassChanger: void visitAnyElementValue(proguard.classfile.Clazz,proguard.classfile.attribute.'annotation'.Annotation,proguard.classfile.attribute.'annotation'.ElementValue)>($r1, $r2, $r3);
+
+        $r4 = $r3.<proguard.classfile.attribute.'annotation'.EnumConstantElementValue: proguard.classfile.Clazz[] referencedClasses>;
+
+        specialinvoke r0.<proguard.optimize.peephole.TargetClassChanger: void updateReferencedClasses(proguard.classfile.Clazz[])>($r4);
+
+        return;
+    }
+
+    public void visitLibraryClass(proguard.classfile.LibraryClass)
+    {
+        proguard.classfile.LibraryClass $r1;
+        proguard.optimize.peephole.TargetClassChanger r0;
+
+        r0 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        $r1 := @parameter0: proguard.classfile.LibraryClass;
+
+        virtualinvoke $r1.<proguard.classfile.LibraryClass: void fieldsAccept(proguard.classfile.visitor.MemberVisitor)>(r0);
+
+        virtualinvoke $r1.<proguard.classfile.LibraryClass: void methodsAccept(proguard.classfile.visitor.MemberVisitor)>(r0);
+
+        return;
+    }
+
+    public void visitLibraryField(proguard.classfile.LibraryClass, proguard.classfile.LibraryField)
+    {
+        proguard.classfile.LibraryClass $r1;
+        proguard.optimize.peephole.TargetClassChanger r0;
+        proguard.classfile.Clazz $r3;
+        proguard.classfile.LibraryField $r2;
+
+        r0 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        $r1 := @parameter0: proguard.classfile.LibraryClass;
+
+        $r2 := @parameter1: proguard.classfile.LibraryField;
+
+        $r3 = $r2.<proguard.classfile.LibraryField: proguard.classfile.Clazz referencedClass>;
+
+        $r3 = specialinvoke r0.<proguard.optimize.peephole.TargetClassChanger: proguard.classfile.Clazz updateReferencedClass(proguard.classfile.Clazz)>($r3);
+
+        $r2.<proguard.classfile.LibraryField: proguard.classfile.Clazz referencedClass> = $r3;
+
+        return;
+    }
+
+    public void visitLibraryMethod(proguard.classfile.LibraryClass, proguard.classfile.LibraryMethod)
+    {
+        proguard.classfile.LibraryClass $r1;
+        proguard.classfile.Clazz[] $r3;
+        proguard.optimize.peephole.TargetClassChanger r0;
+        proguard.classfile.LibraryMethod $r2;
+
+        r0 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        $r1 := @parameter0: proguard.classfile.LibraryClass;
+
+        $r2 := @parameter1: proguard.classfile.LibraryMethod;
+
+        $r3 = $r2.<proguard.classfile.LibraryMethod: proguard.classfile.Clazz[] referencedClasses>;
+
+        specialinvoke r0.<proguard.optimize.peephole.TargetClassChanger: void updateReferencedClasses(proguard.classfile.Clazz[])>($r3);
+
+        return;
+    }
+
+    public void visitLocalVariableInfo(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, proguard.classfile.attribute.LocalVariableInfo)
+    {
+        proguard.optimize.peephole.TargetClassChanger r0;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.attribute.LocalVariableInfo $r4;
+        proguard.classfile.Method $r2;
+
+        r0 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 := @parameter3: proguard.classfile.attribute.LocalVariableInfo;
+
+        $r1 = $r4.<proguard.classfile.attribute.LocalVariableInfo: proguard.classfile.Clazz referencedClass>;
+
+        $r1 = specialinvoke r0.<proguard.optimize.peephole.TargetClassChanger: proguard.classfile.Clazz updateReferencedClass(proguard.classfile.Clazz)>($r1);
+
+        $r4.<proguard.classfile.attribute.LocalVariableInfo: proguard.classfile.Clazz referencedClass> = $r1;
+
+        return;
+    }
+
+    public void visitLocalVariableTableAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, proguard.classfile.attribute.LocalVariableTableAttribute)
+    {
+        proguard.optimize.peephole.TargetClassChanger r0;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.Method $r2;
+        proguard.classfile.attribute.LocalVariableTableAttribute $r4;
+
+        r0 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 := @parameter3: proguard.classfile.attribute.LocalVariableTableAttribute;
+
+        virtualinvoke $r4.<proguard.classfile.attribute.LocalVariableTableAttribute: void localVariablesAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,proguard.classfile.attribute.visitor.LocalVariableInfoVisitor)>($r1, $r2, $r3, r0);
+
+        return;
+    }
+
+    public void visitLocalVariableTypeInfo(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, proguard.classfile.attribute.LocalVariableTypeInfo)
+    {
+        proguard.classfile.Clazz[] $r5;
+        proguard.optimize.peephole.TargetClassChanger r0;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.Method $r2;
+        proguard.classfile.attribute.LocalVariableTypeInfo $r4;
+
+        r0 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 := @parameter3: proguard.classfile.attribute.LocalVariableTypeInfo;
+
+        $r5 = $r4.<proguard.classfile.attribute.LocalVariableTypeInfo: proguard.classfile.Clazz[] referencedClasses>;
+
+        specialinvoke r0.<proguard.optimize.peephole.TargetClassChanger: void updateReferencedClasses(proguard.classfile.Clazz[])>($r5);
+
+        return;
+    }
+
+    public void visitLocalVariableTypeTableAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, proguard.classfile.attribute.LocalVariableTypeTableAttribute)
+    {
+        proguard.optimize.peephole.TargetClassChanger r0;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.Method $r2;
+        proguard.classfile.attribute.LocalVariableTypeTableAttribute $r4;
+
+        r0 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 := @parameter3: proguard.classfile.attribute.LocalVariableTypeTableAttribute;
+
+        virtualinvoke $r4.<proguard.classfile.attribute.LocalVariableTypeTableAttribute: void localVariablesAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,proguard.classfile.attribute.visitor.LocalVariableTypeInfoVisitor)>($r1, $r2, $r3, r0);
+
+        return;
+    }
+
+    public void visitProgramClass(proguard.classfile.ProgramClass)
+    {
+        proguard.classfile.visitor.ReferencedClassVisitor $r6;
+        proguard.classfile.ProgramClass $r1;
+        proguard.classfile.editor.SubclassAdder $r8;
+        proguard.optimize.peephole.TargetClassChanger r0;
+        proguard.classfile.Clazz $r2;
+        int[] $r4, $r5;
+        proguard.classfile.visitor.SubclassFilter $r7;
+        int $i0, $i1, $i2, $i3;
+        java.lang.String $r3;
+        boolean $z0;
+
+        r0 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        $r1 := @parameter0: proguard.classfile.ProgramClass;
+
+        $i1 = 0;
+
+        virtualinvoke $r1.<proguard.classfile.ProgramClass: void constantPoolEntriesAccept(proguard.classfile.constant.visitor.ConstantVisitor)>(r0);
+
+        virtualinvoke $r1.<proguard.classfile.ProgramClass: void fieldsAccept(proguard.classfile.visitor.MemberVisitor)>(r0);
+
+        virtualinvoke $r1.<proguard.classfile.ProgramClass: void methodsAccept(proguard.classfile.visitor.MemberVisitor)>(r0);
+
+        virtualinvoke $r1.<proguard.classfile.ProgramClass: void attributesAccept(proguard.classfile.attribute.visitor.AttributeVisitor)>(r0);
+
+        $r2 = staticinvoke <proguard.optimize.peephole.ClassMerger: proguard.classfile.Clazz getTargetClass(proguard.classfile.Clazz)>($r1);
+
+        if $r2 == null goto label1;
+
+        $r3 = virtualinvoke $r1.<proguard.classfile.ProgramClass: java.lang.String getName()>();
+
+        $i1 = specialinvoke r0.<proguard.optimize.peephole.TargetClassChanger: int addNewClassConstant(proguard.classfile.ProgramClass,java.lang.String,proguard.classfile.Clazz)>($r1, $r3, $r1);
+
+        $r1.<proguard.classfile.ProgramClass: int u2thisClass> = $i1;
+
+        $r1.<proguard.classfile.ProgramClass: int u2interfacesCount> = 0;
+
+        $r1.<proguard.classfile.ProgramClass: proguard.classfile.Clazz[] subClasses> = null;
+
+        return;
+
+     label1:
+        $i2 = 0;
+
+     label2:
+        $i0 = $r1.<proguard.classfile.ProgramClass: int u2interfacesCount>;
+
+        if $i2 >= $i0 goto label4;
+
+        $r2 = virtualinvoke $r1.<proguard.classfile.ProgramClass: proguard.classfile.Clazz getInterface(int)>($i2);
+
+        $z0 = virtualinvoke $r1.<java.lang.Object: boolean equals(java.lang.Object)>($r2);
+
+        if $z0 != 0 goto label3;
+
+        $r4 = $r1.<proguard.classfile.ProgramClass: int[] u2interfaces>;
+
+        $r5 = $r1.<proguard.classfile.ProgramClass: int[] u2interfaces>;
+
+        $i3 = $r5[$i2];
+
+        $r4[$i1] = $i3;
+
+        $i1 = $i1 + 1;
+
+     label3:
+        $i2 = $i2 + 1;
+
+        goto label2;
+
+     label4:
+        $r1.<proguard.classfile.ProgramClass: int u2interfacesCount> = $i1;
+
+        $r6 = new proguard.classfile.visitor.ReferencedClassVisitor;
+
+        $r7 = new proguard.classfile.visitor.SubclassFilter;
+
+        $r8 = new proguard.classfile.editor.SubclassAdder;
+
+        specialinvoke $r8.<proguard.classfile.editor.SubclassAdder: void <init>(proguard.classfile.Clazz)>($r1);
+
+        specialinvoke $r7.<proguard.classfile.visitor.SubclassFilter: void <init>(proguard.classfile.Clazz,proguard.classfile.visitor.ClassVisitor)>($r1, $r8);
+
+        specialinvoke $r6.<proguard.classfile.visitor.ReferencedClassVisitor: void <init>(proguard.classfile.visitor.ClassVisitor)>($r7);
+
+        virtualinvoke $r1.<proguard.classfile.ProgramClass: void superClassConstantAccept(proguard.classfile.constant.visitor.ConstantVisitor)>($r6);
+
+        virtualinvoke $r1.<proguard.classfile.ProgramClass: void interfaceConstantsAccept(proguard.classfile.constant.visitor.ConstantVisitor)>($r6);
+
+        return;
+    }
+
+    public void visitProgramField(proguard.classfile.ProgramClass, proguard.classfile.ProgramField)
+    {
+        proguard.optimize.peephole.TargetClassChanger r0;
+        proguard.classfile.ProgramField $r2;
+        proguard.classfile.Clazz $r3;
+        proguard.classfile.ProgramClass $r1;
+
+        r0 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        $r1 := @parameter0: proguard.classfile.ProgramClass;
+
+        $r2 := @parameter1: proguard.classfile.ProgramField;
+
+        $r3 = $r2.<proguard.classfile.ProgramField: proguard.classfile.Clazz referencedClass>;
+
+        $r3 = specialinvoke r0.<proguard.optimize.peephole.TargetClassChanger: proguard.classfile.Clazz updateReferencedClass(proguard.classfile.Clazz)>($r3);
+
+        $r2.<proguard.classfile.ProgramField: proguard.classfile.Clazz referencedClass> = $r3;
+
+        virtualinvoke $r2.<proguard.classfile.ProgramField: void attributesAccept(proguard.classfile.ProgramClass,proguard.classfile.attribute.visitor.AttributeVisitor)>($r1, r0);
+
+        return;
+    }
+
+    public void visitProgramMethod(proguard.classfile.ProgramClass, proguard.classfile.ProgramMethod)
+    {
+        proguard.classfile.Clazz[] $r3;
+        proguard.optimize.peephole.TargetClassChanger r0;
+        proguard.classfile.ProgramMethod $r2;
+        proguard.classfile.ProgramClass $r1;
+
+        r0 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        $r1 := @parameter0: proguard.classfile.ProgramClass;
+
+        $r2 := @parameter1: proguard.classfile.ProgramMethod;
+
+        $r3 = $r2.<proguard.classfile.ProgramMethod: proguard.classfile.Clazz[] referencedClasses>;
+
+        specialinvoke r0.<proguard.optimize.peephole.TargetClassChanger: void updateReferencedClasses(proguard.classfile.Clazz[])>($r3);
+
+        virtualinvoke $r2.<proguard.classfile.ProgramMethod: void attributesAccept(proguard.classfile.ProgramClass,proguard.classfile.attribute.visitor.AttributeVisitor)>($r1, r0);
+
+        return;
+    }
+
+    public void visitSignatureAttribute(proguard.classfile.Clazz, proguard.classfile.attribute.SignatureAttribute)
+    {
+        proguard.classfile.Clazz[] $r3;
+        proguard.optimize.peephole.TargetClassChanger r0;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.SignatureAttribute $r2;
+
+        r0 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.SignatureAttribute;
+
+        $r3 = $r2.<proguard.classfile.attribute.SignatureAttribute: proguard.classfile.Clazz[] referencedClasses>;
+
+        specialinvoke r0.<proguard.optimize.peephole.TargetClassChanger: void updateReferencedClasses(proguard.classfile.Clazz[])>($r3);
+
+        return;
+    }
+
+    public void visitStringConstant(proguard.classfile.Clazz, proguard.classfile.constant.StringConstant)
+    {
+        proguard.optimize.peephole.TargetClassChanger r0;
+        proguard.classfile.Clazz $r1, $r3, $r4;
+        proguard.classfile.constant.StringConstant $r2;
+        java.lang.String $r6;
+        proguard.classfile.Member $r5;
+
+        r0 := @this: proguard.optimize.peephole.TargetClassChanger;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.constant.StringConstant;
+
+        $r3 = $r2.<proguard.classfile.constant.StringConstant: proguard.classfile.Clazz referencedClass>;
+
+        $r4 = specialinvoke r0.<proguard.optimize.peephole.TargetClassChanger: proguard.classfile.Clazz updateReferencedClass(proguard.classfile.Clazz)>($r3);
+
+        if $r3 == $r4 goto label1;
+
+        $r2.<proguard.classfile.constant.StringConstant: proguard.classfile.Clazz referencedClass> = $r4;
+
+        $r5 = $r2.<proguard.classfile.constant.StringConstant: proguard.classfile.Member referencedMember>;
+
+        $r6 = virtualinvoke $r2.<proguard.classfile.constant.StringConstant: java.lang.String getString(proguard.classfile.Clazz)>($r1);
+
+        $r5 = specialinvoke r0.<proguard.optimize.peephole.TargetClassChanger: proguard.classfile.Member updateReferencedMember(proguard.classfile.Member,java.lang.String,java.lang.String,proguard.classfile.Clazz)>($r5, $r6, null, $r4);
+
+        $r2.<proguard.classfile.constant.StringConstant: proguard.classfile.Member referencedMember> = $r5;
+
+     label1:
+        return;
+    }
+}

@@ -1,0 +1,1382 @@
+public class proguard.optimize.peephole.BranchTargetFinder extends proguard.classfile.util.SimplifiedVisitor implements proguard.classfile.attribute.visitor.AttributeVisitor, proguard.classfile.instruction.visitor.InstructionVisitor, proguard.classfile.attribute.visitor.ExceptionInfoVisitor, proguard.classfile.constant.visitor.ConstantVisitor
+{
+    private static final short AFTER_BRANCH;
+    public static final int AT_METHOD_ENTRY;
+    private static final short BRANCH_ORIGIN;
+    private static final short BRANCH_TARGET;
+    private static final boolean DEBUG;
+    private static final short EXCEPTION_END;
+    private static final short EXCEPTION_HANDLER;
+    private static final short EXCEPTION_START;
+    private static final short INSTRUCTION;
+    private static final int MAXIMUM_CREATION_OFFSETS;
+    public static final int NONE;
+    private static final short SUBROUTINE_INVOCATION;
+    private static final short SUBROUTINE_RETURNING;
+    private int[] creationOffsets;
+    private int currentSubroutineEnd;
+    private int currentSubroutineStart;
+    private int[] initializationOffsets;
+    private short[] instructionMarks;
+    private boolean isInitializer;
+    private int recentCreationOffsetIndex;
+    private int[] recentCreationOffsets;
+    private int[] subroutineEnds;
+    private int[] subroutineStarts;
+    private int superInitializationOffset;
+
+    public void <init>()
+    {
+        short[] $r1;
+        int[] $r2;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        specialinvoke r0.<proguard.classfile.util.SimplifiedVisitor: void <init>()>();
+
+        $r1 = newarray (short)[1025];
+
+        r0.<proguard.optimize.peephole.BranchTargetFinder: short[] instructionMarks> = $r1;
+
+        $r2 = newarray (int)[1024];
+
+        r0.<proguard.optimize.peephole.BranchTargetFinder: int[] subroutineStarts> = $r2;
+
+        $r2 = newarray (int)[1024];
+
+        r0.<proguard.optimize.peephole.BranchTargetFinder: int[] subroutineEnds> = $r2;
+
+        $r2 = newarray (int)[1024];
+
+        r0.<proguard.optimize.peephole.BranchTargetFinder: int[] creationOffsets> = $r2;
+
+        $r2 = newarray (int)[1024];
+
+        r0.<proguard.optimize.peephole.BranchTargetFinder: int[] initializationOffsets> = $r2;
+
+        $r2 = newarray (int)[32];
+
+        r0.<proguard.optimize.peephole.BranchTargetFinder: int[] recentCreationOffsets> = $r2;
+
+        return;
+    }
+
+    private void checkSubroutine(int)
+    {
+        int[] $r1;
+        int $i0, $i1;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+        boolean $z0;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $i0 := @parameter0: int;
+
+        $z0 = virtualinvoke r0.<proguard.optimize.peephole.BranchTargetFinder: boolean isSubroutine(int)>($i0);
+
+        if $z0 == 0 goto label1;
+
+        $r1 = r0.<proguard.optimize.peephole.BranchTargetFinder: int[] subroutineStarts>;
+
+        $i0 = $r1[$i0];
+
+        r0.<proguard.optimize.peephole.BranchTargetFinder: int currentSubroutineStart> = $i0;
+
+        return;
+
+     label1:
+        $r1 = r0.<proguard.optimize.peephole.BranchTargetFinder: int[] subroutineStarts>;
+
+        $i1 = r0.<proguard.optimize.peephole.BranchTargetFinder: int currentSubroutineStart>;
+
+        $r1[$i0] = $i1;
+
+        return;
+    }
+
+    private void markAfterBranchOrigin(int)
+    {
+        short $s1;
+        int $i0, $i2;
+        short[] $r1;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $i0 := @parameter0: int;
+
+        $r1 = r0.<proguard.optimize.peephole.BranchTargetFinder: short[] instructionMarks>;
+
+        $s1 = $r1[$i0];
+
+        $s1 = $s1 | 8;
+
+        $r1[$i0] = $s1;
+
+        $i2 = r0.<proguard.optimize.peephole.BranchTargetFinder: int currentSubroutineEnd>;
+
+        if $i2 > $i0 goto label1;
+
+        r0.<proguard.optimize.peephole.BranchTargetFinder: int currentSubroutineStart> = -2;
+
+     label1:
+        return;
+    }
+
+    private void markBranchOrigin(int)
+    {
+        short $s1;
+        int $i0;
+        short[] $r1;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $i0 := @parameter0: int;
+
+        $r1 = r0.<proguard.optimize.peephole.BranchTargetFinder: short[] instructionMarks>;
+
+        $s1 = $r1[$i0];
+
+        $s1 = $s1 | 3;
+
+        $r1[$i0] = $s1;
+
+        return;
+    }
+
+    private void markBranchTarget(int, int)
+    {
+        short $s2;
+        int[] $r2;
+        int $i0, $i1;
+        short[] $r1;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+        boolean $z0;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $i1 = $i0 + $i1;
+
+        $r1 = r0.<proguard.optimize.peephole.BranchTargetFinder: short[] instructionMarks>;
+
+        $s2 = $r1[$i1];
+
+        $s2 = $s2 | 4;
+
+        $r1[$i1] = $s2;
+
+        $z0 = virtualinvoke r0.<proguard.optimize.peephole.BranchTargetFinder: boolean isSubroutine(int)>($i0);
+
+        if $z0 == 0 goto label1;
+
+        $r2 = r0.<proguard.optimize.peephole.BranchTargetFinder: int[] subroutineStarts>;
+
+        $i0 = r0.<proguard.optimize.peephole.BranchTargetFinder: int currentSubroutineStart>;
+
+        $r2[$i1] = $i0;
+
+        $i0 = r0.<proguard.optimize.peephole.BranchTargetFinder: int currentSubroutineEnd>;
+
+        if $i0 >= $i1 goto label1;
+
+        r0.<proguard.optimize.peephole.BranchTargetFinder: int currentSubroutineEnd> = $i1;
+
+     label1:
+        return;
+    }
+
+    private void markBranchTargets(int, int[])
+    {
+        int[] $r1;
+        int $i0, $i1, $i2;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: int[];
+
+        $i1 = 0;
+
+     label1:
+        $i2 = lengthof $r1;
+
+        if $i1 >= $i2 goto label2;
+
+        $i2 = $r1[$i1];
+
+        specialinvoke r0.<proguard.optimize.peephole.BranchTargetFinder: void markBranchTarget(int,int)>($i0, $i2);
+
+        $i1 = $i1 + 1;
+
+        goto label1;
+
+     label2:
+        return;
+    }
+
+    public int creationOffset(int)
+    {
+        int $i0;
+        int[] $r1;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $i0 := @parameter0: int;
+
+        $r1 = r0.<proguard.optimize.peephole.BranchTargetFinder: int[] creationOffsets>;
+
+        $i0 = $r1[$i0];
+
+        return $i0;
+    }
+
+    public int initializationOffset(int)
+    {
+        int $i0;
+        int[] $r1;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $i0 := @parameter0: int;
+
+        $r1 = r0.<proguard.optimize.peephole.BranchTargetFinder: int[] initializationOffsets>;
+
+        $i0 = $r1[$i0];
+
+        return $i0;
+    }
+
+    public boolean isAfterBranch(int)
+    {
+        short $s1;
+        int $i0;
+        short[] $r1;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $i0 := @parameter0: int;
+
+        $r1 = r0.<proguard.optimize.peephole.BranchTargetFinder: short[] instructionMarks>;
+
+        $s1 = $r1[$i0];
+
+        $s1 = $s1 & 8;
+
+        if $s1 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public boolean isBranchOrigin(int)
+    {
+        short $s1;
+        int $i0;
+        short[] $r1;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $i0 := @parameter0: int;
+
+        $r1 = r0.<proguard.optimize.peephole.BranchTargetFinder: short[] instructionMarks>;
+
+        $s1 = $r1[$i0];
+
+        $s1 = $s1 & 2;
+
+        if $s1 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public boolean isBranchTarget(int)
+    {
+        short $s1;
+        int $i0;
+        short[] $r1;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $i0 := @parameter0: int;
+
+        $r1 = r0.<proguard.optimize.peephole.BranchTargetFinder: short[] instructionMarks>;
+
+        $s1 = $r1[$i0];
+
+        $s1 = $s1 & 4;
+
+        if $s1 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public boolean isExceptionEnd(int)
+    {
+        short $s1;
+        int $i0;
+        short[] $r1;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $i0 := @parameter0: int;
+
+        $r1 = r0.<proguard.optimize.peephole.BranchTargetFinder: short[] instructionMarks>;
+
+        $s1 = $r1[$i0];
+
+        $s1 = $s1 & 32;
+
+        if $s1 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public boolean isExceptionHandler(int)
+    {
+        short $s1;
+        int $i0;
+        short[] $r1;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $i0 := @parameter0: int;
+
+        $r1 = r0.<proguard.optimize.peephole.BranchTargetFinder: short[] instructionMarks>;
+
+        $s1 = $r1[$i0];
+
+        $s1 = $s1 & 64;
+
+        if $s1 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public boolean isExceptionStart(int)
+    {
+        short $s1;
+        int $i0;
+        short[] $r1;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $i0 := @parameter0: int;
+
+        $r1 = r0.<proguard.optimize.peephole.BranchTargetFinder: short[] instructionMarks>;
+
+        $s1 = $r1[$i0];
+
+        $s1 = $s1 & 16;
+
+        if $s1 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public boolean isInitializer()
+    {
+        int $i0;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $i0 = r0.<proguard.optimize.peephole.BranchTargetFinder: int superInitializationOffset>;
+
+        if $i0 == -2 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public boolean isInitializer(int)
+    {
+        int $i0;
+        int[] $r1;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $i0 := @parameter0: int;
+
+        $r1 = r0.<proguard.optimize.peephole.BranchTargetFinder: int[] creationOffsets>;
+
+        $i0 = $r1[$i0];
+
+        if $i0 == -2 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public boolean isInstruction(int)
+    {
+        short $s1;
+        int $i0;
+        short[] $r1;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $i0 := @parameter0: int;
+
+        $r1 = r0.<proguard.optimize.peephole.BranchTargetFinder: short[] instructionMarks>;
+
+        $s1 = $r1[$i0];
+
+        $s1 = $s1 & 1;
+
+        if $s1 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public boolean isNew(int)
+    {
+        int[] $r1;
+        int $i0, $i1;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $i0 := @parameter0: int;
+
+        $r1 = r0.<proguard.optimize.peephole.BranchTargetFinder: int[] initializationOffsets>;
+
+        $i0 = $r1[$i0];
+
+        $i1 = -2;
+
+        if $i0 == $i1 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public boolean isSubroutine(int)
+    {
+        int $i0;
+        int[] $r1;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $i0 := @parameter0: int;
+
+        $r1 = r0.<proguard.optimize.peephole.BranchTargetFinder: int[] subroutineStarts>;
+
+        $i0 = $r1[$i0];
+
+        if $i0 == -2 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public boolean isSubroutineInvocation(int)
+    {
+        short $s1;
+        int $i0;
+        short[] $r1;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $i0 := @parameter0: int;
+
+        $r1 = r0.<proguard.optimize.peephole.BranchTargetFinder: short[] instructionMarks>;
+
+        $s1 = $r1[$i0];
+
+        $s1 = $s1 & 128;
+
+        if $s1 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public boolean isSubroutineReturning(int)
+    {
+        short $s1;
+        int $i0;
+        short[] $r1;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $i0 := @parameter0: int;
+
+        $r1 = r0.<proguard.optimize.peephole.BranchTargetFinder: short[] instructionMarks>;
+
+        $s1 = $r1[$i0];
+
+        $s1 = $s1 & 256;
+
+        if $s1 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public boolean isSubroutineStart(int)
+    {
+        int[] $r1;
+        int $i0, $i1;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $i0 := @parameter0: int;
+
+        $r1 = r0.<proguard.optimize.peephole.BranchTargetFinder: int[] subroutineStarts>;
+
+        $i1 = $r1[$i0];
+
+        if $i1 != $i0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public boolean isTarget(int)
+    {
+        short $s1;
+        int $i0;
+        short[] $r1;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $i0 := @parameter0: int;
+
+        if $i0 == 0 goto label1;
+
+        $r1 = r0.<proguard.optimize.peephole.BranchTargetFinder: short[] instructionMarks>;
+
+        $s1 = $r1[$i0];
+
+        $s1 = $s1 & 116;
+
+        if $s1 == 0 goto label2;
+
+     label1:
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    public int subroutineEnd(int)
+    {
+        int $i0;
+        int[] $r1;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $i0 := @parameter0: int;
+
+        $r1 = r0.<proguard.optimize.peephole.BranchTargetFinder: int[] subroutineEnds>;
+
+        $i0 = $r1[$i0];
+
+        return $i0;
+    }
+
+    public int subroutineStart(int)
+    {
+        int $i0;
+        int[] $r1;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $i0 := @parameter0: int;
+
+        $r1 = r0.<proguard.optimize.peephole.BranchTargetFinder: int[] subroutineStarts>;
+
+        $i0 = $r1[$i0];
+
+        return $i0;
+    }
+
+    public int superInitializationOffset()
+    {
+        int i0;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        i0 = r0.<proguard.optimize.peephole.BranchTargetFinder: int superInitializationOffset>;
+
+        return i0;
+    }
+
+    public void visitAnyAttribute(proguard.classfile.Clazz, proguard.classfile.attribute.Attribute)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+        proguard.classfile.attribute.Attribute $r2;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.Attribute;
+
+        return;
+    }
+
+    public void visitAnyConstant(proguard.classfile.Clazz, proguard.classfile.constant.Constant)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.constant.Constant $r2;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.constant.Constant;
+
+        return;
+    }
+
+    public void visitAnySwitchInstruction(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.instruction.SwitchInstruction)
+    {
+        proguard.classfile.instruction.SwitchInstruction $r4;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int[] $r5;
+        int $i0, $i1;
+        proguard.classfile.Method $r2;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.instruction.SwitchInstruction;
+
+        specialinvoke r0.<proguard.optimize.peephole.BranchTargetFinder: void markBranchOrigin(int)>($i0);
+
+        specialinvoke r0.<proguard.optimize.peephole.BranchTargetFinder: void checkSubroutine(int)>($i0);
+
+        $i1 = $r4.<proguard.classfile.instruction.SwitchInstruction: int defaultOffset>;
+
+        specialinvoke r0.<proguard.optimize.peephole.BranchTargetFinder: void markBranchTarget(int,int)>($i0, $i1);
+
+        $r5 = $r4.<proguard.classfile.instruction.SwitchInstruction: int[] jumpOffsets>;
+
+        specialinvoke r0.<proguard.optimize.peephole.BranchTargetFinder: void markBranchTargets(int,int[])>($i0, $r5);
+
+        $i1 = virtualinvoke $r4.<proguard.classfile.instruction.SwitchInstruction: int length(int)>($i0);
+
+        $i0 = $i1 + $i0;
+
+        specialinvoke r0.<proguard.optimize.peephole.BranchTargetFinder: void markAfterBranchOrigin(int)>($i0);
+
+        return;
+    }
+
+    public void visitBranchInstruction(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.instruction.BranchInstruction)
+    {
+        proguard.classfile.instruction.BranchInstruction $r4;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+        short $s3;
+        byte $b2;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int[] $r6;
+        int $i0, $i1;
+        proguard.classfile.Method $r2;
+        short[] $r5;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.instruction.BranchInstruction;
+
+        specialinvoke r0.<proguard.optimize.peephole.BranchTargetFinder: void markBranchOrigin(int)>($i0);
+
+        specialinvoke r0.<proguard.optimize.peephole.BranchTargetFinder: void checkSubroutine(int)>($i0);
+
+        $i1 = $r4.<proguard.classfile.instruction.BranchInstruction: int branchOffset>;
+
+        specialinvoke r0.<proguard.optimize.peephole.BranchTargetFinder: void markBranchTarget(int,int)>($i0, $i1);
+
+        $b2 = $r4.<proguard.classfile.instruction.BranchInstruction: byte opcode>;
+
+        $i1 = (int) $b2;
+
+        if $i1 == -88 goto label1;
+
+        $i1 = (int) $b2;
+
+        if $i1 != -55 goto label2;
+
+     label1:
+        $r5 = r0.<proguard.optimize.peephole.BranchTargetFinder: short[] instructionMarks>;
+
+        $s3 = $r5[$i0];
+
+        $s3 = $s3 | 128;
+
+        $r5[$i0] = $s3;
+
+        $i1 = $r4.<proguard.classfile.instruction.BranchInstruction: int branchOffset>;
+
+        $i0 = $i1 + $i0;
+
+        $r6 = r0.<proguard.optimize.peephole.BranchTargetFinder: int[] subroutineStarts>;
+
+        $r6[$i0] = $i0;
+
+        return;
+
+     label2:
+        $i1 = (int) $b2;
+
+        if $i1 == -89 goto label3;
+
+        $i1 = (int) $b2;
+
+        if $i1 != -56 goto label4;
+
+     label3:
+        $i1 = virtualinvoke $r4.<proguard.classfile.instruction.BranchInstruction: int length(int)>($i0);
+
+        $i0 = $i1 + $i0;
+
+        specialinvoke r0.<proguard.optimize.peephole.BranchTargetFinder: void markAfterBranchOrigin(int)>($i0);
+
+     label4:
+        return;
+    }
+
+    public void visitCodeAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute)
+    {
+        proguard.optimize.peephole.BranchTargetFinder r0;
+        short $s4;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int[] $r4;
+        int $i0, $i1, $i2, $i3;
+        proguard.classfile.Method $r2;
+        short[] $r5;
+        java.lang.String $r6;
+        boolean $z0, $z1;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 = $r3.<proguard.classfile.attribute.CodeAttribute: int u4codeLength>;
+
+        $r4 = r0.<proguard.optimize.peephole.BranchTargetFinder: int[] subroutineStarts>;
+
+        $i1 = lengthof $r4;
+
+        if $i1 >= $i0 goto label02;
+
+        $i1 = $i0 + 1;
+
+        $r5 = newarray (short)[$i1];
+
+        r0.<proguard.optimize.peephole.BranchTargetFinder: short[] instructionMarks> = $r5;
+
+        $r4 = newarray (int)[$i0];
+
+        r0.<proguard.optimize.peephole.BranchTargetFinder: int[] subroutineStarts> = $r4;
+
+        $r4 = newarray (int)[$i0];
+
+        r0.<proguard.optimize.peephole.BranchTargetFinder: int[] subroutineEnds> = $r4;
+
+        $r4 = newarray (int)[$i0];
+
+        r0.<proguard.optimize.peephole.BranchTargetFinder: int[] creationOffsets> = $r4;
+
+        $r4 = newarray (int)[$i0];
+
+        r0.<proguard.optimize.peephole.BranchTargetFinder: int[] initializationOffsets> = $r4;
+
+        $i1 = 0;
+
+     label01:
+        if $i1 >= $i0 goto label05;
+
+        $r4 = r0.<proguard.optimize.peephole.BranchTargetFinder: int[] subroutineStarts>;
+
+        $r4[$i1] = -2;
+
+        $r4 = r0.<proguard.optimize.peephole.BranchTargetFinder: int[] subroutineEnds>;
+
+        $r4[$i1] = -2;
+
+        $r4 = r0.<proguard.optimize.peephole.BranchTargetFinder: int[] creationOffsets>;
+
+        $r4[$i1] = -2;
+
+        $r4 = r0.<proguard.optimize.peephole.BranchTargetFinder: int[] initializationOffsets>;
+
+        $r4[$i1] = -2;
+
+        $i1 = $i1 + 1;
+
+        goto label01;
+
+     label02:
+        $i1 = 0;
+
+     label03:
+        if $i1 >= $i0 goto label04;
+
+        $r5 = r0.<proguard.optimize.peephole.BranchTargetFinder: short[] instructionMarks>;
+
+        $r5[$i1] = 0;
+
+        $r4 = r0.<proguard.optimize.peephole.BranchTargetFinder: int[] subroutineStarts>;
+
+        $r4[$i1] = -2;
+
+        $r4 = r0.<proguard.optimize.peephole.BranchTargetFinder: int[] subroutineEnds>;
+
+        $r4[$i1] = -2;
+
+        $r4 = r0.<proguard.optimize.peephole.BranchTargetFinder: int[] creationOffsets>;
+
+        $r4[$i1] = -2;
+
+        $r4 = r0.<proguard.optimize.peephole.BranchTargetFinder: int[] initializationOffsets>;
+
+        $r4[$i1] = -2;
+
+        $i1 = $i1 + 1;
+
+        goto label03;
+
+     label04:
+        $r5 = r0.<proguard.optimize.peephole.BranchTargetFinder: short[] instructionMarks>;
+
+        $r5[$i0] = 0;
+
+     label05:
+        r0.<proguard.optimize.peephole.BranchTargetFinder: int superInitializationOffset> = -2;
+
+        r0.<proguard.optimize.peephole.BranchTargetFinder: int currentSubroutineStart> = -2;
+
+        r0.<proguard.optimize.peephole.BranchTargetFinder: int currentSubroutineEnd> = -2;
+
+        r0.<proguard.optimize.peephole.BranchTargetFinder: int recentCreationOffsetIndex> = 0;
+
+        $r6 = interfaceinvoke $r2.<proguard.classfile.Method: java.lang.String getName(proguard.classfile.Clazz)>($r1);
+
+        $z0 = virtualinvoke $r6.<java.lang.String: boolean equals(java.lang.Object)>("<init>");
+
+        if $z0 == 0 goto label06;
+
+        $r4 = r0.<proguard.optimize.peephole.BranchTargetFinder: int[] recentCreationOffsets>;
+
+        $i1 = r0.<proguard.optimize.peephole.BranchTargetFinder: int recentCreationOffsetIndex>;
+
+        $i2 = $i1 + 1;
+
+        r0.<proguard.optimize.peephole.BranchTargetFinder: int recentCreationOffsetIndex> = $i2;
+
+        $r4[$i1] = -1;
+
+     label06:
+        $r5 = r0.<proguard.optimize.peephole.BranchTargetFinder: short[] instructionMarks>;
+
+        $r5[$i0] = 4;
+
+        virtualinvoke $r3.<proguard.classfile.attribute.CodeAttribute: void instructionsAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.instruction.visitor.InstructionVisitor)>($r1, $r2, r0);
+
+        virtualinvoke $r3.<proguard.classfile.attribute.CodeAttribute: void exceptionsAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.visitor.ExceptionInfoVisitor)>($r1, $r2, r0);
+
+        $i2 = $i0 - 1;
+
+        $i1 = -2;
+
+        $z0 = 0;
+
+     label07:
+        if $i2 < 0 goto label14;
+
+        $z1 = virtualinvoke r0.<proguard.optimize.peephole.BranchTargetFinder: boolean isInstruction(int)>($i2);
+
+        if $z1 == 0 goto label10;
+
+        $r4 = r0.<proguard.optimize.peephole.BranchTargetFinder: int[] subroutineStarts>;
+
+        $i3 = $r4[$i2];
+
+        if $i3 == -2 goto label11;
+
+        $r4 = r0.<proguard.optimize.peephole.BranchTargetFinder: int[] subroutineStarts>;
+
+        $i1 = $r4[$i2];
+
+     label08:
+        $z1 = virtualinvoke r0.<proguard.optimize.peephole.BranchTargetFinder: boolean isSubroutineStart(int)>($i2);
+
+        if $z1 == 0 goto label09;
+
+        $i1 = -2;
+
+     label09:
+        $z1 = virtualinvoke r0.<proguard.optimize.peephole.BranchTargetFinder: boolean isSubroutine(int)>($i2);
+
+        if $z1 == 0 goto label13;
+
+        $r4 = r0.<proguard.optimize.peephole.BranchTargetFinder: int[] subroutineEnds>;
+
+        $r4[$i2] = $i0;
+
+        $z1 = virtualinvoke r0.<proguard.optimize.peephole.BranchTargetFinder: boolean isSubroutineReturning(int)>($i2);
+
+        if $z1 == 0 goto label12;
+
+        $z0 = 1;
+
+     label10:
+        $i2 = $i2 + -1;
+
+        goto label07;
+
+     label11:
+        if $i1 == -2 goto label08;
+
+        $r4 = r0.<proguard.optimize.peephole.BranchTargetFinder: int[] subroutineStarts>;
+
+        $r4[$i2] = $i1;
+
+        goto label08;
+
+     label12:
+        if $z0 == 0 goto label10;
+
+        $r5 = r0.<proguard.optimize.peephole.BranchTargetFinder: short[] instructionMarks>;
+
+        $s4 = $r5[$i2];
+
+        $s4 = $s4 | 256;
+
+        $r5[$i2] = $s4;
+
+        goto label10;
+
+     label13:
+        $z0 = 0;
+
+        $i0 = $i2;
+
+        goto label10;
+
+     label14:
+        return;
+    }
+
+    public void visitConstantInstruction(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.instruction.ConstantInstruction)
+    {
+        proguard.optimize.peephole.BranchTargetFinder r0;
+        short $s1;
+        byte $b2;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int[] $r6;
+        int $i0, $i3, $i4;
+        proguard.classfile.instruction.ConstantInstruction $r4;
+        proguard.classfile.Method $r2;
+        short[] $r5;
+        boolean $z0;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.instruction.ConstantInstruction;
+
+        $r5 = r0.<proguard.optimize.peephole.BranchTargetFinder: short[] instructionMarks>;
+
+        $s1 = $r5[$i0];
+
+        $s1 = $s1 | 1;
+
+        $r5[$i0] = $s1;
+
+        specialinvoke r0.<proguard.optimize.peephole.BranchTargetFinder: void checkSubroutine(int)>($i0);
+
+        $b2 = $r4.<proguard.classfile.instruction.ConstantInstruction: byte opcode>;
+
+        $i3 = (int) $b2;
+
+        if $i3 != -69 goto label1;
+
+        $r6 = r0.<proguard.optimize.peephole.BranchTargetFinder: int[] recentCreationOffsets>;
+
+        $i3 = r0.<proguard.optimize.peephole.BranchTargetFinder: int recentCreationOffsetIndex>;
+
+        $i4 = $i3 + 1;
+
+        r0.<proguard.optimize.peephole.BranchTargetFinder: int recentCreationOffsetIndex> = $i4;
+
+        $r6[$i3] = $i0;
+
+        return;
+
+     label1:
+        r0.<proguard.optimize.peephole.BranchTargetFinder: boolean isInitializer> = 0;
+
+        $i3 = $r4.<proguard.classfile.instruction.ConstantInstruction: int constantIndex>;
+
+        interfaceinvoke $r1.<proguard.classfile.Clazz: void constantPoolEntryAccept(int,proguard.classfile.constant.visitor.ConstantVisitor)>($i3, r0);
+
+        $z0 = r0.<proguard.optimize.peephole.BranchTargetFinder: boolean isInitializer>;
+
+        if $z0 == 0 goto label3;
+
+        $r6 = r0.<proguard.optimize.peephole.BranchTargetFinder: int[] recentCreationOffsets>;
+
+        $i3 = r0.<proguard.optimize.peephole.BranchTargetFinder: int recentCreationOffsetIndex>;
+
+        $i3 = $i3 - 1;
+
+        r0.<proguard.optimize.peephole.BranchTargetFinder: int recentCreationOffsetIndex> = $i3;
+
+        $i3 = $r6[$i3];
+
+        $r6 = r0.<proguard.optimize.peephole.BranchTargetFinder: int[] creationOffsets>;
+
+        $r6[$i0] = $i3;
+
+        if $i3 != -1 goto label2;
+
+        r0.<proguard.optimize.peephole.BranchTargetFinder: int superInitializationOffset> = $i0;
+
+        return;
+
+     label2:
+        $r6 = r0.<proguard.optimize.peephole.BranchTargetFinder: int[] initializationOffsets>;
+
+        $r6[$i3] = $i0;
+
+     label3:
+        return;
+    }
+
+    public void visitExceptionInfo(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, proguard.classfile.attribute.ExceptionInfo)
+    {
+        proguard.optimize.peephole.BranchTargetFinder r0;
+        short $s1;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int $i0;
+        proguard.classfile.Method $r2;
+        proguard.classfile.attribute.ExceptionInfo $r4;
+        short[] $r5;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 := @parameter3: proguard.classfile.attribute.ExceptionInfo;
+
+        $r5 = r0.<proguard.optimize.peephole.BranchTargetFinder: short[] instructionMarks>;
+
+        $i0 = $r4.<proguard.classfile.attribute.ExceptionInfo: int u2startPC>;
+
+        $s1 = $r5[$i0];
+
+        $s1 = $s1 | 16;
+
+        $r5[$i0] = $s1;
+
+        $r5 = r0.<proguard.optimize.peephole.BranchTargetFinder: short[] instructionMarks>;
+
+        $i0 = $r4.<proguard.classfile.attribute.ExceptionInfo: int u2endPC>;
+
+        $s1 = $r5[$i0];
+
+        $s1 = $s1 | 32;
+
+        $r5[$i0] = $s1;
+
+        $r5 = r0.<proguard.optimize.peephole.BranchTargetFinder: short[] instructionMarks>;
+
+        $i0 = $r4.<proguard.classfile.attribute.ExceptionInfo: int u2handlerPC>;
+
+        $s1 = $r5[$i0];
+
+        $s1 = $s1 | 64;
+
+        $r5[$i0] = $s1;
+
+        return;
+    }
+
+    public void visitMethodrefConstant(proguard.classfile.Clazz, proguard.classfile.constant.MethodrefConstant)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.constant.MethodrefConstant $r2;
+        java.lang.String $r3;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+        boolean $z0;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.constant.MethodrefConstant;
+
+        $r3 = virtualinvoke $r2.<proguard.classfile.constant.MethodrefConstant: java.lang.String getName(proguard.classfile.Clazz)>($r1);
+
+        $z0 = virtualinvoke $r3.<java.lang.String: boolean equals(java.lang.Object)>("<init>");
+
+        r0.<proguard.optimize.peephole.BranchTargetFinder: boolean isInitializer> = $z0;
+
+        return;
+    }
+
+    public void visitSimpleInstruction(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.instruction.SimpleInstruction)
+    {
+        proguard.classfile.instruction.SimpleInstruction $r4;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+        short $s2;
+        byte $b3;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int $i0, $i1;
+        proguard.classfile.Method $r2;
+        short[] $r5;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.instruction.SimpleInstruction;
+
+        $r5 = r0.<proguard.optimize.peephole.BranchTargetFinder: short[] instructionMarks>;
+
+        $s2 = $r5[$i0];
+
+        $s2 = $s2 | 1;
+
+        $r5[$i0] = $s2;
+
+        specialinvoke r0.<proguard.optimize.peephole.BranchTargetFinder: void checkSubroutine(int)>($i0);
+
+        $b3 = $r4.<proguard.classfile.instruction.SimpleInstruction: byte opcode>;
+
+        $i1 = (int) $b3;
+
+        if $i1 == -84 goto label1;
+
+        $i1 = (int) $b3;
+
+        if $i1 == -83 goto label1;
+
+        $i1 = (int) $b3;
+
+        if $i1 == -82 goto label1;
+
+        $i1 = (int) $b3;
+
+        if $i1 == -81 goto label1;
+
+        $i1 = (int) $b3;
+
+        if $i1 == -80 goto label1;
+
+        $i1 = (int) $b3;
+
+        if $i1 != -65 goto label2;
+
+     label1:
+        specialinvoke r0.<proguard.optimize.peephole.BranchTargetFinder: void markBranchOrigin(int)>($i0);
+
+        $i1 = virtualinvoke $r4.<proguard.classfile.instruction.SimpleInstruction: int length(int)>($i0);
+
+        $i0 = $i1 + $i0;
+
+        specialinvoke r0.<proguard.optimize.peephole.BranchTargetFinder: void markAfterBranchOrigin(int)>($i0);
+
+     label2:
+        return;
+    }
+
+    public void visitVariableInstruction(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.instruction.VariableInstruction)
+    {
+        proguard.classfile.instruction.VariableInstruction $r4;
+        proguard.optimize.peephole.BranchTargetFinder r0;
+        short $s2;
+        byte $b3;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int $i0, $i1;
+        proguard.classfile.Method $r2;
+        short[] $r5;
+
+        r0 := @this: proguard.optimize.peephole.BranchTargetFinder;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.instruction.VariableInstruction;
+
+        $r5 = r0.<proguard.optimize.peephole.BranchTargetFinder: short[] instructionMarks>;
+
+        $s2 = $r5[$i0];
+
+        $s2 = $s2 | 1;
+
+        $r5[$i0] = $s2;
+
+        specialinvoke r0.<proguard.optimize.peephole.BranchTargetFinder: void checkSubroutine(int)>($i0);
+
+        $b3 = $r4.<proguard.classfile.instruction.VariableInstruction: byte opcode>;
+
+        $i1 = (int) $b3;
+
+        if $i1 != -87 goto label1;
+
+        specialinvoke r0.<proguard.optimize.peephole.BranchTargetFinder: void markBranchOrigin(int)>($i0);
+
+        $r5 = r0.<proguard.optimize.peephole.BranchTargetFinder: short[] instructionMarks>;
+
+        $s2 = $r5[$i0];
+
+        $s2 = $s2 | 256;
+
+        $r5[$i0] = $s2;
+
+        $i1 = virtualinvoke $r4.<proguard.classfile.instruction.VariableInstruction: int length(int)>($i0);
+
+        $i0 = $i1 + $i0;
+
+        specialinvoke r0.<proguard.optimize.peephole.BranchTargetFinder: void markAfterBranchOrigin(int)>($i0);
+
+     label1:
+        return;
+    }
+
+    public static void <clinit>()
+    {
+        <proguard.optimize.peephole.BranchTargetFinder: short SUBROUTINE_RETURNING> = 256;
+
+        <proguard.optimize.peephole.BranchTargetFinder: short SUBROUTINE_INVOCATION> = 128;
+
+        <proguard.optimize.peephole.BranchTargetFinder: int NONE> = -2;
+
+        <proguard.optimize.peephole.BranchTargetFinder: int MAXIMUM_CREATION_OFFSETS> = 32;
+
+        <proguard.optimize.peephole.BranchTargetFinder: short INSTRUCTION> = 1;
+
+        <proguard.optimize.peephole.BranchTargetFinder: short EXCEPTION_START> = 16;
+
+        <proguard.optimize.peephole.BranchTargetFinder: short EXCEPTION_HANDLER> = 64;
+
+        <proguard.optimize.peephole.BranchTargetFinder: short EXCEPTION_END> = 32;
+
+        <proguard.optimize.peephole.BranchTargetFinder: boolean DEBUG> = 0;
+
+        <proguard.optimize.peephole.BranchTargetFinder: short BRANCH_TARGET> = 4;
+
+        <proguard.optimize.peephole.BranchTargetFinder: short BRANCH_ORIGIN> = 2;
+
+        <proguard.optimize.peephole.BranchTargetFinder: int AT_METHOD_ENTRY> = -1;
+
+        <proguard.optimize.peephole.BranchTargetFinder: short AFTER_BRANCH> = 8;
+
+        return;
+    }
+}

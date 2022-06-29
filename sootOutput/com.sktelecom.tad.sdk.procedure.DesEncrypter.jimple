@@ -1,0 +1,142 @@
+class com.sktelecom.tad.sdk.procedure.DesEncrypter extends java.lang.Object
+{
+    final java.lang.String ENCRPYTION;
+    javax.crypto.Cipher ecipher;
+
+    void <init>(javax.crypto.SecretKey)
+    {
+        com.sktelecom.tad.sdk.procedure.DesEncrypter r0;
+        javax.crypto.SecretKey $r1;
+        java.lang.String $r4;
+        javax.crypto.Cipher $r2;
+        java.lang.Exception $r3;
+
+        r0 := @this: com.sktelecom.tad.sdk.procedure.DesEncrypter;
+
+        $r1 := @parameter0: javax.crypto.SecretKey;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<com.sktelecom.tad.sdk.procedure.DesEncrypter: java.lang.String ENCRPYTION> = "DES/ECB/PKCS5Padding";
+
+     label1:
+        $r2 = staticinvoke <javax.crypto.Cipher: javax.crypto.Cipher getInstance(java.lang.String)>("DES/ECB/PKCS5Padding");
+
+        r0.<com.sktelecom.tad.sdk.procedure.DesEncrypter: javax.crypto.Cipher ecipher> = $r2;
+
+        $r2 = r0.<com.sktelecom.tad.sdk.procedure.DesEncrypter: javax.crypto.Cipher ecipher>;
+
+        virtualinvoke $r2.<javax.crypto.Cipher: void init(int,java.security.Key)>(1, $r1);
+
+     label2:
+        return;
+
+     label3:
+        $r3 := @caughtexception;
+
+        $r4 = virtualinvoke $r3.<java.lang.Exception: java.lang.String getMessage()>();
+
+        staticinvoke <com.sktelecom.tad.sdk.AdLog: void println(java.lang.String,java.lang.Throwable)>($r4, $r3);
+
+        return;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+    }
+
+    public byte[] encodeBase64(byte[])
+    {
+        byte[] $r1;
+        java.lang.Object[] $r5;
+        com.sktelecom.tad.sdk.procedure.DesEncrypter r0;
+        java.lang.Class[] r2;
+        java.lang.Exception $r7;
+        java.lang.Class $r3;
+        java.lang.Object $r6;
+        java.lang.String $r8;
+        java.lang.reflect.Method $r4;
+
+        r0 := @this: com.sktelecom.tad.sdk.procedure.DesEncrypter;
+
+        $r1 := @parameter0: byte[];
+
+     label1:
+        $r3 = staticinvoke <java.lang.Class: java.lang.Class forName(java.lang.String)>("org.apache.commons.codec.binary.Base64");
+
+     label2:
+        r2 = newarray (java.lang.Class)[1];
+
+     label3:
+        r2[0] = class "[B";
+
+        $r4 = virtualinvoke $r3.<java.lang.Class: java.lang.reflect.Method getMethod(java.lang.String,java.lang.Class[])>("encodeBase64", r2);
+
+     label4:
+        $r5 = newarray (java.lang.Object)[1];
+
+     label5:
+        $r5[0] = $r1;
+
+        $r6 = virtualinvoke $r4.<java.lang.reflect.Method: java.lang.Object invoke(java.lang.Object,java.lang.Object[])>($r3, $r5);
+
+        $r1 = (byte[]) $r6;
+
+     label6:
+        return $r1;
+
+     label7:
+        $r7 := @caughtexception;
+
+        $r8 = virtualinvoke $r7.<java.lang.Exception: java.lang.String getMessage()>();
+
+        staticinvoke <com.sktelecom.tad.sdk.AdLog: void println(java.lang.String,java.lang.Throwable)>($r8, $r7);
+
+        return null;
+
+        catch java.lang.Exception from label1 to label2 with label7;
+        catch java.lang.Exception from label3 to label4 with label7;
+        catch java.lang.Exception from label5 to label6 with label7;
+    }
+
+    public java.lang.String encrypt(java.lang.String)
+    {
+        byte[] $r2;
+        com.sktelecom.tad.sdk.procedure.DesEncrypter r0;
+        java.lang.String $r1;
+        javax.crypto.Cipher $r3;
+        java.lang.Exception $r4;
+
+        r0 := @this: com.sktelecom.tad.sdk.procedure.DesEncrypter;
+
+        $r1 := @parameter0: java.lang.String;
+
+     label1:
+        $r2 = virtualinvoke $r1.<java.lang.String: byte[] getBytes()>();
+
+        $r3 = r0.<com.sktelecom.tad.sdk.procedure.DesEncrypter: javax.crypto.Cipher ecipher>;
+
+        $r2 = virtualinvoke $r3.<javax.crypto.Cipher: byte[] doFinal(byte[])>($r2);
+
+     label2:
+        $r1 = new java.lang.String;
+
+     label3:
+        $r2 = virtualinvoke r0.<com.sktelecom.tad.sdk.procedure.DesEncrypter: byte[] encodeBase64(byte[])>($r2);
+
+        specialinvoke $r1.<java.lang.String: void <init>(byte[])>($r2);
+
+     label4:
+        return $r1;
+
+     label5:
+        $r4 := @caughtexception;
+
+        $r1 = virtualinvoke $r4.<java.lang.Exception: java.lang.String getMessage()>();
+
+        staticinvoke <com.sktelecom.tad.sdk.AdLog: void println(java.lang.String,java.lang.Throwable)>($r1, $r4);
+
+        return null;
+
+        catch java.lang.Exception from label1 to label2 with label5;
+        catch java.lang.Exception from label3 to label4 with label5;
+    }
+}

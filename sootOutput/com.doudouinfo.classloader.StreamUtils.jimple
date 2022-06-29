@@ -1,0 +1,506 @@
+public class com.doudouinfo.classloader.StreamUtils extends java.lang.Object
+{
+
+    public void <init>()
+    {
+        com.doudouinfo.classloader.StreamUtils r0;
+
+        r0 := @this: com.doudouinfo.classloader.StreamUtils;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    public static void closeStream(java.io.InputStream, java.io.OutputStream)
+    {
+        java.io.OutputStream $r1;
+        java.lang.Exception r2, r3;
+        java.io.InputStream $r0;
+
+        $r0 := @parameter0: java.io.InputStream;
+
+        $r1 := @parameter1: java.io.OutputStream;
+
+        if $r1 == null goto label2;
+
+     label1:
+        virtualinvoke $r1.<java.io.OutputStream: void close()>();
+
+     label2:
+        if $r0 == null goto label7;
+
+     label3:
+        virtualinvoke $r0.<java.io.InputStream: void close()>();
+
+     label4:
+        return;
+
+     label5:
+        r2 := @caughtexception;
+
+        virtualinvoke r2.<java.lang.Exception: void printStackTrace()>();
+
+        goto label2;
+
+     label6:
+        r3 := @caughtexception;
+
+        virtualinvoke r3.<java.lang.Exception: void printStackTrace()>();
+
+     label7:
+        return;
+
+        catch java.lang.Exception from label1 to label2 with label5;
+        catch java.lang.Exception from label3 to label4 with label6;
+    }
+
+    public static void copyStream(java.io.InputStream, java.io.OutputStream) throws java.io.IOException
+    {
+        java.io.OutputStream $r1;
+        byte[] r2;
+        int $i0;
+        java.io.InputStream $r0;
+
+        $r0 := @parameter0: java.io.InputStream;
+
+        $r1 := @parameter1: java.io.OutputStream;
+
+        r2 = newarray (byte)[1024];
+
+     label1:
+        $i0 = virtualinvoke $r0.<java.io.InputStream: int read(byte[],int,int)>(r2, 0, 1024);
+
+        if $i0 != -1 goto label2;
+
+        return;
+
+     label2:
+        virtualinvoke $r1.<java.io.OutputStream: void write(byte[],int,int)>(r2, 0, $i0);
+
+        virtualinvoke $r1.<java.io.OutputStream: void flush()>();
+
+        goto label1;
+    }
+
+    public static byte[] inputToBytes(java.io.InputStream) throws java.io.IOException
+    {
+        java.lang.Throwable $r4;
+        byte[] r2;
+        java.io.ByteArrayOutputStream r1, r3, $r5;
+        int $i0;
+        java.io.InputStream $r0;
+
+        $r0 := @parameter0: java.io.InputStream;
+
+        r3 = null;
+
+     label01:
+        $r5 = new java.io.ByteArrayOutputStream;
+
+     label02:
+        r1 = $r5;
+
+     label03:
+        specialinvoke $r5.<java.io.ByteArrayOutputStream: void <init>()>();
+
+     label04:
+        r2 = newarray (byte)[1024];
+
+     label05:
+        $i0 = virtualinvoke $r0.<java.io.InputStream: int read(byte[])>(r2);
+
+     label06:
+        if $i0 != -1 goto label09;
+
+     label07:
+        r2 = virtualinvoke r1.<java.io.ByteArrayOutputStream: byte[] toByteArray()>();
+
+     label08:
+        staticinvoke <com.doudouinfo.classloader.StreamUtils: void closeStream(java.io.InputStream,java.io.OutputStream)>(null, r1);
+
+        return r2;
+
+     label09:
+        virtualinvoke r1.<java.io.ByteArrayOutputStream: void write(byte[],int,int)>(r2, 0, $i0);
+
+     label10:
+        goto label05;
+
+     label11:
+        $r4 := @caughtexception;
+
+        r3 = r1;
+
+     label12:
+        staticinvoke <com.doudouinfo.classloader.StreamUtils: void closeStream(java.io.InputStream,java.io.OutputStream)>(null, r3);
+
+        throw $r4;
+
+     label13:
+        $r4 := @caughtexception;
+
+        goto label12;
+
+        catch java.lang.Throwable from label01 to label02 with label13;
+        catch java.lang.Throwable from label03 to label04 with label13;
+        catch java.lang.Throwable from label05 to label06 with label11;
+        catch java.lang.Throwable from label07 to label08 with label11;
+        catch java.lang.Throwable from label09 to label10 with label11;
+    }
+
+    public static void inputToFile(java.io.InputStream, java.io.File) throws java.io.IOException
+    {
+        java.lang.Throwable $r7;
+        byte[] r4;
+        java.io.BufferedInputStream r2, $r10;
+        java.io.FileOutputStream $r6, $r8;
+        java.io.File $r1;
+        java.io.BufferedOutputStream r3, r5, $r9;
+        int $i0, $i1;
+        java.io.InputStream $r0;
+
+        $r0 := @parameter0: java.io.InputStream;
+
+        $r1 := @parameter1: java.io.File;
+
+        r5 = null;
+
+     label01:
+        $r9 = new java.io.BufferedOutputStream;
+
+     label02:
+        r3 = $r9;
+
+     label03:
+        $r8 = new java.io.FileOutputStream;
+
+     label04:
+        $r6 = $r8;
+
+     label05:
+        specialinvoke $r8.<java.io.FileOutputStream: void <init>(java.io.File)>($r1);
+
+        specialinvoke $r9.<java.io.BufferedOutputStream: void <init>(java.io.OutputStream)>($r6);
+
+     label06:
+        $r10 = new java.io.BufferedInputStream;
+
+     label07:
+        r2 = $r10;
+
+     label08:
+        specialinvoke $r10.<java.io.BufferedInputStream: void <init>(java.io.InputStream)>($r0);
+
+     label09:
+        r4 = newarray (byte)[2048];
+
+     label10:
+        $i0 = virtualinvoke r2.<java.io.BufferedInputStream: int read(byte[])>(r4);
+
+     label11:
+        $i1 = -1;
+
+        if $i0 != $i1 goto label14;
+
+     label12:
+        virtualinvoke r3.<java.io.BufferedOutputStream: void flush()>();
+
+     label13:
+        staticinvoke <com.doudouinfo.classloader.StreamUtils: void closeStream(java.io.InputStream,java.io.OutputStream)>(null, r3);
+
+        return;
+
+     label14:
+        virtualinvoke r3.<java.io.BufferedOutputStream: void write(byte[],int,int)>(r4, 0, $i0);
+
+     label15:
+        goto label10;
+
+     label16:
+        $r7 := @caughtexception;
+
+        r5 = r3;
+
+     label17:
+        staticinvoke <com.doudouinfo.classloader.StreamUtils: void closeStream(java.io.InputStream,java.io.OutputStream)>(null, r5);
+
+        throw $r7;
+
+     label18:
+        $r7 := @caughtexception;
+
+        goto label17;
+
+     label19:
+        $r7 := @caughtexception;
+
+        r5 = r3;
+
+        goto label17;
+
+        catch java.lang.Throwable from label01 to label02 with label18;
+        catch java.lang.Throwable from label03 to label04 with label18;
+        catch java.lang.Throwable from label05 to label06 with label18;
+        catch java.lang.Throwable from label06 to label07 with label19;
+        catch java.lang.Throwable from label08 to label09 with label19;
+        catch java.lang.Throwable from label10 to label11 with label16;
+        catch java.lang.Throwable from label12 to label13 with label16;
+        catch java.lang.Throwable from label14 to label15 with label16;
+    }
+
+    public static java.lang.String inputToString(java.io.InputStream) throws java.io.IOException
+    {
+        java.lang.String $r1;
+        java.io.InputStream $r0;
+
+        $r0 := @parameter0: java.io.InputStream;
+
+        $r1 = staticinvoke <com.doudouinfo.classloader.StreamUtils: java.lang.String inputToString(java.io.InputStream,java.lang.String)>($r0, null);
+
+        return $r1;
+    }
+
+    public static java.lang.String inputToString(java.io.InputStream, java.lang.String) throws java.io.IOException
+    {
+        byte[] $r2;
+        java.lang.String $r1, r3;
+        java.io.InputStream $r0;
+
+        $r0 := @parameter0: java.io.InputStream;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 = staticinvoke <com.doudouinfo.classloader.StreamUtils: byte[] inputToBytes(java.io.InputStream)>($r0);
+
+        goto label1;
+
+     label1:
+        r3 = new java.lang.String;
+
+        specialinvoke r3.<java.lang.String: void <init>(byte[],java.lang.String)>($r2, "utf-8");
+
+        return r3;
+    }
+
+    public static void urlToFile(java.lang.String, java.io.File) throws java.io.IOException
+    {
+        java.net.HttpURLConnection r4, $r6;
+        java.lang.Throwable $r8;
+        java.net.URL r2;
+        java.io.File $r1;
+        java.net.URLConnection $r5;
+        java.lang.String $r0;
+        java.io.InputStream r3, $r7;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: java.io.File;
+
+        r2 = new java.net.URL;
+
+        specialinvoke r2.<java.net.URL: void <init>(java.lang.String)>($r0);
+
+        r3 = null;
+
+        r4 = null;
+
+     label1:
+        $r5 = virtualinvoke r2.<java.net.URL: java.net.URLConnection openConnection()>();
+
+        $r6 = (java.net.HttpURLConnection) $r5;
+
+     label2:
+        r4 = $r6;
+
+     label3:
+        virtualinvoke $r6.<java.net.HttpURLConnection: void setRequestProperty(java.lang.String,java.lang.String)>("User-Agent", "Mozilla/5.0 (Linux; Android 4.3; Nexus 7 Build/JSS15Q) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.72 Safari/537.36");
+
+        virtualinvoke $r6.<java.net.HttpURLConnection: void setReadTimeout(int)>(10000);
+
+        $r7 = virtualinvoke $r6.<java.net.HttpURLConnection: java.io.InputStream getInputStream()>();
+
+     label4:
+        r3 = $r7;
+
+     label5:
+        staticinvoke <com.doudouinfo.classloader.StreamUtils: void inputToFile(java.io.InputStream,java.io.File)>($r7, $r1);
+
+     label6:
+        staticinvoke <com.doudouinfo.classloader.StreamUtils: void closeStream(java.io.InputStream,java.io.OutputStream)>($r7, null);
+
+        if $r6 == null goto label9;
+
+        virtualinvoke $r6.<java.net.HttpURLConnection: void disconnect()>();
+
+        return;
+
+     label7:
+        $r8 := @caughtexception;
+
+        staticinvoke <com.doudouinfo.classloader.StreamUtils: void closeStream(java.io.InputStream,java.io.OutputStream)>(r3, null);
+
+        if r4 == null goto label8;
+
+        virtualinvoke r4.<java.net.HttpURLConnection: void disconnect()>();
+
+     label8:
+        throw $r8;
+
+     label9:
+        return;
+
+        catch java.lang.Throwable from label1 to label2 with label7;
+        catch java.lang.Throwable from label3 to label4 with label7;
+        catch java.lang.Throwable from label5 to label6 with label7;
+    }
+
+    public static java.lang.String urlToString(java.lang.String, java.lang.String) throws java.io.IOException
+    {
+        java.net.HttpURLConnection r4, $r6;
+        java.lang.Throwable $r8;
+        java.net.URL r2;
+        java.net.URLConnection $r5;
+        java.lang.String $r0, $r1;
+        java.io.InputStream r3, $r7;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: java.lang.String;
+
+        r2 = new java.net.URL;
+
+        specialinvoke r2.<java.net.URL: void <init>(java.lang.String)>($r0);
+
+        r3 = null;
+
+        r4 = null;
+
+     label1:
+        $r5 = virtualinvoke r2.<java.net.URL: java.net.URLConnection openConnection()>();
+
+        $r6 = (java.net.HttpURLConnection) $r5;
+
+     label2:
+        r4 = $r6;
+
+     label3:
+        virtualinvoke $r6.<java.net.HttpURLConnection: void setRequestProperty(java.lang.String,java.lang.String)>("User-Agent", "Mozilla/5.0 (Linux; Android 4.3; Nexus 7 Build/JSS15Q) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/29.0.1547.72 Safari/537.36");
+
+        virtualinvoke $r6.<java.net.HttpURLConnection: void setReadTimeout(int)>(10000);
+
+        $r7 = virtualinvoke $r6.<java.net.HttpURLConnection: java.io.InputStream getInputStream()>();
+
+     label4:
+        r3 = $r7;
+
+     label5:
+        $r0 = staticinvoke <com.doudouinfo.classloader.StreamUtils: java.lang.String inputToString(java.io.InputStream,java.lang.String)>($r7, "utf-8");
+
+     label6:
+        staticinvoke <com.doudouinfo.classloader.StreamUtils: void closeStream(java.io.InputStream,java.io.OutputStream)>($r7, null);
+
+        if $r6 == null goto label9;
+
+        virtualinvoke $r6.<java.net.HttpURLConnection: void disconnect()>();
+
+        return $r0;
+
+     label7:
+        $r8 := @caughtexception;
+
+        staticinvoke <com.doudouinfo.classloader.StreamUtils: void closeStream(java.io.InputStream,java.io.OutputStream)>(r3, null);
+
+        if r4 == null goto label8;
+
+        virtualinvoke r4.<java.net.HttpURLConnection: void disconnect()>();
+
+     label8:
+        throw $r8;
+
+     label9:
+        return $r0;
+
+        catch java.lang.Throwable from label1 to label2 with label7;
+        catch java.lang.Throwable from label3 to label4 with label7;
+        catch java.lang.Throwable from label5 to label6 with label7;
+    }
+
+    public static void writeFileToOs(java.io.OutputStream, java.io.File) throws java.io.IOException
+    {
+        java.io.OutputStream $r0;
+        java.lang.Throwable $r6;
+        byte[] r3;
+        java.io.BufferedInputStream r2, r4, $r8;
+        java.io.FileInputStream $r5, $r7;
+        java.io.File $r1;
+        int $i0, $i1;
+
+        $r0 := @parameter0: java.io.OutputStream;
+
+        $r1 := @parameter1: java.io.File;
+
+        r4 = null;
+
+     label01:
+        $r8 = new java.io.BufferedInputStream;
+
+     label02:
+        r2 = $r8;
+
+     label03:
+        $r7 = new java.io.FileInputStream;
+
+     label04:
+        $r5 = $r7;
+
+     label05:
+        specialinvoke $r7.<java.io.FileInputStream: void <init>(java.io.File)>($r1);
+
+        specialinvoke $r8.<java.io.BufferedInputStream: void <init>(java.io.InputStream)>($r5);
+
+     label06:
+        r3 = newarray (byte)[2048];
+
+     label07:
+        $i0 = virtualinvoke r2.<java.io.BufferedInputStream: int read(byte[])>(r3);
+
+     label08:
+        $i1 = -1;
+
+        if $i0 != $i1 goto label09;
+
+        staticinvoke <com.doudouinfo.classloader.StreamUtils: void closeStream(java.io.InputStream,java.io.OutputStream)>(r2, null);
+
+        return;
+
+     label09:
+        virtualinvoke $r0.<java.io.OutputStream: void write(byte[],int,int)>(r3, 0, $i0);
+
+        virtualinvoke $r0.<java.io.OutputStream: void flush()>();
+
+     label10:
+        goto label07;
+
+     label11:
+        $r6 := @caughtexception;
+
+        r4 = r2;
+
+     label12:
+        staticinvoke <com.doudouinfo.classloader.StreamUtils: void closeStream(java.io.InputStream,java.io.OutputStream)>(r4, null);
+
+        throw $r6;
+
+     label13:
+        $r6 := @caughtexception;
+
+        goto label12;
+
+        catch java.lang.Throwable from label01 to label02 with label13;
+        catch java.lang.Throwable from label03 to label04 with label13;
+        catch java.lang.Throwable from label05 to label06 with label13;
+        catch java.lang.Throwable from label07 to label08 with label11;
+        catch java.lang.Throwable from label09 to label10 with label11;
+    }
+}

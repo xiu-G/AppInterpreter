@@ -1,0 +1,249 @@
+public class proguard.optimize.DuplicateInitializerInvocationFixer extends proguard.classfile.util.SimplifiedVisitor implements proguard.classfile.attribute.visitor.AttributeVisitor, proguard.classfile.instruction.visitor.InstructionVisitor, proguard.classfile.constant.visitor.ConstantVisitor, proguard.classfile.visitor.MemberVisitor
+{
+    private static final boolean DEBUG;
+    private final proguard.classfile.editor.CodeAttributeEditor codeAttributeEditor;
+    private java.lang.String descriptor;
+    private final proguard.classfile.instruction.visitor.InstructionVisitor extraAddedInstructionVisitor;
+    private boolean hasBeenFixed;
+
+    public void <init>()
+    {
+        proguard.optimize.DuplicateInitializerInvocationFixer r0;
+
+        r0 := @this: proguard.optimize.DuplicateInitializerInvocationFixer;
+
+        specialinvoke r0.<proguard.optimize.DuplicateInitializerInvocationFixer: void <init>(proguard.classfile.instruction.visitor.InstructionVisitor)>(null);
+
+        return;
+    }
+
+    public void <init>(proguard.classfile.instruction.visitor.InstructionVisitor)
+    {
+        proguard.classfile.editor.CodeAttributeEditor $r2;
+        proguard.optimize.DuplicateInitializerInvocationFixer r0;
+        proguard.classfile.instruction.visitor.InstructionVisitor $r1;
+
+        r0 := @this: proguard.optimize.DuplicateInitializerInvocationFixer;
+
+        $r1 := @parameter0: proguard.classfile.instruction.visitor.InstructionVisitor;
+
+        specialinvoke r0.<proguard.classfile.util.SimplifiedVisitor: void <init>()>();
+
+        $r2 = new proguard.classfile.editor.CodeAttributeEditor;
+
+        specialinvoke $r2.<proguard.classfile.editor.CodeAttributeEditor: void <init>()>();
+
+        r0.<proguard.optimize.DuplicateInitializerInvocationFixer: proguard.classfile.editor.CodeAttributeEditor codeAttributeEditor> = $r2;
+
+        r0.<proguard.optimize.DuplicateInitializerInvocationFixer: proguard.classfile.instruction.visitor.InstructionVisitor extraAddedInstructionVisitor> = $r1;
+
+        return;
+    }
+
+    public void visitAnyAttribute(proguard.classfile.Clazz, proguard.classfile.attribute.Attribute)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.optimize.DuplicateInitializerInvocationFixer r0;
+        proguard.classfile.attribute.Attribute $r2;
+
+        r0 := @this: proguard.optimize.DuplicateInitializerInvocationFixer;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.Attribute;
+
+        return;
+    }
+
+    public void visitAnyInstruction(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.instruction.Instruction)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.instruction.Instruction $r4;
+        int $i0;
+        proguard.classfile.Method $r2;
+        proguard.optimize.DuplicateInitializerInvocationFixer r0;
+
+        r0 := @this: proguard.optimize.DuplicateInitializerInvocationFixer;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.instruction.Instruction;
+
+        return;
+    }
+
+    public void visitCodeAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int $i0;
+        proguard.classfile.editor.CodeAttributeEditor $r4;
+        proguard.classfile.Method $r2;
+        proguard.optimize.DuplicateInitializerInvocationFixer r0;
+
+        r0 := @this: proguard.optimize.DuplicateInitializerInvocationFixer;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 = r0.<proguard.optimize.DuplicateInitializerInvocationFixer: proguard.classfile.editor.CodeAttributeEditor codeAttributeEditor>;
+
+        $i0 = $r3.<proguard.classfile.attribute.CodeAttribute: int u4codeLength>;
+
+        virtualinvoke $r4.<proguard.classfile.editor.CodeAttributeEditor: void reset(int)>($i0);
+
+        virtualinvoke $r3.<proguard.classfile.attribute.CodeAttribute: void instructionsAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.instruction.visitor.InstructionVisitor)>($r1, $r2, r0);
+
+        $r4 = r0.<proguard.optimize.DuplicateInitializerInvocationFixer: proguard.classfile.editor.CodeAttributeEditor codeAttributeEditor>;
+
+        virtualinvoke $r4.<proguard.classfile.editor.CodeAttributeEditor: void visitCodeAttribute(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute)>($r1, $r2, $r3);
+
+        return;
+    }
+
+    public void visitConstantInstruction(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.instruction.ConstantInstruction)
+    {
+        proguard.classfile.editor.CodeAttributeEditor $r7;
+        proguard.classfile.instruction.SimpleInstruction $r6, $r8;
+        proguard.classfile.instruction.visitor.InstructionVisitor $r5;
+        byte $b1;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int $i0, $i2;
+        proguard.classfile.instruction.ConstantInstruction $r4;
+        proguard.classfile.Method $r2;
+        proguard.optimize.DuplicateInitializerInvocationFixer r0;
+        boolean $z0;
+
+        r0 := @this: proguard.optimize.DuplicateInitializerInvocationFixer;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.instruction.ConstantInstruction;
+
+        $b1 = $r4.<proguard.classfile.instruction.ConstantInstruction: byte opcode>;
+
+        $i2 = (int) $b1;
+
+        if $i2 != -73 goto label1;
+
+        r0.<proguard.optimize.DuplicateInitializerInvocationFixer: boolean hasBeenFixed> = 0;
+
+        $i2 = $r4.<proguard.classfile.instruction.ConstantInstruction: int constantIndex>;
+
+        interfaceinvoke $r1.<proguard.classfile.Clazz: void constantPoolEntryAccept(int,proguard.classfile.constant.visitor.ConstantVisitor)>($i2, r0);
+
+        $z0 = r0.<proguard.optimize.DuplicateInitializerInvocationFixer: boolean hasBeenFixed>;
+
+        if $z0 == 0 goto label1;
+
+        $r8 = new proguard.classfile.instruction.SimpleInstruction;
+
+        $r6 = $r8;
+
+        specialinvoke $r8.<proguard.classfile.instruction.SimpleInstruction: void <init>(byte)>(3);
+
+        $r7 = r0.<proguard.optimize.DuplicateInitializerInvocationFixer: proguard.classfile.editor.CodeAttributeEditor codeAttributeEditor>;
+
+        virtualinvoke $r7.<proguard.classfile.editor.CodeAttributeEditor: void insertBeforeInstruction(int,proguard.classfile.instruction.Instruction)>($i0, $r6);
+
+        $r5 = r0.<proguard.optimize.DuplicateInitializerInvocationFixer: proguard.classfile.instruction.visitor.InstructionVisitor extraAddedInstructionVisitor>;
+
+        if $r5 == null goto label1;
+
+        $r5 = r0.<proguard.optimize.DuplicateInitializerInvocationFixer: proguard.classfile.instruction.visitor.InstructionVisitor extraAddedInstructionVisitor>;
+
+        virtualinvoke $r6.<proguard.classfile.instruction.Instruction: void accept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,int,proguard.classfile.instruction.visitor.InstructionVisitor)>(null, null, null, $i0, $r5);
+
+     label1:
+        return;
+    }
+
+    public void visitLibraryMethod(proguard.classfile.LibraryClass, proguard.classfile.LibraryMethod)
+    {
+        proguard.classfile.LibraryMethod $r2;
+        proguard.classfile.LibraryClass $r1;
+        proguard.optimize.DuplicateInitializerInvocationFixer r0;
+
+        r0 := @this: proguard.optimize.DuplicateInitializerInvocationFixer;
+
+        $r1 := @parameter0: proguard.classfile.LibraryClass;
+
+        $r2 := @parameter1: proguard.classfile.LibraryMethod;
+
+        return;
+    }
+
+    public void visitMethodrefConstant(proguard.classfile.Clazz, proguard.classfile.constant.MethodrefConstant)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.constant.MethodrefConstant $r2;
+        java.lang.String $r3;
+        proguard.optimize.DuplicateInitializerInvocationFixer r0;
+
+        r0 := @this: proguard.optimize.DuplicateInitializerInvocationFixer;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.constant.MethodrefConstant;
+
+        $r3 = virtualinvoke $r2.<proguard.classfile.constant.MethodrefConstant: java.lang.String getType(proguard.classfile.Clazz)>($r1);
+
+        r0.<proguard.optimize.DuplicateInitializerInvocationFixer: java.lang.String descriptor> = $r3;
+
+        virtualinvoke $r2.<proguard.classfile.constant.MethodrefConstant: void referencedMemberAccept(proguard.classfile.visitor.MemberVisitor)>(r0);
+
+        return;
+    }
+
+    public void visitProgramMethod(proguard.classfile.ProgramClass, proguard.classfile.ProgramMethod)
+    {
+        proguard.classfile.ProgramMethod $r2;
+        java.lang.String $r3, $r4;
+        proguard.optimize.DuplicateInitializerInvocationFixer r0;
+        proguard.classfile.ProgramClass $r1;
+        boolean $z0;
+
+        r0 := @this: proguard.optimize.DuplicateInitializerInvocationFixer;
+
+        $r1 := @parameter0: proguard.classfile.ProgramClass;
+
+        $r2 := @parameter1: proguard.classfile.ProgramMethod;
+
+        $r3 = r0.<proguard.optimize.DuplicateInitializerInvocationFixer: java.lang.String descriptor>;
+
+        $r4 = virtualinvoke $r2.<proguard.classfile.ProgramMethod: java.lang.String getDescriptor(proguard.classfile.Clazz)>($r1);
+
+        $z0 = virtualinvoke $r3.<java.lang.String: boolean equals(java.lang.Object)>($r4);
+
+        if $z0 != 0 goto label2;
+
+        $z0 = 1;
+
+     label1:
+        r0.<proguard.optimize.DuplicateInitializerInvocationFixer: boolean hasBeenFixed> = $z0;
+
+        return;
+
+     label2:
+        $z0 = 0;
+
+        goto label1;
+    }
+}

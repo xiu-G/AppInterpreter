@@ -1,0 +1,141 @@
+public class proguard.optimize.peephole.VariableShrinker extends proguard.classfile.util.SimplifiedVisitor implements proguard.classfile.attribute.visitor.AttributeVisitor
+{
+    private static final boolean DEBUG;
+    private final proguard.classfile.visitor.MemberVisitor extraVariableMemberVisitor;
+    private final proguard.classfile.editor.VariableEditor variableEditor;
+    private final proguard.optimize.info.VariableUsageMarker variableUsageMarker;
+
+    public void <init>()
+    {
+        proguard.optimize.peephole.VariableShrinker r0;
+
+        r0 := @this: proguard.optimize.peephole.VariableShrinker;
+
+        specialinvoke r0.<proguard.optimize.peephole.VariableShrinker: void <init>(proguard.classfile.visitor.MemberVisitor)>(null);
+
+        return;
+    }
+
+    public void <init>(proguard.classfile.visitor.MemberVisitor)
+    {
+        proguard.classfile.editor.VariableEditor $r3;
+        proguard.optimize.peephole.VariableShrinker r0;
+        proguard.optimize.info.VariableUsageMarker $r2;
+        proguard.classfile.visitor.MemberVisitor $r1;
+
+        r0 := @this: proguard.optimize.peephole.VariableShrinker;
+
+        $r1 := @parameter0: proguard.classfile.visitor.MemberVisitor;
+
+        specialinvoke r0.<proguard.classfile.util.SimplifiedVisitor: void <init>()>();
+
+        $r2 = new proguard.optimize.info.VariableUsageMarker;
+
+        specialinvoke $r2.<proguard.optimize.info.VariableUsageMarker: void <init>()>();
+
+        r0.<proguard.optimize.peephole.VariableShrinker: proguard.optimize.info.VariableUsageMarker variableUsageMarker> = $r2;
+
+        $r3 = new proguard.classfile.editor.VariableEditor;
+
+        specialinvoke $r3.<proguard.classfile.editor.VariableEditor: void <init>()>();
+
+        r0.<proguard.optimize.peephole.VariableShrinker: proguard.classfile.editor.VariableEditor variableEditor> = $r3;
+
+        r0.<proguard.optimize.peephole.VariableShrinker: proguard.classfile.visitor.MemberVisitor extraVariableMemberVisitor> = $r1;
+
+        return;
+    }
+
+    public void visitAnyAttribute(proguard.classfile.Clazz, proguard.classfile.attribute.Attribute)
+    {
+        proguard.optimize.peephole.VariableShrinker r0;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.Attribute $r2;
+
+        r0 := @this: proguard.optimize.peephole.VariableShrinker;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.Attribute;
+
+        return;
+    }
+
+    public void visitCodeAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute)
+    {
+        proguard.optimize.peephole.VariableShrinker r0;
+        proguard.optimize.info.VariableUsageMarker $r5;
+        proguard.classfile.visitor.MemberVisitor $r7;
+        proguard.classfile.editor.VariableEditor $r6;
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        int $i0, $i1;
+        proguard.classfile.Method $r2;
+        java.lang.String $r4;
+        boolean $z0;
+
+        r0 := @this: proguard.optimize.peephole.VariableShrinker;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 = interfaceinvoke $r2.<proguard.classfile.Method: int getAccessFlags()>();
+
+        $i0 = $i0 & 1024;
+
+        if $i0 != 0 goto label4;
+
+        $r4 = interfaceinvoke $r2.<proguard.classfile.Method: java.lang.String getDescriptor(proguard.classfile.Clazz)>($r1);
+
+        $i0 = interfaceinvoke $r2.<proguard.classfile.Method: int getAccessFlags()>();
+
+        $i0 = staticinvoke <proguard.classfile.util.ClassUtil: int internalMethodParameterSize(java.lang.String,int)>($r4, $i0);
+
+        $i1 = $r3.<proguard.classfile.attribute.CodeAttribute: int u2maxLocals>;
+
+        $r5 = r0.<proguard.optimize.peephole.VariableShrinker: proguard.optimize.info.VariableUsageMarker variableUsageMarker>;
+
+        virtualinvoke $r5.<proguard.optimize.info.VariableUsageMarker: void visitCodeAttribute(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute)>($r1, $r2, $r3);
+
+        $r6 = r0.<proguard.optimize.peephole.VariableShrinker: proguard.classfile.editor.VariableEditor variableEditor>;
+
+        virtualinvoke $r6.<proguard.classfile.editor.VariableEditor: void reset(int)>($i1);
+
+     label1:
+        if $i0 >= $i1 goto label3;
+
+        $r5 = r0.<proguard.optimize.peephole.VariableShrinker: proguard.optimize.info.VariableUsageMarker variableUsageMarker>;
+
+        $z0 = virtualinvoke $r5.<proguard.optimize.info.VariableUsageMarker: boolean isVariableUsed(int)>($i0);
+
+        if $z0 != 0 goto label2;
+
+        $r6 = r0.<proguard.optimize.peephole.VariableShrinker: proguard.classfile.editor.VariableEditor variableEditor>;
+
+        virtualinvoke $r6.<proguard.classfile.editor.VariableEditor: void deleteVariable(int)>($i0);
+
+        $r7 = r0.<proguard.optimize.peephole.VariableShrinker: proguard.classfile.visitor.MemberVisitor extraVariableMemberVisitor>;
+
+        if $r7 == null goto label2;
+
+        $r7 = r0.<proguard.optimize.peephole.VariableShrinker: proguard.classfile.visitor.MemberVisitor extraVariableMemberVisitor>;
+
+        interfaceinvoke $r2.<proguard.classfile.Method: void accept(proguard.classfile.Clazz,proguard.classfile.visitor.MemberVisitor)>($r1, $r7);
+
+     label2:
+        $i0 = $i0 + 1;
+
+        goto label1;
+
+     label3:
+        $r6 = r0.<proguard.optimize.peephole.VariableShrinker: proguard.classfile.editor.VariableEditor variableEditor>;
+
+        virtualinvoke $r6.<proguard.classfile.editor.VariableEditor: void visitCodeAttribute(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute)>($r1, $r2, $r3);
+
+     label4:
+        return;
+    }
+}

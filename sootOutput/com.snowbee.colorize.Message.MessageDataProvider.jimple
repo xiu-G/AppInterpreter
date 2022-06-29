@@ -1,0 +1,875 @@
+public class com.snowbee.colorize.Message.MessageDataProvider extends android.content.ContentProvider
+{
+    public static final java.lang.String AUTHORITY;
+    public static final android.net.Uri CONTENT_URI;
+    public static final android.net.Uri CONTENT_URI_WIDGET;
+    public static final java.lang.String[] PROJECTION_APPWIDGETS;
+    public static final android.net.Uri SMS_CONTENT_URI;
+    public static final android.net.Uri SMS_INBOX_CONTENT_URI;
+    private static final java.lang.String TAG;
+    private static final android.content.UriMatcher URI_MATCHER;
+    private static final int URI_WIDGET;
+    private com.snowbee.core.Contact.ContactManager mContactManager;
+    private android.content.Context mContext;
+    private android.content.BroadcastReceiver mIntentReceiver;
+    public android.content.Intent ipcIntent;
+
+    static void <clinit>()
+    {
+        android.net.Uri $r0;
+        java.lang.String[] $r3;
+        android.content.UriMatcher $r2, $r7;
+        com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns $r4;
+        java.lang.StringBuilder $r6, $r8;
+        android.net.Uri$Builder $r1;
+        java.lang.String $r5;
+
+        <com.snowbee.colorize.Message.MessageDataProvider: java.lang.String TAG> = "MessageDataProvider";
+
+        <com.snowbee.colorize.Message.MessageDataProvider: java.lang.String AUTHORITY> = "com.snowbee.colorize.Message.provider";
+
+        $r0 = staticinvoke <android.net.Uri: android.net.Uri parse(java.lang.String)>("content://com.snowbee.colorize.Message.provider");
+
+        <com.snowbee.colorize.Message.MessageDataProvider: android.net.Uri CONTENT_URI> = $r0;
+
+        $r0 = <com.snowbee.colorize.Message.MessageDataProvider: android.net.Uri CONTENT_URI>;
+
+        $r1 = virtualinvoke $r0.<android.net.Uri: android.net.Uri$Builder buildUpon()>();
+
+        $r1 = virtualinvoke $r1.<android.net.Uri$Builder: android.net.Uri$Builder appendEncodedPath(java.lang.String)>("widget_message");
+
+        $r0 = virtualinvoke $r1.<android.net.Uri$Builder: android.net.Uri build()>();
+
+        <com.snowbee.colorize.Message.MessageDataProvider: android.net.Uri CONTENT_URI_WIDGET> = $r0;
+
+        $r7 = new android.content.UriMatcher;
+
+        specialinvoke $r7.<android.content.UriMatcher: void <init>(int)>(-1);
+
+        <com.snowbee.colorize.Message.MessageDataProvider: android.content.UriMatcher URI_MATCHER> = $r7;
+
+        $r0 = staticinvoke <android.net.Uri: android.net.Uri parse(java.lang.String)>("content://sms");
+
+        <com.snowbee.colorize.Message.MessageDataProvider: android.net.Uri SMS_CONTENT_URI> = $r0;
+
+        $r0 = <com.snowbee.colorize.Message.MessageDataProvider: android.net.Uri SMS_CONTENT_URI>;
+
+        $r0 = staticinvoke <android.net.Uri: android.net.Uri withAppendedPath(android.net.Uri,java.lang.String)>($r0, "inbox");
+
+        <com.snowbee.colorize.Message.MessageDataProvider: android.net.Uri SMS_INBOX_CONTENT_URI> = $r0;
+
+        $r3 = newarray (java.lang.String)[9];
+
+        $r4 = <com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns: com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns _id>;
+
+        $r5 = virtualinvoke $r4.<com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns: java.lang.String toString()>();
+
+        $r3[0] = $r5;
+
+        $r4 = <com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns: com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns thread_id>;
+
+        $r5 = virtualinvoke $r4.<com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns: java.lang.String toString()>();
+
+        $r3[1] = $r5;
+
+        $r4 = <com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns: com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns address>;
+
+        $r5 = virtualinvoke $r4.<com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns: java.lang.String toString()>();
+
+        $r3[2] = $r5;
+
+        $r4 = <com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns: com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns person>;
+
+        $r5 = virtualinvoke $r4.<com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns: java.lang.String toString()>();
+
+        $r3[3] = $r5;
+
+        $r4 = <com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns: com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns body>;
+
+        $r5 = virtualinvoke $r4.<com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns: java.lang.String toString()>();
+
+        $r3[4] = $r5;
+
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>(java.lang.String)>("CASE WHEN read = 0 THEN 0 ELSE 8 END as ");
+
+        $r4 = <com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns: com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns read>;
+
+        $r5 = virtualinvoke $r4.<com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns: java.lang.String toString()>();
+
+        $r6 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3[5] = $r5;
+
+        $r4 = <com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns: com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns date>;
+
+        $r5 = virtualinvoke $r4.<com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns: java.lang.String toString()>();
+
+        $r3[6] = $r5;
+
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>(java.lang.String)>("date as ");
+
+        $r4 = <com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns: com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns date_str>;
+
+        $r5 = virtualinvoke $r4.<com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns: java.lang.String toString()>();
+
+        $r6 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3[7] = $r5;
+
+        $r8 = new java.lang.StringBuilder;
+
+        $r4 = <com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns: com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns _id>;
+
+        $r5 = virtualinvoke $r4.<com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns: java.lang.String toString()>();
+
+        $r5 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r5);
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>(java.lang.String)>($r5);
+
+        $r6 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" AS ");
+
+        $r4 = <com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns: com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns photo>;
+
+        $r5 = virtualinvoke $r4.<com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns: java.lang.String toString()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3[8] = $r5;
+
+        <com.snowbee.colorize.Message.MessageDataProvider: java.lang.String[] PROJECTION_APPWIDGETS> = $r3;
+
+        $r2 = <com.snowbee.colorize.Message.MessageDataProvider: android.content.UriMatcher URI_MATCHER>;
+
+        virtualinvoke $r2.<android.content.UriMatcher: void addURI(java.lang.String,java.lang.String,int)>("com.snowbee.colorize.Message.provider", "widget_message", 0);
+
+        $r2 = <com.snowbee.colorize.Message.MessageDataProvider: android.content.UriMatcher URI_MATCHER>;
+
+        virtualinvoke $r2.<android.content.UriMatcher: void addURI(java.lang.String,java.lang.String,int)>("com.snowbee.colorize.Message.provider", "widget_message/#", 0);
+
+        return;
+    }
+
+    public void <init>()
+    {
+        com.snowbee.colorize.Message.MessageDataProvider r0;
+        com.snowbee.colorize.Message.MessageDataProvider$1 $r1;
+
+        r0 := @this: com.snowbee.colorize.Message.MessageDataProvider;
+
+        specialinvoke r0.<android.content.ContentProvider: void <init>()>();
+
+        r0.<com.snowbee.colorize.Message.MessageDataProvider: android.content.Context mContext> = null;
+
+        $r1 = new com.snowbee.colorize.Message.MessageDataProvider$1;
+
+        specialinvoke $r1.<com.snowbee.colorize.Message.MessageDataProvider$1: void <init>(com.snowbee.colorize.Message.MessageDataProvider)>(r0);
+
+        r0.<com.snowbee.colorize.Message.MessageDataProvider: android.content.BroadcastReceiver mIntentReceiver> = $r1;
+
+        return;
+    }
+
+    public static void LoadNewData(android.content.Context, java.lang.Integer)
+    {
+        android.content.Context $r0;
+        int[] $r2;
+        int $i0;
+        java.lang.Integer $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.Integer;
+
+        if $r1 == null goto label1;
+
+        $i0 = virtualinvoke $r1.<java.lang.Integer: int intValue()>();
+
+        staticinvoke <com.snowbee.colorize.Message.MessageWidget: void setLoading(android.content.Context,int,java.lang.String,boolean)>($r0, $i0, "com.snowbee.colorize.Message.action.NOTIFY_LOADING", 1);
+
+        staticinvoke <com.snowbee.colorize.Message.MessageDataProvider: void notifyAllWidgetsModification(android.content.Context)>($r0);
+
+        return;
+
+     label1:
+        $r2 = staticinvoke <com.snowbee.core.Preferences: int[] getAllMessageWidgetIds(android.content.Context)>($r0);
+
+        staticinvoke <com.snowbee.colorize.Message.MessageWidget: void setLoading(android.content.Context,int[],java.lang.String,boolean)>($r0, $r2, "com.snowbee.colorize.Message.action.NOTIFY_LOADING", 1);
+
+        staticinvoke <com.snowbee.colorize.Message.MessageDataProvider: void notifyAllWidgetsModification(android.content.Context)>($r0);
+
+        return;
+    }
+
+    public static void markAllAsRead(android.content.Context)
+    {
+        android.content.Context $r0;
+        android.net.Uri $r4;
+        java.lang.Exception $r7;
+        android.content.ContentResolver $r2, $r3;
+        android.content.ContentValues r1;
+        java.lang.String $r6;
+        android.database.Cursor $r5;
+
+        $r0 := @parameter0: android.content.Context;
+
+     label1:
+        $r2 = virtualinvoke $r0.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        $r3 = virtualinvoke $r0.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+     label2:
+        $r4 = <com.snowbee.colorize.Message.MessageDataProvider: android.net.Uri SMS_INBOX_CONTENT_URI>;
+
+     label3:
+        $r5 = virtualinvoke $r3.<android.content.ContentResolver: android.database.Cursor query(android.net.Uri,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String)>($r4, null, null, null, null);
+
+     label4:
+        r1 = new android.content.ContentValues;
+
+     label5:
+        specialinvoke r1.<android.content.ContentValues: void <init>()>();
+
+        $r6 = interfaceinvoke $r5.<android.database.Cursor: java.lang.String getColumnName(int)>(6);
+
+        virtualinvoke r1.<android.content.ContentValues: void put(java.lang.String,java.lang.String)>($r6, "1");
+
+     label6:
+        $r4 = <com.snowbee.colorize.Message.MessageDataProvider: android.net.Uri SMS_INBOX_CONTENT_URI>;
+
+     label7:
+        virtualinvoke $r2.<android.content.ContentResolver: int update(android.net.Uri,android.content.ContentValues,java.lang.String,java.lang.String[])>($r4, r1, "read=0", null);
+
+     label8:
+        return;
+
+     label9:
+        $r7 := @caughtexception;
+
+        return;
+
+        catch java.lang.Exception from label1 to label2 with label9;
+        catch java.lang.Exception from label3 to label4 with label9;
+        catch java.lang.Exception from label5 to label6 with label9;
+        catch java.lang.Exception from label7 to label8 with label9;
+    }
+
+    public static void notifyAllWidgetsModification(android.content.Context)
+    {
+        android.content.Context $r0;
+        int[] $r1;
+        int i0, $i1, $i2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = staticinvoke <com.snowbee.core.Preferences: int[] getAllMessageWidgetIds(android.content.Context)>($r0);
+
+        $i1 = lengthof $r1;
+
+        $i2 = 0;
+
+     label1:
+        if $i2 < $i1 goto label2;
+
+        return;
+
+     label2:
+        i0 = $r1[$i2];
+
+        staticinvoke <com.snowbee.colorize.Message.MessageDataProvider: void notifyDatabaseModification(android.content.Context,int)>($r0, i0);
+
+        $i2 = $i2 + 1;
+
+        goto label1;
+    }
+
+    public static void notifyDatabaseModification(android.content.Context, int)
+    {
+        android.content.Context $r0;
+        android.content.ContentResolver $r4;
+        int $i0;
+        android.net.Uri $r1;
+        android.net.Uri$Builder $r2;
+        java.lang.String $r3;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $i0 := @parameter1: int;
+
+        $r1 = <com.snowbee.colorize.Message.MessageDataProvider: android.net.Uri CONTENT_URI_WIDGET>;
+
+        $r2 = virtualinvoke $r1.<android.net.Uri: android.net.Uri$Builder buildUpon()>();
+
+        $r3 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i0);
+
+        $r2 = virtualinvoke $r2.<android.net.Uri$Builder: android.net.Uri$Builder appendEncodedPath(java.lang.String)>($r3);
+
+        $r1 = virtualinvoke $r2.<android.net.Uri$Builder: android.net.Uri build()>();
+
+        $r4 = virtualinvoke $r0.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        virtualinvoke $r4.<android.content.ContentResolver: void notifyChange(android.net.Uri,android.database.ContentObserver)>($r1, null);
+
+        staticinvoke <com.snowbee.colorize.Message.MessageWidget: void setLoading(android.content.Context,int,java.lang.String,boolean)>($r0, $i0, "com.snowbee.colorize.Message.action.NOTIFY_LOADING", 0);
+
+        return;
+    }
+
+    public int delete(android.net.Uri, java.lang.String, java.lang.String[])
+    {
+        com.snowbee.colorize.Message.MessageDataProvider r0;
+        android.net.Uri $r1;
+        java.lang.String[] $r3;
+        java.lang.String $r2;
+
+        r0 := @this: com.snowbee.colorize.Message.MessageDataProvider;
+
+        $r1 := @parameter0: android.net.Uri;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: java.lang.String[];
+
+        return 0;
+    }
+
+    public java.lang.String getType(android.net.Uri)
+    {
+        android.net.Uri $r1;
+        com.snowbee.colorize.Message.MessageDataProvider r0;
+
+        r0 := @this: com.snowbee.colorize.Message.MessageDataProvider;
+
+        $r1 := @parameter0: android.net.Uri;
+
+        return null;
+    }
+
+    public android.net.Uri insert(android.net.Uri, android.content.ContentValues)
+    {
+        android.net.Uri $r1;
+        com.snowbee.colorize.Message.MessageDataProvider r0;
+        android.content.ContentValues $r2;
+
+        r0 := @this: com.snowbee.colorize.Message.MessageDataProvider;
+
+        $r1 := @parameter0: android.net.Uri;
+
+        $r2 := @parameter1: android.content.ContentValues;
+
+        return null;
+    }
+
+    public boolean onCreate()
+    {
+        com.snowbee.core.Contact.ContactAPIV1Factory $r8;
+        com.snowbee.colorize.Message.MessageDataProvider r0;
+        android.content.Context $r2;
+        com.snowbee.core.Contact.ContactAPIV2Factory $r7;
+        android.content.IntentFilter r1, $r6;
+        com.snowbee.core.Contact.ContactManager $r5;
+        android.content.BroadcastReceiver $r3;
+        com.snowbee.core.Contact.ContactAPIAbstractFactory r4;
+        boolean $z0;
+
+        r0 := @this: com.snowbee.colorize.Message.MessageDataProvider;
+
+        $r2 = r0.<com.snowbee.colorize.Message.MessageDataProvider: android.content.Context mContext>;
+
+        if $r2 != null goto label1;
+
+        $r2 = virtualinvoke r0.<com.snowbee.colorize.Message.MessageDataProvider: android.content.Context getContext()>();
+
+        r0.<com.snowbee.colorize.Message.MessageDataProvider: android.content.Context mContext> = $r2;
+
+        $r6 = new android.content.IntentFilter;
+
+        r1 = $r6;
+
+        specialinvoke $r6.<android.content.IntentFilter: void <init>()>();
+
+        virtualinvoke r1.<android.content.IntentFilter: void addAction(java.lang.String)>("android.provider.Telephony.SMS_RECEIVED");
+
+        virtualinvoke r1.<android.content.IntentFilter: void addAction(java.lang.String)>("android.intent.action.DATA_SMS_RECEIVED");
+
+        $r2 = r0.<com.snowbee.colorize.Message.MessageDataProvider: android.content.Context mContext>;
+
+        $r3 = r0.<com.snowbee.colorize.Message.MessageDataProvider: android.content.BroadcastReceiver mIntentReceiver>;
+
+        virtualinvoke $r2.<android.content.Context: android.content.Intent registerReceiver(android.content.BroadcastReceiver,android.content.IntentFilter)>($r3, r1);
+
+     label1:
+        $r2 = r0.<com.snowbee.colorize.Message.MessageDataProvider: android.content.Context mContext>;
+
+        $z0 = staticinvoke <com.snowbee.core.Preferences: boolean getBoolean(android.content.Context,java.lang.String)>($r2, "PREF_MESSAGE_NEW_API");
+
+        if $z0 == 0 goto label3;
+
+        $r7 = new com.snowbee.core.Contact.ContactAPIV2Factory;
+
+        r4 = $r7;
+
+        $r2 = r0.<com.snowbee.colorize.Message.MessageDataProvider: android.content.Context mContext>;
+
+        specialinvoke $r7.<com.snowbee.core.Contact.ContactAPIV2Factory: void <init>(android.content.Context)>($r2);
+
+     label2:
+        $r5 = staticinvoke <com.snowbee.core.Contact.ContactManager: com.snowbee.core.Contact.ContactManager getContactManager()>();
+
+        r0.<com.snowbee.colorize.Message.MessageDataProvider: com.snowbee.core.Contact.ContactManager mContactManager> = $r5;
+
+        $r5 = r0.<com.snowbee.colorize.Message.MessageDataProvider: com.snowbee.core.Contact.ContactManager mContactManager>;
+
+        virtualinvoke $r5.<com.snowbee.core.Contact.ContactManager: void setFactory(com.snowbee.core.Contact.ContactAPIAbstractFactory)>(r4);
+
+        return 1;
+
+     label3:
+        $r8 = new com.snowbee.core.Contact.ContactAPIV1Factory;
+
+        r4 = $r8;
+
+        $r2 = r0.<com.snowbee.colorize.Message.MessageDataProvider: android.content.Context mContext>;
+
+        specialinvoke $r8.<com.snowbee.core.Contact.ContactAPIV1Factory: void <init>(android.content.Context)>($r2);
+
+        goto label2;
+    }
+
+    public android.database.Cursor query(android.net.Uri, java.lang.String[], java.lang.String, java.lang.String[], java.lang.String)
+    {
+        java.lang.IllegalStateException $r30;
+        android.net.Uri $r1;
+        com.snowbee.core.Contact.ContactManager $r23;
+        android.content.ContentResolver $r16;
+        java.lang.Long $r22;
+        boolean $z0, $z1, $z2, $z3;
+        java.lang.Exception $r28;
+        com.snowbee.core.Contact.Contact r20, $r26;
+        java.lang.StringBuilder $r9, $r29;
+        java.lang.Throwable $r27;
+        com.snowbee.colorize.Message.MessageDataProvider r0;
+        android.content.Context $r10, $r25;
+        java.lang.Object[] $r21;
+        java.lang.String[] $r2, $r4;
+        long l0, $l5;
+        java.util.HashMap r6, $r32;
+        android.content.UriMatcher $r8;
+        com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns $r18;
+        int $i1, i2, $i3, $i4;
+        java.lang.String $r3, $r5, $r11, $r12, $r13, $r14, $r15, $r24;
+        android.database.Cursor $r17;
+        android.database.MatrixCursor r7, $r31;
+        java.lang.Object $r19;
+
+        r0 := @this: com.snowbee.colorize.Message.MessageDataProvider;
+
+        $r1 := @parameter0: android.net.Uri;
+
+        $r2 := @parameter1: java.lang.String[];
+
+        $r3 := @parameter2: java.lang.String;
+
+        $r4 := @parameter3: java.lang.String[];
+
+        $r5 := @parameter4: java.lang.String;
+
+        $r8 = <com.snowbee.colorize.Message.MessageDataProvider: android.content.UriMatcher URI_MATCHER>;
+
+        $i1 = virtualinvoke $r8.<android.content.UriMatcher: int match(android.net.Uri)>($r1);
+
+        lookupswitch($i1)
+        {
+            case 0: goto label02;
+            default: goto label01;
+        };
+
+     label01:
+        $r30 = new java.lang.IllegalStateException;
+
+        $r29 = new java.lang.StringBuilder;
+
+        specialinvoke $r29.<java.lang.StringBuilder: void <init>(java.lang.String)>("Unrecognized URI:");
+
+        $r9 = virtualinvoke $r29.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r3 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r30.<java.lang.IllegalStateException: void <init>(java.lang.String)>($r3);
+
+        throw $r30;
+
+     label02:
+        $r31 = new android.database.MatrixCursor;
+
+        r7 = $r31;
+
+        specialinvoke $r31.<android.database.MatrixCursor: void <init>(java.lang.String[])>($r2);
+
+        $r10 = r0.<com.snowbee.colorize.Message.MessageDataProvider: android.content.Context mContext>;
+
+        $z0 = staticinvoke <com.snowbee.core.Preferences: boolean getShowOnlyUnread(android.content.Context)>($r10);
+
+        $r10 = r0.<com.snowbee.colorize.Message.MessageDataProvider: android.content.Context mContext>;
+
+        $r3 = virtualinvoke $r10.<android.content.Context: java.lang.String getString(int)>(2131296281);
+
+        $r10 = r0.<com.snowbee.colorize.Message.MessageDataProvider: android.content.Context mContext>;
+
+        $r5 = virtualinvoke $r10.<android.content.Context: java.lang.String getString(int)>(2131296282);
+
+        $r10 = r0.<com.snowbee.colorize.Message.MessageDataProvider: android.content.Context mContext>;
+
+        $r11 = virtualinvoke $r10.<android.content.Context: java.lang.String getString(int)>(2131296283);
+
+        $r10 = r0.<com.snowbee.colorize.Message.MessageDataProvider: android.content.Context mContext>;
+
+        $r12 = virtualinvoke $r10.<android.content.Context: java.lang.String getString(int)>(2131296284);
+
+        $r10 = r0.<com.snowbee.colorize.Message.MessageDataProvider: android.content.Context mContext>;
+
+        $r13 = virtualinvoke $r10.<android.content.Context: java.lang.String getString(int)>(2131296285);
+
+        $r10 = r0.<com.snowbee.colorize.Message.MessageDataProvider: android.content.Context mContext>;
+
+        $r14 = virtualinvoke $r10.<android.content.Context: java.lang.String getString(int)>(2131296286);
+
+        if $z0 == 0 goto label21;
+
+        $r29 = new java.lang.StringBuilder;
+
+        $r9 = $r29;
+
+     label03:
+        $r15 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>("read");
+
+        specialinvoke $r29.<java.lang.StringBuilder: void <init>(java.lang.String)>($r15);
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" = 0");
+
+        $r15 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label04:
+        $r10 = r0.<com.snowbee.colorize.Message.MessageDataProvider: android.content.Context mContext>;
+
+        $z0 = staticinvoke <com.snowbee.core.Preferences: boolean getSmsThread(android.content.Context)>($r10);
+
+        $r10 = r0.<com.snowbee.colorize.Message.MessageDataProvider: android.content.Context mContext>;
+
+        $z1 = staticinvoke <com.snowbee.core.Preferences: boolean getTimeFormatVal(android.content.Context)>($r10);
+
+        $r10 = r0.<com.snowbee.colorize.Message.MessageDataProvider: android.content.Context mContext>;
+
+        $i1 = staticinvoke <com.snowbee.core.Preferences: int getItemLimitVal(android.content.Context,int)>($r10, 3);
+
+     label05:
+        i2 = 0;
+
+     label06:
+        $r10 = r0.<com.snowbee.colorize.Message.MessageDataProvider: android.content.Context mContext>;
+
+        $r16 = virtualinvoke $r10.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+     label07:
+        $r1 = <com.snowbee.colorize.Message.MessageDataProvider: android.net.Uri SMS_INBOX_CONTENT_URI>;
+
+        $r4 = <com.snowbee.colorize.Message.MessageDataProvider: java.lang.String[] PROJECTION_APPWIDGETS>;
+
+     label08:
+        $r17 = virtualinvoke $r16.<android.content.ContentResolver: android.database.Cursor query(android.net.Uri,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String)>($r1, $r4, $r15, null, "date DESC");
+
+     label09:
+        if $r17 == null goto label54;
+
+     label10:
+        $r32 = new java.util.HashMap;
+
+     label11:
+        r6 = $r32;
+
+     label12:
+        specialinvoke $r32.<java.util.HashMap: void <init>()>();
+
+        $z2 = interfaceinvoke $r17.<android.database.Cursor: boolean moveToFirst()>();
+
+     label13:
+        if $z2 == 0 goto label18;
+
+     label14:
+        $r18 = <com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns: com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns address>;
+
+        $i3 = virtualinvoke $r18.<com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns: int ordinal()>();
+
+        $r15 = interfaceinvoke $r17.<android.database.Cursor: java.lang.String getString(int)>($i3);
+
+        $z2 = virtualinvoke r6.<java.util.HashMap: boolean containsKey(java.lang.Object)>($r15);
+
+     label15:
+        if $z2 == 0 goto label45;
+
+        if $z0 == 0 goto label22;
+
+     label16:
+        $z2 = interfaceinvoke $r17.<android.database.Cursor: boolean moveToNext()>();
+
+     label17:
+        if $z2 != 0 goto label14;
+
+     label18:
+        virtualinvoke r6.<java.util.HashMap: void clear()>();
+
+     label19:
+        interfaceinvoke $r17.<android.database.Cursor: void close()>();
+
+     label20:
+        return r7;
+
+     label21:
+        $r15 = null;
+
+        goto label04;
+
+     label22:
+        $r19 = virtualinvoke r6.<java.util.HashMap: java.lang.Object get(java.lang.Object)>($r15);
+
+        r20 = (com.snowbee.core.Contact.Contact) $r19;
+
+     label23:
+        $i3 = lengthof $r2;
+
+        $r21 = newarray (java.lang.Object)[$i3];
+
+     label24:
+        $i3 = 0;
+
+     label25:
+        $i4 = lengthof $r2;
+
+     label26:
+        if $i3 < $i4 goto label52;
+
+     label27:
+        $r29 = new java.lang.StringBuilder;
+
+     label28:
+        $r9 = $r29;
+
+     label29:
+        specialinvoke $r29.<java.lang.StringBuilder: void <init>(java.lang.String)>("S-");
+
+        $r19 = $r21[1];
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r19);
+
+        $r15 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r21[1] = $r15;
+
+        $r15 = virtualinvoke r20.<com.snowbee.core.Contact.Contact: java.lang.String getName()>();
+
+        $r21[2] = $r15;
+
+        $r29 = new java.lang.StringBuilder;
+
+     label30:
+        $r9 = $r29;
+
+     label31:
+        specialinvoke $r29.<java.lang.StringBuilder: void <init>(java.lang.String)>("P-");
+
+        l0 = virtualinvoke r20.<com.snowbee.core.Contact.Contact: long getPersonId()>();
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>(l0);
+
+        $r15 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r21[3] = $r15;
+
+        $i3 = lengthof $r2;
+
+     label32:
+        $i3 = $i3 - 3;
+
+     label33:
+        $i4 = lengthof $r2;
+
+     label34:
+        $i4 = $i4 - 2;
+
+     label35:
+        l0 = interfaceinvoke $r17.<android.database.Cursor: long getLong(int)>($i4);
+
+        $r22 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>(l0);
+
+        $r21[$i3] = $r22;
+
+        $i3 = lengthof $r2;
+
+     label36:
+        $i3 = $i3 - 2;
+
+     label37:
+        l0 = interfaceinvoke $r17.<android.database.Cursor: long getLong(int)>($i3);
+
+        $r10 = r0.<com.snowbee.colorize.Message.MessageDataProvider: android.content.Context mContext>;
+
+        $r15 = staticinvoke <com.snowbee.core.Preferences: java.lang.String getString(android.content.Context,java.lang.String,java.lang.String)>($r10, "PREF_TIME_OFFSET", "0");
+
+        $i3 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String)>($r15);
+
+     label38:
+        $i3 = $i3 * 60;
+
+        $i3 = $i3 * 60000;
+
+        $l5 = (long) $i3;
+
+        l0 = l0 + $l5;
+
+     label39:
+        $i3 = lengthof $r2;
+
+     label40:
+        $i3 = $i3 - 2;
+
+     label41:
+        $r15 = staticinvoke <com.snowbee.core.Date.TimeUtils: java.lang.String getNiceTimeStampMessage(boolean,long,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,boolean)>(0, l0, $r3, $r5, $r11, $r12, $r13, $r14, $z1);
+
+        $r21[$i3] = $r15;
+
+        $i3 = lengthof $r2;
+
+     label42:
+        $i3 = $i3 - 1;
+
+     label43:
+        $r15 = virtualinvoke r20.<com.snowbee.core.Contact.Contact: java.lang.String getAvatarCachePath()>();
+
+        $r21[$i3] = $r15;
+
+        virtualinvoke r7.<android.database.MatrixCursor: void addRow(java.lang.Object[])>($r21);
+
+     label44:
+        i2 = i2 + 1;
+
+        if i2 < $i1 goto label16;
+
+        if $i1 == 0 goto label16;
+
+        goto label18;
+
+     label45:
+        $r23 = r0.<com.snowbee.colorize.Message.MessageDataProvider: com.snowbee.core.Contact.ContactManager mContactManager>;
+
+        $r10 = r0.<com.snowbee.colorize.Message.MessageDataProvider: android.content.Context mContext>;
+
+        $r18 = <com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns: com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns address>;
+
+        $i3 = virtualinvoke $r18.<com.snowbee.colorize.Message.MessageDataProvider$DataProviderColumns: int ordinal()>();
+
+        $r24 = interfaceinvoke $r17.<android.database.Cursor: java.lang.String getString(int)>($i3);
+
+        $r25 = r0.<com.snowbee.colorize.Message.MessageDataProvider: android.content.Context mContext>;
+
+        $z2 = staticinvoke <com.snowbee.core.Preferences: boolean getHideProfilePicVal(android.content.Context)>($r25);
+
+        $r25 = r0.<com.snowbee.colorize.Message.MessageDataProvider: android.content.Context mContext>;
+
+        $z3 = staticinvoke <com.snowbee.core.Preferences: boolean getIsRoundCorner(android.content.Context)>($r25);
+
+        $r26 = virtualinvoke $r23.<com.snowbee.core.Contact.ContactManager: com.snowbee.core.Contact.Contact getContact(android.content.Context,java.lang.String,boolean,boolean)>($r10, $r24, $z2, $z3);
+
+     label46:
+        r20 = $r26;
+
+     label47:
+        virtualinvoke r6.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r15, $r26);
+
+     label48:
+        goto label23;
+
+     label49:
+        $r27 := @caughtexception;
+
+     label50:
+        interfaceinvoke $r17.<android.database.Cursor: void close()>();
+
+        throw $r27;
+
+     label51:
+        $r28 := @caughtexception;
+
+        virtualinvoke $r28.<java.lang.Exception: void printStackTrace()>();
+
+        return r7;
+
+     label52:
+        $r15 = interfaceinvoke $r17.<android.database.Cursor: java.lang.String getString(int)>($i3);
+
+        $r21[$i3] = $r15;
+
+     label53:
+        $i3 = $i3 + 1;
+
+        goto label25;
+
+     label54:
+        return r7;
+
+        catch java.lang.Exception from label03 to label04 with label51;
+        catch java.lang.Exception from label04 to label05 with label51;
+        catch java.lang.Exception from label06 to label07 with label51;
+        catch java.lang.Exception from label08 to label09 with label51;
+        catch java.lang.Throwable from label10 to label11 with label49;
+        catch java.lang.Throwable from label12 to label13 with label49;
+        catch java.lang.Throwable from label14 to label15 with label49;
+        catch java.lang.Throwable from label16 to label17 with label49;
+        catch java.lang.Throwable from label18 to label19 with label49;
+        catch java.lang.Exception from label19 to label20 with label51;
+        catch java.lang.Throwable from label22 to label24 with label49;
+        catch java.lang.Throwable from label25 to label26 with label49;
+        catch java.lang.Throwable from label27 to label28 with label49;
+        catch java.lang.Throwable from label29 to label30 with label49;
+        catch java.lang.Throwable from label31 to label32 with label49;
+        catch java.lang.Throwable from label33 to label34 with label49;
+        catch java.lang.Throwable from label35 to label36 with label49;
+        catch java.lang.Throwable from label37 to label38 with label49;
+        catch java.lang.Throwable from label39 to label40 with label49;
+        catch java.lang.Throwable from label41 to label42 with label49;
+        catch java.lang.Throwable from label43 to label44 with label49;
+        catch java.lang.Throwable from label45 to label46 with label49;
+        catch java.lang.Throwable from label47 to label48 with label49;
+        catch java.lang.Exception from label50 to label51 with label51;
+        catch java.lang.Throwable from label52 to label53 with label49;
+    }
+
+    public int update(android.net.Uri, android.content.ContentValues, java.lang.String, java.lang.String[])
+    {
+        com.snowbee.colorize.Message.MessageDataProvider r0;
+        android.net.Uri $r1;
+        java.lang.String[] $r4;
+        android.content.ContentValues $r2;
+        java.lang.String $r3;
+
+        r0 := @this: com.snowbee.colorize.Message.MessageDataProvider;
+
+        $r1 := @parameter0: android.net.Uri;
+
+        $r2 := @parameter1: android.content.ContentValues;
+
+        $r3 := @parameter2: java.lang.String;
+
+        $r4 := @parameter3: java.lang.String[];
+
+        return 0;
+    }
+}

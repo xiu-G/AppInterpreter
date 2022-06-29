@@ -1,0 +1,422 @@
+public final class com.google.zxing.common.StringUtils extends java.lang.Object
+{
+    private static final boolean ASSUME_SHIFT_JIS;
+    private static final java.lang.String EUC_JP;
+    private static final java.lang.String ISO88591;
+    private static final java.lang.String PLATFORM_DEFAULT_ENCODING;
+    public static final java.lang.String SHIFT_JIS;
+    private static final java.lang.String UTF8;
+
+    static void <clinit>()
+    {
+        java.lang.String $r0, $r1;
+        boolean $z0;
+
+        <com.google.zxing.common.StringUtils: java.lang.String UTF8> = "UTF8";
+
+        <com.google.zxing.common.StringUtils: java.lang.String SHIFT_JIS> = "SJIS";
+
+        <com.google.zxing.common.StringUtils: java.lang.String ISO88591> = "ISO8859_1";
+
+        <com.google.zxing.common.StringUtils: java.lang.String EUC_JP> = "EUC_JP";
+
+        <com.google.zxing.common.StringUtils: boolean ASSUME_SHIFT_JIS> = 0;
+
+        $r0 = staticinvoke <java.lang.System: java.lang.String getProperty(java.lang.String)>("file.encoding");
+
+        <com.google.zxing.common.StringUtils: java.lang.String PLATFORM_DEFAULT_ENCODING> = $r0;
+
+        $r0 = "SJIS";
+
+        $r1 = <com.google.zxing.common.StringUtils: java.lang.String PLATFORM_DEFAULT_ENCODING>;
+
+        $z0 = virtualinvoke $r0.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>($r1);
+
+        if $z0 != 0 goto label1;
+
+        $r0 = "EUC_JP";
+
+        $r1 = <com.google.zxing.common.StringUtils: java.lang.String PLATFORM_DEFAULT_ENCODING>;
+
+        $z0 = virtualinvoke $r0.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>($r1);
+
+        if $z0 == 0 goto label3;
+
+     label1:
+        $z0 = 1;
+
+     label2:
+        <com.google.zxing.common.StringUtils: boolean ASSUME_SHIFT_JIS> = $z0;
+
+        return;
+
+     label3:
+        $z0 = 0;
+
+        goto label2;
+
+        return;
+    }
+
+    private void <init>()
+    {
+        com.google.zxing.common.StringUtils r0;
+
+        r0 := @this: com.google.zxing.common.StringUtils;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    public static java.lang.String guessEncoding(byte[], java.util.Hashtable)
+    {
+        byte[] $r0;
+        short $s6, $s8;
+        byte $b1;
+        int $i0, $i2, $i3, $i4, $i5, $i7, $i9;
+        java.lang.String $r4;
+        java.util.Hashtable $r1;
+        boolean $z0, $z1, $z2, $z3, $z4, $z5;
+        com.google.zxing.DecodeHintType $r3;
+        java.lang.Object $r2;
+
+        $r0 := @parameter0: byte[];
+
+        $r1 := @parameter1: java.util.Hashtable;
+
+        if $r1 == null goto label01;
+
+        $r3 = <com.google.zxing.DecodeHintType: com.google.zxing.DecodeHintType CHARACTER_SET>;
+
+        $r2 = virtualinvoke $r1.<java.util.Hashtable: java.lang.Object get(java.lang.Object)>($r3);
+
+        $r4 = (java.lang.String) $r2;
+
+        if $r4 == null goto label01;
+
+        return $r4;
+
+     label01:
+        $i0 = lengthof $r0;
+
+        if $i0 <= 3 goto label02;
+
+        $b1 = $r0[0];
+
+        $i0 = (int) $b1;
+
+        if $i0 != -17 goto label02;
+
+        $b1 = $r0[1];
+
+        $i0 = (int) $b1;
+
+        if $i0 != -69 goto label02;
+
+        $b1 = $r0[2];
+
+        $i0 = (int) $b1;
+
+        if $i0 != -65 goto label02;
+
+        return "UTF8";
+
+     label02:
+        $i0 = lengthof $r0;
+
+        $i2 = 0;
+
+        $i3 = 0;
+
+        $z0 = 0;
+
+        $z1 = 0;
+
+        $i4 = 0;
+
+        $z2 = 0;
+
+        $i5 = 0;
+
+        $z3 = 1;
+
+        $z4 = 1;
+
+        $z5 = 1;
+
+     label03:
+        if $i4 >= $i0 goto label27;
+
+        if $z5 != 0 goto label04;
+
+        if $z4 != 0 goto label04;
+
+        if $z3 == 0 goto label27;
+
+     label04:
+        $b1 = $r0[$i4];
+
+        $s6 = (short) $b1;
+
+        $s6 = $s6 & 255;
+
+        $i7 = (int) $s6;
+
+        if $i7 < 128 goto label18;
+
+        $i7 = (int) $s6;
+
+        if $i7 > 191 goto label18;
+
+        if $i2 <= 0 goto label05;
+
+        $i2 = $i2 + -1;
+
+     label05:
+        $i7 = (int) $s6;
+
+        if $i7 == 194 goto label06;
+
+        $i7 = (int) $s6;
+
+        if $i7 != 195 goto label09;
+
+     label06:
+        $i7 = $i0 + -1;
+
+        if $i4 >= $i7 goto label09;
+
+        $i7 = $i4 + 1;
+
+        $b1 = $r0[$i7];
+
+        $s8 = (short) $b1;
+
+        $s8 = $s8 & 255;
+
+        $i7 = (int) $s8;
+
+        if $i7 > 191 goto label09;
+
+        $i7 = (int) $s6;
+
+        if $i7 != 194 goto label07;
+
+        $i7 = (int) $s8;
+
+        if $i7 >= 160 goto label08;
+
+     label07:
+        $i7 = (int) $s6;
+
+        if $i7 != 195 goto label09;
+
+        $i7 = (int) $s8;
+
+        if $i7 < 128 goto label09;
+
+     label08:
+        $z0 = 1;
+
+     label09:
+        $i7 = (int) $s6;
+
+        if $i7 < 127 goto label10;
+
+        $i7 = (int) $s6;
+
+        if $i7 > 159 goto label10;
+
+        $z5 = 0;
+
+     label10:
+        $i7 = (int) $s6;
+
+        if $i7 < 161 goto label11;
+
+        $i7 = (int) $s6;
+
+        if $i7 > 223 goto label11;
+
+        if $z2 != 0 goto label14;
+
+        $i3 = $i3 + 1;
+
+     label11:
+        if $z2 != 0 goto label14;
+
+        $i7 = (int) $s6;
+
+        if $i7 < 240 goto label12;
+
+        $i7 = (int) $s6;
+
+        if $i7 <= 255 goto label13;
+
+     label12:
+        $i7 = (int) $s6;
+
+        if $i7 == 128 goto label13;
+
+        $i7 = (int) $s6;
+
+        if $i7 != 160 goto label14;
+
+     label13:
+        $z4 = 0;
+
+     label14:
+        $i7 = (int) $s6;
+
+        if $i7 < 129 goto label15;
+
+        $i7 = (int) $s6;
+
+        if $i7 <= 159 goto label16;
+
+     label15:
+        $i7 = (int) $s6;
+
+        if $i7 < 224 goto label26;
+
+        $i7 = (int) $s6;
+
+        if $i7 > 239 goto label26;
+
+     label16:
+        if $z2 == 0 goto label21;
+
+        $z2 = 0;
+
+     label17:
+        $i4 = $i4 + 1;
+
+        goto label03;
+
+     label18:
+        if $i2 <= 0 goto label19;
+
+        $z3 = 0;
+
+     label19:
+        $i7 = (int) $s6;
+
+        if $i7 < 192 goto label05;
+
+        $i7 = (int) $s6;
+
+        if $i7 > 253 goto label05;
+
+        $i7 = (int) $s6;
+
+     label20:
+        $i9 = $i7 & 64;
+
+        if $i9 == 0 goto label34;
+
+        $i7 = $i7 << 1;
+
+        $i2 = $i2 + 1;
+
+        goto label20;
+
+     label21:
+        $i7 = lengthof $r0;
+
+        $i7 = $i7 + -1;
+
+        if $i4 < $i7 goto label22;
+
+        $z4 = 0;
+
+        $z2 = 1;
+
+        goto label17;
+
+     label22:
+        $i7 = $i4 + 1;
+
+        $b1 = $r0[$i7];
+
+        $s6 = (short) $b1;
+
+        $s6 = $s6 & 255;
+
+        $i7 = (int) $s6;
+
+        if $i7 < 64 goto label23;
+
+        $i7 = (int) $s6;
+
+        if $i7 <= 252 goto label25;
+
+     label23:
+        $z4 = 0;
+
+     label24:
+        $z2 = 1;
+
+        goto label17;
+
+     label25:
+        $i5 = $i5 + 1;
+
+        goto label24;
+
+     label26:
+        $z2 = 0;
+
+        goto label17;
+
+     label27:
+        if $i2 <= 0 goto label28;
+
+        $z3 = 0;
+
+     label28:
+        if $z4 == 0 goto label29;
+
+        $z2 = <com.google.zxing.common.StringUtils: boolean ASSUME_SHIFT_JIS>;
+
+        if $z2 == 0 goto label29;
+
+        return "SJIS";
+
+     label29:
+        if $z3 == 0 goto label30;
+
+        if $z1 == 0 goto label30;
+
+        return "UTF8";
+
+     label30:
+        if $z4 == 0 goto label32;
+
+        if $i5 >= 3 goto label31;
+
+        $i3 = $i3 * 20;
+
+        if $i3 <= $i0 goto label32;
+
+     label31:
+        return "SJIS";
+
+     label32:
+        if $z0 != 0 goto label33;
+
+        if $z5 == 0 goto label33;
+
+        return "ISO8859_1";
+
+     label33:
+        $r4 = <com.google.zxing.common.StringUtils: java.lang.String PLATFORM_DEFAULT_ENCODING>;
+
+        return $r4;
+
+     label34:
+        $z1 = 1;
+
+        goto label05;
+    }
+}

@@ -1,0 +1,660 @@
+public class com.nexage.android.reports.ReportMgr extends java.lang.Object
+{
+    private static final java.lang.String EVENT_TABLE;
+    private static final java.lang.String INTEGER;
+    private static final java.lang.String POSITION;
+    private static final java.lang.String POS_SEQ;
+    private static final java.lang.String POS_SEQ_TYPE;
+    private static final java.lang.String POS_TYPE;
+    private static final java.lang.String PRIMARY_KEY;
+    private static final java.lang.String REQUEST_TABLE;
+    private static final java.lang.String RESPONSE_TIME;
+    private static final java.lang.String RESPONSE_TIME_TYPE;
+    private static final java.lang.String SEQUENCE;
+    private static final java.lang.String SEQUENCE_TYPE;
+    private static final java.lang.String STATUS;
+    private static final java.lang.String STATUS_TYPE;
+    private static final java.lang.String TAGID;
+    private static final java.lang.String TAGID_TYPE;
+    private static final java.lang.String TEXT;
+    private static final java.lang.String TIMESTAMP;
+    private static final java.lang.String TIMESTAMP_TYPE;
+    private static final java.lang.String TYPE;
+    private static final java.lang.String TYPE_TYPE;
+    private static final java.lang.String s_LogSubTag;
+    private static com.nexage.android.reports.ReportMgr s_ReportMgr;
+    private final android.content.Context context;
+    private final android.database.sqlite.SQLiteStatement deleteEventsStmt;
+    private final android.database.sqlite.SQLiteStatement deleteRequestsStmt;
+    private final android.database.sqlite.SQLiteStatement insertEventStmt;
+    private final android.database.sqlite.SQLiteStatement insertRequestStmt;
+    private final android.database.sqlite.SQLiteDatabase reader;
+    private final android.database.sqlite.SQLiteDatabase writer;
+
+    static void <clinit>()
+    {
+        <com.nexage.android.reports.ReportMgr: java.lang.String s_LogSubTag> = "Database";
+
+        <com.nexage.android.reports.ReportMgr: java.lang.String TYPE_TYPE> = " INTEGER";
+
+        <com.nexage.android.reports.ReportMgr: java.lang.String TYPE> = "type";
+
+        <com.nexage.android.reports.ReportMgr: java.lang.String TIMESTAMP_TYPE> = " INTEGER";
+
+        <com.nexage.android.reports.ReportMgr: java.lang.String TIMESTAMP> = "ts";
+
+        <com.nexage.android.reports.ReportMgr: java.lang.String TEXT> = " TEXT";
+
+        <com.nexage.android.reports.ReportMgr: java.lang.String TAGID_TYPE> = " TEXT";
+
+        <com.nexage.android.reports.ReportMgr: java.lang.String TAGID> = "tagId";
+
+        <com.nexage.android.reports.ReportMgr: java.lang.String STATUS_TYPE> = " INTEGER";
+
+        <com.nexage.android.reports.ReportMgr: java.lang.String STATUS> = "st";
+
+        <com.nexage.android.reports.ReportMgr: java.lang.String SEQUENCE_TYPE> = " INTEGER PRIMARY KEY";
+
+        <com.nexage.android.reports.ReportMgr: java.lang.String SEQUENCE> = "seq";
+
+        <com.nexage.android.reports.ReportMgr: java.lang.String RESPONSE_TIME_TYPE> = " INTEGER";
+
+        <com.nexage.android.reports.ReportMgr: java.lang.String RESPONSE_TIME> = "respTime";
+
+        <com.nexage.android.reports.ReportMgr: java.lang.String REQUEST_TABLE> = "reqTable";
+
+        <com.nexage.android.reports.ReportMgr: java.lang.String PRIMARY_KEY> = " INTEGER PRIMARY KEY";
+
+        <com.nexage.android.reports.ReportMgr: java.lang.String POS_TYPE> = " TEXT";
+
+        <com.nexage.android.reports.ReportMgr: java.lang.String POS_SEQ_TYPE> = " INTEGER";
+
+        <com.nexage.android.reports.ReportMgr: java.lang.String POS_SEQ> = "posSeq";
+
+        <com.nexage.android.reports.ReportMgr: java.lang.String POSITION> = "pos";
+
+        <com.nexage.android.reports.ReportMgr: java.lang.String INTEGER> = " INTEGER";
+
+        <com.nexage.android.reports.ReportMgr: java.lang.String EVENT_TABLE> = "eventTable";
+
+        <com.nexage.android.reports.ReportMgr: com.nexage.android.reports.ReportMgr s_ReportMgr> = null;
+
+        return;
+    }
+
+    private void <init>(android.content.Context)
+    {
+        android.content.Context $r1;
+        android.database.sqlite.SQLiteDatabase $r3;
+        com.nexage.android.reports.ReportMgr$OpenHelper r2;
+        com.nexage.android.reports.ReportMgr r0;
+        android.database.sqlite.SQLiteStatement $r4;
+
+        r0 := @this: com.nexage.android.reports.ReportMgr;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<com.nexage.android.reports.ReportMgr: android.content.Context context> = $r1;
+
+        r2 = new com.nexage.android.reports.ReportMgr$OpenHelper;
+
+        $r1 = r0.<com.nexage.android.reports.ReportMgr: android.content.Context context>;
+
+        specialinvoke r2.<com.nexage.android.reports.ReportMgr$OpenHelper: void <init>(android.content.Context)>($r1);
+
+        $r3 = virtualinvoke r2.<com.nexage.android.reports.ReportMgr$OpenHelper: android.database.sqlite.SQLiteDatabase getWritableDatabase()>();
+
+        r0.<com.nexage.android.reports.ReportMgr: android.database.sqlite.SQLiteDatabase writer> = $r3;
+
+        $r3 = virtualinvoke r2.<com.nexage.android.reports.ReportMgr$OpenHelper: android.database.sqlite.SQLiteDatabase getReadableDatabase()>();
+
+        r0.<com.nexage.android.reports.ReportMgr: android.database.sqlite.SQLiteDatabase reader> = $r3;
+
+        $r3 = r0.<com.nexage.android.reports.ReportMgr: android.database.sqlite.SQLiteDatabase writer>;
+
+        $r4 = virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: android.database.sqlite.SQLiteStatement compileStatement(java.lang.String)>("insert into reqTable(pos,posSeq,st,ts,respTime,tagId) values(?,?,?,?,?,?)");
+
+        r0.<com.nexage.android.reports.ReportMgr: android.database.sqlite.SQLiteStatement insertRequestStmt> = $r4;
+
+        $r3 = r0.<com.nexage.android.reports.ReportMgr: android.database.sqlite.SQLiteDatabase writer>;
+
+        $r4 = virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: android.database.sqlite.SQLiteStatement compileStatement(java.lang.String)>("insert into eventTable(pos,posSeq,type,ts,tagId) values(?,?,?,?,?)");
+
+        r0.<com.nexage.android.reports.ReportMgr: android.database.sqlite.SQLiteStatement insertEventStmt> = $r4;
+
+        $r3 = r0.<com.nexage.android.reports.ReportMgr: android.database.sqlite.SQLiteDatabase writer>;
+
+        $r4 = virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: android.database.sqlite.SQLiteStatement compileStatement(java.lang.String)>("delete from reqTable WHERE seq<=?");
+
+        r0.<com.nexage.android.reports.ReportMgr: android.database.sqlite.SQLiteStatement deleteRequestsStmt> = $r4;
+
+        $r3 = r0.<com.nexage.android.reports.ReportMgr: android.database.sqlite.SQLiteDatabase writer>;
+
+        $r4 = virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: android.database.sqlite.SQLiteStatement compileStatement(java.lang.String)>("delete from eventTable WHERE seq<=?");
+
+        r0.<com.nexage.android.reports.ReportMgr: android.database.sqlite.SQLiteStatement deleteEventsStmt> = $r4;
+
+        specialinvoke r0.<com.nexage.android.reports.ReportMgr: void selectAll()>();
+
+        return;
+    }
+
+    static void commitCheckPoint(int, int)
+    {
+        java.lang.Throwable $r2;
+        com.nexage.android.reports.ReportMgr $r0;
+        int $i0, $i1;
+        long $l2;
+        android.database.sqlite.SQLiteStatement r1;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        entermonitor class "Lcom/nexage/android/reports/ReportMgr;";
+
+     label1:
+        $r0 = <com.nexage.android.reports.ReportMgr: com.nexage.android.reports.ReportMgr s_ReportMgr>;
+
+     label2:
+        if $r0 != null goto label4;
+
+     label3:
+        exitmonitor class "Lcom/nexage/android/reports/ReportMgr;";
+
+        return;
+
+     label4:
+        $r0 = <com.nexage.android.reports.ReportMgr: com.nexage.android.reports.ReportMgr s_ReportMgr>;
+
+        r1 = $r0.<com.nexage.android.reports.ReportMgr: android.database.sqlite.SQLiteStatement deleteRequestsStmt>;
+
+        $l2 = (long) $i0;
+
+        virtualinvoke r1.<android.database.sqlite.SQLiteStatement: void bindLong(int,long)>(1, $l2);
+
+        virtualinvoke r1.<android.database.sqlite.SQLiteStatement: void execute()>();
+
+        $r0 = <com.nexage.android.reports.ReportMgr: com.nexage.android.reports.ReportMgr s_ReportMgr>;
+
+        r1 = $r0.<com.nexage.android.reports.ReportMgr: android.database.sqlite.SQLiteStatement deleteEventsStmt>;
+
+        $l2 = (long) $i1;
+
+        virtualinvoke r1.<android.database.sqlite.SQLiteStatement: void bindLong(int,long)>(1, $l2);
+
+        virtualinvoke r1.<android.database.sqlite.SQLiteStatement: void execute()>();
+
+     label5:
+        goto label3;
+
+     label6:
+        $r2 := @caughtexception;
+
+        exitmonitor class "Lcom/nexage/android/reports/ReportMgr;";
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label6;
+        catch java.lang.Throwable from label4 to label5 with label6;
+    }
+
+    public static void insert(com.nexage.android.reports.AdService, com.nexage.android.reports.AdEvent)
+    {
+        java.lang.Throwable $r5;
+        long $l0;
+        com.nexage.android.reports.AdService $r0;
+        com.nexage.android.reports.ReportMgr $r3;
+        int $i1;
+        android.database.sqlite.SQLiteStatement r2;
+        java.lang.String $r4;
+        com.nexage.android.reports.AdEvent $r1;
+
+        $r0 := @parameter0: com.nexage.android.reports.AdService;
+
+        $r1 := @parameter1: com.nexage.android.reports.AdEvent;
+
+        entermonitor class "Lcom/nexage/android/reports/ReportMgr;";
+
+     label1:
+        $r3 = <com.nexage.android.reports.ReportMgr: com.nexage.android.reports.ReportMgr s_ReportMgr>;
+
+        r2 = $r3.<com.nexage.android.reports.ReportMgr: android.database.sqlite.SQLiteStatement insertEventStmt>;
+
+        $r4 = $r0.<com.nexage.android.reports.AdService: java.lang.String position>;
+
+        virtualinvoke r2.<android.database.sqlite.SQLiteStatement: void bindString(int,java.lang.String)>(1, $r4);
+
+        $i1 = $r0.<com.nexage.android.reports.AdService: int m_ServiceID>;
+
+        $l0 = (long) $i1;
+
+        virtualinvoke r2.<android.database.sqlite.SQLiteStatement: void bindLong(int,long)>(2, $l0);
+
+        $i1 = $r1.<com.nexage.android.reports.AdEvent: int type>;
+
+        $l0 = (long) $i1;
+
+        virtualinvoke r2.<android.database.sqlite.SQLiteStatement: void bindLong(int,long)>(3, $l0);
+
+        $l0 = $r1.<com.nexage.android.reports.AdEvent: long timestamp>;
+
+        virtualinvoke r2.<android.database.sqlite.SQLiteStatement: void bindLong(int,long)>(4, $l0);
+
+        $r4 = $r1.<com.nexage.android.reports.AdEvent: java.lang.String tagId>;
+
+        virtualinvoke r2.<android.database.sqlite.SQLiteStatement: void bindString(int,java.lang.String)>(5, $r4);
+
+        $l0 = virtualinvoke r2.<android.database.sqlite.SQLiteStatement: long executeInsert()>();
+
+        $i1 = (int) $l0;
+
+        $r1.<com.nexage.android.reports.AdEvent: int clickSequence> = $i1;
+
+     label2:
+        exitmonitor class "Lcom/nexage/android/reports/ReportMgr;";
+
+        return;
+
+     label3:
+        $r5 := @caughtexception;
+
+        exitmonitor class "Lcom/nexage/android/reports/ReportMgr;";
+
+        throw $r5;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public static void insert(com.nexage.android.reports.AdService, com.nexage.android.reports.AdRequest)
+    {
+        java.lang.Throwable $r5;
+        com.nexage.android.reports.AdRequest $r1;
+        long $l0;
+        com.nexage.android.reports.AdService $r0;
+        com.nexage.android.reports.ReportMgr $r3;
+        int $i1;
+        android.database.sqlite.SQLiteStatement r2;
+        java.lang.String $r4;
+
+        $r0 := @parameter0: com.nexage.android.reports.AdService;
+
+        $r1 := @parameter1: com.nexage.android.reports.AdRequest;
+
+        entermonitor class "Lcom/nexage/android/reports/ReportMgr;";
+
+     label1:
+        $r3 = <com.nexage.android.reports.ReportMgr: com.nexage.android.reports.ReportMgr s_ReportMgr>;
+
+        r2 = $r3.<com.nexage.android.reports.ReportMgr: android.database.sqlite.SQLiteStatement insertRequestStmt>;
+
+        $r4 = $r0.<com.nexage.android.reports.AdService: java.lang.String position>;
+
+        virtualinvoke r2.<android.database.sqlite.SQLiteStatement: void bindString(int,java.lang.String)>(1, $r4);
+
+        $i1 = $r0.<com.nexage.android.reports.AdService: int m_ServiceID>;
+
+        $l0 = (long) $i1;
+
+        virtualinvoke r2.<android.database.sqlite.SQLiteStatement: void bindLong(int,long)>(2, $l0);
+
+        $i1 = $r1.<com.nexage.android.reports.AdRequest: int m_Status>;
+
+        $l0 = (long) $i1;
+
+        virtualinvoke r2.<android.database.sqlite.SQLiteStatement: void bindLong(int,long)>(3, $l0);
+
+        $l0 = $r1.<com.nexage.android.reports.AdRequest: long m_Timestamp>;
+
+        virtualinvoke r2.<android.database.sqlite.SQLiteStatement: void bindLong(int,long)>(4, $l0);
+
+        $i1 = $r1.<com.nexage.android.reports.AdRequest: int responseTime>;
+
+        $l0 = (long) $i1;
+
+        virtualinvoke r2.<android.database.sqlite.SQLiteStatement: void bindLong(int,long)>(5, $l0);
+
+        $r4 = $r1.<com.nexage.android.reports.AdRequest: java.lang.String tagId>;
+
+        virtualinvoke r2.<android.database.sqlite.SQLiteStatement: void bindString(int,java.lang.String)>(6, $r4);
+
+        $l0 = virtualinvoke r2.<android.database.sqlite.SQLiteStatement: long executeInsert()>();
+
+        $i1 = (int) $l0;
+
+        $r1.<com.nexage.android.reports.AdRequest: int adSequence> = $i1;
+
+     label2:
+        exitmonitor class "Lcom/nexage/android/reports/ReportMgr;";
+
+        return;
+
+     label3:
+        $r5 := @caughtexception;
+
+        exitmonitor class "Lcom/nexage/android/reports/ReportMgr;";
+
+        throw $r5;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    private void readEvents()
+    {
+        java.lang.String[] r1;
+        long $l5, $l6;
+        android.database.sqlite.SQLiteDatabase $r3;
+        com.nexage.android.reports.AdService $r7;
+        com.nexage.android.reports.ReportMgr r0;
+        int i0, $i1, i2, i3, i4;
+        java.lang.String $r5, $r6;
+        android.database.Cursor $r4;
+        boolean $z0;
+        com.nexage.android.reports.AdEvent r2, $r8;
+
+        r0 := @this: com.nexage.android.reports.ReportMgr;
+
+        r1 = newarray (java.lang.String)[6];
+
+        r1[0] = "seq";
+
+        r1[1] = "pos";
+
+        r1[2] = "posSeq";
+
+        r1[3] = "type";
+
+        r1[4] = "ts";
+
+        r1[5] = "tagId";
+
+        $r3 = r0.<com.nexage.android.reports.ReportMgr: android.database.sqlite.SQLiteDatabase reader>;
+
+        $r4 = virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: android.database.Cursor query(java.lang.String,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String,java.lang.String,java.lang.String)>("eventTable", r1, null, null, null, null, null);
+
+        $z0 = interfaceinvoke $r4.<android.database.Cursor: boolean moveToFirst()>();
+
+        if $z0 == 0 goto label3;
+
+     label1:
+        i0 = 1;
+
+        $i1 = interfaceinvoke $r4.<android.database.Cursor: int getInt(int)>(0);
+
+        i2 = i0 + 1;
+
+        $r5 = interfaceinvoke $r4.<android.database.Cursor: java.lang.String getString(int)>(i0);
+
+        i3 = i2 + 1;
+
+        i2 = interfaceinvoke $r4.<android.database.Cursor: int getInt(int)>(i2);
+
+        i0 = i3 + 1;
+
+        i3 = interfaceinvoke $r4.<android.database.Cursor: int getInt(int)>(i3);
+
+        i4 = i0 + 1;
+
+        $l5 = interfaceinvoke $r4.<android.database.Cursor: long getLong(int)>(i0);
+
+        $r6 = interfaceinvoke $r4.<android.database.Cursor: java.lang.String getString(int)>(i4);
+
+        $r8 = new com.nexage.android.reports.AdEvent;
+
+        r2 = $r8;
+
+        specialinvoke $r8.<com.nexage.android.reports.AdEvent: void <init>(java.lang.String)>($r6);
+
+        r2.<com.nexage.android.reports.AdEvent: int clickSequence> = $i1;
+
+        r2.<com.nexage.android.reports.AdEvent: int type> = i3;
+
+        r2.<com.nexage.android.reports.AdEvent: long timestamp> = $l5;
+
+        $r7 = staticinvoke <com.nexage.android.reports.AdReport: com.nexage.android.reports.AdService findService(java.lang.String,int)>($r5, i2);
+
+        $r7.<com.nexage.android.reports.AdService: int status> = 1;
+
+        $i1 = $r7.<com.nexage.android.reports.AdService: int responseTime>;
+
+        i2 = -1;
+
+        if $i1 != i2 goto label2;
+
+        $l6 = $r7.<com.nexage.android.reports.AdService: long timestamp>;
+
+        $l5 = $l5 - $l6;
+
+        $i1 = (int) $l5;
+
+        $r7.<com.nexage.android.reports.AdService: int responseTime> = $i1;
+
+     label2:
+        virtualinvoke $r7.<com.nexage.android.reports.AdService: boolean addEvent(com.nexage.android.reports.AdEvent)>(r2);
+
+        $z0 = interfaceinvoke $r4.<android.database.Cursor: boolean moveToNext()>();
+
+        if $z0 != 0 goto label1;
+
+     label3:
+        if $r4 == null goto label4;
+
+        $z0 = interfaceinvoke $r4.<android.database.Cursor: boolean isClosed()>();
+
+        if $z0 != 0 goto label4;
+
+        interfaceinvoke $r4.<android.database.Cursor: void close()>();
+
+     label4:
+        return;
+    }
+
+    private void readRequests()
+    {
+        com.nexage.android.reports.AdRequest r6;
+        java.lang.String[] r1;
+        long $l5, $l6, $l8;
+        android.database.sqlite.SQLiteDatabase $r2;
+        com.nexage.android.reports.AdService $r7;
+        byte $b7;
+        com.nexage.android.reports.ReportMgr r0;
+        int i0, $i1, i2, i3, i4;
+        java.lang.String $r4, $r5;
+        android.database.Cursor $r3;
+        boolean $z0;
+
+        r0 := @this: com.nexage.android.reports.ReportMgr;
+
+        r1 = newarray (java.lang.String)[7];
+
+        r1[0] = "seq";
+
+        r1[1] = "pos";
+
+        r1[2] = "posSeq";
+
+        r1[3] = "st";
+
+        r1[4] = "ts";
+
+        r1[5] = "respTime";
+
+        r1[6] = "tagId";
+
+        $r2 = r0.<com.nexage.android.reports.ReportMgr: android.database.sqlite.SQLiteDatabase reader>;
+
+        $r3 = virtualinvoke $r2.<android.database.sqlite.SQLiteDatabase: android.database.Cursor query(java.lang.String,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String,java.lang.String,java.lang.String)>("reqTable", r1, null, null, null, null, null);
+
+        $z0 = interfaceinvoke $r3.<android.database.Cursor: boolean moveToFirst()>();
+
+        if $z0 == 0 goto label4;
+
+     label1:
+        i0 = 1;
+
+        $i1 = interfaceinvoke $r3.<android.database.Cursor: int getInt(int)>(0);
+
+        i2 = i0 + 1;
+
+        $r4 = interfaceinvoke $r3.<android.database.Cursor: java.lang.String getString(int)>(i0);
+
+        i0 = i2 + 1;
+
+        i2 = interfaceinvoke $r3.<android.database.Cursor: int getInt(int)>(i2);
+
+        i3 = i0 + 1;
+
+        i0 = interfaceinvoke $r3.<android.database.Cursor: int getInt(int)>(i0);
+
+        i4 = i3 + 1;
+
+        $l5 = interfaceinvoke $r3.<android.database.Cursor: long getLong(int)>(i3);
+
+        i3 = i4 + 1;
+
+        i4 = interfaceinvoke $r3.<android.database.Cursor: int getInt(int)>(i4);
+
+        $r5 = interfaceinvoke $r3.<android.database.Cursor: java.lang.String getString(int)>(i3);
+
+        r6 = new com.nexage.android.reports.AdRequest;
+
+        specialinvoke r6.<com.nexage.android.reports.AdRequest: void <init>(int,long,java.lang.String,java.lang.String)>(i0, $l5, $r5, null);
+
+        r6.<com.nexage.android.reports.AdRequest: int adSequence> = $i1;
+
+        r6.<com.nexage.android.reports.AdRequest: int responseTime> = i4;
+
+        $r7 = staticinvoke <com.nexage.android.reports.AdReport: com.nexage.android.reports.AdService findService(java.lang.String,int)>($r4, i2);
+
+        $r7.<com.nexage.android.reports.AdService: int status> = i0;
+
+        $l6 = $r7.<com.nexage.android.reports.AdService: long timestamp>;
+
+        $b7 = $l6 cmp -1L;
+
+        if $b7 != 0 goto label2;
+
+        $r7.<com.nexage.android.reports.AdService: long timestamp> = $l5;
+
+     label2:
+        $l6 = (long) i4;
+
+        $l8 = $r7.<com.nexage.android.reports.AdService: long timestamp>;
+
+        $l5 = $l5 - $l8;
+
+        $l5 = $l6 + $l5;
+
+        $i1 = (int) $l5;
+
+        i2 = $r7.<com.nexage.android.reports.AdService: int responseTime>;
+
+        if $i1 <= i2 goto label3;
+
+        $r7.<com.nexage.android.reports.AdService: int responseTime> = $i1;
+
+     label3:
+        virtualinvoke $r7.<com.nexage.android.reports.AdService: void addRequest(com.nexage.android.reports.AdRequest)>(r6);
+
+        $z0 = interfaceinvoke $r3.<android.database.Cursor: boolean moveToNext()>();
+
+        if $z0 != 0 goto label1;
+
+     label4:
+        if $r3 == null goto label5;
+
+        $z0 = interfaceinvoke $r3.<android.database.Cursor: boolean isClosed()>();
+
+        if $z0 != 0 goto label5;
+
+        interfaceinvoke $r3.<android.database.Cursor: void close()>();
+
+     label5:
+        return;
+    }
+
+    private void selectAll()
+    {
+        com.nexage.android.reports.ReportMgr r0;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r3;
+        java.lang.Exception r1;
+
+        r0 := @this: com.nexage.android.reports.ReportMgr;
+
+     label1:
+        specialinvoke r0.<com.nexage.android.reports.ReportMgr: void readRequests()>();
+
+        specialinvoke r0.<com.nexage.android.reports.ReportMgr: void readEvents()>();
+
+     label2:
+        return;
+
+     label3:
+        r1 := @caughtexception;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = virtualinvoke r1.<java.lang.Exception: java.lang.String getMessage()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(":");
+
+        $r3 = virtualinvoke r1.<java.lang.Exception: java.lang.String toString()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.nexage.android.NexageLog: void w(java.lang.String,java.lang.String)>("Database", $r3);
+
+        return;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+    }
+
+    public static void start(android.content.Context)
+    {
+        java.lang.Throwable $r2;
+        android.content.Context $r0;
+        com.nexage.android.reports.ReportMgr $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        entermonitor class "Lcom/nexage/android/reports/ReportMgr;";
+
+     label1:
+        $r1 = <com.nexage.android.reports.ReportMgr: com.nexage.android.reports.ReportMgr s_ReportMgr>;
+
+        if $r1 != null goto label2;
+
+        staticinvoke <com.nexage.android.reports.AdReport: void restoring()>();
+
+        $r1 = new com.nexage.android.reports.ReportMgr;
+
+        specialinvoke $r1.<com.nexage.android.reports.ReportMgr: void <init>(android.content.Context)>($r0);
+
+        <com.nexage.android.reports.ReportMgr: com.nexage.android.reports.ReportMgr s_ReportMgr> = $r1;
+
+        staticinvoke <com.nexage.android.reports.AdReport: void commitRestore()>();
+
+     label2:
+        exitmonitor class "Lcom/nexage/android/reports/ReportMgr;";
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor class "Lcom/nexage/android/reports/ReportMgr;";
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+}

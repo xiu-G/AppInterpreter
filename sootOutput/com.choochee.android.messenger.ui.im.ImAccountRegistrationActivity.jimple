@@ -1,0 +1,885 @@
+public class com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity extends android.app.ListActivity implements android.view.View$OnClickListener
+{
+    public static final int DIALOG_GENERIC_ERROR;
+    public static final int GRID_SIZE_X;
+    public static final int GRID_SIZE_Y;
+    public static final int MAX_GRID_IMAGE_HEIGHT;
+    public static final int MAX_GRID_IMAGE_WIDTH;
+    private static final java.lang.String TAG;
+    com.choochee.android.messenger.ui.CustomAlertDialog alert;
+    android.database.Cursor cursorImAccounts;
+    com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$ProviderAdapter mAdapter;
+    private int mGridImageHeight;
+    private int mGridImageWidth;
+    android.widget.GridView mGridView;
+    com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$ImageAdapter mGridViewImageAdapter;
+    private android.content.res.TypedArray mNetworkIcons;
+    android.content.res.TypedArray mProviderIcons;
+    java.util.HashMap mProviderIdIconMap;
+    java.util.HashMap mProviderIdNameMap;
+    java.lang.String[] mProviderIds;
+    java.lang.String[] mProviderNames;
+    public android.content.Intent ipcIntent;
+    public android.content.Intent ipcResultIntent;
+
+    public void <init>()
+    {
+        com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity r0;
+
+        r0 := @this: com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity;
+
+        specialinvoke r0.<android.app.ListActivity: void <init>()>();
+
+        r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: java.util.HashMap mProviderIdIconMap> = null;
+
+        r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: java.util.HashMap mProviderIdNameMap> = null;
+
+        r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: java.lang.String[] mProviderIds> = null;
+
+        r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: java.lang.String[] mProviderNames> = null;
+
+        r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.content.res.TypedArray mProviderIcons> = null;
+
+        r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: int mGridImageWidth> = 0;
+
+        r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: int mGridImageHeight> = 0;
+
+        r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.widget.GridView mGridView> = null;
+
+        r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$ImageAdapter mGridViewImageAdapter> = null;
+
+        r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$ProviderAdapter mAdapter> = null;
+
+        r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: com.choochee.android.messenger.ui.CustomAlertDialog alert> = null;
+
+        r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.content.res.TypedArray mNetworkIcons> = null;
+
+        r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.database.Cursor cursorImAccounts> = null;
+
+        return;
+    }
+
+    static void access$000(com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity)
+    {
+        com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity $r0;
+
+        $r0 := @parameter0: com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity;
+
+        specialinvoke $r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: void displayLatestCredentials()>();
+
+        return;
+    }
+
+    static int access$100(com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity)
+    {
+        int i0;
+        com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity $r0;
+
+        $r0 := @parameter0: com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity;
+
+        i0 = $r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: int mGridImageWidth>;
+
+        return i0;
+    }
+
+    static int access$200(com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity)
+    {
+        int i0;
+        com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity $r0;
+
+        $r0 := @parameter0: com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity;
+
+        i0 = $r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: int mGridImageHeight>;
+
+        return i0;
+    }
+
+    private void displayLatestCredentials()
+    {
+        android.widget.LinearLayout $r8;
+        android.net.Uri r1;
+        com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$ImageAdapter $r10;
+        com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity r0;
+        java.lang.String[] r2;
+        android.content.ContentResolver $r3;
+        android.widget.ListAdapter $r11;
+        com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$ProviderAdapter $r9;
+        int $i0;
+        android.view.View $r7;
+        java.lang.StringBuilder $r4;
+        java.lang.String $r5;
+        android.database.Cursor $r6;
+        boolean $z0;
+
+        r0 := @this: com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity;
+
+        specialinvoke r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: void updateNativeContactsProviderCredentials()>();
+
+        r1 = <com.choochee.android.messenger.cws.ChooCheeContentProvider$ChooCheeCM: android.net.Uri GETCHOOCHEE_PROVIDER_CREDENTIALS>;
+
+        $r3 = virtualinvoke r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.content.ContentResolver getContentResolver()>();
+
+        r2 = newarray (java.lang.String)[5];
+
+        r2[0] = "ProviderCredentials._id";
+
+        r2[1] = "ProviderCredentials.providerid";
+
+        r2[2] = "ProviderCredentials.username";
+
+        r2[3] = "ProviderCredentials.credentialid";
+
+        r2[4] = "ProviderCredentials.providerstatus";
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("providerid!=\'ChooChee\'");
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" AND providerid!=\'AddressBook\'");
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r6 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.database.Cursor cursorImAccounts>;
+
+        if $r6 == null goto label1;
+
+        $r6 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.database.Cursor cursorImAccounts>;
+
+        $z0 = interfaceinvoke $r6.<android.database.Cursor: boolean isClosed()>();
+
+        if $z0 != 0 goto label1;
+
+        $r6 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.database.Cursor cursorImAccounts>;
+
+        virtualinvoke r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: void stopManagingCursor(android.database.Cursor)>($r6);
+
+        $r6 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.database.Cursor cursorImAccounts>;
+
+        interfaceinvoke $r6.<android.database.Cursor: void close()>();
+
+     label1:
+        $r6 = virtualinvoke $r3.<android.content.ContentResolver: android.database.Cursor query(android.net.Uri,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String)>(r1, r2, $r5, null, null);
+
+        r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.database.Cursor cursorImAccounts> = $r6;
+
+        $r6 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.database.Cursor cursorImAccounts>;
+
+        if $r6 == null goto label5;
+
+        $r6 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.database.Cursor cursorImAccounts>;
+
+        $i0 = interfaceinvoke $r6.<android.database.Cursor: int getCount()>();
+
+        if $i0 <= 0 goto label2;
+
+        $r7 = virtualinvoke r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.view.View findViewById(int)>(2131361958);
+
+        $r8 = (android.widget.LinearLayout) $r7;
+
+        virtualinvoke $r8.<android.widget.LinearLayout: void setVisibility(int)>(0);
+
+     label2:
+        $r6 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.database.Cursor cursorImAccounts>;
+
+        virtualinvoke r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: void startManagingCursor(android.database.Cursor)>($r6);
+
+        $r9 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$ProviderAdapter mAdapter>;
+
+        if $r9 != null goto label4;
+
+        $r9 = new com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$ProviderAdapter;
+
+        $r6 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.database.Cursor cursorImAccounts>;
+
+        specialinvoke $r9.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$ProviderAdapter: void <init>(com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity,android.content.Context,android.database.Cursor)>(r0, r0, $r6);
+
+        r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$ProviderAdapter mAdapter> = $r9;
+
+        $r9 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$ProviderAdapter mAdapter>;
+
+        virtualinvoke r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: void setListAdapter(android.widget.ListAdapter)>($r9);
+
+     label3:
+        $r10 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$ImageAdapter mGridViewImageAdapter>;
+
+        virtualinvoke $r10.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$ImageAdapter: void refreshView()>();
+
+        return;
+
+     label4:
+        $r11 = virtualinvoke r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.widget.ListAdapter getListAdapter()>();
+
+        $r9 = (com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$ProviderAdapter) $r11;
+
+        r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$ProviderAdapter mAdapter> = $r9;
+
+        $r9 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$ProviderAdapter mAdapter>;
+
+        $r6 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.database.Cursor cursorImAccounts>;
+
+        virtualinvoke $r9.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$ProviderAdapter: void changeCursor(android.database.Cursor)>($r6);
+
+        goto label3;
+
+     label5:
+        return;
+    }
+
+    private void getLatestCredentials()
+    {
+        com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$RequestGetCredentialsTask $r1;
+        com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity r0;
+        java.lang.Void[] $r2;
+
+        r0 := @this: com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity;
+
+        $r1 = new com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$RequestGetCredentialsTask;
+
+        specialinvoke $r1.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$RequestGetCredentialsTask: void <init>(com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity)>(r0);
+
+        $r2 = newarray (java.lang.Void)[0];
+
+        virtualinvoke $r1.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$RequestGetCredentialsTask: android.os.AsyncTask execute(java.lang.Object[])>($r2);
+
+        return;
+    }
+
+    private void setupGridParameters()
+    {
+        android.widget.GridView r4;
+        android.view.ViewGroup$LayoutParams $r7;
+        android.view.WindowManager $r1;
+        com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity r0;
+        android.content.res.TypedArray $r6;
+        int i0, i1, $i2, $i3;
+        android.view.Display $r2;
+        android.view.View $r3;
+        android.widget.LinearLayout$LayoutParams r8;
+        android.content.res.Resources $r5;
+
+        r0 := @this: com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity;
+
+        $r1 = virtualinvoke r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.view.WindowManager getWindowManager()>();
+
+        $r2 = interfaceinvoke $r1.<android.view.WindowManager: android.view.Display getDefaultDisplay()>();
+
+        i0 = virtualinvoke $r2.<android.view.Display: int getWidth()>();
+
+        $r3 = virtualinvoke r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.view.View findViewById(int)>(2131361957);
+
+        r4 = (android.widget.GridView) $r3;
+
+        $r5 = virtualinvoke r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.content.res.Resources getResources()>();
+
+        $r6 = virtualinvoke $r5.<android.content.res.Resources: android.content.res.TypedArray obtainTypedArray(int)>(2131165203);
+
+        r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.content.res.TypedArray mNetworkIcons> = $r6;
+
+        $r7 = virtualinvoke r4.<android.widget.GridView: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        r8 = (android.widget.LinearLayout$LayoutParams) $r7;
+
+        i1 = i0 - 20;
+
+        i0 = r8.<android.widget.LinearLayout$LayoutParams: int leftMargin>;
+
+        i1 = i1 - i0;
+
+        i0 = r8.<android.widget.LinearLayout$LayoutParams: int rightMargin>;
+
+        i1 = i1 - i0;
+
+        i1 = i1 / 3;
+
+        r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: int mGridImageWidth> = i1;
+
+        i1 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: int mGridImageWidth>;
+
+        r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: int mGridImageHeight> = i1;
+
+        i1 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: int mGridImageWidth>;
+
+        if i1 <= 90 goto label1;
+
+        r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: int mGridImageWidth> = 90;
+
+     label1:
+        i1 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: int mGridImageHeight>;
+
+        if i1 <= 90 goto label2;
+
+        r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: int mGridImageHeight> = 90;
+
+     label2:
+        i1 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: int mGridImageWidth>;
+
+        i1 = i1 * 3;
+
+        i1 = i1 + 20;
+
+        i0 = r8.<android.widget.LinearLayout$LayoutParams: int leftMargin>;
+
+        $i2 = r8.<android.widget.LinearLayout$LayoutParams: int rightMargin>;
+
+        i0 = i0 + $i2;
+
+        i1 = i1 + i0;
+
+        i0 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: int mGridImageHeight>;
+
+        i0 = i0 * 2;
+
+        i0 = i0 + 10;
+
+        $i2 = r8.<android.widget.LinearLayout$LayoutParams: int leftMargin>;
+
+        $i3 = r8.<android.widget.LinearLayout$LayoutParams: int rightMargin>;
+
+        $i2 = $i2 + $i3;
+
+        i0 = i0 + $i2;
+
+        r8.<android.widget.LinearLayout$LayoutParams: int width> = i1;
+
+        r8.<android.widget.LinearLayout$LayoutParams: int height> = i0;
+
+        r8.<android.widget.LinearLayout$LayoutParams: int gravity> = 17;
+
+        virtualinvoke r4.<android.widget.GridView: void setLayoutParams(android.view.ViewGroup$LayoutParams)>(r8);
+
+        i1 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: int mGridImageWidth>;
+
+        virtualinvoke r4.<android.widget.GridView: void setColumnWidth(int)>(i1);
+
+        virtualinvoke r4.<android.widget.GridView: void setNumColumns(int)>(3);
+
+        return;
+    }
+
+    private void updateNativeContactsProviderCredentials()
+    {
+        android.accounts.AccountManager $r4;
+        android.accounts.Account $r7;
+        android.net.Uri r1;
+        com.choochee.android.messenger.om.Application $r5;
+        com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity r0;
+        java.lang.String[] r2;
+        java.lang.Integer $r12;
+        android.content.ContentResolver $r10;
+        android.content.ContentValues r3;
+        com.choochee.android.messenger.util.UserProfile $r6;
+        java.lang.String $r8, $r9;
+        boolean z0;
+        android.database.Cursor $r11;
+
+        r0 := @this: com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity;
+
+        z0 = 0;
+
+        $r4 = staticinvoke <android.accounts.AccountManager: android.accounts.AccountManager get(android.content.Context)>(r0);
+
+        $r5 = staticinvoke <com.choochee.android.messenger.om.Application: com.choochee.android.messenger.om.Application getInstance()>();
+
+        $r6 = virtualinvoke $r5.<com.choochee.android.messenger.om.Application: com.choochee.android.messenger.util.UserProfile getUserProfile()>();
+
+        $r7 = staticinvoke <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapter: android.accounts.Account lookupChoocheeAccount(java.lang.String,android.content.Context,com.choochee.android.messenger.util.UserProfile,java.lang.String)>("ImAccountRegistrationAc", r0, $r6, "com.revvl.android.messenger");
+
+        if $r4 == null goto label1;
+
+        if $r7 == null goto label1;
+
+        $r8 = virtualinvoke $r4.<android.accounts.AccountManager: java.lang.String getUserData(android.accounts.Account,java.lang.String)>($r7, "extra.choocheesyncadapter.SYNC_NATIVE");
+
+        $r9 = "YES";
+
+        z0 = virtualinvoke $r9.<java.lang.String: boolean equals(java.lang.Object)>($r8);
+
+        if z0 == 0 goto label3;
+
+        z0 = 1;
+
+     label1:
+        r1 = <com.choochee.android.messenger.cws.ChooCheeContentProvider$ChooCheeCM: android.net.Uri GETCHOOCHEE_PROVIDER_CREDENTIALS>;
+
+        $r10 = virtualinvoke r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.content.ContentResolver getContentResolver()>();
+
+        r2 = newarray (java.lang.String)[5];
+
+        r2[0] = "ProviderCredentials._id";
+
+        r2[1] = "ProviderCredentials.providerid";
+
+        r2[2] = "ProviderCredentials.username";
+
+        r2[3] = "ProviderCredentials.credentialid";
+
+        r2[4] = "ProviderCredentials.providerstatus";
+
+        $r11 = virtualinvoke $r10.<android.content.ContentResolver: android.database.Cursor query(android.net.Uri,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String)>(r1, r2, "providerid=\'AddressBook\'", null, null);
+
+        if $r11 == null goto label5;
+
+        if z0 == 0 goto label4;
+
+        z0 = interfaceinvoke $r11.<android.database.Cursor: boolean moveToFirst()>();
+
+        if z0 != 0 goto label2;
+
+        r3 = new android.content.ContentValues;
+
+        specialinvoke r3.<android.content.ContentValues: void <init>()>();
+
+        $r8 = virtualinvoke r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: java.lang.String getString(int)>(2131427746);
+
+        virtualinvoke r3.<android.content.ContentValues: void put(java.lang.String,java.lang.String)>("providerid", $r8);
+
+        $r5 = staticinvoke <com.choochee.android.messenger.om.Application: com.choochee.android.messenger.om.Application getInstance()>();
+
+        $r6 = virtualinvoke $r5.<com.choochee.android.messenger.om.Application: com.choochee.android.messenger.util.UserProfile getUserProfile()>();
+
+        $r8 = virtualinvoke $r6.<com.choochee.android.messenger.util.UserProfile: java.lang.String getUsername()>();
+
+        virtualinvoke r3.<android.content.ContentValues: void put(java.lang.String,java.lang.String)>("username", $r8);
+
+        virtualinvoke r3.<android.content.ContentValues: void put(java.lang.String,java.lang.String)>("credentialid", "");
+
+        $r12 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(1);
+
+        virtualinvoke r3.<android.content.ContentValues: void put(java.lang.String,java.lang.Integer)>("providerstatus", $r12);
+
+        virtualinvoke $r10.<android.content.ContentResolver: android.net.Uri insert(android.net.Uri,android.content.ContentValues)>(r1, r3);
+
+     label2:
+        interfaceinvoke $r11.<android.database.Cursor: void close()>();
+
+        return;
+
+     label3:
+        z0 = 0;
+
+        goto label1;
+
+     label4:
+        z0 = interfaceinvoke $r11.<android.database.Cursor: boolean moveToFirst()>();
+
+        if z0 == 0 goto label2;
+
+        virtualinvoke $r10.<android.content.ContentResolver: int delete(android.net.Uri,java.lang.String,java.lang.String[])>(r1, "providerid=\'AddressBook\'", null);
+
+        goto label2;
+
+     label5:
+        return;
+    }
+
+    public void onClick(android.view.View)
+    {
+        com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity r0;
+        android.view.View $r1;
+
+        r0 := @this: com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity;
+
+        $r1 := @parameter0: android.view.View;
+
+        return;
+    }
+
+    protected void onCreate(android.os.Bundle)
+    {
+        android.os.Bundle $r1;
+        android.widget.GridView $r11;
+        com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$ImageAdapter $r12, $r14;
+        com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity r0;
+        java.util.HashMap $r2, $r13;
+        java.lang.String[] $r4;
+        java.lang.Integer $r7;
+        android.content.res.TypedArray $r5;
+        int i0, $i1;
+        android.view.View $r10;
+        java.lang.String $r6, $r8;
+        android.widget.ListView $r9;
+        android.content.res.Resources $r3;
+
+        r0 := @this: com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke r0.<android.app.ListActivity: void onCreate(android.os.Bundle)>($r1);
+
+        virtualinvoke r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: void setContentView(int)>(2130903069);
+
+        $r13 = new java.util.HashMap;
+
+        specialinvoke $r13.<java.util.HashMap: void <init>()>();
+
+        r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: java.util.HashMap mProviderIdIconMap> = $r13;
+
+        $r13 = new java.util.HashMap;
+
+        specialinvoke $r13.<java.util.HashMap: void <init>()>();
+
+        r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: java.util.HashMap mProviderIdNameMap> = $r13;
+
+        $r3 = virtualinvoke r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.content.res.Resources getResources()>();
+
+        $r4 = virtualinvoke $r3.<android.content.res.Resources: java.lang.String[] getStringArray(int)>(2131165201);
+
+        r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: java.lang.String[] mProviderIds> = $r4;
+
+        $r3 = virtualinvoke r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.content.res.Resources getResources()>();
+
+        $r4 = virtualinvoke $r3.<android.content.res.Resources: java.lang.String[] getStringArray(int)>(2131165202);
+
+        r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: java.lang.String[] mProviderNames> = $r4;
+
+        $r3 = virtualinvoke r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.content.res.Resources getResources()>();
+
+        $r5 = virtualinvoke $r3.<android.content.res.Resources: android.content.res.TypedArray obtainTypedArray(int)>(2131165204);
+
+        r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.content.res.TypedArray mProviderIcons> = $r5;
+
+        i0 = 0;
+
+     label1:
+        $r4 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: java.lang.String[] mProviderIds>;
+
+        $i1 = lengthof $r4;
+
+        if i0 >= $i1 goto label2;
+
+        $r2 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: java.util.HashMap mProviderIdIconMap>;
+
+        $r4 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: java.lang.String[] mProviderIds>;
+
+        $r6 = $r4[i0];
+
+        $r5 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.content.res.TypedArray mProviderIcons>;
+
+        $i1 = virtualinvoke $r5.<android.content.res.TypedArray: int getResourceId(int,int)>(i0, -1);
+
+        $r7 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i1);
+
+        virtualinvoke $r2.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r6, $r7);
+
+        $r2 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: java.util.HashMap mProviderIdNameMap>;
+
+        $r4 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: java.lang.String[] mProviderIds>;
+
+        $r6 = $r4[i0];
+
+        $r4 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: java.lang.String[] mProviderNames>;
+
+        $r8 = $r4[i0];
+
+        virtualinvoke $r2.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r6, $r8);
+
+        i0 = i0 + 1;
+
+        goto label1;
+
+     label2:
+        $r9 = virtualinvoke r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.widget.ListView getListView()>();
+
+        $r10 = virtualinvoke r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.view.View findViewById(int)>(2131362039);
+
+        virtualinvoke $r9.<android.widget.ListView: void setEmptyView(android.view.View)>($r10);
+
+        specialinvoke r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: void setupGridParameters()>();
+
+        $r3 = virtualinvoke r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.content.res.Resources getResources()>();
+
+        $r5 = virtualinvoke $r3.<android.content.res.Resources: android.content.res.TypedArray obtainTypedArray(int)>(2131165203);
+
+        r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.content.res.TypedArray mNetworkIcons> = $r5;
+
+        $r10 = virtualinvoke r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.view.View findViewById(int)>(2131361957);
+
+        $r11 = (android.widget.GridView) $r10;
+
+        r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.widget.GridView mGridView> = $r11;
+
+        $r14 = new com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$ImageAdapter;
+
+        $r5 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.content.res.TypedArray mNetworkIcons>;
+
+        specialinvoke $r14.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$ImageAdapter: void <init>(com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity,android.content.Context,android.content.res.TypedArray)>(r0, r0, $r5);
+
+        r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$ImageAdapter mGridViewImageAdapter> = $r14;
+
+        $r11 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.widget.GridView mGridView>;
+
+        $r12 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$ImageAdapter mGridViewImageAdapter>;
+
+        virtualinvoke $r11.<android.widget.GridView: void setAdapter(android.widget.ListAdapter)>($r12);
+
+        return;
+    }
+
+    protected android.app.Dialog onCreateDialog(int)
+    {
+        android.widget.TextView $r3;
+        int $i0;
+        com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity r1;
+        android.view.View $r2;
+        android.widget.Button $r4;
+        android.app.Dialog r0;
+        com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$1 $r5;
+
+        r1 := @this: com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity;
+
+        $i0 := @parameter0: int;
+
+        r0 = new android.app.Dialog;
+
+        specialinvoke r0.<android.app.Dialog: void <init>(android.content.Context,int)>(r1, 2131492872);
+
+        lookupswitch($i0)
+        {
+            case 2: goto label2;
+            default: goto label1;
+        };
+
+     label1:
+        r0 = specialinvoke r1.<android.app.ListActivity: android.app.Dialog onCreateDialog(int)>($i0);
+
+        return r0;
+
+     label2:
+        virtualinvoke r0.<android.app.Dialog: void setContentView(int)>(2130903061);
+
+        $r2 = virtualinvoke r0.<android.app.Dialog: android.view.View findViewById(int)>(2131361926);
+
+        $r3 = (android.widget.TextView) $r2;
+
+        virtualinvoke $r3.<android.widget.TextView: void setText(int)>(2131427537);
+
+        $r2 = virtualinvoke r0.<android.app.Dialog: android.view.View findViewById(int)>(2131361898);
+
+        $r3 = (android.widget.TextView) $r2;
+
+        virtualinvoke $r3.<android.widget.TextView: void setText(int)>(2131427686);
+
+        $r2 = virtualinvoke r0.<android.app.Dialog: android.view.View findViewById(int)>(2131361932);
+
+        $r4 = (android.widget.Button) $r2;
+
+        virtualinvoke $r4.<android.widget.Button: void setVisibility(int)>(0);
+
+        $r2 = virtualinvoke r0.<android.app.Dialog: android.view.View findViewById(int)>(2131361932);
+
+        $r4 = (android.widget.Button) $r2;
+
+        $r5 = new com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$1;
+
+        specialinvoke $r5.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$1: void <init>(com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity,android.app.Dialog)>(r1, r0);
+
+        virtualinvoke $r4.<android.widget.Button: void setOnClickListener(android.view.View$OnClickListener)>($r5);
+
+        $r2 = virtualinvoke r0.<android.app.Dialog: android.view.View findViewById(int)>(2131361930);
+
+        $r4 = (android.widget.Button) $r2;
+
+        virtualinvoke $r4.<android.widget.Button: void setVisibility(int)>(8);
+
+        $r2 = virtualinvoke r0.<android.app.Dialog: android.view.View findViewById(int)>(2131361931);
+
+        $r4 = (android.widget.Button) $r2;
+
+        virtualinvoke $r4.<android.widget.Button: void setVisibility(int)>(8);
+
+        return r0;
+    }
+
+    protected void onDestroy()
+    {
+        com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity r0;
+        com.choochee.android.messenger.ui.CustomAlertDialog $r1;
+
+        r0 := @this: com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity;
+
+        $r1 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: com.choochee.android.messenger.ui.CustomAlertDialog alert>;
+
+        if $r1 == null goto label1;
+
+        $r1 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: com.choochee.android.messenger.ui.CustomAlertDialog alert>;
+
+        virtualinvoke $r1.<com.choochee.android.messenger.ui.CustomAlertDialog: void dismiss()>();
+
+     label1:
+        specialinvoke r0.<android.app.ListActivity: void onDestroy()>();
+
+        return;
+    }
+
+    protected void onListItemClick(android.widget.ListView, android.view.View, int, long)
+    {
+        com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity r0;
+        long $l1;
+        android.content.Intent r9;
+        java.util.HashMap $r10;
+        com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$ProviderAdapter $r3;
+        int $i0;
+        android.view.View $r2;
+        java.lang.Object $r11;
+        android.widget.ListView $r1;
+        java.lang.String $r5, $r6, $r7, $r8;
+        android.database.Cursor $r4;
+        boolean $z0;
+
+        r0 := @this: com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity;
+
+        $r1 := @parameter0: android.widget.ListView;
+
+        $r2 := @parameter1: android.view.View;
+
+        $i0 := @parameter2: int;
+
+        $l1 := @parameter3: long;
+
+        $r3 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$ProviderAdapter mAdapter>;
+
+        $r4 = virtualinvoke $r3.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity$ProviderAdapter: android.database.Cursor getCursor()>();
+
+        interfaceinvoke $r4.<android.database.Cursor: boolean moveToPosition(int)>($i0);
+
+        $i0 = interfaceinvoke $r4.<android.database.Cursor: int getColumnIndex(java.lang.String)>("providerid");
+
+        $r5 = interfaceinvoke $r4.<android.database.Cursor: java.lang.String getString(int)>($i0);
+
+        $i0 = interfaceinvoke $r4.<android.database.Cursor: int getColumnIndex(java.lang.String)>("username");
+
+        $r6 = interfaceinvoke $r4.<android.database.Cursor: java.lang.String getString(int)>($i0);
+
+        $i0 = interfaceinvoke $r4.<android.database.Cursor: int getColumnIndex(java.lang.String)>("credentialid");
+
+        $r7 = interfaceinvoke $r4.<android.database.Cursor: java.lang.String getString(int)>($i0);
+
+        $i0 = interfaceinvoke $r4.<android.database.Cursor: int getColumnIndex(java.lang.String)>("providerstatus");
+
+        $i0 = interfaceinvoke $r4.<android.database.Cursor: int getInt(int)>($i0);
+
+        $r8 = "AddressBook";
+
+        $z0 = virtualinvoke $r8.<java.lang.String: boolean equals(java.lang.Object)>($r5);
+
+        if $z0 == 0 goto label1;
+
+        r9 = new android.content.Intent;
+
+        specialinvoke r9.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>(r0, class "Lcom/choochee/android/messenger/ui/im/IMAccountLoginActivity;");
+
+        virtualinvoke r9.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("extra.imaccounteditactivity.providerid", $r5);
+
+        $r10 = r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: java.util.HashMap mProviderIdNameMap>;
+
+        $r11 = virtualinvoke $r10.<java.util.HashMap: java.lang.Object get(java.lang.Object)>($r5);
+
+        $r5 = (java.lang.String) $r11;
+
+        virtualinvoke r9.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("extra.imaccounteditactivity.providername", $r5);
+
+        virtualinvoke r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: void startActivity(android.content.Intent)>(r9);
+
+        return;
+
+     label1:
+        r9 = new android.content.Intent;
+
+        specialinvoke r9.<android.content.Intent: void <init>()>();
+
+        virtualinvoke r9.<android.content.Intent: android.content.Intent setAction(java.lang.String)>("android.intent.action.VIEW");
+
+        virtualinvoke r9.<android.content.Intent: android.content.Intent addCategory(java.lang.String)>("android.intent.category.DEFAULT");
+
+        virtualinvoke r9.<android.content.Intent: android.content.Intent setClass(android.content.Context,java.lang.Class)>(r0, class "Lcom/choochee/android/messenger/ui/im/ImAccountProfileActivity;");
+
+        virtualinvoke r9.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("PROVIDER_ID", $r5);
+
+        virtualinvoke r9.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("USERNAME", $r6);
+
+        virtualinvoke r9.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("CREDENTIAL_ID", $r7);
+
+        virtualinvoke r9.<android.content.Intent: android.content.Intent putExtra(java.lang.String,int)>("REGISTRATION_STATUS", $i0);
+
+        virtualinvoke r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: void startActivity(android.content.Intent)>(r9);
+
+        return;
+    }
+
+    protected void onResume()
+    {
+        com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity r0;
+
+        r0 := @this: com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity;
+
+        specialinvoke r0.<android.app.ListActivity: void onResume()>();
+
+        specialinvoke r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: void displayLatestCredentials()>();
+
+        specialinvoke r0.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: void getLatestCredentials()>();
+
+        return;
+    }
+
+    public android.content.Intent getIntent()
+    {
+        com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity this;
+        android.content.Intent $r0;
+
+        this := @this: com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity;
+
+        $r0 = this.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.content.Intent ipcIntent>;
+
+        return $r0;
+    }
+
+    public void setIntent(android.content.Intent)
+    {
+        com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity this;
+        android.content.Intent parameter0;
+
+        this := @this: com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity;
+
+        parameter0 := @parameter0: android.content.Intent;
+
+        this.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.content.Intent ipcIntent> = parameter0;
+
+        return;
+    }
+
+    public void setResult(int, android.content.Intent)
+    {
+        int parameter0;
+        com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity this;
+        android.content.Intent parameter1;
+
+        this := @this: com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity;
+
+        parameter0 := @parameter0: int;
+
+        parameter1 := @parameter1: android.content.Intent;
+
+        this.<com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: android.content.Intent ipcResultIntent> = parameter1;
+
+        return;
+    }
+
+    public static void <clinit>()
+    {
+        <com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: java.lang.String TAG> = "ImAccountRegistrationAc";
+
+        <com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: int MAX_GRID_IMAGE_WIDTH> = 90;
+
+        <com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: int MAX_GRID_IMAGE_HEIGHT> = 90;
+
+        <com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: int GRID_SIZE_Y> = 2;
+
+        <com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: int GRID_SIZE_X> = 3;
+
+        <com.choochee.android.messenger.ui.im.ImAccountRegistrationActivity: int DIALOG_GENERIC_ERROR> = 2;
+
+        return;
+    }
+}

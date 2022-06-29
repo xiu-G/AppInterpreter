@@ -1,0 +1,817 @@
+public class com.admogo.adapters.WinsAPIAdapter extends com.admogo.adapters.AdMogoAdapter
+{
+    private static int index;
+    private static com.admogo.obj.WinsAD winsAD;
+
+    static void <clinit>()
+    {
+        <com.admogo.adapters.WinsAPIAdapter: int index> = 0;
+
+        return;
+    }
+
+    public void <init>(com.admogo.AdMogoLayout, com.admogo.obj.Ration)
+    {
+        com.admogo.AdMogoLayout $r1;
+        com.admogo.obj.Ration $r2;
+        com.admogo.adapters.WinsAPIAdapter r0;
+
+        r0 := @this: com.admogo.adapters.WinsAPIAdapter;
+
+        $r1 := @parameter0: com.admogo.AdMogoLayout;
+
+        $r2 := @parameter1: com.admogo.obj.Ration;
+
+        specialinvoke r0.<com.admogo.adapters.AdMogoAdapter: void <init>(com.admogo.AdMogoLayout,com.admogo.obj.Ration)>($r1, $r2);
+
+        return;
+    }
+
+    static com.admogo.obj.WinsAD access$0(com.admogo.AdMogoLayout, java.lang.String)
+    {
+        com.admogo.AdMogoLayout $r0;
+        java.lang.String $r1;
+        com.admogo.obj.WinsAD $r2;
+
+        $r0 := @parameter0: com.admogo.AdMogoLayout;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 = staticinvoke <com.admogo.adapters.WinsAPIAdapter: com.admogo.obj.WinsAD getWinsAD(com.admogo.AdMogoLayout,java.lang.String)>($r0, $r1);
+
+        return $r2;
+    }
+
+    static void access$1(com.admogo.obj.WinsAD)
+    {
+        com.admogo.obj.WinsAD $r0;
+
+        $r0 := @parameter0: com.admogo.obj.WinsAD;
+
+        <com.admogo.adapters.WinsAPIAdapter: com.admogo.obj.WinsAD winsAD> = $r0;
+
+        return;
+    }
+
+    static com.admogo.obj.WinsAD access$2()
+    {
+        com.admogo.obj.WinsAD r0;
+
+        r0 = <com.admogo.adapters.WinsAPIAdapter: com.admogo.obj.WinsAD winsAD>;
+
+        return r0;
+    }
+
+    static void access$3(java.lang.String, java.lang.String, com.admogo.AdMogoLayout)
+    {
+        com.admogo.AdMogoLayout $r2;
+        java.lang.String $r0, $r1;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 := @parameter2: com.admogo.AdMogoLayout;
+
+        staticinvoke <com.admogo.adapters.WinsAPIAdapter: void parseWinsADClickJsonString(java.lang.String,java.lang.String,com.admogo.AdMogoLayout)>($r0, $r1, $r2);
+
+        return;
+    }
+
+    static int access$4()
+    {
+        int i0;
+
+        i0 = <com.admogo.adapters.WinsAPIAdapter: int index>;
+
+        return i0;
+    }
+
+    static void access$5(int)
+    {
+        int $i0;
+
+        $i0 := @parameter0: int;
+
+        <com.admogo.adapters.WinsAPIAdapter: int index> = $i0;
+
+        return;
+    }
+
+    private static android.graphics.drawable.Drawable fetchImage(java.lang.String)
+    {
+        java.net.URL $r1;
+        java.lang.Object $r2;
+        java.lang.String $r0;
+        android.graphics.drawable.Drawable $r4;
+        java.lang.Exception $r5;
+        java.io.InputStream $r3;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 = new java.net.URL;
+
+     label1:
+        specialinvoke $r1.<java.net.URL: void <init>(java.lang.String)>($r0);
+
+        $r2 = virtualinvoke $r1.<java.net.URL: java.lang.Object getContent()>();
+
+        $r3 = (java.io.InputStream) $r2;
+
+        $r4 = staticinvoke <android.graphics.drawable.Drawable: android.graphics.drawable.Drawable createFromStream(java.io.InputStream,java.lang.String)>($r3, "src");
+
+        virtualinvoke $r3.<java.io.InputStream: void close()>();
+
+     label2:
+        return $r4;
+
+     label3:
+        $r5 := @caughtexception;
+
+        $r0 = <com.admogo.util.AdMogoUtil: java.lang.String ADMOGO>;
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String,java.lang.Throwable)>($r0, "Unable to fetchImage(): ", $r5);
+
+        return null;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+    }
+
+    private static com.admogo.obj.WinsAD getWinsAD(com.admogo.AdMogoLayout, java.lang.String)
+    {
+        java.net.HttpURLConnection $r7;
+        java.lang.Throwable $r15;
+        java.net.URL $r5;
+        org.json.JSONException $r14;
+        org.json.JSONObject $r3;
+        com.admogo.obj.WinsAD $r13;
+        java.net.URLConnection $r6;
+        int $i0, $i1;
+        java.io.OutputStreamWriter $r9;
+        java.lang.String $r1, $r2, $r11;
+        com.admogo.AdMogoManager $r4;
+        java.io.OutputStream $r10;
+        java.io.BufferedWriter $r8;
+        com.admogo.AdMogoLayout $r0;
+        java.io.InputStream $r12;
+
+        $r0 := @parameter0: com.admogo.AdMogoLayout;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 = <android.os.Build$VERSION: java.lang.String SDK>;
+
+        $i0 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String)>($r2);
+
+        $r3 = new org.json.JSONObject;
+
+     label01:
+        specialinvoke $r3.<org.json.JSONObject: void <init>()>();
+
+     label02:
+        $r4 = $r0.<com.admogo.AdMogoLayout: com.admogo.AdMogoManager adMogoManager>;
+
+        $r2 = $r4.<com.admogo.AdMogoManager: java.lang.String os>;
+
+     label03:
+        virtualinvoke $r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("os", $r2);
+
+     label04:
+        $r4 = $r0.<com.admogo.AdMogoLayout: com.admogo.AdMogoManager adMogoManager>;
+
+        $r2 = $r4.<com.admogo.AdMogoManager: java.lang.String deviceIDHash>;
+
+     label05:
+        virtualinvoke $r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("devid", $r2);
+
+        virtualinvoke $r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("appkey", $r1);
+
+     label06:
+        $r4 = $r0.<com.admogo.AdMogoLayout: com.admogo.AdMogoManager adMogoManager>;
+
+        $i1 = $r4.<com.admogo.AdMogoManager: int width>;
+
+     label07:
+        $r2 = staticinvoke <java.lang.String: java.lang.String valueOf(int)>($i1);
+
+        virtualinvoke $r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("width", $r2);
+
+     label08:
+        $r4 = $r0.<com.admogo.AdMogoLayout: com.admogo.AdMogoManager adMogoManager>;
+
+        $i1 = $r4.<com.admogo.AdMogoManager: int height>;
+
+     label09:
+        $r2 = staticinvoke <java.lang.String: java.lang.String valueOf(int)>($i1);
+
+        virtualinvoke $r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("height", $r2);
+
+        $r2 = staticinvoke <java.lang.String: java.lang.String valueOf(int)>($i0);
+
+        virtualinvoke $r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("deviceosversion", $r2);
+
+        virtualinvoke $r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("version", "1.3");
+
+     label10:
+        $r4 = $r0.<com.admogo.AdMogoLayout: com.admogo.AdMogoManager adMogoManager>;
+
+        $r2 = $r4.<com.admogo.AdMogoManager: java.lang.String deviceName>;
+
+     label11:
+        virtualinvoke $r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("devicename", $r2);
+
+        virtualinvoke $r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("PartnerID", "mogo001");
+
+     label12:
+        $r5 = new java.net.URL;
+
+     label13:
+        specialinvoke $r5.<java.net.URL: void <init>(java.lang.String)>("http://api.winsmedia.net/webviewAdReq");
+
+        $r6 = virtualinvoke $r5.<java.net.URL: java.net.URLConnection openConnection()>();
+
+     label14:
+        $r7 = (java.net.HttpURLConnection) $r6;
+
+     label15:
+        virtualinvoke $r7.<java.net.HttpURLConnection: void setDoOutput(boolean)>(1);
+
+        virtualinvoke $r7.<java.net.HttpURLConnection: void setDoInput(boolean)>(1);
+
+        virtualinvoke $r7.<java.net.HttpURLConnection: void setRequestMethod(java.lang.String)>("POST");
+
+        virtualinvoke $r7.<java.net.HttpURLConnection: void setRequestProperty(java.lang.String,java.lang.String)>("content-type", "application/x-www-form-urlencoded");
+
+        virtualinvoke $r7.<java.net.HttpURLConnection: void addRequestProperty(java.lang.String,java.lang.String)>("appkey", $r1);
+
+        virtualinvoke $r7.<java.net.HttpURLConnection: void setConnectTimeout(int)>(10000);
+
+        virtualinvoke $r7.<java.net.HttpURLConnection: void setReadTimeout(int)>(10000);
+
+     label16:
+        $r8 = new java.io.BufferedWriter;
+
+        $r9 = new java.io.OutputStreamWriter;
+
+     label17:
+        $r10 = virtualinvoke $r7.<java.net.HttpURLConnection: java.io.OutputStream getOutputStream()>();
+
+        specialinvoke $r9.<java.io.OutputStreamWriter: void <init>(java.io.OutputStream)>($r10);
+
+        specialinvoke $r8.<java.io.BufferedWriter: void <init>(java.io.Writer)>($r9);
+
+        $r2 = virtualinvoke $r3.<org.json.JSONObject: java.lang.String toString()>();
+
+        $r11 = staticinvoke <com.admogo.encryption.CryptUtils: java.lang.String getString(java.lang.String)>($r1);
+
+        $r2 = staticinvoke <com.admogo.encryption.CryptUtils: java.lang.String encrypt(java.lang.String,java.lang.String,boolean)>($r2, $r11, 0);
+
+        virtualinvoke $r8.<java.io.BufferedWriter: void write(java.lang.String)>($r2);
+
+        virtualinvoke $r8.<java.io.BufferedWriter: void close()>();
+
+        $r12 = virtualinvoke $r7.<java.net.HttpURLConnection: java.io.InputStream getInputStream()>();
+
+     label18:
+        $r4 = $r0.<com.admogo.AdMogoLayout: com.admogo.AdMogoManager adMogoManager>;
+
+     label19:
+        $r2 = virtualinvoke $r4.<com.admogo.AdMogoManager: java.lang.String convertStreamToString(java.io.InputStream)>($r12);
+
+        $r1 = staticinvoke <com.admogo.encryption.CryptUtils: java.lang.String getString(java.lang.String)>($r1);
+
+        $r1 = staticinvoke <com.admogo.encryption.CryptUtils: java.lang.String decrypt(java.lang.String,java.lang.String,boolean)>($r2, $r1, 0);
+
+        $r13 = staticinvoke <com.admogo.adapters.WinsAPIAdapter: com.admogo.obj.WinsAD parseWinsADJsonString(java.lang.String)>($r1);
+
+     label20:
+        return $r13;
+
+     label21:
+        $r14 := @caughtexception;
+
+        $r2 = <com.admogo.util.AdMogoUtil: java.lang.String ADMOGO>;
+
+     label22:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>($r2, "getWinsAD()", $r14);
+
+     label23:
+        goto label12;
+
+     label24:
+        $r15 := @caughtexception;
+
+        $r1 = <com.admogo.util.AdMogoUtil: java.lang.String ADMOGO>;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>($r1, "Caught IOException in WinsAD", $r15);
+
+        return null;
+
+        catch java.io.IOException from label01 to label02 with label24;
+        catch org.json.JSONException from label03 to label04 with label21;
+        catch org.json.JSONException from label05 to label06 with label21;
+        catch org.json.JSONException from label07 to label08 with label21;
+        catch org.json.JSONException from label09 to label10 with label21;
+        catch org.json.JSONException from label11 to label12 with label21;
+        catch java.io.IOException from label03 to label04 with label24;
+        catch java.io.IOException from label05 to label06 with label24;
+        catch java.io.IOException from label07 to label08 with label24;
+        catch java.io.IOException from label09 to label10 with label24;
+        catch java.io.IOException from label11 to label12 with label24;
+        catch java.io.IOException from label13 to label14 with label24;
+        catch java.io.IOException from label15 to label16 with label24;
+        catch java.io.IOException from label17 to label18 with label24;
+        catch java.io.IOException from label19 to label20 with label24;
+        catch java.io.IOException from label22 to label23 with label24;
+    }
+
+    private static void parseWinsADClickJsonString(java.lang.String, java.lang.String, com.admogo.AdMogoLayout)
+    {
+        com.admogo.AdMogoLayout $r2;
+        org.json.JSONException $r6;
+        org.json.JSONObject $r3;
+        java.lang.Thread $r4;
+        int $i0;
+        com.admogo.adapters.WinsAPIAdapter$PingWinsADUrlRunnable $r5;
+        java.lang.String $r0, $r1;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 := @parameter2: com.admogo.AdMogoLayout;
+
+        $r3 = new org.json.JSONObject;
+
+     label1:
+        specialinvoke $r3.<org.json.JSONObject: void <init>(java.lang.String)>($r0);
+
+        $r0 = virtualinvoke $r3.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("errorcode");
+
+        $z0 = virtualinvoke $r0.<java.lang.String: boolean equals(java.lang.Object)>("0");
+
+     label2:
+        if $z0 != 0 goto label6;
+
+        $i0 = <com.admogo.adapters.WinsAPIAdapter: int index>;
+
+        if $i0 >= 3 goto label6;
+
+        $i0 = <com.admogo.adapters.WinsAPIAdapter: int index>;
+
+        $i0 = $i0 + 1;
+
+        <com.admogo.adapters.WinsAPIAdapter: int index> = $i0;
+
+        $r4 = new java.lang.Thread;
+
+        $r5 = new com.admogo.adapters.WinsAPIAdapter$PingWinsADUrlRunnable;
+
+     label3:
+        specialinvoke $r5.<com.admogo.adapters.WinsAPIAdapter$PingWinsADUrlRunnable: void <init>(com.admogo.AdMogoLayout,java.lang.String)>($r2, $r1);
+
+        specialinvoke $r4.<java.lang.Thread: void <init>(java.lang.Runnable)>($r5);
+
+        virtualinvoke $r4.<java.lang.Thread: void start()>();
+
+     label4:
+        return;
+
+     label5:
+        $r6 := @caughtexception;
+
+     label6:
+        return;
+
+        catch org.json.JSONException from label1 to label2 with label5;
+        catch org.json.JSONException from label3 to label4 with label5;
+    }
+
+    private static com.admogo.obj.WinsAD parseWinsADJsonString(java.lang.String)
+    {
+        java.lang.Integer $r4;
+        android.graphics.drawable.Drawable $r7;
+        java.lang.Exception $r8;
+        java.util.ArrayList $r6;
+        org.json.JSONException $r9;
+        java.util.List $r10;
+        org.json.JSONObject $r2;
+        com.admogo.obj.WinsAD $r1;
+        int $i0, $i1;
+        java.lang.String $r0, $r3;
+        org.json.JSONArray $r5;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 = new com.admogo.obj.WinsAD;
+
+        specialinvoke $r1.<com.admogo.obj.WinsAD: void <init>()>();
+
+        $r2 = new org.json.JSONObject;
+
+     label01:
+        specialinvoke $r2.<org.json.JSONObject: void <init>(java.lang.String)>($r0);
+
+        $r0 = virtualinvoke $r2.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("errorcode");
+
+        $z0 = virtualinvoke $r0.<java.lang.String: boolean equals(java.lang.Object)>("0");
+
+     label02:
+        if $z0 != 0 goto label05;
+
+        $r0 = <com.admogo.util.AdMogoUtil: java.lang.String ADMOGO>;
+
+     label03:
+        $r3 = virtualinvoke $r2.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("errormsg");
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>($r0, $r3);
+
+     label04:
+        return null;
+
+     label05:
+        $r0 = virtualinvoke $r2.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("adid");
+
+     label06:
+        $r1.<com.admogo.obj.WinsAD: java.lang.String adid> = $r0;
+
+     label07:
+        $r0 = virtualinvoke $r2.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("pushstring");
+
+     label08:
+        $r1.<com.admogo.obj.WinsAD: java.lang.String pushString> = $r0;
+
+     label09:
+        $r0 = virtualinvoke $r2.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("refreshtime");
+
+        $r4 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(java.lang.String)>($r0);
+
+        $i0 = virtualinvoke $r4.<java.lang.Integer: int intValue()>();
+
+     label10:
+        $r1.<com.admogo.obj.WinsAD: int refreshTime> = $i0;
+
+     label11:
+        $i0 = virtualinvoke $r2.<org.json.JSONObject: int getInt(java.lang.String)>("showtype");
+
+        $r1.<com.admogo.obj.WinsAD: int showType> = $i0;
+
+     label12:
+        $r5 = virtualinvoke $r2.<org.json.JSONObject: org.json.JSONArray getJSONArray(java.lang.String)>("typevalue");
+
+        $r0 = virtualinvoke $r2.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("clicktype");
+
+        $r4 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(java.lang.String)>($r0);
+
+        $i0 = virtualinvoke $r4.<java.lang.Integer: int intValue()>();
+
+     label13:
+        $r1.<com.admogo.obj.WinsAD: int clickType> = $i0;
+
+        $r6 = new java.util.ArrayList;
+
+     label14:
+        specialinvoke $r6.<java.util.ArrayList: void <init>()>();
+
+     label15:
+        $r1.<com.admogo.obj.WinsAD: java.util.List typeValue> = $r6;
+
+        $i0 = 0;
+
+     label16:
+        $i1 = virtualinvoke $r5.<org.json.JSONArray: int length()>();
+
+     label17:
+        if $i0 < $i1 goto label29;
+
+        $i0 = $r1.<com.admogo.obj.WinsAD: int showType>;
+
+        if $i0 != 1 goto label32;
+
+     label18:
+        $r0 = virtualinvoke $r2.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("width");
+
+        $r4 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(java.lang.String)>($r0);
+
+        $i0 = virtualinvoke $r4.<java.lang.Integer: int intValue()>();
+
+     label19:
+        $r1.<com.admogo.obj.WinsAD: int width> = $i0;
+
+     label20:
+        $r0 = virtualinvoke $r2.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("height");
+
+        $r4 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(java.lang.String)>($r0);
+
+        $i0 = virtualinvoke $r4.<java.lang.Integer: int intValue()>();
+
+     label21:
+        $r1.<com.admogo.obj.WinsAD: int height> = $i0;
+
+     label22:
+        $r0 = virtualinvoke $r2.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("image");
+
+     label23:
+        $r1.<com.admogo.obj.WinsAD: java.lang.String imageLink> = $r0;
+
+        $r0 = $r1.<com.admogo.obj.WinsAD: java.lang.String imageLink>;
+
+     label24:
+        $r7 = staticinvoke <com.admogo.adapters.WinsAPIAdapter: android.graphics.drawable.Drawable fetchImage(java.lang.String)>($r0);
+
+     label25:
+        $r1.<com.admogo.obj.WinsAD: android.graphics.drawable.Drawable image> = $r7;
+
+     label26:
+        return $r1;
+
+     label27:
+        $r8 := @caughtexception;
+
+        $r1.<com.admogo.obj.WinsAD: int showType> = 2;
+
+        goto label12;
+
+     label28:
+        $r9 := @caughtexception;
+
+        $r0 = <com.admogo.util.AdMogoUtil: java.lang.String ADMOGO>;
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String,java.lang.Throwable)>($r0, "No WinsAD Ad Show", $r9);
+
+        return null;
+
+     label29:
+        $r10 = $r1.<com.admogo.obj.WinsAD: java.util.List typeValue>;
+
+     label30:
+        $r0 = virtualinvoke $r5.<org.json.JSONArray: java.lang.String getString(int)>($i0);
+
+        interfaceinvoke $r10.<java.util.List: boolean add(java.lang.Object)>($r0);
+
+     label31:
+        $i0 = $i0 + 1;
+
+        goto label16;
+
+     label32:
+        $i0 = $r1.<com.admogo.obj.WinsAD: int showType>;
+
+        goto label26;
+
+        catch org.json.JSONException from label01 to label02 with label28;
+        catch org.json.JSONException from label03 to label04 with label28;
+        catch org.json.JSONException from label05 to label06 with label28;
+        catch org.json.JSONException from label07 to label08 with label28;
+        catch org.json.JSONException from label09 to label10 with label28;
+        catch java.lang.Exception from label11 to label12 with label27;
+        catch org.json.JSONException from label12 to label13 with label28;
+        catch org.json.JSONException from label14 to label15 with label28;
+        catch org.json.JSONException from label16 to label17 with label28;
+        catch org.json.JSONException from label18 to label19 with label28;
+        catch org.json.JSONException from label20 to label21 with label28;
+        catch org.json.JSONException from label22 to label23 with label28;
+        catch org.json.JSONException from label24 to label25 with label28;
+        catch org.json.JSONException from label30 to label31 with label28;
+    }
+
+    public void click()
+    {
+        android.content.Context $r6;
+        android.net.Uri $r9;
+        android.content.Intent $r7;
+        com.admogo.AdMogoLayout $r5;
+        java.util.List $r2;
+        com.admogo.obj.Ration $r12;
+        com.admogo.obj.WinsAD $r1;
+        java.lang.Thread $r10;
+        int $i0;
+        java.lang.Object $r4;
+        com.admogo.adapters.WinsAPIAdapter$PingWinsADUrlRunnable $r11;
+        java.lang.String $r8;
+        java.lang.ref.WeakReference $r3;
+        com.admogo.adapters.WinsAPIAdapter r0;
+
+        r0 := @this: com.admogo.adapters.WinsAPIAdapter;
+
+        $r1 = <com.admogo.adapters.WinsAPIAdapter: com.admogo.obj.WinsAD winsAD>;
+
+        $r2 = $r1.<com.admogo.obj.WinsAD: java.util.List typeValue>;
+
+        $i0 = interfaceinvoke $r2.<java.util.List: int size()>();
+
+        if $i0 <= 0 goto label1;
+
+        $r1 = <com.admogo.adapters.WinsAPIAdapter: com.admogo.obj.WinsAD winsAD>;
+
+        $i0 = $r1.<com.admogo.obj.WinsAD: int showType>;
+
+        if $i0 != 1 goto label2;
+
+        $r3 = r0.<com.admogo.adapters.WinsAPIAdapter: java.lang.ref.WeakReference adMogoLayoutReference>;
+
+        $r4 = virtualinvoke $r3.<java.lang.ref.WeakReference: java.lang.Object get()>();
+
+        $r5 = (com.admogo.AdMogoLayout) $r4;
+
+        $r3 = $r5.<com.admogo.AdMogoLayout: java.lang.ref.WeakReference activityReference>;
+
+        $r4 = virtualinvoke $r3.<java.lang.ref.WeakReference: java.lang.Object get()>();
+
+        $r6 = (android.content.Context) $r4;
+
+        virtualinvoke $r5.<com.admogo.AdMogoLayout: void countClick()>();
+
+        $r7 = new android.content.Intent;
+
+        $r1 = <com.admogo.adapters.WinsAPIAdapter: com.admogo.obj.WinsAD winsAD>;
+
+        $r2 = $r1.<com.admogo.obj.WinsAD: java.util.List typeValue>;
+
+        $r4 = interfaceinvoke $r2.<java.util.List: java.lang.Object get(int)>(0);
+
+        $r8 = (java.lang.String) $r4;
+
+        $r9 = staticinvoke <android.net.Uri: android.net.Uri parse(java.lang.String)>($r8);
+
+        specialinvoke $r7.<android.content.Intent: void <init>(java.lang.String,android.net.Uri)>("android.intent.action.VIEW", $r9);
+
+        virtualinvoke $r7.<android.content.Intent: android.content.Intent addFlags(int)>(268435456);
+
+        virtualinvoke $r6.<android.content.Context: void startActivity(android.content.Intent)>($r7);
+
+        $r10 = new java.lang.Thread;
+
+        $r11 = new com.admogo.adapters.WinsAPIAdapter$PingWinsADUrlRunnable;
+
+        $r12 = r0.<com.admogo.adapters.WinsAPIAdapter: com.admogo.obj.Ration ration>;
+
+        $r8 = $r12.<com.admogo.obj.Ration: java.lang.String key>;
+
+        specialinvoke $r11.<com.admogo.adapters.WinsAPIAdapter$PingWinsADUrlRunnable: void <init>(com.admogo.AdMogoLayout,java.lang.String)>($r5, $r8);
+
+        specialinvoke $r10.<java.lang.Thread: void <init>(java.lang.Runnable)>($r11);
+
+        virtualinvoke $r10.<java.lang.Thread: void start()>();
+
+        return;
+
+     label1:
+        $r8 = <com.admogo.util.AdMogoUtil: java.lang.String ADMOGO>;
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>($r8, "In onInterceptTouchEvent(), but custom or custom.link is null");
+
+     label2:
+        return;
+    }
+
+    public void displayWinsAD()
+    {
+        com.admogo.AdMogoLayout $r3;
+        android.widget.RelativeLayout$LayoutParams $r11;
+        com.admogo.obj.WinsAD $r8;
+        int $i0;
+        java.lang.Object $r2;
+        java.lang.StringBuilder $r7, $r12;
+        java.lang.String $r5;
+        java.lang.ref.WeakReference $r1;
+        android.webkit.WebView $r6, $r10;
+        android.app.Activity $r4;
+        com.admogo.adapters.WinsAPIAdapter r0;
+        com.admogo.AdMogoManager $r9;
+        double $d0;
+
+        r0 := @this: com.admogo.adapters.WinsAPIAdapter;
+
+        $r1 = r0.<com.admogo.adapters.WinsAPIAdapter: java.lang.ref.WeakReference adMogoLayoutReference>;
+
+        $r2 = virtualinvoke $r1.<java.lang.ref.WeakReference: java.lang.Object get()>();
+
+        $r3 = (com.admogo.AdMogoLayout) $r2;
+
+        if $r3 != null goto label1;
+
+        return;
+
+     label1:
+        $r1 = $r3.<com.admogo.AdMogoLayout: java.lang.ref.WeakReference activityReference>;
+
+        $r2 = virtualinvoke $r1.<java.lang.ref.WeakReference: java.lang.Object get()>();
+
+        $r4 = (android.app.Activity) $r2;
+
+        if $r4 == null goto label2;
+
+        $d0 = staticinvoke <com.admogo.util.AdMogoUtil: double getDensity(android.app.Activity)>($r4);
+
+        $i0 = staticinvoke <com.admogo.util.AdMogoUtil: int convertToScreenPixels(int,double)>(50, $d0);
+
+        $d0 = (double) $i0;
+
+        $r5 = <com.admogo.util.AdMogoUtil: java.lang.String ADMOGO>;
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>($r5, "Serving WinsAD type: banner");
+
+        $r10 = new android.webkit.WebView;
+
+        $r6 = $r10;
+
+        specialinvoke $r10.<android.webkit.WebView: void <init>(android.content.Context)>($r4);
+
+        $r11 = new android.widget.RelativeLayout$LayoutParams;
+
+        $i0 = (int) $d0;
+
+        specialinvoke $r11.<android.widget.RelativeLayout$LayoutParams: void <init>(int,int)>(-1, $i0);
+
+        virtualinvoke $r3.<com.admogo.AdMogoLayout: void addView(android.view.View,android.view.ViewGroup$LayoutParams)>($r6, $r11);
+
+        $r12 = new java.lang.StringBuilder;
+
+        specialinvoke $r12.<java.lang.StringBuilder: void <init>(java.lang.String)>("<body style=\"padding:0; margin:0\"><img src=\"");
+
+        $r8 = <com.admogo.adapters.WinsAPIAdapter: com.admogo.obj.WinsAD winsAD>;
+
+        $r5 = $r8.<com.admogo.obj.WinsAD: java.lang.String imageLink>;
+
+        $r7 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\" width=320 height=50 border=0 align=\"middle\" /></body>");
+
+        $r5 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r6.<android.webkit.WebView: void loadData(java.lang.String,java.lang.String,java.lang.String)>($r5, "text/html", "UTF-8");
+
+        virtualinvoke $r6.<android.webkit.WebView: void setScrollBarStyle(int)>(33554432);
+
+        virtualinvoke $r3.<com.admogo.AdMogoLayout: void pushSubView(android.view.ViewGroup,int)>($r6, 52);
+
+        $r8 = <com.admogo.adapters.WinsAPIAdapter: com.admogo.obj.WinsAD winsAD>;
+
+        $r8.<com.admogo.obj.WinsAD: android.graphics.drawable.Drawable image> = null;
+
+        $r9 = $r3.<com.admogo.AdMogoLayout: com.admogo.AdMogoManager adMogoManager>;
+
+        virtualinvoke $r9.<com.admogo.AdMogoManager: void resetRollover()>();
+
+        virtualinvoke $r3.<com.admogo.AdMogoLayout: void rotateThreadedDelayed()>();
+
+     label2:
+        return;
+    }
+
+    public void finish()
+    {
+        java.lang.String $r1;
+        com.admogo.adapters.WinsAPIAdapter r0;
+
+        r0 := @this: com.admogo.adapters.WinsAPIAdapter;
+
+        $r1 = <com.admogo.util.AdMogoUtil: java.lang.String ADMOGO>;
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>($r1, "WinsAD Finished");
+
+        return;
+    }
+
+    public void handle()
+    {
+        java.util.concurrent.TimeUnit $r2;
+        com.admogo.AdMogoLayout $r5;
+        com.admogo.adapters.WinsAPIAdapter$FetchWinsADRunnable $r1;
+        com.admogo.obj.Ration $r7;
+        java.util.concurrent.ScheduledExecutorService $r6;
+        java.lang.Object $r3;
+        java.lang.ref.WeakReference $r4;
+        com.admogo.adapters.WinsAPIAdapter r0;
+
+        r0 := @this: com.admogo.adapters.WinsAPIAdapter;
+
+        $r4 = r0.<com.admogo.adapters.WinsAPIAdapter: java.lang.ref.WeakReference adMogoLayoutReference>;
+
+        $r3 = virtualinvoke $r4.<java.lang.ref.WeakReference: java.lang.Object get()>();
+
+        $r5 = (com.admogo.AdMogoLayout) $r3;
+
+        if $r5 != null goto label1;
+
+        return;
+
+     label1:
+        $r6 = $r5.<com.admogo.AdMogoLayout: java.util.concurrent.ScheduledExecutorService scheduler>;
+
+        $r1 = new com.admogo.adapters.WinsAPIAdapter$FetchWinsADRunnable;
+
+        $r7 = r0.<com.admogo.adapters.WinsAPIAdapter: com.admogo.obj.Ration ration>;
+
+        specialinvoke $r1.<com.admogo.adapters.WinsAPIAdapter$FetchWinsADRunnable: void <init>(com.admogo.adapters.WinsAPIAdapter,com.admogo.obj.Ration)>(r0, $r7);
+
+        $r2 = <java.util.concurrent.TimeUnit: java.util.concurrent.TimeUnit SECONDS>;
+
+        interfaceinvoke $r6.<java.util.concurrent.ScheduledExecutorService: java.util.concurrent.ScheduledFuture schedule(java.lang.Runnable,long,java.util.concurrent.TimeUnit)>($r1, 0L, $r2);
+
+        return;
+    }
+}

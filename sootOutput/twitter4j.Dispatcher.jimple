@@ -1,0 +1,387 @@
+class twitter4j.Dispatcher extends java.lang.Object
+{
+    private boolean active;
+    private java.util.List q;
+    private twitter4j.ExecuteThread[] threads;
+    java.lang.Object ticket;
+
+    public void <init>(twitter4j.conf.Configuration, java.lang.String)
+    {
+        twitter4j.Dispatcher r0;
+        twitter4j.conf.Configuration $r1;
+        java.lang.String $r2;
+
+        r0 := @this: twitter4j.Dispatcher;
+
+        $r1 := @parameter0: twitter4j.conf.Configuration;
+
+        $r2 := @parameter1: java.lang.String;
+
+        specialinvoke r0.<twitter4j.Dispatcher: void <init>(twitter4j.conf.Configuration,java.lang.String,int)>($r1, $r2, 1);
+
+        return;
+    }
+
+    public void <init>(twitter4j.conf.Configuration, java.lang.String, int)
+    {
+        java.lang.Runtime $r3;
+        twitter4j.ExecuteThread $r7;
+        twitter4j.Dispatcher$1 $r8;
+        twitter4j.Dispatcher r0;
+        twitter4j.conf.Configuration $r1;
+        int $i0, $i1;
+        java.lang.Object $r5;
+        twitter4j.ExecuteThread[] $r6;
+        java.lang.String $r2;
+        java.util.LinkedList $r4;
+
+        r0 := @this: twitter4j.Dispatcher;
+
+        $r1 := @parameter0: twitter4j.conf.Configuration;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $i0 := @parameter2: int;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        $r4 = new java.util.LinkedList;
+
+        specialinvoke $r4.<java.util.LinkedList: void <init>()>();
+
+        r0.<twitter4j.Dispatcher: java.util.List q> = $r4;
+
+        $r5 = new java.lang.Object;
+
+        specialinvoke $r5.<java.lang.Object: void <init>()>();
+
+        r0.<twitter4j.Dispatcher: java.lang.Object ticket> = $r5;
+
+        r0.<twitter4j.Dispatcher: boolean active> = 1;
+
+        $r6 = newarray (twitter4j.ExecuteThread)[$i0];
+
+        r0.<twitter4j.Dispatcher: twitter4j.ExecuteThread[] threads> = $r6;
+
+        $i0 = 0;
+
+     label1:
+        $r6 = r0.<twitter4j.Dispatcher: twitter4j.ExecuteThread[] threads>;
+
+        $i1 = lengthof $r6;
+
+        if $i0 >= $i1 goto label2;
+
+        $r6 = r0.<twitter4j.Dispatcher: twitter4j.ExecuteThread[] threads>;
+
+        $r7 = new twitter4j.ExecuteThread;
+
+        specialinvoke $r7.<twitter4j.ExecuteThread: void <init>(java.lang.String,twitter4j.Dispatcher,int)>($r2, r0, $i0);
+
+        $r6[$i0] = $r7;
+
+        $r6 = r0.<twitter4j.Dispatcher: twitter4j.ExecuteThread[] threads>;
+
+        $r7 = $r6[$i0];
+
+        virtualinvoke $r7.<twitter4j.ExecuteThread: void setDaemon(boolean)>(1);
+
+        $r6 = r0.<twitter4j.Dispatcher: twitter4j.ExecuteThread[] threads>;
+
+        $r7 = $r6[$i0];
+
+        virtualinvoke $r7.<twitter4j.ExecuteThread: void start()>();
+
+        $i0 = $i0 + 1;
+
+        goto label1;
+
+     label2:
+        $r3 = staticinvoke <java.lang.Runtime: java.lang.Runtime getRuntime()>();
+
+        $r8 = new twitter4j.Dispatcher$1;
+
+        specialinvoke $r8.<twitter4j.Dispatcher$1: void <init>(twitter4j.Dispatcher)>(r0);
+
+        virtualinvoke $r3.<java.lang.Runtime: void addShutdownHook(java.lang.Thread)>($r8);
+
+        return;
+    }
+
+    static boolean access$000(twitter4j.Dispatcher)
+    {
+        twitter4j.Dispatcher $r0;
+        boolean z0;
+
+        $r0 := @parameter0: twitter4j.Dispatcher;
+
+        z0 = $r0.<twitter4j.Dispatcher: boolean active>;
+
+        return z0;
+    }
+
+    public void invokeLater(java.lang.Runnable)
+    {
+        java.lang.Throwable $r6, $r7, $r8;
+        java.lang.Runnable $r1;
+        java.util.List $r2, $r3;
+        twitter4j.Dispatcher r0;
+        java.lang.Object $r4, $r5;
+
+        r0 := @this: twitter4j.Dispatcher;
+
+        $r1 := @parameter0: java.lang.Runnable;
+
+        entermonitor r0;
+
+     label01:
+        $r2 = r0.<twitter4j.Dispatcher: java.util.List q>;
+
+        entermonitor $r2;
+
+     label02:
+        $r3 = r0.<twitter4j.Dispatcher: java.util.List q>;
+
+        interfaceinvoke $r3.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        exitmonitor $r2;
+
+     label03:
+        $r4 = r0.<twitter4j.Dispatcher: java.lang.Object ticket>;
+
+        entermonitor $r4;
+
+     label04:
+        $r5 = r0.<twitter4j.Dispatcher: java.lang.Object ticket>;
+
+        virtualinvoke $r5.<java.lang.Object: void notify()>();
+
+        exitmonitor $r4;
+
+     label05:
+        exitmonitor r0;
+
+        return;
+
+     label06:
+        $r6 := @caughtexception;
+
+     label07:
+        exitmonitor $r2;
+
+     label08:
+        throw $r6;
+
+     label09:
+        $r7 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r7;
+
+     label10:
+        $r8 := @caughtexception;
+
+     label11:
+        exitmonitor $r4;
+
+     label12:
+        throw $r8;
+
+     label13:
+        nop;
+
+        catch java.lang.Throwable from label01 to label02 with label09;
+        catch java.lang.Throwable from label02 to label03 with label06;
+        catch java.lang.Throwable from label03 to label04 with label09;
+        catch java.lang.Throwable from label04 to label05 with label10;
+        catch java.lang.Throwable from label07 to label08 with label06;
+        catch java.lang.Throwable from label08 to label09 with label09;
+        catch java.lang.Throwable from label11 to label12 with label10;
+        catch java.lang.Throwable from label12 to label13 with label09;
+    }
+
+    public java.lang.Runnable poll()
+    {
+        java.lang.Throwable $r6, $r7, $r8;
+        java.lang.Runnable r4;
+        java.util.List $r1, $r2;
+        twitter4j.Dispatcher r0;
+        int $i0;
+        java.lang.Object $r3, $r5;
+        boolean $z0;
+
+        r0 := @this: twitter4j.Dispatcher;
+
+     label01:
+        $z0 = r0.<twitter4j.Dispatcher: boolean active>;
+
+        if $z0 == 0 goto label15;
+
+        $r1 = r0.<twitter4j.Dispatcher: java.util.List q>;
+
+        entermonitor $r1;
+
+     label02:
+        $r2 = r0.<twitter4j.Dispatcher: java.util.List q>;
+
+        $i0 = interfaceinvoke $r2.<java.util.List: int size()>();
+
+        if $i0 <= 0 goto label04;
+
+        $r2 = r0.<twitter4j.Dispatcher: java.util.List q>;
+
+        $r3 = interfaceinvoke $r2.<java.util.List: java.lang.Object remove(int)>(0);
+
+        r4 = (java.lang.Runnable) $r3;
+
+        if r4 == null goto label04;
+
+        exitmonitor $r1;
+
+     label03:
+        return r4;
+
+     label04:
+        exitmonitor $r1;
+
+     label05:
+        $r3 = r0.<twitter4j.Dispatcher: java.lang.Object ticket>;
+
+        entermonitor $r3;
+
+     label06:
+        $r5 = r0.<twitter4j.Dispatcher: java.lang.Object ticket>;
+
+     label07:
+        virtualinvoke $r5.<java.lang.Object: void wait()>();
+
+     label08:
+        exitmonitor $r3;
+
+     label09:
+        goto label01;
+
+     label10:
+        $r6 := @caughtexception;
+
+        exitmonitor $r3;
+
+     label11:
+        throw $r6;
+
+     label12:
+        $r7 := @caughtexception;
+
+     label13:
+        exitmonitor $r1;
+
+     label14:
+        throw $r7;
+
+     label15:
+        return null;
+
+     label16:
+        $r8 := @caughtexception;
+
+        goto label08;
+
+        catch java.lang.Throwable from label02 to label03 with label12;
+        catch java.lang.Throwable from label04 to label05 with label12;
+        catch java.lang.InterruptedException from label07 to label08 with label16;
+        catch java.lang.Throwable from label06 to label08 with label10;
+        catch java.lang.Throwable from label08 to label09 with label10;
+        catch java.lang.Throwable from label10 to label11 with label10;
+        catch java.lang.Throwable from label13 to label14 with label12;
+    }
+
+    public void shutdown()
+    {
+        java.lang.Throwable $r5, $r6;
+        java.lang.IllegalStateException $r7;
+        twitter4j.ExecuteThread r2;
+        twitter4j.Dispatcher r0;
+        int i0, i1;
+        twitter4j.ExecuteThread[] r1;
+        java.lang.Object $r3, $r4;
+        boolean $z0;
+
+        r0 := @this: twitter4j.Dispatcher;
+
+        entermonitor r0;
+
+     label01:
+        $z0 = r0.<twitter4j.Dispatcher: boolean active>;
+
+        if $z0 == 0 goto label10;
+
+        r0.<twitter4j.Dispatcher: boolean active> = 0;
+
+        r1 = r0.<twitter4j.Dispatcher: twitter4j.ExecuteThread[] threads>;
+
+        i0 = lengthof r1;
+
+        i1 = 0;
+
+     label02:
+        if i1 >= i0 goto label03;
+
+        r2 = r1[i1];
+
+        virtualinvoke r2.<twitter4j.ExecuteThread: void shutdown()>();
+
+        i1 = i1 + 1;
+
+        goto label02;
+
+     label03:
+        $r3 = r0.<twitter4j.Dispatcher: java.lang.Object ticket>;
+
+        entermonitor $r3;
+
+     label04:
+        $r4 = r0.<twitter4j.Dispatcher: java.lang.Object ticket>;
+
+        virtualinvoke $r4.<java.lang.Object: void notify()>();
+
+        exitmonitor $r3;
+
+     label05:
+        exitmonitor r0;
+
+        return;
+
+     label06:
+        $r5 := @caughtexception;
+
+     label07:
+        exitmonitor $r3;
+
+     label08:
+        throw $r5;
+
+     label09:
+        $r6 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r6;
+
+     label10:
+        $r7 = new java.lang.IllegalStateException;
+
+        specialinvoke $r7.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Already shutdown");
+
+        throw $r7;
+
+     label11:
+        nop;
+
+        catch java.lang.Throwable from label01 to label04 with label09;
+        catch java.lang.Throwable from label04 to label05 with label06;
+        catch java.lang.Throwable from label07 to label08 with label06;
+        catch java.lang.Throwable from label08 to label09 with label09;
+        catch java.lang.Throwable from label10 to label11 with label09;
+    }
+}

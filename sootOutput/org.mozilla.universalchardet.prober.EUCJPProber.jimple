@@ -1,0 +1,288 @@
+public class org.mozilla.universalchardet.prober.EUCJPProber extends org.mozilla.universalchardet.prober.CharsetProber
+{
+    private static final org.mozilla.universalchardet.prober.statemachine.SMModel smModel;
+    private org.mozilla.universalchardet.prober.statemachine.CodingStateMachine codingSM;
+    private org.mozilla.universalchardet.prober.contextanalysis.EUCJPContextAnalysis contextAnalyzer;
+    private org.mozilla.universalchardet.prober.distributionanalysis.EUCJPDistributionAnalysis distributionAnalyzer;
+    private byte[] lastChar;
+    private org.mozilla.universalchardet.prober.CharsetProber$ProbingState state;
+
+    static void <clinit>()
+    {
+        org.mozilla.universalchardet.prober.statemachine.EUCJPSMModel $r0;
+
+        $r0 = new org.mozilla.universalchardet.prober.statemachine.EUCJPSMModel;
+
+        specialinvoke $r0.<org.mozilla.universalchardet.prober.statemachine.EUCJPSMModel: void <init>()>();
+
+        <org.mozilla.universalchardet.prober.EUCJPProber: org.mozilla.universalchardet.prober.statemachine.SMModel smModel> = $r0;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        org.mozilla.universalchardet.prober.distributionanalysis.EUCJPDistributionAnalysis $r4;
+        byte[] $r5;
+        org.mozilla.universalchardet.prober.statemachine.CodingStateMachine $r2;
+        org.mozilla.universalchardet.prober.EUCJPProber r0;
+        org.mozilla.universalchardet.prober.contextanalysis.EUCJPContextAnalysis $r3;
+        org.mozilla.universalchardet.prober.statemachine.SMModel $r1;
+
+        r0 := @this: org.mozilla.universalchardet.prober.EUCJPProber;
+
+        specialinvoke r0.<org.mozilla.universalchardet.prober.CharsetProber: void <init>()>();
+
+        $r2 = new org.mozilla.universalchardet.prober.statemachine.CodingStateMachine;
+
+        $r1 = <org.mozilla.universalchardet.prober.EUCJPProber: org.mozilla.universalchardet.prober.statemachine.SMModel smModel>;
+
+        specialinvoke $r2.<org.mozilla.universalchardet.prober.statemachine.CodingStateMachine: void <init>(org.mozilla.universalchardet.prober.statemachine.SMModel)>($r1);
+
+        r0.<org.mozilla.universalchardet.prober.EUCJPProber: org.mozilla.universalchardet.prober.statemachine.CodingStateMachine codingSM> = $r2;
+
+        $r3 = new org.mozilla.universalchardet.prober.contextanalysis.EUCJPContextAnalysis;
+
+        specialinvoke $r3.<org.mozilla.universalchardet.prober.contextanalysis.EUCJPContextAnalysis: void <init>()>();
+
+        r0.<org.mozilla.universalchardet.prober.EUCJPProber: org.mozilla.universalchardet.prober.contextanalysis.EUCJPContextAnalysis contextAnalyzer> = $r3;
+
+        $r4 = new org.mozilla.universalchardet.prober.distributionanalysis.EUCJPDistributionAnalysis;
+
+        specialinvoke $r4.<org.mozilla.universalchardet.prober.distributionanalysis.EUCJPDistributionAnalysis: void <init>()>();
+
+        r0.<org.mozilla.universalchardet.prober.EUCJPProber: org.mozilla.universalchardet.prober.distributionanalysis.EUCJPDistributionAnalysis distributionAnalyzer> = $r4;
+
+        $r5 = newarray (byte)[2];
+
+        r0.<org.mozilla.universalchardet.prober.EUCJPProber: byte[] lastChar> = $r5;
+
+        virtualinvoke r0.<org.mozilla.universalchardet.prober.EUCJPProber: void reset()>();
+
+        return;
+    }
+
+    public java.lang.String getCharSetName()
+    {
+        java.lang.String r1;
+        org.mozilla.universalchardet.prober.EUCJPProber r0;
+
+        r0 := @this: org.mozilla.universalchardet.prober.EUCJPProber;
+
+        r1 = <org.mozilla.universalchardet.Constants: java.lang.String CHARSET_EUC_JP>;
+
+        return r1;
+    }
+
+    public float getConfidence()
+    {
+        org.mozilla.universalchardet.prober.distributionanalysis.EUCJPDistributionAnalysis $r2;
+        org.mozilla.universalchardet.prober.EUCJPProber r0;
+        org.mozilla.universalchardet.prober.contextanalysis.EUCJPContextAnalysis $r1;
+        float $f0, $f1;
+
+        r0 := @this: org.mozilla.universalchardet.prober.EUCJPProber;
+
+        $r1 = r0.<org.mozilla.universalchardet.prober.EUCJPProber: org.mozilla.universalchardet.prober.contextanalysis.EUCJPContextAnalysis contextAnalyzer>;
+
+        $f0 = virtualinvoke $r1.<org.mozilla.universalchardet.prober.contextanalysis.EUCJPContextAnalysis: float getConfidence()>();
+
+        $r2 = r0.<org.mozilla.universalchardet.prober.EUCJPProber: org.mozilla.universalchardet.prober.distributionanalysis.EUCJPDistributionAnalysis distributionAnalyzer>;
+
+        $f1 = virtualinvoke $r2.<org.mozilla.universalchardet.prober.distributionanalysis.EUCJPDistributionAnalysis: float getConfidence()>();
+
+        $f0 = staticinvoke <java.lang.Math: float max(float,float)>($f0, $f1);
+
+        return $f0;
+    }
+
+    public org.mozilla.universalchardet.prober.CharsetProber$ProbingState getState()
+    {
+        org.mozilla.universalchardet.prober.CharsetProber$ProbingState r1;
+        org.mozilla.universalchardet.prober.EUCJPProber r0;
+
+        r0 := @this: org.mozilla.universalchardet.prober.EUCJPProber;
+
+        r1 = r0.<org.mozilla.universalchardet.prober.EUCJPProber: org.mozilla.universalchardet.prober.CharsetProber$ProbingState state>;
+
+        return r1;
+    }
+
+    public org.mozilla.universalchardet.prober.CharsetProber$ProbingState handleData(byte[], int, int)
+    {
+        byte[] $r1, $r4;
+        byte $b3;
+        org.mozilla.universalchardet.prober.EUCJPProber r0;
+        int $i0, $i1, $i2, $i4, $i5;
+        boolean $z0;
+        org.mozilla.universalchardet.prober.CharsetProber$ProbingState $r3, $r5;
+        org.mozilla.universalchardet.prober.statemachine.CodingStateMachine $r2;
+        org.mozilla.universalchardet.prober.contextanalysis.EUCJPContextAnalysis $r6;
+        org.mozilla.universalchardet.prober.distributionanalysis.EUCJPDistributionAnalysis $r7;
+        float $f0;
+
+        r0 := @this: org.mozilla.universalchardet.prober.EUCJPProber;
+
+        $r1 := @parameter0: byte[];
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $i1 = 0 + $i1;
+
+        $i2 = 0;
+
+     label1:
+        if $i2 >= $i1 goto label2;
+
+        $r2 = r0.<org.mozilla.universalchardet.prober.EUCJPProber: org.mozilla.universalchardet.prober.statemachine.CodingStateMachine codingSM>;
+
+        $b3 = $r1[$i2];
+
+        $i4 = virtualinvoke $r2.<org.mozilla.universalchardet.prober.statemachine.CodingStateMachine: int nextState(byte)>($b3);
+
+        if $i4 != 1 goto label4;
+
+        $r3 = <org.mozilla.universalchardet.prober.CharsetProber$ProbingState: org.mozilla.universalchardet.prober.CharsetProber$ProbingState NOT_ME>;
+
+        r0.<org.mozilla.universalchardet.prober.EUCJPProber: org.mozilla.universalchardet.prober.CharsetProber$ProbingState state> = $r3;
+
+     label2:
+        $r4 = r0.<org.mozilla.universalchardet.prober.EUCJPProber: byte[] lastChar>;
+
+        $i0 = $i1 + -1;
+
+        $b3 = $r1[$i0];
+
+        $r4[0] = $b3;
+
+        $r3 = r0.<org.mozilla.universalchardet.prober.EUCJPProber: org.mozilla.universalchardet.prober.CharsetProber$ProbingState state>;
+
+        $r5 = <org.mozilla.universalchardet.prober.CharsetProber$ProbingState: org.mozilla.universalchardet.prober.CharsetProber$ProbingState DETECTING>;
+
+        if $r3 != $r5 goto label3;
+
+        $r6 = r0.<org.mozilla.universalchardet.prober.EUCJPProber: org.mozilla.universalchardet.prober.contextanalysis.EUCJPContextAnalysis contextAnalyzer>;
+
+        $z0 = virtualinvoke $r6.<org.mozilla.universalchardet.prober.contextanalysis.EUCJPContextAnalysis: boolean gotEnoughData()>();
+
+        if $z0 == 0 goto label3;
+
+        $f0 = virtualinvoke r0.<org.mozilla.universalchardet.prober.EUCJPProber: float getConfidence()>();
+
+        $b3 = $f0 cmpl 0.95F;
+
+        $i0 = (int) $b3;
+
+        if $i0 <= 0 goto label3;
+
+        $r3 = <org.mozilla.universalchardet.prober.CharsetProber$ProbingState: org.mozilla.universalchardet.prober.CharsetProber$ProbingState FOUND_IT>;
+
+        r0.<org.mozilla.universalchardet.prober.EUCJPProber: org.mozilla.universalchardet.prober.CharsetProber$ProbingState state> = $r3;
+
+     label3:
+        $r3 = r0.<org.mozilla.universalchardet.prober.EUCJPProber: org.mozilla.universalchardet.prober.CharsetProber$ProbingState state>;
+
+        return $r3;
+
+     label4:
+        if $i4 != 2 goto label5;
+
+        $r3 = <org.mozilla.universalchardet.prober.CharsetProber$ProbingState: org.mozilla.universalchardet.prober.CharsetProber$ProbingState FOUND_IT>;
+
+        r0.<org.mozilla.universalchardet.prober.EUCJPProber: org.mozilla.universalchardet.prober.CharsetProber$ProbingState state> = $r3;
+
+        goto label2;
+
+     label5:
+        if $i4 != 0 goto label6;
+
+        $r2 = r0.<org.mozilla.universalchardet.prober.EUCJPProber: org.mozilla.universalchardet.prober.statemachine.CodingStateMachine codingSM>;
+
+        $i4 = virtualinvoke $r2.<org.mozilla.universalchardet.prober.statemachine.CodingStateMachine: int getCurrentCharLen()>();
+
+        if $i2 != 0 goto label7;
+
+        $r4 = r0.<org.mozilla.universalchardet.prober.EUCJPProber: byte[] lastChar>;
+
+        $b3 = $r1[0];
+
+        $r4[1] = $b3;
+
+        $r6 = r0.<org.mozilla.universalchardet.prober.EUCJPProber: org.mozilla.universalchardet.prober.contextanalysis.EUCJPContextAnalysis contextAnalyzer>;
+
+        $r4 = r0.<org.mozilla.universalchardet.prober.EUCJPProber: byte[] lastChar>;
+
+        virtualinvoke $r6.<org.mozilla.universalchardet.prober.contextanalysis.EUCJPContextAnalysis: void handleOneChar(byte[],int,int)>($r4, 0, $i4);
+
+        $r7 = r0.<org.mozilla.universalchardet.prober.EUCJPProber: org.mozilla.universalchardet.prober.distributionanalysis.EUCJPDistributionAnalysis distributionAnalyzer>;
+
+        $r4 = r0.<org.mozilla.universalchardet.prober.EUCJPProber: byte[] lastChar>;
+
+        virtualinvoke $r7.<org.mozilla.universalchardet.prober.distributionanalysis.EUCJPDistributionAnalysis: void handleOneChar(byte[],int,int)>($r4, 0, $i4);
+
+     label6:
+        $i2 = $i2 + 1;
+
+        goto label1;
+
+     label7:
+        $r6 = r0.<org.mozilla.universalchardet.prober.EUCJPProber: org.mozilla.universalchardet.prober.contextanalysis.EUCJPContextAnalysis contextAnalyzer>;
+
+        $i5 = $i2 + -1;
+
+        virtualinvoke $r6.<org.mozilla.universalchardet.prober.contextanalysis.EUCJPContextAnalysis: void handleOneChar(byte[],int,int)>($r1, $i5, $i4);
+
+        $r7 = r0.<org.mozilla.universalchardet.prober.EUCJPProber: org.mozilla.universalchardet.prober.distributionanalysis.EUCJPDistributionAnalysis distributionAnalyzer>;
+
+        $i5 = $i2 + -1;
+
+        virtualinvoke $r7.<org.mozilla.universalchardet.prober.distributionanalysis.EUCJPDistributionAnalysis: void handleOneChar(byte[],int,int)>($r1, $i5, $i4);
+
+        goto label6;
+    }
+
+    public void reset()
+    {
+        org.mozilla.universalchardet.prober.distributionanalysis.EUCJPDistributionAnalysis $r4;
+        org.mozilla.universalchardet.prober.CharsetProber$ProbingState $r2;
+        byte[] $r5;
+        org.mozilla.universalchardet.prober.statemachine.CodingStateMachine $r1;
+        org.mozilla.universalchardet.prober.EUCJPProber r0;
+        org.mozilla.universalchardet.prober.contextanalysis.EUCJPContextAnalysis $r3;
+
+        r0 := @this: org.mozilla.universalchardet.prober.EUCJPProber;
+
+        $r1 = r0.<org.mozilla.universalchardet.prober.EUCJPProber: org.mozilla.universalchardet.prober.statemachine.CodingStateMachine codingSM>;
+
+        virtualinvoke $r1.<org.mozilla.universalchardet.prober.statemachine.CodingStateMachine: void reset()>();
+
+        $r2 = <org.mozilla.universalchardet.prober.CharsetProber$ProbingState: org.mozilla.universalchardet.prober.CharsetProber$ProbingState DETECTING>;
+
+        r0.<org.mozilla.universalchardet.prober.EUCJPProber: org.mozilla.universalchardet.prober.CharsetProber$ProbingState state> = $r2;
+
+        $r3 = r0.<org.mozilla.universalchardet.prober.EUCJPProber: org.mozilla.universalchardet.prober.contextanalysis.EUCJPContextAnalysis contextAnalyzer>;
+
+        virtualinvoke $r3.<org.mozilla.universalchardet.prober.contextanalysis.EUCJPContextAnalysis: void reset()>();
+
+        $r4 = r0.<org.mozilla.universalchardet.prober.EUCJPProber: org.mozilla.universalchardet.prober.distributionanalysis.EUCJPDistributionAnalysis distributionAnalyzer>;
+
+        virtualinvoke $r4.<org.mozilla.universalchardet.prober.distributionanalysis.EUCJPDistributionAnalysis: void reset()>();
+
+        $r5 = r0.<org.mozilla.universalchardet.prober.EUCJPProber: byte[] lastChar>;
+
+        staticinvoke <java.util.Arrays: void fill(byte[],byte)>($r5, 0);
+
+        return;
+    }
+
+    public void setOption()
+    {
+        org.mozilla.universalchardet.prober.EUCJPProber r0;
+
+        r0 := @this: org.mozilla.universalchardet.prober.EUCJPProber;
+
+        return;
+    }
+}

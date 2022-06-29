@@ -1,0 +1,439 @@
+class com.shwy.bestjoy.GPSDialogListenerNew extends com.shwy.bestjoy.geo.GPSHandler implements android.content.DialogInterface$OnClickListener, android.content.DialogInterface$OnCancelListener
+{
+    private android.app.Activity activity;
+    private android.content.DialogInterface gps;
+    private int isFirstChanged;
+    private double lat;
+    private android.location.LocationManager lm;
+    private double lont;
+    private android.location.GpsStatus mGpsStatus;
+    private android.os.PowerManager$WakeLock mWakeLock;
+
+    public void <init>(android.content.DialogInterface, android.location.LocationManager, android.app.Activity, android.os.PowerManager$WakeLock)
+    {
+        com.shwy.bestjoy.GPSDialogListenerNew r0;
+        android.location.LocationManager $r2;
+        android.app.Activity $r3;
+        android.os.PowerManager$WakeLock $r4;
+        android.content.DialogInterface $r1;
+
+        r0 := @this: com.shwy.bestjoy.GPSDialogListenerNew;
+
+        $r1 := @parameter0: android.content.DialogInterface;
+
+        $r2 := @parameter1: android.location.LocationManager;
+
+        $r3 := @parameter2: android.app.Activity;
+
+        $r4 := @parameter3: android.os.PowerManager$WakeLock;
+
+        specialinvoke r0.<com.shwy.bestjoy.geo.GPSHandler: void <init>()>();
+
+        r0.<com.shwy.bestjoy.GPSDialogListenerNew: int isFirstChanged> = 0;
+
+        r0.<com.shwy.bestjoy.GPSDialogListenerNew: android.content.DialogInterface gps> = $r1;
+
+        r0.<com.shwy.bestjoy.GPSDialogListenerNew: android.location.LocationManager lm> = $r2;
+
+        r0.<com.shwy.bestjoy.GPSDialogListenerNew: android.app.Activity activity> = $r3;
+
+        r0.<com.shwy.bestjoy.GPSDialogListenerNew: android.os.PowerManager$WakeLock mWakeLock> = $r4;
+
+        return;
+    }
+
+    public void onCancel(android.content.DialogInterface)
+    {
+        com.shwy.bestjoy.GPSDialogListenerNew r0;
+        android.location.LocationManager $r2;
+        android.os.PowerManager$WakeLock $r3;
+        android.content.DialogInterface $r1;
+
+        r0 := @this: com.shwy.bestjoy.GPSDialogListenerNew;
+
+        $r1 := @parameter0: android.content.DialogInterface;
+
+        interfaceinvoke $r1.<android.content.DialogInterface: void dismiss()>();
+
+        $r2 = r0.<com.shwy.bestjoy.GPSDialogListenerNew: android.location.LocationManager lm>;
+
+        virtualinvoke $r2.<android.location.LocationManager: void removeUpdates(android.location.LocationListener)>(r0);
+
+        $r2 = r0.<com.shwy.bestjoy.GPSDialogListenerNew: android.location.LocationManager lm>;
+
+        virtualinvoke $r2.<android.location.LocationManager: void removeGpsStatusListener(android.location.GpsStatus$Listener)>(r0);
+
+        $r3 = r0.<com.shwy.bestjoy.GPSDialogListenerNew: android.os.PowerManager$WakeLock mWakeLock>;
+
+        if $r3 == null goto label1;
+
+        $r3 = r0.<com.shwy.bestjoy.GPSDialogListenerNew: android.os.PowerManager$WakeLock mWakeLock>;
+
+        virtualinvoke $r3.<android.os.PowerManager$WakeLock: void release()>();
+
+     label1:
+        return;
+    }
+
+    public void onClick(android.content.DialogInterface, int)
+    {
+        android.net.Uri $r5;
+        android.content.Intent r2;
+        android.os.PowerManager$WakeLock $r7;
+        com.shwy.bestjoy.GPSDialogListenerNew r0;
+        int $i0;
+        java.lang.StringBuilder $r3;
+        java.lang.String $r4;
+        android.app.Activity $r6;
+        android.content.DialogInterface $r1;
+        double $d0;
+
+        r0 := @this: com.shwy.bestjoy.GPSDialogListenerNew;
+
+        $r1 := @parameter0: android.content.DialogInterface;
+
+        $i0 := @parameter1: int;
+
+        lookupswitch($i0)
+        {
+            case -2: goto label2;
+            case -1: goto label3;
+            default: goto label1;
+        };
+
+     label1:
+        return;
+
+     label2:
+        virtualinvoke r0.<com.shwy.bestjoy.GPSDialogListenerNew: void onCancel(android.content.DialogInterface)>($r1);
+
+        return;
+
+     label3:
+        r2 = new android.content.Intent;
+
+        specialinvoke r2.<android.content.Intent: void <init>(java.lang.String)>("android.intent.action.VIEW");
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>("geo:0,0?z=4&q=");
+
+        $d0 = r0.<com.shwy.bestjoy.GPSDialogListenerNew: double lat>;
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(double)>($d0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(44);
+
+        $d0 = r0.<com.shwy.bestjoy.GPSDialogListenerNew: double lont>;
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(double)>($d0);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r5 = staticinvoke <android.net.Uri: android.net.Uri parse(java.lang.String)>($r4);
+
+        virtualinvoke r2.<android.content.Intent: android.content.Intent setData(android.net.Uri)>($r5);
+
+        $r6 = r0.<com.shwy.bestjoy.GPSDialogListenerNew: android.app.Activity activity>;
+
+        virtualinvoke $r6.<android.app.Activity: void startActivity(android.content.Intent)>(r2);
+
+        $r7 = r0.<com.shwy.bestjoy.GPSDialogListenerNew: android.os.PowerManager$WakeLock mWakeLock>;
+
+        if $r7 == null goto label4;
+
+        $r7 = r0.<com.shwy.bestjoy.GPSDialogListenerNew: android.os.PowerManager$WakeLock mWakeLock>;
+
+        virtualinvoke $r7.<android.os.PowerManager$WakeLock: void release()>();
+
+     label4:
+        return;
+    }
+
+    public void onGpsStatusChanged(int)
+    {
+        com.shwy.bestjoy.GPSDialogListenerNew r0;
+        android.location.GpsStatus $r1;
+        int $i0;
+        android.location.LocationManager $r2;
+
+        r0 := @this: com.shwy.bestjoy.GPSDialogListenerNew;
+
+        $i0 := @parameter0: int;
+
+        if $i0 != 4 goto label1;
+
+        $r2 = r0.<com.shwy.bestjoy.GPSDialogListenerNew: android.location.LocationManager lm>;
+
+        $r1 = virtualinvoke $r2.<android.location.LocationManager: android.location.GpsStatus getGpsStatus(android.location.GpsStatus)>(null);
+
+        r0.<com.shwy.bestjoy.GPSDialogListenerNew: android.location.GpsStatus mGpsStatus> = $r1;
+
+     label1:
+        return;
+    }
+
+    public void onLocationChanged(android.location.Location)
+    {
+        android.location.Address r9;
+        java.lang.Throwable $r15;
+        java.util.Locale $r6;
+        int $i0, $i1;
+        java.lang.String $r10;
+        double $d0, $d1;
+        android.content.DialogInterface $r13;
+        java.io.IOException $r19;
+        android.location.Geocoder r2, $r16;
+        com.shwy.bestjoy.GPSDialogListenerNew r0;
+        android.location.GpsStatus $r4;
+        java.util.List $r7;
+        android.app.AlertDialog$Builder $r14, $r18;
+        java.lang.StringBuilder r3, $r11, $r17;
+        java.lang.Object $r8;
+        android.location.Location $r1;
+        android.app.Activity $r5;
+        android.location.LocationManager $r12;
+
+        r0 := @this: com.shwy.bestjoy.GPSDialogListenerNew;
+
+        $r1 := @parameter0: android.location.Location;
+
+        $r4 = r0.<com.shwy.bestjoy.GPSDialogListenerNew: android.location.GpsStatus mGpsStatus>;
+
+        if $r4 == null goto label35;
+
+        $i0 = r0.<com.shwy.bestjoy.GPSDialogListenerNew: int isFirstChanged>;
+
+        if $i0 <= 0 goto label01;
+
+        return;
+
+     label01:
+        $r4 = r0.<com.shwy.bestjoy.GPSDialogListenerNew: android.location.GpsStatus mGpsStatus>;
+
+        $i0 = virtualinvoke $r4.<android.location.GpsStatus: int getMaxSatellites()>();
+
+        if $i0 < 3 goto label35;
+
+        $r16 = new android.location.Geocoder;
+
+        r2 = $r16;
+
+        $r5 = r0.<com.shwy.bestjoy.GPSDialogListenerNew: android.app.Activity activity>;
+
+        $r6 = staticinvoke <java.util.Locale: java.util.Locale getDefault()>();
+
+        specialinvoke $r16.<android.location.Geocoder: void <init>(android.content.Context,java.util.Locale)>($r5, $r6);
+
+     label02:
+        $d0 = virtualinvoke $r1.<android.location.Location: double getLatitude()>();
+
+     label03:
+        $d0 = $d0 - 0.0017736;
+
+        r0.<com.shwy.bestjoy.GPSDialogListenerNew: double lat> = $d0;
+
+     label04:
+        $d0 = virtualinvoke $r1.<android.location.Location: double getLongitude()>();
+
+     label05:
+        $d0 = $d0 + 0.005002;
+
+        r0.<com.shwy.bestjoy.GPSDialogListenerNew: double lont> = $d0;
+
+        $d0 = r0.<com.shwy.bestjoy.GPSDialogListenerNew: double lat>;
+
+        $d1 = r0.<com.shwy.bestjoy.GPSDialogListenerNew: double lont>;
+
+     label06:
+        $r7 = virtualinvoke r2.<android.location.Geocoder: java.util.List getFromLocation(double,double,int)>($d0, $d1, 1);
+
+     label07:
+        $r11 = new java.lang.StringBuilder;
+
+        r3 = $r11;
+
+     label08:
+        specialinvoke $r11.<java.lang.StringBuilder: void <init>()>();
+
+        $i0 = interfaceinvoke $r7.<java.util.List: int size()>();
+
+     label09:
+        if $i0 <= 0 goto label21;
+
+     label10:
+        $r8 = interfaceinvoke $r7.<java.util.List: java.lang.Object get(int)>(0);
+
+     label11:
+        r9 = (android.location.Address) $r8;
+
+        $i0 = 0;
+
+     label12:
+        $i1 = virtualinvoke r9.<android.location.Address: int getMaxAddressLineIndex()>();
+
+     label13:
+        if $i0 < $i1 goto label33;
+
+     label14:
+        $r10 = virtualinvoke r9.<android.location.Address: java.lang.String getThoroughfare()>();
+
+        $r11 = virtualinvoke r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r10);
+
+        virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" ");
+
+        $r10 = virtualinvoke r9.<android.location.Address: java.lang.String getFeatureName()>();
+
+        $r11 = virtualinvoke r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r10);
+
+     label15:
+        $r5 = r0.<com.shwy.bestjoy.GPSDialogListenerNew: android.app.Activity activity>;
+
+     label16:
+        $r10 = virtualinvoke $r5.<android.app.Activity: java.lang.String getString(int)>(2131165503);
+
+        virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r10);
+
+        virtualinvoke r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\n");
+
+     label17:
+        $r17 = new java.lang.StringBuilder;
+
+        $r11 = $r17;
+
+     label18:
+        $d0 = virtualinvoke $r1.<android.location.Location: double getLatitude()>();
+
+        $r10 = staticinvoke <java.lang.String: java.lang.String valueOf(double)>($d0);
+
+        specialinvoke $r17.<java.lang.StringBuilder: void <init>(java.lang.String)>($r10);
+
+        $r11 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/");
+
+        $d0 = virtualinvoke $r1.<android.location.Location: double getLongitude()>();
+
+        $r11 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(double)>($d0);
+
+        $r10 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r11 = virtualinvoke r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r10);
+
+        virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\n");
+
+     label19:
+        $r17 = new java.lang.StringBuilder;
+
+        $r11 = $r17;
+
+     label20:
+        specialinvoke $r17.<java.lang.StringBuilder: void <init>(java.lang.String)>("\u6d77\u62d4:");
+
+        $d0 = virtualinvoke $r1.<android.location.Location: double getAltitude()>();
+
+        $r11 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(double)>($d0);
+
+        $r10 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r11 = virtualinvoke r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r10);
+
+        virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\n");
+
+     label21:
+        $r12 = r0.<com.shwy.bestjoy.GPSDialogListenerNew: android.location.LocationManager lm>;
+
+     label22:
+        virtualinvoke $r12.<android.location.LocationManager: void removeUpdates(android.location.LocationListener)>(r0);
+
+     label23:
+        $r12 = r0.<com.shwy.bestjoy.GPSDialogListenerNew: android.location.LocationManager lm>;
+
+     label24:
+        virtualinvoke $r12.<android.location.LocationManager: void removeGpsStatusListener(android.location.GpsStatus$Listener)>(r0);
+
+     label25:
+        $r13 = r0.<com.shwy.bestjoy.GPSDialogListenerNew: android.content.DialogInterface gps>;
+
+     label26:
+        interfaceinvoke $r13.<android.content.DialogInterface: void dismiss()>();
+
+     label27:
+        $r18 = new android.app.AlertDialog$Builder;
+
+        $r14 = $r18;
+
+        $r5 = r0.<com.shwy.bestjoy.GPSDialogListenerNew: android.app.Activity activity>;
+
+     label28:
+        specialinvoke $r18.<android.app.AlertDialog$Builder: void <init>(android.content.Context)>($r5);
+
+        $r14 = virtualinvoke $r14.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setTitle(int)>(2131165502);
+
+        $r10 = virtualinvoke r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r14 = virtualinvoke $r14.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setMessage(java.lang.CharSequence)>($r10);
+
+     label29:
+        $r5 = r0.<com.shwy.bestjoy.GPSDialogListenerNew: android.app.Activity activity>;
+
+     label30:
+        $r10 = virtualinvoke $r5.<android.app.Activity: java.lang.String getString(int)>(2131165507);
+
+        $r14 = virtualinvoke $r14.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setPositiveButton(java.lang.CharSequence,android.content.DialogInterface$OnClickListener)>($r10, r0);
+
+        $r14 = virtualinvoke $r14.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setNegativeButton(int,android.content.DialogInterface$OnClickListener)>(2131165510, r0);
+
+        $r14 = virtualinvoke $r14.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setNeutralButton(int,android.content.DialogInterface$OnClickListener)>(2131165508, r0);
+
+        virtualinvoke $r14.<android.app.AlertDialog$Builder: android.app.AlertDialog show()>();
+
+     label31:
+        $i0 = r0.<com.shwy.bestjoy.GPSDialogListenerNew: int isFirstChanged>;
+
+        $i0 = $i0 + 1;
+
+        r0.<com.shwy.bestjoy.GPSDialogListenerNew: int isFirstChanged> = $i0;
+
+        return;
+
+     label32:
+        $r15 := @caughtexception;
+
+        $r19 = (java.io.IOException) $r15;
+
+        virtualinvoke $r19.<java.io.IOException: void printStackTrace()>();
+
+        return;
+
+     label33:
+        $r10 = virtualinvoke r9.<android.location.Address: java.lang.String getAddressLine(int)>($i0);
+
+        $r11 = virtualinvoke r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r10);
+
+        virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" ");
+
+     label34:
+        $i0 = $i0 + 1;
+
+        goto label12;
+
+     label35:
+        return;
+
+        catch java.io.IOException from label02 to label03 with label32;
+        catch java.io.IOException from label04 to label05 with label32;
+        catch java.io.IOException from label06 to label07 with label32;
+        catch java.io.IOException from label08 to label09 with label32;
+        catch java.io.IOException from label10 to label11 with label32;
+        catch java.io.IOException from label12 to label13 with label32;
+        catch java.io.IOException from label14 to label15 with label32;
+        catch java.io.IOException from label16 to label17 with label32;
+        catch java.io.IOException from label18 to label19 with label32;
+        catch java.io.IOException from label20 to label21 with label32;
+        catch java.io.IOException from label22 to label23 with label32;
+        catch java.io.IOException from label24 to label25 with label32;
+        catch java.io.IOException from label26 to label27 with label32;
+        catch java.io.IOException from label28 to label29 with label32;
+        catch java.io.IOException from label30 to label31 with label32;
+        catch java.io.IOException from label33 to label34 with label32;
+    }
+}

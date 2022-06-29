@@ -1,0 +1,5207 @@
+public class com.mobclick.android.MobclickAgent extends java.lang.Object implements com.mobclick.android.e
+{
+    public static boolean LOCATION_OPEN;
+    private static final com.mobclick.android.MobclickAgent a;
+    private static final java.lang.String b;
+    private static final java.lang.String c;
+    private static final java.lang.String d;
+    private static final long e;
+    public static boolean enableCacheInUpdate;
+    private static final int f;
+    private static int g;
+    private static java.lang.String j;
+    private static java.lang.String k;
+    private static boolean l;
+    private static com.mobclick.android.UmengUpdateListener m;
+    private static com.mobclick.android.UmengFeedbackListener n;
+    private static boolean o;
+    private static org.json.JSONObject p;
+    public static boolean testMode;
+    public static boolean updateAutoPopup;
+    private android.content.Context h;
+    private final android.os.Handler i;
+
+    static void <clinit>()
+    {
+        com.mobclick.android.MobclickAgent $r0;
+
+        <com.mobclick.android.MobclickAgent: int f> = 8;
+
+        <com.mobclick.android.MobclickAgent: long e> = 30000L;
+
+        <com.mobclick.android.MobclickAgent: java.lang.String d> = "2.3";
+
+        <com.mobclick.android.MobclickAgent: java.lang.String c> = "Android";
+
+        <com.mobclick.android.MobclickAgent: java.lang.String b> = "Android";
+
+        <com.mobclick.android.MobclickAgent: boolean LOCATION_OPEN> = 0;
+
+        $r0 = new com.mobclick.android.MobclickAgent;
+
+        specialinvoke $r0.<com.mobclick.android.MobclickAgent: void <init>()>();
+
+        <com.mobclick.android.MobclickAgent: com.mobclick.android.MobclickAgent a> = $r0;
+
+        <com.mobclick.android.MobclickAgent: boolean enableCacheInUpdate> = 1;
+
+        <com.mobclick.android.MobclickAgent: boolean testMode> = 0;
+
+        <com.mobclick.android.MobclickAgent: int g> = 1;
+
+        <com.mobclick.android.MobclickAgent: boolean LOCATION_OPEN> = 1;
+
+        <com.mobclick.android.MobclickAgent: java.lang.String j> = "";
+
+        <com.mobclick.android.MobclickAgent: java.lang.String k> = "";
+
+        <com.mobclick.android.MobclickAgent: boolean l> = 1;
+
+        <com.mobclick.android.MobclickAgent: com.mobclick.android.UmengUpdateListener m> = null;
+
+        <com.mobclick.android.MobclickAgent: com.mobclick.android.UmengFeedbackListener n> = null;
+
+        <com.mobclick.android.MobclickAgent: boolean o> = 1;
+
+        <com.mobclick.android.MobclickAgent: org.json.JSONObject p> = null;
+
+        <com.mobclick.android.MobclickAgent: boolean updateAutoPopup> = 1;
+
+        return;
+    }
+
+    private void <init>()
+    {
+        com.mobclick.android.MobclickAgent r0;
+        android.os.HandlerThread $r2;
+        android.os.Looper $r1;
+        android.os.Handler $r3;
+
+        r0 := @this: com.mobclick.android.MobclickAgent;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        $r2 = new android.os.HandlerThread;
+
+        specialinvoke $r2.<android.os.HandlerThread: void <init>(java.lang.String)>("MobclickAgent");
+
+        virtualinvoke $r2.<android.os.HandlerThread: void start()>();
+
+        $r3 = new android.os.Handler;
+
+        $r1 = virtualinvoke $r2.<android.os.HandlerThread: android.os.Looper getLooper()>();
+
+        specialinvoke $r3.<android.os.Handler: void <init>(android.os.Looper)>($r1);
+
+        r0.<com.mobclick.android.MobclickAgent: android.os.Handler i> = $r3;
+
+        return;
+    }
+
+    static com.mobclick.android.MobclickAgent a()
+    {
+        com.mobclick.android.MobclickAgent r0;
+
+        r0 = <com.mobclick.android.MobclickAgent: com.mobclick.android.MobclickAgent a>;
+
+        return r0;
+    }
+
+    private static java.lang.String a(android.content.Context)
+    {
+        android.content.Context $r0;
+        android.os.Bundle $r4;
+        android.content.pm.PackageManager $r1;
+        java.lang.String $r2, $r5;
+        android.content.pm.ApplicationInfo $r3;
+        java.lang.Exception $r6;
+
+        $r0 := @parameter0: android.content.Context;
+
+     label1:
+        $r1 = virtualinvoke $r0.<android.content.Context: android.content.pm.PackageManager getPackageManager()>();
+
+        $r2 = virtualinvoke $r0.<android.content.Context: java.lang.String getPackageName()>();
+
+        $r3 = virtualinvoke $r1.<android.content.pm.PackageManager: android.content.pm.ApplicationInfo getApplicationInfo(java.lang.String,int)>($r2, 128);
+
+     label2:
+        if $r3 == null goto label9;
+
+     label3:
+        $r4 = $r3.<android.content.pm.ApplicationInfo: android.os.Bundle metaData>;
+
+        $r2 = virtualinvoke $r4.<android.os.Bundle: java.lang.String getString(java.lang.String)>("UMENG_APPKEY");
+
+     label4:
+        $r5 = $r2;
+
+        if $r2 == null goto label6;
+
+     label5:
+        $r2 = virtualinvoke $r5.<java.lang.String: java.lang.String trim()>();
+
+        return $r2;
+
+     label6:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("MobclickAgent", "Could not read UMENG_APPKEY meta-data from AndroidManifest.xml.");
+
+     label7:
+        $r5 = null;
+
+        goto label5;
+
+     label8:
+        $r6 := @caughtexception;
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String,java.lang.Throwable)>("MobclickAgent", "Could not read UMENG_APPKEY meta-data from AndroidManifest.xml.", $r6);
+
+        virtualinvoke $r6.<java.lang.Exception: void printStackTrace()>();
+
+     label9:
+        $r5 = null;
+
+        goto label5;
+
+        catch java.lang.Exception from label1 to label2 with label8;
+        catch java.lang.Exception from label3 to label4 with label8;
+        catch java.lang.Exception from label6 to label7 with label8;
+    }
+
+    private java.lang.String a(android.content.Context, android.content.SharedPreferences)
+    {
+        com.mobclick.android.MobclickAgent r0;
+        android.content.SharedPreferences$Editor $r4;
+        android.content.Context $r1;
+        android.content.SharedPreferences $r2;
+        java.lang.Long $r3;
+        long $l0;
+        java.lang.String $r5;
+
+        r0 := @this: com.mobclick.android.MobclickAgent;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.content.SharedPreferences;
+
+        $l0 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $r3 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l0);
+
+        $r4 = interfaceinvoke $r2.<android.content.SharedPreferences: android.content.SharedPreferences$Editor edit()>();
+
+        $l0 = virtualinvoke $r3.<java.lang.Long: long longValue()>();
+
+        interfaceinvoke $r4.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putLong(java.lang.String,long)>("start_millis", $l0);
+
+        interfaceinvoke $r4.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putLong(java.lang.String,long)>("end_millis", -1L);
+
+        interfaceinvoke $r4.<android.content.SharedPreferences$Editor: boolean commit()>();
+
+        $r5 = interfaceinvoke $r2.<android.content.SharedPreferences: java.lang.String getString(java.lang.String,java.lang.String)>("session_id", null);
+
+        return $r5;
+    }
+
+    private java.lang.String a(android.content.Context, java.lang.String, android.content.SharedPreferences)
+    {
+        com.mobclick.android.MobclickAgent r0;
+        android.content.SharedPreferences$Editor $r6;
+        android.content.Context $r1;
+        long $l0;
+        android.content.SharedPreferences $r3;
+        java.lang.StringBuilder $r4;
+        java.lang.String $r2, $r5;
+
+        r0 := @this: com.mobclick.android.MobclickAgent;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: android.content.SharedPreferences;
+
+        specialinvoke r0.<com.mobclick.android.MobclickAgent: void c(android.content.Context,android.content.SharedPreferences)>($r1, $r3);
+
+        $l0 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $r4 = new java.lang.StringBuilder;
+
+        $r5 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r2);
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>(java.lang.String)>($r5);
+
+        $r5 = staticinvoke <java.lang.String: java.lang.String valueOf(long)>($l0);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r6 = interfaceinvoke $r3.<android.content.SharedPreferences: android.content.SharedPreferences$Editor edit()>();
+
+        interfaceinvoke $r6.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putString(java.lang.String,java.lang.String)>("appkey", $r2);
+
+        interfaceinvoke $r6.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putString(java.lang.String,java.lang.String)>("session_id", $r5);
+
+        interfaceinvoke $r6.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putLong(java.lang.String,long)>("start_millis", $l0);
+
+        interfaceinvoke $r6.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putLong(java.lang.String,long)>("end_millis", -1L);
+
+        interfaceinvoke $r6.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putLong(java.lang.String,long)>("duration", 0L);
+
+        interfaceinvoke $r6.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putString(java.lang.String,java.lang.String)>("activities", "");
+
+        interfaceinvoke $r6.<android.content.SharedPreferences$Editor: boolean commit()>();
+
+        specialinvoke r0.<com.mobclick.android.MobclickAgent: void b(android.content.Context,android.content.SharedPreferences)>($r1, $r3);
+
+        return $r5;
+    }
+
+    private static java.lang.String a(android.content.Context, org.json.JSONObject, java.lang.String, boolean)
+    {
+        org.apache.http.impl.client.DefaultHttpClient $r6, $r29;
+        org.apache.http.client.methods.HttpPost $r4, $r27;
+        byte[] $r11;
+        org.apache.http.params.BasicHttpParams $r5, $r28;
+        org.apache.http.client.entity.UrlEncodedFormEntity $r24, $r37;
+        java.util.Date $r16, $r18, $r34;
+        org.apache.http.StatusLine $r19;
+        org.json.JSONObject $r1;
+        java.io.ByteArrayInputStream $r13, $r32;
+        boolean $z0, $z1;
+        org.apache.http.HttpEntity $r20;
+        java.lang.StringBuilder $r7, $r30;
+        android.content.SharedPreferences$Editor $r15;
+        org.apache.http.message.BasicNameValuePair $r23, $r36;
+        java.lang.Throwable $r25, $r26;
+        org.apache.http.client.ClientProtocolException $r38;
+        android.content.Context $r0;
+        long $l1, $l2;
+        java.util.ArrayList $r22, $r35;
+        int $i0;
+        java.lang.String $r2, $r3, $r8;
+        java.io.IOException $r39;
+        android.content.SharedPreferences $r14;
+        org.apache.http.params.HttpParams $r10;
+        org.apache.http.HttpResponse $r17;
+        org.apache.http.entity.InputStreamEntity $r12, $r33;
+        org.apache.http.HttpHost $r9, $r31;
+        java.io.InputStream $r21;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: org.json.JSONObject;
+
+        $r2 := @parameter2: java.lang.String;
+
+        $z0 := @parameter3: boolean;
+
+        $r3 = virtualinvoke $r1.<org.json.JSONObject: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("MobclickAgent", $r3);
+
+        $r27 = new org.apache.http.client.methods.HttpPost;
+
+        $r4 = $r27;
+
+        specialinvoke $r27.<org.apache.http.client.methods.HttpPost: void <init>(java.lang.String)>($r2);
+
+        $r28 = new org.apache.http.params.BasicHttpParams;
+
+        $r5 = $r28;
+
+        specialinvoke $r28.<org.apache.http.params.BasicHttpParams: void <init>()>();
+
+        staticinvoke <org.apache.http.params.HttpConnectionParams: void setConnectionTimeout(org.apache.http.params.HttpParams,int)>($r5, 10000);
+
+        staticinvoke <org.apache.http.params.HttpConnectionParams: void setSoTimeout(org.apache.http.params.HttpParams,int)>($r5, 30000);
+
+        $r29 = new org.apache.http.impl.client.DefaultHttpClient;
+
+        $r6 = $r29;
+
+        specialinvoke $r29.<org.apache.http.impl.client.DefaultHttpClient: void <init>(org.apache.http.params.HttpParams)>($r5);
+
+     label01:
+        $r3 = staticinvoke <com.mobclick.android.r: java.lang.String a(android.content.Context)>($r0);
+
+     label02:
+        if $r3 == null goto label06;
+
+        $r30 = new java.lang.StringBuilder;
+
+        $r7 = $r30;
+
+     label03:
+        specialinvoke $r30.<java.lang.StringBuilder: void <init>(java.lang.String)>("Proxy IP:");
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r8 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("TAG", $r8);
+
+     label04:
+        $r31 = new org.apache.http.HttpHost;
+
+        $r9 = $r31;
+
+     label05:
+        specialinvoke $r31.<org.apache.http.HttpHost: void <init>(java.lang.String,int)>($r3, 80);
+
+        $r10 = interfaceinvoke $r6.<org.apache.http.client.HttpClient: org.apache.http.params.HttpParams getParams()>();
+
+        interfaceinvoke $r10.<org.apache.http.params.HttpParams: org.apache.http.params.HttpParams setParameter(java.lang.String,java.lang.Object)>("http.route.default-proxy", $r9);
+
+     label06:
+        $r3 = virtualinvoke $r1.<org.json.JSONObject: java.lang.String toString()>();
+
+     label07:
+        $z1 = <com.mobclick.android.n: boolean j>;
+
+        if $z1 == 0 goto label25;
+
+        if $z0 != 0 goto label25;
+
+        $r30 = new java.lang.StringBuilder;
+
+        $r7 = $r30;
+
+     label08:
+        specialinvoke $r30.<java.lang.StringBuilder: void <init>(java.lang.String)>("content=");
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r11 = staticinvoke <com.mobclick.android.o: byte[] b(java.lang.String)>($r3);
+
+        virtualinvoke $r4.<org.apache.http.client.methods.HttpPost: void addHeader(java.lang.String,java.lang.String)>("Content-Encoding", "deflate");
+
+     label09:
+        $r33 = new org.apache.http.entity.InputStreamEntity;
+
+        $r12 = $r33;
+
+        $r32 = new java.io.ByteArrayInputStream;
+
+        $r13 = $r32;
+
+     label10:
+        specialinvoke $r32.<java.io.ByteArrayInputStream: void <init>(byte[])>($r11);
+
+     label11:
+        $i0 = <com.mobclick.android.o: int b>;
+
+        $l1 = (long) $i0;
+
+     label12:
+        specialinvoke $r33.<org.apache.http.entity.InputStreamEntity: void <init>(java.io.InputStream,long)>($r13, $l1);
+
+        virtualinvoke $r4.<org.apache.http.client.methods.HttpPost: void setEntity(org.apache.http.HttpEntity)>($r12);
+
+     label13:
+        $r14 = staticinvoke <com.mobclick.android.MobclickAgent: android.content.SharedPreferences j(android.content.Context)>($r0);
+
+        $r15 = interfaceinvoke $r14.<android.content.SharedPreferences: android.content.SharedPreferences$Editor edit()>();
+
+     label14:
+        $r18 = new java.util.Date;
+
+        $r16 = $r18;
+
+     label15:
+        specialinvoke $r18.<java.util.Date: void <init>()>();
+
+        $r17 = interfaceinvoke $r6.<org.apache.http.client.HttpClient: org.apache.http.HttpResponse execute(org.apache.http.client.methods.HttpUriRequest)>($r4);
+
+     label16:
+        $r34 = new java.util.Date;
+
+        $r18 = $r34;
+
+     label17:
+        specialinvoke $r34.<java.util.Date: void <init>()>();
+
+        $l1 = virtualinvoke $r18.<java.util.Date: long getTime()>();
+
+        $l2 = virtualinvoke $r16.<java.util.Date: long getTime()>();
+
+     label18:
+        $l1 = $l1 - $l2;
+
+     label19:
+        $r19 = interfaceinvoke $r17.<org.apache.http.HttpResponse: org.apache.http.StatusLine getStatusLine()>();
+
+        $i0 = interfaceinvoke $r19.<org.apache.http.StatusLine: int getStatusCode()>();
+
+     label20:
+        if $i0 != 200 goto label33;
+
+        $r30 = new java.lang.StringBuilder;
+
+        $r7 = $r30;
+
+     label21:
+        specialinvoke $r30.<java.lang.StringBuilder: void <init>(java.lang.String)>("Sent message to ");
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r2 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("MobclickAgent", $r2);
+
+        interfaceinvoke $r15.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putLong(java.lang.String,long)>("req_time", $l1);
+
+        interfaceinvoke $r15.<android.content.SharedPreferences$Editor: boolean commit()>();
+
+        $r20 = interfaceinvoke $r17.<org.apache.http.HttpResponse: org.apache.http.HttpEntity getEntity()>();
+
+     label22:
+        if $r20 == null goto label36;
+
+     label23:
+        $r21 = interfaceinvoke $r20.<org.apache.http.HttpEntity: java.io.InputStream getContent()>();
+
+        $r2 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String a(java.io.InputStream)>($r21);
+
+     label24:
+        return $r2;
+
+     label25:
+        $r35 = new java.util.ArrayList;
+
+        $r22 = $r35;
+
+     label26:
+        specialinvoke $r35.<java.util.ArrayList: void <init>(int)>(1);
+
+     label27:
+        $r36 = new org.apache.http.message.BasicNameValuePair;
+
+        $r23 = $r36;
+
+     label28:
+        specialinvoke $r36.<org.apache.http.message.BasicNameValuePair: void <init>(java.lang.String,java.lang.String)>("content", $r3);
+
+        interfaceinvoke $r22.<java.util.List: boolean add(java.lang.Object)>($r23);
+
+     label29:
+        $r37 = new org.apache.http.client.entity.UrlEncodedFormEntity;
+
+        $r24 = $r37;
+
+     label30:
+        specialinvoke $r37.<org.apache.http.client.entity.UrlEncodedFormEntity: void <init>(java.util.List,java.lang.String)>($r22, "UTF-8");
+
+        virtualinvoke $r4.<org.apache.http.client.methods.HttpPost: void setEntity(org.apache.http.HttpEntity)>($r24);
+
+     label31:
+        goto label13;
+
+     label32:
+        $r25 := @caughtexception;
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String,java.lang.Throwable)>("MobclickAgent", "ClientProtocolException,Failed to send message.", $r25);
+
+        $r38 = (org.apache.http.client.ClientProtocolException) $r25;
+
+        virtualinvoke $r38.<org.apache.http.client.ClientProtocolException: void printStackTrace()>();
+
+        return null;
+
+     label33:
+        interfaceinvoke $r15.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putLong(java.lang.String,long)>("req_time", -1L);
+
+     label34:
+        return null;
+
+     label35:
+        $r26 := @caughtexception;
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String,java.lang.Throwable)>("MobclickAgent", "IOException,Failed to send message.", $r26);
+
+        $r39 = (java.io.IOException) $r26;
+
+        virtualinvoke $r39.<java.io.IOException: void printStackTrace()>();
+
+     label36:
+        return null;
+
+        catch org.apache.http.client.ClientProtocolException from label01 to label02 with label32;
+        catch org.apache.http.client.ClientProtocolException from label03 to label04 with label32;
+        catch org.apache.http.client.ClientProtocolException from label05 to label07 with label32;
+        catch org.apache.http.client.ClientProtocolException from label08 to label09 with label32;
+        catch org.apache.http.client.ClientProtocolException from label10 to label11 with label32;
+        catch org.apache.http.client.ClientProtocolException from label12 to label14 with label32;
+        catch org.apache.http.client.ClientProtocolException from label15 to label16 with label32;
+        catch org.apache.http.client.ClientProtocolException from label17 to label18 with label32;
+        catch org.apache.http.client.ClientProtocolException from label19 to label20 with label32;
+        catch org.apache.http.client.ClientProtocolException from label21 to label22 with label32;
+        catch org.apache.http.client.ClientProtocolException from label23 to label24 with label32;
+        catch org.apache.http.client.ClientProtocolException from label26 to label27 with label32;
+        catch org.apache.http.client.ClientProtocolException from label28 to label29 with label32;
+        catch org.apache.http.client.ClientProtocolException from label30 to label31 with label32;
+        catch java.io.IOException from label01 to label02 with label35;
+        catch java.io.IOException from label03 to label04 with label35;
+        catch java.io.IOException from label05 to label07 with label35;
+        catch java.io.IOException from label08 to label09 with label35;
+        catch java.io.IOException from label10 to label11 with label35;
+        catch java.io.IOException from label12 to label14 with label35;
+        catch java.io.IOException from label15 to label16 with label35;
+        catch java.io.IOException from label17 to label18 with label35;
+        catch java.io.IOException from label19 to label20 with label35;
+        catch java.io.IOException from label21 to label22 with label35;
+        catch java.io.IOException from label23 to label24 with label35;
+        catch java.io.IOException from label26 to label27 with label35;
+        catch java.io.IOException from label28 to label29 with label35;
+        catch java.io.IOException from label30 to label31 with label35;
+        catch org.apache.http.client.ClientProtocolException from label33 to label34 with label32;
+        catch java.io.IOException from label33 to label34 with label35;
+    }
+
+    private static java.lang.String a(java.io.InputStream)
+    {
+        java.lang.Throwable $r5, $r6, $r7, $r8, $r9;
+        java.io.IOException $r13;
+        java.io.InputStreamReader $r10;
+        java.lang.StringBuilder $r1, $r3, $r12;
+        java.io.BufferedReader $r2, $r11;
+        java.lang.String $r4;
+        java.io.InputStream $r0;
+
+        $r0 := @parameter0: java.io.InputStream;
+
+        $r11 = new java.io.BufferedReader;
+
+        $r2 = $r11;
+
+        $r10 = new java.io.InputStreamReader;
+
+        specialinvoke $r10.<java.io.InputStreamReader: void <init>(java.io.InputStream)>($r0);
+
+        specialinvoke $r11.<java.io.BufferedReader: void <init>(java.io.Reader,int)>($r10, 8192);
+
+        $r1 = new java.lang.StringBuilder;
+
+        $r3 = $r1;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+     label01:
+        $r4 = virtualinvoke $r2.<java.io.BufferedReader: java.lang.String readLine()>();
+
+     label02:
+        if $r4 != null goto label05;
+
+     label03:
+        virtualinvoke $r0.<java.io.InputStream: void close()>();
+
+     label04:
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r4;
+
+     label05:
+        $r12 = new java.lang.StringBuilder;
+
+     label06:
+        $r1 = $r12;
+
+     label07:
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r4);
+
+        specialinvoke $r12.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\n");
+
+        $r4 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+     label08:
+        goto label01;
+
+     label09:
+        $r5 := @caughtexception;
+
+     label10:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("MobclickAgent", "Caught IOException in convertStreamToString()", $r5);
+
+        $r13 = (java.io.IOException) $r5;
+
+        virtualinvoke $r13.<java.io.IOException: void printStackTrace()>();
+
+     label11:
+        virtualinvoke $r0.<java.io.InputStream: void close()>();
+
+     label12:
+        return null;
+
+     label13:
+        $r6 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("MobclickAgent", "Caught IOException in convertStreamToString()", $r6);
+
+        $r13 = (java.io.IOException) $r6;
+
+        virtualinvoke $r13.<java.io.IOException: void printStackTrace()>();
+
+        return null;
+
+     label14:
+        $r7 := @caughtexception;
+
+     label15:
+        virtualinvoke $r0.<java.io.InputStream: void close()>();
+
+     label16:
+        throw $r7;
+
+     label17:
+        $r8 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("MobclickAgent", "Caught IOException in convertStreamToString()", $r8);
+
+        $r13 = (java.io.IOException) $r8;
+
+        virtualinvoke $r13.<java.io.IOException: void printStackTrace()>();
+
+        return null;
+
+     label18:
+        $r9 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("MobclickAgent", "Caught IOException in convertStreamToString()", $r9);
+
+        $r13 = (java.io.IOException) $r9;
+
+        virtualinvoke $r13.<java.io.IOException: void printStackTrace()>();
+
+        return null;
+
+        catch java.io.IOException from label01 to label02 with label09;
+        catch java.lang.Throwable from label01 to label02 with label14;
+        catch java.io.IOException from label03 to label04 with label18;
+        catch java.io.IOException from label07 to label08 with label09;
+        catch java.lang.Throwable from label05 to label06 with label14;
+        catch java.lang.Throwable from label07 to label08 with label14;
+        catch java.lang.Throwable from label10 to label11 with label14;
+        catch java.io.IOException from label11 to label12 with label13;
+        catch java.io.IOException from label15 to label16 with label17;
+    }
+
+    private static void a(android.content.Context, int)
+    {
+        android.content.SharedPreferences$Editor $r3;
+        java.lang.Throwable $r4;
+        android.content.Context $r0;
+        android.content.SharedPreferences $r1;
+        int $i0;
+        java.lang.Object $r2;
+        boolean $z0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $i0 := @parameter1: int;
+
+        if $i0 < 0 goto label1;
+
+        if $i0 <= 5 goto label2;
+
+     label1:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "Illegal value of report policy");
+
+        return;
+
+     label2:
+        $r1 = staticinvoke <com.mobclick.android.MobclickAgent: android.content.SharedPreferences r(android.content.Context)>($r0);
+
+        $z0 = interfaceinvoke $r1.<android.content.SharedPreferences: boolean contains(java.lang.String)>("umeng_report_policy");
+
+        if $z0 != 0 goto label7;
+
+        $r2 = <com.mobclick.android.n: java.lang.Object b>;
+
+        entermonitor $r2;
+
+     label3:
+        $r3 = interfaceinvoke $r1.<android.content.SharedPreferences: android.content.SharedPreferences$Editor edit()>();
+
+        $r3 = interfaceinvoke $r3.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putInt(java.lang.String,int)>("umeng_report_policy", $i0);
+
+        interfaceinvoke $r3.<android.content.SharedPreferences$Editor: boolean commit()>();
+
+        exitmonitor $r2;
+
+     label4:
+        return;
+
+     label5:
+        $r4 := @caughtexception;
+
+        exitmonitor $r2;
+
+     label6:
+        throw $r4;
+
+     label7:
+        return;
+
+        catch java.lang.Throwable from label3 to label4 with label5;
+        catch java.lang.Throwable from label5 to label6 with label5;
+    }
+
+    private void a(android.content.Context, android.content.SharedPreferences, java.lang.String, java.lang.String, int)
+    {
+        com.mobclick.android.MobclickAgent r0;
+        android.content.Context $r1;
+        java.lang.String[] $r7;
+        com.mobclick.android.l $r11;
+        org.json.JSONException $r12;
+        org.json.JSONObject $r9;
+        android.content.SharedPreferences $r2;
+        android.os.Handler $r10;
+        int $i0;
+        java.lang.String $r3, $r4, $r5, $r6, $r8;
+
+        r0 := @this: com.mobclick.android.MobclickAgent;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.content.SharedPreferences;
+
+        $r3 := @parameter2: java.lang.String;
+
+        $r4 := @parameter3: java.lang.String;
+
+        $i0 := @parameter4: int;
+
+        $r5 = interfaceinvoke $r2.<android.content.SharedPreferences: java.lang.String getString(java.lang.String,java.lang.String)>("session_id", "");
+
+        $r6 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String b()>();
+
+        $r7 = virtualinvoke $r6.<java.lang.String: java.lang.String[] split(java.lang.String)>(" ");
+
+        $r8 = $r7[0];
+
+        $r7 = virtualinvoke $r6.<java.lang.String: java.lang.String[] split(java.lang.String)>(" ");
+
+        $r6 = $r7[1];
+
+        $r9 = new org.json.JSONObject;
+
+        specialinvoke $r9.<org.json.JSONObject: void <init>()>();
+
+     label1:
+        virtualinvoke $r9.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("type", "event");
+
+        virtualinvoke $r9.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("session_id", $r5);
+
+        virtualinvoke $r9.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("date", $r8);
+
+        virtualinvoke $r9.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("time", $r6);
+
+        virtualinvoke $r9.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("tag", $r3);
+
+        virtualinvoke $r9.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("label", $r4);
+
+        virtualinvoke $r9.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("acc", $i0);
+
+     label2:
+        $r10 = r0.<com.mobclick.android.MobclickAgent: android.os.Handler i>;
+
+        $r11 = new com.mobclick.android.l;
+
+        specialinvoke $r11.<com.mobclick.android.l: void <init>(com.mobclick.android.MobclickAgent,android.content.Context,org.json.JSONObject)>(r0, $r1, $r9);
+
+        virtualinvoke $r10.<android.os.Handler: boolean post(java.lang.Runnable)>($r11);
+
+        return;
+
+     label3:
+        $r12 := @caughtexception;
+
+        virtualinvoke $r12.<org.json.JSONException: void printStackTrace()>();
+
+        return;
+
+        catch org.json.JSONException from label1 to label2 with label3;
+    }
+
+    static void a(android.content.Context, java.io.File)
+    {
+        android.content.Context $r0;
+        java.io.File $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.io.File;
+
+        staticinvoke <com.mobclick.android.MobclickAgent: void c(android.content.Context,java.io.File)>($r0, $r1);
+
+        return;
+    }
+
+    private void a(android.content.Context, java.lang.String)
+    {
+        com.mobclick.android.MobclickAgent r0;
+        java.lang.Throwable $r10;
+        android.content.Context $r1;
+        android.content.pm.PackageManager $r4;
+        android.content.pm.PackageInfo $r5;
+        java.lang.Exception $r9;
+        com.mobclick.android.l $r8;
+        org.json.JSONObject $r3;
+        android.os.Handler $r7;
+        int $i0;
+        java.lang.String $r2, $r6;
+        boolean $z0;
+
+        r0 := @this: com.mobclick.android.MobclickAgent;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        entermonitor r0;
+
+     label01:
+        $r3 = new org.json.JSONObject;
+
+        specialinvoke $r3.<org.json.JSONObject: void <init>()>();
+
+     label02:
+        virtualinvoke $r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("type", "update");
+
+        virtualinvoke $r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("appkey", $r2);
+
+        $r4 = virtualinvoke $r1.<android.content.Context: android.content.pm.PackageManager getPackageManager()>();
+
+        $r2 = virtualinvoke $r1.<android.content.Context: java.lang.String getPackageName()>();
+
+        $r5 = virtualinvoke $r4.<android.content.pm.PackageManager: android.content.pm.PackageInfo getPackageInfo(java.lang.String,int)>($r2, 0);
+
+        $i0 = $r5.<android.content.pm.PackageInfo: int versionCode>;
+
+        $r2 = virtualinvoke $r1.<android.content.Context: java.lang.String getPackageName()>();
+
+        virtualinvoke $r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("version_code", $i0);
+
+        virtualinvoke $r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("package", $r2);
+
+        virtualinvoke $r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("sdk_version", "2.3");
+
+        $r2 = staticinvoke <com.mobclick.android.o: java.lang.String b(android.content.Context)>($r1);
+
+        $r6 = staticinvoke <com.mobclick.android.o: java.lang.String a(java.lang.String)>($r2);
+
+     label03:
+        if $r2 == null goto label06;
+
+     label04:
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>("");
+
+     label05:
+        if $z0 == 0 goto label07;
+
+     label06:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "No device id");
+
+     label07:
+        virtualinvoke $r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("idmd5", $r6);
+
+        $r2 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String b(android.content.Context)>($r1);
+
+        virtualinvoke $r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("channel", $r2);
+
+     label08:
+        $r7 = r0.<com.mobclick.android.MobclickAgent: android.os.Handler i>;
+
+        $r8 = new com.mobclick.android.l;
+
+        specialinvoke $r8.<com.mobclick.android.l: void <init>(com.mobclick.android.MobclickAgent,android.content.Context,org.json.JSONObject)>(r0, $r1, $r3);
+
+        virtualinvoke $r7.<android.os.Handler: boolean post(java.lang.Runnable)>($r8);
+
+     label09:
+        exitmonitor r0;
+
+        return;
+
+     label10:
+        $r9 := @caughtexception;
+
+     label11:
+        virtualinvoke $r9.<java.lang.Exception: void printStackTrace()>();
+
+     label12:
+        goto label09;
+
+     label13:
+        $r10 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r10;
+
+        catch java.lang.Throwable from label01 to label02 with label13;
+        catch java.lang.Exception from label02 to label03 with label10;
+        catch java.lang.Exception from label04 to label05 with label10;
+        catch java.lang.Exception from label06 to label08 with label10;
+        catch java.lang.Throwable from label02 to label08 with label13;
+        catch java.lang.Throwable from label08 to label09 with label13;
+        catch java.lang.Throwable from label11 to label12 with label13;
+    }
+
+    private void a(android.content.Context, java.lang.String, java.lang.String)
+    {
+        com.mobclick.android.MobclickAgent r0;
+        java.lang.Throwable $r6;
+        android.content.Context $r1;
+        android.content.SharedPreferences $r4;
+        java.lang.StringBuilder $r5;
+        java.lang.String $r2, $r3;
+        boolean $z0;
+
+        r0 := @this: com.mobclick.android.MobclickAgent;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: java.lang.String;
+
+        entermonitor r0;
+
+     label1:
+        r0.<com.mobclick.android.MobclickAgent: android.content.Context h> = $r1;
+
+        $r4 = staticinvoke <com.mobclick.android.MobclickAgent: android.content.SharedPreferences l(android.content.Context)>($r1);
+
+     label2:
+        if $r4 != null goto label4;
+
+     label3:
+        exitmonitor r0;
+
+        return;
+
+     label4:
+        $z0 = specialinvoke r0.<com.mobclick.android.MobclickAgent: boolean a(android.content.SharedPreferences)>($r4);
+
+        if $z0 == 0 goto label7;
+
+        $r2 = specialinvoke r0.<com.mobclick.android.MobclickAgent: java.lang.String a(android.content.Context,java.lang.String,android.content.SharedPreferences)>($r1, $r2, $r4);
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>(java.lang.String)>("Start new session: ");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r2 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("MobclickAgent", $r2);
+
+     label5:
+        goto label3;
+
+     label6:
+        $r6 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r6;
+
+     label7:
+        $r2 = specialinvoke r0.<com.mobclick.android.MobclickAgent: java.lang.String a(android.content.Context,android.content.SharedPreferences)>($r1, $r4);
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>(java.lang.String)>("Extend current session: ");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r2 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("MobclickAgent", $r2);
+
+     label8:
+        goto label3;
+
+        catch java.lang.Throwable from label1 to label2 with label6;
+        catch java.lang.Throwable from label4 to label5 with label6;
+        catch java.lang.Throwable from label7 to label8 with label6;
+    }
+
+    private void a(android.content.Context, java.lang.String, java.lang.String, java.lang.String, int)
+    {
+        com.mobclick.android.MobclickAgent r0;
+        java.lang.Throwable $r6;
+        android.content.Context $r1;
+        android.content.SharedPreferences $r5;
+        int $i0;
+        java.lang.String $r2, $r3, $r4;
+
+        r0 := @this: com.mobclick.android.MobclickAgent;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: java.lang.String;
+
+        $r4 := @parameter3: java.lang.String;
+
+        $i0 := @parameter4: int;
+
+        entermonitor r0;
+
+     label1:
+        $r5 = staticinvoke <com.mobclick.android.MobclickAgent: android.content.SharedPreferences l(android.content.Context)>($r1);
+
+     label2:
+        if $r5 != null goto label4;
+
+     label3:
+        exitmonitor r0;
+
+        return;
+
+     label4:
+        specialinvoke r0.<com.mobclick.android.MobclickAgent: void a(android.content.Context,android.content.SharedPreferences,java.lang.String,java.lang.String,int)>($r1, $r5, $r3, $r4, $i0);
+
+     label5:
+        goto label3;
+
+     label6:
+        $r6 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r6;
+
+        catch java.lang.Throwable from label1 to label2 with label6;
+        catch java.lang.Throwable from label4 to label5 with label6;
+    }
+
+    private void a(android.content.Context, org.json.JSONObject)
+    {
+        com.mobclick.android.MobclickAgent r0;
+        java.lang.Throwable $r3;
+        android.content.Context $r1;
+        org.json.JSONObject $r2;
+
+        r0 := @this: com.mobclick.android.MobclickAgent;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: org.json.JSONObject;
+
+        entermonitor r0;
+
+        if $r2 == null goto label2;
+
+     label1:
+        specialinvoke r0.<com.mobclick.android.MobclickAgent: void b(android.content.Context,org.json.JSONObject)>($r1, $r2);
+
+     label2:
+        exitmonitor r0;
+
+        return;
+
+     label3:
+        $r3 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    static void a(com.mobclick.android.MobclickAgent, android.content.Context)
+    {
+        com.mobclick.android.MobclickAgent $r0;
+        android.content.Context $r1;
+
+        $r0 := @parameter0: com.mobclick.android.MobclickAgent;
+
+        $r1 := @parameter1: android.content.Context;
+
+        specialinvoke $r0.<com.mobclick.android.MobclickAgent: void d(android.content.Context)>($r1);
+
+        return;
+    }
+
+    static void a(com.mobclick.android.MobclickAgent, android.content.Context, java.lang.String)
+    {
+        com.mobclick.android.MobclickAgent $r0;
+        android.content.Context $r1;
+        java.lang.String $r2;
+
+        $r0 := @parameter0: com.mobclick.android.MobclickAgent;
+
+        $r1 := @parameter1: android.content.Context;
+
+        $r2 := @parameter2: java.lang.String;
+
+        specialinvoke $r0.<com.mobclick.android.MobclickAgent: void b(android.content.Context,java.lang.String)>($r1, $r2);
+
+        return;
+    }
+
+    static void a(com.mobclick.android.MobclickAgent, android.content.Context, java.lang.String, java.lang.String)
+    {
+        com.mobclick.android.MobclickAgent $r0;
+        android.content.Context $r1;
+        java.lang.String $r2, $r3;
+
+        $r0 := @parameter0: com.mobclick.android.MobclickAgent;
+
+        $r1 := @parameter1: android.content.Context;
+
+        $r2 := @parameter2: java.lang.String;
+
+        $r3 := @parameter3: java.lang.String;
+
+        specialinvoke $r0.<com.mobclick.android.MobclickAgent: void a(android.content.Context,java.lang.String,java.lang.String)>($r1, $r2, $r3);
+
+        return;
+    }
+
+    static void a(com.mobclick.android.MobclickAgent, android.content.Context, java.lang.String, java.lang.String, java.lang.String, int)
+    {
+        com.mobclick.android.MobclickAgent $r0;
+        android.content.Context $r1;
+        int $i0;
+        java.lang.String $r2, $r3, $r4;
+
+        $r0 := @parameter0: com.mobclick.android.MobclickAgent;
+
+        $r1 := @parameter1: android.content.Context;
+
+        $r2 := @parameter2: java.lang.String;
+
+        $r3 := @parameter3: java.lang.String;
+
+        $r4 := @parameter4: java.lang.String;
+
+        $i0 := @parameter5: int;
+
+        specialinvoke $r0.<com.mobclick.android.MobclickAgent: void a(android.content.Context,java.lang.String,java.lang.String,java.lang.String,int)>($r1, $r2, $r3, $r4, $i0);
+
+        return;
+    }
+
+    static void a(com.mobclick.android.MobclickAgent, android.content.Context, org.json.JSONObject)
+    {
+        com.mobclick.android.MobclickAgent $r0;
+        android.content.Context $r1;
+        org.json.JSONObject $r2;
+
+        $r0 := @parameter0: com.mobclick.android.MobclickAgent;
+
+        $r1 := @parameter1: android.content.Context;
+
+        $r2 := @parameter2: org.json.JSONObject;
+
+        specialinvoke $r0.<com.mobclick.android.MobclickAgent: void c(android.content.Context,org.json.JSONObject)>($r1, $r2);
+
+        return;
+    }
+
+    private boolean a(android.content.SharedPreferences)
+    {
+        com.mobclick.android.MobclickAgent r0;
+        android.content.SharedPreferences $r1;
+        byte $b2;
+        int $i3;
+        long $l0, $l1;
+        boolean $z0;
+
+        r0 := @this: com.mobclick.android.MobclickAgent;
+
+        $r1 := @parameter0: android.content.SharedPreferences;
+
+        $l0 = interfaceinvoke $r1.<android.content.SharedPreferences: long getLong(java.lang.String,long)>("end_millis", -1L);
+
+        $l1 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $z0 = <com.mobclick.android.MobclickAgent: boolean testMode>;
+
+        if $z0 != 0 goto label1;
+
+        $l0 = $l1 - $l0;
+
+        $b2 = $l0 cmp 30000L;
+
+        $i3 = (int) $b2;
+
+        if $i3 <= 0 goto label2;
+
+     label1:
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    private static boolean a(java.lang.String, android.content.Context)
+    {
+        android.content.Context $r1;
+        android.content.pm.PackageManager $r2;
+        java.lang.String[] $r7;
+        android.content.SharedPreferences $r4;
+        int $i0;
+        java.lang.StringBuilder $r5;
+        java.lang.String $r0, $r3, $r6;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: android.content.Context;
+
+        $r2 = virtualinvoke $r1.<android.content.Context: android.content.pm.PackageManager getPackageManager()>();
+
+        $r3 = virtualinvoke $r1.<android.content.Context: java.lang.String getPackageName()>();
+
+        $i0 = virtualinvoke $r2.<android.content.pm.PackageManager: int checkPermission(java.lang.String,java.lang.String)>("android.permission.ACCESS_NETWORK_STATE", $r3);
+
+        if $i0 != 0 goto label01;
+
+        $z0 = staticinvoke <com.mobclick.android.MobclickAgent: boolean o(android.content.Context)>($r1);
+
+        if $z0 != 0 goto label01;
+
+        return 0;
+
+     label01:
+        if $r0 == "update" goto label02;
+
+        if $r0 == "feedback" goto label02;
+
+        if $r0 != "online_config" goto label03;
+
+     label02:
+        return 1;
+
+     label03:
+        $i0 = staticinvoke <com.mobclick.android.MobclickAgent: int s(android.content.Context)>($r1);
+
+        <com.mobclick.android.MobclickAgent: int g> = $i0;
+
+        $i0 = <com.mobclick.android.MobclickAgent: int g>;
+
+        if $i0 != 3 goto label04;
+
+        if $r0 != "flush" goto label10;
+
+        return 1;
+
+     label04:
+        if $r0 != "error" goto label05;
+
+        return 1;
+
+     label05:
+        $i0 = <com.mobclick.android.MobclickAgent: int g>;
+
+        if $i0 != 1 goto label06;
+
+        if $r0 != "launch" goto label06;
+
+        return 1;
+
+     label06:
+        $i0 = <com.mobclick.android.MobclickAgent: int g>;
+
+        if $i0 != 2 goto label07;
+
+        if $r0 != "terminate" goto label07;
+
+        return 1;
+
+     label07:
+        $i0 = <com.mobclick.android.MobclickAgent: int g>;
+
+        if $i0 != 0 goto label08;
+
+        return 1;
+
+     label08:
+        $i0 = <com.mobclick.android.MobclickAgent: int g>;
+
+        if $i0 != 4 goto label09;
+
+        $r4 = staticinvoke <com.mobclick.android.MobclickAgent: android.content.SharedPreferences k(android.content.Context)>($r1);
+
+        $r3 = staticinvoke <com.mobclick.android.n: java.lang.String A()>();
+
+        $r3 = interfaceinvoke $r4.<android.content.SharedPreferences: java.lang.String getString(java.lang.String,java.lang.String)>($r3, "false");
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>(java.lang.String)>("Log has been sent today: ");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(";type:");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r0);
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("MobclickAgent", $r6);
+
+        $z0 = virtualinvoke $r3.<java.lang.String: boolean equals(java.lang.Object)>("true");
+
+        if $z0 != 0 goto label10;
+
+        $z0 = virtualinvoke $r0.<java.lang.String: boolean equals(java.lang.Object)>("launch");
+
+        if $z0 == 0 goto label10;
+
+        return 1;
+
+     label09:
+        $i0 = <com.mobclick.android.MobclickAgent: int g>;
+
+        if $i0 != 5 goto label10;
+
+        $r7 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String[] p(android.content.Context)>($r1);
+
+        $r0 = $r7[0];
+
+        $z0 = virtualinvoke $r0.<java.lang.String: boolean equals(java.lang.Object)>("Wi-Fi");
+
+        return $z0;
+
+     label10:
+        return 0;
+    }
+
+    private static android.app.AlertDialog b(android.content.Context, java.io.File)
+    {
+        android.content.Context $r0;
+        com.mobclick.android.g $r5;
+        java.io.File $r1;
+        android.app.AlertDialog $r7;
+        com.mobclick.android.h $r6;
+        android.app.AlertDialog$Builder $r2, $r4;
+        java.lang.String $r3;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.io.File;
+
+        $r2 = new android.app.AlertDialog$Builder;
+
+        specialinvoke $r2.<android.app.AlertDialog$Builder: void <init>(android.content.Context)>($r0);
+
+        $r3 = staticinvoke <com.mobclick.android.n: java.lang.String h(android.content.Context)>($r0);
+
+        $r4 = virtualinvoke $r2.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setTitle(java.lang.CharSequence)>($r3);
+
+        $r3 = staticinvoke <com.mobclick.android.n: java.lang.String p(android.content.Context)>($r0);
+
+        $r4 = virtualinvoke $r4.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setMessage(java.lang.CharSequence)>($r3);
+
+        $r4 = virtualinvoke $r4.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setCancelable(boolean)>(0);
+
+        $r3 = staticinvoke <com.mobclick.android.n: java.lang.String k(android.content.Context)>($r0);
+
+        $r5 = new com.mobclick.android.g;
+
+        specialinvoke $r5.<com.mobclick.android.g: void <init>(android.content.Context,java.io.File)>($r0, $r1);
+
+        $r4 = virtualinvoke $r4.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setPositiveButton(java.lang.CharSequence,android.content.DialogInterface$OnClickListener)>($r3, $r5);
+
+        $r3 = staticinvoke <com.mobclick.android.n: java.lang.String n(android.content.Context)>($r0);
+
+        $r6 = new com.mobclick.android.h;
+
+        specialinvoke $r6.<com.mobclick.android.h: void <init>()>();
+
+        virtualinvoke $r4.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setNegativeButton(java.lang.CharSequence,android.content.DialogInterface$OnClickListener)>($r3, $r6);
+
+        $r7 = virtualinvoke $r2.<android.app.AlertDialog$Builder: android.app.AlertDialog create()>();
+
+        virtualinvoke $r7.<android.app.AlertDialog: void setCancelable(boolean)>(1);
+
+        return $r7;
+    }
+
+    private static java.lang.String b()
+    {
+        java.text.SimpleDateFormat $r1;
+        java.lang.String $r0;
+        java.util.Date $r2;
+
+        $r1 = new java.text.SimpleDateFormat;
+
+        specialinvoke $r1.<java.text.SimpleDateFormat: void <init>(java.lang.String)>("yyyy-MM-dd HH:mm:ss");
+
+        $r2 = new java.util.Date;
+
+        specialinvoke $r2.<java.util.Date: void <init>()>();
+
+        $r0 = virtualinvoke $r1.<java.text.DateFormat: java.lang.String format(java.util.Date)>($r2);
+
+        return $r0;
+    }
+
+    private static java.lang.String b(android.content.Context)
+    {
+        android.content.Context $r0;
+        android.os.Bundle $r4;
+        android.content.pm.PackageManager $r1;
+        java.lang.Object $r5;
+        java.lang.String $r2;
+        android.content.pm.ApplicationInfo $r3;
+        java.lang.Exception $r6;
+
+        $r0 := @parameter0: android.content.Context;
+
+     label01:
+        $r1 = virtualinvoke $r0.<android.content.Context: android.content.pm.PackageManager getPackageManager()>();
+
+        $r2 = virtualinvoke $r0.<android.content.Context: java.lang.String getPackageName()>();
+
+        $r3 = virtualinvoke $r1.<android.content.pm.PackageManager: android.content.pm.ApplicationInfo getApplicationInfo(java.lang.String,int)>($r2, 128);
+
+     label02:
+        if $r3 == null goto label12;
+
+     label03:
+        $r4 = $r3.<android.content.pm.ApplicationInfo: android.os.Bundle metaData>;
+
+     label04:
+        if $r4 == null goto label12;
+
+     label05:
+        $r4 = $r3.<android.content.pm.ApplicationInfo: android.os.Bundle metaData>;
+
+        $r5 = virtualinvoke $r4.<android.os.Bundle: java.lang.Object get(java.lang.String)>("UMENG_CHANNEL");
+
+     label06:
+        if $r5 == null goto label12;
+
+     label07:
+        $r2 = virtualinvoke $r5.<java.lang.Object: java.lang.String toString()>();
+
+     label08:
+        if $r2 == null goto label09;
+
+        return $r2;
+
+     label09:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("MobclickAgent", "Could not read UMENG_CHANNEL meta-data from AndroidManifest.xml.");
+
+     label10:
+        return "Unknown";
+
+     label11:
+        $r6 := @caughtexception;
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String,java.lang.Throwable)>("MobclickAgent", "Could not read UMENG_CHANNEL meta-data from AndroidManifest.xml.", $r6);
+
+        virtualinvoke $r6.<java.lang.Exception: void printStackTrace()>();
+
+     label12:
+        return "Unknown";
+
+        catch java.lang.Exception from label01 to label02 with label11;
+        catch java.lang.Exception from label03 to label04 with label11;
+        catch java.lang.Exception from label05 to label06 with label11;
+        catch java.lang.Exception from label07 to label08 with label11;
+        catch java.lang.Exception from label09 to label10 with label11;
+    }
+
+    private void b(android.content.Context, android.content.SharedPreferences)
+    {
+        com.mobclick.android.MobclickAgent r0;
+        android.content.Context $r1;
+        java.lang.String[] $r5;
+        com.mobclick.android.l $r9;
+        org.json.JSONException $r10;
+        org.json.JSONObject $r7;
+        android.content.SharedPreferences $r2;
+        android.os.Handler $r8;
+        java.lang.String $r3, $r4, $r6;
+
+        r0 := @this: com.mobclick.android.MobclickAgent;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.content.SharedPreferences;
+
+        $r3 = interfaceinvoke $r2.<android.content.SharedPreferences: java.lang.String getString(java.lang.String,java.lang.String)>("session_id", null);
+
+        if $r3 != null goto label1;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "Missing session_id, ignore message");
+
+        return;
+
+     label1:
+        $r4 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String b()>();
+
+        $r5 = virtualinvoke $r4.<java.lang.String: java.lang.String[] split(java.lang.String)>(" ");
+
+        $r6 = $r5[0];
+
+        $r5 = virtualinvoke $r4.<java.lang.String: java.lang.String[] split(java.lang.String)>(" ");
+
+        $r4 = $r5[1];
+
+        $r7 = new org.json.JSONObject;
+
+        specialinvoke $r7.<org.json.JSONObject: void <init>()>();
+
+     label2:
+        virtualinvoke $r7.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("type", "launch");
+
+        virtualinvoke $r7.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("session_id", $r3);
+
+        virtualinvoke $r7.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("date", $r6);
+
+        virtualinvoke $r7.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("time", $r4);
+
+     label3:
+        $r8 = r0.<com.mobclick.android.MobclickAgent: android.os.Handler i>;
+
+        $r9 = new com.mobclick.android.l;
+
+        specialinvoke $r9.<com.mobclick.android.l: void <init>(com.mobclick.android.MobclickAgent,android.content.Context,org.json.JSONObject)>(r0, $r1, $r7);
+
+        virtualinvoke $r8.<android.os.Handler: boolean post(java.lang.Runnable)>($r9);
+
+        return;
+
+     label4:
+        $r10 := @caughtexception;
+
+        virtualinvoke $r10.<org.json.JSONException: void printStackTrace()>();
+
+        return;
+
+        catch org.json.JSONException from label2 to label3 with label4;
+    }
+
+    private void b(android.content.Context, java.lang.String)
+    {
+        com.mobclick.android.MobclickAgent r0;
+        java.lang.Throwable $r3;
+        android.content.Context $r1;
+        int $i0;
+        java.lang.String $r2;
+
+        r0 := @this: com.mobclick.android.MobclickAgent;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        entermonitor r0;
+
+     label1:
+        $r2 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String c(android.content.Context)>($r1);
+
+        if $r2 == "" goto label3;
+
+        $i0 = virtualinvoke $r2.<java.lang.String: int length()>();
+
+     label2:
+        if $i0 <= 10240 goto label4;
+
+     label3:
+        exitmonitor r0;
+
+        return;
+
+     label4:
+        specialinvoke r0.<com.mobclick.android.MobclickAgent: void c(android.content.Context,java.lang.String)>($r1, $r2);
+
+     label5:
+        goto label3;
+
+     label6:
+        $r3 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label2 with label6;
+        catch java.lang.Throwable from label4 to label5 with label6;
+    }
+
+    private void b(android.content.Context, org.json.JSONObject)
+    {
+        com.mobclick.android.MobclickAgent r0;
+        android.content.Context $r1;
+        java.lang.String[] $r4;
+        com.mobclick.android.l $r7;
+        org.json.JSONException $r8;
+        org.json.JSONObject $r2;
+        com.mobclick.android.UmengFeedbackListener $r9;
+        android.os.Handler $r6;
+        int $i0;
+        java.lang.String $r3, $r5;
+
+        r0 := @this: com.mobclick.android.MobclickAgent;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: org.json.JSONObject;
+
+        $r3 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String b()>();
+
+        $r4 = virtualinvoke $r3.<java.lang.String: java.lang.String[] split(java.lang.String)>(" ");
+
+        $r5 = $r4[0];
+
+        $r4 = virtualinvoke $r3.<java.lang.String: java.lang.String[] split(java.lang.String)>(" ");
+
+        $r3 = $r4[1];
+
+     label1:
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("type", "feedback");
+
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("date", $r5);
+
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("time", $r3);
+
+     label2:
+        $r6 = r0.<com.mobclick.android.MobclickAgent: android.os.Handler i>;
+
+        $r7 = new com.mobclick.android.l;
+
+        specialinvoke $r7.<com.mobclick.android.l: void <init>(com.mobclick.android.MobclickAgent,android.content.Context,org.json.JSONObject)>(r0, $r1, $r2);
+
+        virtualinvoke $r6.<android.os.Handler: boolean post(java.lang.Runnable)>($r7);
+
+        return;
+
+     label3:
+        $r8 := @caughtexception;
+
+        $r9 = <com.mobclick.android.MobclickAgent: com.mobclick.android.UmengFeedbackListener n>;
+
+        $i0 = <com.mobclick.android.FeedbackStatus: int FAILED>;
+
+        interfaceinvoke $r9.<com.mobclick.android.UmengFeedbackListener: void onFeedbackReturned(int)>($i0);
+
+        virtualinvoke $r8.<org.json.JSONException: void printStackTrace()>();
+
+        return;
+
+        catch org.json.JSONException from label1 to label2 with label3;
+    }
+
+    static void b(com.mobclick.android.MobclickAgent, android.content.Context, org.json.JSONObject)
+    {
+        com.mobclick.android.MobclickAgent $r0;
+        android.content.Context $r1;
+        org.json.JSONObject $r2;
+
+        $r0 := @parameter0: com.mobclick.android.MobclickAgent;
+
+        $r1 := @parameter1: android.content.Context;
+
+        $r2 := @parameter2: org.json.JSONObject;
+
+        specialinvoke $r0.<com.mobclick.android.MobclickAgent: void h(android.content.Context,org.json.JSONObject)>($r1, $r2);
+
+        return;
+    }
+
+    private static java.lang.String c(android.content.Context)
+    {
+        android.content.Context $r0;
+        java.lang.Object[] $r6;
+        java.lang.String[] $r5;
+        java.util.ArrayList $r3;
+        int $i0;
+        java.lang.String $r2, $r10, $r11, $r13;
+        boolean $z0, $z1;
+        java.lang.Process $r7;
+        java.lang.Runtime $r4;
+        java.io.InputStreamReader $r8;
+        java.lang.Exception $r14, $r15, $r16;
+        java.lang.StringBuilder $r12;
+        java.io.BufferedReader $r1;
+        java.io.InputStream $r9;
+
+        $r0 := @parameter0: android.content.Context;
+
+     label01:
+        $r2 = virtualinvoke $r0.<android.content.Context: java.lang.String getPackageName()>();
+
+     label02:
+        $r3 = new java.util.ArrayList;
+
+     label03:
+        specialinvoke $r3.<java.util.ArrayList: void <init>()>();
+
+        virtualinvoke $r3.<java.util.ArrayList: boolean add(java.lang.Object)>("logcat");
+
+        virtualinvoke $r3.<java.util.ArrayList: boolean add(java.lang.Object)>("-d");
+
+        virtualinvoke $r3.<java.util.ArrayList: boolean add(java.lang.Object)>("-v");
+
+        virtualinvoke $r3.<java.util.ArrayList: boolean add(java.lang.Object)>("raw");
+
+        virtualinvoke $r3.<java.util.ArrayList: boolean add(java.lang.Object)>("-s");
+
+        virtualinvoke $r3.<java.util.ArrayList: boolean add(java.lang.Object)>("AndroidRuntime:E");
+
+        virtualinvoke $r3.<java.util.ArrayList: boolean add(java.lang.Object)>("-p");
+
+        virtualinvoke $r3.<java.util.ArrayList: boolean add(java.lang.Object)>($r2);
+
+        $r4 = staticinvoke <java.lang.Runtime: java.lang.Runtime getRuntime()>();
+
+        $i0 = virtualinvoke $r3.<java.util.ArrayList: int size()>();
+
+        $r5 = newarray (java.lang.String)[$i0];
+
+        $r6 = virtualinvoke $r3.<java.util.ArrayList: java.lang.Object[] toArray(java.lang.Object[])>($r5);
+
+        $r5 = (java.lang.String[]) $r6;
+
+        $r7 = virtualinvoke $r4.<java.lang.Runtime: java.lang.Process exec(java.lang.String[])>($r5);
+
+     label04:
+        $r1 = new java.io.BufferedReader;
+
+        $r8 = new java.io.InputStreamReader;
+
+     label05:
+        $r9 = virtualinvoke $r7.<java.lang.Process: java.io.InputStream getInputStream()>();
+
+        specialinvoke $r8.<java.io.InputStreamReader: void <init>(java.io.InputStream)>($r9);
+
+        specialinvoke $r1.<java.io.BufferedReader: void <init>(java.io.Reader,int)>($r8, 1024);
+
+        $r10 = virtualinvoke $r1.<java.io.BufferedReader: java.lang.String readLine()>();
+
+     label06:
+        $z0 = 0;
+
+        $r11 = "";
+
+        $z1 = 0;
+
+     label07:
+        if $r10 != null goto label12;
+
+     label08:
+        $i0 = virtualinvoke $r11.<java.lang.String: int length()>();
+
+     label09:
+        if $i0 <= 0 goto label29;
+
+        if $z1 == 0 goto label29;
+
+        if $z0 == 0 goto label29;
+
+     label10:
+        $r4 = staticinvoke <java.lang.Runtime: java.lang.Runtime getRuntime()>();
+
+        virtualinvoke $r4.<java.lang.Runtime: java.lang.Process exec(java.lang.String)>("logcat -c");
+
+     label11:
+        return $r11;
+
+     label12:
+        $i0 = virtualinvoke $r10.<java.lang.String: int indexOf(java.lang.String)>("thread attach failed");
+
+     label13:
+        if $i0 >= 0 goto label15;
+
+        $r12 = new java.lang.StringBuilder;
+
+     label14:
+        $r11 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r11);
+
+        specialinvoke $r12.<java.lang.StringBuilder: void <init>(java.lang.String)>($r11);
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r10);
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(10);
+
+        $r11 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label15:
+        if $z1 != 0 goto label18;
+
+     label16:
+        $r13 = virtualinvoke $r10.<java.lang.String: java.lang.String toLowerCase()>();
+
+        $i0 = virtualinvoke $r13.<java.lang.String: int indexOf(java.lang.String)>("exception");
+
+     label17:
+        if $i0 < 0 goto label18;
+
+        $z1 = 1;
+
+     label18:
+        if $z0 != 0 goto label21;
+
+     label19:
+        $i0 = virtualinvoke $r10.<java.lang.String: int indexOf(java.lang.String)>($r2);
+
+     label20:
+        if $i0 < 0 goto label21;
+
+        $z0 = 1;
+
+     label21:
+        $r10 = virtualinvoke $r1.<java.io.BufferedReader: java.lang.String readLine()>();
+
+     label22:
+        goto label07;
+
+     label23:
+        $r14 := @caughtexception;
+
+     label24:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "Failed to clear log");
+
+        virtualinvoke $r14.<java.lang.Exception: void printStackTrace()>();
+
+     label25:
+        return $r11;
+
+     label26:
+        $r15 := @caughtexception;
+
+     label27:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "Failed to catch error log");
+
+        virtualinvoke $r15.<java.lang.Exception: void printStackTrace()>();
+
+        return $r11;
+
+     label28:
+        $r16 := @caughtexception;
+
+        $r11 = "";
+
+        $r15 = $r16;
+
+        goto label27;
+
+     label29:
+        $r11 = "";
+
+        goto label10;
+
+        catch java.lang.Exception from label01 to label02 with label28;
+        catch java.lang.Exception from label03 to label04 with label28;
+        catch java.lang.Exception from label05 to label06 with label28;
+        catch java.lang.Exception from label08 to label09 with label28;
+        catch java.lang.Exception from label10 to label11 with label23;
+        catch java.lang.Exception from label12 to label13 with label28;
+        catch java.lang.Exception from label14 to label15 with label28;
+        catch java.lang.Exception from label16 to label17 with label28;
+        catch java.lang.Exception from label19 to label20 with label28;
+        catch java.lang.Exception from label21 to label22 with label28;
+        catch java.lang.Exception from label24 to label25 with label26;
+    }
+
+    private void c(android.content.Context, android.content.SharedPreferences)
+    {
+        com.mobclick.android.MobclickAgent r0;
+        android.content.Context $r1;
+        long $l0;
+        java.lang.String[] $r7;
+        com.mobclick.android.l $r15;
+        org.json.JSONException $r13;
+        org.json.JSONObject $r9, $r14;
+        byte $b1;
+        java.lang.Long $r4, $r5;
+        android.os.Handler $r11;
+        int $i2, $i3;
+        java.lang.String $r3, $r6, $r8;
+        boolean $z0;
+        android.content.SharedPreferences $r2;
+        org.json.JSONArray $r10, $r12, $r16;
+
+        r0 := @this: com.mobclick.android.MobclickAgent;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.content.SharedPreferences;
+
+        $r3 = interfaceinvoke $r2.<android.content.SharedPreferences: java.lang.String getString(java.lang.String,java.lang.String)>("session_id", null);
+
+        if $r3 != null goto label01;
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>("MobclickAgent", "Missing session_id, ignore message");
+
+        return;
+
+     label01:
+        $l0 = interfaceinvoke $r2.<android.content.SharedPreferences: long getLong(java.lang.String,long)>("duration", -1L);
+
+        $r4 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l0);
+
+        $r5 = $r4;
+
+        $l0 = virtualinvoke $r4.<java.lang.Long: long longValue()>();
+
+        $b1 = $l0 cmp 0L;
+
+        $i2 = (int) $b1;
+
+        if $i2 > 0 goto label02;
+
+        $r5 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>(0L);
+
+     label02:
+        $r6 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String b()>();
+
+        $r7 = virtualinvoke $r6.<java.lang.String: java.lang.String[] split(java.lang.String)>(" ");
+
+        $r8 = $r7[0];
+
+        $r7 = virtualinvoke $r6.<java.lang.String: java.lang.String[] split(java.lang.String)>(" ");
+
+        $r6 = $r7[1];
+
+        $r14 = new org.json.JSONObject;
+
+        $r9 = $r14;
+
+        specialinvoke $r14.<org.json.JSONObject: void <init>()>();
+
+     label03:
+        virtualinvoke $r9.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("type", "terminate");
+
+        virtualinvoke $r9.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("session_id", $r3);
+
+        virtualinvoke $r9.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("date", $r8);
+
+        virtualinvoke $r9.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("time", $r6);
+
+        $l0 = virtualinvoke $r5.<java.lang.Long: long longValue()>();
+
+     label04:
+        $l0 = $l0 / 1000L;
+
+     label05:
+        $r3 = staticinvoke <java.lang.String: java.lang.String valueOf(long)>($l0);
+
+        virtualinvoke $r9.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("duration", $r3);
+
+     label06:
+        $z0 = <com.mobclick.android.MobclickAgent: boolean l>;
+
+        if $z0 == 0 goto label13;
+
+     label07:
+        $r3 = interfaceinvoke $r2.<android.content.SharedPreferences: java.lang.String getString(java.lang.String,java.lang.String)>("activities", "");
+
+        $r7 = virtualinvoke $r3.<java.lang.String: java.lang.String[] split(java.lang.String)>(";");
+
+     label08:
+        $r12 = new org.json.JSONArray;
+
+        $r10 = $r12;
+
+     label09:
+        specialinvoke $r12.<org.json.JSONArray: void <init>()>();
+
+     label10:
+        $i2 = 0;
+
+     label11:
+        $i3 = lengthof $r7;
+
+        if $i2 < $i3 goto label14;
+
+     label12:
+        virtualinvoke $r9.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("activities", $r10);
+
+     label13:
+        $r11 = r0.<com.mobclick.android.MobclickAgent: android.os.Handler i>;
+
+        $r15 = new com.mobclick.android.l;
+
+        specialinvoke $r15.<com.mobclick.android.l: void <init>(com.mobclick.android.MobclickAgent,android.content.Context,org.json.JSONObject)>(r0, $r1, $r9);
+
+        virtualinvoke $r11.<android.os.Handler: boolean post(java.lang.Runnable)>($r15);
+
+        return;
+
+     label14:
+        $r3 = $r7[$i2];
+
+        $r16 = new org.json.JSONArray;
+
+        $r12 = $r16;
+
+     label15:
+        specialinvoke $r16.<org.json.JSONArray: void <init>(java.lang.String)>($r3);
+
+        virtualinvoke $r10.<org.json.JSONArray: org.json.JSONArray put(java.lang.Object)>($r12);
+
+     label16:
+        $i2 = $i2 + 1;
+
+        goto label11;
+
+     label17:
+        $r13 := @caughtexception;
+
+        virtualinvoke $r13.<org.json.JSONException: void printStackTrace()>();
+
+        return;
+
+        catch org.json.JSONException from label03 to label04 with label17;
+        catch org.json.JSONException from label05 to label06 with label17;
+        catch org.json.JSONException from label07 to label08 with label17;
+        catch org.json.JSONException from label09 to label10 with label17;
+        catch org.json.JSONException from label12 to label13 with label17;
+        catch org.json.JSONException from label15 to label16 with label17;
+    }
+
+    private static void c(android.content.Context, java.io.File)
+    {
+        android.content.Context $r0;
+        android.net.Uri $r5;
+        android.content.Intent $r2;
+        java.lang.StringBuilder $r3;
+        java.lang.String $r4;
+        java.io.File $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.io.File;
+
+        $r2 = new android.content.Intent;
+
+        specialinvoke $r2.<android.content.Intent: void <init>(java.lang.String)>("android.intent.action.VIEW");
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>("file://");
+
+        $r4 = virtualinvoke $r1.<java.io.File: java.lang.String getAbsolutePath()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r5 = staticinvoke <android.net.Uri: android.net.Uri parse(java.lang.String)>($r4);
+
+        virtualinvoke $r2.<android.content.Intent: android.content.Intent setDataAndType(android.net.Uri,java.lang.String)>($r5, "application/vnd.android.package-archive");
+
+        virtualinvoke $r0.<android.content.Context: void startActivity(android.content.Intent)>($r2);
+
+        return;
+    }
+
+    private void c(android.content.Context, java.lang.String)
+    {
+        com.mobclick.android.MobclickAgent r0;
+        android.content.Context $r1;
+        java.lang.String[] $r4;
+        com.mobclick.android.l $r8;
+        org.json.JSONException $r9;
+        org.json.JSONObject $r6;
+        android.os.Handler $r7;
+        java.lang.String $r2, $r3, $r5;
+
+        r0 := @this: com.mobclick.android.MobclickAgent;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String b()>();
+
+        $r4 = virtualinvoke $r3.<java.lang.String: java.lang.String[] split(java.lang.String)>(" ");
+
+        $r5 = $r4[0];
+
+        $r4 = virtualinvoke $r3.<java.lang.String: java.lang.String[] split(java.lang.String)>(" ");
+
+        $r3 = $r4[1];
+
+        $r6 = new org.json.JSONObject;
+
+        specialinvoke $r6.<org.json.JSONObject: void <init>()>();
+
+     label1:
+        virtualinvoke $r6.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("type", "error");
+
+        virtualinvoke $r6.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("context", $r2);
+
+        virtualinvoke $r6.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("date", $r5);
+
+        virtualinvoke $r6.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("time", $r3);
+
+     label2:
+        $r7 = r0.<com.mobclick.android.MobclickAgent: android.os.Handler i>;
+
+        $r8 = new com.mobclick.android.l;
+
+        specialinvoke $r8.<com.mobclick.android.l: void <init>(com.mobclick.android.MobclickAgent,android.content.Context,org.json.JSONObject)>(r0, $r1, $r6);
+
+        virtualinvoke $r7.<android.os.Handler: boolean post(java.lang.Runnable)>($r8);
+
+        return;
+
+     label3:
+        $r9 := @caughtexception;
+
+        virtualinvoke $r9.<org.json.JSONException: void printStackTrace()>();
+
+        return;
+
+        catch org.json.JSONException from label1 to label2 with label3;
+    }
+
+    private void c(android.content.Context, org.json.JSONObject)
+    {
+        com.mobclick.android.MobclickAgent r0;
+        android.content.Context $r1;
+        com.mobclick.android.UmengUpdateListener $r7;
+        org.json.JSONObject $r2;
+        int $i0;
+        java.lang.StringBuilder $r5;
+        java.lang.String $r3, $r4, $r6;
+        boolean $z0;
+
+        r0 := @this: com.mobclick.android.MobclickAgent;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: org.json.JSONObject;
+
+        $z0 = staticinvoke <com.mobclick.android.MobclickAgent: boolean a(java.lang.String,android.content.Context)>("update", $r1);
+
+        if $z0 == 0 goto label3;
+
+        $r3 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String a(android.content.Context,org.json.JSONObject,java.lang.String,boolean)>($r1, $r2, "http://www.umeng.com/api/check_app_update", 1);
+
+        $r4 = $r3;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>(java.lang.String)>("return message from ");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("MobclickAgent", $r6);
+
+        if $r3 != null goto label1;
+
+        $r4 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String a(android.content.Context,org.json.JSONObject,java.lang.String,boolean)>($r1, $r2, "http://www.umeng.co/api/check_app_update", 1);
+
+     label1:
+        if $r4 == null goto label2;
+
+        specialinvoke r0.<com.mobclick.android.MobclickAgent: void d(android.content.Context,java.lang.String)>($r1, $r4);
+
+        return;
+
+     label2:
+        $r7 = <com.mobclick.android.MobclickAgent: com.mobclick.android.UmengUpdateListener m>;
+
+        if $r7 == null goto label4;
+
+        $r7 = <com.mobclick.android.MobclickAgent: com.mobclick.android.UmengUpdateListener m>;
+
+        $i0 = <com.mobclick.android.UpdateStatus: int Timeout>;
+
+        interfaceinvoke $r7.<com.mobclick.android.UmengUpdateListener: void onUpdateReturned(int)>($i0);
+
+        return;
+
+     label3:
+        $r7 = <com.mobclick.android.MobclickAgent: com.mobclick.android.UmengUpdateListener m>;
+
+        if $r7 == null goto label4;
+
+        $r7 = <com.mobclick.android.MobclickAgent: com.mobclick.android.UmengUpdateListener m>;
+
+        $i0 = <com.mobclick.android.UpdateStatus: int No>;
+
+        interfaceinvoke $r7.<com.mobclick.android.UmengUpdateListener: void onUpdateReturned(int)>($i0);
+
+     label4:
+        return;
+    }
+
+    static void c(com.mobclick.android.MobclickAgent, android.content.Context, org.json.JSONObject)
+    {
+        com.mobclick.android.MobclickAgent $r0;
+        android.content.Context $r1;
+        org.json.JSONObject $r2;
+
+        $r0 := @parameter0: com.mobclick.android.MobclickAgent;
+
+        $r1 := @parameter1: android.content.Context;
+
+        $r2 := @parameter2: org.json.JSONObject;
+
+        specialinvoke $r0.<com.mobclick.android.MobclickAgent: void e(android.content.Context,org.json.JSONObject)>($r1, $r2);
+
+        return;
+    }
+
+    private static android.app.AlertDialog d(android.content.Context, org.json.JSONObject)
+    {
+        android.content.Context $r0;
+        java.lang.String[] $r6;
+        org.json.JSONObject $r1;
+        com.mobclick.android.i $r11;
+        com.mobclick.android.j $r12;
+        java.lang.String $r2, $r3, $r4, $r5, $r7;
+        boolean $z0;
+        java.lang.Exception $r14;
+        android.app.AlertDialog $r13;
+        android.app.AlertDialog$Builder $r9, $r10;
+        java.lang.StringBuilder $r8;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: org.json.JSONObject;
+
+     label01:
+        $z0 = virtualinvoke $r1.<org.json.JSONObject: boolean has(java.lang.String)>("version");
+
+     label02:
+        if $z0 == 0 goto label24;
+
+     label03:
+        $r2 = virtualinvoke $r1.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("version");
+
+     label04:
+        $z0 = virtualinvoke $r1.<org.json.JSONObject: boolean has(java.lang.String)>("update_log");
+
+     label05:
+        if $z0 == 0 goto label25;
+
+     label06:
+        $r3 = virtualinvoke $r1.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("update_log");
+
+     label07:
+        $r4 = $r3;
+
+     label08:
+        $z0 = virtualinvoke $r1.<org.json.JSONObject: boolean has(java.lang.String)>("path");
+
+     label09:
+        if $z0 == 0 goto label26;
+
+     label10:
+        $r3 = virtualinvoke $r1.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("path");
+
+     label11:
+        $r5 = "";
+
+     label12:
+        $r6 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String[] p(android.content.Context)>($r0);
+
+        $r7 = $r6[0];
+
+        $z0 = virtualinvoke $r7.<java.lang.String: boolean equals(java.lang.Object)>("Wi-Fi");
+
+     label13:
+        if $z0 != 0 goto label15;
+
+        $r8 = new java.lang.StringBuilder;
+
+     label14:
+        $r5 = staticinvoke <com.mobclick.android.n: java.lang.String j(android.content.Context)>($r0);
+
+        $r5 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r5);
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>(java.lang.String)>($r5);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\n");
+
+        $r5 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label15:
+        $r9 = new android.app.AlertDialog$Builder;
+
+     label16:
+        specialinvoke $r9.<android.app.AlertDialog$Builder: void <init>(android.content.Context)>($r0);
+
+        $r7 = staticinvoke <com.mobclick.android.n: java.lang.String h(android.content.Context)>($r0);
+
+        $r10 = virtualinvoke $r9.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setTitle(java.lang.CharSequence)>($r7);
+
+     label17:
+        $r8 = new java.lang.StringBuilder;
+
+     label18:
+        $r5 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r5);
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>(java.lang.String)>($r5);
+
+        $r5 = staticinvoke <com.mobclick.android.n: java.lang.String i(android.content.Context)>($r0);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\n");
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r10 = virtualinvoke $r10.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setMessage(java.lang.CharSequence)>($r4);
+
+        $r10 = virtualinvoke $r10.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setCancelable(boolean)>(0);
+
+        $r4 = staticinvoke <com.mobclick.android.n: java.lang.String k(android.content.Context)>($r0);
+
+     label19:
+        $r11 = new com.mobclick.android.i;
+
+     label20:
+        specialinvoke $r11.<com.mobclick.android.i: void <init>(android.content.Context,java.lang.String,java.lang.String)>($r0, $r3, $r2);
+
+        $r10 = virtualinvoke $r10.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setPositiveButton(java.lang.CharSequence,android.content.DialogInterface$OnClickListener)>($r4, $r11);
+
+        $r2 = staticinvoke <com.mobclick.android.n: java.lang.String n(android.content.Context)>($r0);
+
+     label21:
+        $r12 = new com.mobclick.android.j;
+
+     label22:
+        specialinvoke $r12.<com.mobclick.android.j: void <init>()>();
+
+        virtualinvoke $r10.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setNegativeButton(java.lang.CharSequence,android.content.DialogInterface$OnClickListener)>($r2, $r12);
+
+        $r13 = virtualinvoke $r9.<android.app.AlertDialog$Builder: android.app.AlertDialog create()>();
+
+        virtualinvoke $r13.<android.app.AlertDialog: void setCancelable(boolean)>(1);
+
+     label23:
+        return $r13;
+
+     label24:
+        $r2 = "";
+
+        goto label04;
+
+     label25:
+        $r4 = "";
+
+        goto label08;
+
+     label26:
+        $r3 = "";
+
+        goto label11;
+
+     label27:
+        $r14 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("MobclickAgent", "Fail to create update dialog box.", $r14);
+
+        virtualinvoke $r14.<java.lang.Exception: void printStackTrace()>();
+
+        return null;
+
+        catch java.lang.Exception from label01 to label02 with label27;
+        catch java.lang.Exception from label03 to label04 with label27;
+        catch java.lang.Exception from label04 to label05 with label27;
+        catch java.lang.Exception from label06 to label07 with label27;
+        catch java.lang.Exception from label08 to label09 with label27;
+        catch java.lang.Exception from label10 to label11 with label27;
+        catch java.lang.Exception from label12 to label13 with label27;
+        catch java.lang.Exception from label14 to label15 with label27;
+        catch java.lang.Exception from label16 to label17 with label27;
+        catch java.lang.Exception from label18 to label19 with label27;
+        catch java.lang.Exception from label20 to label21 with label27;
+        catch java.lang.Exception from label22 to label23 with label27;
+    }
+
+    private void d(android.content.Context)
+    {
+        com.mobclick.android.MobclickAgent r0;
+        java.lang.Throwable $r4;
+        android.content.SharedPreferences$Editor $r5;
+        android.content.Context $r1, $r2;
+        long $l0, $l2, $l3, $l4;
+        byte $b1;
+        java.lang.String $r6, $r7, $r9, $r10;
+        boolean $z0;
+        android.content.SharedPreferences $r3;
+        java.lang.Class $r8;
+        java.lang.StringBuilder $r11;
+
+        r0 := @this: com.mobclick.android.MobclickAgent;
+
+        $r1 := @parameter0: android.content.Context;
+
+        entermonitor r0;
+
+     label1:
+        $r2 = r0.<com.mobclick.android.MobclickAgent: android.content.Context h>;
+
+        if $r2 == $r1 goto label3;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "onPause() called without context from corresponding onResume()");
+
+     label2:
+        exitmonitor r0;
+
+        return;
+
+     label3:
+        r0.<com.mobclick.android.MobclickAgent: android.content.Context h> = $r1;
+
+        $r3 = staticinvoke <com.mobclick.android.MobclickAgent: android.content.SharedPreferences l(android.content.Context)>($r1);
+
+        if $r3 == null goto label2;
+
+        $l0 = interfaceinvoke $r3.<android.content.SharedPreferences: long getLong(java.lang.String,long)>("start_millis", -1L);
+
+        $b1 = $l0 cmp -1L;
+
+        if $b1 != 0 goto label6;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "onEndSession called before onStartSession");
+
+     label4:
+        goto label2;
+
+     label5:
+        $r4 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r4;
+
+     label6:
+        $l2 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $l0 = $l2 - $l0;
+
+        $l3 = interfaceinvoke $r3.<android.content.SharedPreferences: long getLong(java.lang.String,long)>("duration", 0L);
+
+        $r5 = interfaceinvoke $r3.<android.content.SharedPreferences: android.content.SharedPreferences$Editor edit()>();
+
+        $z0 = <com.mobclick.android.MobclickAgent: boolean l>;
+
+        if $z0 == 0 goto label8;
+
+        $r6 = interfaceinvoke $r3.<android.content.SharedPreferences: java.lang.String getString(java.lang.String,java.lang.String)>("activities", "");
+
+        $r7 = $r6;
+
+        $r8 = virtualinvoke $r1.<java.lang.Object: java.lang.Class getClass()>();
+
+        $r9 = virtualinvoke $r8.<java.lang.Class: java.lang.String getName()>();
+
+        $r10 = "";
+
+        $z0 = virtualinvoke $r10.<java.lang.String: boolean equals(java.lang.Object)>($r6);
+
+        if $z0 != 0 goto label7;
+
+        $r11 = new java.lang.StringBuilder;
+
+        $r6 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r6);
+
+        specialinvoke $r11.<java.lang.StringBuilder: void <init>(java.lang.String)>($r6);
+
+        $r11 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(";");
+
+        $r7 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label7:
+        $r11 = new java.lang.StringBuilder;
+
+        $r6 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r7);
+
+        specialinvoke $r11.<java.lang.StringBuilder: void <init>(java.lang.String)>($r6);
+
+        $r11 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("[");
+
+        $r11 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r9);
+
+        $r11 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(",");
+
+        $l4 = $l0 / 1000L;
+
+        $r11 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l4);
+
+        $r11 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("]");
+
+        $r9 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r5.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor remove(java.lang.String)>("activities");
+
+        interfaceinvoke $r5.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putString(java.lang.String,java.lang.String)>("activities", $r9);
+
+     label8:
+        interfaceinvoke $r5.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putLong(java.lang.String,long)>("start_millis", -1L);
+
+        interfaceinvoke $r5.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putLong(java.lang.String,long)>("end_millis", $l2);
+
+        $l2 = $l0 + $l3;
+
+        interfaceinvoke $r5.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putLong(java.lang.String,long)>("duration", $l2);
+
+        interfaceinvoke $r5.<android.content.SharedPreferences$Editor: boolean commit()>();
+
+     label9:
+        goto label2;
+
+        catch java.lang.Throwable from label1 to label2 with label5;
+        catch java.lang.Throwable from label3 to label4 with label5;
+        catch java.lang.Throwable from label6 to label9 with label5;
+    }
+
+    private void d(android.content.Context, java.lang.String)
+    {
+        com.mobclick.android.MobclickAgent r0;
+        android.content.Context $r1;
+        com.mobclick.android.UmengUpdateListener $r4;
+        java.lang.Exception $r5;
+        org.json.JSONObject $r3;
+        int $i0;
+        java.lang.String $r2;
+        boolean $z0;
+
+        r0 := @this: com.mobclick.android.MobclickAgent;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 = new org.json.JSONObject;
+
+     label01:
+        specialinvoke $r3.<org.json.JSONObject: void <init>(java.lang.String)>($r2);
+
+     label02:
+        <com.mobclick.android.MobclickAgent: org.json.JSONObject p> = $r3;
+
+        $r3 = <com.mobclick.android.MobclickAgent: org.json.JSONObject p>;
+
+     label03:
+        $r2 = virtualinvoke $r3.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("update");
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>("Yes");
+
+     label04:
+        if $z0 != 0 goto label07;
+
+        $r4 = <com.mobclick.android.MobclickAgent: com.mobclick.android.UmengUpdateListener m>;
+
+        if $r4 == null goto label13;
+
+        $r4 = <com.mobclick.android.MobclickAgent: com.mobclick.android.UmengUpdateListener m>;
+
+        $i0 = <com.mobclick.android.UpdateStatus: int No>;
+
+     label05:
+        interfaceinvoke $r4.<com.mobclick.android.UmengUpdateListener: void onUpdateReturned(int)>($i0);
+
+     label06:
+        return;
+
+     label07:
+        $r4 = <com.mobclick.android.MobclickAgent: com.mobclick.android.UmengUpdateListener m>;
+
+        if $r4 == null goto label09;
+
+        $r4 = <com.mobclick.android.MobclickAgent: com.mobclick.android.UmengUpdateListener m>;
+
+        $i0 = <com.mobclick.android.UpdateStatus: int Yes>;
+
+     label08:
+        interfaceinvoke $r4.<com.mobclick.android.UmengUpdateListener: void onUpdateReturned(int)>($i0);
+
+     label09:
+        $z0 = <com.mobclick.android.MobclickAgent: boolean updateAutoPopup>;
+
+        if $z0 == 0 goto label13;
+
+     label10:
+        staticinvoke <com.mobclick.android.MobclickAgent: void showUpdateDialog(android.content.Context)>($r1);
+
+     label11:
+        return;
+
+     label12:
+        $r5 := @caughtexception;
+
+        virtualinvoke $r5.<java.lang.Exception: void printStackTrace()>();
+
+     label13:
+        return;
+
+        catch java.lang.Exception from label01 to label02 with label12;
+        catch java.lang.Exception from label03 to label04 with label12;
+        catch java.lang.Exception from label05 to label06 with label12;
+        catch java.lang.Exception from label08 to label09 with label12;
+        catch java.lang.Exception from label10 to label11 with label12;
+    }
+
+    private void e(android.content.Context)
+    {
+        com.mobclick.android.MobclickAgent r0;
+        java.lang.Throwable $r2;
+        android.content.Context $r1;
+
+        r0 := @this: com.mobclick.android.MobclickAgent;
+
+        $r1 := @parameter0: android.content.Context;
+
+        entermonitor r0;
+
+     label1:
+        specialinvoke r0.<com.mobclick.android.MobclickAgent: void f(android.content.Context)>($r1);
+
+     label2:
+        exitmonitor r0;
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    private static void e(android.content.Context, java.lang.String)
+    {
+        android.content.SharedPreferences$Editor $r5;
+        java.lang.Throwable $r9;
+        android.content.Context $r0;
+        org.json.JSONObject $r4, $r6;
+        int $i0;
+        java.lang.String $r1, $r13;
+        boolean $z0;
+        java.util.Iterator $r7;
+        java.lang.Exception $r8, $r10, $r11, $r14;
+        android.content.SharedPreferences $r3;
+        java.lang.Object $r2, $r12;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r3 = staticinvoke <com.mobclick.android.MobclickAgent: android.content.SharedPreferences r(android.content.Context)>($r0);
+
+        $r2 = <com.mobclick.android.n: java.lang.Object b>;
+
+        entermonitor $r2;
+
+     label01:
+        $r4 = new org.json.JSONObject;
+
+     label02:
+        specialinvoke $r4.<org.json.JSONObject: void <init>(java.lang.String)>($r1);
+
+     label03:
+        $z0 = virtualinvoke $r4.<org.json.JSONObject: boolean has(java.lang.String)>("last_config_time");
+
+     label04:
+        if $z0 == 0 goto label06;
+
+     label05:
+        $r5 = interfaceinvoke $r3.<android.content.SharedPreferences: android.content.SharedPreferences$Editor edit()>();
+
+        $r1 = virtualinvoke $r4.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("last_config_time");
+
+        $r5 = interfaceinvoke $r5.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putString(java.lang.String,java.lang.String)>("umeng_last_config_time", $r1);
+
+        interfaceinvoke $r5.<android.content.SharedPreferences$Editor: boolean commit()>();
+
+     label06:
+        $z0 = virtualinvoke $r4.<org.json.JSONObject: boolean has(java.lang.String)>("report_policy");
+
+     label07:
+        if $z0 == 0 goto label09;
+
+     label08:
+        $r5 = interfaceinvoke $r3.<android.content.SharedPreferences: android.content.SharedPreferences$Editor edit()>();
+
+        $i0 = virtualinvoke $r4.<org.json.JSONObject: int getInt(java.lang.String)>("report_policy");
+
+        $r5 = interfaceinvoke $r5.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putInt(java.lang.String,int)>("umeng_report_policy", $i0);
+
+        interfaceinvoke $r5.<android.content.SharedPreferences$Editor: boolean commit()>();
+
+     label09:
+        $z0 = virtualinvoke $r4.<org.json.JSONObject: boolean has(java.lang.String)>("online_params");
+
+     label10:
+        if $z0 == 0 goto label30;
+
+        $r6 = new org.json.JSONObject;
+
+     label11:
+        $r1 = virtualinvoke $r4.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("online_params");
+
+        specialinvoke $r6.<org.json.JSONObject: void <init>(java.lang.String)>($r1);
+
+        $r7 = virtualinvoke $r6.<org.json.JSONObject: java.util.Iterator keys()>();
+
+        $r5 = interfaceinvoke $r3.<android.content.SharedPreferences: android.content.SharedPreferences$Editor edit()>();
+
+     label12:
+        $z0 = interfaceinvoke $r7.<java.util.Iterator: boolean hasNext()>();
+
+     label13:
+        if $z0 != 0 goto label25;
+
+     label14:
+        interfaceinvoke $r5.<android.content.SharedPreferences$Editor: boolean commit()>();
+
+     label15:
+        exitmonitor $r2;
+
+     label16:
+        return;
+
+     label17:
+        $r8 := @caughtexception;
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("MobclickAgent", "not json string");
+
+        exitmonitor $r2;
+
+     label18:
+        return;
+
+     label19:
+        $r9 := @caughtexception;
+
+        exitmonitor $r2;
+
+     label20:
+        throw $r9;
+
+     label21:
+        $r10 := @caughtexception;
+
+     label22:
+        virtualinvoke $r10.<java.lang.Exception: void printStackTrace()>();
+
+        goto label06;
+
+     label23:
+        $r11 := @caughtexception;
+
+        virtualinvoke $r11.<java.lang.Exception: void printStackTrace()>();
+
+     label24:
+        goto label09;
+
+     label25:
+        $r12 = interfaceinvoke $r7.<java.util.Iterator: java.lang.Object next()>();
+
+        $r1 = (java.lang.String) $r12;
+
+        $r13 = virtualinvoke $r6.<org.json.JSONObject: java.lang.String getString(java.lang.String)>($r1);
+
+        interfaceinvoke $r5.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putString(java.lang.String,java.lang.String)>($r1, $r13);
+
+     label26:
+        goto label12;
+
+     label27:
+        $r14 := @caughtexception;
+
+     label28:
+        virtualinvoke $r14.<java.lang.Exception: void printStackTrace()>();
+
+     label29:
+        goto label15;
+
+     label30:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "has no online setting params");
+
+     label31:
+        goto label15;
+
+        catch java.lang.Exception from label02 to label03 with label17;
+        catch java.lang.Throwable from label01 to label03 with label19;
+        catch java.lang.Exception from label03 to label04 with label21;
+        catch java.lang.Exception from label05 to label06 with label21;
+        catch java.lang.Throwable from label03 to label06 with label19;
+        catch java.lang.Exception from label06 to label07 with label23;
+        catch java.lang.Exception from label08 to label09 with label23;
+        catch java.lang.Throwable from label06 to label09 with label19;
+        catch java.lang.Exception from label09 to label10 with label27;
+        catch java.lang.Exception from label11 to label13 with label27;
+        catch java.lang.Exception from label14 to label15 with label27;
+        catch java.lang.Throwable from label09 to label15 with label19;
+        catch java.lang.Throwable from label15 to label16 with label19;
+        catch java.lang.Throwable from label17 to label18 with label19;
+        catch java.lang.Throwable from label19 to label20 with label19;
+        catch java.lang.Throwable from label22 to label24 with label19;
+        catch java.lang.Exception from label25 to label26 with label27;
+        catch java.lang.Throwable from label25 to label26 with label19;
+        catch java.lang.Throwable from label28 to label29 with label19;
+        catch java.lang.Exception from label30 to label31 with label27;
+        catch java.lang.Throwable from label30 to label31 with label19;
+    }
+
+    private void e(android.content.Context, org.json.JSONObject)
+    {
+        com.mobclick.android.MobclickAgent r0;
+        android.content.SharedPreferences$Editor $r13;
+        android.content.Context $r1;
+        org.json.JSONException $r8;
+        org.json.JSONObject $r2, $r3, $r4, $r5;
+        int $i0;
+        java.lang.String $r6, $r9, $r10;
+        boolean $z0;
+        android.content.SharedPreferences $r12;
+        com.mobclick.android.UmengFeedbackListener $r11;
+        org.json.JSONArray $r7;
+
+        r0 := @this: com.mobclick.android.MobclickAgent;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: org.json.JSONObject;
+
+        $r4 = staticinvoke <com.mobclick.android.MobclickAgent: org.json.JSONObject i(android.content.Context)>($r1);
+
+        if $r4 != null goto label01;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "Fail to construct message header");
+
+        return;
+
+     label01:
+        $r5 = staticinvoke <com.mobclick.android.MobclickAgent: org.json.JSONObject g(android.content.Context)>($r1);
+
+        $r3 = new org.json.JSONObject;
+
+        specialinvoke $r3.<org.json.JSONObject: void <init>()>();
+
+     label02:
+        $r6 = virtualinvoke $r2.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("type");
+
+     label03:
+        if $r6 == null goto label29;
+
+        if $r6 == "flush" goto label28;
+
+     label04:
+        virtualinvoke $r2.<org.json.JSONObject: java.lang.Object remove(java.lang.String)>("type");
+
+     label05:
+        if $r5 == null goto label16;
+
+     label06:
+        $z0 = virtualinvoke $r5.<org.json.JSONObject: boolean isNull(java.lang.String)>($r6);
+
+     label07:
+        if $z0 == 0 goto label14;
+
+        $r7 = new org.json.JSONArray;
+
+     label08:
+        specialinvoke $r7.<org.json.JSONArray: void <init>()>();
+
+        virtualinvoke $r7.<org.json.JSONArray: org.json.JSONArray put(java.lang.Object)>($r2);
+
+        virtualinvoke $r5.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>($r6, $r7);
+
+     label09:
+        $r2 = $r5;
+
+     label10:
+        if $r2 != null goto label21;
+
+     label11:
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>("MobclickAgent", "No cache message to flush");
+
+     label12:
+        return;
+
+     label13:
+        $r8 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "Fail to construct json message.");
+
+        virtualinvoke $r8.<org.json.JSONException: void printStackTrace()>();
+
+        staticinvoke <com.mobclick.android.MobclickAgent: void h(android.content.Context)>($r1);
+
+        return;
+
+     label14:
+        $r7 = virtualinvoke $r5.<org.json.JSONObject: org.json.JSONArray getJSONArray(java.lang.String)>($r6);
+
+        virtualinvoke $r7.<org.json.JSONArray: org.json.JSONArray put(java.lang.Object)>($r2);
+
+     label15:
+        $r2 = $r5;
+
+        goto label10;
+
+     label16:
+        $r5 = new org.json.JSONObject;
+
+     label17:
+        specialinvoke $r5.<org.json.JSONObject: void <init>()>();
+
+     label18:
+        $r7 = new org.json.JSONArray;
+
+     label19:
+        specialinvoke $r7.<org.json.JSONArray: void <init>()>();
+
+        virtualinvoke $r7.<org.json.JSONArray: org.json.JSONArray put(java.lang.Object)>($r2);
+
+        virtualinvoke $r5.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>($r6, $r7);
+
+     label20:
+        $r2 = $r5;
+
+        goto label10;
+
+     label21:
+        virtualinvoke $r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("header", $r4);
+
+        virtualinvoke $r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("body", $r2);
+
+     label22:
+        $z0 = staticinvoke <com.mobclick.android.MobclickAgent: boolean a(java.lang.String,android.content.Context)>($r6, $r1);
+
+        if $z0 == 0 goto label27;
+
+        $r9 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String a(android.content.Context,org.json.JSONObject,java.lang.String,boolean)>($r1, $r3, "http://www.umeng.com/app_logs", 0);
+
+        $r10 = $r9;
+
+        if $r9 != null goto label23;
+
+        $r10 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String a(android.content.Context,org.json.JSONObject,java.lang.String,boolean)>($r1, $r3, "http://www.umeng.co/app_logs", 0);
+
+     label23:
+        if $r10 == null goto label25;
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("MobclickAgent", "send message succeed, clear cache");
+
+        $z0 = virtualinvoke $r6.<java.lang.String: boolean equals(java.lang.Object)>("feedback");
+
+        if $z0 == 0 goto label24;
+
+        $r11 = <com.mobclick.android.MobclickAgent: com.mobclick.android.UmengFeedbackListener n>;
+
+        $i0 = <com.mobclick.android.FeedbackStatus: int SUCCEED>;
+
+        interfaceinvoke $r11.<com.mobclick.android.UmengFeedbackListener: void onFeedbackReturned(int)>($i0);
+
+     label24:
+        staticinvoke <com.mobclick.android.MobclickAgent: void h(android.content.Context)>($r1);
+
+        $i0 = <com.mobclick.android.MobclickAgent: int g>;
+
+        if $i0 != 4 goto label29;
+
+        $r12 = staticinvoke <com.mobclick.android.MobclickAgent: android.content.SharedPreferences k(android.content.Context)>($r1);
+
+        $r13 = interfaceinvoke $r12.<android.content.SharedPreferences: android.content.SharedPreferences$Editor edit()>();
+
+        $r6 = staticinvoke <com.mobclick.android.n: java.lang.String A()>();
+
+        interfaceinvoke $r13.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putString(java.lang.String,java.lang.String)>($r6, "true");
+
+        interfaceinvoke $r13.<android.content.SharedPreferences$Editor: boolean commit()>();
+
+        return;
+
+     label25:
+        $z0 = virtualinvoke $r6.<java.lang.String: boolean equals(java.lang.Object)>("feedback");
+
+        if $z0 == 0 goto label26;
+
+        $r11 = <com.mobclick.android.MobclickAgent: com.mobclick.android.UmengFeedbackListener n>;
+
+        $i0 = <com.mobclick.android.FeedbackStatus: int FAILED>;
+
+        interfaceinvoke $r11.<com.mobclick.android.UmengFeedbackListener: void onFeedbackReturned(int)>($i0);
+
+     label26:
+        staticinvoke <com.mobclick.android.MobclickAgent: void f(android.content.Context,org.json.JSONObject)>($r1, $r2);
+
+        return;
+
+     label27:
+        $z0 = virtualinvoke $r6.<java.lang.String: boolean equals(java.lang.Object)>("feedback");
+
+        if $z0 == 0 goto label26;
+
+        $r11 = <com.mobclick.android.MobclickAgent: com.mobclick.android.UmengFeedbackListener n>;
+
+        $i0 = <com.mobclick.android.FeedbackStatus: int DISCONNECT>;
+
+        interfaceinvoke $r11.<com.mobclick.android.UmengFeedbackListener: void onFeedbackReturned(int)>($i0);
+
+        goto label26;
+
+     label28:
+        $r2 = $r5;
+
+        goto label10;
+
+     label29:
+        return;
+
+        catch org.json.JSONException from label02 to label03 with label13;
+        catch org.json.JSONException from label04 to label05 with label13;
+        catch org.json.JSONException from label06 to label07 with label13;
+        catch org.json.JSONException from label08 to label09 with label13;
+        catch org.json.JSONException from label11 to label12 with label13;
+        catch org.json.JSONException from label14 to label15 with label13;
+        catch org.json.JSONException from label17 to label18 with label13;
+        catch org.json.JSONException from label19 to label20 with label13;
+        catch org.json.JSONException from label21 to label22 with label13;
+    }
+
+    public static void enterPage(android.content.Context, java.lang.String)
+    {
+        android.content.Context $r0;
+        java.lang.String $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        staticinvoke <com.mobclick.android.MobclickAgent: void onEvent(android.content.Context,java.lang.String,java.lang.String)>($r0, "_PAGE_", $r1);
+
+        return;
+    }
+
+    private void f(android.content.Context)
+    {
+        com.mobclick.android.MobclickAgent r0;
+        com.mobclick.android.l $r4;
+        android.content.Context $r1;
+        org.json.JSONException $r5;
+        org.json.JSONObject $r2;
+        android.os.Handler $r3;
+
+        r0 := @this: com.mobclick.android.MobclickAgent;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 = new org.json.JSONObject;
+
+        specialinvoke $r2.<org.json.JSONObject: void <init>()>();
+
+     label1:
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("type", "flush");
+
+     label2:
+        $r3 = r0.<com.mobclick.android.MobclickAgent: android.os.Handler i>;
+
+        $r4 = new com.mobclick.android.l;
+
+        specialinvoke $r4.<com.mobclick.android.l: void <init>(com.mobclick.android.MobclickAgent,android.content.Context,org.json.JSONObject)>(r0, $r1, $r2);
+
+        virtualinvoke $r3.<android.os.Handler: boolean post(java.lang.Runnable)>($r4);
+
+        return;
+
+     label3:
+        $r5 := @caughtexception;
+
+        virtualinvoke $r5.<org.json.JSONException: void printStackTrace()>();
+
+        return;
+
+        catch org.json.JSONException from label1 to label2 with label3;
+    }
+
+    private void f(android.content.Context, java.lang.String)
+    {
+        com.mobclick.android.MobclickAgent r0;
+        java.lang.Throwable $r10;
+        android.content.Context $r1;
+        android.content.pm.PackageManager $r4;
+        android.content.pm.PackageInfo $r5;
+        java.lang.Exception $r9;
+        com.mobclick.android.l $r8;
+        org.json.JSONObject $r3;
+        android.os.Handler $r7;
+        int $i0;
+        java.lang.String $r2, $r6;
+        boolean $z0;
+
+        r0 := @this: com.mobclick.android.MobclickAgent;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        entermonitor r0;
+
+     label01:
+        $r3 = new org.json.JSONObject;
+
+        specialinvoke $r3.<org.json.JSONObject: void <init>()>();
+
+     label02:
+        virtualinvoke $r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("type", "online_config");
+
+        virtualinvoke $r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("appkey", $r2);
+
+        $r4 = virtualinvoke $r1.<android.content.Context: android.content.pm.PackageManager getPackageManager()>();
+
+        $r2 = virtualinvoke $r1.<android.content.Context: java.lang.String getPackageName()>();
+
+        $r5 = virtualinvoke $r4.<android.content.pm.PackageManager: android.content.pm.PackageInfo getPackageInfo(java.lang.String,int)>($r2, 0);
+
+        $i0 = $r5.<android.content.pm.PackageInfo: int versionCode>;
+
+        $r2 = virtualinvoke $r1.<android.content.Context: java.lang.String getPackageName()>();
+
+        virtualinvoke $r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("version_code", $i0);
+
+        virtualinvoke $r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("package", $r2);
+
+        virtualinvoke $r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("sdk_version", "2.3");
+
+        $r2 = staticinvoke <com.mobclick.android.o: java.lang.String b(android.content.Context)>($r1);
+
+        $r6 = staticinvoke <com.mobclick.android.o: java.lang.String a(java.lang.String)>($r2);
+
+     label03:
+        if $r2 == null goto label06;
+
+     label04:
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>("");
+
+     label05:
+        if $z0 == 0 goto label07;
+
+     label06:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "No device id");
+
+     label07:
+        virtualinvoke $r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("idmd5", $r6);
+
+        $r2 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String b(android.content.Context)>($r1);
+
+        virtualinvoke $r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("channel", $r2);
+
+        $i0 = staticinvoke <com.mobclick.android.MobclickAgent: int s(android.content.Context)>($r1);
+
+        virtualinvoke $r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("report_policy", $i0);
+
+        $r2 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String t(android.content.Context)>($r1);
+
+        virtualinvoke $r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("last_config_time", $r2);
+
+     label08:
+        $r7 = r0.<com.mobclick.android.MobclickAgent: android.os.Handler i>;
+
+        $r8 = new com.mobclick.android.l;
+
+        specialinvoke $r8.<com.mobclick.android.l: void <init>(com.mobclick.android.MobclickAgent,android.content.Context,org.json.JSONObject)>(r0, $r1, $r3);
+
+        virtualinvoke $r7.<android.os.Handler: boolean post(java.lang.Runnable)>($r8);
+
+     label09:
+        exitmonitor r0;
+
+        return;
+
+     label10:
+        $r9 := @caughtexception;
+
+     label11:
+        virtualinvoke $r9.<java.lang.Exception: void printStackTrace()>();
+
+     label12:
+        goto label09;
+
+     label13:
+        $r10 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r10;
+
+        catch java.lang.Throwable from label01 to label02 with label13;
+        catch java.lang.Exception from label02 to label03 with label10;
+        catch java.lang.Exception from label04 to label05 with label10;
+        catch java.lang.Exception from label06 to label08 with label10;
+        catch java.lang.Throwable from label02 to label08 with label13;
+        catch java.lang.Throwable from label08 to label09 with label13;
+        catch java.lang.Throwable from label11 to label12 with label13;
+    }
+
+    private static void f(android.content.Context, org.json.JSONObject)
+    {
+        java.lang.Throwable $r5, $r6;
+        android.content.Context $r0;
+        byte[] $r4;
+        java.io.FileOutputStream $r3;
+        java.io.IOException $r8;
+        java.io.FileNotFoundException $r7;
+        org.json.JSONObject $r1;
+        java.lang.String $r2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: org.json.JSONObject;
+
+        $r2 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String n(android.content.Context)>($r0);
+
+     label1:
+        $r3 = virtualinvoke $r0.<android.content.Context: java.io.FileOutputStream openFileOutput(java.lang.String,int)>($r2, 0);
+
+        $r2 = virtualinvoke $r1.<org.json.JSONObject: java.lang.String toString()>();
+
+        $r4 = virtualinvoke $r2.<java.lang.String: byte[] getBytes()>();
+
+        virtualinvoke $r3.<java.io.FileOutputStream: void write(byte[])>($r4);
+
+        virtualinvoke $r3.<java.io.FileOutputStream: void close()>();
+
+     label2:
+        return;
+
+     label3:
+        $r5 := @caughtexception;
+
+        $r7 = (java.io.FileNotFoundException) $r5;
+
+        virtualinvoke $r7.<java.io.FileNotFoundException: void printStackTrace()>();
+
+        return;
+
+     label4:
+        $r6 := @caughtexception;
+
+        $r8 = (java.io.IOException) $r6;
+
+        virtualinvoke $r8.<java.io.IOException: void printStackTrace()>();
+
+        return;
+
+        catch java.io.FileNotFoundException from label1 to label2 with label3;
+        catch java.io.IOException from label1 to label2 with label4;
+    }
+
+    public static void flush(android.content.Context)
+    {
+        com.mobclick.android.MobclickAgent $r1;
+        android.content.Context $r0;
+        java.lang.Exception $r2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        if $r0 != null goto label2;
+
+     label1:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "unexpected null context");
+
+     label2:
+        $r1 = <com.mobclick.android.MobclickAgent: com.mobclick.android.MobclickAgent a>;
+
+     label3:
+        specialinvoke $r1.<com.mobclick.android.MobclickAgent: void e(android.content.Context)>($r0);
+
+     label4:
+        return;
+
+     label5:
+        $r2 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "Exception occurred in Mobclick.flush(). ");
+
+        virtualinvoke $r2.<java.lang.Exception: void printStackTrace()>();
+
+        return;
+
+        catch java.lang.Exception from label1 to label2 with label5;
+        catch java.lang.Exception from label3 to label4 with label5;
+    }
+
+    private static java.io.File g(android.content.Context, org.json.JSONObject)
+    {
+        java.net.HttpURLConnection $r6;
+        android.content.Context $r0;
+        java.net.URL $r4;
+        long $l1, $l2;
+        org.json.JSONObject $r1;
+        byte $b3;
+        java.net.URLConnection $r5;
+        int $i0;
+        java.lang.String $r2, $r3, $r9;
+        boolean $z0;
+        java.io.File $r7;
+        java.lang.Exception $r10;
+        java.lang.StringBuilder $r8;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: org.json.JSONObject;
+
+     label01:
+        $z0 = virtualinvoke $r1.<org.json.JSONObject: boolean has(java.lang.String)>("path");
+
+     label02:
+        if $z0 != 0 goto label03;
+
+        return null;
+
+     label03:
+        $r2 = virtualinvoke $r1.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("path");
+
+        $z0 = virtualinvoke $r1.<org.json.JSONObject: boolean has(java.lang.String)>("version");
+
+     label04:
+        if $z0 == 0 goto label18;
+
+     label05:
+        $r3 = virtualinvoke $r1.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("version");
+
+     label06:
+        $r4 = new java.net.URL;
+
+     label07:
+        specialinvoke $r4.<java.net.URL: void <init>(java.lang.String)>($r2);
+
+        $r5 = virtualinvoke $r4.<java.net.URL: java.net.URLConnection openConnection()>();
+
+        $r6 = (java.net.HttpURLConnection) $r5;
+
+        virtualinvoke $r6.<java.net.HttpURLConnection: void setRequestMethod(java.lang.String)>("GET");
+
+        virtualinvoke $r6.<java.net.HttpURLConnection: void setDoOutput(boolean)>(1);
+
+        virtualinvoke $r6.<java.net.HttpURLConnection: void setConnectTimeout(int)>(5000);
+
+        virtualinvoke $r6.<java.net.HttpURLConnection: void connect()>();
+
+        $i0 = virtualinvoke $r6.<java.net.HttpURLConnection: int getContentLength()>();
+
+        virtualinvoke $r6.<java.net.HttpURLConnection: void disconnect()>();
+
+        $r2 = staticinvoke <android.os.Environment: java.lang.String getExternalStorageState()>();
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>("mounted");
+
+     label08:
+        if $z0 == 0 goto label19;
+
+     label09:
+        $r7 = staticinvoke <android.os.Environment: java.io.File getExternalStorageDirectory()>();
+
+     label10:
+        $r8 = new java.lang.StringBuilder;
+
+     label11:
+        $r2 = virtualinvoke $r7.<java.io.File: java.lang.String getParent()>();
+
+        $r2 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r2);
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>(java.lang.String)>($r2);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/");
+
+        $r2 = virtualinvoke $r7.<java.io.File: java.lang.String getName()>();
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/download");
+
+        $r2 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label12:
+        $r7 = new java.io.File;
+
+     label13:
+        $r9 = virtualinvoke $r0.<android.content.Context: java.lang.String getPackageName()>();
+
+        $r3 = staticinvoke <com.mobclick.android.a: java.lang.String a(java.lang.String,java.lang.String,int)>($r9, $r3, $i0);
+
+        specialinvoke $r7.<java.io.File: void <init>(java.lang.String,java.lang.String)>($r2, $r3);
+
+        $z0 = virtualinvoke $r7.<java.io.File: boolean exists()>();
+
+     label14:
+        if $z0 == 0 goto label17;
+
+     label15:
+        $l1 = virtualinvoke $r7.<java.io.File: long length()>();
+
+     label16:
+        $l2 = (long) $i0;
+
+        $b3 = $l1 cmp $l2;
+
+        if $b3 == 0 goto label22;
+
+     label17:
+        return null;
+
+     label18:
+        $r3 = "";
+
+        goto label06;
+
+     label19:
+        $r7 = virtualinvoke $r0.<android.content.Context: java.io.File getFilesDir()>();
+
+        $r2 = virtualinvoke $r7.<java.io.File: java.lang.String getAbsolutePath()>();
+
+     label20:
+        goto label12;
+
+     label21:
+        $r10 := @caughtexception;
+
+        virtualinvoke $r10.<java.lang.Exception: void printStackTrace()>();
+
+        goto label17;
+
+     label22:
+        return $r7;
+
+        catch java.lang.Exception from label01 to label02 with label21;
+        catch java.lang.Exception from label03 to label04 with label21;
+        catch java.lang.Exception from label05 to label06 with label21;
+        catch java.lang.Exception from label07 to label08 with label21;
+        catch java.lang.Exception from label09 to label10 with label21;
+        catch java.lang.Exception from label11 to label12 with label21;
+        catch java.lang.Exception from label13 to label14 with label21;
+        catch java.lang.Exception from label15 to label16 with label21;
+        catch java.lang.Exception from label19 to label20 with label21;
+    }
+
+    private static org.json.JSONObject g(android.content.Context)
+    {
+        java.lang.Throwable $r6, $r7;
+        android.content.Context $r0;
+        byte[] $r1;
+        java.io.FileInputStream $r3;
+        org.json.JSONException $r5;
+        org.json.JSONObject $r10;
+        int $i0;
+        java.lang.StringBuilder $r4, $r8;
+        java.lang.String $r2, $r9;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r2 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String n(android.content.Context)>($r0);
+
+     label01:
+        $r3 = virtualinvoke $r0.<android.content.Context: java.io.FileInputStream openFileInput(java.lang.String)>($r2);
+
+     label02:
+        $r1 = newarray (byte)[16384];
+
+        $r2 = "";
+
+     label03:
+        $i0 = virtualinvoke $r3.<java.io.FileInputStream: int read(byte[])>($r1);
+
+     label04:
+        if $i0 != -1 goto label07;
+
+     label05:
+        $i0 = virtualinvoke $r2.<java.lang.String: int length()>();
+
+     label06:
+        if $i0 != 0 goto label12;
+
+        return null;
+
+     label07:
+        $r8 = new java.lang.StringBuilder;
+
+        $r4 = $r8;
+
+     label08:
+        $r2 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r2);
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>(java.lang.String)>($r2);
+
+     label09:
+        $r9 = new java.lang.String;
+
+        $r2 = $r9;
+
+     label10:
+        specialinvoke $r9.<java.lang.String: void <init>(byte[],int,int)>($r1, 0, $i0);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r2 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label11:
+        goto label03;
+
+     label12:
+        $r10 = new org.json.JSONObject;
+
+     label13:
+        specialinvoke $r10.<org.json.JSONObject: void <init>(java.lang.String)>($r2);
+
+     label14:
+        return $r10;
+
+     label15:
+        $r5 := @caughtexception;
+
+     label16:
+        virtualinvoke $r3.<java.io.FileInputStream: void close()>();
+
+        staticinvoke <com.mobclick.android.MobclickAgent: void h(android.content.Context)>($r0);
+
+        virtualinvoke $r5.<org.json.JSONException: void printStackTrace()>();
+
+     label17:
+        return null;
+
+     label18:
+        $r6 := @caughtexception;
+
+        return null;
+
+     label19:
+        $r7 := @caughtexception;
+
+        return null;
+
+        catch java.io.FileNotFoundException from label01 to label02 with label18;
+        catch java.io.FileNotFoundException from label03 to label04 with label18;
+        catch java.io.FileNotFoundException from label05 to label06 with label18;
+        catch java.io.FileNotFoundException from label08 to label09 with label18;
+        catch java.io.FileNotFoundException from label10 to label11 with label18;
+        catch java.io.IOException from label01 to label02 with label19;
+        catch java.io.IOException from label03 to label04 with label19;
+        catch java.io.IOException from label05 to label06 with label19;
+        catch java.io.IOException from label08 to label09 with label19;
+        catch java.io.IOException from label10 to label11 with label19;
+        catch org.json.JSONException from label13 to label14 with label15;
+        catch java.io.FileNotFoundException from label13 to label14 with label18;
+        catch java.io.IOException from label13 to label14 with label19;
+        catch java.io.FileNotFoundException from label16 to label17 with label18;
+        catch java.io.IOException from label16 to label17 with label19;
+    }
+
+    public static java.lang.String getConfigParams(android.content.Context, java.lang.String)
+    {
+        android.content.Context $r0;
+        java.lang.String $r1;
+        android.content.SharedPreferences $r2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 = staticinvoke <com.mobclick.android.MobclickAgent: android.content.SharedPreferences r(android.content.Context)>($r0);
+
+        $r1 = interfaceinvoke $r2.<android.content.SharedPreferences: java.lang.String getString(java.lang.String,java.lang.String)>($r1, "");
+
+        return $r1;
+    }
+
+    public static org.json.JSONObject getUpdateInfo()
+    {
+        org.json.JSONObject r0;
+
+        r0 = <com.mobclick.android.MobclickAgent: org.json.JSONObject p>;
+
+        return r0;
+    }
+
+    private static void h(android.content.Context)
+    {
+        android.content.Context $r0;
+        java.lang.String $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String m(android.content.Context)>($r0);
+
+        virtualinvoke $r0.<android.content.Context: boolean deleteFile(java.lang.String)>($r1);
+
+        $r1 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String n(android.content.Context)>($r0);
+
+        virtualinvoke $r0.<android.content.Context: boolean deleteFile(java.lang.String)>($r1);
+
+        return;
+    }
+
+    private void h(android.content.Context, org.json.JSONObject)
+    {
+        com.mobclick.android.MobclickAgent r0;
+        android.content.Context $r1;
+        org.json.JSONObject $r2;
+        java.lang.StringBuilder $r5;
+        java.lang.String $r3, $r4, $r6;
+        boolean $z0;
+
+        r0 := @this: com.mobclick.android.MobclickAgent;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: org.json.JSONObject;
+
+        $z0 = staticinvoke <com.mobclick.android.MobclickAgent: boolean a(java.lang.String,android.content.Context)>("online_config", $r1);
+
+        if $z0 == 0 goto label2;
+
+        $r3 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String a(android.content.Context,org.json.JSONObject,java.lang.String,boolean)>($r1, $r2, "http://www.umeng.com/check_config_update", 1);
+
+        $r4 = $r3;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>(java.lang.String)>("return message from ");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("MobclickAgent", $r6);
+
+        if $r3 != null goto label1;
+
+        $r4 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String a(android.content.Context,org.json.JSONObject,java.lang.String,boolean)>($r1, $r2, "http://www.umeng.co/check_config_update", 1);
+
+     label1:
+        if $r4 == null goto label2;
+
+        staticinvoke <com.mobclick.android.MobclickAgent: void e(android.content.Context,java.lang.String)>($r1, $r4);
+
+     label2:
+        return;
+    }
+
+    private static org.json.JSONObject i(android.content.Context)
+    {
+        android.content.pm.PackageManager $r7;
+        android.view.WindowManager $r15;
+        org.json.JSONException $r22;
+        org.json.JSONObject $r2, $r27;
+        byte $b1;
+        android.content.ContentResolver $r10;
+        java.util.Locale $r11;
+        android.view.Display $r16;
+        java.lang.SecurityException $r32;
+        boolean $z0;
+        java.util.TimeZone $r13;
+        android.util.DisplayMetrics $r14, $r29;
+        java.lang.Exception $r24, $r25, $r26;
+        java.lang.StringBuilder $r17, $r30;
+        android.location.Location $r19;
+        android.content.SharedPreferences$Editor $r20;
+        java.lang.Throwable $r21, $r23;
+        android.content.Context $r0;
+        android.content.pm.PackageManager$NameNotFoundException $r31;
+        long $l0;
+        java.lang.String[] $r18;
+        android.content.pm.PackageInfo $r8;
+        java.util.Calendar $r12;
+        android.telephony.TelephonyManager $r4;
+        int $i2, $i3;
+        java.lang.String $r5, $r6;
+        double $d0;
+        android.content.SharedPreferences $r1;
+        android.content.res.Configuration $r9, $r28;
+        java.lang.Object $r3;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = staticinvoke <com.mobclick.android.MobclickAgent: android.content.SharedPreferences j(android.content.Context)>($r0);
+
+        $r27 = new org.json.JSONObject;
+
+        $r2 = $r27;
+
+        specialinvoke $r27.<org.json.JSONObject: void <init>()>();
+
+     label01:
+        $l0 = interfaceinvoke $r1.<android.content.SharedPreferences: long getLong(java.lang.String,long)>("req_time", 0L);
+
+     label02:
+        $b1 = $l0 cmp 0L;
+
+        if $b1 == 0 goto label04;
+
+     label03:
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,long)>("req_time", $l0);
+
+     label04:
+        $r3 = virtualinvoke $r0.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("phone");
+
+     label05:
+        $r4 = (android.telephony.TelephonyManager) $r3;
+
+     label06:
+        $r5 = staticinvoke <com.mobclick.android.o: java.lang.String b(android.content.Context)>($r0);
+
+        $r6 = staticinvoke <com.mobclick.android.o: java.lang.String a(java.lang.String)>($r5);
+
+     label07:
+        if $r5 == null goto label10;
+
+     label08:
+        $z0 = virtualinvoke $r5.<java.lang.String: boolean equals(java.lang.Object)>("");
+
+     label09:
+        if $z0 == 0 goto label12;
+
+     label10:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "No device id");
+
+     label11:
+        return null;
+
+     label12:
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("idmd5", $r6);
+
+     label13:
+        $r5 = <android.os.Build: java.lang.String MODEL>;
+
+     label14:
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("device_model", $r5);
+
+        $r5 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String a(android.content.Context)>($r0);
+
+     label15:
+        if $r5 != null goto label18;
+
+     label16:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "No appkey");
+
+     label17:
+        return null;
+
+     label18:
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("appkey", $r5);
+
+        $r5 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String b(android.content.Context)>($r0);
+
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("channel", $r5);
+
+     label19:
+        $r7 = virtualinvoke $r0.<android.content.Context: android.content.pm.PackageManager getPackageManager()>();
+
+        $r5 = virtualinvoke $r0.<android.content.Context: java.lang.String getPackageName()>();
+
+        $r8 = virtualinvoke $r7.<android.content.pm.PackageManager: android.content.pm.PackageInfo getPackageInfo(java.lang.String,int)>($r5, 0);
+
+     label20:
+        $r5 = $r8.<android.content.pm.PackageInfo: java.lang.String versionName>;
+
+        $i2 = $r8.<android.content.pm.PackageInfo: int versionCode>;
+
+     label21:
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("app_version", $r5);
+
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("version_code", $i2);
+
+     label22:
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("sdk_type", "Android");
+
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("sdk_version", "2.3");
+
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("os", "Android");
+
+     label23:
+        $r5 = <android.os.Build$VERSION: java.lang.String RELEASE>;
+
+     label24:
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("os_version", $r5);
+
+     label25:
+        $r28 = new android.content.res.Configuration;
+
+        $r9 = $r28;
+
+     label26:
+        specialinvoke $r28.<android.content.res.Configuration: void <init>()>();
+
+        $r10 = virtualinvoke $r0.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        staticinvoke <android.provider.Settings$System: void getConfiguration(android.content.ContentResolver,android.content.res.Configuration)>($r10, $r9);
+
+     label27:
+        if $r9 == null goto label70;
+
+        $r11 = $r9.<android.content.res.Configuration: java.util.Locale locale>;
+
+        if $r11 == null goto label70;
+
+        $r11 = $r9.<android.content.res.Configuration: java.util.Locale locale>;
+
+     label28:
+        $r5 = virtualinvoke $r11.<java.util.Locale: java.lang.String getCountry()>();
+
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("country", $r5);
+
+     label29:
+        $r11 = $r9.<android.content.res.Configuration: java.util.Locale locale>;
+
+     label30:
+        $r5 = virtualinvoke $r11.<java.util.Locale: java.lang.String toString()>();
+
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("language", $r5);
+
+     label31:
+        $r11 = $r9.<android.content.res.Configuration: java.util.Locale locale>;
+
+     label32:
+        $r12 = staticinvoke <java.util.Calendar: java.util.Calendar getInstance(java.util.Locale)>($r11);
+
+     label33:
+        if $r12 == null goto label68;
+
+     label34:
+        $r13 = virtualinvoke $r12.<java.util.Calendar: java.util.TimeZone getTimeZone()>();
+
+     label35:
+        if $r13 == null goto label65;
+
+     label36:
+        $i2 = virtualinvoke $r13.<java.util.TimeZone: int getRawOffset()>();
+
+     label37:
+        $i2 = $i2 / 3600000;
+
+     label38:
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("timezone", $i2);
+
+     label39:
+        $r29 = new android.util.DisplayMetrics;
+
+        $r14 = $r29;
+
+     label40:
+        specialinvoke $r29.<android.util.DisplayMetrics: void <init>()>();
+
+        $r3 = virtualinvoke $r0.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("window");
+
+        $r15 = (android.view.WindowManager) $r3;
+
+        $r16 = interfaceinvoke $r15.<android.view.WindowManager: android.view.Display getDefaultDisplay()>();
+
+        virtualinvoke $r16.<android.view.Display: void getMetrics(android.util.DisplayMetrics)>($r14);
+
+        $i2 = $r14.<android.util.DisplayMetrics: int widthPixels>;
+
+        $i3 = $r14.<android.util.DisplayMetrics: int heightPixels>;
+
+     label41:
+        $r30 = new java.lang.StringBuilder;
+
+        $r17 = $r30;
+
+     label42:
+        $r5 = staticinvoke <java.lang.String: java.lang.String valueOf(int)>($i3);
+
+        $r5 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r5);
+
+        specialinvoke $r30.<java.lang.StringBuilder: void <init>(java.lang.String)>($r5);
+
+        $r17 = virtualinvoke $r17.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("*");
+
+        $r5 = staticinvoke <java.lang.String: java.lang.String valueOf(int)>($i2);
+
+        $r17 = virtualinvoke $r17.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r17.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("resolution", $r5);
+
+     label43:
+        $r18 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String[] p(android.content.Context)>($r0);
+
+        $r5 = $r18[0];
+
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("access", $r5);
+
+        $r5 = $r18[0];
+
+        $z0 = virtualinvoke $r5.<java.lang.String: boolean equals(java.lang.Object)>("2G/3G");
+
+     label44:
+        if $z0 == 0 goto label46;
+
+     label45:
+        $r5 = $r18[1];
+
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("access_subtype", $r5);
+
+     label46:
+        $r5 = virtualinvoke $r4.<android.telephony.TelephonyManager: java.lang.String getNetworkOperatorName()>();
+
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("carrier", $r5);
+
+     label47:
+        $z0 = <com.mobclick.android.MobclickAgent: boolean LOCATION_OPEN>;
+
+        if $z0 == 0 goto label51;
+
+     label48:
+        $r19 = staticinvoke <com.mobclick.android.MobclickAgent: android.location.Location q(android.content.Context)>($r0);
+
+     label49:
+        if $r19 == null goto label81;
+
+     label50:
+        $d0 = virtualinvoke $r19.<android.location.Location: double getLatitude()>();
+
+        $r5 = staticinvoke <java.lang.String: java.lang.String valueOf(double)>($d0);
+
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("lat", $r5);
+
+        $d0 = virtualinvoke $r19.<android.location.Location: double getLongitude()>();
+
+        $r5 = staticinvoke <java.lang.String: java.lang.String valueOf(double)>($d0);
+
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("lng", $r5);
+
+     label51:
+        $r5 = staticinvoke <com.mobclick.android.o: java.lang.String a()>();
+
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("cpu", $r5);
+
+     label52:
+        $r5 = <com.mobclick.android.MobclickAgent: java.lang.String j>;
+
+     label53:
+        $z0 = virtualinvoke $r5.<java.lang.String: boolean equals(java.lang.Object)>("");
+
+     label54:
+        if $z0 != 0 goto label56;
+
+        $r5 = <com.mobclick.android.MobclickAgent: java.lang.String j>;
+
+     label55:
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("gpu_vender", $r5);
+
+     label56:
+        $r5 = <com.mobclick.android.MobclickAgent: java.lang.String k>;
+
+     label57:
+        $z0 = virtualinvoke $r5.<java.lang.String: boolean equals(java.lang.Object)>("");
+
+     label58:
+        if $z0 != 0 goto label60;
+
+        $r5 = <com.mobclick.android.MobclickAgent: java.lang.String k>;
+
+     label59:
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("gpu_renderer", $r5);
+
+     label60:
+        $r20 = interfaceinvoke $r1.<android.content.SharedPreferences: android.content.SharedPreferences$Editor edit()>();
+
+        $r5 = virtualinvoke $r2.<org.json.JSONObject: java.lang.String toString()>();
+
+        interfaceinvoke $r20.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putString(java.lang.String,java.lang.String)>("header", $r5);
+
+        interfaceinvoke $r20.<android.content.SharedPreferences$Editor: boolean commit()>();
+
+        return $r2;
+
+     label61:
+        $r21 := @caughtexception;
+
+        $r31 = (android.content.pm.PackageManager$NameNotFoundException) $r21;
+
+     label62:
+        virtualinvoke $r31.<android.content.pm.PackageManager$NameNotFoundException: void printStackTrace()>();
+
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("app_version", "unknown");
+
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("version_code", "unknown");
+
+     label63:
+        goto label22;
+
+     label64:
+        $r22 := @caughtexception;
+
+        virtualinvoke $r22.<org.json.JSONException: void printStackTrace()>();
+
+        return null;
+
+     label65:
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("timezone", 8);
+
+     label66:
+        goto label39;
+
+     label67:
+        $r23 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("MobclickAgent", "Failed to get IMEI. Forget to add permission READ_PHONE_STATE? ", $r23);
+
+        $r32 = (java.lang.SecurityException) $r23;
+
+        virtualinvoke $r32.<java.lang.SecurityException: void printStackTrace()>();
+
+        return null;
+
+     label68:
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("timezone", 8);
+
+     label69:
+        goto label39;
+
+     label70:
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("country", "Unknown");
+
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("language", "Unknown");
+
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("timezone", 8);
+
+     label71:
+        goto label39;
+
+     label72:
+        $r24 := @caughtexception;
+
+     label73:
+        virtualinvoke $r24.<java.lang.Exception: void printStackTrace()>();
+
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("resolution", "Unknown");
+
+     label74:
+        goto label43;
+
+     label75:
+        $r25 := @caughtexception;
+
+     label76:
+        virtualinvoke $r25.<java.lang.Exception: void printStackTrace()>();
+
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("access", "Unknown");
+
+     label77:
+        goto label46;
+
+     label78:
+        $r26 := @caughtexception;
+
+     label79:
+        virtualinvoke $r26.<java.lang.Exception: void printStackTrace()>();
+
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("carrier", "Unknown");
+
+     label80:
+        goto label47;
+
+     label81:
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,double)>("lat", 0.0);
+
+        virtualinvoke $r2.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,double)>("lng", 0.0);
+
+     label82:
+        goto label51;
+
+        catch org.json.JSONException from label01 to label02 with label64;
+        catch org.json.JSONException from label03 to label05 with label64;
+        catch org.json.JSONException from label06 to label07 with label64;
+        catch org.json.JSONException from label08 to label09 with label64;
+        catch org.json.JSONException from label10 to label11 with label64;
+        catch org.json.JSONException from label12 to label13 with label64;
+        catch org.json.JSONException from label14 to label15 with label64;
+        catch org.json.JSONException from label16 to label17 with label64;
+        catch org.json.JSONException from label18 to label19 with label64;
+        catch java.lang.SecurityException from label01 to label02 with label67;
+        catch java.lang.SecurityException from label03 to label05 with label67;
+        catch java.lang.SecurityException from label06 to label07 with label67;
+        catch java.lang.SecurityException from label08 to label09 with label67;
+        catch java.lang.SecurityException from label10 to label11 with label67;
+        catch java.lang.SecurityException from label12 to label13 with label67;
+        catch java.lang.SecurityException from label14 to label15 with label67;
+        catch java.lang.SecurityException from label16 to label17 with label67;
+        catch java.lang.SecurityException from label18 to label19 with label67;
+        catch android.content.pm.PackageManager$NameNotFoundException from label19 to label20 with label61;
+        catch android.content.pm.PackageManager$NameNotFoundException from label21 to label22 with label61;
+        catch org.json.JSONException from label19 to label20 with label64;
+        catch org.json.JSONException from label21 to label22 with label64;
+        catch java.lang.SecurityException from label19 to label20 with label67;
+        catch java.lang.SecurityException from label21 to label22 with label67;
+        catch org.json.JSONException from label22 to label23 with label64;
+        catch org.json.JSONException from label24 to label25 with label64;
+        catch org.json.JSONException from label26 to label27 with label64;
+        catch org.json.JSONException from label28 to label29 with label64;
+        catch org.json.JSONException from label30 to label31 with label64;
+        catch org.json.JSONException from label32 to label33 with label64;
+        catch org.json.JSONException from label34 to label35 with label64;
+        catch org.json.JSONException from label36 to label37 with label64;
+        catch org.json.JSONException from label38 to label39 with label64;
+        catch java.lang.SecurityException from label22 to label23 with label67;
+        catch java.lang.SecurityException from label24 to label25 with label67;
+        catch java.lang.SecurityException from label26 to label27 with label67;
+        catch java.lang.SecurityException from label28 to label29 with label67;
+        catch java.lang.SecurityException from label30 to label31 with label67;
+        catch java.lang.SecurityException from label32 to label33 with label67;
+        catch java.lang.SecurityException from label34 to label35 with label67;
+        catch java.lang.SecurityException from label36 to label37 with label67;
+        catch java.lang.SecurityException from label38 to label39 with label67;
+        catch java.lang.Exception from label40 to label41 with label72;
+        catch java.lang.Exception from label42 to label43 with label72;
+        catch java.lang.Exception from label43 to label44 with label75;
+        catch java.lang.Exception from label45 to label46 with label75;
+        catch java.lang.Exception from label46 to label47 with label78;
+        catch org.json.JSONException from label48 to label49 with label64;
+        catch org.json.JSONException from label50 to label52 with label64;
+        catch org.json.JSONException from label53 to label54 with label64;
+        catch org.json.JSONException from label55 to label56 with label64;
+        catch org.json.JSONException from label57 to label58 with label64;
+        catch org.json.JSONException from label59 to label60 with label64;
+        catch java.lang.SecurityException from label48 to label49 with label67;
+        catch java.lang.SecurityException from label50 to label52 with label67;
+        catch java.lang.SecurityException from label53 to label54 with label67;
+        catch java.lang.SecurityException from label55 to label56 with label67;
+        catch java.lang.SecurityException from label57 to label58 with label67;
+        catch java.lang.SecurityException from label59 to label60 with label67;
+        catch org.json.JSONException from label62 to label63 with label64;
+        catch java.lang.SecurityException from label62 to label63 with label67;
+        catch org.json.JSONException from label65 to label66 with label64;
+        catch java.lang.SecurityException from label65 to label66 with label67;
+        catch org.json.JSONException from label68 to label69 with label64;
+        catch org.json.JSONException from label70 to label71 with label64;
+        catch org.json.JSONException from label73 to label74 with label64;
+        catch org.json.JSONException from label76 to label77 with label64;
+        catch org.json.JSONException from label79 to label80 with label64;
+        catch org.json.JSONException from label81 to label82 with label64;
+        catch java.lang.SecurityException from label68 to label69 with label67;
+        catch java.lang.SecurityException from label70 to label71 with label67;
+        catch java.lang.SecurityException from label73 to label74 with label67;
+        catch java.lang.SecurityException from label76 to label77 with label67;
+        catch java.lang.SecurityException from label79 to label80 with label67;
+        catch java.lang.SecurityException from label81 to label82 with label67;
+    }
+
+    public static void initFeedback(android.content.Context)
+    {
+        com.mobclick.android.MobclickAgent $r1;
+        android.content.Context $r0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        staticinvoke <com.mobclick.android.UmengFeedback: void a(android.content.Context)>($r0);
+
+        $r1 = <com.mobclick.android.MobclickAgent: com.mobclick.android.MobclickAgent a>;
+
+        staticinvoke <com.mobclick.android.UmengFeedback: void a(com.mobclick.android.e)>($r1);
+
+        return;
+    }
+
+    private static android.content.SharedPreferences j(android.content.Context)
+    {
+        android.content.Context $r0;
+        android.content.SharedPreferences $r3;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = virtualinvoke $r0.<android.content.Context: java.lang.String getPackageName()>();
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("mobclick_agent_header_");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = virtualinvoke $r0.<android.content.Context: android.content.SharedPreferences getSharedPreferences(java.lang.String,int)>($r1, 0);
+
+        return $r3;
+    }
+
+    private static android.content.SharedPreferences k(android.content.Context)
+    {
+        android.content.Context $r0;
+        android.content.SharedPreferences $r3;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = virtualinvoke $r0.<android.content.Context: java.lang.String getPackageName()>();
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("mobclick_agent_update_");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = virtualinvoke $r0.<android.content.Context: android.content.SharedPreferences getSharedPreferences(java.lang.String,int)>($r1, 0);
+
+        return $r3;
+    }
+
+    private static android.content.SharedPreferences l(android.content.Context)
+    {
+        android.content.Context $r0;
+        android.content.SharedPreferences $r3;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = virtualinvoke $r0.<android.content.Context: java.lang.String getPackageName()>();
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("mobclick_agent_state_");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = virtualinvoke $r0.<android.content.Context: android.content.SharedPreferences getSharedPreferences(java.lang.String,int)>($r1, 0);
+
+        return $r3;
+    }
+
+    private static java.lang.String m(android.content.Context)
+    {
+        android.content.Context $r0;
+        java.lang.StringBuilder $r1;
+        java.lang.String $r2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r2 = virtualinvoke $r0.<android.content.Context: java.lang.String getPackageName()>();
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>(java.lang.String)>("mobclick_agent_header_");
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r2;
+    }
+
+    private static java.lang.String n(android.content.Context)
+    {
+        android.content.Context $r0;
+        java.lang.StringBuilder $r1;
+        java.lang.String $r2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r2 = virtualinvoke $r0.<android.content.Context: java.lang.String getPackageName()>();
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>(java.lang.String)>("mobclick_agent_cached_");
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r2;
+    }
+
+    private static boolean o(android.content.Context)
+    {
+        android.net.ConnectivityManager $r3;
+        android.content.Context $r0;
+        android.net.NetworkInfo $r4;
+        java.lang.Object $r2;
+        android.net.NetworkInfo$State $r1, $r5;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r2 = virtualinvoke $r0.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("connectivity");
+
+        $r3 = (android.net.ConnectivityManager) $r2;
+
+        if $r3 != null goto label1;
+
+        return 0;
+
+     label1:
+        $r4 = virtualinvoke $r3.<android.net.ConnectivityManager: android.net.NetworkInfo getNetworkInfo(int)>(0);
+
+        $r5 = virtualinvoke $r4.<android.net.NetworkInfo: android.net.NetworkInfo$State getState()>();
+
+        $r1 = <android.net.NetworkInfo$State: android.net.NetworkInfo$State CONNECTED>;
+
+        if $r5 != $r1 goto label2;
+
+        return 1;
+
+     label2:
+        $r4 = virtualinvoke $r3.<android.net.ConnectivityManager: android.net.NetworkInfo getNetworkInfo(int)>(1);
+
+        $r1 = virtualinvoke $r4.<android.net.NetworkInfo: android.net.NetworkInfo$State getState()>();
+
+        $r5 = <android.net.NetworkInfo$State: android.net.NetworkInfo$State CONNECTED>;
+
+        if $r1 != $r5 goto label3;
+
+        return 1;
+
+     label3:
+        return 0;
+    }
+
+    public static void onError(android.content.Context)
+    {
+        android.content.Context $r0;
+        com.mobclick.android.k $r3;
+        int $i0;
+        java.lang.String $r1;
+        java.lang.Exception $r2;
+
+        $r0 := @parameter0: android.content.Context;
+
+     label01:
+        $r1 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String a(android.content.Context)>($r0);
+
+     label02:
+        if $r1 == null goto label05;
+
+     label03:
+        $i0 = virtualinvoke $r1.<java.lang.String: int length()>();
+
+     label04:
+        if $i0 != 0 goto label07;
+
+     label05:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "unexpected empty appkey");
+
+     label06:
+        return;
+
+     label07:
+        if $r0 != null goto label11;
+
+     label08:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "unexpected null context");
+
+     label09:
+        return;
+
+     label10:
+        $r2 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "Exception occurred in Mobclick.onError()");
+
+        virtualinvoke $r2.<java.lang.Exception: void printStackTrace()>();
+
+        return;
+
+     label11:
+        $r3 = new com.mobclick.android.k;
+
+     label12:
+        specialinvoke $r3.<com.mobclick.android.k: void <init>(android.content.Context,java.lang.String,int)>($r0, $r1, 2);
+
+        virtualinvoke $r3.<com.mobclick.android.k: void start()>();
+
+     label13:
+        return;
+
+        catch java.lang.Exception from label01 to label02 with label10;
+        catch java.lang.Exception from label03 to label04 with label10;
+        catch java.lang.Exception from label05 to label06 with label10;
+        catch java.lang.Exception from label08 to label09 with label10;
+        catch java.lang.Exception from label12 to label13 with label10;
+    }
+
+    public static void onEvent(android.content.Context, java.lang.String)
+    {
+        android.content.Context $r0;
+        java.lang.String $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        staticinvoke <com.mobclick.android.MobclickAgent: void onEvent(android.content.Context,java.lang.String,int)>($r0, $r1, 1);
+
+        return;
+    }
+
+    public static void onEvent(android.content.Context, java.lang.String, int)
+    {
+        int $i0;
+        android.content.Context $r0;
+        java.lang.String $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $i0 := @parameter2: int;
+
+        staticinvoke <com.mobclick.android.MobclickAgent: void onEvent(android.content.Context,java.lang.String,java.lang.String,int)>($r0, $r1, $r1, $i0);
+
+        return;
+    }
+
+    public static void onEvent(android.content.Context, java.lang.String, java.lang.String)
+    {
+        android.content.Context $r0;
+        java.lang.String $r1, $r2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 := @parameter2: java.lang.String;
+
+        staticinvoke <com.mobclick.android.MobclickAgent: void onEvent(android.content.Context,java.lang.String,java.lang.String,int)>($r0, $r1, $r2, 1);
+
+        return;
+    }
+
+    public static void onEvent(android.content.Context, java.lang.String, java.lang.String, int)
+    {
+        android.content.Context $r0;
+        java.lang.Exception $r4;
+        com.mobclick.android.k $r5;
+        int $i0, $i1;
+        java.lang.String $r1, $r2, $r3;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 := @parameter2: java.lang.String;
+
+        $i0 := @parameter3: int;
+
+     label01:
+        $r3 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String a(android.content.Context)>($r0);
+
+     label02:
+        if $r3 == null goto label05;
+
+     label03:
+        $i1 = virtualinvoke $r3.<java.lang.String: int length()>();
+
+     label04:
+        if $i1 != 0 goto label07;
+
+     label05:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "unexpected empty appkey");
+
+     label06:
+        return;
+
+     label07:
+        if $r0 != null goto label11;
+
+     label08:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "unexpected null context");
+
+     label09:
+        return;
+
+     label10:
+        $r4 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "Exception occurred in Mobclick.onEvent(). ");
+
+        virtualinvoke $r4.<java.lang.Exception: void printStackTrace()>();
+
+        return;
+
+     label11:
+        if $r1 == null goto label12;
+
+        if $r1 != "" goto label14;
+
+     label12:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "tag is null or empty");
+
+     label13:
+        return;
+
+     label14:
+        if $r2 == null goto label15;
+
+        if $r2 != "" goto label17;
+
+     label15:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "label is null or empty");
+
+     label16:
+        return;
+
+     label17:
+        if $i0 > 0 goto label20;
+
+     label18:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "Illegal value of acc");
+
+     label19:
+        return;
+
+     label20:
+        $r5 = new com.mobclick.android.k;
+
+     label21:
+        specialinvoke $r5.<com.mobclick.android.k: void <init>(android.content.Context,java.lang.String,java.lang.String,java.lang.String,int,int)>($r0, $r3, $r1, $r2, $i0, 3);
+
+        virtualinvoke $r5.<com.mobclick.android.k: void start()>();
+
+     label22:
+        return;
+
+        catch java.lang.Exception from label01 to label02 with label10;
+        catch java.lang.Exception from label03 to label04 with label10;
+        catch java.lang.Exception from label05 to label06 with label10;
+        catch java.lang.Exception from label08 to label09 with label10;
+        catch java.lang.Exception from label12 to label13 with label10;
+        catch java.lang.Exception from label15 to label16 with label10;
+        catch java.lang.Exception from label18 to label19 with label10;
+        catch java.lang.Exception from label21 to label22 with label10;
+    }
+
+    public static void onPause(android.content.Context)
+    {
+        android.content.Context $r0;
+        java.lang.Exception $r2;
+        com.mobclick.android.k $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        if $r0 != null goto label3;
+
+     label1:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "unexpected null context");
+
+     label2:
+        return;
+
+     label3:
+        $r1 = new com.mobclick.android.k;
+
+     label4:
+        specialinvoke $r1.<com.mobclick.android.k: void <init>(android.content.Context,int)>($r0, 0);
+
+        virtualinvoke $r1.<com.mobclick.android.k: void start()>();
+
+     label5:
+        return;
+
+     label6:
+        $r2 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "Exception occurred in Mobclick.onRause(). ");
+
+        virtualinvoke $r2.<java.lang.Exception: void printStackTrace()>();
+
+        return;
+
+        catch java.lang.Exception from label1 to label2 with label6;
+        catch java.lang.Exception from label4 to label5 with label6;
+    }
+
+    public static void onResume(android.content.Context)
+    {
+        android.content.Context $r0;
+        java.lang.String $r1, $r2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String a(android.content.Context)>($r0);
+
+        $r2 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String b(android.content.Context)>($r0);
+
+        staticinvoke <com.mobclick.android.MobclickAgent: void onResume(android.content.Context,java.lang.String,java.lang.String)>($r0, $r1, $r2);
+
+        return;
+    }
+
+    public static void onResume(android.content.Context, java.lang.String, java.lang.String)
+    {
+        android.content.Context $r0;
+        com.mobclick.android.k $r4;
+        int $i0;
+        java.lang.String $r1, $r2;
+        java.lang.Exception $r3;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 := @parameter2: java.lang.String;
+
+        if $r0 != null goto label03;
+
+     label01:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "unexpected null context");
+
+     label02:
+        return;
+
+     label03:
+        if $r1 == null goto label06;
+
+     label04:
+        $i0 = virtualinvoke $r1.<java.lang.String: int length()>();
+
+     label05:
+        if $i0 != 0 goto label09;
+
+     label06:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "unexpected empty appkey");
+
+     label07:
+        return;
+
+     label08:
+        $r3 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "Exception occurred in Mobclick.onResume(). ");
+
+        virtualinvoke $r3.<java.lang.Exception: void printStackTrace()>();
+
+        return;
+
+     label09:
+        $r4 = new com.mobclick.android.k;
+
+     label10:
+        specialinvoke $r4.<com.mobclick.android.k: void <init>(android.content.Context,java.lang.String,java.lang.String,int)>($r0, $r1, $r2, 1);
+
+        virtualinvoke $r4.<com.mobclick.android.k: void start()>();
+
+     label11:
+        return;
+
+        catch java.lang.Exception from label01 to label02 with label08;
+        catch java.lang.Exception from label04 to label05 with label08;
+        catch java.lang.Exception from label06 to label07 with label08;
+        catch java.lang.Exception from label10 to label11 with label08;
+    }
+
+    public static void openActivityDurationTrack(boolean)
+    {
+        boolean $z0;
+
+        $z0 := @parameter0: boolean;
+
+        <com.mobclick.android.MobclickAgent: boolean l> = $z0;
+
+        return;
+    }
+
+    public static void openFeedbackActivity(android.content.Context)
+    {
+        com.mobclick.android.MobclickAgent $r1;
+        android.content.Context $r0;
+        android.content.Intent $r2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        staticinvoke <com.mobclick.android.UmengFeedback: void a(android.content.Context)>($r0);
+
+        $r1 = <com.mobclick.android.MobclickAgent: com.mobclick.android.MobclickAgent a>;
+
+        staticinvoke <com.mobclick.android.UmengFeedback: void a(com.mobclick.android.e)>($r1);
+
+        $r2 = new android.content.Intent;
+
+        specialinvoke $r2.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>($r0, class "Lcom/mobclick/android/UmengFeedback;");
+
+        virtualinvoke $r0.<android.content.Context: void startActivity(android.content.Intent)>($r2);
+
+        return;
+    }
+
+    private static java.lang.String[] p(android.content.Context)
+    {
+        android.net.ConnectivityManager $r5;
+        android.content.Context $r0;
+        android.content.pm.PackageManager $r2;
+        android.net.NetworkInfo $r6;
+        java.lang.String[] $r1;
+        android.net.NetworkInfo$State $r7, $r8;
+        int $i0;
+        java.lang.Object $r4;
+        java.lang.String $r3;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = newarray (java.lang.String)[2];
+
+        $r1[0] = "Unknown";
+
+        $r1[1] = "Unknown";
+
+        $r2 = virtualinvoke $r0.<android.content.Context: android.content.pm.PackageManager getPackageManager()>();
+
+        $r3 = virtualinvoke $r0.<android.content.Context: java.lang.String getPackageName()>();
+
+        $i0 = virtualinvoke $r2.<android.content.pm.PackageManager: int checkPermission(java.lang.String,java.lang.String)>("android.permission.ACCESS_NETWORK_STATE", $r3);
+
+        if $i0 == 0 goto label1;
+
+        $r1[0] = "Unknown";
+
+        return $r1;
+
+     label1:
+        $r4 = virtualinvoke $r0.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("connectivity");
+
+        $r5 = (android.net.ConnectivityManager) $r4;
+
+        if $r5 != null goto label2;
+
+        $r1[0] = "Unknown";
+
+        return $r1;
+
+     label2:
+        $r6 = virtualinvoke $r5.<android.net.ConnectivityManager: android.net.NetworkInfo getNetworkInfo(int)>(1);
+
+        $r7 = virtualinvoke $r6.<android.net.NetworkInfo: android.net.NetworkInfo$State getState()>();
+
+        $r8 = <android.net.NetworkInfo$State: android.net.NetworkInfo$State CONNECTED>;
+
+        if $r7 != $r8 goto label3;
+
+        $r1[0] = "Wi-Fi";
+
+        return $r1;
+
+     label3:
+        $r6 = virtualinvoke $r5.<android.net.ConnectivityManager: android.net.NetworkInfo getNetworkInfo(int)>(0);
+
+        $r7 = virtualinvoke $r6.<android.net.NetworkInfo: android.net.NetworkInfo$State getState()>();
+
+        $r8 = <android.net.NetworkInfo$State: android.net.NetworkInfo$State CONNECTED>;
+
+        if $r7 != $r8 goto label4;
+
+        $r1[0] = "2G/3G";
+
+        $r3 = virtualinvoke $r6.<android.net.NetworkInfo: java.lang.String getSubtypeName()>();
+
+        $r1[1] = $r3;
+
+     label4:
+        return $r1;
+    }
+
+    private static android.location.Location q(android.content.Context)
+    {
+        android.content.Context $r0;
+        com.mobclick.android.f $r2;
+        android.location.Location $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r2 = new com.mobclick.android.f;
+
+        specialinvoke $r2.<com.mobclick.android.f: void <init>(android.content.Context)>($r0);
+
+        $r1 = virtualinvoke $r2.<com.mobclick.android.f: android.location.Location a()>();
+
+        return $r1;
+    }
+
+    private static android.content.SharedPreferences r(android.content.Context)
+    {
+        android.content.Context $r0;
+        android.content.SharedPreferences $r3;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = virtualinvoke $r0.<android.content.Context: java.lang.String getPackageName()>();
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("mobclick_agent_online_setting_");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = virtualinvoke $r0.<android.content.Context: android.content.SharedPreferences getSharedPreferences(java.lang.String,int)>($r1, 0);
+
+        return $r3;
+    }
+
+    private static int s(android.content.Context)
+    {
+        int $i0;
+        android.content.Context $r0;
+        android.content.SharedPreferences $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = staticinvoke <com.mobclick.android.MobclickAgent: android.content.SharedPreferences r(android.content.Context)>($r0);
+
+        $i0 = <com.mobclick.android.MobclickAgent: int g>;
+
+        $i0 = interfaceinvoke $r1.<android.content.SharedPreferences: int getInt(java.lang.String,int)>("umeng_report_policy", $i0);
+
+        return $i0;
+    }
+
+    public static void setDefaultReportPolicy(android.content.Context, int)
+    {
+        int $i0;
+        android.content.Context $r0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $i0 := @parameter1: int;
+
+        if $i0 < 0 goto label1;
+
+        if $i0 <= 5 goto label2;
+
+     label1:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "Illegal value of report policy");
+
+        return;
+
+     label2:
+        <com.mobclick.android.MobclickAgent: int g> = $i0;
+
+        staticinvoke <com.mobclick.android.MobclickAgent: void a(android.content.Context,int)>($r0, $i0);
+
+        return;
+    }
+
+    public static void setFeedbackListener(com.mobclick.android.UmengFeedbackListener)
+    {
+        com.mobclick.android.UmengFeedbackListener $r0;
+
+        $r0 := @parameter0: com.mobclick.android.UmengFeedbackListener;
+
+        <com.mobclick.android.MobclickAgent: com.mobclick.android.UmengFeedbackListener n> = $r0;
+
+        return;
+    }
+
+    public static void setOpenGLContext(javax.microedition.khronos.opengles.GL10)
+    {
+        javax.microedition.khronos.opengles.GL10 $r0;
+        int $i0;
+        java.lang.String[] $r1;
+        java.lang.String $r2;
+
+        $r0 := @parameter0: javax.microedition.khronos.opengles.GL10;
+
+        if $r0 == null goto label1;
+
+        $r1 = staticinvoke <com.mobclick.android.o: java.lang.String[] a(javax.microedition.khronos.opengles.GL10)>($r0);
+
+        $i0 = lengthof $r1;
+
+        if $i0 != 2 goto label1;
+
+        $r2 = $r1[0];
+
+        <com.mobclick.android.MobclickAgent: java.lang.String j> = $r2;
+
+        $r2 = $r1[1];
+
+        <com.mobclick.android.MobclickAgent: java.lang.String k> = $r2;
+
+     label1:
+        return;
+    }
+
+    public static void setUpdateListener(com.mobclick.android.UmengUpdateListener)
+    {
+        com.mobclick.android.UmengUpdateListener $r0;
+
+        $r0 := @parameter0: com.mobclick.android.UmengUpdateListener;
+
+        <com.mobclick.android.MobclickAgent: com.mobclick.android.UmengUpdateListener m> = $r0;
+
+        return;
+    }
+
+    public static void setUpdateOnlyWifi(boolean)
+    {
+        boolean $z0;
+
+        $z0 := @parameter0: boolean;
+
+        <com.mobclick.android.MobclickAgent: boolean o> = 0;
+
+        return;
+    }
+
+    public static void showUpdateDialog(android.content.Context)
+    {
+        android.app.AlertDialog $r3;
+        android.content.Context $r0;
+        org.json.JSONObject $r1;
+        java.io.File $r2;
+        boolean $z0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = <com.mobclick.android.MobclickAgent: org.json.JSONObject p>;
+
+        if $r1 == null goto label2;
+
+        $r1 = <com.mobclick.android.MobclickAgent: org.json.JSONObject p>;
+
+        $r2 = staticinvoke <com.mobclick.android.MobclickAgent: java.io.File g(android.content.Context,org.json.JSONObject)>($r0, $r1);
+
+        if $r2 == null goto label1;
+
+        $z0 = <com.mobclick.android.MobclickAgent: boolean enableCacheInUpdate>;
+
+        if $z0 == 0 goto label1;
+
+        $r3 = staticinvoke <com.mobclick.android.MobclickAgent: android.app.AlertDialog b(android.content.Context,java.io.File)>($r0, $r2);
+
+        virtualinvoke $r3.<android.app.AlertDialog: void show()>();
+
+        return;
+
+     label1:
+        $r1 = <com.mobclick.android.MobclickAgent: org.json.JSONObject p>;
+
+        $r3 = staticinvoke <com.mobclick.android.MobclickAgent: android.app.AlertDialog d(android.content.Context,org.json.JSONObject)>($r0, $r1);
+
+        virtualinvoke $r3.<android.app.AlertDialog: void show()>();
+
+     label2:
+        return;
+    }
+
+    private static java.lang.String t(android.content.Context)
+    {
+        android.content.Context $r0;
+        java.lang.String $r2;
+        android.content.SharedPreferences $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = staticinvoke <com.mobclick.android.MobclickAgent: android.content.SharedPreferences r(android.content.Context)>($r0);
+
+        $r2 = interfaceinvoke $r1.<android.content.SharedPreferences: java.lang.String getString(java.lang.String,java.lang.String)>("umeng_last_config_time", "");
+
+        return $r2;
+    }
+
+    public static void update(android.content.Context)
+    {
+        com.mobclick.android.MobclickAgent $r6;
+        android.content.Context $r0;
+        com.mobclick.android.UmengUpdateListener $r3;
+        java.lang.String[] $r1;
+        java.lang.Exception $r4;
+        int $i0;
+        java.lang.StringBuilder $r5;
+        java.lang.String $r2;
+        boolean $z0;
+
+        $r0 := @parameter0: android.content.Context;
+
+     label01:
+        $z0 = staticinvoke <com.mobclick.android.a: boolean b()>();
+
+     label02:
+        if $z0 == 0 goto label05;
+
+     label03:
+        staticinvoke <com.mobclick.android.o: void a(android.content.Context)>($r0);
+
+     label04:
+        return;
+
+     label05:
+        $z0 = <com.mobclick.android.MobclickAgent: boolean o>;
+
+        if $z0 == 0 goto label11;
+
+     label06:
+        $r1 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String[] p(android.content.Context)>($r0);
+
+        $r2 = $r1[0];
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>("Wi-Fi");
+
+     label07:
+        if $z0 != 0 goto label11;
+
+        $r3 = <com.mobclick.android.MobclickAgent: com.mobclick.android.UmengUpdateListener m>;
+
+        $i0 = <com.mobclick.android.UpdateStatus: int NoneWifi>;
+
+     label08:
+        interfaceinvoke $r3.<com.mobclick.android.UmengUpdateListener: void onUpdateReturned(int)>($i0);
+
+     label09:
+        return;
+
+     label10:
+        $r4 := @caughtexception;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>(java.lang.String)>("Exception occurred in Mobclick.update(). ");
+
+        $r2 = virtualinvoke $r4.<java.lang.Exception: java.lang.String getMessage()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r2 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", $r2);
+
+        virtualinvoke $r4.<java.lang.Exception: void printStackTrace()>();
+
+        return;
+
+     label11:
+        if $r0 != null goto label14;
+
+        $r3 = <com.mobclick.android.MobclickAgent: com.mobclick.android.UmengUpdateListener m>;
+
+        $i0 = <com.mobclick.android.UpdateStatus: int No>;
+
+     label12:
+        interfaceinvoke $r3.<com.mobclick.android.UmengUpdateListener: void onUpdateReturned(int)>($i0);
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "unexpected null context");
+
+     label13:
+        return;
+
+     label14:
+        $r6 = <com.mobclick.android.MobclickAgent: com.mobclick.android.MobclickAgent a>;
+
+     label15:
+        $r2 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String a(android.content.Context)>($r0);
+
+        specialinvoke $r6.<com.mobclick.android.MobclickAgent: void a(android.content.Context,java.lang.String)>($r0, $r2);
+
+     label16:
+        return;
+
+        catch java.lang.Exception from label01 to label02 with label10;
+        catch java.lang.Exception from label03 to label04 with label10;
+        catch java.lang.Exception from label06 to label07 with label10;
+        catch java.lang.Exception from label08 to label09 with label10;
+        catch java.lang.Exception from label12 to label13 with label10;
+        catch java.lang.Exception from label15 to label16 with label10;
+    }
+
+    public static void updateOnlineConfig(android.content.Context)
+    {
+        com.mobclick.android.MobclickAgent $r2;
+        android.content.Context $r0;
+        java.lang.String $r1;
+        java.lang.Exception $r3;
+
+        $r0 := @parameter0: android.content.Context;
+
+        if $r0 != null goto label3;
+
+     label1:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "unexpected null context");
+
+     label2:
+        return;
+
+     label3:
+        $r2 = <com.mobclick.android.MobclickAgent: com.mobclick.android.MobclickAgent a>;
+
+     label4:
+        $r1 = staticinvoke <com.mobclick.android.MobclickAgent: java.lang.String a(android.content.Context)>($r0);
+
+        specialinvoke $r2.<com.mobclick.android.MobclickAgent: void f(android.content.Context,java.lang.String)>($r0, $r1);
+
+     label5:
+        return;
+
+     label6:
+        $r3 := @caughtexception;
+
+        virtualinvoke $r3.<java.lang.Exception: void printStackTrace()>();
+
+        return;
+
+        catch java.lang.Exception from label1 to label2 with label6;
+        catch java.lang.Exception from label4 to label5 with label6;
+    }
+
+    public void onFeedbackReturned(org.json.JSONObject)
+    {
+        com.mobclick.android.MobclickAgent r0, $r3;
+        android.content.Context $r2;
+        org.json.JSONObject $r1;
+        java.lang.Exception $r4;
+
+        r0 := @this: com.mobclick.android.MobclickAgent;
+
+        $r1 := @parameter0: org.json.JSONObject;
+
+     label1:
+        $r2 = r0.<com.mobclick.android.MobclickAgent: android.content.Context h>;
+
+     label2:
+        if $r2 != null goto label3;
+
+        return;
+
+     label3:
+        $r3 = <com.mobclick.android.MobclickAgent: com.mobclick.android.MobclickAgent a>;
+
+     label4:
+        $r2 = r0.<com.mobclick.android.MobclickAgent: android.content.Context h>;
+
+        specialinvoke $r3.<com.mobclick.android.MobclickAgent: void a(android.content.Context,org.json.JSONObject)>($r2, $r1);
+
+     label5:
+        return;
+
+     label6:
+        $r4 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MobclickAgent", "Exception occurred while sending feedback.");
+
+        virtualinvoke $r4.<java.lang.Exception: void printStackTrace()>();
+
+        return;
+
+        catch java.lang.Exception from label1 to label2 with label6;
+        catch java.lang.Exception from label4 to label5 with label6;
+    }
+}

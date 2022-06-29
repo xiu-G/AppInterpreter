@@ -1,0 +1,285 @@
+public abstract class org.mozilla.universalchardet.prober.CharsetProber extends java.lang.Object
+{
+    public static final int ASCII_A;
+    public static final int ASCII_A_CAPITAL;
+    public static final int ASCII_GT;
+    public static final int ASCII_LT;
+    public static final int ASCII_SP;
+    public static final int ASCII_Z;
+    public static final int ASCII_Z_CAPITAL;
+    public static final float SHORTCUT_THRESHOLD;
+
+    public void <init>()
+    {
+        org.mozilla.universalchardet.prober.CharsetProber r0;
+
+        r0 := @this: org.mozilla.universalchardet.prober.CharsetProber;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    private boolean isAscii(byte)
+    {
+        org.mozilla.universalchardet.prober.CharsetProber r0;
+        short $s1;
+        byte $b0;
+
+        r0 := @this: org.mozilla.universalchardet.prober.CharsetProber;
+
+        $b0 := @parameter0: byte;
+
+        $s1 = (short) $b0;
+
+        $s1 = $s1 & 128;
+
+        if $s1 != 0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    private boolean isAsciiSymbol(byte)
+    {
+        org.mozilla.universalchardet.prober.CharsetProber r0;
+        short $s1;
+        byte $b0;
+        int $i2;
+
+        r0 := @this: org.mozilla.universalchardet.prober.CharsetProber;
+
+        $b0 := @parameter0: byte;
+
+        $s1 = (short) $b0;
+
+        $s1 = $s1 & 255;
+
+        $i2 = (int) $s1;
+
+        if $i2 < 65 goto label2;
+
+        $i2 = (int) $s1;
+
+        if $i2 <= 90 goto label1;
+
+        $i2 = (int) $s1;
+
+        if $i2 < 97 goto label2;
+
+     label1:
+        $i2 = (int) $s1;
+
+        if $i2 <= 122 goto label3;
+
+     label2:
+        return 1;
+
+     label3:
+        return 0;
+    }
+
+    public java.nio.ByteBuffer filterWithEnglishLetters(byte[], int, int)
+    {
+        org.mozilla.universalchardet.prober.CharsetProber r0;
+        byte[] $r1;
+        java.nio.ByteBuffer $r2;
+        byte $b3;
+        int $i0, $i1, $i2, $i4;
+        boolean $z0, $z1;
+
+        r0 := @this: org.mozilla.universalchardet.prober.CharsetProber;
+
+        $r1 := @parameter0: byte[];
+
+        $i2 := @parameter1: int;
+
+        $i0 := @parameter2: int;
+
+        $r2 = staticinvoke <java.nio.ByteBuffer: java.nio.ByteBuffer allocate(int)>($i0);
+
+        $i1 = 0 + $i0;
+
+        $i0 = 0;
+
+        $z0 = 0;
+
+     label1:
+        if $i2 >= $i1 goto label6;
+
+        $b3 = $r1[$i2];
+
+        $i4 = (int) $b3;
+
+        if $i4 != 62 goto label4;
+
+        $z0 = 0;
+
+     label2:
+        $z1 = specialinvoke r0.<org.mozilla.universalchardet.prober.CharsetProber: boolean isAscii(byte)>($b3);
+
+        if $z1 == 0 goto label3;
+
+        $z1 = specialinvoke r0.<org.mozilla.universalchardet.prober.CharsetProber: boolean isAsciiSymbol(byte)>($b3);
+
+        if $z1 == 0 goto label3;
+
+        if $i2 <= $i0 goto label5;
+
+        if $z0 != 0 goto label5;
+
+        $i4 = $i2 - $i0;
+
+        virtualinvoke $r2.<java.nio.ByteBuffer: java.nio.ByteBuffer put(byte[],int,int)>($r1, $i0, $i4);
+
+        virtualinvoke $r2.<java.nio.ByteBuffer: java.nio.ByteBuffer put(byte)>(32);
+
+        $i0 = $i2 + 1;
+
+     label3:
+        $i2 = $i2 + 1;
+
+        goto label1;
+
+     label4:
+        $i4 = (int) $b3;
+
+        if $i4 != 60 goto label2;
+
+        $z0 = 1;
+
+        goto label2;
+
+     label5:
+        $i0 = $i2 + 1;
+
+        goto label3;
+
+     label6:
+        if $z0 != 0 goto label7;
+
+        if $i2 <= $i0 goto label7;
+
+        $i2 = $i2 - $i0;
+
+        virtualinvoke $r2.<java.nio.ByteBuffer: java.nio.ByteBuffer put(byte[],int,int)>($r1, $i0, $i2);
+
+     label7:
+        return $r2;
+    }
+
+    public java.nio.ByteBuffer filterWithoutEnglishLetters(byte[], int, int)
+    {
+        org.mozilla.universalchardet.prober.CharsetProber r0;
+        byte[] $r1;
+        java.nio.ByteBuffer $r2;
+        byte $b3;
+        int $i0, $i1, $i2, $i4;
+        boolean $z0, $z1;
+
+        r0 := @this: org.mozilla.universalchardet.prober.CharsetProber;
+
+        $r1 := @parameter0: byte[];
+
+        $i2 := @parameter1: int;
+
+        $i0 := @parameter2: int;
+
+        $r2 = staticinvoke <java.nio.ByteBuffer: java.nio.ByteBuffer allocate(int)>($i0);
+
+        $i1 = 0 + $i0;
+
+        $i0 = 0;
+
+        $z0 = 0;
+
+     label1:
+        if $i2 >= $i1 goto label5;
+
+        $b3 = $r1[$i2];
+
+        $z1 = specialinvoke r0.<org.mozilla.universalchardet.prober.CharsetProber: boolean isAscii(byte)>($b3);
+
+        if $z1 != 0 goto label3;
+
+        $z0 = 1;
+
+     label2:
+        $i2 = $i2 + 1;
+
+        goto label1;
+
+     label3:
+        $z1 = specialinvoke r0.<org.mozilla.universalchardet.prober.CharsetProber: boolean isAsciiSymbol(byte)>($b3);
+
+        if $z1 == 0 goto label2;
+
+        if $z0 == 0 goto label4;
+
+        if $i2 <= $i0 goto label4;
+
+        $i4 = $i2 - $i0;
+
+        virtualinvoke $r2.<java.nio.ByteBuffer: java.nio.ByteBuffer put(byte[],int,int)>($r1, $i0, $i4);
+
+        virtualinvoke $r2.<java.nio.ByteBuffer: java.nio.ByteBuffer put(byte)>(32);
+
+        $i0 = $i2 + 1;
+
+        $z0 = 0;
+
+        goto label2;
+
+     label4:
+        $i0 = $i2 + 1;
+
+        goto label2;
+
+     label5:
+        if $z0 == 0 goto label6;
+
+        if $i2 <= $i0 goto label6;
+
+        $i2 = $i2 - $i0;
+
+        virtualinvoke $r2.<java.nio.ByteBuffer: java.nio.ByteBuffer put(byte[],int,int)>($r1, $i0, $i2);
+
+     label6:
+        return $r2;
+    }
+
+    public abstract java.lang.String getCharSetName();
+
+    public abstract float getConfidence();
+
+    public abstract org.mozilla.universalchardet.prober.CharsetProber$ProbingState getState();
+
+    public abstract org.mozilla.universalchardet.prober.CharsetProber$ProbingState handleData(byte[], int, int);
+
+    public abstract void reset();
+
+    public abstract void setOption();
+
+    public static void <clinit>()
+    {
+        <org.mozilla.universalchardet.prober.CharsetProber: float SHORTCUT_THRESHOLD> = 0.95F;
+
+        <org.mozilla.universalchardet.prober.CharsetProber: int ASCII_Z_CAPITAL> = 90;
+
+        <org.mozilla.universalchardet.prober.CharsetProber: int ASCII_Z> = 122;
+
+        <org.mozilla.universalchardet.prober.CharsetProber: int ASCII_SP> = 32;
+
+        <org.mozilla.universalchardet.prober.CharsetProber: int ASCII_LT> = 60;
+
+        <org.mozilla.universalchardet.prober.CharsetProber: int ASCII_GT> = 62;
+
+        <org.mozilla.universalchardet.prober.CharsetProber: int ASCII_A_CAPITAL> = 65;
+
+        <org.mozilla.universalchardet.prober.CharsetProber: int ASCII_A> = 97;
+
+        return;
+    }
+}

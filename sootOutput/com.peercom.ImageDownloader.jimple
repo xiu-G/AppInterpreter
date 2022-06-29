@@ -1,0 +1,157 @@
+public class com.peercom.ImageDownloader extends java.lang.Object
+{
+    public static final int IMGAE_CACHE_LIMIT_SIZE;
+    public static java.util.HashMap mImageCache;
+
+    static void <clinit>()
+    {
+        java.util.HashMap $r0;
+
+        <com.peercom.ImageDownloader: int IMGAE_CACHE_LIMIT_SIZE> = 30;
+
+        $r0 = new java.util.HashMap;
+
+        specialinvoke $r0.<java.util.HashMap: void <init>()>();
+
+        <com.peercom.ImageDownloader: java.util.HashMap mImageCache> = $r0;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        com.peercom.ImageDownloader r0;
+
+        r0 := @this: com.peercom.ImageDownloader;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    private static boolean cancelPotentialDownload(java.lang.String, android.widget.ImageView)
+    {
+        com.peercom.ImageDownloaderTask $r3;
+        android.widget.ImageView $r1;
+        java.lang.String $r0, r2;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: android.widget.ImageView;
+
+        $r3 = staticinvoke <com.peercom.ImageDownloader: com.peercom.ImageDownloaderTask getBitmapDownloaderTask(android.widget.ImageView)>($r1);
+
+        if $r3 == null goto label2;
+
+        r2 = $r3.<com.peercom.ImageDownloaderTask: java.lang.String url>;
+
+        if r2 == null goto label1;
+
+        $z0 = virtualinvoke r2.<java.lang.String: boolean equals(java.lang.Object)>($r0);
+
+        if $z0 != 0 goto label3;
+
+     label1:
+        virtualinvoke $r3.<com.peercom.ImageDownloaderTask: boolean cancel(boolean)>(1);
+
+     label2:
+        return 1;
+
+     label3:
+        return 0;
+    }
+
+    public static void download(java.lang.String, android.widget.ImageView)
+    {
+        com.peercom.ImageDownloader$DownloadedDrawable r2;
+        com.peercom.ImageDownloaderTask r3;
+        android.widget.ImageView $r1;
+        java.util.HashMap $r4;
+        java.lang.String[] $r7;
+        android.graphics.Bitmap r6;
+        int $i0;
+        java.lang.Object $r5;
+        java.lang.String $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: android.widget.ImageView;
+
+        $r4 = <com.peercom.ImageDownloader: java.util.HashMap mImageCache>;
+
+        $r5 = virtualinvoke $r4.<java.util.HashMap: java.lang.Object get(java.lang.Object)>($r0);
+
+        r6 = (android.graphics.Bitmap) $r5;
+
+        if r6 == null goto label1;
+
+        virtualinvoke $r1.<android.widget.ImageView: void setImageBitmap(android.graphics.Bitmap)>(r6);
+
+        return;
+
+     label1:
+        $z0 = staticinvoke <com.peercom.ImageDownloader: boolean cancelPotentialDownload(java.lang.String,android.widget.ImageView)>($r0, $r1);
+
+        if $z0 == 0 goto label3;
+
+        $r4 = <com.peercom.ImageDownloader: java.util.HashMap mImageCache>;
+
+        $i0 = virtualinvoke $r4.<java.util.HashMap: int size()>();
+
+        if $i0 <= 30 goto label2;
+
+        $r4 = <com.peercom.ImageDownloader: java.util.HashMap mImageCache>;
+
+        virtualinvoke $r4.<java.util.HashMap: void clear()>();
+
+     label2:
+        r3 = new com.peercom.ImageDownloaderTask;
+
+        specialinvoke r3.<com.peercom.ImageDownloaderTask: void <init>(java.lang.String,android.widget.ImageView)>($r0, $r1);
+
+        r2 = new com.peercom.ImageDownloader$DownloadedDrawable;
+
+        specialinvoke r2.<com.peercom.ImageDownloader$DownloadedDrawable: void <init>(com.peercom.ImageDownloaderTask)>(r3);
+
+        virtualinvoke $r1.<android.widget.ImageView: void setImageDrawable(android.graphics.drawable.Drawable)>(r2);
+
+        $r7 = newarray (java.lang.String)[1];
+
+        $r7[0] = $r0;
+
+        virtualinvoke r3.<com.peercom.ImageDownloaderTask: android.os.AsyncTask execute(java.lang.Object[])>($r7);
+
+     label3:
+        return;
+    }
+
+    private static com.peercom.ImageDownloaderTask getBitmapDownloaderTask(android.widget.ImageView)
+    {
+        com.peercom.ImageDownloader$DownloadedDrawable $r2;
+        com.peercom.ImageDownloaderTask $r3;
+        android.widget.ImageView $r0;
+        android.graphics.drawable.Drawable $r1;
+        boolean $z0;
+
+        $r0 := @parameter0: android.widget.ImageView;
+
+        if $r0 == null goto label1;
+
+        $r1 = virtualinvoke $r0.<android.widget.ImageView: android.graphics.drawable.Drawable getDrawable()>();
+
+        $z0 = $r1 instanceof com.peercom.ImageDownloader$DownloadedDrawable;
+
+        if $z0 == 0 goto label1;
+
+        $r2 = (com.peercom.ImageDownloader$DownloadedDrawable) $r1;
+
+        $r3 = virtualinvoke $r2.<com.peercom.ImageDownloader$DownloadedDrawable: com.peercom.ImageDownloaderTask getBitmapDownloaderTask()>();
+
+        return $r3;
+
+     label1:
+        return null;
+    }
+}

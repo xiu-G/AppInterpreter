@@ -1,0 +1,519 @@
+public class cn.trinea.android.common.service.HttpCache extends java.lang.Object
+{
+    private java.util.Map cache;
+    private android.content.Context context;
+    private cn.trinea.android.common.dao.HttpCacheDao httpCacheDao;
+    private int type;
+
+    public void <init>(android.content.Context)
+    {
+        android.content.Context $r1;
+        java.util.concurrent.ConcurrentHashMap $r4;
+        int $i0;
+        cn.trinea.android.common.service.HttpCache r0;
+        cn.trinea.android.common.dao.impl.HttpCacheDaoImpl $r5;
+        java.lang.IllegalArgumentException $r3;
+        cn.trinea.android.common.util.SqliteUtils $r2;
+
+        r0 := @this: cn.trinea.android.common.service.HttpCache;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        $i0 = -1;
+
+        r0.<cn.trinea.android.common.service.HttpCache: int type> = $i0;
+
+        if $r1 != null goto label1;
+
+        $r3 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r3.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("The context can not be null.");
+
+        throw $r3;
+
+     label1:
+        r0.<cn.trinea.android.common.service.HttpCache: android.content.Context context> = $r1;
+
+        $r4 = new java.util.concurrent.ConcurrentHashMap;
+
+        specialinvoke $r4.<java.util.concurrent.ConcurrentHashMap: void <init>()>();
+
+        r0.<cn.trinea.android.common.service.HttpCache: java.util.Map cache> = $r4;
+
+        $r5 = new cn.trinea.android.common.dao.impl.HttpCacheDaoImpl;
+
+        $r2 = staticinvoke <cn.trinea.android.common.util.SqliteUtils: cn.trinea.android.common.util.SqliteUtils getInstance(android.content.Context)>($r1);
+
+        specialinvoke $r5.<cn.trinea.android.common.dao.impl.HttpCacheDaoImpl: void <init>(cn.trinea.android.common.util.SqliteUtils)>($r2);
+
+        r0.<cn.trinea.android.common.service.HttpCache: cn.trinea.android.common.dao.HttpCacheDao httpCacheDao> = $r5;
+
+        return;
+    }
+
+    private void <init>(android.content.Context, int)
+    {
+        int $i0;
+        cn.trinea.android.common.service.HttpCache r0;
+        android.content.Context $r1;
+
+        r0 := @this: cn.trinea.android.common.service.HttpCache;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $i0 := @parameter1: int;
+
+        specialinvoke r0.<cn.trinea.android.common.service.HttpCache: void <init>(android.content.Context)>($r1);
+
+        r0.<cn.trinea.android.common.service.HttpCache: int type> = $i0;
+
+        specialinvoke r0.<cn.trinea.android.common.service.HttpCache: void initData(int)>($i0);
+
+        return;
+    }
+
+    private cn.trinea.android.common.entity.HttpResponse getFromCache(java.lang.String)
+    {
+        cn.trinea.android.common.entity.HttpResponse $r4;
+        java.util.Map $r2;
+        cn.trinea.android.common.service.HttpCache r0;
+        java.lang.Object $r3;
+        cn.trinea.android.common.dao.HttpCacheDao $r5;
+        java.lang.String $r1;
+        boolean $z0;
+
+        r0 := @this: cn.trinea.android.common.service.HttpCache;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $z0 = staticinvoke <cn.trinea.android.common.util.StringUtils: boolean isEmpty(java.lang.String)>($r1);
+
+        if $z0 == 0 goto label1;
+
+        return null;
+
+     label1:
+        $r2 = r0.<cn.trinea.android.common.service.HttpCache: java.util.Map cache>;
+
+        $r3 = interfaceinvoke $r2.<java.util.Map: java.lang.Object get(java.lang.Object)>($r1);
+
+        $r4 = (cn.trinea.android.common.entity.HttpResponse) $r3;
+
+        if $r4 != null goto label2;
+
+        $r5 = r0.<cn.trinea.android.common.service.HttpCache: cn.trinea.android.common.dao.HttpCacheDao httpCacheDao>;
+
+        $r4 = interfaceinvoke $r5.<cn.trinea.android.common.dao.HttpCacheDao: cn.trinea.android.common.entity.HttpResponse getHttpResponse(java.lang.String)>($r1);
+
+     label2:
+        if $r4 == null goto label3;
+
+        $z0 = virtualinvoke $r4.<cn.trinea.android.common.entity.HttpResponse: boolean isExpired()>();
+
+        if $z0 == 0 goto label4;
+
+     label3:
+        return null;
+
+     label4:
+        $r4 = virtualinvoke $r4.<cn.trinea.android.common.entity.HttpResponse: cn.trinea.android.common.entity.HttpResponse setInCache(boolean)>(1);
+
+        return $r4;
+    }
+
+    private int getType()
+    {
+        int i0;
+        cn.trinea.android.common.service.HttpCache r0;
+
+        r0 := @this: cn.trinea.android.common.service.HttpCache;
+
+        i0 = r0.<cn.trinea.android.common.service.HttpCache: int type>;
+
+        return i0;
+    }
+
+    private void initData(int)
+    {
+        java.util.Map $r1;
+        int $i0;
+        cn.trinea.android.common.service.HttpCache r0;
+        cn.trinea.android.common.dao.HttpCacheDao $r2;
+        java.util.HashMap $r3;
+
+        r0 := @this: cn.trinea.android.common.service.HttpCache;
+
+        $i0 := @parameter0: int;
+
+        $r2 = r0.<cn.trinea.android.common.service.HttpCache: cn.trinea.android.common.dao.HttpCacheDao httpCacheDao>;
+
+        $r1 = interfaceinvoke $r2.<cn.trinea.android.common.dao.HttpCacheDao: java.util.Map getHttpResponsesByType(int)>($i0);
+
+        r0.<cn.trinea.android.common.service.HttpCache: java.util.Map cache> = $r1;
+
+        $r1 = r0.<cn.trinea.android.common.service.HttpCache: java.util.Map cache>;
+
+        if $r1 != null goto label1;
+
+        $r3 = new java.util.HashMap;
+
+        specialinvoke $r3.<java.util.HashMap: void <init>()>();
+
+        r0.<cn.trinea.android.common.service.HttpCache: java.util.Map cache> = $r3;
+
+     label1:
+        return;
+    }
+
+    private cn.trinea.android.common.entity.HttpResponse putIntoCache(cn.trinea.android.common.entity.HttpResponse)
+    {
+        long $l2;
+        cn.trinea.android.common.entity.HttpResponse $r1;
+        byte $b3;
+        java.util.Map $r3;
+        int $i0, $i1;
+        cn.trinea.android.common.service.HttpCache r0;
+        cn.trinea.android.common.dao.HttpCacheDao $r4;
+        java.lang.String $r2;
+
+        r0 := @this: cn.trinea.android.common.service.HttpCache;
+
+        $r1 := @parameter0: cn.trinea.android.common.entity.HttpResponse;
+
+        if $r1 == null goto label1;
+
+        $r2 = virtualinvoke $r1.<cn.trinea.android.common.entity.HttpResponse: java.lang.String getUrl()>();
+
+        if $r2 != null goto label2;
+
+     label1:
+        return null;
+
+     label2:
+        $i0 = r0.<cn.trinea.android.common.service.HttpCache: int type>;
+
+        $i1 = -1;
+
+        if $i0 == $i1 goto label3;
+
+        $i0 = r0.<cn.trinea.android.common.service.HttpCache: int type>;
+
+        $i1 = virtualinvoke $r1.<cn.trinea.android.common.entity.HttpResponse: int getType()>();
+
+        if $i0 != $i1 goto label3;
+
+        $r3 = r0.<cn.trinea.android.common.service.HttpCache: java.util.Map cache>;
+
+        interfaceinvoke $r3.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r2, $r1);
+
+     label3:
+        $r4 = r0.<cn.trinea.android.common.service.HttpCache: cn.trinea.android.common.dao.HttpCacheDao httpCacheDao>;
+
+        $l2 = interfaceinvoke $r4.<cn.trinea.android.common.dao.HttpCacheDao: long insertHttpResponse(cn.trinea.android.common.entity.HttpResponse)>($r1);
+
+        $b3 = $l2 cmp -1L;
+
+        if $b3 != 0 goto label4;
+
+        return null;
+
+     label4:
+        return $r1;
+    }
+
+    public void clear()
+    {
+        cn.trinea.android.common.service.HttpCache r0;
+        cn.trinea.android.common.dao.HttpCacheDao $r2;
+        java.util.Map $r1;
+
+        r0 := @this: cn.trinea.android.common.service.HttpCache;
+
+        $r1 = r0.<cn.trinea.android.common.service.HttpCache: java.util.Map cache>;
+
+        interfaceinvoke $r1.<java.util.Map: void clear()>();
+
+        $r2 = r0.<cn.trinea.android.common.service.HttpCache: cn.trinea.android.common.dao.HttpCacheDao httpCacheDao>;
+
+        interfaceinvoke $r2.<cn.trinea.android.common.dao.HttpCacheDao: int deleteAllHttpResponse()>();
+
+        return;
+    }
+
+    public boolean containsKey(java.lang.String)
+    {
+        cn.trinea.android.common.service.HttpCache r0;
+        cn.trinea.android.common.entity.HttpResponse $r2;
+        java.lang.String $r1;
+
+        r0 := @this: cn.trinea.android.common.service.HttpCache;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = specialinvoke r0.<cn.trinea.android.common.service.HttpCache: cn.trinea.android.common.entity.HttpResponse getFromCache(java.lang.String)>($r1);
+
+        if $r2 == null goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public cn.trinea.android.common.entity.HttpResponse httpGet(cn.trinea.android.common.entity.HttpRequest)
+    {
+        java.lang.String[] $r5;
+        java.util.ArrayList $r2;
+        cn.trinea.android.common.entity.HttpResponse $r6;
+        cn.trinea.android.common.entity.HttpRequest $r1;
+        int $i0, $i1;
+        cn.trinea.android.common.service.HttpCache r0;
+        java.lang.String $r3, $r4;
+        boolean $z0, $z1, $z2;
+
+        r0 := @this: cn.trinea.android.common.service.HttpCache;
+
+        $r1 := @parameter0: cn.trinea.android.common.entity.HttpRequest;
+
+        $z0 = 0;
+
+        if $r1 == null goto label01;
+
+        $r3 = virtualinvoke $r1.<cn.trinea.android.common.entity.HttpRequest: java.lang.String getUrl()>();
+
+        $z1 = staticinvoke <cn.trinea.android.common.util.StringUtils: boolean isEmpty(java.lang.String)>($r3);
+
+        if $z1 == 0 goto label02;
+
+     label01:
+        return null;
+
+     label02:
+        $r4 = virtualinvoke $r1.<cn.trinea.android.common.entity.HttpRequest: java.lang.String getRequestProperty(java.lang.String)>("cache-control");
+
+        $z1 = staticinvoke <cn.trinea.android.common.util.StringUtils: boolean isEmpty(java.lang.String)>($r4);
+
+        if $z1 != 0 goto label12;
+
+        $r5 = virtualinvoke $r4.<java.lang.String: java.lang.String[] split(java.lang.String)>(",");
+
+        $z1 = staticinvoke <cn.trinea.android.common.util.ArrayUtils: boolean isEmpty(java.lang.Object[])>($r5);
+
+        if $z1 != 0 goto label12;
+
+        $r2 = new java.util.ArrayList;
+
+        specialinvoke $r2.<java.util.ArrayList: void <init>()>();
+
+        $i0 = lengthof $r5;
+
+        $i1 = 0;
+
+     label03:
+        if $i1 < $i0 goto label07;
+
+        $z1 = interfaceinvoke $r2.<java.util.List: boolean contains(java.lang.Object)>("no-cache");
+
+        if $z1 == 0 goto label11;
+
+        $z1 = 1;
+
+     label04:
+        $z2 = interfaceinvoke $r2.<java.util.List: boolean contains(java.lang.Object)>("no-store");
+
+        if $z2 == 0 goto label05;
+
+        $z0 = 1;
+
+     label05:
+        if $z1 != 0 goto label10;
+
+        $r6 = specialinvoke r0.<cn.trinea.android.common.service.HttpCache: cn.trinea.android.common.entity.HttpResponse getFromCache(java.lang.String)>($r3);
+
+     label06:
+        if $r6 != null goto label13;
+
+        if $z0 == 0 goto label09;
+
+        $r6 = staticinvoke <cn.trinea.android.common.util.HttpUtils: cn.trinea.android.common.entity.HttpResponse httpGet(java.lang.String)>($r3);
+
+        return $r6;
+
+     label07:
+        $r4 = $r5[$i1];
+
+        if $r4 == null goto label08;
+
+        $r4 = virtualinvoke $r4.<java.lang.String: java.lang.String trim()>();
+
+        interfaceinvoke $r2.<java.util.List: boolean add(java.lang.Object)>($r4);
+
+     label08:
+        $i1 = $i1 + 1;
+
+        goto label03;
+
+     label09:
+        $r6 = staticinvoke <cn.trinea.android.common.util.HttpUtils: cn.trinea.android.common.entity.HttpResponse httpGet(java.lang.String)>($r3);
+
+        $r6 = specialinvoke r0.<cn.trinea.android.common.service.HttpCache: cn.trinea.android.common.entity.HttpResponse putIntoCache(cn.trinea.android.common.entity.HttpResponse)>($r6);
+
+        return $r6;
+
+     label10:
+        $r6 = null;
+
+        goto label06;
+
+     label11:
+        $z1 = 0;
+
+        goto label04;
+
+     label12:
+        $z1 = 0;
+
+        goto label05;
+
+     label13:
+        return $r6;
+    }
+
+    public cn.trinea.android.common.entity.HttpResponse httpGet(java.lang.String)
+    {
+        cn.trinea.android.common.entity.HttpResponse $r2;
+        cn.trinea.android.common.entity.HttpRequest $r3;
+        cn.trinea.android.common.service.HttpCache r0;
+        java.lang.String $r1;
+
+        r0 := @this: cn.trinea.android.common.service.HttpCache;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r3 = new cn.trinea.android.common.entity.HttpRequest;
+
+        specialinvoke $r3.<cn.trinea.android.common.entity.HttpRequest: void <init>(java.lang.String)>($r1);
+
+        $r2 = virtualinvoke r0.<cn.trinea.android.common.service.HttpCache: cn.trinea.android.common.entity.HttpResponse httpGet(cn.trinea.android.common.entity.HttpRequest)>($r3);
+
+        return $r2;
+    }
+
+    public void httpGet(cn.trinea.android.common.entity.HttpRequest, cn.trinea.android.common.service.HttpCache$HttpCacheListener)
+    {
+        cn.trinea.android.common.service.HttpCache$HttpCacheRequestAsyncTask $r3;
+        cn.trinea.android.common.entity.HttpRequest[] $r4;
+        cn.trinea.android.common.entity.HttpRequest $r1;
+        cn.trinea.android.common.service.HttpCache r0;
+        cn.trinea.android.common.service.HttpCache$HttpCacheListener $r2;
+
+        r0 := @this: cn.trinea.android.common.service.HttpCache;
+
+        $r1 := @parameter0: cn.trinea.android.common.entity.HttpRequest;
+
+        $r2 := @parameter1: cn.trinea.android.common.service.HttpCache$HttpCacheListener;
+
+        $r3 = new cn.trinea.android.common.service.HttpCache$HttpCacheRequestAsyncTask;
+
+        specialinvoke $r3.<cn.trinea.android.common.service.HttpCache$HttpCacheRequestAsyncTask: void <init>(cn.trinea.android.common.service.HttpCache,cn.trinea.android.common.service.HttpCache$HttpCacheListener)>(r0, $r2);
+
+        $r4 = newarray (cn.trinea.android.common.entity.HttpRequest)[1];
+
+        $r4[0] = $r1;
+
+        virtualinvoke $r3.<cn.trinea.android.common.service.HttpCache$HttpCacheRequestAsyncTask: android.os.AsyncTask execute(java.lang.Object[])>($r4);
+
+        return;
+    }
+
+    public void httpGet(java.lang.String, cn.trinea.android.common.service.HttpCache$HttpCacheListener)
+    {
+        cn.trinea.android.common.service.HttpCache$HttpCacheStringAsyncTask $r3;
+        cn.trinea.android.common.service.HttpCache r0;
+        java.lang.String[] $r4;
+        java.lang.String $r1;
+        cn.trinea.android.common.service.HttpCache$HttpCacheListener $r2;
+
+        r0 := @this: cn.trinea.android.common.service.HttpCache;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: cn.trinea.android.common.service.HttpCache$HttpCacheListener;
+
+        $r3 = new cn.trinea.android.common.service.HttpCache$HttpCacheStringAsyncTask;
+
+        specialinvoke $r3.<cn.trinea.android.common.service.HttpCache$HttpCacheStringAsyncTask: void <init>(cn.trinea.android.common.service.HttpCache,cn.trinea.android.common.service.HttpCache$HttpCacheListener)>(r0, $r2);
+
+        $r4 = newarray (java.lang.String)[1];
+
+        $r4[0] = $r1;
+
+        virtualinvoke $r3.<cn.trinea.android.common.service.HttpCache$HttpCacheStringAsyncTask: android.os.AsyncTask execute(java.lang.Object[])>($r4);
+
+        return;
+    }
+
+    public cn.trinea.android.common.entity.HttpResponse httpGetString(cn.trinea.android.common.entity.HttpRequest)
+    {
+        cn.trinea.android.common.service.HttpCache r0;
+        cn.trinea.android.common.entity.HttpResponse $r2;
+        cn.trinea.android.common.entity.HttpRequest $r1;
+
+        r0 := @this: cn.trinea.android.common.service.HttpCache;
+
+        $r1 := @parameter0: cn.trinea.android.common.entity.HttpRequest;
+
+        $r2 = virtualinvoke r0.<cn.trinea.android.common.service.HttpCache: cn.trinea.android.common.entity.HttpResponse httpGet(cn.trinea.android.common.entity.HttpRequest)>($r1);
+
+        return $r2;
+    }
+
+    public java.lang.String httpGetString(java.lang.String)
+    {
+        cn.trinea.android.common.entity.HttpResponse $r3;
+        cn.trinea.android.common.entity.HttpRequest $r2;
+        cn.trinea.android.common.service.HttpCache r0;
+        java.lang.String $r1;
+
+        r0 := @this: cn.trinea.android.common.service.HttpCache;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = new cn.trinea.android.common.entity.HttpRequest;
+
+        specialinvoke $r2.<cn.trinea.android.common.entity.HttpRequest: void <init>(java.lang.String)>($r1);
+
+        $r3 = virtualinvoke r0.<cn.trinea.android.common.service.HttpCache: cn.trinea.android.common.entity.HttpResponse httpGet(cn.trinea.android.common.entity.HttpRequest)>($r2);
+
+        if $r3 != null goto label1;
+
+        return null;
+
+     label1:
+        $r1 = virtualinvoke $r3.<cn.trinea.android.common.entity.HttpResponse: java.lang.String getResponseBody()>();
+
+        return $r1;
+    }
+
+    protected boolean isExpired(java.lang.String)
+    {
+        cn.trinea.android.common.service.HttpCache r0;
+        cn.trinea.android.common.entity.HttpResponse $r2;
+        java.lang.String $r1;
+
+        r0 := @this: cn.trinea.android.common.service.HttpCache;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = specialinvoke r0.<cn.trinea.android.common.service.HttpCache: cn.trinea.android.common.entity.HttpResponse getFromCache(java.lang.String)>($r1);
+
+        if $r2 != null goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+}

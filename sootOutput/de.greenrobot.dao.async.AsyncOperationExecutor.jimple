@@ -1,0 +1,1287 @@
+class de.greenrobot.dao.async.AsyncOperationExecutor extends java.lang.Object implements android.os.Handler$Callback, java.lang.Runnable
+{
+    private static java.util.concurrent.ExecutorService executorService;
+    private int countOperationsCompleted;
+    private int countOperationsEnqueued;
+    private volatile boolean executorRunning;
+    private android.os.Handler handlerMainThread;
+    private int lastSequenceNumber;
+    private volatile de.greenrobot.dao.async.AsyncOperationListener listener;
+    private volatile de.greenrobot.dao.async.AsyncOperationListener listenerMainThread;
+    private volatile int maxOperationCountToMerge;
+    private final java.util.concurrent.BlockingQueue queue;
+    private volatile int waitForMergeMillis;
+
+    static void <clinit>()
+    {
+        java.util.concurrent.ExecutorService $r0;
+
+        $r0 = staticinvoke <java.util.concurrent.Executors: java.util.concurrent.ExecutorService newCachedThreadPool()>();
+
+        <de.greenrobot.dao.async.AsyncOperationExecutor: java.util.concurrent.ExecutorService executorService> = $r0;
+
+        return;
+    }
+
+    void <init>()
+    {
+        de.greenrobot.dao.async.AsyncOperationExecutor r0;
+        java.util.concurrent.LinkedBlockingQueue $r1;
+
+        r0 := @this: de.greenrobot.dao.async.AsyncOperationExecutor;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        $r1 = new java.util.concurrent.LinkedBlockingQueue;
+
+        specialinvoke $r1.<java.util.concurrent.LinkedBlockingQueue: void <init>()>();
+
+        r0.<de.greenrobot.dao.async.AsyncOperationExecutor: java.util.concurrent.BlockingQueue queue> = $r1;
+
+        r0.<de.greenrobot.dao.async.AsyncOperationExecutor: int maxOperationCountToMerge> = 50;
+
+        r0.<de.greenrobot.dao.async.AsyncOperationExecutor: int waitForMergeMillis> = 50;
+
+        return;
+    }
+
+    private void executeOperation(de.greenrobot.dao.async.AsyncOperation)
+    {
+        java.lang.Throwable $r7;
+        java.lang.Object[] $r11;
+        de.greenrobot.dao.async.AsyncOperation $r1;
+        de.greenrobot.dao.query.Query $r12;
+        long $l0;
+        java.lang.Iterable $r10;
+        int[] $r2;
+        java.lang.Long $r14;
+        de.greenrobot.dao.AbstractDao $r8;
+        int $i1;
+        de.greenrobot.dao.async.AsyncOperationExecutor r0;
+        java.lang.String $r6;
+        de.greenrobot.dao.DaoException $r4;
+        java.util.List $r13;
+        java.lang.StringBuilder $r5;
+        java.lang.Object $r9;
+        de.greenrobot.dao.async.AsyncOperation$OperationType $r3;
+
+        r0 := @this: de.greenrobot.dao.async.AsyncOperationExecutor;
+
+        $r1 := @parameter0: de.greenrobot.dao.async.AsyncOperation;
+
+        $l0 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $r1.<de.greenrobot.dao.async.AsyncOperation: long timeStarted> = $l0;
+
+     label01:
+        $r2 = <de.greenrobot.dao.async.AsyncOperationExecutor$1: int[] $SwitchMap$de$greenrobot$dao$async$AsyncOperation$OperationType>;
+
+        $r3 = $r1.<de.greenrobot.dao.async.AsyncOperation: de.greenrobot.dao.async.AsyncOperation$OperationType type>;
+
+        $i1 = virtualinvoke $r3.<de.greenrobot.dao.async.AsyncOperation$OperationType: int ordinal()>();
+
+        $i1 = $r2[$i1];
+
+     label02:
+        lookupswitch($i1)
+        {
+            case 1: goto label06;
+            case 2: goto label08;
+            case 3: goto label10;
+            case 4: goto label12;
+            case 5: goto label14;
+            case 6: goto label16;
+            case 7: goto label18;
+            case 8: goto label20;
+            case 9: goto label22;
+            case 10: goto label24;
+            case 11: goto label26;
+            case 12: goto label28;
+            case 13: goto label30;
+            case 14: goto label32;
+            case 15: goto label34;
+            case 16: goto label36;
+            case 17: goto label38;
+            case 18: goto label40;
+            case 19: goto label42;
+            case 20: goto label44;
+            case 21: goto label46;
+            case 22: goto label48;
+            default: goto label03;
+        };
+
+     label03:
+        $r4 = new de.greenrobot.dao.DaoException;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>(java.lang.String)>("Unsupported operation: ");
+
+        $r3 = $r1.<de.greenrobot.dao.async.AsyncOperation: de.greenrobot.dao.async.AsyncOperation$OperationType type>;
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r3);
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r4.<de.greenrobot.dao.DaoException: void <init>(java.lang.String)>($r6);
+
+        throw $r4;
+
+     label04:
+        $r7 := @caughtexception;
+
+        $r1.<de.greenrobot.dao.async.AsyncOperation: java.lang.Throwable throwable> = $r7;
+
+     label05:
+        $l0 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $r1.<de.greenrobot.dao.async.AsyncOperation: long timeCompleted> = $l0;
+
+        return;
+
+     label06:
+        $r8 = $r1.<de.greenrobot.dao.async.AsyncOperation: de.greenrobot.dao.AbstractDao dao>;
+
+        $r9 = $r1.<de.greenrobot.dao.async.AsyncOperation: java.lang.Object parameter>;
+
+        virtualinvoke $r8.<de.greenrobot.dao.AbstractDao: void delete(java.lang.Object)>($r9);
+
+     label07:
+        goto label05;
+
+     label08:
+        $r8 = $r1.<de.greenrobot.dao.async.AsyncOperation: de.greenrobot.dao.AbstractDao dao>;
+
+        $r9 = $r1.<de.greenrobot.dao.async.AsyncOperation: java.lang.Object parameter>;
+
+        $r10 = (java.lang.Iterable) $r9;
+
+        virtualinvoke $r8.<de.greenrobot.dao.AbstractDao: void deleteInTx(java.lang.Iterable)>($r10);
+
+     label09:
+        goto label05;
+
+     label10:
+        $r8 = $r1.<de.greenrobot.dao.async.AsyncOperation: de.greenrobot.dao.AbstractDao dao>;
+
+        $r9 = $r1.<de.greenrobot.dao.async.AsyncOperation: java.lang.Object parameter>;
+
+        $r11 = (java.lang.Object[]) $r9;
+
+        virtualinvoke $r8.<de.greenrobot.dao.AbstractDao: void deleteInTx(java.lang.Object[])>($r11);
+
+     label11:
+        goto label05;
+
+     label12:
+        $r8 = $r1.<de.greenrobot.dao.async.AsyncOperation: de.greenrobot.dao.AbstractDao dao>;
+
+        $r9 = $r1.<de.greenrobot.dao.async.AsyncOperation: java.lang.Object parameter>;
+
+        virtualinvoke $r8.<de.greenrobot.dao.AbstractDao: long insert(java.lang.Object)>($r9);
+
+     label13:
+        goto label05;
+
+     label14:
+        $r8 = $r1.<de.greenrobot.dao.async.AsyncOperation: de.greenrobot.dao.AbstractDao dao>;
+
+        $r9 = $r1.<de.greenrobot.dao.async.AsyncOperation: java.lang.Object parameter>;
+
+        $r10 = (java.lang.Iterable) $r9;
+
+        virtualinvoke $r8.<de.greenrobot.dao.AbstractDao: void insertInTx(java.lang.Iterable)>($r10);
+
+     label15:
+        goto label05;
+
+     label16:
+        $r8 = $r1.<de.greenrobot.dao.async.AsyncOperation: de.greenrobot.dao.AbstractDao dao>;
+
+        $r9 = $r1.<de.greenrobot.dao.async.AsyncOperation: java.lang.Object parameter>;
+
+        $r11 = (java.lang.Object[]) $r9;
+
+        virtualinvoke $r8.<de.greenrobot.dao.AbstractDao: void insertInTx(java.lang.Object[])>($r11);
+
+     label17:
+        goto label05;
+
+     label18:
+        $r8 = $r1.<de.greenrobot.dao.async.AsyncOperation: de.greenrobot.dao.AbstractDao dao>;
+
+        $r9 = $r1.<de.greenrobot.dao.async.AsyncOperation: java.lang.Object parameter>;
+
+        virtualinvoke $r8.<de.greenrobot.dao.AbstractDao: long insertOrReplace(java.lang.Object)>($r9);
+
+     label19:
+        goto label05;
+
+     label20:
+        $r8 = $r1.<de.greenrobot.dao.async.AsyncOperation: de.greenrobot.dao.AbstractDao dao>;
+
+        $r9 = $r1.<de.greenrobot.dao.async.AsyncOperation: java.lang.Object parameter>;
+
+        $r10 = (java.lang.Iterable) $r9;
+
+        virtualinvoke $r8.<de.greenrobot.dao.AbstractDao: void insertOrReplaceInTx(java.lang.Iterable)>($r10);
+
+     label21:
+        goto label05;
+
+     label22:
+        $r8 = $r1.<de.greenrobot.dao.async.AsyncOperation: de.greenrobot.dao.AbstractDao dao>;
+
+        $r9 = $r1.<de.greenrobot.dao.async.AsyncOperation: java.lang.Object parameter>;
+
+        $r11 = (java.lang.Object[]) $r9;
+
+        virtualinvoke $r8.<de.greenrobot.dao.AbstractDao: void insertOrReplaceInTx(java.lang.Object[])>($r11);
+
+     label23:
+        goto label05;
+
+     label24:
+        $r8 = $r1.<de.greenrobot.dao.async.AsyncOperation: de.greenrobot.dao.AbstractDao dao>;
+
+        $r9 = $r1.<de.greenrobot.dao.async.AsyncOperation: java.lang.Object parameter>;
+
+        virtualinvoke $r8.<de.greenrobot.dao.AbstractDao: void update(java.lang.Object)>($r9);
+
+     label25:
+        goto label05;
+
+     label26:
+        $r8 = $r1.<de.greenrobot.dao.async.AsyncOperation: de.greenrobot.dao.AbstractDao dao>;
+
+        $r9 = $r1.<de.greenrobot.dao.async.AsyncOperation: java.lang.Object parameter>;
+
+        $r10 = (java.lang.Iterable) $r9;
+
+        virtualinvoke $r8.<de.greenrobot.dao.AbstractDao: void updateInTx(java.lang.Iterable)>($r10);
+
+     label27:
+        goto label05;
+
+     label28:
+        $r8 = $r1.<de.greenrobot.dao.async.AsyncOperation: de.greenrobot.dao.AbstractDao dao>;
+
+        $r9 = $r1.<de.greenrobot.dao.async.AsyncOperation: java.lang.Object parameter>;
+
+        $r11 = (java.lang.Object[]) $r9;
+
+        virtualinvoke $r8.<de.greenrobot.dao.AbstractDao: void updateInTx(java.lang.Object[])>($r11);
+
+     label29:
+        goto label05;
+
+     label30:
+        specialinvoke r0.<de.greenrobot.dao.async.AsyncOperationExecutor: void executeTransactionRunnable(de.greenrobot.dao.async.AsyncOperation)>($r1);
+
+     label31:
+        goto label05;
+
+     label32:
+        specialinvoke r0.<de.greenrobot.dao.async.AsyncOperationExecutor: void executeTransactionCallable(de.greenrobot.dao.async.AsyncOperation)>($r1);
+
+     label33:
+        goto label05;
+
+     label34:
+        $r9 = $r1.<de.greenrobot.dao.async.AsyncOperation: java.lang.Object parameter>;
+
+        $r12 = (de.greenrobot.dao.query.Query) $r9;
+
+        $r13 = virtualinvoke $r12.<de.greenrobot.dao.query.Query: java.util.List list()>();
+
+        $r1.<de.greenrobot.dao.async.AsyncOperation: java.lang.Object result> = $r13;
+
+     label35:
+        goto label05;
+
+     label36:
+        $r9 = $r1.<de.greenrobot.dao.async.AsyncOperation: java.lang.Object parameter>;
+
+        $r12 = (de.greenrobot.dao.query.Query) $r9;
+
+        $r9 = virtualinvoke $r12.<de.greenrobot.dao.query.Query: java.lang.Object unique()>();
+
+        $r1.<de.greenrobot.dao.async.AsyncOperation: java.lang.Object result> = $r9;
+
+     label37:
+        goto label05;
+
+     label38:
+        $r8 = $r1.<de.greenrobot.dao.async.AsyncOperation: de.greenrobot.dao.AbstractDao dao>;
+
+        $r9 = $r1.<de.greenrobot.dao.async.AsyncOperation: java.lang.Object parameter>;
+
+        virtualinvoke $r8.<de.greenrobot.dao.AbstractDao: void deleteByKey(java.lang.Object)>($r9);
+
+     label39:
+        goto label05;
+
+     label40:
+        $r8 = $r1.<de.greenrobot.dao.async.AsyncOperation: de.greenrobot.dao.AbstractDao dao>;
+
+        virtualinvoke $r8.<de.greenrobot.dao.AbstractDao: void deleteAll()>();
+
+     label41:
+        goto label05;
+
+     label42:
+        $r8 = $r1.<de.greenrobot.dao.async.AsyncOperation: de.greenrobot.dao.AbstractDao dao>;
+
+        $r9 = $r1.<de.greenrobot.dao.async.AsyncOperation: java.lang.Object parameter>;
+
+        $r9 = virtualinvoke $r8.<de.greenrobot.dao.AbstractDao: java.lang.Object load(java.lang.Object)>($r9);
+
+        $r1.<de.greenrobot.dao.async.AsyncOperation: java.lang.Object result> = $r9;
+
+     label43:
+        goto label05;
+
+     label44:
+        $r8 = $r1.<de.greenrobot.dao.async.AsyncOperation: de.greenrobot.dao.AbstractDao dao>;
+
+        $r13 = virtualinvoke $r8.<de.greenrobot.dao.AbstractDao: java.util.List loadAll()>();
+
+        $r1.<de.greenrobot.dao.async.AsyncOperation: java.lang.Object result> = $r13;
+
+     label45:
+        goto label05;
+
+     label46:
+        $r8 = $r1.<de.greenrobot.dao.async.AsyncOperation: de.greenrobot.dao.AbstractDao dao>;
+
+        $l0 = virtualinvoke $r8.<de.greenrobot.dao.AbstractDao: long count()>();
+
+        $r14 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l0);
+
+        $r1.<de.greenrobot.dao.async.AsyncOperation: java.lang.Object result> = $r14;
+
+     label47:
+        goto label05;
+
+     label48:
+        $r8 = $r1.<de.greenrobot.dao.async.AsyncOperation: de.greenrobot.dao.AbstractDao dao>;
+
+        $r9 = $r1.<de.greenrobot.dao.async.AsyncOperation: java.lang.Object parameter>;
+
+        virtualinvoke $r8.<de.greenrobot.dao.AbstractDao: void refresh(java.lang.Object)>($r9);
+
+     label49:
+        goto label05;
+
+        catch java.lang.Throwable from label01 to label02 with label04;
+        catch java.lang.Throwable from label03 to label04 with label04;
+        catch java.lang.Throwable from label06 to label07 with label04;
+        catch java.lang.Throwable from label08 to label09 with label04;
+        catch java.lang.Throwable from label10 to label11 with label04;
+        catch java.lang.Throwable from label12 to label13 with label04;
+        catch java.lang.Throwable from label14 to label15 with label04;
+        catch java.lang.Throwable from label16 to label17 with label04;
+        catch java.lang.Throwable from label18 to label19 with label04;
+        catch java.lang.Throwable from label20 to label21 with label04;
+        catch java.lang.Throwable from label22 to label23 with label04;
+        catch java.lang.Throwable from label24 to label25 with label04;
+        catch java.lang.Throwable from label26 to label27 with label04;
+        catch java.lang.Throwable from label28 to label29 with label04;
+        catch java.lang.Throwable from label30 to label31 with label04;
+        catch java.lang.Throwable from label32 to label33 with label04;
+        catch java.lang.Throwable from label34 to label35 with label04;
+        catch java.lang.Throwable from label36 to label37 with label04;
+        catch java.lang.Throwable from label38 to label39 with label04;
+        catch java.lang.Throwable from label40 to label41 with label04;
+        catch java.lang.Throwable from label42 to label43 with label04;
+        catch java.lang.Throwable from label44 to label45 with label04;
+        catch java.lang.Throwable from label46 to label47 with label04;
+        catch java.lang.Throwable from label48 to label49 with label04;
+    }
+
+    private void executeOperationAndPostCompleted(de.greenrobot.dao.async.AsyncOperation)
+    {
+        de.greenrobot.dao.async.AsyncOperationExecutor r0;
+        de.greenrobot.dao.async.AsyncOperation $r1;
+
+        r0 := @this: de.greenrobot.dao.async.AsyncOperationExecutor;
+
+        $r1 := @parameter0: de.greenrobot.dao.async.AsyncOperation;
+
+        specialinvoke r0.<de.greenrobot.dao.async.AsyncOperationExecutor: void executeOperation(de.greenrobot.dao.async.AsyncOperation)>($r1);
+
+        specialinvoke r0.<de.greenrobot.dao.async.AsyncOperationExecutor: void handleOperationCompleted(de.greenrobot.dao.async.AsyncOperation)>($r1);
+
+        return;
+    }
+
+    private void executeTransactionCallable(de.greenrobot.dao.async.AsyncOperation)
+    {
+        java.lang.Throwable $r5;
+        android.database.sqlite.SQLiteDatabase $r2;
+        de.greenrobot.dao.async.AsyncOperation $r1;
+        de.greenrobot.dao.async.AsyncOperationExecutor r0;
+        java.lang.Object $r3;
+        java.util.concurrent.Callable $r4;
+
+        r0 := @this: de.greenrobot.dao.async.AsyncOperationExecutor;
+
+        $r1 := @parameter0: de.greenrobot.dao.async.AsyncOperation;
+
+        $r2 = virtualinvoke $r1.<de.greenrobot.dao.async.AsyncOperation: android.database.sqlite.SQLiteDatabase getDatabase()>();
+
+        virtualinvoke $r2.<android.database.sqlite.SQLiteDatabase: void beginTransaction()>();
+
+     label1:
+        $r3 = $r1.<de.greenrobot.dao.async.AsyncOperation: java.lang.Object parameter>;
+
+        $r4 = (java.util.concurrent.Callable) $r3;
+
+        $r3 = interfaceinvoke $r4.<java.util.concurrent.Callable: java.lang.Object call()>();
+
+        $r1.<de.greenrobot.dao.async.AsyncOperation: java.lang.Object result> = $r3;
+
+        virtualinvoke $r2.<android.database.sqlite.SQLiteDatabase: void setTransactionSuccessful()>();
+
+     label2:
+        virtualinvoke $r2.<android.database.sqlite.SQLiteDatabase: void endTransaction()>();
+
+        return;
+
+     label3:
+        $r5 := @caughtexception;
+
+        virtualinvoke $r2.<android.database.sqlite.SQLiteDatabase: void endTransaction()>();
+
+        throw $r5;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    private void executeTransactionRunnable(de.greenrobot.dao.async.AsyncOperation)
+    {
+        java.lang.Throwable $r5;
+        android.database.sqlite.SQLiteDatabase $r2;
+        de.greenrobot.dao.async.AsyncOperation $r1;
+        de.greenrobot.dao.async.AsyncOperationExecutor r0;
+        java.lang.Object $r3;
+        java.lang.Runnable $r4;
+
+        r0 := @this: de.greenrobot.dao.async.AsyncOperationExecutor;
+
+        $r1 := @parameter0: de.greenrobot.dao.async.AsyncOperation;
+
+        $r2 = virtualinvoke $r1.<de.greenrobot.dao.async.AsyncOperation: android.database.sqlite.SQLiteDatabase getDatabase()>();
+
+        virtualinvoke $r2.<android.database.sqlite.SQLiteDatabase: void beginTransaction()>();
+
+     label1:
+        $r3 = $r1.<de.greenrobot.dao.async.AsyncOperation: java.lang.Object parameter>;
+
+        $r4 = (java.lang.Runnable) $r3;
+
+        interfaceinvoke $r4.<java.lang.Runnable: void run()>();
+
+        virtualinvoke $r2.<android.database.sqlite.SQLiteDatabase: void setTransactionSuccessful()>();
+
+     label2:
+        virtualinvoke $r2.<android.database.sqlite.SQLiteDatabase: void endTransaction()>();
+
+        return;
+
+     label3:
+        $r5 := @caughtexception;
+
+        virtualinvoke $r2.<android.database.sqlite.SQLiteDatabase: void endTransaction()>();
+
+        throw $r5;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    private void handleOperationCompleted(de.greenrobot.dao.async.AsyncOperation)
+    {
+        java.lang.Throwable $r6;
+        de.greenrobot.dao.async.AsyncOperation $r1;
+        de.greenrobot.dao.async.AsyncOperationListener $r2;
+        android.os.Message $r5;
+        android.os.Handler $r3;
+        android.os.Looper $r4;
+        int $i0, $i1;
+        de.greenrobot.dao.async.AsyncOperationExecutor r0;
+
+        r0 := @this: de.greenrobot.dao.async.AsyncOperationExecutor;
+
+        $r1 := @parameter0: de.greenrobot.dao.async.AsyncOperation;
+
+        virtualinvoke $r1.<de.greenrobot.dao.async.AsyncOperation: void setCompleted()>();
+
+        $r2 = r0.<de.greenrobot.dao.async.AsyncOperationExecutor: de.greenrobot.dao.async.AsyncOperationListener listener>;
+
+        if $r2 == null goto label1;
+
+        interfaceinvoke $r2.<de.greenrobot.dao.async.AsyncOperationListener: void onAsyncOperationCompleted(de.greenrobot.dao.async.AsyncOperation)>($r1);
+
+     label1:
+        $r2 = r0.<de.greenrobot.dao.async.AsyncOperationExecutor: de.greenrobot.dao.async.AsyncOperationListener listenerMainThread>;
+
+        if $r2 == null goto label3;
+
+        $r3 = r0.<de.greenrobot.dao.async.AsyncOperationExecutor: android.os.Handler handlerMainThread>;
+
+        if $r3 != null goto label2;
+
+        $r3 = new android.os.Handler;
+
+        $r4 = staticinvoke <android.os.Looper: android.os.Looper getMainLooper()>();
+
+        specialinvoke $r3.<android.os.Handler: void <init>(android.os.Looper,android.os.Handler$Callback)>($r4, r0);
+
+        r0.<de.greenrobot.dao.async.AsyncOperationExecutor: android.os.Handler handlerMainThread> = $r3;
+
+     label2:
+        $r3 = r0.<de.greenrobot.dao.async.AsyncOperationExecutor: android.os.Handler handlerMainThread>;
+
+        $r5 = virtualinvoke $r3.<android.os.Handler: android.os.Message obtainMessage(int,java.lang.Object)>(1, $r1);
+
+        $r3 = r0.<de.greenrobot.dao.async.AsyncOperationExecutor: android.os.Handler handlerMainThread>;
+
+        virtualinvoke $r3.<android.os.Handler: boolean sendMessage(android.os.Message)>($r5);
+
+     label3:
+        entermonitor r0;
+
+     label4:
+        $i0 = r0.<de.greenrobot.dao.async.AsyncOperationExecutor: int countOperationsCompleted>;
+
+        $i0 = $i0 + 1;
+
+        r0.<de.greenrobot.dao.async.AsyncOperationExecutor: int countOperationsCompleted> = $i0;
+
+        $i0 = r0.<de.greenrobot.dao.async.AsyncOperationExecutor: int countOperationsCompleted>;
+
+        $i1 = r0.<de.greenrobot.dao.async.AsyncOperationExecutor: int countOperationsEnqueued>;
+
+        if $i0 != $i1 goto label5;
+
+        virtualinvoke r0.<java.lang.Object: void notifyAll()>();
+
+     label5:
+        exitmonitor r0;
+
+     label6:
+        return;
+
+     label7:
+        $r6 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r6;
+
+        catch java.lang.Throwable from label4 to label6 with label7;
+    }
+
+    private void mergeTxAndExecute(de.greenrobot.dao.async.AsyncOperation, de.greenrobot.dao.async.AsyncOperation)
+    {
+        java.lang.Throwable $r9;
+        de.greenrobot.dao.async.AsyncOperation $r1, $r2;
+        java.util.Iterator $r6;
+        java.util.concurrent.BlockingQueue $r7;
+        java.util.ArrayList $r3, $r10;
+        android.database.sqlite.SQLiteDatabase $r4;
+        de.greenrobot.dao.DaoException $r8, $r11;
+        int $i0, $i1;
+        de.greenrobot.dao.async.AsyncOperationExecutor r0;
+        java.lang.Object $r5;
+        boolean $z0;
+
+        r0 := @this: de.greenrobot.dao.async.AsyncOperationExecutor;
+
+        $r1 := @parameter0: de.greenrobot.dao.async.AsyncOperation;
+
+        $r2 := @parameter1: de.greenrobot.dao.async.AsyncOperation;
+
+        $r10 = new java.util.ArrayList;
+
+        $r3 = $r10;
+
+        specialinvoke $r10.<java.util.ArrayList: void <init>()>();
+
+        virtualinvoke $r3.<java.util.ArrayList: boolean add(java.lang.Object)>($r1);
+
+        virtualinvoke $r3.<java.util.ArrayList: boolean add(java.lang.Object)>($r2);
+
+        $r4 = virtualinvoke $r1.<de.greenrobot.dao.async.AsyncOperation: android.database.sqlite.SQLiteDatabase getDatabase()>();
+
+        virtualinvoke $r4.<android.database.sqlite.SQLiteDatabase: void beginTransaction()>();
+
+        $i1 = 0;
+
+     label01:
+        $i0 = virtualinvoke $r3.<java.util.ArrayList: int size()>();
+
+     label02:
+        if $i1 >= $i0 goto label26;
+
+     label03:
+        $r5 = virtualinvoke $r3.<java.util.ArrayList: java.lang.Object get(int)>($i1);
+
+        $r2 = (de.greenrobot.dao.async.AsyncOperation) $r5;
+
+        specialinvoke r0.<de.greenrobot.dao.async.AsyncOperationExecutor: void executeOperation(de.greenrobot.dao.async.AsyncOperation)>($r2);
+
+        $z0 = virtualinvoke $r2.<de.greenrobot.dao.async.AsyncOperation: boolean isFailed()>();
+
+     label04:
+        if $z0 == 0 goto label07;
+
+        $z0 = 1;
+
+     label05:
+        virtualinvoke $r4.<android.database.sqlite.SQLiteDatabase: void endTransaction()>();
+
+        if $z0 == 0 goto label23;
+
+        staticinvoke <de.greenrobot.dao.DaoLog: int i(java.lang.String)>("Revered merged transaction because one of the operations failed. Executing operations one by one instead...");
+
+        $r6 = virtualinvoke $r3.<java.util.ArrayList: java.util.Iterator iterator()>();
+
+     label06:
+        $z0 = interfaceinvoke $r6.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label25;
+
+        $r5 = interfaceinvoke $r6.<java.util.Iterator: java.lang.Object next()>();
+
+        $r1 = (de.greenrobot.dao.async.AsyncOperation) $r5;
+
+        virtualinvoke $r1.<de.greenrobot.dao.async.AsyncOperation: void reset()>();
+
+        specialinvoke r0.<de.greenrobot.dao.async.AsyncOperationExecutor: void executeOperationAndPostCompleted(de.greenrobot.dao.async.AsyncOperation)>($r1);
+
+        goto label06;
+
+     label07:
+        $i0 = virtualinvoke $r3.<java.util.ArrayList: int size()>();
+
+     label08:
+        $i0 = $i0 + -1;
+
+        if $i1 != $i0 goto label20;
+
+     label09:
+        $r7 = r0.<de.greenrobot.dao.async.AsyncOperationExecutor: java.util.concurrent.BlockingQueue queue>;
+
+        $r5 = interfaceinvoke $r7.<java.util.concurrent.BlockingQueue: java.lang.Object peek()>();
+
+        $r1 = (de.greenrobot.dao.async.AsyncOperation) $r5;
+
+        $i0 = r0.<de.greenrobot.dao.async.AsyncOperationExecutor: int maxOperationCountToMerge>;
+
+     label10:
+        if $i1 >= $i0 goto label21;
+
+     label11:
+        $z0 = virtualinvoke $r2.<de.greenrobot.dao.async.AsyncOperation: boolean isMergeableWith(de.greenrobot.dao.async.AsyncOperation)>($r1);
+
+     label12:
+        if $z0 == 0 goto label21;
+
+     label13:
+        $r7 = r0.<de.greenrobot.dao.async.AsyncOperationExecutor: java.util.concurrent.BlockingQueue queue>;
+
+        $r5 = interfaceinvoke $r7.<java.util.concurrent.BlockingQueue: java.lang.Object remove()>();
+
+        $r2 = (de.greenrobot.dao.async.AsyncOperation) $r5;
+
+     label14:
+        if $r2 == $r1 goto label19;
+
+     label15:
+        $r11 = new de.greenrobot.dao.DaoException;
+
+     label16:
+        $r8 = $r11;
+
+     label17:
+        specialinvoke $r11.<de.greenrobot.dao.DaoException: void <init>(java.lang.String)>("Internal error: peeked op did not match removed op");
+
+        throw $r8;
+
+     label18:
+        $r9 := @caughtexception;
+
+        virtualinvoke $r4.<android.database.sqlite.SQLiteDatabase: void endTransaction()>();
+
+        throw $r9;
+
+     label19:
+        virtualinvoke $r3.<java.util.ArrayList: boolean add(java.lang.Object)>($r2);
+
+     label20:
+        $i1 = $i1 + 1;
+
+        goto label01;
+
+     label21:
+        virtualinvoke $r4.<android.database.sqlite.SQLiteDatabase: void setTransactionSuccessful()>();
+
+     label22:
+        goto label20;
+
+     label23:
+        $i1 = virtualinvoke $r3.<java.util.ArrayList: int size()>();
+
+        $r6 = virtualinvoke $r3.<java.util.ArrayList: java.util.Iterator iterator()>();
+
+     label24:
+        $z0 = interfaceinvoke $r6.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label27;
+
+        $r5 = interfaceinvoke $r6.<java.util.Iterator: java.lang.Object next()>();
+
+        $r1 = (de.greenrobot.dao.async.AsyncOperation) $r5;
+
+        $r1.<de.greenrobot.dao.async.AsyncOperation: int mergedOperationsCount> = $i1;
+
+        specialinvoke r0.<de.greenrobot.dao.async.AsyncOperationExecutor: void handleOperationCompleted(de.greenrobot.dao.async.AsyncOperation)>($r1);
+
+        goto label24;
+
+     label25:
+        return;
+
+     label26:
+        $z0 = 0;
+
+        goto label05;
+
+     label27:
+        return;
+
+        catch java.lang.Throwable from label01 to label02 with label18;
+        catch java.lang.Throwable from label03 to label04 with label18;
+        catch java.lang.Throwable from label07 to label08 with label18;
+        catch java.lang.Throwable from label09 to label10 with label18;
+        catch java.lang.Throwable from label11 to label12 with label18;
+        catch java.lang.Throwable from label13 to label14 with label18;
+        catch java.lang.Throwable from label15 to label16 with label18;
+        catch java.lang.Throwable from label17 to label18 with label18;
+        catch java.lang.Throwable from label19 to label20 with label18;
+        catch java.lang.Throwable from label21 to label22 with label18;
+    }
+
+    public void enqueue(de.greenrobot.dao.async.AsyncOperation)
+    {
+        java.lang.Throwable $r4;
+        de.greenrobot.dao.async.AsyncOperation $r1;
+        int $i0;
+        de.greenrobot.dao.async.AsyncOperationExecutor r0;
+        java.util.concurrent.BlockingQueue $r2;
+        java.util.concurrent.ExecutorService $r3;
+        boolean $z0;
+
+        r0 := @this: de.greenrobot.dao.async.AsyncOperationExecutor;
+
+        $r1 := @parameter0: de.greenrobot.dao.async.AsyncOperation;
+
+        entermonitor r0;
+
+     label1:
+        $i0 = r0.<de.greenrobot.dao.async.AsyncOperationExecutor: int lastSequenceNumber>;
+
+        $i0 = $i0 + 1;
+
+        r0.<de.greenrobot.dao.async.AsyncOperationExecutor: int lastSequenceNumber> = $i0;
+
+        $r1.<de.greenrobot.dao.async.AsyncOperation: int sequenceNumber> = $i0;
+
+        $r2 = r0.<de.greenrobot.dao.async.AsyncOperationExecutor: java.util.concurrent.BlockingQueue queue>;
+
+        interfaceinvoke $r2.<java.util.concurrent.BlockingQueue: boolean add(java.lang.Object)>($r1);
+
+        $i0 = r0.<de.greenrobot.dao.async.AsyncOperationExecutor: int countOperationsEnqueued>;
+
+        $i0 = $i0 + 1;
+
+        r0.<de.greenrobot.dao.async.AsyncOperationExecutor: int countOperationsEnqueued> = $i0;
+
+        $z0 = r0.<de.greenrobot.dao.async.AsyncOperationExecutor: boolean executorRunning>;
+
+        if $z0 != 0 goto label2;
+
+        r0.<de.greenrobot.dao.async.AsyncOperationExecutor: boolean executorRunning> = 1;
+
+        $r3 = <de.greenrobot.dao.async.AsyncOperationExecutor: java.util.concurrent.ExecutorService executorService>;
+
+        interfaceinvoke $r3.<java.util.concurrent.ExecutorService: void execute(java.lang.Runnable)>(r0);
+
+     label2:
+        exitmonitor r0;
+
+     label3:
+        return;
+
+     label4:
+        $r4 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r4;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+    }
+
+    public de.greenrobot.dao.async.AsyncOperationListener getListener()
+    {
+        de.greenrobot.dao.async.AsyncOperationExecutor r0;
+        de.greenrobot.dao.async.AsyncOperationListener r1;
+
+        r0 := @this: de.greenrobot.dao.async.AsyncOperationExecutor;
+
+        r1 = r0.<de.greenrobot.dao.async.AsyncOperationExecutor: de.greenrobot.dao.async.AsyncOperationListener listener>;
+
+        return r1;
+    }
+
+    public de.greenrobot.dao.async.AsyncOperationListener getListenerMainThread()
+    {
+        de.greenrobot.dao.async.AsyncOperationExecutor r0;
+        de.greenrobot.dao.async.AsyncOperationListener r1;
+
+        r0 := @this: de.greenrobot.dao.async.AsyncOperationExecutor;
+
+        r1 = r0.<de.greenrobot.dao.async.AsyncOperationExecutor: de.greenrobot.dao.async.AsyncOperationListener listenerMainThread>;
+
+        return r1;
+    }
+
+    public int getMaxOperationCountToMerge()
+    {
+        int i0;
+        de.greenrobot.dao.async.AsyncOperationExecutor r0;
+
+        r0 := @this: de.greenrobot.dao.async.AsyncOperationExecutor;
+
+        i0 = r0.<de.greenrobot.dao.async.AsyncOperationExecutor: int maxOperationCountToMerge>;
+
+        return i0;
+    }
+
+    public int getWaitForMergeMillis()
+    {
+        int i0;
+        de.greenrobot.dao.async.AsyncOperationExecutor r0;
+
+        r0 := @this: de.greenrobot.dao.async.AsyncOperationExecutor;
+
+        i0 = r0.<de.greenrobot.dao.async.AsyncOperationExecutor: int waitForMergeMillis>;
+
+        return i0;
+    }
+
+    public boolean handleMessage(android.os.Message)
+    {
+        de.greenrobot.dao.async.AsyncOperationListener $r2;
+        android.os.Message $r1;
+        de.greenrobot.dao.async.AsyncOperation $r4;
+        de.greenrobot.dao.async.AsyncOperationExecutor r0;
+        java.lang.Object $r3;
+
+        r0 := @this: de.greenrobot.dao.async.AsyncOperationExecutor;
+
+        $r1 := @parameter0: android.os.Message;
+
+        $r2 = r0.<de.greenrobot.dao.async.AsyncOperationExecutor: de.greenrobot.dao.async.AsyncOperationListener listenerMainThread>;
+
+        if $r2 == null goto label1;
+
+        $r3 = $r1.<android.os.Message: java.lang.Object obj>;
+
+        $r4 = (de.greenrobot.dao.async.AsyncOperation) $r3;
+
+        interfaceinvoke $r2.<de.greenrobot.dao.async.AsyncOperationListener: void onAsyncOperationCompleted(de.greenrobot.dao.async.AsyncOperation)>($r4);
+
+     label1:
+        return 0;
+    }
+
+    public boolean isCompleted()
+    {
+        java.lang.Throwable $r1;
+        int $i0, $i1;
+        de.greenrobot.dao.async.AsyncOperationExecutor r0;
+        boolean $z0;
+
+        r0 := @this: de.greenrobot.dao.async.AsyncOperationExecutor;
+
+        entermonitor r0;
+
+     label1:
+        $i1 = r0.<de.greenrobot.dao.async.AsyncOperationExecutor: int countOperationsEnqueued>;
+
+        $i0 = r0.<de.greenrobot.dao.async.AsyncOperationExecutor: int countOperationsCompleted>;
+
+     label2:
+        if $i1 != $i0 goto label4;
+
+        $z0 = 1;
+
+     label3:
+        exitmonitor r0;
+
+        return $z0;
+
+     label4:
+        $z0 = 0;
+
+        goto label3;
+
+     label5:
+        $r1 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label2 with label5;
+    }
+
+    public void run()
+    {
+        java.lang.Throwable $r6, $r10, $r11;
+        de.greenrobot.dao.async.AsyncOperation $r4, $r5;
+        java.util.concurrent.BlockingQueue $r2;
+        long $l1;
+        java.util.concurrent.TimeUnit $r1;
+        java.lang.Thread $r8;
+        int $i0;
+        de.greenrobot.dao.async.AsyncOperationExecutor r0;
+        java.lang.Object $r3;
+        java.lang.StringBuilder $r7;
+        java.lang.String $r9;
+        boolean $z0;
+
+        r0 := @this: de.greenrobot.dao.async.AsyncOperationExecutor;
+
+     label01:
+        $r2 = r0.<de.greenrobot.dao.async.AsyncOperationExecutor: java.util.concurrent.BlockingQueue queue>;
+
+        $r1 = <java.util.concurrent.TimeUnit: java.util.concurrent.TimeUnit SECONDS>;
+
+     label02:
+        $r3 = interfaceinvoke $r2.<java.util.concurrent.BlockingQueue: java.lang.Object poll(long,java.util.concurrent.TimeUnit)>(1L, $r1);
+
+     label03:
+        $r4 = (de.greenrobot.dao.async.AsyncOperation) $r3;
+
+     label04:
+        if $r4 != null goto label09;
+
+     label05:
+        entermonitor r0;
+
+     label06:
+        $r2 = r0.<de.greenrobot.dao.async.AsyncOperationExecutor: java.util.concurrent.BlockingQueue queue>;
+
+        $r3 = interfaceinvoke $r2.<java.util.concurrent.BlockingQueue: java.lang.Object poll()>();
+
+        $r4 = (de.greenrobot.dao.async.AsyncOperation) $r3;
+
+        if $r4 != null goto label08;
+
+        r0.<de.greenrobot.dao.async.AsyncOperationExecutor: boolean executorRunning> = 0;
+
+        exitmonitor r0;
+
+     label07:
+        r0.<de.greenrobot.dao.async.AsyncOperationExecutor: boolean executorRunning> = 0;
+
+        return;
+
+     label08:
+        exitmonitor r0;
+
+     label09:
+        $z0 = virtualinvoke $r4.<de.greenrobot.dao.async.AsyncOperation: boolean isMergeTx()>();
+
+     label10:
+        if $z0 == 0 goto label30;
+
+     label11:
+        $r2 = r0.<de.greenrobot.dao.async.AsyncOperationExecutor: java.util.concurrent.BlockingQueue queue>;
+
+        $i0 = r0.<de.greenrobot.dao.async.AsyncOperationExecutor: int waitForMergeMillis>;
+
+     label12:
+        $l1 = (long) $i0;
+
+     label13:
+        $r1 = <java.util.concurrent.TimeUnit: java.util.concurrent.TimeUnit MILLISECONDS>;
+
+     label14:
+        $r3 = interfaceinvoke $r2.<java.util.concurrent.BlockingQueue: java.lang.Object poll(long,java.util.concurrent.TimeUnit)>($l1, $r1);
+
+     label15:
+        $r5 = (de.greenrobot.dao.async.AsyncOperation) $r3;
+
+     label16:
+        if $r5 == null goto label30;
+
+     label17:
+        $z0 = virtualinvoke $r4.<de.greenrobot.dao.async.AsyncOperation: boolean isMergeableWith(de.greenrobot.dao.async.AsyncOperation)>($r5);
+
+     label18:
+        if $z0 == 0 goto label28;
+
+     label19:
+        specialinvoke r0.<de.greenrobot.dao.async.AsyncOperationExecutor: void mergeTxAndExecute(de.greenrobot.dao.async.AsyncOperation,de.greenrobot.dao.async.AsyncOperation)>($r4, $r5);
+
+     label20:
+        goto label01;
+
+     label21:
+        $r6 := @caughtexception;
+
+     label22:
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>()>();
+
+        $r8 = staticinvoke <java.lang.Thread: java.lang.Thread currentThread()>();
+
+        $r9 = virtualinvoke $r8.<java.lang.Thread: java.lang.String getName()>();
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r9);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" was interruppted");
+
+        $r9 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <de.greenrobot.dao.DaoLog: int w(java.lang.String,java.lang.Throwable)>($r9, $r6);
+
+     label23:
+        r0.<de.greenrobot.dao.async.AsyncOperationExecutor: boolean executorRunning> = 0;
+
+        return;
+
+     label24:
+        $r10 := @caughtexception;
+
+     label25:
+        exitmonitor r0;
+
+     label26:
+        throw $r10;
+
+     label27:
+        $r11 := @caughtexception;
+
+        r0.<de.greenrobot.dao.async.AsyncOperationExecutor: boolean executorRunning> = 0;
+
+        throw $r11;
+
+     label28:
+        specialinvoke r0.<de.greenrobot.dao.async.AsyncOperationExecutor: void executeOperationAndPostCompleted(de.greenrobot.dao.async.AsyncOperation)>($r4);
+
+        specialinvoke r0.<de.greenrobot.dao.async.AsyncOperationExecutor: void executeOperationAndPostCompleted(de.greenrobot.dao.async.AsyncOperation)>($r5);
+
+     label29:
+        goto label01;
+
+     label30:
+        specialinvoke r0.<de.greenrobot.dao.async.AsyncOperationExecutor: void executeOperationAndPostCompleted(de.greenrobot.dao.async.AsyncOperation)>($r4);
+
+     label31:
+        goto label01;
+
+        catch java.lang.InterruptedException from label02 to label03 with label21;
+        catch java.lang.Throwable from label01 to label04 with label27;
+        catch java.lang.Throwable from label05 to label06 with label27;
+        catch java.lang.Throwable from label06 to label07 with label24;
+        catch java.lang.InterruptedException from label09 to label10 with label21;
+        catch java.lang.InterruptedException from label14 to label15 with label21;
+        catch java.lang.InterruptedException from label17 to label18 with label21;
+        catch java.lang.InterruptedException from label19 to label20 with label21;
+        catch java.lang.Throwable from label08 to label09 with label27;
+        catch java.lang.Throwable from label09 to label10 with label27;
+        catch java.lang.Throwable from label11 to label12 with label27;
+        catch java.lang.Throwable from label13 to label16 with label27;
+        catch java.lang.Throwable from label17 to label18 with label27;
+        catch java.lang.Throwable from label19 to label20 with label27;
+        catch java.lang.Throwable from label22 to label23 with label27;
+        catch java.lang.InterruptedException from label26 to label27 with label21;
+        catch java.lang.Throwable from label25 to label27 with label27;
+        catch java.lang.InterruptedException from label28 to label29 with label21;
+        catch java.lang.InterruptedException from label30 to label31 with label21;
+        catch java.lang.Throwable from label28 to label29 with label27;
+        catch java.lang.Throwable from label30 to label31 with label27;
+    }
+
+    public void setListener(de.greenrobot.dao.async.AsyncOperationListener)
+    {
+        de.greenrobot.dao.async.AsyncOperationExecutor r0;
+        de.greenrobot.dao.async.AsyncOperationListener $r1;
+
+        r0 := @this: de.greenrobot.dao.async.AsyncOperationExecutor;
+
+        $r1 := @parameter0: de.greenrobot.dao.async.AsyncOperationListener;
+
+        r0.<de.greenrobot.dao.async.AsyncOperationExecutor: de.greenrobot.dao.async.AsyncOperationListener listener> = $r1;
+
+        return;
+    }
+
+    public void setListenerMainThread(de.greenrobot.dao.async.AsyncOperationListener)
+    {
+        de.greenrobot.dao.async.AsyncOperationExecutor r0;
+        de.greenrobot.dao.async.AsyncOperationListener $r1;
+
+        r0 := @this: de.greenrobot.dao.async.AsyncOperationExecutor;
+
+        $r1 := @parameter0: de.greenrobot.dao.async.AsyncOperationListener;
+
+        r0.<de.greenrobot.dao.async.AsyncOperationExecutor: de.greenrobot.dao.async.AsyncOperationListener listenerMainThread> = $r1;
+
+        return;
+    }
+
+    public void setMaxOperationCountToMerge(int)
+    {
+        int $i0;
+        de.greenrobot.dao.async.AsyncOperationExecutor r0;
+
+        r0 := @this: de.greenrobot.dao.async.AsyncOperationExecutor;
+
+        $i0 := @parameter0: int;
+
+        r0.<de.greenrobot.dao.async.AsyncOperationExecutor: int maxOperationCountToMerge> = $i0;
+
+        return;
+    }
+
+    public void setWaitForMergeMillis(int)
+    {
+        int $i0;
+        de.greenrobot.dao.async.AsyncOperationExecutor r0;
+
+        r0 := @this: de.greenrobot.dao.async.AsyncOperationExecutor;
+
+        $i0 := @parameter0: int;
+
+        r0.<de.greenrobot.dao.async.AsyncOperationExecutor: int waitForMergeMillis> = $i0;
+
+        return;
+    }
+
+    public void waitForCompletion()
+    {
+        java.lang.Throwable $r2, $r3;
+        de.greenrobot.dao.DaoException $r1;
+        de.greenrobot.dao.async.AsyncOperationExecutor r0;
+        boolean $z0;
+
+        r0 := @this: de.greenrobot.dao.async.AsyncOperationExecutor;
+
+        entermonitor r0;
+
+     label1:
+        $z0 = virtualinvoke r0.<de.greenrobot.dao.async.AsyncOperationExecutor: boolean isCompleted()>();
+
+     label2:
+        if $z0 != 0 goto label8;
+
+     label3:
+        virtualinvoke r0.<java.lang.Object: void wait()>();
+
+     label4:
+        goto label1;
+
+     label5:
+        $r2 := @caughtexception;
+
+     label6:
+        $r1 = new de.greenrobot.dao.DaoException;
+
+        specialinvoke $r1.<de.greenrobot.dao.DaoException: void <init>(java.lang.String,java.lang.Throwable)>("Interrupted while waiting for all operations to complete", $r2);
+
+        throw $r1;
+
+     label7:
+        $r3 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r3;
+
+     label8:
+        exitmonitor r0;
+
+        return;
+
+        catch java.lang.Throwable from label1 to label2 with label7;
+        catch java.lang.InterruptedException from label3 to label4 with label5;
+        catch java.lang.Throwable from label3 to label4 with label7;
+        catch java.lang.Throwable from label6 to label7 with label7;
+    }
+
+    public boolean waitForCompletion(int)
+    {
+        java.lang.Throwable $r2, $r3;
+        de.greenrobot.dao.DaoException $r1;
+        int $i0;
+        de.greenrobot.dao.async.AsyncOperationExecutor r0;
+        long $l1;
+        boolean $z0;
+
+        r0 := @this: de.greenrobot.dao.async.AsyncOperationExecutor;
+
+        $i0 := @parameter0: int;
+
+        entermonitor r0;
+
+     label1:
+        $z0 = virtualinvoke r0.<de.greenrobot.dao.async.AsyncOperationExecutor: boolean isCompleted()>();
+
+     label2:
+        if $z0 != 0 goto label4;
+
+        $l1 = (long) $i0;
+
+     label3:
+        virtualinvoke r0.<java.lang.Object: void wait(long)>($l1);
+
+     label4:
+        $z0 = virtualinvoke r0.<de.greenrobot.dao.async.AsyncOperationExecutor: boolean isCompleted()>();
+
+     label5:
+        exitmonitor r0;
+
+        return $z0;
+
+     label6:
+        $r2 := @caughtexception;
+
+     label7:
+        $r1 = new de.greenrobot.dao.DaoException;
+
+        specialinvoke $r1.<de.greenrobot.dao.DaoException: void <init>(java.lang.String,java.lang.Throwable)>("Interrupted while waiting for all operations to complete", $r2);
+
+        throw $r1;
+
+     label8:
+        $r3 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label2 with label8;
+        catch java.lang.InterruptedException from label3 to label4 with label6;
+        catch java.lang.Throwable from label3 to label4 with label8;
+        catch java.lang.Throwable from label4 to label5 with label8;
+        catch java.lang.Throwable from label7 to label8 with label8;
+    }
+}

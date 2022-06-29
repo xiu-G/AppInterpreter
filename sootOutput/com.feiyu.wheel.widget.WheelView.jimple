@@ -1,0 +1,2404 @@
+public class com.feiyu.wheel.widget.WheelView extends android.view.View
+{
+    private static final int ADDITIONAL_ITEMS_SPACE;
+    private static final int ADDITIONAL_ITEM_HEIGHT;
+    private static final int DEF_VISIBLE_ITEMS;
+    private static final int ITEMS_TEXT_COLOR;
+    private static final int ITEM_OFFSET;
+    private static final int LABEL_OFFSET;
+    private static final int MIN_DELTA_FOR_SCROLLING;
+    private static final int PADDING;
+    private static final int SCROLLING_DURATION;
+    private static final int[] SHADOWS_COLORS;
+    private static final int TEXT_SIZE;
+    private static final int VALUE_TEXT_COLOR;
+    private final int MESSAGE_JUSTIFY;
+    private final int MESSAGE_SCROLL;
+    private com.feiyu.wheel.widget.WheelAdapter adapter;
+    private android.os.Handler animationHandler;
+    private android.graphics.drawable.GradientDrawable bottomShadow;
+    private android.graphics.drawable.Drawable centerDrawable;
+    private java.util.List changingListeners;
+    private int currentItem;
+    private android.view.GestureDetector gestureDetector;
+    private android.view.GestureDetector$SimpleOnGestureListener gestureListener;
+    boolean isCyclic;
+    private boolean isScrollingPerformed;
+    private int itemHeight;
+    private android.text.StaticLayout itemsLayout;
+    private android.text.TextPaint itemsPaint;
+    private int itemsWidth;
+    private java.lang.String label;
+    private android.text.StaticLayout labelLayout;
+    private int labelWidth;
+    private int lastScrollY;
+    private android.widget.Scroller scroller;
+    private java.util.List scrollingListeners;
+    private int scrollingOffset;
+    private android.graphics.drawable.GradientDrawable topShadow;
+    private android.text.StaticLayout valueLayout;
+    private android.text.TextPaint valuePaint;
+    private int visibleItems;
+
+    static void <clinit>()
+    {
+        int[] $r0;
+
+        <com.feiyu.wheel.widget.WheelView: int VALUE_TEXT_COLOR> = -268435456;
+
+        <com.feiyu.wheel.widget.WheelView: int TEXT_SIZE> = 30;
+
+        <com.feiyu.wheel.widget.WheelView: int SCROLLING_DURATION> = 400;
+
+        <com.feiyu.wheel.widget.WheelView: int PADDING> = 10;
+
+        <com.feiyu.wheel.widget.WheelView: int MIN_DELTA_FOR_SCROLLING> = 1;
+
+        <com.feiyu.wheel.widget.WheelView: int LABEL_OFFSET> = 8;
+
+        <com.feiyu.wheel.widget.WheelView: int ITEM_OFFSET> = 6;
+
+        <com.feiyu.wheel.widget.WheelView: int ITEMS_TEXT_COLOR> = -16777216;
+
+        <com.feiyu.wheel.widget.WheelView: int DEF_VISIBLE_ITEMS> = 5;
+
+        <com.feiyu.wheel.widget.WheelView: int ADDITIONAL_ITEM_HEIGHT> = 15;
+
+        <com.feiyu.wheel.widget.WheelView: int ADDITIONAL_ITEMS_SPACE> = 10;
+
+        $r0 = newarray (int)[3];
+
+        $r0[0] = -15658735;
+
+        $r0[1] = 11184810;
+
+        $r0[2] = 11184810;
+
+        <com.feiyu.wheel.widget.WheelView: int[] SHADOWS_COLORS> = $r0;
+
+        return;
+    }
+
+    public void <init>(android.content.Context)
+    {
+        android.content.Context $r1;
+        com.feiyu.wheel.widget.WheelView$1 $r3;
+        com.feiyu.wheel.widget.WheelView r0;
+        com.feiyu.wheel.widget.WheelView$2 $r4;
+        java.util.LinkedList $r2;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke r0.<android.view.View: void <init>(android.content.Context)>($r1);
+
+        r0.<com.feiyu.wheel.widget.WheelView: com.feiyu.wheel.widget.WheelAdapter adapter> = null;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int currentItem> = 0;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int itemsWidth> = 0;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int labelWidth> = 0;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int visibleItems> = 5;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int itemHeight> = 0;
+
+        r0.<com.feiyu.wheel.widget.WheelView: boolean isCyclic> = 0;
+
+        $r2 = new java.util.LinkedList;
+
+        specialinvoke $r2.<java.util.LinkedList: void <init>()>();
+
+        r0.<com.feiyu.wheel.widget.WheelView: java.util.List changingListeners> = $r2;
+
+        $r2 = new java.util.LinkedList;
+
+        specialinvoke $r2.<java.util.LinkedList: void <init>()>();
+
+        r0.<com.feiyu.wheel.widget.WheelView: java.util.List scrollingListeners> = $r2;
+
+        $r3 = new com.feiyu.wheel.widget.WheelView$1;
+
+        specialinvoke $r3.<com.feiyu.wheel.widget.WheelView$1: void <init>(com.feiyu.wheel.widget.WheelView)>(r0);
+
+        r0.<com.feiyu.wheel.widget.WheelView: android.view.GestureDetector$SimpleOnGestureListener gestureListener> = $r3;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int MESSAGE_SCROLL> = 0;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int MESSAGE_JUSTIFY> = 1;
+
+        $r4 = new com.feiyu.wheel.widget.WheelView$2;
+
+        specialinvoke $r4.<com.feiyu.wheel.widget.WheelView$2: void <init>(com.feiyu.wheel.widget.WheelView)>(r0);
+
+        r0.<com.feiyu.wheel.widget.WheelView: android.os.Handler animationHandler> = $r4;
+
+        specialinvoke r0.<com.feiyu.wheel.widget.WheelView: void initData(android.content.Context)>($r1);
+
+        return;
+    }
+
+    public void <init>(android.content.Context, android.util.AttributeSet)
+    {
+        android.content.Context $r1;
+        com.feiyu.wheel.widget.WheelView$1 $r4;
+        com.feiyu.wheel.widget.WheelView r0;
+        android.util.AttributeSet $r2;
+        com.feiyu.wheel.widget.WheelView$2 $r5;
+        java.util.LinkedList $r3;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.util.AttributeSet;
+
+        specialinvoke r0.<android.view.View: void <init>(android.content.Context,android.util.AttributeSet)>($r1, $r2);
+
+        r0.<com.feiyu.wheel.widget.WheelView: com.feiyu.wheel.widget.WheelAdapter adapter> = null;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int currentItem> = 0;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int itemsWidth> = 0;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int labelWidth> = 0;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int visibleItems> = 5;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int itemHeight> = 0;
+
+        r0.<com.feiyu.wheel.widget.WheelView: boolean isCyclic> = 0;
+
+        $r3 = new java.util.LinkedList;
+
+        specialinvoke $r3.<java.util.LinkedList: void <init>()>();
+
+        r0.<com.feiyu.wheel.widget.WheelView: java.util.List changingListeners> = $r3;
+
+        $r3 = new java.util.LinkedList;
+
+        specialinvoke $r3.<java.util.LinkedList: void <init>()>();
+
+        r0.<com.feiyu.wheel.widget.WheelView: java.util.List scrollingListeners> = $r3;
+
+        $r4 = new com.feiyu.wheel.widget.WheelView$1;
+
+        specialinvoke $r4.<com.feiyu.wheel.widget.WheelView$1: void <init>(com.feiyu.wheel.widget.WheelView)>(r0);
+
+        r0.<com.feiyu.wheel.widget.WheelView: android.view.GestureDetector$SimpleOnGestureListener gestureListener> = $r4;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int MESSAGE_SCROLL> = 0;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int MESSAGE_JUSTIFY> = 1;
+
+        $r5 = new com.feiyu.wheel.widget.WheelView$2;
+
+        specialinvoke $r5.<com.feiyu.wheel.widget.WheelView$2: void <init>(com.feiyu.wheel.widget.WheelView)>(r0);
+
+        r0.<com.feiyu.wheel.widget.WheelView: android.os.Handler animationHandler> = $r5;
+
+        specialinvoke r0.<com.feiyu.wheel.widget.WheelView: void initData(android.content.Context)>($r1);
+
+        return;
+    }
+
+    public void <init>(android.content.Context, android.util.AttributeSet, int)
+    {
+        android.content.Context $r1;
+        com.feiyu.wheel.widget.WheelView$1 $r4;
+        com.feiyu.wheel.widget.WheelView r0;
+        android.util.AttributeSet $r2;
+        com.feiyu.wheel.widget.WheelView$2 $r5;
+        int $i0;
+        java.util.LinkedList $r3;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.util.AttributeSet;
+
+        $i0 := @parameter2: int;
+
+        specialinvoke r0.<android.view.View: void <init>(android.content.Context,android.util.AttributeSet,int)>($r1, $r2, $i0);
+
+        r0.<com.feiyu.wheel.widget.WheelView: com.feiyu.wheel.widget.WheelAdapter adapter> = null;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int currentItem> = 0;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int itemsWidth> = 0;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int labelWidth> = 0;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int visibleItems> = 5;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int itemHeight> = 0;
+
+        r0.<com.feiyu.wheel.widget.WheelView: boolean isCyclic> = 0;
+
+        $r3 = new java.util.LinkedList;
+
+        specialinvoke $r3.<java.util.LinkedList: void <init>()>();
+
+        r0.<com.feiyu.wheel.widget.WheelView: java.util.List changingListeners> = $r3;
+
+        $r3 = new java.util.LinkedList;
+
+        specialinvoke $r3.<java.util.LinkedList: void <init>()>();
+
+        r0.<com.feiyu.wheel.widget.WheelView: java.util.List scrollingListeners> = $r3;
+
+        $r4 = new com.feiyu.wheel.widget.WheelView$1;
+
+        specialinvoke $r4.<com.feiyu.wheel.widget.WheelView$1: void <init>(com.feiyu.wheel.widget.WheelView)>(r0);
+
+        r0.<com.feiyu.wheel.widget.WheelView: android.view.GestureDetector$SimpleOnGestureListener gestureListener> = $r4;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int MESSAGE_SCROLL> = 0;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int MESSAGE_JUSTIFY> = 1;
+
+        $r5 = new com.feiyu.wheel.widget.WheelView$2;
+
+        specialinvoke $r5.<com.feiyu.wheel.widget.WheelView$2: void <init>(com.feiyu.wheel.widget.WheelView)>(r0);
+
+        r0.<com.feiyu.wheel.widget.WheelView: android.os.Handler animationHandler> = $r5;
+
+        specialinvoke r0.<com.feiyu.wheel.widget.WheelView: void initData(android.content.Context)>($r1);
+
+        return;
+    }
+
+    static boolean access$0(com.feiyu.wheel.widget.WheelView)
+    {
+        com.feiyu.wheel.widget.WheelView $r0;
+        boolean z0;
+
+        $r0 := @parameter0: com.feiyu.wheel.widget.WheelView;
+
+        z0 = $r0.<com.feiyu.wheel.widget.WheelView: boolean isScrollingPerformed>;
+
+        return z0;
+    }
+
+    static android.widget.Scroller access$1(com.feiyu.wheel.widget.WheelView)
+    {
+        android.widget.Scroller r1;
+        com.feiyu.wheel.widget.WheelView $r0;
+
+        $r0 := @parameter0: com.feiyu.wheel.widget.WheelView;
+
+        r1 = $r0.<com.feiyu.wheel.widget.WheelView: android.widget.Scroller scroller>;
+
+        return r1;
+    }
+
+    static int access$10(com.feiyu.wheel.widget.WheelView)
+    {
+        int i0;
+        com.feiyu.wheel.widget.WheelView $r0;
+
+        $r0 := @parameter0: com.feiyu.wheel.widget.WheelView;
+
+        i0 = $r0.<com.feiyu.wheel.widget.WheelView: int lastScrollY>;
+
+        return i0;
+    }
+
+    static void access$11(com.feiyu.wheel.widget.WheelView, int)
+    {
+        int $i0;
+        com.feiyu.wheel.widget.WheelView $r0;
+
+        $r0 := @parameter0: com.feiyu.wheel.widget.WheelView;
+
+        $i0 := @parameter1: int;
+
+        specialinvoke $r0.<com.feiyu.wheel.widget.WheelView: void setNextMessage(int)>($i0);
+
+        return;
+    }
+
+    static android.os.Handler access$12(com.feiyu.wheel.widget.WheelView)
+    {
+        com.feiyu.wheel.widget.WheelView $r0;
+        android.os.Handler r1;
+
+        $r0 := @parameter0: com.feiyu.wheel.widget.WheelView;
+
+        r1 = $r0.<com.feiyu.wheel.widget.WheelView: android.os.Handler animationHandler>;
+
+        return r1;
+    }
+
+    static void access$13(com.feiyu.wheel.widget.WheelView)
+    {
+        com.feiyu.wheel.widget.WheelView $r0;
+
+        $r0 := @parameter0: com.feiyu.wheel.widget.WheelView;
+
+        specialinvoke $r0.<com.feiyu.wheel.widget.WheelView: void justify()>();
+
+        return;
+    }
+
+    static void access$2(com.feiyu.wheel.widget.WheelView)
+    {
+        com.feiyu.wheel.widget.WheelView $r0;
+
+        $r0 := @parameter0: com.feiyu.wheel.widget.WheelView;
+
+        specialinvoke $r0.<com.feiyu.wheel.widget.WheelView: void clearMessages()>();
+
+        return;
+    }
+
+    static void access$3(com.feiyu.wheel.widget.WheelView)
+    {
+        com.feiyu.wheel.widget.WheelView $r0;
+
+        $r0 := @parameter0: com.feiyu.wheel.widget.WheelView;
+
+        specialinvoke $r0.<com.feiyu.wheel.widget.WheelView: void startScrolling()>();
+
+        return;
+    }
+
+    static void access$4(com.feiyu.wheel.widget.WheelView, int)
+    {
+        int $i0;
+        com.feiyu.wheel.widget.WheelView $r0;
+
+        $r0 := @parameter0: com.feiyu.wheel.widget.WheelView;
+
+        $i0 := @parameter1: int;
+
+        specialinvoke $r0.<com.feiyu.wheel.widget.WheelView: void doScroll(int)>($i0);
+
+        return;
+    }
+
+    static int access$5(com.feiyu.wheel.widget.WheelView)
+    {
+        int i0;
+        com.feiyu.wheel.widget.WheelView $r0;
+
+        $r0 := @parameter0: com.feiyu.wheel.widget.WheelView;
+
+        i0 = $r0.<com.feiyu.wheel.widget.WheelView: int currentItem>;
+
+        return i0;
+    }
+
+    static int access$6(com.feiyu.wheel.widget.WheelView)
+    {
+        int $i0;
+        com.feiyu.wheel.widget.WheelView $r0;
+
+        $r0 := @parameter0: com.feiyu.wheel.widget.WheelView;
+
+        $i0 = specialinvoke $r0.<com.feiyu.wheel.widget.WheelView: int getItemHeight()>();
+
+        return $i0;
+    }
+
+    static int access$7(com.feiyu.wheel.widget.WheelView)
+    {
+        int i0;
+        com.feiyu.wheel.widget.WheelView $r0;
+
+        $r0 := @parameter0: com.feiyu.wheel.widget.WheelView;
+
+        i0 = $r0.<com.feiyu.wheel.widget.WheelView: int scrollingOffset>;
+
+        return i0;
+    }
+
+    static void access$8(com.feiyu.wheel.widget.WheelView, int)
+    {
+        int $i0;
+        com.feiyu.wheel.widget.WheelView $r0;
+
+        $r0 := @parameter0: com.feiyu.wheel.widget.WheelView;
+
+        $i0 := @parameter1: int;
+
+        $r0.<com.feiyu.wheel.widget.WheelView: int lastScrollY> = $i0;
+
+        return;
+    }
+
+    static com.feiyu.wheel.widget.WheelAdapter access$9(com.feiyu.wheel.widget.WheelView)
+    {
+        com.feiyu.wheel.widget.WheelAdapter r1;
+        com.feiyu.wheel.widget.WheelView $r0;
+
+        $r0 := @parameter0: com.feiyu.wheel.widget.WheelView;
+
+        r1 = $r0.<com.feiyu.wheel.widget.WheelView: com.feiyu.wheel.widget.WheelAdapter adapter>;
+
+        return r1;
+    }
+
+    private java.lang.String buildText(boolean)
+    {
+        com.feiyu.wheel.widget.WheelView r0;
+        int i0, $i1, $i2;
+        java.lang.StringBuilder r1;
+        java.lang.String $r2;
+        boolean $z0;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $z0 := @parameter0: boolean;
+
+        r1 = new java.lang.StringBuilder;
+
+        specialinvoke r1.<java.lang.StringBuilder: void <init>()>();
+
+        i0 = r0.<com.feiyu.wheel.widget.WheelView: int visibleItems>;
+
+        i0 = i0 / 2;
+
+        i0 = i0 + 1;
+
+        $i1 = r0.<com.feiyu.wheel.widget.WheelView: int currentItem>;
+
+        $i1 = $i1 - i0;
+
+     label1:
+        $i2 = r0.<com.feiyu.wheel.widget.WheelView: int currentItem>;
+
+        $i2 = $i2 + i0;
+
+        if $i1 <= $i2 goto label2;
+
+        $r2 = virtualinvoke r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r2;
+
+     label2:
+        if $z0 != 0 goto label3;
+
+        $i2 = r0.<com.feiyu.wheel.widget.WheelView: int currentItem>;
+
+        if $i1 == $i2 goto label4;
+
+     label3:
+        $r2 = specialinvoke r0.<com.feiyu.wheel.widget.WheelView: java.lang.String getTextItem(int)>($i1);
+
+        if $r2 == null goto label4;
+
+        virtualinvoke r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+     label4:
+        $i2 = r0.<com.feiyu.wheel.widget.WheelView: int currentItem>;
+
+        $i2 = $i2 + i0;
+
+        if $i1 >= $i2 goto label5;
+
+        virtualinvoke r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\n");
+
+     label5:
+        $i1 = $i1 + 1;
+
+        goto label1;
+    }
+
+    private int calculateLayoutWidth(int, int)
+    {
+        com.feiyu.wheel.widget.WheelView r0;
+        android.text.TextPaint $r1;
+        int $i0, $i1, $i2, $i3;
+        float $f0, $f1;
+        java.lang.String $r2;
+        double d0, $d1;
+        boolean z0;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        specialinvoke r0.<com.feiyu.wheel.widget.WheelView: void initResourcesIfNecessary()>();
+
+        $i2 = specialinvoke r0.<com.feiyu.wheel.widget.WheelView: int getMaxTextLength()>();
+
+        if $i2 <= 0 goto label06;
+
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: android.text.TextPaint itemsPaint>;
+
+        $f0 = staticinvoke <android.text.Layout: float getDesiredWidth(java.lang.CharSequence,android.text.TextPaint)>("0", $r1);
+
+        $f0 = staticinvoke <android.util.FloatMath: float ceil(float)>($f0);
+
+        $f1 = (float) $i2;
+
+        $f0 = $f1 * $f0;
+
+        $i2 = (int) $f0;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int itemsWidth> = $i2;
+
+     label01:
+        $i2 = r0.<com.feiyu.wheel.widget.WheelView: int itemsWidth>;
+
+        $i2 = $i2 + 10;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int itemsWidth> = $i2;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int labelWidth> = 0;
+
+        $r2 = r0.<com.feiyu.wheel.widget.WheelView: java.lang.String label>;
+
+        if $r2 == null goto label02;
+
+        $r2 = r0.<com.feiyu.wheel.widget.WheelView: java.lang.String label>;
+
+        $i2 = virtualinvoke $r2.<java.lang.String: int length()>();
+
+        if $i2 <= 0 goto label02;
+
+        $r2 = r0.<com.feiyu.wheel.widget.WheelView: java.lang.String label>;
+
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: android.text.TextPaint valuePaint>;
+
+        $f0 = staticinvoke <android.text.Layout: float getDesiredWidth(java.lang.CharSequence,android.text.TextPaint)>($r2, $r1);
+
+        $f0 = staticinvoke <android.util.FloatMath: float ceil(float)>($f0);
+
+        $i2 = (int) $f0;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int labelWidth> = $i2;
+
+     label02:
+        z0 = 0;
+
+        if $i1 != 1073741824 goto label07;
+
+        $i2 = $i0;
+
+        z0 = 1;
+
+     label03:
+        if z0 == 0 goto label05;
+
+        $i0 = $i2 + -8;
+
+        $i0 = $i0 + -20;
+
+        if $i0 > 0 goto label04;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int labelWidth> = 0;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int itemsWidth> = 0;
+
+     label04:
+        $i1 = r0.<com.feiyu.wheel.widget.WheelView: int labelWidth>;
+
+        if $i1 <= 0 goto label09;
+
+        $i1 = r0.<com.feiyu.wheel.widget.WheelView: int itemsWidth>;
+
+        d0 = (double) $i1;
+
+        $d1 = (double) $i0;
+
+        d0 = d0 * $d1;
+
+        $i3 = r0.<com.feiyu.wheel.widget.WheelView: int itemsWidth>;
+
+        $i1 = r0.<com.feiyu.wheel.widget.WheelView: int labelWidth>;
+
+        $i1 = $i3 + $i1;
+
+        $d1 = (double) $i1;
+
+        d0 = d0 / $d1;
+
+        $i1 = (int) d0;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int itemsWidth> = $i1;
+
+        $i1 = r0.<com.feiyu.wheel.widget.WheelView: int itemsWidth>;
+
+        $i0 = $i0 - $i1;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int labelWidth> = $i0;
+
+     label05:
+        $i0 = r0.<com.feiyu.wheel.widget.WheelView: int itemsWidth>;
+
+        if $i0 <= 0 goto label10;
+
+        $i0 = r0.<com.feiyu.wheel.widget.WheelView: int itemsWidth>;
+
+        $i1 = r0.<com.feiyu.wheel.widget.WheelView: int labelWidth>;
+
+        specialinvoke r0.<com.feiyu.wheel.widget.WheelView: void createLayouts(int,int)>($i0, $i1);
+
+        return $i2;
+
+     label06:
+        r0.<com.feiyu.wheel.widget.WheelView: int itemsWidth> = 0;
+
+        goto label01;
+
+     label07:
+        $i2 = r0.<com.feiyu.wheel.widget.WheelView: int itemsWidth>;
+
+        $i3 = r0.<com.feiyu.wheel.widget.WheelView: int labelWidth>;
+
+        $i2 = $i2 + $i3;
+
+        $i2 = $i2 + 20;
+
+        $i3 = r0.<com.feiyu.wheel.widget.WheelView: int labelWidth>;
+
+        if $i3 <= 0 goto label08;
+
+        $i2 = $i2 + 8;
+
+     label08:
+        $i3 = virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: int getSuggestedMinimumWidth()>();
+
+        $i3 = staticinvoke <java.lang.Math: int max(int,int)>($i2, $i3);
+
+        $i2 = $i3;
+
+        if $i1 != -2147483648 goto label03;
+
+        if $i0 >= $i3 goto label03;
+
+        $i2 = $i0;
+
+        z0 = 1;
+
+        goto label03;
+
+     label09:
+        $i0 = $i0 + 8;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int itemsWidth> = $i0;
+
+        goto label05;
+
+     label10:
+        return $i2;
+    }
+
+    private void clearMessages()
+    {
+        com.feiyu.wheel.widget.WheelView r0;
+        android.os.Handler $r1;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: android.os.Handler animationHandler>;
+
+        virtualinvoke $r1.<android.os.Handler: void removeMessages(int)>(0);
+
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: android.os.Handler animationHandler>;
+
+        virtualinvoke $r1.<android.os.Handler: void removeMessages(int)>(1);
+
+        return;
+    }
+
+    private void createLayouts(int, int)
+    {
+        android.text.StaticLayout $r2;
+        com.feiyu.wheel.widget.WheelView r0;
+        com.feiyu.wheel.widget.WheelAdapter $r6;
+        android.text.Layout$Alignment $r5;
+        android.text.TextPaint $r4;
+        int $i0, $i1, $i2;
+        java.lang.String r1, $r3;
+        boolean $z0;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        r1 = null;
+
+        $r2 = r0.<com.feiyu.wheel.widget.WheelView: android.text.StaticLayout itemsLayout>;
+
+        if $r2 == null goto label01;
+
+        $r2 = r0.<com.feiyu.wheel.widget.WheelView: android.text.StaticLayout itemsLayout>;
+
+        $i2 = virtualinvoke $r2.<android.text.StaticLayout: int getWidth()>();
+
+        if $i2 <= $i0 goto label11;
+
+     label01:
+        $r2 = new android.text.StaticLayout;
+
+        $z0 = r0.<com.feiyu.wheel.widget.WheelView: boolean isScrollingPerformed>;
+
+        $r3 = specialinvoke r0.<com.feiyu.wheel.widget.WheelView: java.lang.String buildText(boolean)>($z0);
+
+        $r4 = r0.<com.feiyu.wheel.widget.WheelView: android.text.TextPaint itemsPaint>;
+
+        if $i1 <= 0 goto label10;
+
+        $r5 = <android.text.Layout$Alignment: android.text.Layout$Alignment ALIGN_OPPOSITE>;
+
+     label02:
+        specialinvoke $r2.<android.text.StaticLayout: void <init>(java.lang.CharSequence,android.text.TextPaint,int,android.text.Layout$Alignment,float,float,boolean)>($r3, $r4, $i0, $r5, 1.0F, 15.0F, 0);
+
+        r0.<com.feiyu.wheel.widget.WheelView: android.text.StaticLayout itemsLayout> = $r2;
+
+     label03:
+        $z0 = r0.<com.feiyu.wheel.widget.WheelView: boolean isScrollingPerformed>;
+
+        if $z0 != 0 goto label14;
+
+        $r2 = r0.<com.feiyu.wheel.widget.WheelView: android.text.StaticLayout valueLayout>;
+
+        if $r2 == null goto label04;
+
+        $r2 = r0.<com.feiyu.wheel.widget.WheelView: android.text.StaticLayout valueLayout>;
+
+        $i2 = virtualinvoke $r2.<android.text.StaticLayout: int getWidth()>();
+
+        if $i2 <= $i0 goto label14;
+
+     label04:
+        $r6 = virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: com.feiyu.wheel.widget.WheelAdapter getAdapter()>();
+
+        if $r6 == null goto label05;
+
+        $r6 = virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: com.feiyu.wheel.widget.WheelAdapter getAdapter()>();
+
+        $i2 = r0.<com.feiyu.wheel.widget.WheelView: int currentItem>;
+
+        r1 = interfaceinvoke $r6.<com.feiyu.wheel.widget.WheelAdapter: java.lang.String getItem(int)>($i2);
+
+     label05:
+        $r2 = new android.text.StaticLayout;
+
+        if r1 == null goto label12;
+
+     label06:
+        $r4 = r0.<com.feiyu.wheel.widget.WheelView: android.text.TextPaint valuePaint>;
+
+        if $i1 <= 0 goto label13;
+
+        $r5 = <android.text.Layout$Alignment: android.text.Layout$Alignment ALIGN_OPPOSITE>;
+
+     label07:
+        specialinvoke $r2.<android.text.StaticLayout: void <init>(java.lang.CharSequence,android.text.TextPaint,int,android.text.Layout$Alignment,float,float,boolean)>(r1, $r4, $i0, $r5, 1.0F, 15.0F, 0);
+
+        r0.<com.feiyu.wheel.widget.WheelView: android.text.StaticLayout valueLayout> = $r2;
+
+     label08:
+        if $i1 <= 0 goto label17;
+
+        $r2 = r0.<com.feiyu.wheel.widget.WheelView: android.text.StaticLayout labelLayout>;
+
+        if $r2 == null goto label09;
+
+        $r2 = r0.<com.feiyu.wheel.widget.WheelView: android.text.StaticLayout labelLayout>;
+
+        $i0 = virtualinvoke $r2.<android.text.StaticLayout: int getWidth()>();
+
+        if $i0 <= $i1 goto label16;
+
+     label09:
+        $r2 = new android.text.StaticLayout;
+
+        r1 = r0.<com.feiyu.wheel.widget.WheelView: java.lang.String label>;
+
+        $r4 = r0.<com.feiyu.wheel.widget.WheelView: android.text.TextPaint valuePaint>;
+
+        $r5 = <android.text.Layout$Alignment: android.text.Layout$Alignment ALIGN_NORMAL>;
+
+        specialinvoke $r2.<android.text.StaticLayout: void <init>(java.lang.CharSequence,android.text.TextPaint,int,android.text.Layout$Alignment,float,float,boolean)>(r1, $r4, $i1, $r5, 1.0F, 15.0F, 0);
+
+        r0.<com.feiyu.wheel.widget.WheelView: android.text.StaticLayout labelLayout> = $r2;
+
+        return;
+
+     label10:
+        $r5 = <android.text.Layout$Alignment: android.text.Layout$Alignment ALIGN_CENTER>;
+
+        goto label02;
+
+     label11:
+        $r2 = r0.<com.feiyu.wheel.widget.WheelView: android.text.StaticLayout itemsLayout>;
+
+        virtualinvoke $r2.<android.text.StaticLayout: void increaseWidthTo(int)>($i0);
+
+        goto label03;
+
+     label12:
+        r1 = "";
+
+        goto label06;
+
+     label13:
+        $r5 = <android.text.Layout$Alignment: android.text.Layout$Alignment ALIGN_CENTER>;
+
+        goto label07;
+
+     label14:
+        $z0 = r0.<com.feiyu.wheel.widget.WheelView: boolean isScrollingPerformed>;
+
+        if $z0 == 0 goto label15;
+
+        r0.<com.feiyu.wheel.widget.WheelView: android.text.StaticLayout valueLayout> = null;
+
+        goto label08;
+
+     label15:
+        $r2 = r0.<com.feiyu.wheel.widget.WheelView: android.text.StaticLayout valueLayout>;
+
+        virtualinvoke $r2.<android.text.StaticLayout: void increaseWidthTo(int)>($i0);
+
+        goto label08;
+
+     label16:
+        $r2 = r0.<com.feiyu.wheel.widget.WheelView: android.text.StaticLayout labelLayout>;
+
+        virtualinvoke $r2.<android.text.StaticLayout: void increaseWidthTo(int)>($i1);
+
+     label17:
+        return;
+    }
+
+    private void doScroll(int)
+    {
+        com.feiyu.wheel.widget.WheelAdapter $r1;
+        com.feiyu.wheel.widget.WheelView r0;
+        int $i0, i1, $i2, $i3;
+        boolean $z0;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $i0 := @parameter0: int;
+
+        $i2 = r0.<com.feiyu.wheel.widget.WheelView: int scrollingOffset>;
+
+        $i0 = $i2 + $i0;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int scrollingOffset> = $i0;
+
+        $i0 = r0.<com.feiyu.wheel.widget.WheelView: int scrollingOffset>;
+
+        $i2 = specialinvoke r0.<com.feiyu.wheel.widget.WheelView: int getItemHeight()>();
+
+        $i0 = $i0 / $i2;
+
+        $i2 = r0.<com.feiyu.wheel.widget.WheelView: int currentItem>;
+
+        $i2 = $i2 - $i0;
+
+        $z0 = r0.<com.feiyu.wheel.widget.WheelView: boolean isCyclic>;
+
+        if $z0 == 0 goto label5;
+
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: com.feiyu.wheel.widget.WheelAdapter adapter>;
+
+        i1 = interfaceinvoke $r1.<com.feiyu.wheel.widget.WheelAdapter: int getItemsCount()>();
+
+        if i1 <= 0 goto label5;
+
+     label1:
+        if $i2 < 0 goto label4;
+
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: com.feiyu.wheel.widget.WheelAdapter adapter>;
+
+        i1 = interfaceinvoke $r1.<com.feiyu.wheel.widget.WheelAdapter: int getItemsCount()>();
+
+        $i2 = $i2 % i1;
+
+     label2:
+        i1 = r0.<com.feiyu.wheel.widget.WheelView: int scrollingOffset>;
+
+        $i3 = r0.<com.feiyu.wheel.widget.WheelView: int currentItem>;
+
+        if $i2 == $i3 goto label8;
+
+        virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: void setCurrentItem(int,boolean)>($i2, 0);
+
+     label3:
+        $i2 = specialinvoke r0.<com.feiyu.wheel.widget.WheelView: int getItemHeight()>();
+
+        $i0 = $i2 * $i0;
+
+        $i0 = i1 - $i0;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int scrollingOffset> = $i0;
+
+        $i0 = r0.<com.feiyu.wheel.widget.WheelView: int scrollingOffset>;
+
+        $i2 = virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: int getHeight()>();
+
+        if $i0 <= $i2 goto label9;
+
+        $i0 = r0.<com.feiyu.wheel.widget.WheelView: int scrollingOffset>;
+
+        $i2 = virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: int getHeight()>();
+
+        $i0 = $i0 % $i2;
+
+        $i2 = virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: int getHeight()>();
+
+        $i0 = $i0 + $i2;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int scrollingOffset> = $i0;
+
+        return;
+
+     label4:
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: com.feiyu.wheel.widget.WheelAdapter adapter>;
+
+        i1 = interfaceinvoke $r1.<com.feiyu.wheel.widget.WheelAdapter: int getItemsCount()>();
+
+        $i2 = $i2 + i1;
+
+        goto label1;
+
+     label5:
+        $z0 = r0.<com.feiyu.wheel.widget.WheelView: boolean isScrollingPerformed>;
+
+        if $z0 == 0 goto label7;
+
+        if $i2 >= 0 goto label6;
+
+        $i0 = r0.<com.feiyu.wheel.widget.WheelView: int currentItem>;
+
+        $i2 = 0;
+
+        goto label2;
+
+     label6:
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: com.feiyu.wheel.widget.WheelAdapter adapter>;
+
+        i1 = interfaceinvoke $r1.<com.feiyu.wheel.widget.WheelAdapter: int getItemsCount()>();
+
+        if $i2 < i1 goto label2;
+
+        $i0 = r0.<com.feiyu.wheel.widget.WheelView: int currentItem>;
+
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: com.feiyu.wheel.widget.WheelAdapter adapter>;
+
+        $i2 = interfaceinvoke $r1.<com.feiyu.wheel.widget.WheelAdapter: int getItemsCount()>();
+
+        $i0 = $i0 - $i2;
+
+        $i0 = $i0 + 1;
+
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: com.feiyu.wheel.widget.WheelAdapter adapter>;
+
+        $i2 = interfaceinvoke $r1.<com.feiyu.wheel.widget.WheelAdapter: int getItemsCount()>();
+
+        $i2 = $i2 + -1;
+
+        goto label2;
+
+     label7:
+        $i2 = staticinvoke <java.lang.Math: int max(int,int)>($i2, 0);
+
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: com.feiyu.wheel.widget.WheelAdapter adapter>;
+
+        i1 = interfaceinvoke $r1.<com.feiyu.wheel.widget.WheelAdapter: int getItemsCount()>();
+
+        i1 = i1 + -1;
+
+        $i2 = staticinvoke <java.lang.Math: int min(int,int)>($i2, i1);
+
+        goto label2;
+
+     label8:
+        virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: void invalidate()>();
+
+        goto label3;
+
+     label9:
+        return;
+    }
+
+    private void drawCenterRect(android.graphics.Canvas)
+    {
+        com.feiyu.wheel.widget.WheelView r0;
+        int i0, i1, $i2, $i3;
+        android.graphics.Canvas $r1;
+        android.graphics.drawable.Drawable $r2;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $r1 := @parameter0: android.graphics.Canvas;
+
+        i0 = virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: int getHeight()>();
+
+        i0 = i0 / 2;
+
+        $i2 = specialinvoke r0.<com.feiyu.wheel.widget.WheelView: int getItemHeight()>();
+
+        i1 = $i2 / 2;
+
+        $r2 = r0.<com.feiyu.wheel.widget.WheelView: android.graphics.drawable.Drawable centerDrawable>;
+
+        $i2 = i0 - i1;
+
+        $i3 = virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: int getWidth()>();
+
+        i0 = i0 + i1;
+
+        virtualinvoke $r2.<android.graphics.drawable.Drawable: void setBounds(int,int,int,int)>(0, $i2, $i3, i0);
+
+        $r2 = r0.<com.feiyu.wheel.widget.WheelView: android.graphics.drawable.Drawable centerDrawable>;
+
+        virtualinvoke $r2.<android.graphics.drawable.Drawable: void draw(android.graphics.Canvas)>($r1);
+
+        return;
+    }
+
+    private void drawItems(android.graphics.Canvas)
+    {
+        android.text.StaticLayout $r2;
+        com.feiyu.wheel.widget.WheelView r0;
+        int[] $r4;
+        android.text.TextPaint $r3;
+        int $i0, $i1;
+        float $f0;
+        android.graphics.Canvas $r1;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $r1 := @parameter0: android.graphics.Canvas;
+
+        virtualinvoke $r1.<android.graphics.Canvas: int save()>();
+
+        $r2 = r0.<com.feiyu.wheel.widget.WheelView: android.text.StaticLayout itemsLayout>;
+
+        $i0 = virtualinvoke $r2.<android.text.StaticLayout: int getLineTop(int)>(1);
+
+        $i1 = neg $i0;
+
+        $i0 = r0.<com.feiyu.wheel.widget.WheelView: int scrollingOffset>;
+
+        $i0 = $i1 + $i0;
+
+        $f0 = (float) $i0;
+
+        virtualinvoke $r1.<android.graphics.Canvas: void translate(float,float)>(0.0F, $f0);
+
+        $r3 = r0.<com.feiyu.wheel.widget.WheelView: android.text.TextPaint itemsPaint>;
+
+        virtualinvoke $r3.<android.text.TextPaint: void setColor(int)>(-16777216);
+
+        $r3 = r0.<com.feiyu.wheel.widget.WheelView: android.text.TextPaint itemsPaint>;
+
+        $r4 = virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: int[] getDrawableState()>();
+
+        $r3.<android.text.TextPaint: int[] drawableState> = $r4;
+
+        $r2 = r0.<com.feiyu.wheel.widget.WheelView: android.text.StaticLayout itemsLayout>;
+
+        virtualinvoke $r2.<android.text.StaticLayout: void draw(android.graphics.Canvas)>($r1);
+
+        virtualinvoke $r1.<android.graphics.Canvas: void restore()>();
+
+        return;
+    }
+
+    private void drawShadows(android.graphics.Canvas)
+    {
+        com.feiyu.wheel.widget.WheelView r0;
+        android.graphics.drawable.GradientDrawable $r2;
+        int $i0, $i1, $i2;
+        android.graphics.Canvas $r1;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $r1 := @parameter0: android.graphics.Canvas;
+
+        $r2 = r0.<com.feiyu.wheel.widget.WheelView: android.graphics.drawable.GradientDrawable topShadow>;
+
+        $i0 = virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: int getWidth()>();
+
+        $i1 = virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: int getHeight()>();
+
+        $i2 = r0.<com.feiyu.wheel.widget.WheelView: int visibleItems>;
+
+        $i1 = $i1 / $i2;
+
+        virtualinvoke $r2.<android.graphics.drawable.GradientDrawable: void setBounds(int,int,int,int)>(0, 0, $i0, $i1);
+
+        $r2 = r0.<com.feiyu.wheel.widget.WheelView: android.graphics.drawable.GradientDrawable topShadow>;
+
+        virtualinvoke $r2.<android.graphics.drawable.GradientDrawable: void draw(android.graphics.Canvas)>($r1);
+
+        $r2 = r0.<com.feiyu.wheel.widget.WheelView: android.graphics.drawable.GradientDrawable bottomShadow>;
+
+        $i0 = virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: int getHeight()>();
+
+        $i1 = virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: int getHeight()>();
+
+        $i2 = r0.<com.feiyu.wheel.widget.WheelView: int visibleItems>;
+
+        $i1 = $i1 / $i2;
+
+        $i0 = $i0 - $i1;
+
+        $i1 = virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: int getWidth()>();
+
+        $i2 = virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: int getHeight()>();
+
+        virtualinvoke $r2.<android.graphics.drawable.GradientDrawable: void setBounds(int,int,int,int)>(0, $i0, $i1, $i2);
+
+        $r2 = r0.<com.feiyu.wheel.widget.WheelView: android.graphics.drawable.GradientDrawable bottomShadow>;
+
+        virtualinvoke $r2.<android.graphics.drawable.GradientDrawable: void draw(android.graphics.Canvas)>($r1);
+
+        return;
+    }
+
+    private void drawValue(android.graphics.Canvas)
+    {
+        android.graphics.Rect r2;
+        android.text.StaticLayout $r5;
+        com.feiyu.wheel.widget.WheelView r0;
+        int[] $r4;
+        android.text.TextPaint $r3;
+        int $i0, $i1;
+        float $f0, $f1;
+        android.graphics.Canvas $r1;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $r1 := @parameter0: android.graphics.Canvas;
+
+        $r3 = r0.<com.feiyu.wheel.widget.WheelView: android.text.TextPaint valuePaint>;
+
+        virtualinvoke $r3.<android.text.TextPaint: void setColor(int)>(-268435456);
+
+        $r3 = r0.<com.feiyu.wheel.widget.WheelView: android.text.TextPaint valuePaint>;
+
+        $r4 = virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: int[] getDrawableState()>();
+
+        $r3.<android.text.TextPaint: int[] drawableState> = $r4;
+
+        r2 = new android.graphics.Rect;
+
+        specialinvoke r2.<android.graphics.Rect: void <init>()>();
+
+        $r5 = r0.<com.feiyu.wheel.widget.WheelView: android.text.StaticLayout itemsLayout>;
+
+        $i0 = r0.<com.feiyu.wheel.widget.WheelView: int visibleItems>;
+
+        $i0 = $i0 / 2;
+
+        virtualinvoke $r5.<android.text.StaticLayout: int getLineBounds(int,android.graphics.Rect)>($i0, r2);
+
+        $r5 = r0.<com.feiyu.wheel.widget.WheelView: android.text.StaticLayout labelLayout>;
+
+        if $r5 == null goto label1;
+
+        virtualinvoke $r1.<android.graphics.Canvas: int save()>();
+
+        $r5 = r0.<com.feiyu.wheel.widget.WheelView: android.text.StaticLayout itemsLayout>;
+
+        $i0 = virtualinvoke $r5.<android.text.StaticLayout: int getWidth()>();
+
+        $i0 = $i0 + 8;
+
+        $f0 = (float) $i0;
+
+        $i0 = r2.<android.graphics.Rect: int top>;
+
+        $f1 = (float) $i0;
+
+        virtualinvoke $r1.<android.graphics.Canvas: void translate(float,float)>($f0, $f1);
+
+        $r5 = r0.<com.feiyu.wheel.widget.WheelView: android.text.StaticLayout labelLayout>;
+
+        virtualinvoke $r5.<android.text.StaticLayout: void draw(android.graphics.Canvas)>($r1);
+
+        virtualinvoke $r1.<android.graphics.Canvas: void restore()>();
+
+     label1:
+        $r5 = r0.<com.feiyu.wheel.widget.WheelView: android.text.StaticLayout valueLayout>;
+
+        if $r5 == null goto label2;
+
+        virtualinvoke $r1.<android.graphics.Canvas: int save()>();
+
+        $i1 = r2.<android.graphics.Rect: int top>;
+
+        $i0 = r0.<com.feiyu.wheel.widget.WheelView: int scrollingOffset>;
+
+        $i0 = $i1 + $i0;
+
+        $f0 = (float) $i0;
+
+        virtualinvoke $r1.<android.graphics.Canvas: void translate(float,float)>(0.0F, $f0);
+
+        $r5 = r0.<com.feiyu.wheel.widget.WheelView: android.text.StaticLayout valueLayout>;
+
+        virtualinvoke $r5.<android.text.StaticLayout: void draw(android.graphics.Canvas)>($r1);
+
+        virtualinvoke $r1.<android.graphics.Canvas: void restore()>();
+
+     label2:
+        return;
+    }
+
+    private int getDesiredHeight(android.text.Layout)
+    {
+        com.feiyu.wheel.widget.WheelView r0;
+        android.text.Layout $r1;
+        int $i0, $i1;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $r1 := @parameter0: android.text.Layout;
+
+        if $r1 != null goto label1;
+
+        return 0;
+
+     label1:
+        $i1 = specialinvoke r0.<com.feiyu.wheel.widget.WheelView: int getItemHeight()>();
+
+        $i0 = r0.<com.feiyu.wheel.widget.WheelView: int visibleItems>;
+
+        $i0 = $i1 * $i0;
+
+        $i0 = $i0 + -12;
+
+        $i0 = $i0 + -15;
+
+        $i1 = virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: int getSuggestedMinimumHeight()>();
+
+        $i0 = staticinvoke <java.lang.Math: int max(int,int)>($i0, $i1);
+
+        return $i0;
+    }
+
+    private int getItemHeight()
+    {
+        android.text.StaticLayout $r1;
+        com.feiyu.wheel.widget.WheelView r0;
+        int $i0, $i1;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $i0 = r0.<com.feiyu.wheel.widget.WheelView: int itemHeight>;
+
+        if $i0 == 0 goto label1;
+
+        $i0 = r0.<com.feiyu.wheel.widget.WheelView: int itemHeight>;
+
+        return $i0;
+
+     label1:
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: android.text.StaticLayout itemsLayout>;
+
+        if $r1 == null goto label2;
+
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: android.text.StaticLayout itemsLayout>;
+
+        $i0 = virtualinvoke $r1.<android.text.StaticLayout: int getLineCount()>();
+
+        if $i0 <= 2 goto label2;
+
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: android.text.StaticLayout itemsLayout>;
+
+        $i0 = virtualinvoke $r1.<android.text.StaticLayout: int getLineTop(int)>(2);
+
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: android.text.StaticLayout itemsLayout>;
+
+        $i1 = virtualinvoke $r1.<android.text.StaticLayout: int getLineTop(int)>(1);
+
+        $i0 = $i0 - $i1;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int itemHeight> = $i0;
+
+        $i0 = r0.<com.feiyu.wheel.widget.WheelView: int itemHeight>;
+
+        return $i0;
+
+     label2:
+        $i0 = virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: int getHeight()>();
+
+        $i1 = r0.<com.feiyu.wheel.widget.WheelView: int visibleItems>;
+
+        $i0 = $i0 / $i1;
+
+        return $i0;
+    }
+
+    private int getMaxTextLength()
+    {
+        com.feiyu.wheel.widget.WheelAdapter $r1;
+        com.feiyu.wheel.widget.WheelView r0;
+        int i0, $i1, $i2;
+        java.lang.String r2, $r3;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $r1 = virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: com.feiyu.wheel.widget.WheelAdapter getAdapter()>();
+
+        if $r1 != null goto label1;
+
+        return 0;
+
+     label1:
+        i0 = interfaceinvoke $r1.<com.feiyu.wheel.widget.WheelAdapter: int getMaximumLength()>();
+
+        if i0 <= 0 goto label2;
+
+        return i0;
+
+     label2:
+        r2 = null;
+
+        i0 = r0.<com.feiyu.wheel.widget.WheelView: int visibleItems>;
+
+        i0 = i0 / 2;
+
+        $i1 = r0.<com.feiyu.wheel.widget.WheelView: int currentItem>;
+
+        i0 = $i1 - i0;
+
+        i0 = staticinvoke <java.lang.Math: int max(int,int)>(i0, 0);
+
+     label3:
+        $i1 = r0.<com.feiyu.wheel.widget.WheelView: int currentItem>;
+
+        $i2 = r0.<com.feiyu.wheel.widget.WheelView: int visibleItems>;
+
+        $i1 = $i1 + $i2;
+
+        $i2 = interfaceinvoke $r1.<com.feiyu.wheel.widget.WheelAdapter: int getItemsCount()>();
+
+        $i1 = staticinvoke <java.lang.Math: int min(int,int)>($i1, $i2);
+
+        if i0 < $i1 goto label4;
+
+        if r2 == null goto label7;
+
+        i0 = virtualinvoke r2.<java.lang.String: int length()>();
+
+        return i0;
+
+     label4:
+        $r3 = interfaceinvoke $r1.<com.feiyu.wheel.widget.WheelAdapter: java.lang.String getItem(int)>(i0);
+
+        if $r3 == null goto label6;
+
+        if r2 == null goto label5;
+
+        $i1 = virtualinvoke r2.<java.lang.String: int length()>();
+
+        $i2 = virtualinvoke $r3.<java.lang.String: int length()>();
+
+        if $i1 >= $i2 goto label6;
+
+     label5:
+        r2 = $r3;
+
+     label6:
+        i0 = i0 + 1;
+
+        goto label3;
+
+     label7:
+        return 0;
+    }
+
+    private java.lang.String getTextItem(int)
+    {
+        com.feiyu.wheel.widget.WheelAdapter $r1;
+        com.feiyu.wheel.widget.WheelView r0;
+        int $i0, $i1;
+        java.lang.String $r2;
+        boolean $z0;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $i0 := @parameter0: int;
+
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: com.feiyu.wheel.widget.WheelAdapter adapter>;
+
+        if $r1 == null goto label5;
+
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: com.feiyu.wheel.widget.WheelAdapter adapter>;
+
+        $i1 = interfaceinvoke $r1.<com.feiyu.wheel.widget.WheelAdapter: int getItemsCount()>();
+
+        if $i1 != 0 goto label1;
+
+        return null;
+
+     label1:
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: com.feiyu.wheel.widget.WheelAdapter adapter>;
+
+        $i1 = interfaceinvoke $r1.<com.feiyu.wheel.widget.WheelAdapter: int getItemsCount()>();
+
+        if $i0 < 0 goto label2;
+
+        if $i0 < $i1 goto label3;
+
+     label2:
+        $z0 = r0.<com.feiyu.wheel.widget.WheelView: boolean isCyclic>;
+
+        if $z0 == 0 goto label5;
+
+     label3:
+        if $i0 < 0 goto label4;
+
+        $i0 = $i0 % $i1;
+
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: com.feiyu.wheel.widget.WheelAdapter adapter>;
+
+        $r2 = interfaceinvoke $r1.<com.feiyu.wheel.widget.WheelAdapter: java.lang.String getItem(int)>($i0);
+
+        return $r2;
+
+     label4:
+        $i0 = $i0 + $i1;
+
+        goto label3;
+
+     label5:
+        return null;
+    }
+
+    private void initData(android.content.Context)
+    {
+        android.content.Context $r1;
+        android.view.GestureDetector $r2;
+        android.widget.Scroller $r4;
+        com.feiyu.wheel.widget.WheelView r0;
+        android.view.GestureDetector$SimpleOnGestureListener $r3;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 = new android.view.GestureDetector;
+
+        $r3 = r0.<com.feiyu.wheel.widget.WheelView: android.view.GestureDetector$SimpleOnGestureListener gestureListener>;
+
+        specialinvoke $r2.<android.view.GestureDetector: void <init>(android.content.Context,android.view.GestureDetector$OnGestureListener)>($r1, $r3);
+
+        r0.<com.feiyu.wheel.widget.WheelView: android.view.GestureDetector gestureDetector> = $r2;
+
+        $r2 = r0.<com.feiyu.wheel.widget.WheelView: android.view.GestureDetector gestureDetector>;
+
+        virtualinvoke $r2.<android.view.GestureDetector: void setIsLongpressEnabled(boolean)>(0);
+
+        $r4 = new android.widget.Scroller;
+
+        specialinvoke $r4.<android.widget.Scroller: void <init>(android.content.Context)>($r1);
+
+        r0.<com.feiyu.wheel.widget.WheelView: android.widget.Scroller scroller> = $r4;
+
+        return;
+    }
+
+    private void initResourcesIfNecessary()
+    {
+        android.content.Context $r3;
+        com.feiyu.wheel.widget.WheelView r0;
+        android.graphics.drawable.Drawable $r2;
+        android.graphics.drawable.GradientDrawable$Orientation $r6;
+        int[] $r7;
+        android.text.TextPaint $r1;
+        android.graphics.drawable.GradientDrawable $r5;
+        android.content.res.Resources $r4;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: android.text.TextPaint itemsPaint>;
+
+        if $r1 != null goto label1;
+
+        $r1 = new android.text.TextPaint;
+
+        specialinvoke $r1.<android.text.TextPaint: void <init>(int)>(33);
+
+        r0.<com.feiyu.wheel.widget.WheelView: android.text.TextPaint itemsPaint> = $r1;
+
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: android.text.TextPaint itemsPaint>;
+
+        virtualinvoke $r1.<android.text.TextPaint: void setTextSize(float)>(30.0F);
+
+     label1:
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: android.text.TextPaint valuePaint>;
+
+        if $r1 != null goto label2;
+
+        $r1 = new android.text.TextPaint;
+
+        specialinvoke $r1.<android.text.TextPaint: void <init>(int)>(37);
+
+        r0.<com.feiyu.wheel.widget.WheelView: android.text.TextPaint valuePaint> = $r1;
+
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: android.text.TextPaint valuePaint>;
+
+        virtualinvoke $r1.<android.text.TextPaint: void setTextSize(float)>(30.0F);
+
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: android.text.TextPaint valuePaint>;
+
+        virtualinvoke $r1.<android.text.TextPaint: void setShadowLayer(float,float,float,int)>(0.1F, 0.0F, 0.1F, -4144960);
+
+     label2:
+        $r2 = r0.<com.feiyu.wheel.widget.WheelView: android.graphics.drawable.Drawable centerDrawable>;
+
+        if $r2 != null goto label3;
+
+        $r3 = virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: android.content.Context getContext()>();
+
+        $r4 = virtualinvoke $r3.<android.content.Context: android.content.res.Resources getResources()>();
+
+        $r2 = virtualinvoke $r4.<android.content.res.Resources: android.graphics.drawable.Drawable getDrawable(int)>(2130837679);
+
+        r0.<com.feiyu.wheel.widget.WheelView: android.graphics.drawable.Drawable centerDrawable> = $r2;
+
+     label3:
+        $r5 = r0.<com.feiyu.wheel.widget.WheelView: android.graphics.drawable.GradientDrawable topShadow>;
+
+        if $r5 != null goto label4;
+
+        $r5 = new android.graphics.drawable.GradientDrawable;
+
+        $r6 = <android.graphics.drawable.GradientDrawable$Orientation: android.graphics.drawable.GradientDrawable$Orientation TOP_BOTTOM>;
+
+        $r7 = <com.feiyu.wheel.widget.WheelView: int[] SHADOWS_COLORS>;
+
+        specialinvoke $r5.<android.graphics.drawable.GradientDrawable: void <init>(android.graphics.drawable.GradientDrawable$Orientation,int[])>($r6, $r7);
+
+        r0.<com.feiyu.wheel.widget.WheelView: android.graphics.drawable.GradientDrawable topShadow> = $r5;
+
+     label4:
+        $r5 = r0.<com.feiyu.wheel.widget.WheelView: android.graphics.drawable.GradientDrawable bottomShadow>;
+
+        if $r5 != null goto label5;
+
+        $r5 = new android.graphics.drawable.GradientDrawable;
+
+        $r6 = <android.graphics.drawable.GradientDrawable$Orientation: android.graphics.drawable.GradientDrawable$Orientation BOTTOM_TOP>;
+
+        $r7 = <com.feiyu.wheel.widget.WheelView: int[] SHADOWS_COLORS>;
+
+        specialinvoke $r5.<android.graphics.drawable.GradientDrawable: void <init>(android.graphics.drawable.GradientDrawable$Orientation,int[])>($r6, $r7);
+
+        r0.<com.feiyu.wheel.widget.WheelView: android.graphics.drawable.GradientDrawable bottomShadow> = $r5;
+
+     label5:
+        virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: void setBackgroundResource(int)>(2130837678);
+
+        return;
+    }
+
+    private void invalidateLayouts()
+    {
+        com.feiyu.wheel.widget.WheelView r0;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        r0.<com.feiyu.wheel.widget.WheelView: android.text.StaticLayout itemsLayout> = null;
+
+        r0.<com.feiyu.wheel.widget.WheelView: android.text.StaticLayout valueLayout> = null;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int scrollingOffset> = 0;
+
+        return;
+    }
+
+    private void justify()
+    {
+        android.widget.Scroller $r2;
+        com.feiyu.wheel.widget.WheelView r0;
+        com.feiyu.wheel.widget.WheelAdapter $r1;
+        byte $b4;
+        int i0, $i1, $i2, $i3;
+        float $f0, $f1;
+        boolean z0, $z1;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: com.feiyu.wheel.widget.WheelAdapter adapter>;
+
+        if $r1 != null goto label1;
+
+        return;
+
+     label1:
+        r0.<com.feiyu.wheel.widget.WheelView: int lastScrollY> = 0;
+
+        i0 = r0.<com.feiyu.wheel.widget.WheelView: int scrollingOffset>;
+
+        $i1 = specialinvoke r0.<com.feiyu.wheel.widget.WheelView: int getItemHeight()>();
+
+        if i0 <= 0 goto label6;
+
+        $i2 = r0.<com.feiyu.wheel.widget.WheelView: int currentItem>;
+
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: com.feiyu.wheel.widget.WheelAdapter adapter>;
+
+        $i3 = interfaceinvoke $r1.<com.feiyu.wheel.widget.WheelAdapter: int getItemsCount()>();
+
+        if $i2 >= $i3 goto label5;
+
+        z0 = 1;
+
+     label2:
+        $z1 = r0.<com.feiyu.wheel.widget.WheelView: boolean isCyclic>;
+
+        if $z1 != 0 goto label3;
+
+        if z0 == 0 goto label4;
+
+     label3:
+        $f0 = (float) i0;
+
+        $f0 = staticinvoke <java.lang.Math: float abs(float)>($f0);
+
+        $f1 = (float) $i1;
+
+        $f1 = $f1 / 2.0F;
+
+        $b4 = $f0 cmpl $f1;
+
+        $i2 = (int) $b4;
+
+        if $i2 <= 0 goto label4;
+
+        if i0 >= 0 goto label8;
+
+        $i1 = $i1 + 1;
+
+        i0 = i0 + $i1;
+
+     label4:
+        $i1 = staticinvoke <java.lang.Math: int abs(int)>(i0);
+
+        if $i1 <= 1 goto label9;
+
+        $r2 = r0.<com.feiyu.wheel.widget.WheelView: android.widget.Scroller scroller>;
+
+        virtualinvoke $r2.<android.widget.Scroller: void startScroll(int,int,int,int,int)>(0, 0, 0, i0, 400);
+
+        specialinvoke r0.<com.feiyu.wheel.widget.WheelView: void setNextMessage(int)>(1);
+
+        return;
+
+     label5:
+        z0 = 0;
+
+        goto label2;
+
+     label6:
+        $i2 = r0.<com.feiyu.wheel.widget.WheelView: int currentItem>;
+
+        if $i2 <= 0 goto label7;
+
+        z0 = 1;
+
+        goto label2;
+
+     label7:
+        z0 = 0;
+
+        goto label2;
+
+     label8:
+        $i1 = $i1 + 1;
+
+        i0 = i0 - $i1;
+
+        goto label4;
+
+     label9:
+        virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: void finishScrolling()>();
+
+        return;
+    }
+
+    private void setNextMessage(int)
+    {
+        int $i0;
+        com.feiyu.wheel.widget.WheelView r0;
+        android.os.Handler $r1;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $i0 := @parameter0: int;
+
+        specialinvoke r0.<com.feiyu.wheel.widget.WheelView: void clearMessages()>();
+
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: android.os.Handler animationHandler>;
+
+        virtualinvoke $r1.<android.os.Handler: boolean sendEmptyMessage(int)>($i0);
+
+        return;
+    }
+
+    private void startScrolling()
+    {
+        com.feiyu.wheel.widget.WheelView r0;
+        boolean $z0;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $z0 = r0.<com.feiyu.wheel.widget.WheelView: boolean isScrollingPerformed>;
+
+        if $z0 != 0 goto label1;
+
+        r0.<com.feiyu.wheel.widget.WheelView: boolean isScrollingPerformed> = 1;
+
+        virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: void notifyScrollingListenersAboutStart()>();
+
+     label1:
+        return;
+    }
+
+    public void addChangingListener(com.feiyu.wheel.widget.OnWheelChangedListener)
+    {
+        com.feiyu.wheel.widget.OnWheelChangedListener $r1;
+        java.util.List $r2;
+        com.feiyu.wheel.widget.WheelView r0;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $r1 := @parameter0: com.feiyu.wheel.widget.OnWheelChangedListener;
+
+        $r2 = r0.<com.feiyu.wheel.widget.WheelView: java.util.List changingListeners>;
+
+        interfaceinvoke $r2.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        return;
+    }
+
+    public void addScrollingListener(com.feiyu.wheel.widget.OnWheelScrollListener)
+    {
+        java.util.List $r2;
+        com.feiyu.wheel.widget.WheelView r0;
+        com.feiyu.wheel.widget.OnWheelScrollListener $r1;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $r1 := @parameter0: com.feiyu.wheel.widget.OnWheelScrollListener;
+
+        $r2 = r0.<com.feiyu.wheel.widget.WheelView: java.util.List scrollingListeners>;
+
+        interfaceinvoke $r2.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        return;
+    }
+
+    void finishScrolling()
+    {
+        com.feiyu.wheel.widget.WheelView r0;
+        boolean $z0;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $z0 = r0.<com.feiyu.wheel.widget.WheelView: boolean isScrollingPerformed>;
+
+        if $z0 == 0 goto label1;
+
+        virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: void notifyScrollingListenersAboutEnd()>();
+
+        r0.<com.feiyu.wheel.widget.WheelView: boolean isScrollingPerformed> = 0;
+
+     label1:
+        specialinvoke r0.<com.feiyu.wheel.widget.WheelView: void invalidateLayouts()>();
+
+        virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: void invalidate()>();
+
+        return;
+    }
+
+    public com.feiyu.wheel.widget.WheelAdapter getAdapter()
+    {
+        com.feiyu.wheel.widget.WheelAdapter r1;
+        com.feiyu.wheel.widget.WheelView r0;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        r1 = r0.<com.feiyu.wheel.widget.WheelView: com.feiyu.wheel.widget.WheelAdapter adapter>;
+
+        return r1;
+    }
+
+    public int getCurrentItem()
+    {
+        int i0;
+        com.feiyu.wheel.widget.WheelView r0;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        i0 = r0.<com.feiyu.wheel.widget.WheelView: int currentItem>;
+
+        return i0;
+    }
+
+    public java.lang.String getLabel()
+    {
+        java.lang.String r1;
+        com.feiyu.wheel.widget.WheelView r0;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        r1 = r0.<com.feiyu.wheel.widget.WheelView: java.lang.String label>;
+
+        return r1;
+    }
+
+    public int getVisibleItems()
+    {
+        int i0;
+        com.feiyu.wheel.widget.WheelView r0;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        i0 = r0.<com.feiyu.wheel.widget.WheelView: int visibleItems>;
+
+        return i0;
+    }
+
+    public boolean isCyclic()
+    {
+        com.feiyu.wheel.widget.WheelView r0;
+        boolean z0;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        z0 = r0.<com.feiyu.wheel.widget.WheelView: boolean isCyclic>;
+
+        return z0;
+    }
+
+    protected void notifyChangingListeners(int, int)
+    {
+        com.feiyu.wheel.widget.OnWheelChangedListener r4;
+        com.feiyu.wheel.widget.WheelView r0;
+        java.util.Iterator $r2;
+        java.util.List $r1;
+        int $i0, $i1;
+        java.lang.Object $r3;
+        boolean $z0;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: java.util.List changingListeners>;
+
+        $r2 = interfaceinvoke $r1.<java.util.List: java.util.Iterator iterator()>();
+
+     label1:
+        $z0 = interfaceinvoke $r2.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 != 0 goto label2;
+
+        return;
+
+     label2:
+        $r3 = interfaceinvoke $r2.<java.util.Iterator: java.lang.Object next()>();
+
+        r4 = (com.feiyu.wheel.widget.OnWheelChangedListener) $r3;
+
+        interfaceinvoke r4.<com.feiyu.wheel.widget.OnWheelChangedListener: void onChanged(com.feiyu.wheel.widget.WheelView,int,int)>(r0, $i0, $i1);
+
+        goto label1;
+    }
+
+    protected void notifyScrollingListenersAboutEnd()
+    {
+        java.util.List $r1;
+        com.feiyu.wheel.widget.WheelView r0;
+        java.util.Iterator $r2;
+        java.lang.Object $r3;
+        com.feiyu.wheel.widget.OnWheelScrollListener r4;
+        boolean $z0;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: java.util.List scrollingListeners>;
+
+        $r2 = interfaceinvoke $r1.<java.util.List: java.util.Iterator iterator()>();
+
+     label1:
+        $z0 = interfaceinvoke $r2.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 != 0 goto label2;
+
+        return;
+
+     label2:
+        $r3 = interfaceinvoke $r2.<java.util.Iterator: java.lang.Object next()>();
+
+        r4 = (com.feiyu.wheel.widget.OnWheelScrollListener) $r3;
+
+        interfaceinvoke r4.<com.feiyu.wheel.widget.OnWheelScrollListener: void onScrollingFinished(com.feiyu.wheel.widget.WheelView)>(r0);
+
+        goto label1;
+    }
+
+    protected void notifyScrollingListenersAboutStart()
+    {
+        java.util.List $r1;
+        com.feiyu.wheel.widget.WheelView r0;
+        java.util.Iterator $r2;
+        java.lang.Object $r3;
+        com.feiyu.wheel.widget.OnWheelScrollListener r4;
+        boolean $z0;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: java.util.List scrollingListeners>;
+
+        $r2 = interfaceinvoke $r1.<java.util.List: java.util.Iterator iterator()>();
+
+     label1:
+        $z0 = interfaceinvoke $r2.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 != 0 goto label2;
+
+        return;
+
+     label2:
+        $r3 = interfaceinvoke $r2.<java.util.Iterator: java.lang.Object next()>();
+
+        r4 = (com.feiyu.wheel.widget.OnWheelScrollListener) $r3;
+
+        interfaceinvoke r4.<com.feiyu.wheel.widget.OnWheelScrollListener: void onScrollingStarted(com.feiyu.wheel.widget.WheelView)>(r0);
+
+        goto label1;
+    }
+
+    protected void onDraw(android.graphics.Canvas)
+    {
+        android.text.StaticLayout $r2;
+        com.feiyu.wheel.widget.WheelView r0;
+        int $i0, $i1;
+        android.graphics.Canvas $r1;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $r1 := @parameter0: android.graphics.Canvas;
+
+        specialinvoke r0.<android.view.View: void onDraw(android.graphics.Canvas)>($r1);
+
+        $r2 = r0.<com.feiyu.wheel.widget.WheelView: android.text.StaticLayout itemsLayout>;
+
+        if $r2 != null goto label1;
+
+        $i0 = r0.<com.feiyu.wheel.widget.WheelView: int itemsWidth>;
+
+        if $i0 != 0 goto label3;
+
+        $i0 = virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: int getWidth()>();
+
+        specialinvoke r0.<com.feiyu.wheel.widget.WheelView: int calculateLayoutWidth(int,int)>($i0, 1073741824);
+
+     label1:
+        $i0 = r0.<com.feiyu.wheel.widget.WheelView: int itemsWidth>;
+
+        if $i0 <= 0 goto label2;
+
+        virtualinvoke $r1.<android.graphics.Canvas: int save()>();
+
+        virtualinvoke $r1.<android.graphics.Canvas: void translate(float,float)>(10.0F, -6.0F);
+
+        specialinvoke r0.<com.feiyu.wheel.widget.WheelView: void drawItems(android.graphics.Canvas)>($r1);
+
+        specialinvoke r0.<com.feiyu.wheel.widget.WheelView: void drawValue(android.graphics.Canvas)>($r1);
+
+        virtualinvoke $r1.<android.graphics.Canvas: void restore()>();
+
+     label2:
+        specialinvoke r0.<com.feiyu.wheel.widget.WheelView: void drawCenterRect(android.graphics.Canvas)>($r1);
+
+        specialinvoke r0.<com.feiyu.wheel.widget.WheelView: void drawShadows(android.graphics.Canvas)>($r1);
+
+        return;
+
+     label3:
+        $i0 = r0.<com.feiyu.wheel.widget.WheelView: int itemsWidth>;
+
+        $i1 = r0.<com.feiyu.wheel.widget.WheelView: int labelWidth>;
+
+        specialinvoke r0.<com.feiyu.wheel.widget.WheelView: void createLayouts(int,int)>($i0, $i1);
+
+        goto label1;
+    }
+
+    protected void onMeasure(int, int)
+    {
+        android.text.StaticLayout $r1;
+        com.feiyu.wheel.widget.WheelView r0;
+        int $i0, $i1, $i2, $i3, $i4;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $i2 = staticinvoke <android.view.View$MeasureSpec: int getMode(int)>($i0);
+
+        $i3 = staticinvoke <android.view.View$MeasureSpec: int getMode(int)>($i1);
+
+        $i4 = staticinvoke <android.view.View$MeasureSpec: int getSize(int)>($i0);
+
+        $i0 = staticinvoke <android.view.View$MeasureSpec: int getSize(int)>($i1);
+
+        $i1 = specialinvoke r0.<com.feiyu.wheel.widget.WheelView: int calculateLayoutWidth(int,int)>($i4, $i2);
+
+        if $i3 != 1073741824 goto label2;
+
+        $i2 = $i0;
+
+     label1:
+        virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: void setMeasuredDimension(int,int)>($i1, $i2);
+
+        return;
+
+     label2:
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: android.text.StaticLayout itemsLayout>;
+
+        $i4 = specialinvoke r0.<com.feiyu.wheel.widget.WheelView: int getDesiredHeight(android.text.Layout)>($r1);
+
+        $i2 = $i4;
+
+        if $i3 != -2147483648 goto label1;
+
+        $i2 = staticinvoke <java.lang.Math: int min(int,int)>($i4, $i0);
+
+        goto label1;
+    }
+
+    public boolean onTouchEvent(android.view.MotionEvent)
+    {
+        com.feiyu.wheel.widget.WheelAdapter $r2;
+        android.view.GestureDetector $r3;
+        com.feiyu.wheel.widget.WheelView r0;
+        android.view.MotionEvent $r1;
+        int $i0;
+        boolean $z0;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $r1 := @parameter0: android.view.MotionEvent;
+
+        $r2 = virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: com.feiyu.wheel.widget.WheelAdapter getAdapter()>();
+
+        if $r2 != null goto label1;
+
+        return 1;
+
+     label1:
+        $r3 = r0.<com.feiyu.wheel.widget.WheelView: android.view.GestureDetector gestureDetector>;
+
+        $z0 = virtualinvoke $r3.<android.view.GestureDetector: boolean onTouchEvent(android.view.MotionEvent)>($r1);
+
+        if $z0 != 0 goto label2;
+
+        $i0 = virtualinvoke $r1.<android.view.MotionEvent: int getAction()>();
+
+        if $i0 != 1 goto label2;
+
+        specialinvoke r0.<com.feiyu.wheel.widget.WheelView: void justify()>();
+
+     label2:
+        return 1;
+    }
+
+    public void removeChangingListener(com.feiyu.wheel.widget.OnWheelChangedListener)
+    {
+        com.feiyu.wheel.widget.OnWheelChangedListener $r1;
+        java.util.List $r2;
+        com.feiyu.wheel.widget.WheelView r0;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $r1 := @parameter0: com.feiyu.wheel.widget.OnWheelChangedListener;
+
+        $r2 = r0.<com.feiyu.wheel.widget.WheelView: java.util.List changingListeners>;
+
+        interfaceinvoke $r2.<java.util.List: boolean remove(java.lang.Object)>($r1);
+
+        return;
+    }
+
+    public void removeScrollingListener(com.feiyu.wheel.widget.OnWheelScrollListener)
+    {
+        java.util.List $r2;
+        com.feiyu.wheel.widget.WheelView r0;
+        com.feiyu.wheel.widget.OnWheelScrollListener $r1;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $r1 := @parameter0: com.feiyu.wheel.widget.OnWheelScrollListener;
+
+        $r2 = r0.<com.feiyu.wheel.widget.WheelView: java.util.List scrollingListeners>;
+
+        interfaceinvoke $r2.<java.util.List: boolean remove(java.lang.Object)>($r1);
+
+        return;
+    }
+
+    public void scroll(int, int)
+    {
+        android.widget.Scroller $r1;
+        com.feiyu.wheel.widget.WheelView r0;
+        int $i0, $i1, $i2, $i3;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: android.widget.Scroller scroller>;
+
+        virtualinvoke $r1.<android.widget.Scroller: void forceFinished(boolean)>(1);
+
+        $i2 = r0.<com.feiyu.wheel.widget.WheelView: int scrollingOffset>;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int lastScrollY> = $i2;
+
+        $i2 = specialinvoke r0.<com.feiyu.wheel.widget.WheelView: int getItemHeight()>();
+
+        $i2 = $i0 * $i2;
+
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: android.widget.Scroller scroller>;
+
+        $i0 = r0.<com.feiyu.wheel.widget.WheelView: int lastScrollY>;
+
+        $i3 = r0.<com.feiyu.wheel.widget.WheelView: int lastScrollY>;
+
+        $i2 = $i2 - $i3;
+
+        virtualinvoke $r1.<android.widget.Scroller: void startScroll(int,int,int,int,int)>(0, $i0, 0, $i2, 400);
+
+        specialinvoke r0.<com.feiyu.wheel.widget.WheelView: void setNextMessage(int)>(0);
+
+        specialinvoke r0.<com.feiyu.wheel.widget.WheelView: void startScrolling()>();
+
+        return;
+    }
+
+    public void setAdapter(com.feiyu.wheel.widget.WheelAdapter)
+    {
+        com.feiyu.wheel.widget.WheelAdapter $r1;
+        com.feiyu.wheel.widget.WheelView r0;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $r1 := @parameter0: com.feiyu.wheel.widget.WheelAdapter;
+
+        r0.<com.feiyu.wheel.widget.WheelView: com.feiyu.wheel.widget.WheelAdapter adapter> = $r1;
+
+        specialinvoke r0.<com.feiyu.wheel.widget.WheelView: void invalidateLayouts()>();
+
+        virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: void invalidate()>();
+
+        return;
+    }
+
+    public void setCurrentItem(int)
+    {
+        int $i0;
+        com.feiyu.wheel.widget.WheelView r0;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $i0 := @parameter0: int;
+
+        virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: void setCurrentItem(int,boolean)>($i0, 0);
+
+        return;
+    }
+
+    public void setCurrentItem(int, boolean)
+    {
+        com.feiyu.wheel.widget.WheelAdapter $r1;
+        com.feiyu.wheel.widget.WheelView r0;
+        int i0, $i1;
+        boolean $z0, $z1;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $i1 := @parameter0: int;
+
+        $z0 := @parameter1: boolean;
+
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: com.feiyu.wheel.widget.WheelAdapter adapter>;
+
+        if $r1 == null goto label7;
+
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: com.feiyu.wheel.widget.WheelAdapter adapter>;
+
+        i0 = interfaceinvoke $r1.<com.feiyu.wheel.widget.WheelAdapter: int getItemsCount()>();
+
+        if i0 != 0 goto label1;
+
+        return;
+
+     label1:
+        if $i1 < 0 goto label2;
+
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: com.feiyu.wheel.widget.WheelAdapter adapter>;
+
+        i0 = interfaceinvoke $r1.<com.feiyu.wheel.widget.WheelAdapter: int getItemsCount()>();
+
+        if $i1 < i0 goto label4;
+
+     label2:
+        $z1 = r0.<com.feiyu.wheel.widget.WheelView: boolean isCyclic>;
+
+        if $z1 == 0 goto label7;
+
+     label3:
+        if $i1 < 0 goto label5;
+
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: com.feiyu.wheel.widget.WheelAdapter adapter>;
+
+        i0 = interfaceinvoke $r1.<com.feiyu.wheel.widget.WheelAdapter: int getItemsCount()>();
+
+        $i1 = $i1 % i0;
+
+     label4:
+        i0 = r0.<com.feiyu.wheel.widget.WheelView: int currentItem>;
+
+        if $i1 == i0 goto label7;
+
+        goto label6;
+
+     label5:
+        $r1 = r0.<com.feiyu.wheel.widget.WheelView: com.feiyu.wheel.widget.WheelAdapter adapter>;
+
+        i0 = interfaceinvoke $r1.<com.feiyu.wheel.widget.WheelAdapter: int getItemsCount()>();
+
+        $i1 = $i1 + i0;
+
+        goto label3;
+
+     label6:
+        specialinvoke r0.<com.feiyu.wheel.widget.WheelView: void invalidateLayouts()>();
+
+        i0 = r0.<com.feiyu.wheel.widget.WheelView: int currentItem>;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int currentItem> = $i1;
+
+        $i1 = r0.<com.feiyu.wheel.widget.WheelView: int currentItem>;
+
+        virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: void notifyChangingListeners(int,int)>(i0, $i1);
+
+        virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: void invalidate()>();
+
+     label7:
+        return;
+    }
+
+    public void setCyclic(boolean)
+    {
+        com.feiyu.wheel.widget.WheelView r0;
+        boolean $z0;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $z0 := @parameter0: boolean;
+
+        r0.<com.feiyu.wheel.widget.WheelView: boolean isCyclic> = 1;
+
+        virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: void invalidate()>();
+
+        specialinvoke r0.<com.feiyu.wheel.widget.WheelView: void invalidateLayouts()>();
+
+        return;
+    }
+
+    public void setInterpolator(android.view.animation.Interpolator)
+    {
+        android.content.Context $r2;
+        android.widget.Scroller $r3;
+        com.feiyu.wheel.widget.WheelView r0;
+        android.view.animation.Interpolator $r1;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $r1 := @parameter0: android.view.animation.Interpolator;
+
+        $r3 = r0.<com.feiyu.wheel.widget.WheelView: android.widget.Scroller scroller>;
+
+        virtualinvoke $r3.<android.widget.Scroller: void forceFinished(boolean)>(1);
+
+        $r3 = new android.widget.Scroller;
+
+        $r2 = virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: android.content.Context getContext()>();
+
+        specialinvoke $r3.<android.widget.Scroller: void <init>(android.content.Context,android.view.animation.Interpolator)>($r2, $r1);
+
+        r0.<com.feiyu.wheel.widget.WheelView: android.widget.Scroller scroller> = $r3;
+
+        return;
+    }
+
+    public void setLabel(java.lang.String)
+    {
+        com.feiyu.wheel.widget.WheelView r0;
+        java.lang.String $r1, $r2;
+        boolean $z0;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = r0.<com.feiyu.wheel.widget.WheelView: java.lang.String label>;
+
+        if $r2 == null goto label1;
+
+        $r2 = r0.<com.feiyu.wheel.widget.WheelView: java.lang.String label>;
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>($r1);
+
+        if $z0 != 0 goto label2;
+
+     label1:
+        r0.<com.feiyu.wheel.widget.WheelView: java.lang.String label> = $r1;
+
+        r0.<com.feiyu.wheel.widget.WheelView: android.text.StaticLayout labelLayout> = null;
+
+        virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: void invalidate()>();
+
+     label2:
+        return;
+    }
+
+    public void setVisibleItems(int)
+    {
+        int $i0;
+        com.feiyu.wheel.widget.WheelView r0;
+
+        r0 := @this: com.feiyu.wheel.widget.WheelView;
+
+        $i0 := @parameter0: int;
+
+        r0.<com.feiyu.wheel.widget.WheelView: int visibleItems> = $i0;
+
+        virtualinvoke r0.<com.feiyu.wheel.widget.WheelView: void invalidate()>();
+
+        return;
+    }
+}

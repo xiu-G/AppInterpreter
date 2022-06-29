@@ -1,0 +1,1466 @@
+public class com.entaz.app.comicplus.menu.CategoryCharge extends android.app.Activity
+{
+    public static final java.lang.String BUNDLE_KEY;
+    public static final java.lang.String BUNDLE_MYPAGE;
+    private static final int REQ_AUTO_CHARGE_POPUP;
+    private static final int REQ_FIND_PASSWORD_POPUP;
+    private static final java.lang.String TAG;
+    private static java.lang.String m_strUrlSecurityEnd;
+    private static java.lang.String m_strUrlSecurityStart;
+    private static java.lang.String strSecurityKey;
+    com.entaz.app.comicplus.menu.form.EzBillForm billForm;
+    android.app.AlertDialog m_AlertDialog;
+    android.widget.FrameLayout m_CenterLayout;
+    com.entaz.app.comicplus.http.HttpReq m_HttpReq;
+    android.widget.TextView m_MyPoint;
+    com.entaz.app.comicplus.http.HttpReq$Request m_OnComplete;
+    android.widget.ProgressBar m_Progress;
+    boolean m_fComplete;
+    private java.lang.String strBillingCode;
+    public android.content.Intent ipcIntent;
+    public android.content.Intent ipcResultIntent;
+
+    static void <clinit>()
+    {
+        <com.entaz.app.comicplus.menu.CategoryCharge: java.lang.String TAG> = "CategoryCharge";
+
+        <com.entaz.app.comicplus.menu.CategoryCharge: int REQ_FIND_PASSWORD_POPUP> = 2;
+
+        <com.entaz.app.comicplus.menu.CategoryCharge: int REQ_AUTO_CHARGE_POPUP> = 1;
+
+        <com.entaz.app.comicplus.menu.CategoryCharge: java.lang.String BUNDLE_MYPAGE> = "MYPAGE";
+
+        <com.entaz.app.comicplus.menu.CategoryCharge: java.lang.String BUNDLE_KEY> = "BUNDLE";
+
+        <com.entaz.app.comicplus.menu.CategoryCharge: java.lang.String strSecurityKey> = "";
+
+        <com.entaz.app.comicplus.menu.CategoryCharge: java.lang.String m_strUrlSecurityStart> = "http://comicplus.entaz.com/module/payment_point_buy_start.jsp?debug=false";
+
+        <com.entaz.app.comicplus.menu.CategoryCharge: java.lang.String m_strUrlSecurityEnd> = "http://comicplus.entaz.com/module/payment_point_buy_end.jsp";
+
+        return;
+    }
+
+    public void <init>()
+    {
+        com.entaz.app.comicplus.menu.CategoryCharge r0;
+        com.entaz.app.comicplus.menu.CategoryCharge$1 $r1;
+
+        r0 := @this: com.entaz.app.comicplus.menu.CategoryCharge;
+
+        specialinvoke r0.<android.app.Activity: void <init>()>();
+
+        r0.<com.entaz.app.comicplus.menu.CategoryCharge: java.lang.String strBillingCode> = "";
+
+        r0.<com.entaz.app.comicplus.menu.CategoryCharge: boolean m_fComplete> = 1;
+
+        $r1 = new com.entaz.app.comicplus.menu.CategoryCharge$1;
+
+        specialinvoke $r1.<com.entaz.app.comicplus.menu.CategoryCharge$1: void <init>(com.entaz.app.comicplus.menu.CategoryCharge)>(r0);
+
+        r0.<com.entaz.app.comicplus.menu.CategoryCharge: com.entaz.app.comicplus.http.HttpReq$Request m_OnComplete> = $r1;
+
+        return;
+    }
+
+    static void access$0(com.entaz.app.comicplus.menu.CategoryCharge, java.lang.String)
+    {
+        com.entaz.app.comicplus.menu.CategoryCharge $r0;
+        java.lang.String $r1;
+
+        $r0 := @parameter0: com.entaz.app.comicplus.menu.CategoryCharge;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r0.<com.entaz.app.comicplus.menu.CategoryCharge: java.lang.String strBillingCode> = $r1;
+
+        return;
+    }
+
+    static java.lang.String access$1(com.entaz.app.comicplus.menu.CategoryCharge)
+    {
+        com.entaz.app.comicplus.menu.CategoryCharge $r0;
+        java.lang.String r1;
+
+        $r0 := @parameter0: com.entaz.app.comicplus.menu.CategoryCharge;
+
+        r1 = $r0.<com.entaz.app.comicplus.menu.CategoryCharge: java.lang.String strBillingCode>;
+
+        return r1;
+    }
+
+    static void access$2(com.entaz.app.comicplus.menu.CategoryCharge, java.lang.String)
+    {
+        com.entaz.app.comicplus.menu.CategoryCharge $r0;
+        java.lang.String $r1;
+
+        $r0 := @parameter0: com.entaz.app.comicplus.menu.CategoryCharge;
+
+        $r1 := @parameter1: java.lang.String;
+
+        specialinvoke $r0.<com.entaz.app.comicplus.menu.CategoryCharge: void billProcess(java.lang.String)>($r1);
+
+        return;
+    }
+
+    static java.lang.String access$3()
+    {
+        java.lang.String r0;
+
+        r0 = <com.entaz.app.comicplus.menu.CategoryCharge: java.lang.String strSecurityKey>;
+
+        return r0;
+    }
+
+    static java.lang.String access$4()
+    {
+        java.lang.String r0;
+
+        r0 = <com.entaz.app.comicplus.menu.CategoryCharge: java.lang.String m_strUrlSecurityEnd>;
+
+        return r0;
+    }
+
+    static void access$5(com.entaz.app.comicplus.menu.CategoryCharge)
+    {
+        com.entaz.app.comicplus.menu.CategoryCharge $r0;
+
+        $r0 := @parameter0: com.entaz.app.comicplus.menu.CategoryCharge;
+
+        specialinvoke $r0.<com.entaz.app.comicplus.menu.CategoryCharge: void refreshPoint()>();
+
+        return;
+    }
+
+    private void billProcess(java.lang.String)
+    {
+        com.entaz.app.comicplus.menu.CategoryCharge r0;
+        java.lang.Object[] $r5;
+        com.entaz.app.comicplus.menu.CategoryCharge$EzBillTask r2;
+        com.entaz.purchase.PurchaseFactory$PurchaseType $r3, $r4;
+        java.lang.StringBuilder $r8;
+        java.lang.String $r1, $r6, $r7;
+        com.entaz.purchase.IPurchase $r9;
+        boolean $z0;
+
+        r0 := @this: com.entaz.app.comicplus.menu.CategoryCharge;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r3 = <com.entaz.app.comicplus.Application: com.entaz.purchase.PurchaseFactory$PurchaseType STORE_TYPE>;
+
+        $r4 = <com.entaz.purchase.PurchaseFactory$PurchaseType: com.entaz.purchase.PurchaseFactory$PurchaseType DANAL>;
+
+        if $r3 != $r4 goto label2;
+
+        r2 = new com.entaz.app.comicplus.menu.CategoryCharge$EzBillTask;
+
+        specialinvoke r2.<com.entaz.app.comicplus.menu.CategoryCharge$EzBillTask: void <init>(com.entaz.app.comicplus.menu.CategoryCharge)>(r0);
+
+        $r5 = newarray (java.lang.Object)[1];
+
+        $r5[0] = $r1;
+
+        virtualinvoke r2.<com.entaz.app.comicplus.menu.CategoryCharge$EzBillTask: android.os.AsyncTask execute(java.lang.Object[])>($r5);
+
+     label1:
+        r0.<com.entaz.app.comicplus.menu.CategoryCharge: boolean m_fComplete> = 0;
+
+        return;
+
+     label2:
+        $r6 = <com.entaz.app.comicplus.menu.CategoryCharge: java.lang.String m_strUrlSecurityStart>;
+
+        $r6 = staticinvoke <com.entaz.app.comicplus.menu.CategoryCharge: java.lang.String makeUrl(java.lang.String)>($r6);
+
+        $r7 = staticinvoke <com.entaz.app.comicplus.menu.CategoryCharge: java.lang.String requestURL(java.lang.String,java.lang.String,java.lang.String)>($r6, "A", "");
+
+        <com.entaz.app.comicplus.menu.CategoryCharge: java.lang.String strSecurityKey> = $r7;
+
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>(java.lang.String)>("strSecurityKey:");
+
+        $r7 = <com.entaz.app.comicplus.menu.CategoryCharge: java.lang.String strSecurityKey>;
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(", strUrl:");
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r6 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("CategoryCharge", $r6);
+
+        $r9 = <com.entaz.app.comicplus.Application: com.entaz.purchase.IPurchase mPurchase>;
+
+        interfaceinvoke $r9.<com.entaz.purchase.IPurchase: void popPurchaseDlg(java.lang.String)>($r1);
+
+        $r6 = <com.entaz.app.comicplus.Application: java.lang.String BILLCODE1000>;
+
+        $z0 = virtualinvoke $r6.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>($r1);
+
+        if $z0 == 0 goto label3;
+
+        r0.<com.entaz.app.comicplus.menu.CategoryCharge: java.lang.String strBillingCode> = "1000";
+
+        goto label1;
+
+     label3:
+        $r6 = <com.entaz.app.comicplus.Application: java.lang.String BILLCODE3000>;
+
+        $z0 = virtualinvoke $r6.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>($r1);
+
+        if $z0 == 0 goto label4;
+
+        r0.<com.entaz.app.comicplus.menu.CategoryCharge: java.lang.String strBillingCode> = "3000";
+
+        goto label1;
+
+     label4:
+        $r6 = <com.entaz.app.comicplus.Application: java.lang.String BILLCODE5000>;
+
+        $z0 = virtualinvoke $r6.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>($r1);
+
+        if $z0 == 0 goto label5;
+
+        r0.<com.entaz.app.comicplus.menu.CategoryCharge: java.lang.String strBillingCode> = "5000";
+
+        goto label1;
+
+     label5:
+        $r6 = <com.entaz.app.comicplus.Application: java.lang.String BILLCODE10000>;
+
+        $z0 = virtualinvoke $r6.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>($r1);
+
+        if $z0 == 0 goto label1;
+
+        r0.<com.entaz.app.comicplus.menu.CategoryCharge: java.lang.String strBillingCode> = "10000";
+
+        goto label1;
+    }
+
+    public static java.lang.String encodeAllParameters(java.lang.String)
+    {
+        int i0, $i1;
+        java.lang.String[] $r1;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 = virtualinvoke $r0.<java.lang.String: java.lang.String[] split(java.lang.String)>("&");
+
+        $r0 = "";
+
+        i0 = 0;
+
+     label1:
+        $i1 = lengthof $r1;
+
+        if i0 < $i1 goto label2;
+
+        return $r0;
+
+     label2:
+        if i0 <= 0 goto label3;
+
+        $r2 = new java.lang.StringBuilder;
+
+        $r0 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r0);
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>($r0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("&");
+
+        $r0 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label3:
+        $r2 = new java.lang.StringBuilder;
+
+        $r0 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r0);
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>($r0);
+
+        $r0 = $r1[i0];
+
+        $r0 = staticinvoke <com.entaz.app.comicplus.menu.CategoryCharge: java.lang.String encodeParameter(java.lang.String)>($r0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r0);
+
+        $r0 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        i0 = i0 + 1;
+
+        goto label1;
+    }
+
+    public static java.lang.String encodeParameter(java.lang.String)
+    {
+        java.lang.StringBuffer r1, $r5;
+        int $i0;
+        java.lang.String $r0, r2, r3;
+        java.lang.Exception $r4;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r5 = new java.lang.StringBuffer;
+
+        r1 = $r5;
+
+        specialinvoke $r5.<java.lang.StringBuffer: void <init>()>();
+
+        r2 = "";
+
+     label1:
+        $i0 = virtualinvoke $r0.<java.lang.String: int indexOf(int)>(61);
+
+     label2:
+        if $i0 != -1 goto label5;
+
+        r3 = $r0;
+
+     label3:
+        virtualinvoke r1.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(r3);
+
+        virtualinvoke r1.<java.lang.StringBuffer: java.lang.StringBuffer append(char)>(61);
+
+        $r0 = staticinvoke <java.net.URLEncoder: java.lang.String encode(java.lang.String,java.lang.String)>(r2, "EUC-KR");
+
+        virtualinvoke r1.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r0);
+
+     label4:
+        $r0 = virtualinvoke r1.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        return $r0;
+
+     label5:
+        r3 = virtualinvoke $r0.<java.lang.String: java.lang.String substring(int,int)>(0, $i0);
+
+     label6:
+        $i0 = $i0 + 1;
+
+     label7:
+        $r0 = virtualinvoke $r0.<java.lang.String: java.lang.String substring(int)>($i0);
+
+     label8:
+        r2 = $r0;
+
+        goto label3;
+
+     label9:
+        $r4 := @caughtexception;
+
+        virtualinvoke $r4.<java.lang.Exception: void printStackTrace()>();
+
+        goto label4;
+
+        catch java.lang.Exception from label1 to label2 with label9;
+        catch java.lang.Exception from label3 to label4 with label9;
+        catch java.lang.Exception from label5 to label6 with label9;
+        catch java.lang.Exception from label7 to label8 with label9;
+    }
+
+    public static java.lang.String makeUrl(java.lang.String)
+    {
+        java.lang.Exception $r6;
+        int $i0;
+        com.entaz.purchase.PurchaseFactory$PurchaseType $r3, $r4;
+        java.lang.StringBuilder $r1;
+        java.lang.String $r0, $r2, $r5;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $z0 = virtualinvoke $r0.<java.lang.String: boolean contains(java.lang.CharSequence)>("?");
+
+        if $z0 == 0 goto label09;
+
+        $r1 = new java.lang.StringBuilder;
+
+        $r2 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r0);
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>(java.lang.String)>($r2);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("&");
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label01:
+        $r3 = <com.entaz.app.comicplus.Application: com.entaz.purchase.PurchaseFactory$PurchaseType STORE_TYPE>;
+
+        $r4 = <com.entaz.purchase.PurchaseFactory$PurchaseType: com.entaz.purchase.PurchaseFactory$PurchaseType DANAL>;
+
+        if $r3 != $r4 goto label11;
+
+        $r5 = "http://comicplus.entaz.com/autoDanalPayment/checkPayment.jsp";
+
+        $z0 = virtualinvoke $r5.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>($r0);
+
+        if $z0 != 0 goto label02;
+
+        $r5 = "http://comicplus.entaz.com/autoDanalPayment/autoPayment.jsp";
+
+        $z0 = virtualinvoke $r5.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>($r0);
+
+        if $z0 == 0 goto label11;
+
+     label02:
+        $r1 = new java.lang.StringBuilder;
+
+     label03:
+        $r0 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r2);
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>(java.lang.String)>($r0);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("phone=");
+
+     label04:
+        $r0 = <com.entaz.app.comicplus.Application: java.lang.String m_strPhoneNumber>;
+
+     label05:
+        $r0 = staticinvoke <com.entaz.security.DES: java.lang.String encrypt(java.lang.String)>($r0);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r0);
+
+        $r0 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label06:
+        $r2 = $r0;
+
+     label07:
+        $r1 = new java.lang.StringBuilder;
+
+        $r0 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r2);
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>(java.lang.String)>($r0);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("&productType=");
+
+        $i0 = <com.entaz.app.comicplus.Application: int m_nProductType>;
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("&version=");
+
+        $i0 = <com.entaz.app.comicplus.Application: int m_nVersion>;
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("&platform=");
+
+        $r0 = <com.entaz.app.comicplus.Application: java.lang.String m_strPhonePlatform>;
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r0);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("&model=");
+
+        $r0 = <com.entaz.app.comicplus.Application: java.lang.String m_strPhoneModel>;
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r0);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("&device=");
+
+        $r0 = <com.entaz.app.comicplus.Application: java.lang.String m_strPhoneDevice>;
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r0);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("&market=");
+
+        $r0 = <com.entaz.app.comicplus.Application: java.lang.String m_strPhoneMarket>;
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r0);
+
+        $r0 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r2 = $r0;
+
+        $r3 = <com.entaz.app.comicplus.Application: com.entaz.purchase.PurchaseFactory$PurchaseType STORE_TYPE>;
+
+        $r4 = <com.entaz.purchase.PurchaseFactory$PurchaseType: com.entaz.purchase.PurchaseFactory$PurchaseType OLLEHSTORE>;
+
+        if $r3 != $r4 goto label08;
+
+        $r1 = new java.lang.StringBuilder;
+
+        $r0 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r0);
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>(java.lang.String)>($r0);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("&encrypt=DES");
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label08:
+        $r0 = staticinvoke <com.entaz.app.comicplus.menu.CategoryCharge: java.lang.String encodeAllParameters(java.lang.String)>($r2);
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>(java.lang.String)>("makeUrl(), url=");
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r0);
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("CategoryCharge", $r2);
+
+        return $r0;
+
+     label09:
+        $r1 = new java.lang.StringBuilder;
+
+        $r2 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r0);
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>(java.lang.String)>($r2);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("?");
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        goto label01;
+
+     label10:
+        $r6 := @caughtexception;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>(java.lang.String)>("makeUrl() URL encrypt Exception , url=");
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r0 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("CategoryCharge", $r0);
+
+        goto label07;
+
+     label11:
+        $r1 = new java.lang.StringBuilder;
+
+        $r0 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r2);
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>(java.lang.String)>($r0);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("phone=");
+
+        $r0 = <com.entaz.app.comicplus.Application: java.lang.String m_strPhoneNumber>;
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r0);
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        goto label07;
+
+        catch java.lang.Exception from label03 to label04 with label10;
+        catch java.lang.Exception from label05 to label06 with label10;
+    }
+
+    public static com.entaz.app.comicplus.menu.form.EzBillForm parse2EzBillForm(java.lang.String)
+    {
+        com.entaz.app.comicplus.menu.form.EzBillForm r1;
+        int i0, $i1;
+        java.lang.String[] $r3;
+        java.lang.String $r0, $r2;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        if $r0 == null goto label01;
+
+        $r2 = "";
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>($r0);
+
+        if $z0 == 0 goto label02;
+
+     label01:
+        return null;
+
+     label02:
+        r1 = new com.entaz.app.comicplus.menu.form.EzBillForm;
+
+        specialinvoke r1.<com.entaz.app.comicplus.menu.form.EzBillForm: void <init>()>();
+
+        $r3 = virtualinvoke $r0.<java.lang.String: java.lang.String[] split(java.lang.String)>("[|]");
+
+        i0 = 0;
+
+     label03:
+        $i1 = lengthof $r3;
+
+        if i0 < $i1 goto label04;
+
+        return r1;
+
+     label04:
+        lookupswitch(i0)
+        {
+            case 0: goto label06;
+            case 1: goto label07;
+            case 2: goto label08;
+            case 3: goto label09;
+            case 4: goto label10;
+            case 5: goto label11;
+            default: goto label05;
+        };
+
+     label05:
+        i0 = i0 + 1;
+
+        goto label03;
+
+     label06:
+        $r0 = $r3[i0];
+
+        $r0 = virtualinvoke $r0.<java.lang.String: java.lang.String trim()>();
+
+        $z0 = staticinvoke <java.lang.Boolean: boolean parseBoolean(java.lang.String)>($r0);
+
+        virtualinvoke r1.<com.entaz.app.comicplus.menu.form.EzBillForm: void setCheckFlag(boolean)>($z0);
+
+        goto label05;
+
+     label07:
+        $r0 = $r3[i0];
+
+        $r0 = virtualinvoke $r0.<java.lang.String: java.lang.String trim()>();
+
+        virtualinvoke r1.<com.entaz.app.comicplus.menu.form.EzBillForm: void setRrn1st(java.lang.String)>($r0);
+
+        goto label05;
+
+     label08:
+        $r0 = $r3[i0];
+
+        $r0 = virtualinvoke $r0.<java.lang.String: java.lang.String trim()>();
+
+        virtualinvoke r1.<com.entaz.app.comicplus.menu.form.EzBillForm: void setRrn2nd(java.lang.String)>($r0);
+
+        goto label05;
+
+     label09:
+        $r0 = $r3[i0];
+
+        $r0 = virtualinvoke $r0.<java.lang.String: java.lang.String trim()>();
+
+        virtualinvoke r1.<com.entaz.app.comicplus.menu.form.EzBillForm: void setPurchaseType(java.lang.String)>($r0);
+
+        goto label05;
+
+     label10:
+        $r0 = $r3[i0];
+
+        $r0 = virtualinvoke $r0.<java.lang.String: java.lang.String trim()>();
+
+        virtualinvoke r1.<com.entaz.app.comicplus.menu.form.EzBillForm: void setPhone(java.lang.String)>($r0);
+
+        goto label05;
+
+     label11:
+        $r0 = $r3[i0];
+
+        $r0 = virtualinvoke $r0.<java.lang.String: java.lang.String trim()>();
+
+        virtualinvoke r1.<com.entaz.app.comicplus.menu.form.EzBillForm: void setPwd(java.lang.String)>($r0);
+
+        goto label05;
+    }
+
+    private void refreshPoint()
+    {
+        com.entaz.app.comicplus.menu.CategoryCharge r0;
+        android.content.Context $r2;
+        com.entaz.app.comicplus.http.HttpReq $r3;
+        android.widget.ProgressBar $r4;
+        com.entaz.app.comicplus.http.HttpReq$Request $r1;
+
+        r0 := @this: com.entaz.app.comicplus.menu.CategoryCharge;
+
+        $r3 = new com.entaz.app.comicplus.http.HttpReq;
+
+        $r2 = virtualinvoke r0.<com.entaz.app.comicplus.menu.CategoryCharge: android.content.Context getApplicationContext()>();
+
+        $r1 = r0.<com.entaz.app.comicplus.menu.CategoryCharge: com.entaz.app.comicplus.http.HttpReq$Request m_OnComplete>;
+
+        specialinvoke $r3.<com.entaz.app.comicplus.http.HttpReq: void <init>(android.content.Context,java.lang.String,com.entaz.app.comicplus.http.HttpReq$Request)>($r2, "http://comicplus.entaz.com/myPage/myUsePointList.jsp", $r1);
+
+        r0.<com.entaz.app.comicplus.menu.CategoryCharge: com.entaz.app.comicplus.http.HttpReq m_HttpReq> = $r3;
+
+        $r3 = r0.<com.entaz.app.comicplus.menu.CategoryCharge: com.entaz.app.comicplus.http.HttpReq m_HttpReq>;
+
+        virtualinvoke $r3.<com.entaz.app.comicplus.http.HttpReq: void start()>();
+
+        $r4 = r0.<com.entaz.app.comicplus.menu.CategoryCharge: android.widget.ProgressBar m_Progress>;
+
+        virtualinvoke $r4.<android.widget.ProgressBar: void setVisibility(int)>(0);
+
+        r0.<com.entaz.app.comicplus.menu.CategoryCharge: boolean m_fComplete> = 0;
+
+        return;
+    }
+
+    public static java.lang.String requestURL(java.lang.String, java.lang.String, java.lang.String)
+    {
+        java.net.HttpURLConnection r6;
+        java.lang.Throwable r16, r22, r23, r24, r25, r26, r27, r28;
+        java.net.URL r4;
+        java.lang.StringBuffer r0;
+        java.net.URLConnection $r5;
+        java.lang.String r1, r2, r3;
+        boolean $z0;
+        java.io.PrintWriter r7;
+        java.io.OutputStream $r8;
+        java.io.InputStreamReader r11;
+        java.lang.Exception r13, r14, r15, r17, r18, r19, r20, r21, r29;
+        java.lang.StringBuilder r9;
+        java.io.BufferedReader r10;
+        java.io.InputStream $r12;
+
+        r1 := @parameter0: java.lang.String;
+
+        r2 := @parameter1: java.lang.String;
+
+        r3 := @parameter2: java.lang.String;
+
+        r0 = new java.lang.StringBuffer;
+
+        specialinvoke r0.<java.lang.StringBuffer: void <init>(java.lang.String)>("");
+
+     label01:
+        r4 = new java.net.URL;
+
+     label02:
+        specialinvoke r4.<java.net.URL: void <init>(java.lang.String)>(r1);
+
+     label03:
+        $r5 = virtualinvoke r4.<java.net.URL: java.net.URLConnection openConnection()>();
+
+        r6 = (java.net.HttpURLConnection) $r5;
+
+     label04:
+        virtualinvoke r6.<java.net.HttpURLConnection: void setDoOutput(boolean)>(1);
+
+        virtualinvoke r6.<java.net.HttpURLConnection: void setDoInput(boolean)>(1);
+
+        virtualinvoke r6.<java.net.HttpURLConnection: void setUseCaches(boolean)>(0);
+
+     label05:
+        r7 = new java.io.PrintWriter;
+
+     label06:
+        $r8 = virtualinvoke r6.<java.net.HttpURLConnection: java.io.OutputStream getOutputStream()>();
+
+        specialinvoke r7.<java.io.PrintWriter: void <init>(java.io.OutputStream)>($r8);
+
+     label07:
+        r9 = new java.lang.StringBuilder;
+
+     label08:
+        r1 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>(r2);
+
+        specialinvoke r9.<java.lang.StringBuilder: void <init>(java.lang.String)>(r1);
+
+        r9 = virtualinvoke r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("=");
+
+        r9 = virtualinvoke r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("");
+
+        r1 = virtualinvoke r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label09:
+        virtualinvoke r7.<java.io.PrintWriter: void println(java.lang.String)>(r1);
+
+        virtualinvoke r7.<java.io.PrintWriter: void flush()>();
+
+        virtualinvoke r7.<java.io.PrintWriter: void close()>();
+
+     label10:
+        r10 = new java.io.BufferedReader;
+
+        r11 = new java.io.InputStreamReader;
+
+     label11:
+        $r12 = virtualinvoke r6.<java.net.HttpURLConnection: java.io.InputStream getInputStream()>();
+
+        specialinvoke r11.<java.io.InputStreamReader: void <init>(java.io.InputStream)>($r12);
+
+        specialinvoke r10.<java.io.BufferedReader: void <init>(java.io.Reader)>(r11);
+
+     label12:
+        r1 = virtualinvoke r10.<java.io.BufferedReader: java.lang.String readLine()>();
+
+     label13:
+        if r1 != null goto label21;
+
+     label14:
+        virtualinvoke r10.<java.io.BufferedReader: void close()>();
+
+        r1 = virtualinvoke r0.<java.lang.StringBuffer: java.lang.String toString()>();
+
+     label15:
+        virtualinvoke r1.<java.lang.String: java.lang.String trim()>();
+
+     label16:
+        if r10 == null goto label18;
+
+     label17:
+        virtualinvoke r10.<java.io.BufferedReader: void close()>();
+
+     label18:
+        if r7 == null goto label57;
+
+     label19:
+        virtualinvoke r7.<java.io.PrintWriter: void close()>();
+
+     label20:
+        return r1;
+
+     label21:
+        $z0 = virtualinvoke r1.<java.lang.String: boolean equals(java.lang.Object)>("");
+
+     label22:
+        if $z0 != 0 goto label12;
+
+     label23:
+        virtualinvoke r1.<java.lang.String: java.lang.String trim()>();
+
+        virtualinvoke r0.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(r1);
+
+     label24:
+        goto label12;
+
+     label25:
+        r13 := @caughtexception;
+
+        r1 = "";
+
+        r14 = r13;
+
+     label26:
+        virtualinvoke r14.<java.lang.Exception: void printStackTrace()>();
+
+     label27:
+        if r10 == null goto label29;
+
+     label28:
+        virtualinvoke r10.<java.io.BufferedReader: void close()>();
+
+     label29:
+        if r7 == null goto label57;
+
+     label30:
+        virtualinvoke r7.<java.io.PrintWriter: void close()>();
+
+     label31:
+        return r1;
+
+     label32:
+        r15 := @caughtexception;
+
+        return r1;
+
+     label33:
+        r16 := @caughtexception;
+
+        r7 = null;
+
+        r10 = null;
+
+     label34:
+        if r10 == null goto label36;
+
+     label35:
+        virtualinvoke r10.<java.io.BufferedReader: void close()>();
+
+     label36:
+        if r7 == null goto label38;
+
+     label37:
+        virtualinvoke r7.<java.io.PrintWriter: void close()>();
+
+     label38:
+        throw r16;
+
+     label39:
+        r17 := @caughtexception;
+
+        return r1;
+
+     label40:
+        r18 := @caughtexception;
+
+        goto label29;
+
+     label41:
+        r19 := @caughtexception;
+
+        goto label36;
+
+     label42:
+        r20 := @caughtexception;
+
+        goto label38;
+
+     label43:
+        r21 := @caughtexception;
+
+        goto label18;
+
+     label44:
+        r22 := @caughtexception;
+
+        r7 = null;
+
+        r16 = r22;
+
+        r10 = null;
+
+        goto label34;
+
+     label45:
+        r23 := @caughtexception;
+
+        r7 = null;
+
+        r16 = r23;
+
+        r10 = null;
+
+        goto label34;
+
+     label46:
+        r24 := @caughtexception;
+
+        r16 = r24;
+
+        r10 = null;
+
+        goto label34;
+
+     label47:
+        r25 := @caughtexception;
+
+        r16 = r25;
+
+        r10 = null;
+
+        goto label34;
+
+     label48:
+        r26 := @caughtexception;
+
+        r16 = r26;
+
+        goto label34;
+
+     label49:
+        r27 := @caughtexception;
+
+        r16 = r27;
+
+        goto label34;
+
+     label50:
+        r28 := @caughtexception;
+
+        r16 = r28;
+
+        goto label34;
+
+     label51:
+        r14 := @caughtexception;
+
+        r10 = null;
+
+        r7 = null;
+
+        r1 = "";
+
+        goto label26;
+
+     label52:
+        r14 := @caughtexception;
+
+        r10 = null;
+
+        r7 = null;
+
+        r1 = "";
+
+        goto label26;
+
+     label53:
+        r14 := @caughtexception;
+
+        r10 = null;
+
+        r7 = null;
+
+        r1 = "";
+
+        goto label26;
+
+     label54:
+        r14 := @caughtexception;
+
+        r10 = null;
+
+        r1 = "";
+
+        goto label26;
+
+     label55:
+        r14 := @caughtexception;
+
+        r10 = null;
+
+        r1 = "";
+
+        goto label26;
+
+     label56:
+        r29 := @caughtexception;
+
+        r14 = r29;
+
+        goto label26;
+
+     label57:
+        return r1;
+
+        catch java.lang.Exception from label02 to label03 with label51;
+        catch java.lang.Throwable from label01 to label03 with label33;
+        catch java.lang.Exception from label03 to label04 with label52;
+        catch java.lang.Throwable from label03 to label04 with label44;
+        catch java.lang.Exception from label04 to label05 with label53;
+        catch java.lang.Exception from label06 to label07 with label53;
+        catch java.lang.Throwable from label04 to label07 with label45;
+        catch java.lang.Exception from label08 to label09 with label54;
+        catch java.lang.Throwable from label07 to label09 with label46;
+        catch java.lang.Exception from label09 to label10 with label55;
+        catch java.lang.Exception from label11 to label12 with label55;
+        catch java.lang.Throwable from label09 to label12 with label47;
+        catch java.lang.Exception from label12 to label13 with label25;
+        catch java.lang.Exception from label14 to label15 with label25;
+        catch java.lang.Throwable from label12 to label13 with label48;
+        catch java.lang.Throwable from label14 to label15 with label48;
+        catch java.lang.Exception from label15 to label16 with label56;
+        catch java.lang.Throwable from label15 to label16 with label49;
+        catch java.lang.Exception from label17 to label18 with label43;
+        catch java.lang.Exception from label19 to label20 with label39;
+        catch java.lang.Exception from label21 to label22 with label25;
+        catch java.lang.Exception from label23 to label24 with label25;
+        catch java.lang.Throwable from label21 to label22 with label48;
+        catch java.lang.Throwable from label23 to label24 with label48;
+        catch java.lang.Throwable from label26 to label27 with label50;
+        catch java.lang.Exception from label28 to label29 with label40;
+        catch java.lang.Exception from label30 to label31 with label32;
+        catch java.lang.Exception from label35 to label36 with label41;
+        catch java.lang.Exception from label37 to label38 with label42;
+    }
+
+    protected void onActivityResult(int, int, android.content.Intent)
+    {
+        com.entaz.app.comicplus.menu.CategoryCharge r0;
+        android.content.Intent $r1, $r4;
+        com.entaz.app.comicplus.menu.form.EzBillForm $r2;
+        int $i0, $i1;
+        java.lang.String $r3;
+        boolean z0;
+
+        r0 := @this: com.entaz.app.comicplus.menu.CategoryCharge;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $r1 := @parameter2: android.content.Intent;
+
+        $r1 = virtualinvoke r0.<com.entaz.app.comicplus.menu.CategoryCharge: android.content.Intent getIntent()>();
+
+        lookupswitch($i0)
+        {
+            case 1: goto label2;
+            case 2: goto label5;
+            default: goto label1;
+        };
+
+     label1:
+        return;
+
+     label2:
+        r0.<com.entaz.app.comicplus.menu.CategoryCharge: boolean m_fComplete> = 1;
+
+        if $i1 != -1 goto label3;
+
+        specialinvoke r0.<com.entaz.app.comicplus.menu.CategoryCharge: void refreshPoint()>();
+
+        return;
+
+     label3:
+        if $i1 != 0 goto label6;
+
+        z0 = 0;
+
+        if $r1 == null goto label4;
+
+        z0 = virtualinvoke $r1.<android.content.Intent: boolean getBooleanExtra(java.lang.String,boolean)>("PWDCHK", 0);
+
+     label4:
+        if z0 == 0 goto label6;
+
+        $r4 = new android.content.Intent;
+
+        $r1 = $r4;
+
+        specialinvoke $r4.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>(r0, class "Lcom/entaz/app/comicplus/menu/FindPasswordPopup;");
+
+        $r2 = r0.<com.entaz.app.comicplus.menu.CategoryCharge: com.entaz.app.comicplus.menu.form.EzBillForm billForm>;
+
+        $r3 = virtualinvoke $r2.<com.entaz.app.comicplus.menu.form.EzBillForm: java.lang.String getRrn1st()>();
+
+        virtualinvoke $r1.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("RRN1", $r3);
+
+        $r2 = r0.<com.entaz.app.comicplus.menu.CategoryCharge: com.entaz.app.comicplus.menu.form.EzBillForm billForm>;
+
+        $r3 = virtualinvoke $r2.<com.entaz.app.comicplus.menu.form.EzBillForm: java.lang.String getRrn2nd()>();
+
+        virtualinvoke $r1.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("RRN2", $r3);
+
+        $r2 = r0.<com.entaz.app.comicplus.menu.CategoryCharge: com.entaz.app.comicplus.menu.form.EzBillForm billForm>;
+
+        $r3 = virtualinvoke $r2.<com.entaz.app.comicplus.menu.form.EzBillForm: java.lang.String getPurchaseType()>();
+
+        virtualinvoke $r1.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("TELECOM", $r3);
+
+        $r2 = r0.<com.entaz.app.comicplus.menu.CategoryCharge: com.entaz.app.comicplus.menu.form.EzBillForm billForm>;
+
+        $r3 = virtualinvoke $r2.<com.entaz.app.comicplus.menu.form.EzBillForm: java.lang.String getPhone()>();
+
+        virtualinvoke $r1.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("PHONE", $r3);
+
+        $r2 = r0.<com.entaz.app.comicplus.menu.CategoryCharge: com.entaz.app.comicplus.menu.form.EzBillForm billForm>;
+
+        $r3 = virtualinvoke $r2.<com.entaz.app.comicplus.menu.form.EzBillForm: java.lang.String getPwd()>();
+
+        virtualinvoke $r1.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("PWD", $r3);
+
+        virtualinvoke r0.<com.entaz.app.comicplus.menu.CategoryCharge: void startActivityForResult(android.content.Intent,int)>($r1, 2);
+
+        r0.<com.entaz.app.comicplus.menu.CategoryCharge: boolean m_fComplete> = 0;
+
+        return;
+
+     label5:
+        r0.<com.entaz.app.comicplus.menu.CategoryCharge: boolean m_fComplete> = 1;
+
+     label6:
+        return;
+    }
+
+    protected void onCreate(android.os.Bundle)
+    {
+        com.entaz.app.comicplus.menu.CategoryCharge r0;
+        android.os.Bundle $r1;
+        com.entaz.app.comicplus.menu.CategoryCharge$8 $r3;
+        com.entaz.purchase.IPurchase $r2;
+
+        r0 := @this: com.entaz.app.comicplus.menu.CategoryCharge;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke r0.<android.app.Activity: void onCreate(android.os.Bundle)>($r1);
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("CategoryCharge", "onCreate");
+
+        virtualinvoke r0.<com.entaz.app.comicplus.menu.CategoryCharge: void setBillInfo()>();
+
+        virtualinvoke r0.<com.entaz.app.comicplus.menu.CategoryCharge: void setLayout()>();
+
+        virtualinvoke r0.<com.entaz.app.comicplus.menu.CategoryCharge: void overridePendingTransition(int,int)>(2130968578, 2130968579);
+
+        $r2 = <com.entaz.app.comicplus.Application: com.entaz.purchase.IPurchase mPurchase>;
+
+        $r3 = new com.entaz.app.comicplus.menu.CategoryCharge$8;
+
+        specialinvoke $r3.<com.entaz.app.comicplus.menu.CategoryCharge$8: void <init>(com.entaz.app.comicplus.menu.CategoryCharge)>(r0);
+
+        interfaceinvoke $r2.<com.entaz.purchase.IPurchase: void setOnBillListener(com.entaz.purchase.IPurchase$OnBillListener)>($r3);
+
+        return;
+    }
+
+    protected void onDestroy()
+    {
+        com.entaz.app.comicplus.menu.CategoryCharge r0;
+
+        r0 := @this: com.entaz.app.comicplus.menu.CategoryCharge;
+
+        specialinvoke r0.<android.app.Activity: void onDestroy()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("CategoryCharge", "onDestroy");
+
+        return;
+    }
+
+    protected void onPause()
+    {
+        com.entaz.app.comicplus.menu.CategoryCharge r0;
+        android.content.BroadcastReceiver $r1;
+
+        r0 := @this: com.entaz.app.comicplus.menu.CategoryCharge;
+
+        specialinvoke r0.<android.app.Activity: void onPause()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("CategoryCharge", "onPause");
+
+        $r1 = <com.entaz.app.comicplus.Application: android.content.BroadcastReceiver receiver>;
+
+        virtualinvoke r0.<com.entaz.app.comicplus.menu.CategoryCharge: void unregisterReceiver(android.content.BroadcastReceiver)>($r1);
+
+        return;
+    }
+
+    protected void onResume()
+    {
+        com.entaz.app.comicplus.menu.CategoryCharge r0;
+        android.content.IntentFilter r1;
+        android.content.BroadcastReceiver $r2;
+
+        r0 := @this: com.entaz.app.comicplus.menu.CategoryCharge;
+
+        specialinvoke r0.<android.app.Activity: void onResume()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("CategoryCharge", "onResume");
+
+        r1 = new android.content.IntentFilter;
+
+        specialinvoke r1.<android.content.IntentFilter: void <init>(java.lang.String)>("android.net.conn.CONNECTIVITY_CHANGE");
+
+        $r2 = <com.entaz.app.comicplus.Application: android.content.BroadcastReceiver receiver>;
+
+        virtualinvoke r0.<com.entaz.app.comicplus.menu.CategoryCharge: android.content.Intent registerReceiver(android.content.BroadcastReceiver,android.content.IntentFilter)>($r2, r1);
+
+        return;
+    }
+
+    void setBillInfo()
+    {
+        com.entaz.app.comicplus.menu.CategoryCharge r0;
+        com.entaz.purchase.PurchaseFactory$PurchaseType $r3;
+        java.lang.String $r1;
+        com.entaz.purchase.IPurchase $r2;
+
+        r0 := @this: com.entaz.app.comicplus.menu.CategoryCharge;
+
+        $r3 = <com.entaz.app.comicplus.Application: com.entaz.purchase.PurchaseFactory$PurchaseType STORE_TYPE>;
+
+        $r2 = staticinvoke <com.entaz.purchase.PurchaseFactory: com.entaz.purchase.IPurchase getPurchase(android.content.Context,com.entaz.purchase.PurchaseFactory$PurchaseType)>(r0, $r3);
+
+        <com.entaz.app.comicplus.Application: com.entaz.purchase.IPurchase mPurchase> = $r2;
+
+        $r2 = <com.entaz.app.comicplus.Application: com.entaz.purchase.IPurchase mPurchase>;
+
+        $r1 = <com.entaz.app.comicplus.Application: java.lang.String APPID>;
+
+        interfaceinvoke $r2.<com.entaz.purchase.IPurchase: void setSetting(java.lang.String,java.lang.String,int)>($r1, "203.231.235.196", 12346);
+
+        return;
+    }
+
+    void setLayout()
+    {
+        com.entaz.app.comicplus.menu.CategoryCharge r0;
+        android.os.Bundle $r8;
+        android.widget.ProgressBar $r4;
+        android.widget.FrameLayout $r3;
+        android.content.Intent $r7;
+        com.entaz.app.comicplus.menu.CategoryCharge$6 $r19;
+        android.view.View $r2;
+        com.entaz.app.comicplus.menu.CategoryCharge$7 $r20;
+        com.entaz.app.comicplus.menu.CategoryCharge$4 $r17;
+        com.entaz.app.comicplus.menu.CategoryCharge$5 $r18;
+        com.entaz.app.comicplus.menu.CategoryCharge$2 $r10;
+        com.entaz.app.comicplus.menu.CategoryCharge$3 $r16;
+        boolean z0;
+        android.view.LayoutInflater r6;
+        android.widget.TextView $r11;
+        com.entaz.app.comicplus.ui.ImageButton r9, r12, r13, r14, r15;
+        java.lang.Object $r5;
+        android.view.Window $r1;
+
+        r0 := @this: com.entaz.app.comicplus.menu.CategoryCharge;
+
+        virtualinvoke r0.<com.entaz.app.comicplus.menu.CategoryCharge: void setContentView(int)>(2130903066);
+
+        $r1 = virtualinvoke r0.<com.entaz.app.comicplus.menu.CategoryCharge: android.view.Window getWindow()>();
+
+        virtualinvoke $r1.<android.view.Window: void setFlags(int,int)>(128, 128);
+
+        $r2 = virtualinvoke r0.<com.entaz.app.comicplus.menu.CategoryCharge: android.view.View findViewById(int)>(2131165300);
+
+        $r3 = (android.widget.FrameLayout) $r2;
+
+        r0.<com.entaz.app.comicplus.menu.CategoryCharge: android.widget.FrameLayout m_CenterLayout> = $r3;
+
+        $r2 = virtualinvoke r0.<com.entaz.app.comicplus.menu.CategoryCharge: android.view.View findViewById(int)>(2131165302);
+
+        $r4 = (android.widget.ProgressBar) $r2;
+
+        r0.<com.entaz.app.comicplus.menu.CategoryCharge: android.widget.ProgressBar m_Progress> = $r4;
+
+        $r5 = virtualinvoke r0.<com.entaz.app.comicplus.menu.CategoryCharge: java.lang.Object getSystemService(java.lang.String)>("layout_inflater");
+
+        r6 = (android.view.LayoutInflater) $r5;
+
+        $r3 = r0.<com.entaz.app.comicplus.menu.CategoryCharge: android.widget.FrameLayout m_CenterLayout>;
+
+        virtualinvoke r6.<android.view.LayoutInflater: android.view.View inflate(int,android.view.ViewGroup)>(2130903070, $r3);
+
+        $r7 = virtualinvoke r0.<com.entaz.app.comicplus.menu.CategoryCharge: android.content.Intent getIntent()>();
+
+        $r8 = virtualinvoke $r7.<android.content.Intent: android.os.Bundle getBundleExtra(java.lang.String)>("BUNDLE");
+
+        z0 = 0;
+
+        if $r8 == null goto label1;
+
+        z0 = virtualinvoke $r8.<android.os.Bundle: boolean getBoolean(java.lang.String)>("MYPAGE");
+
+     label1:
+        $r3 = r0.<com.entaz.app.comicplus.menu.CategoryCharge: android.widget.FrameLayout m_CenterLayout>;
+
+        $r2 = virtualinvoke $r3.<android.widget.FrameLayout: android.view.View findViewById(int)>(2131165306);
+
+        r9 = (com.entaz.app.comicplus.ui.ImageButton) $r2;
+
+        if z0 == 0 goto label3;
+
+        $r10 = new com.entaz.app.comicplus.menu.CategoryCharge$2;
+
+        specialinvoke $r10.<com.entaz.app.comicplus.menu.CategoryCharge$2: void <init>(com.entaz.app.comicplus.menu.CategoryCharge)>(r0);
+
+        virtualinvoke r9.<com.entaz.app.comicplus.ui.ImageButton: void setOnClickListener(android.view.View$OnClickListener)>($r10);
+
+     label2:
+        $r3 = r0.<com.entaz.app.comicplus.menu.CategoryCharge: android.widget.FrameLayout m_CenterLayout>;
+
+        $r2 = virtualinvoke $r3.<android.widget.FrameLayout: android.view.View findViewById(int)>(2131165309);
+
+        $r11 = (android.widget.TextView) $r2;
+
+        r0.<com.entaz.app.comicplus.menu.CategoryCharge: android.widget.TextView m_MyPoint> = $r11;
+
+        specialinvoke r0.<com.entaz.app.comicplus.menu.CategoryCharge: void refreshPoint()>();
+
+        $r3 = r0.<com.entaz.app.comicplus.menu.CategoryCharge: android.widget.FrameLayout m_CenterLayout>;
+
+        $r2 = virtualinvoke $r3.<android.widget.FrameLayout: android.view.View findViewById(int)>(2131165308);
+
+        r9 = (com.entaz.app.comicplus.ui.ImageButton) $r2;
+
+        $r3 = r0.<com.entaz.app.comicplus.menu.CategoryCharge: android.widget.FrameLayout m_CenterLayout>;
+
+        $r2 = virtualinvoke $r3.<android.widget.FrameLayout: android.view.View findViewById(int)>(2131165310);
+
+        r12 = (com.entaz.app.comicplus.ui.ImageButton) $r2;
+
+        $r3 = r0.<com.entaz.app.comicplus.menu.CategoryCharge: android.widget.FrameLayout m_CenterLayout>;
+
+        $r2 = virtualinvoke $r3.<android.widget.FrameLayout: android.view.View findViewById(int)>(2131165311);
+
+        r13 = (com.entaz.app.comicplus.ui.ImageButton) $r2;
+
+        $r3 = r0.<com.entaz.app.comicplus.menu.CategoryCharge: android.widget.FrameLayout m_CenterLayout>;
+
+        $r2 = virtualinvoke $r3.<android.widget.FrameLayout: android.view.View findViewById(int)>(2131165312);
+
+        r14 = (com.entaz.app.comicplus.ui.ImageButton) $r2;
+
+        $r3 = r0.<com.entaz.app.comicplus.menu.CategoryCharge: android.widget.FrameLayout m_CenterLayout>;
+
+        $r2 = virtualinvoke $r3.<android.widget.FrameLayout: android.view.View findViewById(int)>(2131165313);
+
+        r15 = (com.entaz.app.comicplus.ui.ImageButton) $r2;
+
+        $r16 = new com.entaz.app.comicplus.menu.CategoryCharge$3;
+
+        specialinvoke $r16.<com.entaz.app.comicplus.menu.CategoryCharge$3: void <init>(com.entaz.app.comicplus.menu.CategoryCharge)>(r0);
+
+        virtualinvoke r9.<com.entaz.app.comicplus.ui.ImageButton: void setOnClickListener(android.view.View$OnClickListener)>($r16);
+
+        $r17 = new com.entaz.app.comicplus.menu.CategoryCharge$4;
+
+        specialinvoke $r17.<com.entaz.app.comicplus.menu.CategoryCharge$4: void <init>(com.entaz.app.comicplus.menu.CategoryCharge)>(r0);
+
+        virtualinvoke r12.<com.entaz.app.comicplus.ui.ImageButton: void setOnClickListener(android.view.View$OnClickListener)>($r17);
+
+        $r18 = new com.entaz.app.comicplus.menu.CategoryCharge$5;
+
+        specialinvoke $r18.<com.entaz.app.comicplus.menu.CategoryCharge$5: void <init>(com.entaz.app.comicplus.menu.CategoryCharge)>(r0);
+
+        virtualinvoke r13.<com.entaz.app.comicplus.ui.ImageButton: void setOnClickListener(android.view.View$OnClickListener)>($r18);
+
+        $r19 = new com.entaz.app.comicplus.menu.CategoryCharge$6;
+
+        specialinvoke $r19.<com.entaz.app.comicplus.menu.CategoryCharge$6: void <init>(com.entaz.app.comicplus.menu.CategoryCharge)>(r0);
+
+        virtualinvoke r14.<com.entaz.app.comicplus.ui.ImageButton: void setOnClickListener(android.view.View$OnClickListener)>($r19);
+
+        $r20 = new com.entaz.app.comicplus.menu.CategoryCharge$7;
+
+        specialinvoke $r20.<com.entaz.app.comicplus.menu.CategoryCharge$7: void <init>(com.entaz.app.comicplus.menu.CategoryCharge)>(r0);
+
+        virtualinvoke r15.<com.entaz.app.comicplus.ui.ImageButton: void setOnClickListener(android.view.View$OnClickListener)>($r20);
+
+        return;
+
+     label3:
+        virtualinvoke r9.<com.entaz.app.comicplus.ui.ImageButton: void setVisibility(int)>(4);
+
+        goto label2;
+    }
+
+    public android.content.Intent getIntent()
+    {
+        com.entaz.app.comicplus.menu.CategoryCharge this;
+        android.content.Intent $r0;
+
+        this := @this: com.entaz.app.comicplus.menu.CategoryCharge;
+
+        $r0 = this.<com.entaz.app.comicplus.menu.CategoryCharge: android.content.Intent ipcIntent>;
+
+        return $r0;
+    }
+
+    public void setIntent(android.content.Intent)
+    {
+        com.entaz.app.comicplus.menu.CategoryCharge this;
+        android.content.Intent parameter0;
+
+        this := @this: com.entaz.app.comicplus.menu.CategoryCharge;
+
+        parameter0 := @parameter0: android.content.Intent;
+
+        this.<com.entaz.app.comicplus.menu.CategoryCharge: android.content.Intent ipcIntent> = parameter0;
+
+        return;
+    }
+
+    public void setResult(int, android.content.Intent)
+    {
+        com.entaz.app.comicplus.menu.CategoryCharge this;
+        int parameter0;
+        android.content.Intent parameter1;
+
+        this := @this: com.entaz.app.comicplus.menu.CategoryCharge;
+
+        parameter0 := @parameter0: int;
+
+        parameter1 := @parameter1: android.content.Intent;
+
+        this.<com.entaz.app.comicplus.menu.CategoryCharge: android.content.Intent ipcResultIntent> = parameter1;
+
+        return;
+    }
+}

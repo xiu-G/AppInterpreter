@@ -1,0 +1,265 @@
+public class com.facebook.ads.internal.AdResponse extends java.lang.Object
+{
+    private static final int DEFAULT_MIN_VIEWABILITY_PERCENTAGE;
+    private static final int DEFAULT_REFRESH_INTERVAL_SECONDS;
+    private static final int DEFAULT_REFRESH_THRESHOLD_SECONDS;
+    private final java.util.List dataModels;
+    private final com.facebook.ads.AdError error;
+    private final int refreshIntervalMillis;
+    private final int refreshThresholdMillis;
+    private final int viewabilityThreshold;
+
+    private void <init>(int, int, int, java.util.List, com.facebook.ads.AdError)
+    {
+        com.facebook.ads.internal.AdResponse r0;
+        com.facebook.ads.AdError $r2;
+        java.util.List $r1;
+        int $i0, $i1, $i2;
+
+        r0 := @this: com.facebook.ads.internal.AdResponse;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $i2 := @parameter2: int;
+
+        $r1 := @parameter3: java.util.List;
+
+        $r2 := @parameter4: com.facebook.ads.AdError;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<com.facebook.ads.internal.AdResponse: int refreshIntervalMillis> = $i0;
+
+        r0.<com.facebook.ads.internal.AdResponse: int refreshThresholdMillis> = $i1;
+
+        r0.<com.facebook.ads.internal.AdResponse: int viewabilityThreshold> = $i2;
+
+        r0.<com.facebook.ads.internal.AdResponse: java.util.List dataModels> = $r1;
+
+        r0.<com.facebook.ads.internal.AdResponse: com.facebook.ads.AdError error> = $r2;
+
+        return;
+    }
+
+    public static com.facebook.ads.internal.AdResponse parseResponse(android.content.Context, org.json.JSONObject)
+    {
+        com.facebook.ads.internal.AdResponse $r9;
+        android.content.Context $r0;
+        java.util.ArrayList $r5;
+        com.facebook.ads.AdError $r3;
+        org.json.JSONObject $r1, $r2;
+        com.facebook.ads.internal.AdType $r7;
+        int $i0, $i1, $i2, $i3, $i4, $i5;
+        java.lang.String $r4;
+        boolean $z0;
+        com.facebook.ads.internal.AdDataModel $r8;
+        org.json.JSONArray $r6;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: org.json.JSONObject;
+
+        $i1 = 0;
+
+        $i0 = virtualinvoke $r1.<org.json.JSONObject: int optInt(java.lang.String,int)>("refresh", 0);
+
+        $i0 = $i0 * 1000;
+
+        $i2 = virtualinvoke $r1.<org.json.JSONObject: int optInt(java.lang.String,int)>("refresh_threshold", 20);
+
+        $i2 = $i2 * 1000;
+
+        $i3 = virtualinvoke $r1.<org.json.JSONObject: int optInt(java.lang.String,int)>("min_viewability_percentage", 10);
+
+        $r2 = virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject optJSONObject(java.lang.String)>("reason");
+
+        if $r2 == null goto label9;
+
+        $r3 = new com.facebook.ads.AdError;
+
+        $i4 = virtualinvoke $r2.<org.json.JSONObject: int optInt(java.lang.String)>("code");
+
+        $r4 = virtualinvoke $r2.<org.json.JSONObject: java.lang.String optString(java.lang.String)>("message");
+
+        specialinvoke $r3.<com.facebook.ads.AdError: void <init>(int,java.lang.String)>($i4, $r4);
+
+     label1:
+        $i4 = virtualinvoke $r1.<org.json.JSONObject: int optInt(java.lang.String)>("ad_type");
+
+        $r5 = new java.util.ArrayList;
+
+        specialinvoke $r5.<java.util.ArrayList: void <init>()>();
+
+        $r6 = virtualinvoke $r1.<org.json.JSONObject: org.json.JSONArray optJSONArray(java.lang.String)>("ads");
+
+        if $r6 == null goto label7;
+
+        $i5 = virtualinvoke $r6.<org.json.JSONArray: int length()>();
+
+        if $i5 <= 0 goto label7;
+
+     label2:
+        $i5 = virtualinvoke $r6.<org.json.JSONArray: int length()>();
+
+        if $i1 >= $i5 goto label6;
+
+        $r1 = virtualinvoke $r6.<org.json.JSONArray: org.json.JSONObject optJSONObject(int)>($i1);
+
+        if $r1 == null goto label4;
+
+        $r7 = <com.facebook.ads.internal.AdType: com.facebook.ads.internal.AdType HTML>;
+
+        $i5 = virtualinvoke $r7.<com.facebook.ads.internal.AdType: int getValue()>();
+
+        if $i4 != $i5 goto label5;
+
+        $r1 = virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject optJSONObject(java.lang.String)>("data");
+
+        $r8 = staticinvoke <com.facebook.ads.internal.HtmlAdDataModel: com.facebook.ads.internal.HtmlAdDataModel fromJSONObject(org.json.JSONObject)>($r1);
+
+     label3:
+        if $r8 == null goto label4;
+
+        $z0 = staticinvoke <com.facebook.ads.internal.AdInvalidationUtils: boolean shouldInvalidate(android.content.Context,com.facebook.ads.internal.AdDataModel)>($r0, $r8);
+
+        if $z0 != 0 goto label4;
+
+        interfaceinvoke $r5.<java.util.List: boolean add(java.lang.Object)>($r8);
+
+     label4:
+        $i1 = $i1 + 1;
+
+        goto label2;
+
+     label5:
+        $r7 = <com.facebook.ads.internal.AdType: com.facebook.ads.internal.AdType NATIVE>;
+
+        $i5 = virtualinvoke $r7.<com.facebook.ads.internal.AdType: int getValue()>();
+
+        if $i4 != $i5 goto label8;
+
+        $r1 = virtualinvoke $r1.<org.json.JSONObject: org.json.JSONObject optJSONObject(java.lang.String)>("metadata");
+
+        $r8 = staticinvoke <com.facebook.ads.internal.NativeAdDataModel: com.facebook.ads.internal.NativeAdDataModel fromJSONObject(org.json.JSONObject)>($r1);
+
+        goto label3;
+
+     label6:
+        $z0 = interfaceinvoke $r5.<java.util.List: boolean isEmpty()>();
+
+        if $z0 == 0 goto label7;
+
+        $r3 = <com.facebook.ads.AdError: com.facebook.ads.AdError NO_FILL>;
+
+     label7:
+        $r9 = new com.facebook.ads.internal.AdResponse;
+
+        specialinvoke $r9.<com.facebook.ads.internal.AdResponse: void <init>(int,int,int,java.util.List,com.facebook.ads.AdError)>($i0, $i2, $i3, $r5, $r3);
+
+        return $r9;
+
+     label8:
+        $r8 = null;
+
+        goto label3;
+
+     label9:
+        $r3 = null;
+
+        goto label1;
+    }
+
+    public com.facebook.ads.internal.AdDataModel getDataModel()
+    {
+        com.facebook.ads.internal.AdResponse r0;
+        java.util.List $r1;
+        com.facebook.ads.internal.AdDataModel $r3;
+        java.lang.Object $r2;
+        boolean $z0;
+
+        r0 := @this: com.facebook.ads.internal.AdResponse;
+
+        $r1 = r0.<com.facebook.ads.internal.AdResponse: java.util.List dataModels>;
+
+        if $r1 == null goto label1;
+
+        $r1 = r0.<com.facebook.ads.internal.AdResponse: java.util.List dataModels>;
+
+        $z0 = interfaceinvoke $r1.<java.util.List: boolean isEmpty()>();
+
+        if $z0 == 0 goto label2;
+
+     label1:
+        return null;
+
+     label2:
+        $r1 = r0.<com.facebook.ads.internal.AdResponse: java.util.List dataModels>;
+
+        $r2 = interfaceinvoke $r1.<java.util.List: java.lang.Object get(int)>(0);
+
+        $r3 = (com.facebook.ads.internal.AdDataModel) $r2;
+
+        return $r3;
+    }
+
+    public com.facebook.ads.AdError getError()
+    {
+        com.facebook.ads.internal.AdResponse r0;
+        com.facebook.ads.AdError r1;
+
+        r0 := @this: com.facebook.ads.internal.AdResponse;
+
+        r1 = r0.<com.facebook.ads.internal.AdResponse: com.facebook.ads.AdError error>;
+
+        return r1;
+    }
+
+    public int getRefreshIntervalMillis()
+    {
+        com.facebook.ads.internal.AdResponse r0;
+        int i0;
+
+        r0 := @this: com.facebook.ads.internal.AdResponse;
+
+        i0 = r0.<com.facebook.ads.internal.AdResponse: int refreshIntervalMillis>;
+
+        return i0;
+    }
+
+    public int getRefreshThresholdMillis()
+    {
+        com.facebook.ads.internal.AdResponse r0;
+        int i0;
+
+        r0 := @this: com.facebook.ads.internal.AdResponse;
+
+        i0 = r0.<com.facebook.ads.internal.AdResponse: int refreshThresholdMillis>;
+
+        return i0;
+    }
+
+    public int getViewabilityThreshold()
+    {
+        com.facebook.ads.internal.AdResponse r0;
+        int i0;
+
+        r0 := @this: com.facebook.ads.internal.AdResponse;
+
+        i0 = r0.<com.facebook.ads.internal.AdResponse: int viewabilityThreshold>;
+
+        return i0;
+    }
+
+    public static void <clinit>()
+    {
+        <com.facebook.ads.internal.AdResponse: int DEFAULT_REFRESH_THRESHOLD_SECONDS> = 20;
+
+        <com.facebook.ads.internal.AdResponse: int DEFAULT_REFRESH_INTERVAL_SECONDS> = 0;
+
+        <com.facebook.ads.internal.AdResponse: int DEFAULT_MIN_VIEWABILITY_PERCENTAGE> = 10;
+
+        return;
+    }
+}

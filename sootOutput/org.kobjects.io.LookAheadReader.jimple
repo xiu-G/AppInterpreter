@@ -1,0 +1,504 @@
+public class org.kobjects.io.LookAheadReader extends java.io.Reader
+{
+    char[] buf;
+    int bufPos;
+    int bufValid;
+    java.io.Reader reader;
+
+    public void <init>(java.io.Reader)
+    {
+        java.lang.Runtime $r2;
+        long $l0;
+        org.kobjects.io.LookAheadReader r0;
+        java.io.Reader $r1;
+        short $s2;
+        byte $b1;
+        int $i3;
+        char[] $r3;
+
+        r0 := @this: org.kobjects.io.LookAheadReader;
+
+        $r1 := @parameter0: java.io.Reader;
+
+        specialinvoke r0.<java.io.Reader: void <init>()>();
+
+        $r2 = staticinvoke <java.lang.Runtime: java.lang.Runtime getRuntime()>();
+
+        $l0 = virtualinvoke $r2.<java.lang.Runtime: long freeMemory()>();
+
+        $b1 = $l0 cmp 1000000L;
+
+        $i3 = (int) $b1;
+
+        if $i3 <= 0 goto label2;
+
+        $s2 = 16384;
+
+     label1:
+        $r3 = newarray (char)[$s2];
+
+        r0.<org.kobjects.io.LookAheadReader: char[] buf> = $r3;
+
+        r0.<org.kobjects.io.LookAheadReader: int bufPos> = 0;
+
+        r0.<org.kobjects.io.LookAheadReader: int bufValid> = 0;
+
+        r0.<org.kobjects.io.LookAheadReader: java.io.Reader reader> = $r1;
+
+        return;
+
+     label2:
+        $s2 = 128;
+
+        goto label1;
+    }
+
+    public void close() throws java.io.IOException
+    {
+        org.kobjects.io.LookAheadReader r0;
+        java.io.Reader $r1;
+
+        r0 := @this: org.kobjects.io.LookAheadReader;
+
+        $r1 = r0.<org.kobjects.io.LookAheadReader: java.io.Reader reader>;
+
+        virtualinvoke $r1.<java.io.Reader: void close()>();
+
+        return;
+    }
+
+    public int peek(int) throws java.io.IOException
+    {
+        char $c5;
+        org.kobjects.io.LookAheadReader r0;
+        java.io.Reader $r2;
+        int $i0, i1, $i2, $i3, $i4;
+        char[] $r1, $r3;
+
+        r0 := @this: org.kobjects.io.LookAheadReader;
+
+        $i0 := @parameter0: int;
+
+        goto label2;
+
+     label1:
+        $i3 = r0.<org.kobjects.io.LookAheadReader: int bufValid>;
+
+        i1 = $i3 + i1;
+
+        r0.<org.kobjects.io.LookAheadReader: int bufValid> = i1;
+
+     label2:
+        i1 = r0.<org.kobjects.io.LookAheadReader: int bufValid>;
+
+        if 0 < i1 goto label3;
+
+        i1 = r0.<org.kobjects.io.LookAheadReader: int bufPos>;
+
+        $i3 = r0.<org.kobjects.io.LookAheadReader: int bufValid>;
+
+        i1 = i1 + $i3;
+
+        $r1 = r0.<org.kobjects.io.LookAheadReader: char[] buf>;
+
+        $i3 = lengthof $r1;
+
+        i1 = i1 % $i3;
+
+        $r1 = r0.<org.kobjects.io.LookAheadReader: char[] buf>;
+
+        $i3 = lengthof $r1;
+
+        $i3 = $i3 - i1;
+
+        $r1 = r0.<org.kobjects.io.LookAheadReader: char[] buf>;
+
+        $i4 = lengthof $r1;
+
+        $i2 = r0.<org.kobjects.io.LookAheadReader: int bufValid>;
+
+        $i2 = $i4 - $i2;
+
+        $i3 = staticinvoke <java.lang.Math: int min(int,int)>($i3, $i2);
+
+        $r2 = r0.<org.kobjects.io.LookAheadReader: java.io.Reader reader>;
+
+        $r1 = r0.<org.kobjects.io.LookAheadReader: char[] buf>;
+
+        i1 = virtualinvoke $r2.<java.io.Reader: int read(char[],int,int)>($r1, i1, $i3);
+
+        if i1 != -1 goto label1;
+
+        return -1;
+
+     label3:
+        $r1 = r0.<org.kobjects.io.LookAheadReader: char[] buf>;
+
+        i1 = r0.<org.kobjects.io.LookAheadReader: int bufPos>;
+
+        $r3 = r0.<org.kobjects.io.LookAheadReader: char[] buf>;
+
+        $i3 = lengthof $r3;
+
+        $i0 = 0 % $i3;
+
+        $i0 = i1 + $i0;
+
+        $c5 = $r1[$i0];
+
+        $i0 = (int) $c5;
+
+        return $i0;
+    }
+
+    public int read() throws java.io.IOException
+    {
+        int $i0, $i1, $i2;
+        char[] $r1;
+        org.kobjects.io.LookAheadReader r0;
+
+        r0 := @this: org.kobjects.io.LookAheadReader;
+
+        $i0 = virtualinvoke r0.<org.kobjects.io.LookAheadReader: int peek(int)>(0);
+
+        if $i0 == -1 goto label2;
+
+        $i1 = r0.<org.kobjects.io.LookAheadReader: int bufPos>;
+
+        $i1 = $i1 + 1;
+
+        r0.<org.kobjects.io.LookAheadReader: int bufPos> = $i1;
+
+        $r1 = r0.<org.kobjects.io.LookAheadReader: char[] buf>;
+
+        $i2 = lengthof $r1;
+
+        if $i1 != $i2 goto label1;
+
+        r0.<org.kobjects.io.LookAheadReader: int bufPos> = 0;
+
+     label1:
+        $i1 = r0.<org.kobjects.io.LookAheadReader: int bufValid>;
+
+        $i1 = $i1 + -1;
+
+        r0.<org.kobjects.io.LookAheadReader: int bufValid> = $i1;
+
+     label2:
+        return $i0;
+    }
+
+    public int read(char[], int, int) throws java.io.IOException
+    {
+        int $i0, $i1, $i2, $i3;
+        char[] $r1, $r2;
+        org.kobjects.io.LookAheadReader r0;
+
+        r0 := @this: org.kobjects.io.LookAheadReader;
+
+        $r1 := @parameter0: char[];
+
+        $i0 := @parameter1: int;
+
+        $i2 := @parameter2: int;
+
+        $i1 = r0.<org.kobjects.io.LookAheadReader: int bufValid>;
+
+        if $i1 != 0 goto label1;
+
+        $i1 = virtualinvoke r0.<org.kobjects.io.LookAheadReader: int peek(int)>(0);
+
+        if $i1 != -1 goto label1;
+
+        return -1;
+
+     label1:
+        $i1 = r0.<org.kobjects.io.LookAheadReader: int bufValid>;
+
+        if $i2 <= $i1 goto label2;
+
+        $i2 = r0.<org.kobjects.io.LookAheadReader: int bufValid>;
+
+     label2:
+        $r2 = r0.<org.kobjects.io.LookAheadReader: char[] buf>;
+
+        $i1 = lengthof $r2;
+
+        $i3 = r0.<org.kobjects.io.LookAheadReader: int bufPos>;
+
+        $i1 = $i1 - $i3;
+
+        if $i2 <= $i1 goto label3;
+
+        $r2 = r0.<org.kobjects.io.LookAheadReader: char[] buf>;
+
+        $i2 = lengthof $r2;
+
+        $i1 = r0.<org.kobjects.io.LookAheadReader: int bufPos>;
+
+        $i2 = $i2 - $i1;
+
+     label3:
+        $r2 = r0.<org.kobjects.io.LookAheadReader: char[] buf>;
+
+        $i1 = r0.<org.kobjects.io.LookAheadReader: int bufPos>;
+
+        staticinvoke <java.lang.System: void arraycopy(java.lang.Object,int,java.lang.Object,int,int)>($r2, $i1, $r1, $i0, $i2);
+
+        $i0 = r0.<org.kobjects.io.LookAheadReader: int bufValid>;
+
+        $i0 = $i0 - $i2;
+
+        r0.<org.kobjects.io.LookAheadReader: int bufValid> = $i0;
+
+        $i0 = r0.<org.kobjects.io.LookAheadReader: int bufPos>;
+
+        $i0 = $i0 + $i2;
+
+        r0.<org.kobjects.io.LookAheadReader: int bufPos> = $i0;
+
+        $i0 = r0.<org.kobjects.io.LookAheadReader: int bufPos>;
+
+        $r1 = r0.<org.kobjects.io.LookAheadReader: char[] buf>;
+
+        $i1 = lengthof $r1;
+
+        if $i0 <= $i1 goto label4;
+
+        $i0 = r0.<org.kobjects.io.LookAheadReader: int bufPos>;
+
+        $r1 = r0.<org.kobjects.io.LookAheadReader: char[] buf>;
+
+        $i1 = lengthof $r1;
+
+        $i0 = $i0 - $i1;
+
+        r0.<org.kobjects.io.LookAheadReader: int bufPos> = $i0;
+
+     label4:
+        return $i2;
+    }
+
+    public java.lang.String readLine() throws java.io.IOException
+    {
+        int $i0, $i1;
+        org.kobjects.io.LookAheadReader r0;
+        java.lang.String $r1;
+
+        r0 := @this: org.kobjects.io.LookAheadReader;
+
+        $i0 = virtualinvoke r0.<org.kobjects.io.LookAheadReader: int peek(int)>(0);
+
+        $i1 = -1;
+
+        if $i0 != $i1 goto label1;
+
+        return null;
+
+     label1:
+        $r1 = virtualinvoke r0.<org.kobjects.io.LookAheadReader: java.lang.String readTo(java.lang.String)>("\r\n");
+
+        $i0 = virtualinvoke r0.<org.kobjects.io.LookAheadReader: int read()>();
+
+        if $i0 != 13 goto label2;
+
+        $i0 = virtualinvoke r0.<org.kobjects.io.LookAheadReader: int peek(int)>(0);
+
+        if $i0 != 10 goto label2;
+
+        virtualinvoke r0.<org.kobjects.io.LookAheadReader: int read()>();
+
+     label2:
+        return $r1;
+    }
+
+    public java.lang.String readTo(char) throws java.io.IOException
+    {
+        char $c0, $c2;
+        org.kobjects.io.LookAheadReader r0;
+        java.lang.StringBuffer r1, $r3;
+        int $i1, $i3;
+        java.lang.String $r2;
+
+        r0 := @this: org.kobjects.io.LookAheadReader;
+
+        $c0 := @parameter0: char;
+
+        $r3 = new java.lang.StringBuffer;
+
+        r1 = $r3;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+     label1:
+        $i1 = virtualinvoke r0.<org.kobjects.io.LookAheadReader: int peek(int)>(0);
+
+        $i3 = -1;
+
+        if $i1 == $i3 goto label2;
+
+        $i1 = virtualinvoke r0.<org.kobjects.io.LookAheadReader: int peek(int)>(0);
+
+        $i3 = (int) $c0;
+
+        if $i1 == $i3 goto label2;
+
+        $i1 = virtualinvoke r0.<org.kobjects.io.LookAheadReader: int read()>();
+
+        $c2 = (char) $i1;
+
+        virtualinvoke r1.<java.lang.StringBuffer: java.lang.StringBuffer append(char)>($c2);
+
+        goto label1;
+
+     label2:
+        $r2 = virtualinvoke r1.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        return $r2;
+    }
+
+    public java.lang.String readTo(java.lang.String) throws java.io.IOException
+    {
+        java.lang.StringBuffer r2, $r3;
+        int $i0, $i2;
+        char $c1;
+        org.kobjects.io.LookAheadReader r0;
+        java.lang.String $r1;
+
+        r0 := @this: org.kobjects.io.LookAheadReader;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r3 = new java.lang.StringBuffer;
+
+        r2 = $r3;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+     label1:
+        $i0 = virtualinvoke r0.<org.kobjects.io.LookAheadReader: int peek(int)>(0);
+
+        $i2 = -1;
+
+        if $i0 == $i2 goto label2;
+
+        $i0 = virtualinvoke r0.<org.kobjects.io.LookAheadReader: int peek(int)>(0);
+
+        $c1 = (char) $i0;
+
+        $i0 = (int) $c1;
+
+        $i0 = virtualinvoke $r1.<java.lang.String: int indexOf(int)>($i0);
+
+        $i2 = -1;
+
+        if $i0 != $i2 goto label2;
+
+        $i0 = virtualinvoke r0.<org.kobjects.io.LookAheadReader: int read()>();
+
+        $c1 = (char) $i0;
+
+        virtualinvoke r2.<java.lang.StringBuffer: java.lang.StringBuffer append(char)>($c1);
+
+        goto label1;
+
+     label2:
+        $r1 = virtualinvoke r2.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        return $r1;
+    }
+
+    public java.lang.String readWhile(java.lang.String) throws java.io.IOException
+    {
+        java.lang.StringBuffer r2, $r3;
+        int $i0, $i2;
+        char $c1;
+        org.kobjects.io.LookAheadReader r0;
+        java.lang.String $r1;
+
+        r0 := @this: org.kobjects.io.LookAheadReader;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r3 = new java.lang.StringBuffer;
+
+        r2 = $r3;
+
+        specialinvoke $r3.<java.lang.StringBuffer: void <init>()>();
+
+     label1:
+        $i0 = virtualinvoke r0.<org.kobjects.io.LookAheadReader: int peek(int)>(0);
+
+        $i2 = -1;
+
+        if $i0 == $i2 goto label2;
+
+        $i0 = virtualinvoke r0.<org.kobjects.io.LookAheadReader: int peek(int)>(0);
+
+        $c1 = (char) $i0;
+
+        $i0 = (int) $c1;
+
+        $i0 = virtualinvoke $r1.<java.lang.String: int indexOf(int)>($i0);
+
+        $i2 = -1;
+
+        if $i0 == $i2 goto label2;
+
+        $i0 = virtualinvoke r0.<org.kobjects.io.LookAheadReader: int read()>();
+
+        $c1 = (char) $i0;
+
+        virtualinvoke r2.<java.lang.StringBuffer: java.lang.StringBuffer append(char)>($c1);
+
+        goto label1;
+
+     label2:
+        $r1 = virtualinvoke r2.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        return $r1;
+    }
+
+    public void skip(java.lang.String) throws java.io.IOException
+    {
+        java.lang.StringBuffer $r2;
+        int $i0, $i2;
+        char $c1;
+        org.kobjects.io.LookAheadReader r0;
+        java.lang.String $r1;
+
+        r0 := @this: org.kobjects.io.LookAheadReader;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = new java.lang.StringBuffer;
+
+        specialinvoke $r2.<java.lang.StringBuffer: void <init>()>();
+
+     label1:
+        $i0 = virtualinvoke r0.<org.kobjects.io.LookAheadReader: int peek(int)>(0);
+
+        $i2 = -1;
+
+        if $i0 == $i2 goto label2;
+
+        $i0 = virtualinvoke r0.<org.kobjects.io.LookAheadReader: int peek(int)>(0);
+
+        $c1 = (char) $i0;
+
+        $i0 = (int) $c1;
+
+        $i0 = virtualinvoke $r1.<java.lang.String: int indexOf(int)>($i0);
+
+        $i2 = -1;
+
+        if $i0 == $i2 goto label2;
+
+        virtualinvoke r0.<org.kobjects.io.LookAheadReader: int read()>();
+
+        goto label1;
+
+     label2:
+        return;
+    }
+}

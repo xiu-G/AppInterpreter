@@ -1,0 +1,350 @@
+public class com.entaz.app.comicplus.menu.mypage.MyPageBookmark extends android.app.Activity
+{
+    public static final java.lang.String BUNDLE_KEY;
+    private static final java.lang.String TAG;
+    android.widget.TextView m_BookmarkEmptyText;
+    com.entaz.app.comicplus.menu.mypage.MyPageBookmarkListView m_BookmarkListView;
+    android.widget.FrameLayout m_CenterLayout;
+    com.entaz.app.comicplus.http.HttpReq m_HttpReq;
+    java.util.ArrayList m_ImageList;
+    android.widget.TextView m_MyPoint;
+    com.entaz.app.comicplus.menu.mypage.MyPageBookmarkListView$OnMoreListListener m_OnMoreList;
+    android.widget.ProgressBar m_Progress;
+    boolean m_fComplete;
+    public android.content.Intent ipcIntent;
+    public android.content.Intent ipcResultIntent;
+
+    public void <init>()
+    {
+        com.entaz.app.comicplus.menu.mypage.MyPageBookmark r0;
+        com.entaz.app.comicplus.menu.mypage.MyPageBookmark$1 $r1;
+
+        r0 := @this: com.entaz.app.comicplus.menu.mypage.MyPageBookmark;
+
+        specialinvoke r0.<android.app.Activity: void <init>()>();
+
+        r0.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: boolean m_fComplete> = 0;
+
+        r0.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: java.util.ArrayList m_ImageList> = null;
+
+        $r1 = new com.entaz.app.comicplus.menu.mypage.MyPageBookmark$1;
+
+        specialinvoke $r1.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark$1: void <init>(com.entaz.app.comicplus.menu.mypage.MyPageBookmark)>(r0);
+
+        r0.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: com.entaz.app.comicplus.menu.mypage.MyPageBookmarkListView$OnMoreListListener m_OnMoreList> = $r1;
+
+        return;
+    }
+
+    protected void onCreate(android.os.Bundle)
+    {
+        android.os.Bundle $r1;
+        com.entaz.app.comicplus.menu.mypage.MyPageBookmark r0;
+
+        r0 := @this: com.entaz.app.comicplus.menu.mypage.MyPageBookmark;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke r0.<android.app.Activity: void onCreate(android.os.Bundle)>($r1);
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MyPageBookmark", "onCreate");
+
+        virtualinvoke r0.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: void setLayout()>();
+
+        return;
+    }
+
+    protected void onDestroy()
+    {
+        com.entaz.app.comicplus.menu.mypage.MyPageBookmark r0;
+
+        r0 := @this: com.entaz.app.comicplus.menu.mypage.MyPageBookmark;
+
+        specialinvoke r0.<android.app.Activity: void onDestroy()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MyPageBookmark", "onDestroy");
+
+        return;
+    }
+
+    protected void onPause()
+    {
+        android.content.BroadcastReceiver $r1;
+        com.entaz.app.comicplus.menu.mypage.MyPageBookmark r0;
+
+        r0 := @this: com.entaz.app.comicplus.menu.mypage.MyPageBookmark;
+
+        specialinvoke r0.<android.app.Activity: void onPause()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MyPageBookmark", "onPause");
+
+        $r1 = <com.entaz.app.comicplus.Application: android.content.BroadcastReceiver receiver>;
+
+        virtualinvoke r0.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: void unregisterReceiver(android.content.BroadcastReceiver)>($r1);
+
+        return;
+    }
+
+    protected void onResume()
+    {
+        android.content.IntentFilter r1;
+        android.content.BroadcastReceiver $r2;
+        com.entaz.app.comicplus.menu.mypage.MyPageBookmark r0;
+
+        r0 := @this: com.entaz.app.comicplus.menu.mypage.MyPageBookmark;
+
+        specialinvoke r0.<android.app.Activity: void onResume()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("MyPageBookmark", "onResume");
+
+        r1 = new android.content.IntentFilter;
+
+        specialinvoke r1.<android.content.IntentFilter: void <init>(java.lang.String)>("android.net.conn.CONNECTIVITY_CHANGE");
+
+        $r2 = <com.entaz.app.comicplus.Application: android.content.BroadcastReceiver receiver>;
+
+        virtualinvoke r0.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: android.content.Intent registerReceiver(android.content.BroadcastReceiver,android.content.IntentFilter)>($r2, r1);
+
+        return;
+    }
+
+    void setLayout()
+    {
+        android.widget.ProgressBar $r5;
+        com.entaz.app.comicplus.menu.mypage.MyPageBookmark r0;
+        android.widget.FrameLayout $r4;
+        java.util.ArrayList r1, $r11;
+        com.entaz.app.comicplus.menu.mypage.MyPageBookmarkListView $r9;
+        int $i0, i1;
+        android.view.View $r3;
+        java.lang.String $r16;
+        com.entaz.app.comicplus.cache.ImageDownloader $r12;
+        android.view.LayoutInflater r7;
+        com.entaz.app.comicplus.Bookmark $r15;
+        android.widget.TextView $r10;
+        com.entaz.app.comicplus.ui.ImageButton r8;
+        android.widget.BaseAdapter $r14;
+        android.widget.ListAdapter $r13;
+        com.entaz.app.comicplus.menu.mypage.MyPageBookmark$2 $r17;
+        java.lang.Object $r6;
+        android.view.Window $r2;
+
+        r0 := @this: com.entaz.app.comicplus.menu.mypage.MyPageBookmark;
+
+        $r2 = virtualinvoke r0.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: android.view.Window getWindow()>();
+
+        virtualinvoke $r2.<android.view.Window: void setFlags(int,int)>(128, 128);
+
+        virtualinvoke r0.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: void setContentView(int)>(2130903066);
+
+        $r3 = virtualinvoke r0.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: android.view.View findViewById(int)>(2131165300);
+
+        $r4 = (android.widget.FrameLayout) $r3;
+
+        r0.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: android.widget.FrameLayout m_CenterLayout> = $r4;
+
+        $r3 = virtualinvoke r0.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: android.view.View findViewById(int)>(2131165302);
+
+        $r5 = (android.widget.ProgressBar) $r3;
+
+        r0.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: android.widget.ProgressBar m_Progress> = $r5;
+
+        $r6 = virtualinvoke r0.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: java.lang.Object getSystemService(java.lang.String)>("layout_inflater");
+
+        r7 = (android.view.LayoutInflater) $r6;
+
+        $r4 = r0.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: android.widget.FrameLayout m_CenterLayout>;
+
+        virtualinvoke r7.<android.view.LayoutInflater: android.view.View inflate(int,android.view.ViewGroup)>(2130903069, $r4);
+
+        $r4 = r0.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: android.widget.FrameLayout m_CenterLayout>;
+
+        $r3 = virtualinvoke $r4.<android.widget.FrameLayout: android.view.View findViewById(int)>(2131165303);
+
+        r8 = (com.entaz.app.comicplus.ui.ImageButton) $r3;
+
+        $r17 = new com.entaz.app.comicplus.menu.mypage.MyPageBookmark$2;
+
+        specialinvoke $r17.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark$2: void <init>(com.entaz.app.comicplus.menu.mypage.MyPageBookmark)>(r0);
+
+        virtualinvoke r8.<com.entaz.app.comicplus.ui.ImageButton: void setOnClickListener(android.view.View$OnClickListener)>($r17);
+
+        $r4 = r0.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: android.widget.FrameLayout m_CenterLayout>;
+
+        $r3 = virtualinvoke $r4.<android.widget.FrameLayout: android.view.View findViewById(int)>(2131165304);
+
+        $r9 = (com.entaz.app.comicplus.menu.mypage.MyPageBookmarkListView) $r3;
+
+        r0.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: com.entaz.app.comicplus.menu.mypage.MyPageBookmarkListView m_BookmarkListView> = $r9;
+
+        $r4 = r0.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: android.widget.FrameLayout m_CenterLayout>;
+
+        $r3 = virtualinvoke $r4.<android.widget.FrameLayout: android.view.View findViewById(int)>(2131165305);
+
+        $r10 = (android.widget.TextView) $r3;
+
+        r0.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: android.widget.TextView m_BookmarkEmptyText> = $r10;
+
+        $r5 = r0.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: android.widget.ProgressBar m_Progress>;
+
+        virtualinvoke $r5.<android.widget.ProgressBar: void setVisibility(int)>(0);
+
+        r0.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: boolean m_fComplete> = 0;
+
+        r1 = <com.entaz.app.comicplus.Application: java.util.ArrayList myBookmark>;
+
+        $i0 = virtualinvoke r1.<java.util.ArrayList: int size()>();
+
+        $r11 = new java.util.ArrayList;
+
+        r1 = $r11;
+
+        specialinvoke $r11.<java.util.ArrayList: void <init>()>();
+
+        if $i0 <= 0 goto label2;
+
+        $r10 = r0.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: android.widget.TextView m_BookmarkEmptyText>;
+
+        virtualinvoke $r10.<android.widget.TextView: void setVisibility(int)>(4);
+
+        $i0 = $i0 + -1;
+
+     label1:
+        if $i0 >= 0 goto label5;
+
+     label2:
+        $r9 = r0.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: com.entaz.app.comicplus.menu.mypage.MyPageBookmarkListView m_BookmarkListView>;
+
+        virtualinvoke $r9.<com.entaz.app.comicplus.menu.mypage.MyPageBookmarkListView: void setList(java.util.ArrayList)>(r1);
+
+        $r11 = new java.util.ArrayList;
+
+        r1 = $r11;
+
+        specialinvoke $r11.<java.util.ArrayList: void <init>()>();
+
+        $r11 = <com.entaz.app.comicplus.Application: java.util.ArrayList myBookmark>;
+
+        $i0 = virtualinvoke $r11.<java.util.ArrayList: int size()>();
+
+        i1 = 0;
+
+     label3:
+        if i1 < $i0 goto label6;
+
+        $r12 = <com.entaz.app.comicplus.Application: com.entaz.app.comicplus.cache.ImageDownloader imagedownloader>;
+
+        r1 = virtualinvoke $r12.<com.entaz.app.comicplus.cache.ImageDownloader: java.util.ArrayList checkCache(java.util.ArrayList)>(r1);
+
+        r0.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: java.util.ArrayList m_ImageList> = r1;
+
+        r1 = r0.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: java.util.ArrayList m_ImageList>;
+
+        if r1 == null goto label4;
+
+        $r12 = <com.entaz.app.comicplus.Application: com.entaz.app.comicplus.cache.ImageDownloader imagedownloader>;
+
+        r1 = r0.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: java.util.ArrayList m_ImageList>;
+
+        virtualinvoke $r12.<com.entaz.app.comicplus.cache.ImageDownloader: void setQueue(java.util.ArrayList)>(r1);
+
+     label4:
+        $r12 = <com.entaz.app.comicplus.Application: com.entaz.app.comicplus.cache.ImageDownloader imagedownloader>;
+
+        $r9 = r0.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: com.entaz.app.comicplus.menu.mypage.MyPageBookmarkListView m_BookmarkListView>;
+
+        $r13 = virtualinvoke $r9.<com.entaz.app.comicplus.menu.mypage.MyPageBookmarkListView: android.widget.ListAdapter getAdapter()>();
+
+        $r14 = (android.widget.BaseAdapter) $r13;
+
+        virtualinvoke $r12.<com.entaz.app.comicplus.cache.ImageDownloader: void setAdapter(android.widget.BaseAdapter)>($r14);
+
+        $r5 = r0.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: android.widget.ProgressBar m_Progress>;
+
+        virtualinvoke $r5.<android.widget.ProgressBar: void setVisibility(int)>(4);
+
+        r0.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: boolean m_fComplete> = 1;
+
+        return;
+
+     label5:
+        $r11 = <com.entaz.app.comicplus.Application: java.util.ArrayList myBookmark>;
+
+        $r6 = virtualinvoke $r11.<java.util.ArrayList: java.lang.Object get(int)>($i0);
+
+        $r15 = (com.entaz.app.comicplus.Bookmark) $r6;
+
+        virtualinvoke r1.<java.util.ArrayList: boolean add(java.lang.Object)>($r15);
+
+        $i0 = $i0 + -1;
+
+        goto label1;
+
+     label6:
+        $r11 = <com.entaz.app.comicplus.Application: java.util.ArrayList myBookmark>;
+
+        $r6 = virtualinvoke $r11.<java.util.ArrayList: java.lang.Object get(int)>(i1);
+
+        $r15 = (com.entaz.app.comicplus.Bookmark) $r6;
+
+        $r16 = $r15.<com.entaz.app.comicplus.Bookmark: java.lang.String imageUrl>;
+
+        virtualinvoke r1.<java.util.ArrayList: boolean add(java.lang.Object)>($r16);
+
+        i1 = i1 + 1;
+
+        goto label3;
+    }
+
+    public android.content.Intent getIntent()
+    {
+        android.content.Intent $r0;
+        com.entaz.app.comicplus.menu.mypage.MyPageBookmark this;
+
+        this := @this: com.entaz.app.comicplus.menu.mypage.MyPageBookmark;
+
+        $r0 = this.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: android.content.Intent ipcIntent>;
+
+        return $r0;
+    }
+
+    public void setIntent(android.content.Intent)
+    {
+        android.content.Intent parameter0;
+        com.entaz.app.comicplus.menu.mypage.MyPageBookmark this;
+
+        this := @this: com.entaz.app.comicplus.menu.mypage.MyPageBookmark;
+
+        parameter0 := @parameter0: android.content.Intent;
+
+        this.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: android.content.Intent ipcIntent> = parameter0;
+
+        return;
+    }
+
+    public void setResult(int, android.content.Intent)
+    {
+        int parameter0;
+        android.content.Intent parameter1;
+        com.entaz.app.comicplus.menu.mypage.MyPageBookmark this;
+
+        this := @this: com.entaz.app.comicplus.menu.mypage.MyPageBookmark;
+
+        parameter0 := @parameter0: int;
+
+        parameter1 := @parameter1: android.content.Intent;
+
+        this.<com.entaz.app.comicplus.menu.mypage.MyPageBookmark: android.content.Intent ipcResultIntent> = parameter1;
+
+        return;
+    }
+
+    public static void <clinit>()
+    {
+        <com.entaz.app.comicplus.menu.mypage.MyPageBookmark: java.lang.String TAG> = "MyPageBookmark";
+
+        <com.entaz.app.comicplus.menu.mypage.MyPageBookmark: java.lang.String BUNDLE_KEY> = "BUNDLE";
+
+        return;
+    }
+}

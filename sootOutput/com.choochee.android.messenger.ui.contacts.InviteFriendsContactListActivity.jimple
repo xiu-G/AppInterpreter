@@ -1,0 +1,901 @@
+public class com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity extends android.app.ListActivity implements com.choochee.android.messenger.util.ChooCheeImListener$IReceiver, android.content.DialogInterface$OnDismissListener
+{
+    private static final java.lang.String TAG;
+    private static final java.lang.String cDEFAULTEMAIL;
+    private static final int cPHONENUMBERLENGTH;
+    private android.widget.Button clearSelection;
+    private com.choochee.android.messenger.ui.contacts.ContactItemListAdapter mAdapter;
+    private java.util.List mData;
+    private int mInviteType;
+    private boolean mIsSent;
+    private android.widget.ListView mListView;
+    private com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity$ConfigState mState;
+    private android.widget.Button sendInvite;
+    public android.content.Intent ipcIntent;
+    public android.content.Intent ipcResultIntent;
+
+    public void <init>()
+    {
+        com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity r0;
+
+        r0 := @this: com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity;
+
+        specialinvoke r0.<android.app.ListActivity: void <init>()>();
+
+        r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity$ConfigState mState> = null;
+
+        r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: int mInviteType> = -1;
+
+        r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: boolean mIsSent> = 0;
+
+        return;
+    }
+
+    static java.lang.String[] access$100(com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity)
+    {
+        java.lang.String[] $r1;
+        com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity $r0;
+
+        $r0 := @parameter0: com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity;
+
+        $r1 = specialinvoke $r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: java.lang.String[] getCheckedContacts()>();
+
+        return $r1;
+    }
+
+    static android.widget.Button access$200(com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity)
+    {
+        android.widget.Button r1;
+        com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity $r0;
+
+        $r0 := @parameter0: com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity;
+
+        r1 = $r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: android.widget.Button sendInvite>;
+
+        return r1;
+    }
+
+    static android.widget.Button access$300(com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity)
+    {
+        android.widget.Button r1;
+        com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity $r0;
+
+        $r0 := @parameter0: com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity;
+
+        r1 = $r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: android.widget.Button clearSelection>;
+
+        return r1;
+    }
+
+    private void clearSelection()
+    {
+        com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity r0;
+        int $i0, i1;
+        android.widget.Button $r2;
+        android.widget.ListView $r1;
+
+        r0 := @this: com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity;
+
+        $r1 = r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: android.widget.ListView mListView>;
+
+        $i0 = virtualinvoke $r1.<android.widget.ListView: int getCount()>();
+
+        i1 = 0;
+
+     label1:
+        if i1 >= $i0 goto label2;
+
+        $r1 = r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: android.widget.ListView mListView>;
+
+        virtualinvoke $r1.<android.widget.ListView: void setItemChecked(int,boolean)>(i1, 0);
+
+        i1 = i1 + 1;
+
+        goto label1;
+
+     label2:
+        $r2 = r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: android.widget.Button sendInvite>;
+
+        virtualinvoke $r2.<android.widget.Button: void setEnabled(boolean)>(0);
+
+        $r2 = r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: android.widget.Button clearSelection>;
+
+        virtualinvoke $r2.<android.widget.Button: void setEnabled(boolean)>(0);
+
+        return;
+    }
+
+    private void displayProgress()
+    {
+        android.view.View $r1;
+        com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity r0;
+
+        r0 := @this: com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity;
+
+        $r1 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: android.view.View findViewById(int)>(2131361822);
+
+        virtualinvoke $r1.<android.view.View: void setVisibility(int)>(0);
+
+        return;
+    }
+
+    private java.lang.String extractEmailAddress(java.lang.String)
+    {
+        com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity r0;
+        java.util.regex.Matcher $r3;
+        java.util.regex.MatchResult $r4;
+        java.lang.String $r1;
+        java.util.regex.Pattern $r2;
+        boolean $z0;
+
+        r0 := @this: com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r1);
+
+        if $z0 != 0 goto label1;
+
+        $r2 = staticinvoke <java.util.regex.Pattern: java.util.regex.Pattern compile(java.lang.String)>("([a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,4})?.*");
+
+        $r3 = virtualinvoke $r2.<java.util.regex.Pattern: java.util.regex.Matcher matcher(java.lang.CharSequence)>($r1);
+
+        $z0 = virtualinvoke $r3.<java.util.regex.Matcher: boolean find()>();
+
+        if $z0 == 0 goto label1;
+
+        $r4 = virtualinvoke $r3.<java.util.regex.Matcher: java.util.regex.MatchResult toMatchResult()>();
+
+        $r1 = interfaceinvoke $r4.<java.util.regex.MatchResult: java.lang.String group(int)>(1);
+
+        return $r1;
+
+     label1:
+        return null;
+    }
+
+    private java.lang.String[] getCheckedContacts()
+    {
+        com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity r1;
+        java.lang.Object[] $r9;
+        java.lang.String[] $r8;
+        java.util.ArrayList r0;
+        java.util.List $r4;
+        android.util.SparseBooleanArray $r3;
+        int $i0, i1, $i2;
+        com.choochee.android.messenger.ui.contacts.Item $r6;
+        java.lang.Object $r5;
+        android.widget.ListView $r2;
+        java.lang.String $r7;
+        boolean $z0;
+
+        r1 := @this: com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity;
+
+        $r2 = r1.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: android.widget.ListView mListView>;
+
+        $r3 = virtualinvoke $r2.<android.widget.ListView: android.util.SparseBooleanArray getCheckedItemPositions()>();
+
+        r0 = new java.util.ArrayList;
+
+        specialinvoke r0.<java.util.ArrayList: void <init>()>();
+
+        $i0 = virtualinvoke $r3.<android.util.SparseBooleanArray: int size()>();
+
+        i1 = 0;
+
+     label1:
+        if i1 >= $i0 goto label3;
+
+        $i2 = virtualinvoke $r3.<android.util.SparseBooleanArray: int keyAt(int)>(i1);
+
+        $z0 = virtualinvoke $r3.<android.util.SparseBooleanArray: boolean valueAt(int)>(i1);
+
+        if $z0 == 0 goto label2;
+
+        $r4 = r1.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: java.util.List mData>;
+
+        $r5 = interfaceinvoke $r4.<java.util.List: java.lang.Object get(int)>($i2);
+
+        $r6 = (com.choochee.android.messenger.ui.contacts.Item) $r5;
+
+        $r7 = virtualinvoke $r6.<com.choochee.android.messenger.ui.contacts.Item: java.lang.String getAddress()>();
+
+        virtualinvoke r0.<java.util.ArrayList: boolean add(java.lang.Object)>($r7);
+
+     label2:
+        i1 = i1 + 1;
+
+        goto label1;
+
+     label3:
+        $r8 = newarray (java.lang.String)[0];
+
+        $r9 = virtualinvoke r0.<java.util.ArrayList: java.lang.Object[] toArray(java.lang.Object[])>($r8);
+
+        $r8 = (java.lang.String[]) $r9;
+
+        return $r8;
+    }
+
+    private java.lang.String getPrimaryEmailAddr()
+    {
+        android.accounts.AccountManager r5;
+        com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity r0;
+        android.accounts.Account r1;
+        android.accounts.Account[] r2, r6;
+        int i0, i1;
+        java.lang.Object $r4;
+        java.lang.String r3, $r7;
+        boolean $z0;
+
+        r0 := @this: com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity;
+
+        r3 = null;
+
+        $r4 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: java.lang.Object getSystemService(java.lang.String)>("account");
+
+        r5 = (android.accounts.AccountManager) $r4;
+
+        r2 = virtualinvoke r5.<android.accounts.AccountManager: android.accounts.Account[] getAccountsByType(java.lang.String)>("com.google");
+
+        r6 = r2;
+
+        i0 = lengthof r2;
+
+        if i0 != 0 goto label1;
+
+        r6 = virtualinvoke r5.<android.accounts.AccountManager: android.accounts.Account[] getAccountsByType(java.lang.String)>(null);
+
+     label1:
+        r2 = r6;
+
+        i0 = lengthof r6;
+
+        i1 = 0;
+
+     label2:
+        if i1 >= i0 goto label4;
+
+        r1 = r2[i1];
+
+        r3 = r1.<android.accounts.Account: java.lang.String name>;
+
+        $r7 = specialinvoke r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: java.lang.String extractEmailAddress(java.lang.String)>(r3);
+
+        r3 = $r7;
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r7);
+
+        if $z0 != 0 goto label3;
+
+        return $r7;
+
+     label3:
+        i1 = i1 + 1;
+
+        goto label2;
+
+     label4:
+        return r3;
+    }
+
+    private void getSelectedItems(java.lang.String)
+    {
+        com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity r0;
+        int $i0;
+        java.lang.String[] $r2;
+        java.lang.String $r1;
+        boolean $z0;
+
+        r0 := @this: com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r1);
+
+        if $z0 == 0 goto label1;
+
+        $r1 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: java.lang.String getString(int)>(2131427735);
+
+     label1:
+        $r2 = specialinvoke r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: java.lang.String[] getCheckedContacts()>();
+
+        $i0 = r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: int mInviteType>;
+
+        if $i0 != 2 goto label3;
+
+        specialinvoke r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: void sendLocalEmail(java.lang.String[],java.lang.String)>($r2, $r1);
+
+     label2:
+        r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: boolean mIsSent> = 1;
+
+        return;
+
+     label3:
+        specialinvoke r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: void sendLocalSms(java.lang.String[],java.lang.String)>($r2, $r1);
+
+        goto label2;
+    }
+
+    private void getTemplateForSMS()
+    {
+        com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity r0;
+        com.choochee.android.messenger.util.ChooCheeImListener $r3;
+        com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity$ConfigState $r2;
+        android.content.Intent r1;
+
+        r0 := @this: com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity;
+
+        r1 = new android.content.Intent;
+
+        specialinvoke r1.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>(r0, class "Lcom/choochee/android/messenger/cws/ChooCheeImService;");
+
+        virtualinvoke r1.<android.content.Intent: android.content.Intent setAction(java.lang.String)>("com.choochee.android.messenger.imservice.GET");
+
+        virtualinvoke r1.<android.content.Intent: android.content.Intent putExtra(java.lang.String,int)>("com.choochee.android.messenger.imservice.REQEUSTCODE", 117);
+
+        $r2 = r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity$ConfigState mState>;
+
+        $r3 = $r2.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity$ConfigState: com.choochee.android.messenger.util.ChooCheeImListener mReceiver>;
+
+        virtualinvoke r1.<android.content.Intent: android.content.Intent putExtra(java.lang.String,android.os.Parcelable)>("com.choochee.android.messenger.imservice.STATUS_RECEIVER", $r3);
+
+        virtualinvoke r1.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("com.choochee.android.messenger.imservice.TEMPLATE_TYPE", "SMS");
+
+        virtualinvoke r1.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("com.choochee.android.messenger.imservice.TEMPLATE_NAME", "Invitation");
+
+        virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: android.content.ComponentName startService(android.content.Intent)>(r1);
+
+        return;
+    }
+
+    private void hideProgress()
+    {
+        android.view.View $r1;
+        com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity r0;
+
+        r0 := @this: com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity;
+
+        $r1 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: android.view.View findViewById(int)>(2131361822);
+
+        virtualinvoke $r1.<android.view.View: void setVisibility(int)>(8);
+
+        return;
+    }
+
+    private void sendLocalEmail(java.lang.String[], java.lang.String)
+    {
+        com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity r0;
+        java.lang.String[] $r1, $r5;
+        android.content.Intent r3;
+        java.lang.String $r2, $r4;
+
+        r0 := @this: com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity;
+
+        $r1 := @parameter0: java.lang.String[];
+
+        $r2 := @parameter1: java.lang.String;
+
+        if $r1 == null goto label1;
+
+        $r4 = specialinvoke r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: java.lang.String getPrimaryEmailAddr()>();
+
+        r3 = new android.content.Intent;
+
+        specialinvoke r3.<android.content.Intent: void <init>(java.lang.String)>("android.intent.action.SEND");
+
+        virtualinvoke r3.<android.content.Intent: android.content.Intent setType(java.lang.String)>("plain/text");
+
+        $r5 = newarray (java.lang.String)[1];
+
+        $r5[0] = $r4;
+
+        virtualinvoke r3.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String[])>("android.intent.extra.EMAIL", $r5);
+
+        $r4 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: java.lang.String getString(int)>(2131427435);
+
+        virtualinvoke r3.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("android.intent.extra.SUBJECT", $r4);
+
+        virtualinvoke r3.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("android.intent.extra.TEXT", $r2);
+
+        virtualinvoke r3.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String[])>("android.intent.extra.BCC", $r1);
+
+        r3 = staticinvoke <android.content.Intent: android.content.Intent createChooser(android.content.Intent,java.lang.CharSequence)>(r3, "Email:");
+
+        virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: void startActivity(android.content.Intent)>(r3);
+
+     label1:
+        return;
+    }
+
+    private void sendLocalSms(java.lang.String[], java.lang.String)
+    {
+        com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity r0;
+        java.lang.String[] $r1;
+        android.telephony.gsm.SmsManager $r3;
+        int i0, $i1;
+        java.lang.String $r2, $r4;
+        boolean $z0;
+
+        r0 := @this: com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity;
+
+        $r1 := @parameter0: java.lang.String[];
+
+        $r2 := @parameter1: java.lang.String;
+
+        if $r1 == null goto label3;
+
+        i0 = 0;
+
+     label1:
+        $i1 = lengthof $r1;
+
+        if i0 >= $i1 goto label3;
+
+        $r3 = staticinvoke <android.telephony.gsm.SmsManager: android.telephony.gsm.SmsManager getDefault()>();
+
+        $r4 = $r1[i0];
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r4);
+
+        if $z0 != 0 goto label2;
+
+        $r4 = $r1[i0];
+
+        $i1 = virtualinvoke $r4.<java.lang.String: int length()>();
+
+        if $i1 <= 1 goto label2;
+
+        $r4 = $r1[i0];
+
+        virtualinvoke $r3.<android.telephony.gsm.SmsManager: void sendTextMessage(java.lang.String,java.lang.String,java.lang.String,android.app.PendingIntent,android.app.PendingIntent)>($r4, null, $r2, null, null);
+
+     label2:
+        i0 = i0 + 1;
+
+        goto label1;
+
+     label3:
+        virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: void finish()>();
+
+        return;
+    }
+
+    public void onButtonClick(android.view.View)
+    {
+        int $i0;
+        android.view.View $r1;
+        com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity r0;
+
+        r0 := @this: com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity;
+
+        $r1 := @parameter0: android.view.View;
+
+        $i0 = virtualinvoke $r1.<android.view.View: int getId()>();
+
+        lookupswitch($i0)
+        {
+            case 2131361850: goto label2;
+            case 2131361851: goto label3;
+            default: goto label1;
+        };
+
+     label1:
+        return;
+
+     label2:
+        specialinvoke r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: void clearSelection()>();
+
+        return;
+
+     label3:
+        specialinvoke r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: void displayProgress()>();
+
+        specialinvoke r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: void getTemplateForSMS()>();
+
+        return;
+    }
+
+    public void onCreate(android.os.Bundle)
+    {
+        com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity r0;
+        android.os.Bundle $r1;
+        com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity$1 $r8;
+        com.choochee.android.messenger.util.ChooCheeImListener $r4;
+        com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity$ConfigState $r3;
+        android.view.View $r5;
+        android.widget.Button $r6;
+        java.lang.Object $r2;
+        android.widget.ListView $r7;
+        boolean z0;
+
+        r0 := @this: com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke r0.<android.app.ListActivity: void onCreate(android.os.Bundle)>($r1);
+
+        virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: void setContentView(int)>(2130903047);
+
+        $r2 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: java.lang.Object getLastNonConfigurationInstance()>();
+
+        $r3 = (com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity$ConfigState) $r2;
+
+        r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity$ConfigState mState> = $r3;
+
+        $r3 = r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity$ConfigState mState>;
+
+        if $r3 == null goto label3;
+
+        z0 = 1;
+
+     label1:
+        if z0 == 0 goto label4;
+
+        $r3 = r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity$ConfigState mState>;
+
+        $r4 = $r3.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity$ConfigState: com.choochee.android.messenger.util.ChooCheeImListener mReceiver>;
+
+        virtualinvoke $r4.<com.choochee.android.messenger.util.ChooCheeImListener: void setReceiver(com.choochee.android.messenger.util.ChooCheeImListener$IReceiver)>(r0);
+
+     label2:
+        $r5 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: android.view.View findViewById(int)>(2131361851);
+
+        $r6 = (android.widget.Button) $r5;
+
+        r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: android.widget.Button sendInvite> = $r6;
+
+        $r5 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: android.view.View findViewById(int)>(2131361850);
+
+        $r6 = (android.widget.Button) $r5;
+
+        r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: android.widget.Button clearSelection> = $r6;
+
+        $r6 = r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: android.widget.Button sendInvite>;
+
+        virtualinvoke $r6.<android.widget.Button: void setEnabled(boolean)>(0);
+
+        $r6 = r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: android.widget.Button clearSelection>;
+
+        virtualinvoke $r6.<android.widget.Button: void setEnabled(boolean)>(0);
+
+        $r7 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: android.widget.ListView getListView()>();
+
+        r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: android.widget.ListView mListView> = $r7;
+
+        $r7 = r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: android.widget.ListView mListView>;
+
+        virtualinvoke $r7.<android.widget.ListView: void setItemsCanFocus(boolean)>(0);
+
+        $r7 = r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: android.widget.ListView mListView>;
+
+        virtualinvoke $r7.<android.widget.ListView: void setChoiceMode(int)>(2);
+
+        $r7 = r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: android.widget.ListView mListView>;
+
+        $r8 = new com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity$1;
+
+        specialinvoke $r8.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity$1: void <init>(com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity)>(r0);
+
+        virtualinvoke $r7.<android.widget.ListView: void setOnItemClickListener(android.widget.AdapterView$OnItemClickListener)>($r8);
+
+        return;
+
+     label3:
+        z0 = 0;
+
+        goto label1;
+
+     label4:
+        $r3 = new com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity$ConfigState;
+
+        specialinvoke $r3.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity$ConfigState: void <init>(com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity$1)>(null);
+
+        r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity$ConfigState mState> = $r3;
+
+        $r3 = r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity$ConfigState mState>;
+
+        $r4 = $r3.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity$ConfigState: com.choochee.android.messenger.util.ChooCheeImListener mReceiver>;
+
+        virtualinvoke $r4.<com.choochee.android.messenger.util.ChooCheeImListener: void setReceiver(com.choochee.android.messenger.util.ChooCheeImListener$IReceiver)>(r0);
+
+        goto label2;
+    }
+
+    public void onDismiss(android.content.DialogInterface)
+    {
+        com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity r0;
+        android.content.DialogInterface $r1;
+        boolean $z0;
+
+        r0 := @this: com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity;
+
+        $r1 := @parameter0: android.content.DialogInterface;
+
+        $z0 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: boolean isFinishing()>();
+
+        if $z0 != 0 goto label1;
+
+        virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: void finish()>();
+
+     label1:
+        return;
+    }
+
+    public void onReceiveResult(int, android.os.Bundle)
+    {
+        com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity r0;
+        android.os.Bundle $r1;
+        int $i0;
+        com.choochee.android.messenger.ui.PostExecuteDialog r8;
+        java.lang.StringBuilder $r3;
+        java.lang.String r2, $r4, $r6, $r7;
+        boolean $z0;
+        android.content.res.Resources $r5;
+
+        r0 := @this: com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: android.os.Bundle;
+
+        lookupswitch($i0)
+        {
+            case 13: goto label5;
+            case 16: goto label6;
+            case 21: goto label2;
+            default: goto label1;
+        };
+
+     label1:
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Unhandled reqeustResult: onReceiveResult -> (");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(") resultData: [");
+
+        $r4 = virtualinvoke $r1.<android.os.Bundle: java.lang.String toString()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("]");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void e(java.lang.String,java.lang.String)>("InviteFriendsContactLis", $r4);
+
+        return;
+
+     label2:
+        $r4 = virtualinvoke $r1.<android.os.Bundle: java.lang.String getString(java.lang.String)>("templatebody");
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r4);
+
+        if $z0 != 0 goto label7;
+
+        $r5 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: android.content.res.Resources getResources()>();
+
+        $r6 = virtualinvoke $r5.<android.content.res.Resources: java.lang.String getString(int)>(2131427736);
+
+        r2 = virtualinvoke $r6.<java.lang.String: java.lang.String replace(java.lang.CharSequence,java.lang.CharSequence)>("$", "\\$");
+
+        r2 = virtualinvoke r2.<java.lang.String: java.lang.String replace(java.lang.CharSequence,java.lang.CharSequence)>("{", "\\{");
+
+        r2 = virtualinvoke r2.<java.lang.String: java.lang.String replace(java.lang.CharSequence,java.lang.CharSequence)>("}", "\\}");
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("[\\s]+");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(r2);
+
+        $r7 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        r2 = "";
+
+        $i0 = virtualinvoke r2.<java.lang.String: int length()>();
+
+        if $i0 >= 1 goto label4;
+
+        $r4 = virtualinvoke $r4.<java.lang.String: java.lang.String replaceAll(java.lang.String,java.lang.String)>($r7, "");
+
+     label3:
+        specialinvoke r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: void getSelectedItems(java.lang.String)>($r4);
+
+        return;
+
+     label4:
+        $r4 = virtualinvoke $r4.<java.lang.String: java.lang.String replace(java.lang.CharSequence,java.lang.CharSequence)>($r6, "");
+
+        goto label3;
+
+     label5:
+        r8 = new com.choochee.android.messenger.ui.PostExecuteDialog;
+
+        specialinvoke r8.<com.choochee.android.messenger.ui.PostExecuteDialog: void <init>(android.content.Context,android.os.Bundle)>(r0, $r1);
+
+        virtualinvoke r8.<com.choochee.android.messenger.ui.PostExecuteDialog: void setOnDismissListener(android.content.DialogInterface$OnDismissListener)>(r0);
+
+        virtualinvoke r8.<com.choochee.android.messenger.ui.PostExecuteDialog: void show()>();
+
+        return;
+
+     label6:
+        r8 = new com.choochee.android.messenger.ui.PostExecuteDialog;
+
+        specialinvoke r8.<com.choochee.android.messenger.ui.PostExecuteDialog: void <init>(android.content.Context,android.os.Bundle)>(r0, $r1);
+
+        virtualinvoke r8.<com.choochee.android.messenger.ui.PostExecuteDialog: void setOnDismissListener(android.content.DialogInterface$OnDismissListener)>(r0);
+
+        virtualinvoke r8.<com.choochee.android.messenger.ui.PostExecuteDialog: void show()>();
+
+     label7:
+        return;
+    }
+
+    public void onResume()
+    {
+        com.choochee.android.messenger.ui.contacts.NativeContactsContract r1;
+        com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity r0;
+        android.os.Bundle $r3;
+        android.content.Intent $r2;
+        java.util.List $r7;
+        com.choochee.android.messenger.ui.contacts.ContactItemListAdapter $r8;
+        android.content.ContentResolver $r6;
+        int $i0;
+        java.lang.StringBuilder $r4;
+        java.lang.String $r5;
+        boolean $z0;
+
+        r0 := @this: com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity;
+
+        specialinvoke r0.<android.app.ListActivity: void onResume()>();
+
+        $z0 = r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: boolean mIsSent>;
+
+        if $z0 != 1 goto label1;
+
+        r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: boolean mIsSent> = 0;
+
+        virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: void finish()>();
+
+     label1:
+        $r2 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: android.content.Intent getIntent()>();
+
+        $r3 = virtualinvoke $r2.<android.content.Intent: android.os.Bundle getExtras()>();
+
+        if $r3 == null goto label2;
+
+        $i0 = virtualinvoke $r3.<android.os.Bundle: int getInt(java.lang.String)>("SEND_INVITE");
+
+        r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: int mInviteType> = $i0;
+
+     label2:
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("InviteType:");
+
+        $i0 = r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: int mInviteType>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void d(java.lang.String,java.lang.String)>("InviteFriendsContactLis", $r5);
+
+        r1 = new com.choochee.android.messenger.ui.contacts.NativeContactsContract;
+
+        specialinvoke r1.<com.choochee.android.messenger.ui.contacts.NativeContactsContract: void <init>()>();
+
+        $i0 = r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: int mInviteType>;
+
+        if $i0 != 1 goto label4;
+
+        $r6 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: android.content.ContentResolver getContentResolver()>();
+
+        $r7 = virtualinvoke r1.<com.choochee.android.messenger.ui.contacts.NativeContactsContract: java.util.List getPhoneContacts(android.content.ContentResolver)>($r6);
+
+        r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: java.util.List mData> = $r7;
+
+     label3:
+        $r7 = r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: java.util.List mData>;
+
+        if $r7 == null goto label5;
+
+        $r8 = new com.choochee.android.messenger.ui.contacts.ContactItemListAdapter;
+
+        $r7 = r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: java.util.List mData>;
+
+        specialinvoke $r8.<com.choochee.android.messenger.ui.contacts.ContactItemListAdapter: void <init>(android.content.Context,java.util.List)>(r0, $r7);
+
+        r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: com.choochee.android.messenger.ui.contacts.ContactItemListAdapter mAdapter> = $r8;
+
+        $r8 = r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: com.choochee.android.messenger.ui.contacts.ContactItemListAdapter mAdapter>;
+
+        if $r8 == null goto label5;
+
+        $r8 = r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: com.choochee.android.messenger.ui.contacts.ContactItemListAdapter mAdapter>;
+
+        virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: void setListAdapter(android.widget.ListAdapter)>($r8);
+
+        return;
+
+     label4:
+        $i0 = r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: int mInviteType>;
+
+        if $i0 != 2 goto label3;
+
+        $r6 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: android.content.ContentResolver getContentResolver()>();
+
+        $r7 = virtualinvoke r1.<com.choochee.android.messenger.ui.contacts.NativeContactsContract: java.util.List getEmailContacts(android.content.ContentResolver)>($r6);
+
+        r0.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: java.util.List mData> = $r7;
+
+        goto label3;
+
+     label5:
+        return;
+    }
+
+    public android.content.Intent getIntent()
+    {
+        android.content.Intent $r0;
+        com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity this;
+
+        this := @this: com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity;
+
+        $r0 = this.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: android.content.Intent ipcIntent>;
+
+        return $r0;
+    }
+
+    public void setIntent(android.content.Intent)
+    {
+        android.content.Intent parameter0;
+        com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity this;
+
+        this := @this: com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity;
+
+        parameter0 := @parameter0: android.content.Intent;
+
+        this.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: android.content.Intent ipcIntent> = parameter0;
+
+        return;
+    }
+
+    public void setResult(int, android.content.Intent)
+    {
+        int parameter0;
+        android.content.Intent parameter1;
+        com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity this;
+
+        this := @this: com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity;
+
+        parameter0 := @parameter0: int;
+
+        parameter1 := @parameter1: android.content.Intent;
+
+        this.<com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: android.content.Intent ipcResultIntent> = parameter1;
+
+        return;
+    }
+
+    public static void <clinit>()
+    {
+        <com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: int cPHONENUMBERLENGTH> = 1;
+
+        <com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: java.lang.String cDEFAULTEMAIL> = "revvl@revvl.com";
+
+        <com.choochee.android.messenger.ui.contacts.InviteFriendsContactListActivity: java.lang.String TAG> = "InviteFriendsContactLis";
+
+        return;
+    }
+}

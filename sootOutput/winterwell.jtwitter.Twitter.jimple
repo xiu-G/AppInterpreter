@@ -1,0 +1,4849 @@
+public class winterwell.jtwitter.Twitter extends java.lang.Object
+{
+    static final boolean $assertionsDisabled;
+    public static final java.lang.String version;
+    java.lang.String TWITTER_URL;
+    java.lang.Integer count;
+    private java.lang.String geocode;
+    private final winterwell.jtwitter.Twitter$IHttpClient http;
+    private java.lang.String lang;
+    private int maxResults;
+    private double[] myLatLong;
+    private final java.lang.String name;
+    private java.lang.Integer pageNumber;
+    private java.util.Date sinceDate;
+    private java.lang.Long sinceId;
+    private java.lang.String sourceApp;
+    private java.util.Date untilDate;
+
+    static void <clinit>()
+    {
+        java.lang.Class $r0;
+        boolean $z0;
+
+        <winterwell.jtwitter.Twitter: java.lang.String version> = "1.6.3";
+
+        <winterwell.jtwitter.Twitter: boolean $assertionsDisabled> = 0;
+
+        $r0 = class "Lwinterwell/jtwitter/Twitter;";
+
+        $z0 = virtualinvoke $r0.<java.lang.Class: boolean desiredAssertionStatus()>();
+
+        if $z0 != 0 goto label2;
+
+        $z0 = 1;
+
+     label1:
+        <winterwell.jtwitter.Twitter: boolean $assertionsDisabled> = $z0;
+
+        return;
+
+     label2:
+        $z0 = 0;
+
+        goto label1;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        winterwell.jtwitter.URLConnectionHttpClient $r1;
+        winterwell.jtwitter.Twitter r0;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 = new winterwell.jtwitter.URLConnectionHttpClient;
+
+        specialinvoke $r1.<winterwell.jtwitter.URLConnectionHttpClient: void <init>()>();
+
+        specialinvoke r0.<winterwell.jtwitter.Twitter: void <init>(java.lang.String,winterwell.jtwitter.Twitter$IHttpClient)>(null, $r1);
+
+        return;
+    }
+
+    public void <init>(java.lang.String, java.lang.String)
+    {
+        winterwell.jtwitter.URLConnectionHttpClient $r3;
+        winterwell.jtwitter.Twitter r0;
+        java.lang.String $r1, $r2;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 = new winterwell.jtwitter.URLConnectionHttpClient;
+
+        specialinvoke $r3.<winterwell.jtwitter.URLConnectionHttpClient: void <init>(java.lang.String,java.lang.String)>($r1, $r2);
+
+        specialinvoke r0.<winterwell.jtwitter.Twitter: void <init>(java.lang.String,winterwell.jtwitter.Twitter$IHttpClient)>($r1, $r3);
+
+        return;
+    }
+
+    public void <init>(java.lang.String, winterwell.jtwitter.Twitter$IHttpClient)
+    {
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.Twitter$IHttpClient $r2;
+        int $i0;
+        java.lang.String $r1;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: winterwell.jtwitter.Twitter$IHttpClient;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL> = "http://api.twitter.com/1";
+
+        r0.<winterwell.jtwitter.Twitter: java.lang.String sourceApp> = "jtwitterlib";
+
+        $i0 = -1;
+
+        r0.<winterwell.jtwitter.Twitter: int maxResults> = $i0;
+
+        r0.<winterwell.jtwitter.Twitter: java.lang.String name> = $r1;
+
+        r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http> = $r2;
+
+        return;
+    }
+
+    private static java.net.URI URI(java.lang.String)
+    {
+        java.lang.Throwable $r2;
+        java.lang.String $r0;
+        java.net.URI $r1;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 = new java.net.URI;
+
+     label1:
+        specialinvoke $r1.<java.net.URI: void <init>(java.lang.String)>($r0);
+
+     label2:
+        return $r1;
+
+     label3:
+        $r2 := @caughtexception;
+
+        return null;
+
+        catch java.net.URISyntaxException from label1 to label2 with label3;
+    }
+
+    private transient java.util.Map aMap(java.lang.String[])
+    {
+        winterwell.jtwitter.Twitter r0;
+        int $i0, $i1;
+        java.lang.String[] $r1;
+        java.util.HashMap $r2;
+        java.lang.String $r3, $r4;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String[];
+
+        $r2 = new java.util.HashMap;
+
+        specialinvoke $r2.<java.util.HashMap: void <init>()>();
+
+        $i0 = 0;
+
+     label1:
+        $i1 = lengthof $r1;
+
+        if $i0 >= $i1 goto label2;
+
+        $r3 = $r1[$i0];
+
+        $i1 = $i0 + 1;
+
+        $r4 = $r1[$i1];
+
+        virtualinvoke $r2.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r3, $r4);
+
+        $i0 = $i0 + 2;
+
+        goto label1;
+
+     label2:
+        return $r2;
+    }
+
+    static java.net.URI access$000(java.lang.String)
+    {
+        java.lang.String $r0;
+        java.net.URI $r1;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 = staticinvoke <winterwell.jtwitter.Twitter: java.net.URI URI(java.lang.String)>($r0);
+
+        return $r1;
+    }
+
+    private java.util.Map addStandardishParameters(java.util.Map)
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.lang.Long $r2;
+        java.util.Map $r1;
+        java.lang.String $r3;
+        java.lang.Integer $r4;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.util.Map;
+
+        $r2 = r0.<winterwell.jtwitter.Twitter: java.lang.Long sinceId>;
+
+        if $r2 == null goto label1;
+
+        $r2 = r0.<winterwell.jtwitter.Twitter: java.lang.Long sinceId>;
+
+        $r3 = virtualinvoke $r2.<java.lang.Long: java.lang.String toString()>();
+
+        interfaceinvoke $r1.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("since_id", $r3);
+
+     label1:
+        $r4 = r0.<winterwell.jtwitter.Twitter: java.lang.Integer pageNumber>;
+
+        if $r4 == null goto label2;
+
+        $r4 = r0.<winterwell.jtwitter.Twitter: java.lang.Integer pageNumber>;
+
+        $r3 = virtualinvoke $r4.<java.lang.Integer: java.lang.String toString()>();
+
+        interfaceinvoke $r1.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("page", $r3);
+
+        r0.<winterwell.jtwitter.Twitter: java.lang.Integer pageNumber> = null;
+
+     label2:
+        $r4 = r0.<winterwell.jtwitter.Twitter: java.lang.Integer count>;
+
+        if $r4 == null goto label3;
+
+        $r4 = r0.<winterwell.jtwitter.Twitter: java.lang.Integer count>;
+
+        $r3 = virtualinvoke $r4.<java.lang.Integer: java.lang.String toString()>();
+
+        interfaceinvoke $r1.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("count", $r3);
+
+     label3:
+        return $r1;
+    }
+
+    static transient java.util.Map asMap(java.lang.Object[])
+    {
+        java.lang.Object[] $r0;
+        java.util.HashMap $r1;
+        java.lang.AssertionError $r2;
+        int $i0, $i1;
+        java.lang.Object $r3, $r4;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.Object[];
+
+        $z0 = <winterwell.jtwitter.Twitter: boolean $assertionsDisabled>;
+
+        if $z0 != 0 goto label1;
+
+        $i0 = lengthof $r0;
+
+        $i0 = $i0 % 2;
+
+        if $i0 == 0 goto label1;
+
+        $r2 = new java.lang.AssertionError;
+
+        specialinvoke $r2.<java.lang.AssertionError: void <init>()>();
+
+        throw $r2;
+
+     label1:
+        $r1 = new java.util.HashMap;
+
+        $i0 = lengthof $r0;
+
+        $i0 = $i0 / 2;
+
+        specialinvoke $r1.<java.util.HashMap: void <init>(int)>($i0);
+
+        $i0 = 0;
+
+     label2:
+        $i1 = lengthof $r0;
+
+        if $i0 >= $i1 goto label3;
+
+        $r3 = $r0[$i0];
+
+        $i1 = $i0 + 1;
+
+        $r4 = $r0[$i1];
+
+        interfaceinvoke $r1.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r3, $r4);
+
+        $i0 = $i0 + 2;
+
+        goto label2;
+
+     label3:
+        return $r1;
+    }
+
+    private java.util.List bulkShow2(java.lang.Class, java.util.List)
+    {
+        java.lang.Object[] $r7;
+        java.util.ArrayList $r3, $r13;
+        winterwell.jtwitter.TwitterException $r12;
+        java.util.Map $r8;
+        int $i0, $i1, $i2;
+        java.lang.String $r6;
+        boolean $z0;
+        winterwell.jtwitter.Twitter r0;
+        java.util.List $r2, $r11;
+        winterwell.jtwitter.Twitter$IHttpClient $r9, $r10;
+        java.lang.Class $r1;
+        java.lang.StringBuilder $r4, $r14;
+        java.lang.Object $r5;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.Class;
+
+        $r2 := @parameter1: java.util.List;
+
+        $r13 = new java.util.ArrayList;
+
+        $r3 = $r13;
+
+        $i0 = interfaceinvoke $r2.<java.util.List: int size()>();
+
+        specialinvoke $r13.<java.util.ArrayList: void <init>(int)>($i0);
+
+        $i0 = 0;
+
+     label01:
+        $i1 = interfaceinvoke $r2.<java.util.List: int size()>();
+
+        if $i0 >= $i1 goto label13;
+
+        $r14 = new java.lang.StringBuilder;
+
+        $r4 = $r14;
+
+        specialinvoke $r14.<java.lang.StringBuilder: void <init>()>();
+
+        $i1 = $i0 + 100;
+
+        $i2 = interfaceinvoke $r2.<java.util.List: int size()>();
+
+        $i1 = staticinvoke <java.lang.Math: int min(int,int)>($i1, $i2);
+
+        $i2 = $i0;
+
+     label02:
+        if $i2 >= $i1 goto label03;
+
+        $r5 = interfaceinvoke $r2.<java.util.List: java.lang.Object get(int)>($i2);
+
+        virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r5);
+
+        virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(",");
+
+        $i2 = $i2 + 1;
+
+        goto label02;
+
+     label03:
+        $i1 = virtualinvoke $r4.<java.lang.StringBuilder: int length()>();
+
+        $i2 = -1;
+
+        $i1 = $i1 + $i2;
+
+        $i2 = virtualinvoke $r4.<java.lang.StringBuilder: int length()>();
+
+        virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder delete(int,int)>($i1, $i2);
+
+        if $r1 != class "Ljava/lang/String;" goto label11;
+
+        $r6 = "screen_name";
+
+     label04:
+        $r7 = newarray (java.lang.Object)[2];
+
+        $r7[0] = $r6;
+
+        $r7[1] = $r4;
+
+        $r8 = staticinvoke <winterwell.jtwitter.Twitter: java.util.Map asMap(java.lang.Object[])>($r7);
+
+        $r9 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $r14 = new java.lang.StringBuilder;
+
+        $r4 = $r14;
+
+     label05:
+        specialinvoke $r14.<java.lang.StringBuilder: void <init>()>();
+
+     label06:
+        $r6 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+     label07:
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/users/lookup.json");
+
+        $r6 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label08:
+        $r10 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+     label09:
+        $z0 = interfaceinvoke $r10.<winterwell.jtwitter.Twitter$IHttpClient: boolean canAuthenticate()>();
+
+        $r6 = interfaceinvoke $r9.<winterwell.jtwitter.Twitter$IHttpClient: java.lang.String getPage(java.lang.String,java.util.Map,boolean)>($r6, $r8, $z0);
+
+        $r11 = staticinvoke <winterwell.jtwitter.Twitter$User: java.util.List getUsers(java.lang.String)>($r6);
+
+        virtualinvoke $r3.<java.util.ArrayList: boolean addAll(java.util.Collection)>($r11);
+
+     label10:
+        $i0 = $i0 + 100;
+
+        goto label01;
+
+     label11:
+        $r6 = "user_id";
+
+        goto label04;
+
+     label12:
+        $r12 := @caughtexception;
+
+     label13:
+        return $r3;
+
+        catch winterwell.jtwitter.TwitterException from label05 to label06 with label12;
+        catch winterwell.jtwitter.TwitterException from label07 to label08 with label12;
+        catch winterwell.jtwitter.TwitterException from label09 to label10 with label12;
+    }
+
+    private java.util.List dateFilter(java.util.List)
+    {
+        java.util.Iterator $r4;
+        java.util.Date $r3;
+        java.util.ArrayList $r1;
+        winterwell.jtwitter.Twitter r0;
+        java.util.List $r2;
+        int $i0;
+        winterwell.jtwitter.Twitter$ITweet $r6;
+        java.lang.Object $r5;
+        boolean $z0;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r2 := @parameter0: java.util.List;
+
+        $r3 = r0.<winterwell.jtwitter.Twitter: java.util.Date sinceDate>;
+
+        if $r3 != null goto label1;
+
+        $r3 = r0.<winterwell.jtwitter.Twitter: java.util.Date untilDate>;
+
+        if $r3 != null goto label1;
+
+        return $r2;
+
+     label1:
+        $r1 = new java.util.ArrayList;
+
+        $i0 = interfaceinvoke $r2.<java.util.List: int size()>();
+
+        specialinvoke $r1.<java.util.ArrayList: void <init>(int)>($i0);
+
+        $r4 = interfaceinvoke $r2.<java.util.List: java.util.Iterator iterator()>();
+
+     label2:
+        $z0 = interfaceinvoke $r4.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label4;
+
+        $r5 = interfaceinvoke $r4.<java.util.Iterator: java.lang.Object next()>();
+
+        $r6 = (winterwell.jtwitter.Twitter$ITweet) $r5;
+
+        $r3 = interfaceinvoke $r6.<winterwell.jtwitter.Twitter$ITweet: java.util.Date getCreatedAt()>();
+
+        if $r3 != null goto label3;
+
+        virtualinvoke $r1.<java.util.ArrayList: boolean add(java.lang.Object)>($r6);
+
+        goto label2;
+
+     label3:
+        $z0 = specialinvoke r0.<winterwell.jtwitter.Twitter: boolean notTooEarly(winterwell.jtwitter.Twitter$ITweet)>($r6);
+
+        if $z0 == 0 goto label2;
+
+        $z0 = specialinvoke r0.<winterwell.jtwitter.Twitter: boolean notTooLate(winterwell.jtwitter.Twitter$ITweet)>($r6);
+
+        if $z0 == 0 goto label2;
+
+        virtualinvoke $r1.<java.util.ArrayList: boolean add(java.lang.Object)>($r6);
+
+        goto label2;
+
+     label4:
+        return $r1;
+    }
+
+    private boolean enoughResults(java.util.List)
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.util.List $r1;
+        int $i0, $i1;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.util.List;
+
+        $i0 = r0.<winterwell.jtwitter.Twitter: int maxResults>;
+
+        $i1 = -1;
+
+        if $i0 == $i1 goto label1;
+
+        $i0 = interfaceinvoke $r1.<java.util.List: int size()>();
+
+        $i1 = r0.<winterwell.jtwitter.Twitter: int maxResults>;
+
+        if $i0 < $i1 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public static java.util.Date getDate(int, java.lang.String, int)
+    {
+        java.util.GregorianCalendar $r3;
+        java.util.Date $r4;
+        java.lang.reflect.Field $r2;
+        java.lang.IllegalArgumentException $r6;
+        java.lang.Exception $r5;
+        int $i0, $i1, $i2;
+        java.lang.Class $r1;
+        java.lang.String $r0;
+
+        $i0 := @parameter0: int;
+
+        $r0 := @parameter1: java.lang.String;
+
+        $i1 := @parameter2: int;
+
+        $r1 = class "Ljava/util/GregorianCalendar;";
+
+     label1:
+        $r0 = virtualinvoke $r0.<java.lang.String: java.lang.String toUpperCase()>();
+
+        $r2 = virtualinvoke $r1.<java.lang.Class: java.lang.reflect.Field getField(java.lang.String)>($r0);
+
+        $i2 = virtualinvoke $r2.<java.lang.reflect.Field: int getInt(java.lang.Object)>(null);
+
+     label2:
+        $r3 = new java.util.GregorianCalendar;
+
+     label3:
+        specialinvoke $r3.<java.util.GregorianCalendar: void <init>(int,int,int)>($i0, $i2, $i1);
+
+        $r4 = virtualinvoke $r3.<java.util.Calendar: java.util.Date getTime()>();
+
+     label4:
+        return $r4;
+
+     label5:
+        $r5 := @caughtexception;
+
+        $r6 = new java.lang.IllegalArgumentException;
+
+        $r0 = virtualinvoke $r5.<java.lang.Exception: java.lang.String getMessage()>();
+
+        specialinvoke $r6.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r0);
+
+        throw $r6;
+
+        catch java.lang.Exception from label1 to label2 with label5;
+        catch java.lang.Exception from label3 to label4 with label5;
+    }
+
+    private java.util.List getMessages(java.lang.String, java.util.Map)
+    {
+        java.lang.Integer $r5;
+        java.util.ArrayList $r6;
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.Twitter$IHttpClient $r3;
+        java.util.List $r4;
+        java.util.Map $r2;
+        int $i0, $i1;
+        java.lang.String $r1, $r7;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.util.Map;
+
+        $i0 = r0.<winterwell.jtwitter.Twitter: int maxResults>;
+
+        if $i0 >= 1 goto label1;
+
+        $r3 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $r1 = interfaceinvoke $r3.<winterwell.jtwitter.Twitter$IHttpClient: java.lang.String getPage(java.lang.String,java.util.Map,boolean)>($r1, $r2, 1);
+
+        $r4 = staticinvoke <winterwell.jtwitter.Twitter$Message: java.util.List getMessages(java.lang.String)>($r1);
+
+        $r4 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.List dateFilter(java.util.List)>($r4);
+
+        return $r4;
+
+     label1:
+        $r5 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(1);
+
+        r0.<winterwell.jtwitter.Twitter: java.lang.Integer pageNumber> = $r5;
+
+        $r6 = new java.util.ArrayList;
+
+        specialinvoke $r6.<java.util.ArrayList: void <init>()>();
+
+     label2:
+        $i0 = interfaceinvoke $r6.<java.util.List: int size()>();
+
+        $i1 = r0.<winterwell.jtwitter.Twitter: int maxResults>;
+
+        if $i0 > $i1 goto label3;
+
+        $r3 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $r7 = interfaceinvoke $r3.<winterwell.jtwitter.Twitter$IHttpClient: java.lang.String getPage(java.lang.String,java.util.Map,boolean)>($r1, $r2, 1);
+
+        $r4 = staticinvoke <winterwell.jtwitter.Twitter$Message: java.util.List getMessages(java.lang.String)>($r7);
+
+        $r4 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.List dateFilter(java.util.List)>($r4);
+
+        interfaceinvoke $r6.<java.util.List: boolean addAll(java.util.Collection)>($r4);
+
+        $i0 = interfaceinvoke $r4.<java.util.List: int size()>();
+
+        if $i0 < 20 goto label3;
+
+        $r5 = r0.<winterwell.jtwitter.Twitter: java.lang.Integer pageNumber>;
+
+        $i0 = virtualinvoke $r5.<java.lang.Integer: int intValue()>();
+
+        $i0 = $i0 + 1;
+
+        $r5 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        r0.<winterwell.jtwitter.Twitter: java.lang.Integer pageNumber> = $r5;
+
+        $r5 = r0.<winterwell.jtwitter.Twitter: java.lang.Integer pageNumber>;
+
+        $i0 = virtualinvoke $r5.<java.lang.Integer: int intValue()>();
+
+        $r7 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i0);
+
+        interfaceinvoke $r2.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("page", $r7);
+
+        goto label2;
+
+     label3:
+        return $r6;
+    }
+
+    private java.util.Map getSearchParams(java.lang.String, int)
+    {
+        java.lang.String[] $r2;
+        winterwell.jtwitter.Twitter r0;
+        java.lang.Long $r6;
+        java.util.Map $r5;
+        int $i0;
+        java.lang.StringBuilder $r3;
+        java.lang.String $r1, $r4;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $i0 := @parameter1: int;
+
+        $r2 = newarray (java.lang.String)[4];
+
+        $r2[0] = "rpp";
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r2[1] = $r4;
+
+        $r2[2] = "q";
+
+        $r2[3] = $r1;
+
+        $r5 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.Map aMap(java.lang.String[])>($r2);
+
+        $r6 = r0.<winterwell.jtwitter.Twitter: java.lang.Long sinceId>;
+
+        if $r6 == null goto label1;
+
+        $r6 = r0.<winterwell.jtwitter.Twitter: java.lang.Long sinceId>;
+
+        $r1 = virtualinvoke $r6.<java.lang.Long: java.lang.String toString()>();
+
+        interfaceinvoke $r5.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("since_id", $r1);
+
+     label1:
+        $r1 = r0.<winterwell.jtwitter.Twitter: java.lang.String lang>;
+
+        if $r1 == null goto label2;
+
+        $r1 = r0.<winterwell.jtwitter.Twitter: java.lang.String lang>;
+
+        interfaceinvoke $r5.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("lang", $r1);
+
+     label2:
+        $r1 = r0.<winterwell.jtwitter.Twitter: java.lang.String geocode>;
+
+        if $r1 == null goto label3;
+
+        $r1 = r0.<winterwell.jtwitter.Twitter: java.lang.String geocode>;
+
+        interfaceinvoke $r5.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("geocode", $r1);
+
+     label3:
+        specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.Map addStandardishParameters(java.util.Map)>($r5);
+
+        return $r5;
+    }
+
+    private java.util.List getStatuses(java.lang.String, java.util.Map, boolean)
+    {
+        java.lang.Integer $r5;
+        java.util.ArrayList $r6;
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.Twitter$IHttpClient $r3;
+        java.util.List $r4;
+        java.util.Map $r2;
+        int $i0, $i1;
+        java.lang.String $r1, $r7;
+        boolean $z0;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.util.Map;
+
+        $z0 := @parameter2: boolean;
+
+        $i0 = r0.<winterwell.jtwitter.Twitter: int maxResults>;
+
+        if $i0 >= 1 goto label1;
+
+        $r3 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $r1 = interfaceinvoke $r3.<winterwell.jtwitter.Twitter$IHttpClient: java.lang.String getPage(java.lang.String,java.util.Map,boolean)>($r1, $r2, $z0);
+
+        $r4 = staticinvoke <winterwell.jtwitter.Twitter$Status: java.util.List getStatuses(java.lang.String)>($r1);
+
+        $r4 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.List dateFilter(java.util.List)>($r4);
+
+        return $r4;
+
+     label1:
+        $r5 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(1);
+
+        r0.<winterwell.jtwitter.Twitter: java.lang.Integer pageNumber> = $r5;
+
+        $r6 = new java.util.ArrayList;
+
+        specialinvoke $r6.<java.util.ArrayList: void <init>()>();
+
+     label2:
+        $i0 = interfaceinvoke $r6.<java.util.List: int size()>();
+
+        $i1 = r0.<winterwell.jtwitter.Twitter: int maxResults>;
+
+        if $i0 > $i1 goto label3;
+
+        $r3 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $r7 = interfaceinvoke $r3.<winterwell.jtwitter.Twitter$IHttpClient: java.lang.String getPage(java.lang.String,java.util.Map,boolean)>($r1, $r2, $z0);
+
+        $r4 = staticinvoke <winterwell.jtwitter.Twitter$Status: java.util.List getStatuses(java.lang.String)>($r7);
+
+        $r4 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.List dateFilter(java.util.List)>($r4);
+
+        interfaceinvoke $r6.<java.util.List: boolean addAll(java.util.Collection)>($r4);
+
+        $i0 = interfaceinvoke $r4.<java.util.List: int size()>();
+
+        if $i0 < 20 goto label3;
+
+        $r5 = r0.<winterwell.jtwitter.Twitter: java.lang.Integer pageNumber>;
+
+        $i0 = virtualinvoke $r5.<java.lang.Integer: int intValue()>();
+
+        $i0 = $i0 + 1;
+
+        $r5 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        r0.<winterwell.jtwitter.Twitter: java.lang.Integer pageNumber> = $r5;
+
+        $r5 = r0.<winterwell.jtwitter.Twitter: java.lang.Integer pageNumber>;
+
+        $i0 = virtualinvoke $r5.<java.lang.Integer: int intValue()>();
+
+        $r7 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i0);
+
+        interfaceinvoke $r2.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("page", $r7);
+
+        goto label2;
+
+     label3:
+        return $r6;
+    }
+
+    public static winterwell.jtwitter.Twitter$User getUser(java.lang.String, java.util.List)
+    {
+        java.util.Iterator $r3;
+        java.lang.AssertionError $r2;
+        java.util.List $r1;
+        java.lang.Object $r4;
+        java.lang.String $r0, $r6;
+        winterwell.jtwitter.Twitter$User $r5;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: java.util.List;
+
+        $z0 = <winterwell.jtwitter.Twitter: boolean $assertionsDisabled>;
+
+        if $z0 != 0 goto label2;
+
+        if $r0 == null goto label1;
+
+        if $r1 != null goto label2;
+
+     label1:
+        $r2 = new java.lang.AssertionError;
+
+        specialinvoke $r2.<java.lang.AssertionError: void <init>()>();
+
+        throw $r2;
+
+     label2:
+        $r3 = interfaceinvoke $r1.<java.util.List: java.util.Iterator iterator()>();
+
+     label3:
+        $z0 = interfaceinvoke $r3.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label4;
+
+        $r4 = interfaceinvoke $r3.<java.util.Iterator: java.lang.Object next()>();
+
+        $r5 = (winterwell.jtwitter.Twitter$User) $r4;
+
+        $r6 = $r5.<winterwell.jtwitter.Twitter$User: java.lang.String screenName>;
+
+        $z0 = virtualinvoke $r0.<java.lang.String: boolean equals(java.lang.Object)>($r6);
+
+        if $z0 == 0 goto label3;
+
+        return $r5;
+
+     label4:
+        return null;
+    }
+
+    private java.util.List getUserIDs(java.lang.String, java.lang.String)
+    {
+        java.lang.String[] $r5;
+        long $l0;
+        java.util.ArrayList $r4;
+        org.json.JSONException $r12;
+        org.json.JSONObject $r9;
+        byte $b1;
+        java.lang.Long $r3;
+        winterwell.jtwitter.TwitterException $r13;
+        java.util.Map $r6;
+        int $i2, $i3;
+        java.lang.String $r1, $r2;
+        boolean $z0;
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.Twitter$IHttpClient $r7, $r8;
+        java.lang.Object $r10;
+        java.lang.StringBuilder $r14;
+        org.json.JSONArray $r11;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>(-1L);
+
+        $r4 = new java.util.ArrayList;
+
+        specialinvoke $r4.<java.util.ArrayList: void <init>()>();
+
+        $r5 = newarray (java.lang.String)[2];
+
+        $r5[0] = "screen_name";
+
+        $r5[1] = $r2;
+
+        $r6 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.Map newMap(java.lang.String[])>($r5);
+
+     label01:
+        $l0 = virtualinvoke $r3.<java.lang.Long: long longValue()>();
+
+        $b1 = $l0 cmp 0L;
+
+        if $b1 == 0 goto label12;
+
+        $z0 = specialinvoke r0.<winterwell.jtwitter.Twitter: boolean enoughResults(java.util.List)>($r4);
+
+        if $z0 != 0 goto label12;
+
+        $r2 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r3);
+
+        interfaceinvoke $r6.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("cursor", $r2);
+
+        $r7 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $r8 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $z0 = interfaceinvoke $r8.<winterwell.jtwitter.Twitter$IHttpClient: boolean canAuthenticate()>();
+
+        $r2 = interfaceinvoke $r7.<winterwell.jtwitter.Twitter$IHttpClient: java.lang.String getPage(java.lang.String,java.util.Map,boolean)>($r1, $r6, $z0);
+
+        $r9 = new org.json.JSONObject;
+
+     label02:
+        specialinvoke $r9.<org.json.JSONObject: void <init>(java.lang.String)>($r2);
+
+        $r10 = virtualinvoke $r9.<org.json.JSONObject: java.lang.Object get(java.lang.String)>("ids");
+
+     label03:
+        $r11 = (org.json.JSONArray) $r10;
+
+        $i2 = 0;
+
+     label04:
+        $i3 = virtualinvoke $r11.<org.json.JSONArray: int length()>();
+
+     label05:
+        if $i2 >= $i3 goto label08;
+
+     label06:
+        $l0 = virtualinvoke $r11.<org.json.JSONArray: long getLong(int)>($i2);
+
+        $r3 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l0);
+
+        interfaceinvoke $r4.<java.util.List: boolean add(java.lang.Object)>($r3);
+
+     label07:
+        $i2 = $i2 + 1;
+
+        goto label04;
+
+     label08:
+        $r3 = new java.lang.Long;
+
+     label09:
+        $r2 = virtualinvoke $r9.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("next_cursor");
+
+        specialinvoke $r3.<java.lang.Long: void <init>(java.lang.String)>($r2);
+
+     label10:
+        goto label01;
+
+     label11:
+        $r12 := @caughtexception;
+
+        $r13 = new winterwell.jtwitter.TwitterException;
+
+        $r14 = new java.lang.StringBuilder;
+
+        specialinvoke $r14.<java.lang.StringBuilder: void <init>()>();
+
+        $r14 = virtualinvoke $r14.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Could not parse id list");
+
+        $r14 = virtualinvoke $r14.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r12);
+
+        $r1 = virtualinvoke $r14.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r13.<winterwell.jtwitter.TwitterException: void <init>(java.lang.String)>($r1);
+
+        throw $r13;
+
+     label12:
+        return $r4;
+
+        catch org.json.JSONException from label02 to label03 with label11;
+        catch org.json.JSONException from label04 to label05 with label11;
+        catch org.json.JSONException from label06 to label07 with label11;
+        catch org.json.JSONException from label09 to label10 with label11;
+    }
+
+    private java.util.List getUsers(java.lang.String, java.lang.String)
+    {
+        java.lang.String[] $r3;
+        long $l0;
+        java.util.ArrayList $r5;
+        org.json.JSONException $r11;
+        org.json.JSONObject $r7;
+        byte $b1;
+        java.lang.Long $r6;
+        winterwell.jtwitter.TwitterException $r12;
+        java.util.Map $r4;
+        java.lang.String $r1, $r2;
+        boolean $z0;
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.Twitter$IHttpClient $r8, $r9;
+        java.util.List $r10;
+        java.lang.StringBuilder $r13;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 = newarray (java.lang.String)[2];
+
+        $r3[0] = "screen_name";
+
+        $r3[1] = $r2;
+
+        $r4 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.Map newMap(java.lang.String[])>($r3);
+
+        $r5 = new java.util.ArrayList;
+
+        specialinvoke $r5.<java.util.ArrayList: void <init>()>();
+
+        $r6 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>(-1L);
+
+     label1:
+        $l0 = virtualinvoke $r6.<java.lang.Long: long longValue()>();
+
+        $b1 = $l0 cmp 0L;
+
+        if $b1 == 0 goto label7;
+
+        $z0 = specialinvoke r0.<winterwell.jtwitter.Twitter: boolean enoughResults(java.util.List)>($r5);
+
+        if $z0 != 0 goto label7;
+
+        $r2 = virtualinvoke $r6.<java.lang.Long: java.lang.String toString()>();
+
+        interfaceinvoke $r4.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("cursor", $r2);
+
+        $r7 = new org.json.JSONObject;
+
+        $r8 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $r9 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+     label2:
+        $z0 = interfaceinvoke $r9.<winterwell.jtwitter.Twitter$IHttpClient: boolean canAuthenticate()>();
+
+        $r2 = interfaceinvoke $r8.<winterwell.jtwitter.Twitter$IHttpClient: java.lang.String getPage(java.lang.String,java.util.Map,boolean)>($r1, $r4, $z0);
+
+        specialinvoke $r7.<org.json.JSONObject: void <init>(java.lang.String)>($r2);
+
+        $r2 = virtualinvoke $r7.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("users");
+
+        $r10 = staticinvoke <winterwell.jtwitter.Twitter$User: java.util.List getUsers(java.lang.String)>($r2);
+
+        interfaceinvoke $r5.<java.util.List: boolean addAll(java.util.Collection)>($r10);
+
+     label3:
+        $r6 = new java.lang.Long;
+
+     label4:
+        $r2 = virtualinvoke $r7.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("next_cursor");
+
+        specialinvoke $r6.<java.lang.Long: void <init>(java.lang.String)>($r2);
+
+     label5:
+        goto label1;
+
+     label6:
+        $r11 := @caughtexception;
+
+        $r12 = new winterwell.jtwitter.TwitterException;
+
+        $r13 = new java.lang.StringBuilder;
+
+        specialinvoke $r13.<java.lang.StringBuilder: void <init>()>();
+
+        $r13 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Could not parse user listing: ");
+
+        $r13 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r11);
+
+        $r1 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r12.<winterwell.jtwitter.TwitterException: void <init>(java.lang.String)>($r1);
+
+        throw $r12;
+
+     label7:
+        return $r5;
+
+        catch org.json.JSONException from label2 to label3 with label6;
+        catch org.json.JSONException from label4 to label5 with label6;
+    }
+
+    protected static java.lang.String jsonGet(java.lang.String, org.json.JSONObject)
+    {
+        org.json.JSONObject $r1;
+        java.lang.Object $r2, $r3;
+        java.lang.String $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: org.json.JSONObject;
+
+        $r2 = virtualinvoke $r1.<org.json.JSONObject: java.lang.Object opt(java.lang.String)>($r0);
+
+        if $r2 != null goto label1;
+
+        return null;
+
+     label1:
+        $r3 = <org.json.JSONObject: java.lang.Object NULL>;
+
+        $z0 = virtualinvoke $r3.<java.lang.Object: boolean equals(java.lang.Object)>($r2);
+
+        if $z0 != 0 goto label2;
+
+        $r0 = virtualinvoke $r2.<java.lang.Object: java.lang.String toString()>();
+
+        return $r0;
+
+     label2:
+        return null;
+    }
+
+    public static void main(java.lang.String[])
+    {
+        java.io.PrintStream $r5;
+        winterwell.jtwitter.Twitter $r2;
+        winterwell.jtwitter.Twitter$Status $r1;
+        int $i0;
+        java.lang.String[] $r0;
+        java.lang.String $r3, $r4;
+
+        $r0 := @parameter0: java.lang.String[];
+
+        $i0 = lengthof $r0;
+
+        if $i0 != 3 goto label1;
+
+        $r2 = new winterwell.jtwitter.Twitter;
+
+        $r3 = $r0[0];
+
+        $r4 = $r0[1];
+
+        specialinvoke $r2.<winterwell.jtwitter.Twitter: void <init>(java.lang.String,java.lang.String)>($r3, $r4);
+
+        $r3 = $r0[2];
+
+        $r1 = virtualinvoke $r2.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$Status setStatus(java.lang.String)>($r3);
+
+        $r5 = <java.lang.System: java.io.PrintStream out>;
+
+        virtualinvoke $r5.<java.io.PrintStream: void println(java.lang.Object)>($r1);
+
+        return;
+
+     label1:
+        $r5 = <java.lang.System: java.io.PrintStream out>;
+
+        virtualinvoke $r5.<java.io.PrintStream: void println(java.lang.String)>("Java interface for Twitter");
+
+        $r5 = <java.lang.System: java.io.PrintStream out>;
+
+        virtualinvoke $r5.<java.io.PrintStream: void println(java.lang.String)>("--------------------------");
+
+        $r5 = <java.lang.System: java.io.PrintStream out>;
+
+        virtualinvoke $r5.<java.io.PrintStream: void println(java.lang.String)>("Version 1.6.3");
+
+        $r5 = <java.lang.System: java.io.PrintStream out>;
+
+        virtualinvoke $r5.<java.io.PrintStream: void println(java.lang.String)>("Released under LGPL by Winterwell Associates Ltd.");
+
+        $r5 = <java.lang.System: java.io.PrintStream out>;
+
+        virtualinvoke $r5.<java.io.PrintStream: void println(java.lang.String)>("See source code or JavaDoc for details on how to use.");
+
+        return;
+    }
+
+    private transient java.util.Map newMap(java.lang.String[])
+    {
+        winterwell.jtwitter.Twitter r0;
+        int $i0, $i1;
+        java.lang.String[] $r1;
+        java.util.HashMap $r2;
+        java.lang.String $r3, $r4;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String[];
+
+        $r2 = new java.util.HashMap;
+
+        specialinvoke $r2.<java.util.HashMap: void <init>()>();
+
+        $i0 = 0;
+
+     label1:
+        $i1 = lengthof $r1;
+
+        if $i0 >= $i1 goto label2;
+
+        $r3 = $r1[$i0];
+
+        $i1 = $i0 + 1;
+
+        $r4 = $r1[$i1];
+
+        virtualinvoke $r2.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r3, $r4);
+
+        $i0 = $i0 + 2;
+
+        goto label1;
+
+     label2:
+        return $r2;
+    }
+
+    private boolean notTooEarly(winterwell.jtwitter.Twitter$ITweet)
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.util.Date $r2, $r3;
+        winterwell.jtwitter.Twitter$ITweet $r1;
+        boolean $z0;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: winterwell.jtwitter.Twitter$ITweet;
+
+        $r2 = r0.<winterwell.jtwitter.Twitter: java.util.Date sinceDate>;
+
+        if $r2 == null goto label1;
+
+        $r2 = r0.<winterwell.jtwitter.Twitter: java.util.Date sinceDate>;
+
+        $r3 = interfaceinvoke $r1.<winterwell.jtwitter.Twitter$ITweet: java.util.Date getCreatedAt()>();
+
+        $z0 = virtualinvoke $r2.<java.util.Date: boolean before(java.util.Date)>($r3);
+
+        if $z0 == 0 goto label2;
+
+     label1:
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    private boolean notTooLate(winterwell.jtwitter.Twitter$ITweet)
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.util.Date $r2, $r3;
+        winterwell.jtwitter.Twitter$ITweet $r1;
+        boolean $z0;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: winterwell.jtwitter.Twitter$ITweet;
+
+        $r2 = r0.<winterwell.jtwitter.Twitter: java.util.Date untilDate>;
+
+        if $r2 == null goto label1;
+
+        $r2 = r0.<winterwell.jtwitter.Twitter: java.util.Date untilDate>;
+
+        $r3 = interfaceinvoke $r1.<winterwell.jtwitter.Twitter$ITweet: java.util.Date getCreatedAt()>();
+
+        $z0 = virtualinvoke $r2.<java.util.Date: boolean after(java.util.Date)>($r3);
+
+        if $z0 == 0 goto label2;
+
+     label1:
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    private java.lang.String post(java.lang.String, java.util.Map, boolean) throws winterwell.jtwitter.TwitterException
+    {
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.Twitter$IHttpClient $r3;
+        java.util.Map $r2;
+        java.lang.String $r1;
+        boolean $z0;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.util.Map;
+
+        $z0 := @parameter2: boolean;
+
+        $r3 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $r1 = interfaceinvoke $r3.<winterwell.jtwitter.Twitter$IHttpClient: java.lang.String post(java.lang.String,java.util.Map,boolean)>($r1, $r2, $z0);
+
+        return $r1;
+    }
+
+    private java.util.Map standardishParameters()
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.util.HashMap $r2;
+        java.util.Map $r1;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r2 = new java.util.HashMap;
+
+        specialinvoke $r2.<java.util.HashMap: void <init>()>();
+
+        $r1 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.Map addStandardishParameters(java.util.Map)>($r2);
+
+        return $r1;
+    }
+
+    static java.lang.String unencode(java.lang.String)
+    {
+        java.lang.String $r0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        if $r0 != null goto label1;
+
+        return null;
+
+     label1:
+        $r0 = virtualinvoke $r0.<java.lang.String: java.lang.String replace(java.lang.CharSequence,java.lang.CharSequence)>("&quot;", "\"");
+
+        $r0 = virtualinvoke $r0.<java.lang.String: java.lang.String replace(java.lang.CharSequence,java.lang.CharSequence)>("&apos;", "\'");
+
+        $r0 = virtualinvoke $r0.<java.lang.String: java.lang.String replace(java.lang.CharSequence,java.lang.CharSequence)>("&nbsp;", " ");
+
+        $r0 = virtualinvoke $r0.<java.lang.String: java.lang.String replace(java.lang.CharSequence,java.lang.CharSequence)>("&amp;", "&");
+
+        $r0 = virtualinvoke $r0.<java.lang.String: java.lang.String replace(java.lang.CharSequence,java.lang.CharSequence)>("&gt;", ">");
+
+        $r0 = virtualinvoke $r0.<java.lang.String: java.lang.String replace(java.lang.CharSequence,java.lang.CharSequence)>("&lt;", "<");
+
+        return $r0;
+    }
+
+    public winterwell.jtwitter.Twitter$User befriend(java.lang.String) throws winterwell.jtwitter.TwitterException
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.lang.String $r1;
+        winterwell.jtwitter.Twitter$User $r2;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = virtualinvoke r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$User follow(java.lang.String)>($r1);
+
+        return $r2;
+    }
+
+    public winterwell.jtwitter.Twitter$User breakFriendship(java.lang.String)
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.lang.String $r1;
+        winterwell.jtwitter.Twitter$User $r2;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = virtualinvoke r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$User stopFollowing(java.lang.String)>($r1);
+
+        return $r2;
+    }
+
+    public java.util.List bulkShow(java.util.List)
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.util.List $r1;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.util.List;
+
+        $r1 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.List bulkShow2(java.lang.Class,java.util.List)>(class "Ljava/lang/String;", $r1);
+
+        return $r1;
+    }
+
+    public java.util.List bulkShowById(java.util.List)
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.util.List $r1;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.util.List;
+
+        $r1 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.List bulkShow2(java.lang.Class,java.util.List)>(class "Ljava/lang/Long;", $r1);
+
+        return $r1;
+    }
+
+    public void destroyStatus(long) throws winterwell.jtwitter.TwitterException
+    {
+        winterwell.jtwitter.Twitter r0;
+        long $l0;
+        java.lang.StringBuilder $r1;
+        java.lang.String $r2;
+        java.lang.AssertionError $r3;
+        boolean $z0;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $l0 := @parameter0: long;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/statuses/destroy/");
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(".json");
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r2 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.lang.String post(java.lang.String,java.util.Map,boolean)>($r2, null, 1);
+
+        virtualinvoke r0.<winterwell.jtwitter.Twitter: void flush()>();
+
+        $z0 = <winterwell.jtwitter.Twitter: boolean $assertionsDisabled>;
+
+        if $z0 != 0 goto label1;
+
+        if $r2 != null goto label1;
+
+        $r3 = new java.lang.AssertionError;
+
+        specialinvoke $r3.<java.lang.AssertionError: void <init>()>();
+
+        throw $r3;
+
+     label1:
+        return;
+    }
+
+    public void destroyStatus(winterwell.jtwitter.Twitter$Status) throws winterwell.jtwitter.TwitterException
+    {
+        winterwell.jtwitter.Twitter$Status $r1;
+        winterwell.jtwitter.Twitter r0;
+        long $l0;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: winterwell.jtwitter.Twitter$Status;
+
+        $l0 = virtualinvoke $r1.<winterwell.jtwitter.Twitter$Status: long getId()>();
+
+        virtualinvoke r0.<winterwell.jtwitter.Twitter: void destroyStatus(long)>($l0);
+
+        return;
+    }
+
+    void flush()
+    {
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.Twitter$IHttpClient $r1;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r3;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("http://twitter.com/");
+
+        $r3 = r0.<winterwell.jtwitter.Twitter: java.lang.String name>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r1.<winterwell.jtwitter.Twitter$IHttpClient: java.lang.String getPage(java.lang.String,java.util.Map,boolean)>($r3, null, 1);
+
+        return;
+    }
+
+    public winterwell.jtwitter.Twitter$User follow(java.lang.String) throws winterwell.jtwitter.TwitterException
+    {
+        java.lang.String[] $r5;
+        java.lang.IllegalArgumentException $r4;
+        java.lang.NullPointerException $r2;
+        winterwell.jtwitter.Twitter r0;
+        org.json.JSONException $r11;
+        org.json.JSONObject $r9;
+        winterwell.jtwitter.TwitterException $r12;
+        java.util.Map $r6;
+        winterwell.jtwitter.TwitterException$E403 $r10;
+        java.lang.StringBuilder $r7;
+        java.lang.String $r1, $r3;
+        winterwell.jtwitter.Twitter$User $r8;
+        boolean $z0;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        if $r1 != null goto label01;
+
+        $r2 = new java.lang.NullPointerException;
+
+        specialinvoke $r2.<java.lang.NullPointerException: void <init>()>();
+
+        throw $r2;
+
+     label01:
+        $r3 = virtualinvoke r0.<winterwell.jtwitter.Twitter: java.lang.String getScreenName()>();
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>($r3);
+
+        if $z0 == 0 goto label02;
+
+        $r4 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r4.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("follow yourself makes no sense");
+
+        throw $r4;
+
+     label02:
+        $r5 = newarray (java.lang.String)[2];
+
+        $r5[0] = "screen_name";
+
+        $r5[1] = $r1;
+
+     label03:
+        $r6 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.Map newMap(java.lang.String[])>($r5);
+
+     label04:
+        $r7 = new java.lang.StringBuilder;
+
+     label05:
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>()>();
+
+     label06:
+        $r3 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+     label07:
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/friendships/create.json");
+
+        $r3 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.lang.String post(java.lang.String,java.util.Map,boolean)>($r3, $r6, 1);
+
+     label08:
+        $r8 = new winterwell.jtwitter.Twitter$User;
+
+        $r9 = new org.json.JSONObject;
+
+     label09:
+        specialinvoke $r9.<org.json.JSONObject: void <init>(java.lang.String)>($r3);
+
+        specialinvoke $r8.<winterwell.jtwitter.Twitter$User: void <init>(org.json.JSONObject,winterwell.jtwitter.Twitter$Status)>($r9, null);
+
+     label10:
+        return $r8;
+
+     label11:
+        $r10 := @caughtexception;
+
+        $z0 = virtualinvoke r0.<winterwell.jtwitter.Twitter: boolean isFollowing(java.lang.String)>($r1);
+
+        if $z0 != 0 goto label13;
+
+        throw $r10;
+
+     label12:
+        $r11 := @caughtexception;
+
+        $r12 = new winterwell.jtwitter.TwitterException;
+
+        specialinvoke $r12.<winterwell.jtwitter.TwitterException: void <init>(java.lang.Exception)>($r11);
+
+        throw $r12;
+
+     label13:
+        return null;
+
+        catch winterwell.jtwitter.TwitterException$E403 from label03 to label04 with label11;
+        catch winterwell.jtwitter.TwitterException$E403 from label05 to label06 with label11;
+        catch winterwell.jtwitter.TwitterException$E403 from label07 to label08 with label11;
+        catch org.json.JSONException from label09 to label10 with label12;
+    }
+
+    public void follow(winterwell.jtwitter.Twitter$User)
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.lang.String $r2;
+        winterwell.jtwitter.Twitter$User $r1;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: winterwell.jtwitter.Twitter$User;
+
+        $r2 = $r1.<winterwell.jtwitter.Twitter$User: java.lang.String screenName>;
+
+        virtualinvoke r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$User follow(java.lang.String)>($r2);
+
+        return;
+    }
+
+    public java.util.List getDirectMessages()
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.util.List $r4;
+        java.util.Map $r3;
+        java.lang.StringBuilder $r1;
+        java.lang.String $r2;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/direct_messages.json");
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.Map standardishParameters()>();
+
+        $r4 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.List getMessages(java.lang.String,java.util.Map)>($r2, $r3);
+
+        return $r4;
+    }
+
+    public java.util.List getDirectMessagesSent()
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.util.List $r4;
+        java.util.Map $r3;
+        java.lang.StringBuilder $r1;
+        java.lang.String $r2;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/direct_messages/sent.json");
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.Map standardishParameters()>();
+
+        $r4 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.List getMessages(java.lang.String,java.util.Map)>($r2, $r3);
+
+        return $r4;
+    }
+
+    public java.util.List getFavorites()
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.util.List $r4;
+        java.util.Map $r3;
+        java.lang.StringBuilder $r1;
+        java.lang.String $r2;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/favorites.json");
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.Map standardishParameters()>();
+
+        $r4 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.List getStatuses(java.lang.String,java.util.Map,boolean)>($r2, $r3, 1);
+
+        return $r4;
+    }
+
+    public java.util.List getFavorites(java.lang.String)
+    {
+        java.lang.String[] $r2;
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.Twitter$IHttpClient $r5;
+        java.util.List $r6;
+        java.util.Map $r3;
+        java.lang.StringBuilder $r4;
+        java.lang.String $r1;
+        boolean $z0;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = newarray (java.lang.String)[2];
+
+        $r2[0] = "screen_name";
+
+        $r2[1] = $r1;
+
+        $r3 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.Map newMap(java.lang.String[])>($r2);
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r1 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/favorites.json");
+
+        $r1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.Map addStandardishParameters(java.util.Map)>($r3);
+
+        $r5 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $z0 = interfaceinvoke $r5.<winterwell.jtwitter.Twitter$IHttpClient: boolean canAuthenticate()>();
+
+        $r6 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.List getStatuses(java.lang.String,java.util.Map,boolean)>($r1, $r3, $z0);
+
+        return $r6;
+    }
+
+    public java.util.List getFeatured() throws winterwell.jtwitter.TwitterException
+    {
+        java.util.Iterator $r3;
+        winterwell.jtwitter.Twitter$Status $r5;
+        java.util.ArrayList $r1;
+        winterwell.jtwitter.Twitter r0;
+        java.util.List $r2;
+        java.lang.Object $r4;
+        winterwell.jtwitter.Twitter$User $r6;
+        boolean $z0;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 = new java.util.ArrayList;
+
+        specialinvoke $r1.<java.util.ArrayList: void <init>()>();
+
+        $r2 = virtualinvoke r0.<winterwell.jtwitter.Twitter: java.util.List getPublicTimeline()>();
+
+        $r3 = interfaceinvoke $r2.<java.util.List: java.util.Iterator iterator()>();
+
+     label1:
+        $z0 = interfaceinvoke $r3.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label2;
+
+        $r4 = interfaceinvoke $r3.<java.util.Iterator: java.lang.Object next()>();
+
+        $r5 = (winterwell.jtwitter.Twitter$Status) $r4;
+
+        $r6 = virtualinvoke $r5.<winterwell.jtwitter.Twitter$Status: winterwell.jtwitter.Twitter$User getUser()>();
+
+        interfaceinvoke $r1.<java.util.List: boolean add(java.lang.Object)>($r6);
+
+        goto label1;
+
+     label2:
+        return $r1;
+    }
+
+    public java.util.List getFollowerIDs() throws winterwell.jtwitter.TwitterException
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.util.List $r3;
+        java.lang.StringBuilder $r1;
+        java.lang.String $r2;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/followers/ids.json");
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.List getUserIDs(java.lang.String,java.lang.String)>($r2, null);
+
+        return $r3;
+    }
+
+    public java.util.List getFollowerIDs(java.lang.String) throws winterwell.jtwitter.TwitterException
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.util.List $r4;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r1, $r3;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/followers/ids.json");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r4 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.List getUserIDs(java.lang.String,java.lang.String)>($r3, $r1);
+
+        return $r4;
+    }
+
+    public java.util.List getFollowers() throws winterwell.jtwitter.TwitterException
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.util.List $r3;
+        java.lang.StringBuilder $r1;
+        java.lang.String $r2;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/statuses/followers.json");
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.List getUsers(java.lang.String,java.lang.String)>($r2, null);
+
+        return $r3;
+    }
+
+    public java.util.List getFollowers(java.lang.String) throws winterwell.jtwitter.TwitterException
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.util.List $r4;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r1, $r3;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/statuses/followers.json");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r4 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.List getUsers(java.lang.String,java.lang.String)>($r3, $r1);
+
+        return $r4;
+    }
+
+    public java.util.List getFriendIDs() throws winterwell.jtwitter.TwitterException
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.util.List $r3;
+        java.lang.StringBuilder $r1;
+        java.lang.String $r2;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/friends/ids.json");
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.List getUserIDs(java.lang.String,java.lang.String)>($r2, null);
+
+        return $r3;
+    }
+
+    public java.util.List getFriendIDs(java.lang.String) throws winterwell.jtwitter.TwitterException
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.util.List $r4;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r1, $r3;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/friends/ids.json");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r4 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.List getUserIDs(java.lang.String,java.lang.String)>($r3, $r1);
+
+        return $r4;
+    }
+
+    public java.util.List getFriends() throws winterwell.jtwitter.TwitterException
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.util.List $r3;
+        java.lang.StringBuilder $r1;
+        java.lang.String $r2;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/statuses/friends.json");
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.List getUsers(java.lang.String,java.lang.String)>($r2, null);
+
+        return $r3;
+    }
+
+    public java.util.List getFriends(java.lang.String) throws winterwell.jtwitter.TwitterException
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.util.List $r4;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r1, $r3;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/statuses/friends.json");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r4 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.List getUsers(java.lang.String,java.lang.String)>($r3, $r1);
+
+        return $r4;
+    }
+
+    public java.util.List getFriendsTimeline() throws winterwell.jtwitter.TwitterException
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.util.List $r4;
+        java.util.Map $r3;
+        java.lang.StringBuilder $r1;
+        java.lang.String $r2;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/statuses/friends_timeline.json");
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.Map standardishParameters()>();
+
+        $r4 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.List getStatuses(java.lang.String,java.util.Map,boolean)>($r2, $r3, 1);
+
+        return $r4;
+    }
+
+    public java.util.List getHomeTimeline() throws winterwell.jtwitter.TwitterException
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.util.List $r4;
+        java.util.Map $r3;
+        java.lang.StringBuilder $r1;
+        java.lang.String $r2;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/statuses/home_timeline.json");
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.Map standardishParameters()>();
+
+        $r4 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.List getStatuses(java.lang.String,java.util.Map,boolean)>($r2, $r3, 1);
+
+        return $r4;
+    }
+
+    public winterwell.jtwitter.Twitter$IHttpClient getHttpClient()
+    {
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.Twitter$IHttpClient r1;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        r1 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        return r1;
+    }
+
+    public java.util.List getLists()
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.util.List $r1;
+        java.lang.String $r2;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r2 = r0.<winterwell.jtwitter.Twitter: java.lang.String name>;
+
+        $r1 = virtualinvoke r0.<winterwell.jtwitter.Twitter: java.util.List getLists(java.lang.String)>($r2);
+
+        return $r1;
+    }
+
+    public java.util.List getLists(java.lang.String)
+    {
+        java.lang.AssertionError $r3;
+        java.util.ArrayList $r10;
+        org.json.JSONException $r11;
+        org.json.JSONObject $r7;
+        winterwell.jtwitter.TwitterException $r12;
+        int $i0, $i1;
+        java.lang.String $r1, $r5;
+        boolean $z0;
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.TwitterList $r2;
+        winterwell.jtwitter.Twitter$IHttpClient $r6;
+        java.lang.StringBuilder $r4;
+        java.lang.Object $r8;
+        org.json.JSONArray $r9;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $z0 = <winterwell.jtwitter.Twitter: boolean $assertionsDisabled>;
+
+        if $z0 != 0 goto label01;
+
+        if $r1 != null goto label01;
+
+        $r3 = new java.lang.AssertionError;
+
+        specialinvoke $r3.<java.lang.AssertionError: void <init>()>();
+
+        throw $r3;
+
+     label01:
+        $r4 = new java.lang.StringBuilder;
+
+     label02:
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+     label03:
+        $r5 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+     label04:
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/");
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/lists.json");
+
+        $r1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label05:
+        $r6 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+     label06:
+        $r1 = interfaceinvoke $r6.<winterwell.jtwitter.Twitter$IHttpClient: java.lang.String getPage(java.lang.String,java.util.Map,boolean)>($r1, null, 1);
+
+     label07:
+        $r7 = new org.json.JSONObject;
+
+     label08:
+        specialinvoke $r7.<org.json.JSONObject: void <init>(java.lang.String)>($r1);
+
+        $r8 = virtualinvoke $r7.<org.json.JSONObject: java.lang.Object get(java.lang.String)>("lists");
+
+     label09:
+        $r9 = (org.json.JSONArray) $r8;
+
+        $r10 = new java.util.ArrayList;
+
+     label10:
+        specialinvoke $r10.<java.util.ArrayList: void <init>()>();
+
+     label11:
+        $i0 = 0;
+
+     label12:
+        $i1 = virtualinvoke $r9.<org.json.JSONArray: int length()>();
+
+     label13:
+        if $i0 >= $i1 goto label19;
+
+     label14:
+        $r7 = virtualinvoke $r9.<org.json.JSONArray: org.json.JSONObject getJSONObject(int)>($i0);
+
+     label15:
+        $r2 = new winterwell.jtwitter.TwitterList;
+
+     label16:
+        specialinvoke $r2.<winterwell.jtwitter.TwitterList: void <init>(org.json.JSONObject,winterwell.jtwitter.Twitter)>($r7, r0);
+
+        interfaceinvoke $r10.<java.util.List: boolean add(java.lang.Object)>($r2);
+
+     label17:
+        $i0 = $i0 + 1;
+
+        goto label12;
+
+     label18:
+        $r11 := @caughtexception;
+
+        $r12 = new winterwell.jtwitter.TwitterException;
+
+        specialinvoke $r12.<winterwell.jtwitter.TwitterException: void <init>(java.lang.Exception)>($r11);
+
+        throw $r12;
+
+     label19:
+        return $r10;
+
+        catch org.json.JSONException from label02 to label03 with label18;
+        catch org.json.JSONException from label04 to label05 with label18;
+        catch org.json.JSONException from label06 to label07 with label18;
+        catch org.json.JSONException from label08 to label09 with label18;
+        catch org.json.JSONException from label10 to label11 with label18;
+        catch org.json.JSONException from label12 to label13 with label18;
+        catch org.json.JSONException from label14 to label15 with label18;
+        catch org.json.JSONException from label16 to label17 with label18;
+    }
+
+    public int getMaxResults()
+    {
+        int i0;
+        winterwell.jtwitter.Twitter r0;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        i0 = r0.<winterwell.jtwitter.Twitter: int maxResults>;
+
+        return i0;
+    }
+
+    public java.util.List getPublicTimeline() throws winterwell.jtwitter.TwitterException
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.util.List $r4;
+        java.util.Map $r3;
+        java.lang.StringBuilder $r1;
+        java.lang.String $r2;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/statuses/public_timeline.json");
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.Map standardishParameters()>();
+
+        $r4 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.List getStatuses(java.lang.String,java.util.Map,boolean)>($r2, $r3, 0);
+
+        return $r4;
+    }
+
+    public int getRateLimitStatus()
+    {
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.Twitter$IHttpClient $r1, $r4;
+        org.json.JSONException $r6;
+        org.json.JSONObject $r5;
+        winterwell.jtwitter.TwitterException $r7;
+        int $i0;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r3;
+        boolean $z0;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/account/rate_limit_status.json");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r4 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $z0 = interfaceinvoke $r4.<winterwell.jtwitter.Twitter$IHttpClient: boolean canAuthenticate()>();
+
+        $r3 = interfaceinvoke $r1.<winterwell.jtwitter.Twitter$IHttpClient: java.lang.String getPage(java.lang.String,java.util.Map,boolean)>($r3, null, $z0);
+
+        $r5 = new org.json.JSONObject;
+
+     label1:
+        specialinvoke $r5.<org.json.JSONObject: void <init>(java.lang.String)>($r3);
+
+        $i0 = virtualinvoke $r5.<org.json.JSONObject: int getInt(java.lang.String)>("remaining_hits");
+
+     label2:
+        return $i0;
+
+     label3:
+        $r6 := @caughtexception;
+
+        $r7 = new winterwell.jtwitter.TwitterException;
+
+        specialinvoke $r7.<winterwell.jtwitter.TwitterException: void <init>(java.lang.Exception)>($r6);
+
+        throw $r7;
+
+        catch org.json.JSONException from label1 to label2 with label3;
+    }
+
+    public java.util.List getReplies() throws winterwell.jtwitter.TwitterException
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.util.List $r4;
+        java.util.Map $r3;
+        java.lang.StringBuilder $r1;
+        java.lang.String $r2;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/statuses/replies.json");
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.Map standardishParameters()>();
+
+        $r4 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.List getStatuses(java.lang.String,java.util.Map,boolean)>($r2, $r3, 1);
+
+        return $r4;
+    }
+
+    public java.util.List getRetweeters(winterwell.jtwitter.Twitter$Status)
+    {
+        winterwell.jtwitter.Twitter$Status $r1;
+        long $l0;
+        java.util.HashMap $r5;
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.Twitter$IHttpClient $r2;
+        java.util.List $r7;
+        java.util.Map $r6;
+        java.lang.StringBuilder $r3;
+        java.lang.String $r4;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: winterwell.jtwitter.Twitter$Status;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/statuses/");
+
+        $l0 = $r1.<winterwell.jtwitter.Twitter$Status: long id>;
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/retweeted_by.json");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r5 = new java.util.HashMap;
+
+        specialinvoke $r5.<java.util.HashMap: void <init>()>();
+
+        $r6 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.Map addStandardishParameters(java.util.Map)>($r5);
+
+        $r2 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $r4 = interfaceinvoke $r2.<winterwell.jtwitter.Twitter$IHttpClient: java.lang.String getPage(java.lang.String,java.util.Map,boolean)>($r4, $r6, 1);
+
+        $r7 = staticinvoke <winterwell.jtwitter.Twitter$User: java.util.List getUsers(java.lang.String)>($r4);
+
+        return $r7;
+    }
+
+    public java.util.List getRetweets(winterwell.jtwitter.Twitter$Status)
+    {
+        winterwell.jtwitter.Twitter$Status $r1;
+        long $l0;
+        java.util.HashMap $r5;
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.Twitter$IHttpClient $r2;
+        java.util.List $r7;
+        java.util.Map $r6;
+        java.lang.StringBuilder $r3;
+        java.lang.String $r4;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: winterwell.jtwitter.Twitter$Status;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/statuses/retweets/");
+
+        $l0 = $r1.<winterwell.jtwitter.Twitter$Status: long id>;
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(".json");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r5 = new java.util.HashMap;
+
+        specialinvoke $r5.<java.util.HashMap: void <init>()>();
+
+        $r6 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.Map addStandardishParameters(java.util.Map)>($r5);
+
+        $r2 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $r4 = interfaceinvoke $r2.<winterwell.jtwitter.Twitter$IHttpClient: java.lang.String getPage(java.lang.String,java.util.Map,boolean)>($r4, $r6, 1);
+
+        $r7 = staticinvoke <winterwell.jtwitter.Twitter$Status: java.util.List getStatuses(java.lang.String)>($r4);
+
+        return $r7;
+    }
+
+    public java.util.List getRetweetsByMe()
+    {
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.Twitter$IHttpClient $r1;
+        java.util.List $r6;
+        java.util.Map $r5;
+        java.lang.StringBuilder $r2;
+        java.util.HashMap $r4;
+        java.lang.String $r3;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/statuses/retweeted_by_me.json");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r4 = new java.util.HashMap;
+
+        specialinvoke $r4.<java.util.HashMap: void <init>()>();
+
+        $r5 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.Map addStandardishParameters(java.util.Map)>($r4);
+
+        $r1 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $r3 = interfaceinvoke $r1.<winterwell.jtwitter.Twitter$IHttpClient: java.lang.String getPage(java.lang.String,java.util.Map,boolean)>($r3, $r5, 1);
+
+        $r6 = staticinvoke <winterwell.jtwitter.Twitter$Status: java.util.List getStatuses(java.lang.String)>($r3);
+
+        return $r6;
+    }
+
+    public java.util.List getRetweetsOfMe()
+    {
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.Twitter$IHttpClient $r1;
+        java.util.List $r6;
+        java.util.Map $r5;
+        java.lang.StringBuilder $r2;
+        java.util.HashMap $r4;
+        java.lang.String $r3;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/statuses/retweets_of_me.json");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r4 = new java.util.HashMap;
+
+        specialinvoke $r4.<java.util.HashMap: void <init>()>();
+
+        $r5 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.Map addStandardishParameters(java.util.Map)>($r4);
+
+        $r1 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $r3 = interfaceinvoke $r1.<winterwell.jtwitter.Twitter$IHttpClient: java.lang.String getPage(java.lang.String,java.util.Map,boolean)>($r3, $r5, 1);
+
+        $r6 = staticinvoke <winterwell.jtwitter.Twitter$Status: java.util.List getStatuses(java.lang.String)>($r3);
+
+        return $r6;
+    }
+
+    public java.lang.String getScreenName()
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.lang.String r1;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        r1 = r0.<winterwell.jtwitter.Twitter: java.lang.String name>;
+
+        return r1;
+    }
+
+    public winterwell.jtwitter.Twitter$Status getStatus() throws winterwell.jtwitter.TwitterException
+    {
+        java.lang.Object[] $r1;
+        winterwell.jtwitter.Twitter$Status $r9;
+        java.lang.Integer $r2;
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.Twitter$IHttpClient $r4;
+        java.util.List $r7;
+        java.util.Map $r3;
+        int $i0;
+        java.lang.StringBuilder $r5;
+        java.lang.Object $r8;
+        java.lang.String $r6;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 = newarray (java.lang.Object)[2];
+
+        $r1[0] = "count";
+
+        $r2 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(6);
+
+        $r1[1] = $r2;
+
+        $r3 = staticinvoke <winterwell.jtwitter.Twitter: java.util.Map asMap(java.lang.Object[])>($r1);
+
+        $r4 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r6 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/statuses/user_timeline.json");
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r6 = interfaceinvoke $r4.<winterwell.jtwitter.Twitter$IHttpClient: java.lang.String getPage(java.lang.String,java.util.Map,boolean)>($r6, $r3, 1);
+
+        $r7 = staticinvoke <winterwell.jtwitter.Twitter$Status: java.util.List getStatuses(java.lang.String)>($r6);
+
+        $i0 = interfaceinvoke $r7.<java.util.List: int size()>();
+
+        if $i0 != 0 goto label1;
+
+        return null;
+
+     label1:
+        $r8 = interfaceinvoke $r7.<java.util.List: java.lang.Object get(int)>(0);
+
+        $r9 = (winterwell.jtwitter.Twitter$Status) $r8;
+
+        return $r9;
+    }
+
+    public winterwell.jtwitter.Twitter$Status getStatus(long) throws winterwell.jtwitter.TwitterException
+    {
+        winterwell.jtwitter.Twitter$Status $r4;
+        long $l0;
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.Twitter$IHttpClient $r1;
+        org.json.JSONException $r6;
+        org.json.JSONObject $r5;
+        winterwell.jtwitter.TwitterException $r7;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r3;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $l0 := @parameter0: long;
+
+        $r1 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/statuses/show/");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(".json");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = interfaceinvoke $r1.<winterwell.jtwitter.Twitter$IHttpClient: java.lang.String getPage(java.lang.String,java.util.Map,boolean)>($r3, null, 1);
+
+        $r4 = new winterwell.jtwitter.Twitter$Status;
+
+        $r5 = new org.json.JSONObject;
+
+     label1:
+        specialinvoke $r5.<org.json.JSONObject: void <init>(java.lang.String)>($r3);
+
+        specialinvoke $r4.<winterwell.jtwitter.Twitter$Status: void <init>(org.json.JSONObject,winterwell.jtwitter.Twitter$User)>($r5, null);
+
+     label2:
+        return $r4;
+
+     label3:
+        $r6 := @caughtexception;
+
+        $r7 = new winterwell.jtwitter.TwitterException;
+
+        specialinvoke $r7.<winterwell.jtwitter.TwitterException: void <init>(java.lang.Exception)>($r6);
+
+        throw $r7;
+
+        catch org.json.JSONException from label1 to label2 with label3;
+    }
+
+    public winterwell.jtwitter.Twitter$Status getStatus(java.lang.String) throws winterwell.jtwitter.TwitterException
+    {
+        java.lang.Object[] $r3;
+        winterwell.jtwitter.Twitter$Status $r10;
+        java.lang.AssertionError $r2;
+        java.lang.Integer $r4;
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.Twitter$IHttpClient $r6;
+        java.util.List $r8;
+        java.util.Map $r5;
+        int $i0;
+        java.lang.StringBuilder $r7;
+        java.lang.Object $r9;
+        java.lang.String $r1;
+        boolean $z0;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $z0 = <winterwell.jtwitter.Twitter: boolean $assertionsDisabled>;
+
+        if $z0 != 0 goto label1;
+
+        if $r1 != null goto label1;
+
+        $r2 = new java.lang.AssertionError;
+
+        specialinvoke $r2.<java.lang.AssertionError: void <init>()>();
+
+        throw $r2;
+
+     label1:
+        $r3 = newarray (java.lang.Object)[4];
+
+        $r3[0] = "id";
+
+        $r3[1] = $r1;
+
+        $r3[2] = "count";
+
+        $r4 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(6);
+
+        $r3[3] = $r4;
+
+        $r5 = staticinvoke <winterwell.jtwitter.Twitter: java.util.Map asMap(java.lang.Object[])>($r3);
+
+        $r6 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>()>();
+
+        $r1 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/statuses/user_timeline.json");
+
+        $r1 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r1 = interfaceinvoke $r6.<winterwell.jtwitter.Twitter$IHttpClient: java.lang.String getPage(java.lang.String,java.util.Map,boolean)>($r1, $r5, 0);
+
+        $r8 = staticinvoke <winterwell.jtwitter.Twitter$Status: java.util.List getStatuses(java.lang.String)>($r1);
+
+        $i0 = interfaceinvoke $r8.<java.util.List: int size()>();
+
+        if $i0 != 0 goto label2;
+
+        return null;
+
+     label2:
+        $r9 = interfaceinvoke $r8.<java.util.List: java.lang.Object get(int)>(0);
+
+        $r10 = (winterwell.jtwitter.Twitter$Status) $r9;
+
+        return $r10;
+    }
+
+    public java.util.List getTrends()
+    {
+        java.util.ArrayList $r5;
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.Twitter$IHttpClient $r1;
+        org.json.JSONException $r6;
+        org.json.JSONObject $r3;
+        winterwell.jtwitter.TwitterException $r7;
+        int $i0, $i1;
+        java.lang.String $r2;
+        org.json.JSONArray $r4;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $i0 = 0;
+
+        $r1 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $r2 = interfaceinvoke $r1.<winterwell.jtwitter.Twitter$IHttpClient: java.lang.String getPage(java.lang.String,java.util.Map,boolean)>("http://search.twitter.com/trends.json", null, 0);
+
+        $r3 = new org.json.JSONObject;
+
+     label1:
+        specialinvoke $r3.<org.json.JSONObject: void <init>(java.lang.String)>($r2);
+
+        $r4 = virtualinvoke $r3.<org.json.JSONObject: org.json.JSONArray getJSONArray(java.lang.String)>("trends");
+
+     label2:
+        $r5 = new java.util.ArrayList;
+
+     label3:
+        specialinvoke $r5.<java.util.ArrayList: void <init>()>();
+
+     label4:
+        $i1 = virtualinvoke $r4.<org.json.JSONArray: int length()>();
+
+     label5:
+        if $i0 >= $i1 goto label9;
+
+     label6:
+        $r3 = virtualinvoke $r4.<org.json.JSONArray: org.json.JSONObject getJSONObject(int)>($i0);
+
+        $r2 = virtualinvoke $r3.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("name");
+
+        interfaceinvoke $r5.<java.util.List: boolean add(java.lang.Object)>($r2);
+
+     label7:
+        $i0 = $i0 + 1;
+
+        goto label4;
+
+     label8:
+        $r6 := @caughtexception;
+
+        $r7 = new winterwell.jtwitter.TwitterException;
+
+        specialinvoke $r7.<winterwell.jtwitter.TwitterException: void <init>(java.lang.Exception)>($r6);
+
+        throw $r7;
+
+     label9:
+        return $r5;
+
+        catch org.json.JSONException from label1 to label2 with label8;
+        catch org.json.JSONException from label3 to label5 with label8;
+        catch org.json.JSONException from label6 to label7 with label8;
+    }
+
+    public java.util.Date getUntilDate()
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.util.Date r1;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        r1 = r0.<winterwell.jtwitter.Twitter: java.util.Date untilDate>;
+
+        return r1;
+    }
+
+    public winterwell.jtwitter.Twitter$User getUser(long)
+    {
+        winterwell.jtwitter.Twitter r0;
+        long $l0;
+        winterwell.jtwitter.Twitter$User $r1;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $l0 := @parameter0: long;
+
+        $r1 = virtualinvoke r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$User show(long)>($l0);
+
+        return $r1;
+    }
+
+    public winterwell.jtwitter.Twitter$User getUser(java.lang.String)
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.lang.String $r1;
+        winterwell.jtwitter.Twitter$User $r2;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = virtualinvoke r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$User show(java.lang.String)>($r1);
+
+        return $r2;
+    }
+
+    public java.util.List getUserTimeline() throws winterwell.jtwitter.TwitterException
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.util.List $r4;
+        java.util.Map $r3;
+        java.lang.StringBuilder $r1;
+        java.lang.String $r2;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/statuses/user_timeline.json");
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.Map standardishParameters()>();
+
+        $r4 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.List getStatuses(java.lang.String,java.util.Map,boolean)>($r2, $r3, 1);
+
+        return $r4;
+    }
+
+    public java.util.List getUserTimeline(java.lang.String) throws winterwell.jtwitter.TwitterException
+    {
+        java.lang.Object[] $r3;
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.Twitter$IHttpClient $r2;
+        java.util.List $r6;
+        java.util.Map $r4;
+        java.lang.StringBuilder $r5;
+        java.lang.String $r1;
+        boolean $z0;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r3 = newarray (java.lang.Object)[2];
+
+        $r3[0] = "screen_name";
+
+        $r3[1] = $r1;
+
+        $r4 = staticinvoke <winterwell.jtwitter.Twitter: java.util.Map asMap(java.lang.Object[])>($r3);
+
+        specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.Map addStandardishParameters(java.util.Map)>($r4);
+
+        $r2 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $z0 = interfaceinvoke $r2.<winterwell.jtwitter.Twitter$IHttpClient: boolean canAuthenticate()>();
+
+        $r2 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r1 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/statuses/user_timeline.json");
+
+        $r1 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r1 = interfaceinvoke $r2.<winterwell.jtwitter.Twitter$IHttpClient: java.lang.String getPage(java.lang.String,java.util.Map,boolean)>($r1, $r4, $z0);
+
+        $r6 = staticinvoke <winterwell.jtwitter.Twitter$Status: java.util.List getStatuses(java.lang.String)>($r1);
+
+        return $r6;
+    }
+
+    public java.util.List getUserTimelineWithRetweets(java.lang.String) throws winterwell.jtwitter.TwitterException
+    {
+        java.lang.Object[] $r2;
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.Twitter$IHttpClient $r4;
+        java.util.List $r9;
+        java.util.Map $r3;
+        java.lang.StringBuilder $r5;
+        java.lang.String $r1, $r6;
+        winterwell.jtwitter.SimpleRSSReader $r8;
+        winterwell.jtwitter.Twitter$User $r7;
+        boolean $z0;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = newarray (java.lang.Object)[2];
+
+        $r2[0] = "screen_name";
+
+        $r2[1] = $r1;
+
+        $r3 = staticinvoke <winterwell.jtwitter.Twitter: java.util.Map asMap(java.lang.Object[])>($r2);
+
+        specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.Map addStandardishParameters(java.util.Map)>($r3);
+
+        $r4 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $z0 = interfaceinvoke $r4.<winterwell.jtwitter.Twitter$IHttpClient: boolean canAuthenticate()>();
+
+        $r4 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r6 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/statuses/user_timeline.rss");
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r6 = interfaceinvoke $r4.<winterwell.jtwitter.Twitter$IHttpClient: java.lang.String getPage(java.lang.String,java.util.Map,boolean)>($r6, $r3, $z0);
+
+        $r7 = new winterwell.jtwitter.Twitter$User;
+
+        specialinvoke $r7.<winterwell.jtwitter.Twitter$User: void <init>(java.lang.String)>($r1);
+
+        $r8 = new winterwell.jtwitter.SimpleRSSReader;
+
+        specialinvoke $r8.<winterwell.jtwitter.SimpleRSSReader: void <init>(winterwell.jtwitter.Twitter$User,java.lang.String)>($r7, $r6);
+
+        $r9 = virtualinvoke $r8.<winterwell.jtwitter.SimpleRSSReader: java.util.List getStatuses()>();
+
+        return $r9;
+    }
+
+    public boolean isFollower(java.lang.String)
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.lang.String $r1, $r2;
+        boolean $z0;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = r0.<winterwell.jtwitter.Twitter: java.lang.String name>;
+
+        $z0 = virtualinvoke r0.<winterwell.jtwitter.Twitter: boolean isFollower(java.lang.String,java.lang.String)>($r1, $r2);
+
+        return $z0;
+    }
+
+    public boolean isFollower(java.lang.String, java.lang.String)
+    {
+        java.lang.String[] $r7;
+        java.lang.AssertionError $r3;
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.Twitter$IHttpClient $r4, $r9;
+        java.util.Map $r8;
+        java.lang.Boolean $r10;
+        java.lang.StringBuilder $r5;
+        java.lang.String $r1, $r2, $r6;
+        boolean $z0;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $z0 = <winterwell.jtwitter.Twitter: boolean $assertionsDisabled>;
+
+        if $z0 != 0 goto label2;
+
+        if $r1 == null goto label1;
+
+        if $r2 != null goto label2;
+
+     label1:
+        $r3 = new java.lang.AssertionError;
+
+        specialinvoke $r3.<java.lang.AssertionError: void <init>()>();
+
+        throw $r3;
+
+     label2:
+        $r4 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r6 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/friendships/exists.json");
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r7 = newarray (java.lang.String)[4];
+
+        $r7[0] = "user_a";
+
+        $r7[1] = $r1;
+
+        $r7[2] = "user_b";
+
+        $r7[3] = $r2;
+
+        $r8 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.Map aMap(java.lang.String[])>($r7);
+
+        $r9 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $z0 = interfaceinvoke $r9.<winterwell.jtwitter.Twitter$IHttpClient: boolean canAuthenticate()>();
+
+        $r1 = interfaceinvoke $r4.<winterwell.jtwitter.Twitter$IHttpClient: java.lang.String getPage(java.lang.String,java.util.Map,boolean)>($r6, $r8, $z0);
+
+        $r10 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(java.lang.String)>($r1);
+
+        $z0 = virtualinvoke $r10.<java.lang.Boolean: boolean booleanValue()>();
+
+        return $z0;
+    }
+
+    public boolean isFollowing(java.lang.String)
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.lang.String $r1, $r2;
+        boolean $z0;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = r0.<winterwell.jtwitter.Twitter: java.lang.String name>;
+
+        $z0 = virtualinvoke r0.<winterwell.jtwitter.Twitter: boolean isFollower(java.lang.String,java.lang.String)>($r2, $r1);
+
+        if $z0 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public boolean isFollowing(winterwell.jtwitter.Twitter$User)
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.lang.String $r2;
+        winterwell.jtwitter.Twitter$User $r1;
+        boolean $z0;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: winterwell.jtwitter.Twitter$User;
+
+        $r2 = $r1.<winterwell.jtwitter.Twitter$User: java.lang.String screenName>;
+
+        $z0 = virtualinvoke r0.<winterwell.jtwitter.Twitter: boolean isFollowing(java.lang.String)>($r2);
+
+        return $z0;
+    }
+
+    public boolean isValidLogin()
+    {
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.Twitter$IHttpClient $r1;
+        winterwell.jtwitter.TwitterException $r2;
+        winterwell.jtwitter.TwitterException$E401 $r4;
+        winterwell.jtwitter.TwitterException$E403 $r3;
+        boolean $z0;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $z0 = interfaceinvoke $r1.<winterwell.jtwitter.Twitter$IHttpClient: boolean canAuthenticate()>();
+
+        if $z0 != 0 goto label1;
+
+        return 0;
+
+     label1:
+        virtualinvoke r0.<winterwell.jtwitter.Twitter: java.util.List getDirectMessages()>();
+
+     label2:
+        return 1;
+
+     label3:
+        $r2 := @caughtexception;
+
+        throw $r2;
+
+     label4:
+        $r3 := @caughtexception;
+
+        return 0;
+
+     label5:
+        $r4 := @caughtexception;
+
+        return 0;
+
+        catch winterwell.jtwitter.TwitterException$E403 from label1 to label2 with label4;
+        catch winterwell.jtwitter.TwitterException$E401 from label1 to label2 with label5;
+        catch winterwell.jtwitter.TwitterException from label1 to label2 with label3;
+    }
+
+    public winterwell.jtwitter.Twitter$User leaveNotifications(java.lang.String)
+    {
+        java.lang.String[] $r2;
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.Twitter$IHttpClient $r4;
+        org.json.JSONException $r8;
+        org.json.JSONObject $r7;
+        winterwell.jtwitter.TwitterException $r9;
+        java.util.Map $r3;
+        java.lang.StringBuilder $r5;
+        java.lang.String $r1;
+        winterwell.jtwitter.Twitter$User $r6;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = newarray (java.lang.String)[2];
+
+        $r2[0] = "screen_name";
+
+        $r2[1] = $r1;
+
+        $r3 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.Map newMap(java.lang.String[])>($r2);
+
+        $r4 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r1 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/notifications/leave.json");
+
+        $r1 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r1 = interfaceinvoke $r4.<winterwell.jtwitter.Twitter$IHttpClient: java.lang.String getPage(java.lang.String,java.util.Map,boolean)>($r1, $r3, 1);
+
+        $r6 = new winterwell.jtwitter.Twitter$User;
+
+        $r7 = new org.json.JSONObject;
+
+     label1:
+        specialinvoke $r7.<org.json.JSONObject: void <init>(java.lang.String)>($r1);
+
+        specialinvoke $r6.<winterwell.jtwitter.Twitter$User: void <init>(org.json.JSONObject,winterwell.jtwitter.Twitter$Status)>($r7, null);
+
+     label2:
+        return $r6;
+
+     label3:
+        $r8 := @caughtexception;
+
+        $r9 = new winterwell.jtwitter.TwitterException;
+
+        specialinvoke $r9.<winterwell.jtwitter.TwitterException: void <init>(java.lang.Exception)>($r8);
+
+        throw $r9;
+
+        catch org.json.JSONException from label1 to label2 with label3;
+    }
+
+    public winterwell.jtwitter.Twitter$User notify(java.lang.String)
+    {
+        java.lang.String[] $r2;
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.Twitter$IHttpClient $r4;
+        org.json.JSONException $r8;
+        org.json.JSONObject $r7;
+        winterwell.jtwitter.TwitterException $r9;
+        java.util.Map $r3;
+        java.lang.StringBuilder $r5;
+        java.lang.String $r1;
+        winterwell.jtwitter.Twitter$User $r6;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = newarray (java.lang.String)[2];
+
+        $r2[0] = "screen_name";
+
+        $r2[1] = $r1;
+
+        $r3 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.Map newMap(java.lang.String[])>($r2);
+
+        $r4 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r1 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/notifications/follow.json");
+
+        $r1 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r1 = interfaceinvoke $r4.<winterwell.jtwitter.Twitter$IHttpClient: java.lang.String getPage(java.lang.String,java.util.Map,boolean)>($r1, $r3, 1);
+
+        $r6 = new winterwell.jtwitter.Twitter$User;
+
+        $r7 = new org.json.JSONObject;
+
+     label1:
+        specialinvoke $r7.<org.json.JSONObject: void <init>(java.lang.String)>($r1);
+
+        specialinvoke $r6.<winterwell.jtwitter.Twitter$User: void <init>(org.json.JSONObject,winterwell.jtwitter.Twitter$Status)>($r7, null);
+
+     label2:
+        return $r6;
+
+     label3:
+        $r8 := @caughtexception;
+
+        $r9 = new winterwell.jtwitter.TwitterException;
+
+        specialinvoke $r9.<winterwell.jtwitter.TwitterException: void <init>(java.lang.Exception)>($r8);
+
+        throw $r9;
+
+        catch org.json.JSONException from label1 to label2 with label3;
+    }
+
+    public winterwell.jtwitter.Twitter$Status retweet(winterwell.jtwitter.Twitter$Status)
+    {
+        winterwell.jtwitter.TwitterException$Repetition $r11;
+        long $l0;
+        org.json.JSONException $r12;
+        org.json.JSONObject $r5;
+        winterwell.jtwitter.TwitterException $r13;
+        winterwell.jtwitter.TwitterException$E403 $r6;
+        java.lang.String $r3;
+        boolean $z0;
+        java.util.Iterator $r8;
+        winterwell.jtwitter.Twitter$Status $r1, $r4, $r10;
+        winterwell.jtwitter.Twitter r0;
+        java.util.List $r7;
+        java.lang.StringBuilder $r2;
+        java.lang.Object $r9;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: winterwell.jtwitter.Twitter$Status;
+
+        $r2 = new java.lang.StringBuilder;
+
+     label01:
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+     label02:
+        $r3 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+     label03:
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/statuses/retweet/");
+
+        $l0 = virtualinvoke $r1.<winterwell.jtwitter.Twitter$Status: long getId()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(".json");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.lang.String post(java.lang.String,java.util.Map,boolean)>($r3, null, 1);
+
+     label04:
+        $r4 = new winterwell.jtwitter.Twitter$Status;
+
+        $r5 = new org.json.JSONObject;
+
+     label05:
+        specialinvoke $r5.<org.json.JSONObject: void <init>(java.lang.String)>($r3);
+
+        specialinvoke $r4.<winterwell.jtwitter.Twitter$Status: void <init>(org.json.JSONObject,winterwell.jtwitter.Twitter$User)>($r5, null);
+
+     label06:
+        return $r4;
+
+     label07:
+        $r6 := @caughtexception;
+
+        $r7 = virtualinvoke r0.<winterwell.jtwitter.Twitter: java.util.List getRetweetsByMe()>();
+
+        $r8 = interfaceinvoke $r7.<java.util.List: java.util.Iterator iterator()>();
+
+     label08:
+        $z0 = interfaceinvoke $r8.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label09;
+
+        $r9 = interfaceinvoke $r8.<java.util.Iterator: java.lang.Object next()>();
+
+        $r4 = (winterwell.jtwitter.Twitter$Status) $r9;
+
+        $r10 = virtualinvoke $r4.<winterwell.jtwitter.Twitter$Status: winterwell.jtwitter.Twitter$Status getOriginal()>();
+
+        $z0 = virtualinvoke $r1.<winterwell.jtwitter.Twitter$Status: boolean equals(java.lang.Object)>($r10);
+
+        if $z0 == 0 goto label08;
+
+        $r11 = new winterwell.jtwitter.TwitterException$Repetition;
+
+        $r3 = virtualinvoke $r4.<winterwell.jtwitter.Twitter$Status: java.lang.String getText()>();
+
+        specialinvoke $r11.<winterwell.jtwitter.TwitterException$Repetition: void <init>(java.lang.String)>($r3);
+
+        throw $r11;
+
+     label09:
+        throw $r6;
+
+     label10:
+        $r12 := @caughtexception;
+
+        $r13 = new winterwell.jtwitter.TwitterException;
+
+        specialinvoke $r13.<winterwell.jtwitter.TwitterException: void <init>(java.lang.Exception)>($r12);
+
+        throw $r13;
+
+        catch winterwell.jtwitter.TwitterException$E403 from label01 to label02 with label07;
+        catch winterwell.jtwitter.TwitterException$E403 from label03 to label04 with label07;
+        catch winterwell.jtwitter.TwitterException$E403 from label05 to label06 with label07;
+        catch org.json.JSONException from label01 to label02 with label10;
+        catch org.json.JSONException from label03 to label04 with label10;
+        catch org.json.JSONException from label05 to label06 with label10;
+    }
+
+    public java.util.List search(java.lang.String)
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.util.List $r2;
+        java.lang.String $r1;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = virtualinvoke r0.<winterwell.jtwitter.Twitter: java.util.List search(java.lang.String,winterwell.jtwitter.Twitter$ICallback,int)>($r1, null, 100);
+
+        return $r2;
+    }
+
+    public java.util.List search(java.lang.String, winterwell.jtwitter.Twitter$ICallback, int)
+    {
+        java.lang.Integer $r4;
+        java.util.ArrayList $r5;
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.Twitter$IHttpClient $r6;
+        java.util.List $r7;
+        winterwell.jtwitter.Twitter$ICallback $r2;
+        java.util.Map $r3;
+        int $i0, $i1, $i2;
+        java.lang.String $r1;
+        boolean $z0;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: winterwell.jtwitter.Twitter$ICallback;
+
+        $i0 := @parameter2: int;
+
+        $i1 = r0.<winterwell.jtwitter.Twitter: int maxResults>;
+
+        if $i1 >= 100 goto label3;
+
+        $i1 = r0.<winterwell.jtwitter.Twitter: int maxResults>;
+
+        if $i1 <= 0 goto label3;
+
+        $i1 = r0.<winterwell.jtwitter.Twitter: int maxResults>;
+
+        $r3 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.Map getSearchParams(java.lang.String,int)>($r1, $i1);
+
+     label1:
+        $r4 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(1);
+
+        r0.<winterwell.jtwitter.Twitter: java.lang.Integer pageNumber> = $r4;
+
+        $r5 = new java.util.ArrayList;
+
+        $i1 = r0.<winterwell.jtwitter.Twitter: int maxResults>;
+
+        $i1 = staticinvoke <java.lang.Math: int max(int,int)>($i1, $i0);
+
+        specialinvoke $r5.<java.util.ArrayList: void <init>(int)>($i1);
+
+        $r4 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(1);
+
+        r0.<winterwell.jtwitter.Twitter: java.lang.Integer pageNumber> = $r4;
+
+     label2:
+        $r4 = r0.<winterwell.jtwitter.Twitter: java.lang.Integer pageNumber>;
+
+        $i1 = virtualinvoke $r4.<java.lang.Integer: int intValue()>();
+
+        $r1 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i1);
+
+        interfaceinvoke $r3.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("page", $r1);
+
+        $r6 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $r1 = interfaceinvoke $r6.<winterwell.jtwitter.Twitter$IHttpClient: java.lang.String getPage(java.lang.String,java.util.Map,boolean)>("http://search.twitter.com/search.json", $r3, 0);
+
+        $r7 = staticinvoke <winterwell.jtwitter.Twitter$Status: java.util.List getStatusesFromSearch(winterwell.jtwitter.Twitter,java.lang.String)>(r0, $r1);
+
+        $i1 = interfaceinvoke $r7.<java.util.List: int size()>();
+
+        $r7 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.List dateFilter(java.util.List)>($r7);
+
+        interfaceinvoke $r5.<java.util.List: boolean addAll(java.util.Collection)>($r7);
+
+        if $r2 == null goto label4;
+
+        $z0 = interfaceinvoke $r2.<winterwell.jtwitter.Twitter$ICallback: boolean process(java.util.List)>($r7);
+
+        if $z0 == 0 goto label4;
+
+        return $r5;
+
+     label3:
+        $r3 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.Map getSearchParams(java.lang.String,int)>($r1, $i0);
+
+        goto label1;
+
+     label4:
+        if $i1 < $i0 goto label5;
+
+        $r4 = r0.<winterwell.jtwitter.Twitter: java.lang.Integer pageNumber>;
+
+        $i1 = virtualinvoke $r4.<java.lang.Integer: int intValue()>();
+
+        $i1 = $i1 + 1;
+
+        $r4 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i1);
+
+        r0.<winterwell.jtwitter.Twitter: java.lang.Integer pageNumber> = $r4;
+
+        $i1 = interfaceinvoke $r5.<java.util.List: int size()>();
+
+        $i2 = r0.<winterwell.jtwitter.Twitter: int maxResults>;
+
+        if $i1 < $i2 goto label2;
+
+     label5:
+        return $r5;
+    }
+
+    public java.util.List searchUsers(java.lang.String)
+    {
+        java.lang.Object[] $r2;
+        java.lang.Integer $r4;
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.Twitter$IHttpClient $r5;
+        java.util.List $r7;
+        java.util.Map $r3;
+        java.lang.StringBuilder $r6;
+        java.lang.String $r1;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = newarray (java.lang.Object)[2];
+
+        $r2[0] = "q";
+
+        $r2[1] = $r1;
+
+        $r3 = staticinvoke <winterwell.jtwitter.Twitter: java.util.Map asMap(java.lang.Object[])>($r2);
+
+        $r4 = r0.<winterwell.jtwitter.Twitter: java.lang.Integer pageNumber>;
+
+        if $r4 == null goto label1;
+
+        $r4 = r0.<winterwell.jtwitter.Twitter: java.lang.Integer pageNumber>;
+
+        $r1 = virtualinvoke $r4.<java.lang.Integer: java.lang.String toString()>();
+
+        interfaceinvoke $r3.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("page", $r1);
+
+     label1:
+        $r5 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+        $r1 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/users/search.json");
+
+        $r1 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r1 = interfaceinvoke $r5.<winterwell.jtwitter.Twitter$IHttpClient: java.lang.String getPage(java.lang.String,java.util.Map,boolean)>($r1, $r3, 1);
+
+        $r7 = staticinvoke <winterwell.jtwitter.Twitter$User: java.util.List getUsers(java.lang.String)>($r1);
+
+        return $r7;
+    }
+
+    public winterwell.jtwitter.Twitter$Message sendMessage(java.lang.String, java.lang.String) throws winterwell.jtwitter.TwitterException
+    {
+        winterwell.jtwitter.Twitter$Message $r9;
+        java.lang.Object[] $r7;
+        java.lang.AssertionError $r3;
+        java.lang.IllegalArgumentException $r6;
+        winterwell.jtwitter.Twitter r0;
+        org.json.JSONException $r11;
+        org.json.JSONObject $r10;
+        winterwell.jtwitter.TwitterException $r12;
+        java.util.Map $r8;
+        int $i0;
+        java.lang.StringBuilder $r4;
+        java.lang.String $r1, $r2, $r5;
+        boolean $z0;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $z0 = <winterwell.jtwitter.Twitter: boolean $assertionsDisabled>;
+
+        if $z0 != 0 goto label1;
+
+        if $r1 != null goto label1;
+
+        $r3 = new java.lang.AssertionError;
+
+        specialinvoke $r3.<java.lang.AssertionError: void <init>()>();
+
+        throw $r3;
+
+     label1:
+        $z0 = <winterwell.jtwitter.Twitter: boolean $assertionsDisabled>;
+
+        if $z0 != 0 goto label2;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("d ");
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean startsWith(java.lang.String)>($r5);
+
+        if $z0 == 0 goto label2;
+
+        $r3 = new java.lang.AssertionError;
+
+        specialinvoke $r3.<java.lang.AssertionError: void <init>()>();
+
+        throw $r3;
+
+     label2:
+        $i0 = virtualinvoke $r2.<java.lang.String: int length()>();
+
+        if $i0 <= 140 goto label3;
+
+        $r6 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r6.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("Message is too long.");
+
+        throw $r6;
+
+     label3:
+        $r7 = newarray (java.lang.Object)[4];
+
+        $r7[0] = "user";
+
+        $r7[1] = $r1;
+
+        $r7[2] = "text";
+
+        $r7[3] = $r2;
+
+        $r8 = staticinvoke <winterwell.jtwitter.Twitter: java.util.Map asMap(java.lang.Object[])>($r7);
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r1 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/direct_messages/new.json");
+
+        $r1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r1 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.lang.String post(java.lang.String,java.util.Map,boolean)>($r1, $r8, 1);
+
+        $r9 = new winterwell.jtwitter.Twitter$Message;
+
+        $r10 = new org.json.JSONObject;
+
+     label4:
+        specialinvoke $r10.<org.json.JSONObject: void <init>(java.lang.String)>($r1);
+
+        specialinvoke $r9.<winterwell.jtwitter.Twitter$Message: void <init>(org.json.JSONObject)>($r10);
+
+     label5:
+        return $r9;
+
+     label6:
+        $r11 := @caughtexception;
+
+        $r12 = new winterwell.jtwitter.TwitterException;
+
+        specialinvoke $r12.<winterwell.jtwitter.TwitterException: void <init>(java.lang.Exception)>($r11);
+
+        throw $r12;
+
+        catch org.json.JSONException from label4 to label5 with label6;
+    }
+
+    public void setAPIRootUrl(java.lang.String)
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.lang.StringBuilder $r3;
+        java.lang.String $r1;
+        java.lang.AssertionError $r2;
+        boolean $z0;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $z0 = <winterwell.jtwitter.Twitter: boolean $assertionsDisabled>;
+
+        if $z0 != 0 goto label1;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean startsWith(java.lang.String)>("http://");
+
+        if $z0 != 0 goto label1;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean startsWith(java.lang.String)>("https://");
+
+        if $z0 != 0 goto label1;
+
+        $r2 = new java.lang.AssertionError;
+
+        specialinvoke $r2.<java.lang.AssertionError: void <init>()>();
+
+        throw $r2;
+
+     label1:
+        $z0 = <winterwell.jtwitter.Twitter: boolean $assertionsDisabled>;
+
+        if $z0 != 0 goto label2;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean endsWith(java.lang.String)>("/");
+
+        if $z0 == 0 goto label2;
+
+        $r2 = new java.lang.AssertionError;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Please remove the trailing / from ");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r2.<java.lang.AssertionError: void <init>(java.lang.Object)>($r1);
+
+        throw $r2;
+
+     label2:
+        r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL> = $r1;
+
+        return;
+    }
+
+    public void setCount(java.lang.Integer)
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.lang.Integer $r1;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.Integer;
+
+        r0.<winterwell.jtwitter.Twitter: java.lang.Integer count> = $r1;
+
+        return;
+    }
+
+    public void setFavorite(winterwell.jtwitter.Twitter$Status, boolean)
+    {
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.Twitter$IHttpClient $r4;
+        winterwell.jtwitter.Twitter$Status $r1;
+        java.lang.StringBuilder $r2;
+        long $l0;
+        java.lang.String $r3;
+        boolean $z0;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: winterwell.jtwitter.Twitter$Status;
+
+        $z0 := @parameter1: boolean;
+
+        if $z0 == 0 goto label2;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/favorites/create/");
+
+        $l0 = $r1.<winterwell.jtwitter.Twitter$Status: long id>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(".json");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label1:
+        $r4 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        interfaceinvoke $r4.<winterwell.jtwitter.Twitter$IHttpClient: java.lang.String getPage(java.lang.String,java.util.Map,boolean)>($r3, null, 1);
+
+        return;
+
+     label2:
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/favorites/destroy/");
+
+        $l0 = $r1.<winterwell.jtwitter.Twitter$Status: long id>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(".json");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        goto label1;
+    }
+
+    public void setLanguage(java.lang.String)
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.lang.String $r1;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r0.<winterwell.jtwitter.Twitter: java.lang.String lang> = $r1;
+
+        return;
+    }
+
+    public void setMaxResults(int)
+    {
+        winterwell.jtwitter.Twitter r0;
+        int $i0;
+        java.lang.AssertionError $r1;
+        boolean $z0;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $i0 := @parameter0: int;
+
+        $z0 = <winterwell.jtwitter.Twitter: boolean $assertionsDisabled>;
+
+        if $z0 != 0 goto label1;
+
+        if $i0 != 0 goto label1;
+
+        $r1 = new java.lang.AssertionError;
+
+        specialinvoke $r1.<java.lang.AssertionError: void <init>()>();
+
+        throw $r1;
+
+     label1:
+        r0.<winterwell.jtwitter.Twitter: int maxResults> = $i0;
+
+        return;
+    }
+
+    public void setMyLocation(double[])
+    {
+        double[] $r1;
+        java.lang.IllegalArgumentException $r5;
+        winterwell.jtwitter.Twitter r0;
+        byte $b0;
+        int $i1;
+        java.lang.StringBuilder $r2, $r4;
+        java.lang.String $r3;
+        double $d0;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: double[];
+
+        r0.<winterwell.jtwitter.Twitter: double[] myLatLong> = $r1;
+
+        $r1 = r0.<winterwell.jtwitter.Twitter: double[] myLatLong>;
+
+        if $r1 != null goto label1;
+
+        return;
+
+     label1:
+        $r1 = r0.<winterwell.jtwitter.Twitter: double[] myLatLong>;
+
+        $d0 = $r1[0];
+
+        $d0 = staticinvoke <java.lang.Math: double abs(double)>($d0);
+
+        $b0 = $d0 cmpl 90.0;
+
+        $i1 = (int) $b0;
+
+        if $i1 <= 0 goto label2;
+
+        $r5 = new java.lang.IllegalArgumentException;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r1 = r0.<winterwell.jtwitter.Twitter: double[] myLatLong>;
+
+        $d0 = $r1[0];
+
+        $r2 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(double)>($d0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" is not within +/- 90");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r5.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r3);
+
+        throw $r5;
+
+     label2:
+        $r1 = r0.<winterwell.jtwitter.Twitter: double[] myLatLong>;
+
+        $d0 = $r1[1];
+
+        $d0 = staticinvoke <java.lang.Math: double abs(double)>($d0);
+
+        $b0 = $d0 cmpl 180.0;
+
+        $i1 = (int) $b0;
+
+        if $i1 <= 0 goto label3;
+
+        $r5 = new java.lang.IllegalArgumentException;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r1 = r0.<winterwell.jtwitter.Twitter: double[] myLatLong>;
+
+        $d0 = $r1[1];
+
+        $r2 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(double)>($d0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" is not within +/- 180");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r5.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r3);
+
+        throw $r5;
+
+     label3:
+        return;
+    }
+
+    public void setPageNumber(java.lang.Integer)
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.lang.Integer $r1;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.Integer;
+
+        r0.<winterwell.jtwitter.Twitter: java.lang.Integer pageNumber> = $r1;
+
+        return;
+    }
+
+    public void setSearchLocation(double, double, java.lang.String)
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.lang.StringBuilder $r3;
+        java.lang.String $r1;
+        java.lang.AssertionError $r2;
+        double $d0, $d1;
+        boolean $z0;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $d0 := @parameter0: double;
+
+        $d1 := @parameter1: double;
+
+        $r1 := @parameter2: java.lang.String;
+
+        $z0 = <winterwell.jtwitter.Twitter: boolean $assertionsDisabled>;
+
+        if $z0 != 0 goto label1;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean endsWith(java.lang.String)>("mi");
+
+        if $z0 != 0 goto label1;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean endsWith(java.lang.String)>("km");
+
+        if $z0 != 0 goto label1;
+
+        $r2 = new java.lang.AssertionError;
+
+        specialinvoke $r2.<java.lang.AssertionError: void <init>(java.lang.Object)>($r1);
+
+        throw $r2;
+
+     label1:
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(double)>($d0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(",");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(double)>($d1);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(",");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        r0.<winterwell.jtwitter.Twitter: java.lang.String geocode> = $r1;
+
+        return;
+    }
+
+    public void setSinceDate(java.util.Date)
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.util.Date $r1;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.util.Date;
+
+        r0.<winterwell.jtwitter.Twitter: java.util.Date sinceDate> = $r1;
+
+        return;
+    }
+
+    public void setSinceId(java.lang.Long)
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.lang.Long $r1;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.Long;
+
+        r0.<winterwell.jtwitter.Twitter: java.lang.Long sinceId> = $r1;
+
+        return;
+    }
+
+    public void setSource(java.lang.String)
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.lang.String $r1;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r0.<winterwell.jtwitter.Twitter: java.lang.String sourceApp> = $r1;
+
+        return;
+    }
+
+    public winterwell.jtwitter.Twitter$Status setStatus(java.lang.String) throws winterwell.jtwitter.TwitterException
+    {
+        winterwell.jtwitter.Twitter$Status $r2;
+        winterwell.jtwitter.Twitter r0;
+        java.lang.String $r1;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = virtualinvoke r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$Status updateStatus(java.lang.String)>($r1);
+
+        return $r2;
+    }
+
+    public void setUntilDate(java.util.Date)
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.util.Date $r1;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.util.Date;
+
+        r0.<winterwell.jtwitter.Twitter: java.util.Date untilDate> = $r1;
+
+        return;
+    }
+
+    public winterwell.jtwitter.Twitter$User show(long)
+    {
+        java.lang.Object[] $r1;
+        long $l0;
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.Twitter$IHttpClient $r5, $r6;
+        org.json.JSONException $r9;
+        org.json.JSONObject $r8;
+        winterwell.jtwitter.TwitterException $r10;
+        java.util.Map $r4;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r3;
+        winterwell.jtwitter.Twitter$User $r7;
+        boolean $z0;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $l0 := @parameter0: long;
+
+        $r1 = newarray (java.lang.Object)[2];
+
+        $r1[0] = "user_id";
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r1[1] = $r3;
+
+        $r4 = staticinvoke <winterwell.jtwitter.Twitter: java.util.Map asMap(java.lang.Object[])>($r1);
+
+        $r5 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/users/show.json");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r6 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $z0 = interfaceinvoke $r6.<winterwell.jtwitter.Twitter$IHttpClient: boolean canAuthenticate()>();
+
+        $r3 = interfaceinvoke $r5.<winterwell.jtwitter.Twitter$IHttpClient: java.lang.String getPage(java.lang.String,java.util.Map,boolean)>($r3, $r4, $z0);
+
+        $r7 = new winterwell.jtwitter.Twitter$User;
+
+        $r8 = new org.json.JSONObject;
+
+     label1:
+        specialinvoke $r8.<org.json.JSONObject: void <init>(java.lang.String)>($r3);
+
+        specialinvoke $r7.<winterwell.jtwitter.Twitter$User: void <init>(org.json.JSONObject,winterwell.jtwitter.Twitter$Status)>($r8, null);
+
+     label2:
+        return $r7;
+
+     label3:
+        $r9 := @caughtexception;
+
+        $r10 = new winterwell.jtwitter.TwitterException;
+
+        specialinvoke $r10.<winterwell.jtwitter.TwitterException: void <init>(java.lang.Exception)>($r9);
+
+        throw $r10;
+
+        catch org.json.JSONException from label1 to label2 with label3;
+    }
+
+    public winterwell.jtwitter.Twitter$User show(java.lang.String) throws winterwell.jtwitter.TwitterException
+    {
+        java.lang.String[] $r2;
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.Twitter$IHttpClient $r4, $r6;
+        org.json.JSONException $r9;
+        org.json.JSONObject $r8;
+        winterwell.jtwitter.TwitterException $r10;
+        java.util.Map $r3;
+        java.lang.StringBuilder $r5;
+        java.lang.String $r1;
+        winterwell.jtwitter.Twitter$User $r7;
+        boolean $z0;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = newarray (java.lang.String)[2];
+
+        $r2[0] = "screen_name";
+
+        $r2[1] = $r1;
+
+        $r3 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.Map newMap(java.lang.String[])>($r2);
+
+        $r4 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r1 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/users/show.json");
+
+        $r1 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r6 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $z0 = interfaceinvoke $r6.<winterwell.jtwitter.Twitter$IHttpClient: boolean canAuthenticate()>();
+
+        $r1 = interfaceinvoke $r4.<winterwell.jtwitter.Twitter$IHttpClient: java.lang.String getPage(java.lang.String,java.util.Map,boolean)>($r1, $r3, $z0);
+
+        $r7 = new winterwell.jtwitter.Twitter$User;
+
+        $r8 = new org.json.JSONObject;
+
+     label1:
+        specialinvoke $r8.<org.json.JSONObject: void <init>(java.lang.String)>($r1);
+
+        specialinvoke $r7.<winterwell.jtwitter.Twitter$User: void <init>(org.json.JSONObject,winterwell.jtwitter.Twitter$Status)>($r8, null);
+
+     label2:
+        return $r7;
+
+     label3:
+        $r9 := @caughtexception;
+
+        $r10 = new winterwell.jtwitter.TwitterException;
+
+        specialinvoke $r10.<winterwell.jtwitter.TwitterException: void <init>(java.lang.Exception)>($r9);
+
+        throw $r10;
+
+        catch org.json.JSONException from label1 to label2 with label3;
+    }
+
+    public java.util.List splitMessage(java.lang.String)
+    {
+        java.lang.String[] $r5;
+        java.util.ArrayList $r2;
+        winterwell.jtwitter.Twitter r0;
+        java.util.List $r3;
+        int $i0, $i1, $i2, $i3;
+        java.lang.StringBuilder $r4;
+        java.lang.String $r1, $r6;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $i0 = virtualinvoke $r1.<java.lang.String: int length()>();
+
+        if $i0 > 140 goto label1;
+
+        $r3 = staticinvoke <java.util.Collections: java.util.List singletonList(java.lang.Object)>($r1);
+
+        return $r3;
+
+     label1:
+        $r2 = new java.util.ArrayList;
+
+        specialinvoke $r2.<java.util.ArrayList: void <init>(int)>(4);
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>(int)>(140);
+
+        $r5 = virtualinvoke $r1.<java.lang.String: java.lang.String[] split(java.lang.String)>("\\s+");
+
+        $i0 = lengthof $r5;
+
+        $i1 = 0;
+
+     label2:
+        if $i1 >= $i0 goto label6;
+
+        $r1 = $r5[$i1];
+
+        $i2 = virtualinvoke $r4.<java.lang.StringBuilder: int length()>();
+
+        $i3 = virtualinvoke $r1.<java.lang.String: int length()>();
+
+        $i2 = $i2 + $i3;
+
+        $i2 = $i2 + 1;
+
+        if $i2 <= 140 goto label4;
+
+        virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("...");
+
+        $r6 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r2.<java.util.List: boolean add(java.lang.Object)>($r6);
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>(int)>(140);
+
+        virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+     label3:
+        $i1 = $i1 + 1;
+
+        goto label2;
+
+     label4:
+        $i2 = virtualinvoke $r4.<java.lang.StringBuilder: int length()>();
+
+        if $i2 == 0 goto label5;
+
+        virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" ");
+
+     label5:
+        virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        goto label3;
+
+     label6:
+        $i0 = virtualinvoke $r4.<java.lang.StringBuilder: int length()>();
+
+        if $i0 == 0 goto label7;
+
+        $r1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r2.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+     label7:
+        return $r2;
+    }
+
+    public winterwell.jtwitter.Twitter$User stopFollowing(java.lang.String)
+    {
+        java.lang.String[] $r4;
+        java.lang.AssertionError $r3;
+        winterwell.jtwitter.Twitter r0;
+        org.json.JSONException $r9;
+        org.json.JSONObject $r8;
+        winterwell.jtwitter.TwitterException $r10;
+        java.util.Map $r5;
+        java.lang.StringBuilder $r6;
+        java.lang.String $r1, $r2;
+        winterwell.jtwitter.Twitter$User $r7;
+        boolean $z0;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $z0 = <winterwell.jtwitter.Twitter: boolean $assertionsDisabled>;
+
+        if $z0 != 0 goto label01;
+
+        $r2 = virtualinvoke r0.<winterwell.jtwitter.Twitter: java.lang.String getScreenName()>();
+
+        if $r2 != null goto label01;
+
+        $r3 = new java.lang.AssertionError;
+
+        specialinvoke $r3.<java.lang.AssertionError: void <init>()>();
+
+        throw $r3;
+
+     label01:
+        $r4 = newarray (java.lang.String)[2];
+
+        $r4[0] = "screen_name";
+
+        $r4[1] = $r1;
+
+     label02:
+        $r5 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.util.Map newMap(java.lang.String[])>($r4);
+
+     label03:
+        $r6 = new java.lang.StringBuilder;
+
+     label04:
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+     label05:
+        $r2 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+     label06:
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/friendships/destroy.json");
+
+        $r2 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r2 = specialinvoke r0.<winterwell.jtwitter.Twitter: java.lang.String post(java.lang.String,java.util.Map,boolean)>($r2, $r5, 1);
+
+     label07:
+        $r7 = new winterwell.jtwitter.Twitter$User;
+
+        $r8 = new org.json.JSONObject;
+
+     label08:
+        specialinvoke $r8.<org.json.JSONObject: void <init>(java.lang.String)>($r2);
+
+        specialinvoke $r7.<winterwell.jtwitter.Twitter$User: void <init>(org.json.JSONObject,winterwell.jtwitter.Twitter$Status)>($r8, null);
+
+     label09:
+        return $r7;
+
+     label10:
+        $r9 := @caughtexception;
+
+        $r10 = new winterwell.jtwitter.TwitterException;
+
+     label11:
+        specialinvoke $r10.<winterwell.jtwitter.TwitterException: void <init>(java.lang.Exception)>($r9);
+
+        throw $r10;
+
+     label12:
+        $r10 := @caughtexception;
+
+        $r2 = virtualinvoke r0.<winterwell.jtwitter.Twitter: java.lang.String getScreenName()>();
+
+        $z0 = virtualinvoke r0.<winterwell.jtwitter.Twitter: boolean isFollower(java.lang.String,java.lang.String)>($r2, $r1);
+
+        if $z0 != 0 goto label13;
+
+        return null;
+
+     label13:
+        throw $r10;
+
+        catch winterwell.jtwitter.TwitterException from label02 to label03 with label12;
+        catch winterwell.jtwitter.TwitterException from label04 to label05 with label12;
+        catch winterwell.jtwitter.TwitterException from label06 to label07 with label12;
+        catch org.json.JSONException from label08 to label09 with label10;
+        catch winterwell.jtwitter.TwitterException from label08 to label09 with label12;
+        catch winterwell.jtwitter.TwitterException from label11 to label12 with label12;
+    }
+
+    public void stopFollowing(winterwell.jtwitter.Twitter$User)
+    {
+        winterwell.jtwitter.Twitter r0;
+        java.lang.String $r2;
+        winterwell.jtwitter.Twitter$User $r1;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: winterwell.jtwitter.Twitter$User;
+
+        $r2 = $r1.<winterwell.jtwitter.Twitter$User: java.lang.String screenName>;
+
+        virtualinvoke r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$User stopFollowing(java.lang.String)>($r2);
+
+        return;
+    }
+
+    public winterwell.jtwitter.Twitter$Status updateStatus(java.lang.String)
+    {
+        winterwell.jtwitter.Twitter$Status $r2;
+        winterwell.jtwitter.Twitter r0;
+        java.lang.String $r1;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = virtualinvoke r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$Status updateStatus(java.lang.String,long)>($r1, -1L);
+
+        return $r2;
+    }
+
+    public winterwell.jtwitter.Twitter$Status updateStatus(java.lang.String, long) throws winterwell.jtwitter.TwitterException
+    {
+        java.lang.Throwable $r14;
+        winterwell.jtwitter.TwitterException$Repetition $r19;
+        java.lang.Object[] $r3;
+        double[] $r5;
+        long $l0;
+        org.json.JSONException $r13;
+        org.json.JSONObject $r9, $r17;
+        byte $b2;
+        winterwell.jtwitter.TwitterException $r21;
+        java.util.Map $r4;
+        int $i1;
+        winterwell.jtwitter.TwitterException$E403 $r11;
+        java.lang.String $r1, $r6, $r10, $r12;
+        double $d0;
+        boolean $z0;
+        winterwell.jtwitter.Twitter$Status $r8, $r18;
+        java.lang.IllegalArgumentException $r16;
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.Twitter$IHttpClient $r7;
+        java.lang.StringBuilder $r2, $r15;
+        winterwell.jtwitter.TwitterException$Unexplained $r20;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $l0 := @parameter1: long;
+
+        $i1 = virtualinvoke $r1.<java.lang.String: int length()>();
+
+        if $i1 <= 160 goto label01;
+
+        $r16 = new java.lang.IllegalArgumentException;
+
+        $r15 = new java.lang.StringBuilder;
+
+        specialinvoke $r15.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = virtualinvoke $r15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Status text must be 160 characters or less: ");
+
+        $i1 = virtualinvoke $r1.<java.lang.String: int length()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" ");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r16.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r1);
+
+        throw $r16;
+
+     label01:
+        $r3 = newarray (java.lang.Object)[2];
+
+        $r3[0] = "status";
+
+        $r3[1] = $r1;
+
+        $r4 = staticinvoke <winterwell.jtwitter.Twitter: java.util.Map asMap(java.lang.Object[])>($r3);
+
+        $r5 = r0.<winterwell.jtwitter.Twitter: double[] myLatLong>;
+
+        if $r5 == null goto label02;
+
+        $r5 = r0.<winterwell.jtwitter.Twitter: double[] myLatLong>;
+
+        $d0 = $r5[0];
+
+        $r6 = staticinvoke <java.lang.Double: java.lang.String toString(double)>($d0);
+
+        interfaceinvoke $r4.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("lat", $r6);
+
+        $r5 = r0.<winterwell.jtwitter.Twitter: double[] myLatLong>;
+
+        $d0 = $r5[1];
+
+        $r6 = staticinvoke <java.lang.Double: java.lang.String toString(double)>($d0);
+
+        interfaceinvoke $r4.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("long", $r6);
+
+     label02:
+        $r6 = r0.<winterwell.jtwitter.Twitter: java.lang.String sourceApp>;
+
+        if $r6 == null goto label03;
+
+        $r6 = r0.<winterwell.jtwitter.Twitter: java.lang.String sourceApp>;
+
+        interfaceinvoke $r4.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("source", $r6);
+
+     label03:
+        $b2 = $l0 cmp 0L;
+
+        $i1 = (int) $b2;
+
+        if $i1 <= 0 goto label04;
+
+        $r15 = new java.lang.StringBuilder;
+
+        specialinvoke $r15.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = virtualinvoke $r15.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("");
+
+        $r6 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r4.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("in_reply_to_status_id", $r6);
+
+     label04:
+        $r7 = r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$IHttpClient http>;
+
+        $r15 = new java.lang.StringBuilder;
+
+        $r2 = $r15;
+
+     label05:
+        specialinvoke $r15.<java.lang.StringBuilder: void <init>()>();
+
+     label06:
+        $r6 = r0.<winterwell.jtwitter.Twitter: java.lang.String TWITTER_URL>;
+
+     label07:
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/statuses/update.json");
+
+        $r6 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r6 = interfaceinvoke $r7.<winterwell.jtwitter.Twitter$IHttpClient: java.lang.String post(java.lang.String,java.util.Map,boolean)>($r6, $r4, 1);
+
+     label08:
+        $r18 = new winterwell.jtwitter.Twitter$Status;
+
+        $r8 = $r18;
+
+        $r17 = new org.json.JSONObject;
+
+        $r9 = $r17;
+
+     label09:
+        specialinvoke $r17.<org.json.JSONObject: void <init>(java.lang.String)>($r6);
+
+        specialinvoke $r18.<winterwell.jtwitter.Twitter$Status: void <init>(org.json.JSONObject,winterwell.jtwitter.Twitter$User)>($r9, null);
+
+        $r6 = virtualinvoke $r1.<java.lang.String: java.lang.String trim()>();
+
+     label10:
+        $r10 = $r8.<winterwell.jtwitter.Twitter$Status: java.lang.String text>;
+
+     label11:
+        $r10 = virtualinvoke $r10.<java.lang.String: java.lang.String trim()>();
+
+        $z0 = virtualinvoke $r10.<java.lang.String: boolean equals(java.lang.Object)>($r6);
+
+     label12:
+        if $z0 == 0 goto label15;
+
+        return $r8;
+
+     label13:
+        $r11 := @caughtexception;
+
+        $r8 = virtualinvoke r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$Status getStatus()>();
+
+        if $r8 == null goto label14;
+
+        $r6 = virtualinvoke $r8.<winterwell.jtwitter.Twitter$Status: java.lang.String getText()>();
+
+        $z0 = virtualinvoke $r6.<java.lang.String: boolean equals(java.lang.Object)>($r1);
+
+        if $z0 == 0 goto label14;
+
+        $r19 = new winterwell.jtwitter.TwitterException$Repetition;
+
+        $r1 = virtualinvoke $r8.<winterwell.jtwitter.Twitter$Status: java.lang.String getText()>();
+
+        specialinvoke $r19.<winterwell.jtwitter.TwitterException$Repetition: void <init>(java.lang.String)>($r1);
+
+        throw $r19;
+
+     label14:
+        throw $r11;
+
+     label15:
+        $r12 = virtualinvoke $r1.<java.lang.String: java.lang.String toLowerCase()>();
+
+        $z0 = virtualinvoke $r12.<java.lang.String: boolean startsWith(java.lang.String)>("dm");
+
+     label16:
+        if $z0 != 0 goto label19;
+
+     label17:
+        $z0 = virtualinvoke $r12.<java.lang.String: boolean startsWith(java.lang.String)>("d");
+
+     label18:
+        if $z0 == 0 goto label20;
+
+     label19:
+        return null;
+
+     label20:
+        staticinvoke <java.lang.Thread: void sleep(long)>(500L);
+
+     label21:
+        $r8 = virtualinvoke r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$Status getStatus()>();
+
+     label22:
+        if $r8 == null goto label25;
+
+        $r10 = $r8.<winterwell.jtwitter.Twitter$Status: java.lang.String text>;
+
+     label23:
+        $z0 = virtualinvoke $r6.<java.lang.String: boolean equals(java.lang.Object)>($r10);
+
+     label24:
+        if $z0 != 0 goto label32;
+
+     label25:
+        $r20 = new winterwell.jtwitter.TwitterException$Unexplained;
+
+        $r15 = new java.lang.StringBuilder;
+
+        $r2 = $r15;
+
+     label26:
+        specialinvoke $r15.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Unexplained failure for tweet: expected \"");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\" but got ");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r8);
+
+        $r1 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r20.<winterwell.jtwitter.TwitterException$Unexplained: void <init>(java.lang.String)>($r1);
+
+     label27:
+        throw $r20;
+
+     label28:
+        $r13 := @caughtexception;
+
+        $r21 = new winterwell.jtwitter.TwitterException;
+
+        specialinvoke $r21.<winterwell.jtwitter.TwitterException: void <init>(java.lang.Exception)>($r13);
+
+        throw $r21;
+
+     label29:
+        $r14 := @caughtexception;
+
+        $r20 = new winterwell.jtwitter.TwitterException$Unexplained;
+
+        $r15 = new java.lang.StringBuilder;
+
+        $r2 = $r15;
+
+     label30:
+        specialinvoke $r15.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Unexplained failure for tweet: expected \"");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\" but got ");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r10);
+
+        $r1 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r20.<winterwell.jtwitter.TwitterException$Unexplained: void <init>(java.lang.String)>($r1);
+
+     label31:
+        throw $r20;
+
+     label32:
+        return $r8;
+
+        catch winterwell.jtwitter.TwitterException$E403 from label05 to label06 with label13;
+        catch winterwell.jtwitter.TwitterException$E403 from label07 to label08 with label13;
+        catch org.json.JSONException from label09 to label10 with label28;
+        catch org.json.JSONException from label11 to label12 with label28;
+        catch org.json.JSONException from label15 to label16 with label28;
+        catch org.json.JSONException from label17 to label18 with label28;
+        catch java.lang.InterruptedException from label20 to label21 with label29;
+        catch org.json.JSONException from label20 to label21 with label28;
+        catch org.json.JSONException from label21 to label22 with label28;
+        catch org.json.JSONException from label23 to label24 with label28;
+        catch org.json.JSONException from label26 to label27 with label28;
+        catch org.json.JSONException from label30 to label31 with label28;
+    }
+
+    public boolean userExists(java.lang.String)
+    {
+        winterwell.jtwitter.Twitter r0;
+        winterwell.jtwitter.TwitterException$E404 $r2;
+        java.lang.String $r1;
+
+        r0 := @this: winterwell.jtwitter.Twitter;
+
+        $r1 := @parameter0: java.lang.String;
+
+     label1:
+        virtualinvoke r0.<winterwell.jtwitter.Twitter: winterwell.jtwitter.Twitter$User show(java.lang.String)>($r1);
+
+     label2:
+        return 1;
+
+     label3:
+        $r2 := @caughtexception;
+
+        return 0;
+
+        catch winterwell.jtwitter.TwitterException$E404 from label1 to label2 with label3;
+    }
+}

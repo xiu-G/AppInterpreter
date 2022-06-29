@@ -1,0 +1,710 @@
+public class com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity extends android.app.Activity
+{
+    public java.lang.Integer DownState;
+    public final int MSG_DownError;
+    public final int MSG_DownSuccess;
+    private android.widget.Button dialog_cancelbtn;
+    private android.widget.TextView dialog_info;
+    private android.widget.Button dialog_okbtn;
+    private android.widget.TextView dialog_title;
+    private com.aishukeclassmfkb.entity.FileDownloadInfo downinfo;
+    private android.widget.TextView downloadmsg;
+    private android.widget.ProgressBar downloadprogress;
+    private android.os.Handler handler;
+    private java.lang.Boolean hasSendMessage;
+    private android.os.PowerManager$WakeLock mWakeLock;
+    private android.os.PowerManager pManager;
+    private com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity$MyReceiver receiver;
+    private android.widget.TextView text_progress;
+    public android.content.Intent ipcIntent;
+    public android.content.Intent ipcResultIntent;
+
+    public void <init>()
+    {
+        com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity r0;
+        java.lang.Boolean $r2;
+        com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity$1 $r3;
+        java.lang.Integer $r1;
+
+        r0 := @this: com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity;
+
+        specialinvoke r0.<android.app.Activity: void <init>()>();
+
+        r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: int MSG_DownSuccess> = 100001;
+
+        r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: int MSG_DownError> = 100002;
+
+        $r1 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(1);
+
+        r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: java.lang.Integer DownState> = $r1;
+
+        $r2 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(0);
+
+        r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: java.lang.Boolean hasSendMessage> = $r2;
+
+        $r3 = new com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity$1;
+
+        specialinvoke $r3.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity$1: void <init>(com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity)>(r0);
+
+        r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.os.Handler handler> = $r3;
+
+        return;
+    }
+
+    private void DefaultAction()
+    {
+        com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity r0;
+        int $i0;
+        android.content.Intent $r2;
+        java.lang.Integer $r1;
+        com.aishukeclassmfkb.entity.FileDownloadInfo $r3;
+
+        r0 := @this: com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity;
+
+        $r1 = r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: java.lang.Integer DownState>;
+
+        $i0 = virtualinvoke $r1.<java.lang.Integer: int intValue()>();
+
+        lookupswitch($i0)
+        {
+            case 1: goto label2;
+            case 2: goto label3;
+            case 3: goto label4;
+            default: goto label1;
+        };
+
+     label1:
+        return;
+
+     label2:
+        $r2 = new android.content.Intent;
+
+        specialinvoke $r2.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>(r0, class "Lcom/aishukeclassmfkb/service/FileDownloadService;");
+
+        virtualinvoke r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: boolean stopService(android.content.Intent)>($r2);
+
+        $r2 = new android.content.Intent;
+
+        specialinvoke $r2.<android.content.Intent: void <init>()>();
+
+        virtualinvoke $r2.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("ActionResult", "Cancel");
+
+        $r3 = r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: com.aishukeclassmfkb.entity.FileDownloadInfo downinfo>;
+
+        $i0 = virtualinvoke $r3.<com.aishukeclassmfkb.entity.FileDownloadInfo: int getResultCode()>();
+
+        virtualinvoke r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: void setResult(int,android.content.Intent)>($i0, $r2);
+
+        virtualinvoke r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: void finish()>();
+
+        return;
+
+     label3:
+        $r2 = new android.content.Intent;
+
+        specialinvoke $r2.<android.content.Intent: void <init>()>();
+
+        virtualinvoke $r2.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("ActionResult", "DownError");
+
+        $r3 = r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: com.aishukeclassmfkb.entity.FileDownloadInfo downinfo>;
+
+        $i0 = virtualinvoke $r3.<com.aishukeclassmfkb.entity.FileDownloadInfo: int getResultCode()>();
+
+        virtualinvoke r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: void setResult(int,android.content.Intent)>($i0, $r2);
+
+        virtualinvoke r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: void finish()>();
+
+        return;
+
+     label4:
+        $r2 = new android.content.Intent;
+
+        specialinvoke $r2.<android.content.Intent: void <init>()>();
+
+        virtualinvoke $r2.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("ActionResult", "DownSuccess");
+
+        $r3 = r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: com.aishukeclassmfkb.entity.FileDownloadInfo downinfo>;
+
+        $i0 = virtualinvoke $r3.<com.aishukeclassmfkb.entity.FileDownloadInfo: int getResultCode()>();
+
+        virtualinvoke r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: void setResult(int,android.content.Intent)>($i0, $r2);
+
+        virtualinvoke r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: void finish()>();
+
+        return;
+    }
+
+    private void DownSuccess(com.aishukeclassmfkb.entity.FileDownloadInfo)
+    {
+        java.lang.Object[] $r3;
+        com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity r0;
+        com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity$2 $r2;
+        com.aishukeclassmfkb.entity.FileDownloadInfo $r1;
+
+        r0 := @this: com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity;
+
+        $r1 := @parameter0: com.aishukeclassmfkb.entity.FileDownloadInfo;
+
+        $r2 = new com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity$2;
+
+        specialinvoke $r2.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity$2: void <init>(com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity,com.aishukeclassmfkb.entity.FileDownloadInfo)>(r0, $r1);
+
+        $r3 = newarray (java.lang.Object)[0];
+
+        virtualinvoke $r2.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity$2: android.os.AsyncTask execute(java.lang.Object[])>($r3);
+
+        return;
+    }
+
+    private void InitDownloadUI()
+    {
+        com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity r0;
+        int $i0;
+        android.widget.Button $r2;
+        java.lang.Integer $r1;
+
+        r0 := @this: com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity;
+
+        $r1 = r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: java.lang.Integer DownState>;
+
+        $i0 = virtualinvoke $r1.<java.lang.Integer: int intValue()>();
+
+        lookupswitch($i0)
+        {
+            case 1: goto label2;
+            case 2: goto label3;
+            case 3: goto label4;
+            default: goto label1;
+        };
+
+     label1:
+        return;
+
+     label2:
+        $r2 = r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.widget.Button dialog_okbtn>;
+
+        virtualinvoke $r2.<android.widget.Button: void setVisibility(int)>(4);
+
+        $r2 = r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.widget.Button dialog_cancelbtn>;
+
+        virtualinvoke $r2.<android.widget.Button: void setText(java.lang.CharSequence)>("\u53d6\u6d88");
+
+        $r2 = r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.widget.Button dialog_cancelbtn>;
+
+        virtualinvoke $r2.<android.widget.Button: void setVisibility(int)>(0);
+
+        return;
+
+     label3:
+        $r2 = r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.widget.Button dialog_okbtn>;
+
+        virtualinvoke $r2.<android.widget.Button: void setVisibility(int)>(4);
+
+        $r2 = r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.widget.Button dialog_cancelbtn>;
+
+        virtualinvoke $r2.<android.widget.Button: void setText(java.lang.CharSequence)>("\u786e\u5b9a");
+
+        $r2 = r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.widget.Button dialog_cancelbtn>;
+
+        virtualinvoke $r2.<android.widget.Button: void setVisibility(int)>(0);
+
+        return;
+
+     label4:
+        $r2 = r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.widget.Button dialog_okbtn>;
+
+        virtualinvoke $r2.<android.widget.Button: void setText(java.lang.CharSequence)>("\u6253\u5f00\u4e66\u7c4d");
+
+        $r2 = r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.widget.Button dialog_okbtn>;
+
+        virtualinvoke $r2.<android.widget.Button: void setVisibility(int)>(0);
+
+        $r2 = r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.widget.Button dialog_cancelbtn>;
+
+        virtualinvoke $r2.<android.widget.Button: void setText(java.lang.CharSequence)>("\u786e\u5b9a");
+
+        $r2 = r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.widget.Button dialog_cancelbtn>;
+
+        virtualinvoke $r2.<android.widget.Button: void setVisibility(int)>(0);
+
+        return;
+    }
+
+    static com.aishukeclassmfkb.entity.FileDownloadInfo access$000(com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity)
+    {
+        com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity $r0;
+        com.aishukeclassmfkb.entity.FileDownloadInfo r1;
+
+        $r0 := @parameter0: com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity;
+
+        r1 = $r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: com.aishukeclassmfkb.entity.FileDownloadInfo downinfo>;
+
+        return r1;
+    }
+
+    static com.aishukeclassmfkb.entity.FileDownloadInfo access$002(com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity, com.aishukeclassmfkb.entity.FileDownloadInfo)
+    {
+        com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity $r0;
+        com.aishukeclassmfkb.entity.FileDownloadInfo $r1;
+
+        $r0 := @parameter0: com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity;
+
+        $r1 := @parameter1: com.aishukeclassmfkb.entity.FileDownloadInfo;
+
+        $r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: com.aishukeclassmfkb.entity.FileDownloadInfo downinfo> = $r1;
+
+        return $r1;
+    }
+
+    static void access$100(com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity, com.aishukeclassmfkb.entity.FileDownloadInfo)
+    {
+        com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity $r0;
+        com.aishukeclassmfkb.entity.FileDownloadInfo $r1;
+
+        $r0 := @parameter0: com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity;
+
+        $r1 := @parameter1: com.aishukeclassmfkb.entity.FileDownloadInfo;
+
+        specialinvoke $r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: void DownSuccess(com.aishukeclassmfkb.entity.FileDownloadInfo)>($r1);
+
+        return;
+    }
+
+    static void access$200(com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity)
+    {
+        com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity $r0;
+
+        $r0 := @parameter0: com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity;
+
+        specialinvoke $r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: void InitDownloadUI()>();
+
+        return;
+    }
+
+    static java.lang.Boolean access$402(com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity, java.lang.Boolean)
+    {
+        java.lang.Boolean $r1;
+        com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity $r0;
+
+        $r0 := @parameter0: com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity;
+
+        $r1 := @parameter1: java.lang.Boolean;
+
+        $r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: java.lang.Boolean hasSendMessage> = $r1;
+
+        return $r1;
+    }
+
+    static void access$500(com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity)
+    {
+        com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity $r0;
+
+        $r0 := @parameter0: com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity;
+
+        specialinvoke $r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: void DefaultAction()>();
+
+        return;
+    }
+
+    static android.widget.TextView access$600(com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity)
+    {
+        android.widget.TextView r1;
+        com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity $r0;
+
+        $r0 := @parameter0: com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity;
+
+        r1 = $r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.widget.TextView text_progress>;
+
+        return r1;
+    }
+
+    static android.widget.TextView access$700(com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity)
+    {
+        android.widget.TextView r1;
+        com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity $r0;
+
+        $r0 := @parameter0: com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity;
+
+        r1 = $r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.widget.TextView downloadmsg>;
+
+        return r1;
+    }
+
+    static android.widget.ProgressBar access$800(com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity)
+    {
+        com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity $r0;
+        android.widget.ProgressBar r1;
+
+        $r0 := @parameter0: com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity;
+
+        r1 = $r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.widget.ProgressBar downloadprogress>;
+
+        return r1;
+    }
+
+    static android.os.Handler access$900(com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity)
+    {
+        com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity $r0;
+        android.os.Handler r1;
+
+        $r0 := @parameter0: com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity;
+
+        r1 = $r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.os.Handler handler>;
+
+        return r1;
+    }
+
+    private void initData()
+    {
+        android.widget.TextView $r2;
+        com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity r0;
+        android.widget.Button $r3;
+        com.aishukeclassmfkb.entity.FileDownloadInfo $r1;
+
+        r0 := @this: com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity;
+
+        $r1 = r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: com.aishukeclassmfkb.entity.FileDownloadInfo downinfo>;
+
+        if $r1 == null goto label1;
+
+        $r2 = r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.widget.TextView dialog_title>;
+
+        virtualinvoke $r2.<android.widget.TextView: void setText(java.lang.CharSequence)>("\u4e0b\u8f7d\u7535\u5b50\u4e66");
+
+        $r2 = r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.widget.TextView dialog_info>;
+
+        virtualinvoke $r2.<android.widget.TextView: void setText(java.lang.CharSequence)>("\u6b63\u5728\u4e0b\u8f7d\u8be5\u7535\u5b50\u4e66\uff0c\u4e0b\u8f7d\u540e\u53ef\u4ee5\u79bb\u7ebf\u9605\u8bfb\u3002");
+
+        $r3 = r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.widget.Button dialog_okbtn>;
+
+        virtualinvoke $r3.<android.widget.Button: void setText(java.lang.CharSequence)>("\u786e\u5b9a");
+
+        $r2 = r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.widget.TextView downloadmsg>;
+
+        virtualinvoke $r2.<android.widget.TextView: void setText(java.lang.CharSequence)>("\u6b63\u5728\u51c6\u5907\u4e0b\u8f7d...");
+
+        $r3 = r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.widget.Button dialog_cancelbtn>;
+
+        virtualinvoke $r3.<android.widget.Button: void setText(java.lang.CharSequence)>("\u53d6\u6d88");
+
+     label1:
+        return;
+    }
+
+    private void initListener()
+    {
+        com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity r0;
+        com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity$4 $r3;
+        com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity$3 $r2;
+        android.widget.Button $r1;
+
+        r0 := @this: com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity;
+
+        $r1 = r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.widget.Button dialog_okbtn>;
+
+        $r2 = new com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity$3;
+
+        specialinvoke $r2.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity$3: void <init>(com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity)>(r0);
+
+        virtualinvoke $r1.<android.widget.Button: void setOnClickListener(android.view.View$OnClickListener)>($r2);
+
+        $r1 = r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.widget.Button dialog_cancelbtn>;
+
+        $r3 = new com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity$4;
+
+        specialinvoke $r3.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity$4: void <init>(com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity)>(r0);
+
+        virtualinvoke $r1.<android.widget.Button: void setOnClickListener(android.view.View$OnClickListener)>($r3);
+
+        return;
+    }
+
+    private void initUI()
+    {
+        android.widget.TextView $r2;
+        com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity r0;
+        android.widget.ProgressBar $r3;
+        android.view.View $r1;
+        android.widget.Button $r4;
+
+        r0 := @this: com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity;
+
+        $r1 = virtualinvoke r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.view.View findViewById(int)>(2131361926);
+
+        $r2 = (android.widget.TextView) $r1;
+
+        r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.widget.TextView dialog_title> = $r2;
+
+        $r1 = virtualinvoke r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.view.View findViewById(int)>(2131361927);
+
+        $r2 = (android.widget.TextView) $r1;
+
+        r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.widget.TextView dialog_info> = $r2;
+
+        $r1 = virtualinvoke r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.view.View findViewById(int)>(2131361928);
+
+        $r3 = (android.widget.ProgressBar) $r1;
+
+        r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.widget.ProgressBar downloadprogress> = $r3;
+
+        $r1 = virtualinvoke r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.view.View findViewById(int)>(2131361929);
+
+        $r2 = (android.widget.TextView) $r1;
+
+        r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.widget.TextView text_progress> = $r2;
+
+        $r1 = virtualinvoke r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.view.View findViewById(int)>(2131361931);
+
+        $r4 = (android.widget.Button) $r1;
+
+        r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.widget.Button dialog_okbtn> = $r4;
+
+        $r1 = virtualinvoke r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.view.View findViewById(int)>(2131361932);
+
+        $r4 = (android.widget.Button) $r1;
+
+        r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.widget.Button dialog_cancelbtn> = $r4;
+
+        $r1 = virtualinvoke r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.view.View findViewById(int)>(2131361930);
+
+        $r2 = (android.widget.TextView) $r1;
+
+        r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.widget.TextView downloadmsg> = $r2;
+
+        return;
+    }
+
+    protected void onCreate(android.os.Bundle)
+    {
+        android.os.Bundle $r1;
+        android.content.IntentFilter $r7;
+        android.content.Intent $r4;
+        com.aishukeclassmfkb.entity.FileDownloadInfo $r2;
+        java.io.Serializable $r5;
+        java.util.List $r3;
+        com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity r0;
+        com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity$MyReceiver $r6;
+        boolean $z0;
+
+        r0 := @this: com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke r0.<android.app.Activity: void onCreate(android.os.Bundle)>($r1);
+
+        staticinvoke <com.umeng.analytics.MobclickAgent: void onError(android.content.Context)>(r0);
+
+        $r3 = <com.aishukeclassmfkb.util.Constant: java.util.List activitys>;
+
+        interfaceinvoke $r3.<java.util.List: boolean add(java.lang.Object)>(r0);
+
+        $r4 = virtualinvoke r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.content.Intent getIntent()>();
+
+        $r1 = virtualinvoke $r4.<android.content.Intent: android.os.Bundle getExtras()>();
+
+        if $r1 == null goto label1;
+
+        $z0 = virtualinvoke $r1.<android.os.Bundle: boolean containsKey(java.lang.String)>("downinfo");
+
+        if $z0 == 0 goto label1;
+
+        $r5 = virtualinvoke $r1.<android.os.Bundle: java.io.Serializable getSerializable(java.lang.String)>("downinfo");
+
+        $r2 = (com.aishukeclassmfkb.entity.FileDownloadInfo) $r5;
+
+        r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: com.aishukeclassmfkb.entity.FileDownloadInfo downinfo> = $r2;
+
+     label1:
+        virtualinvoke r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: void setContentView(int)>(2130903070);
+
+        specialinvoke r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: void initUI()>();
+
+        specialinvoke r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: void initData()>();
+
+        specialinvoke r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: void initListener()>();
+
+        specialinvoke r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: void InitDownloadUI()>();
+
+        $r6 = new com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity$MyReceiver;
+
+        specialinvoke $r6.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity$MyReceiver: void <init>(com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity,com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity$1)>(r0, null);
+
+        r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity$MyReceiver receiver> = $r6;
+
+        $r7 = new android.content.IntentFilter;
+
+        specialinvoke $r7.<android.content.IntentFilter: void <init>()>();
+
+        virtualinvoke $r7.<android.content.IntentFilter: void addAction(java.lang.String)>("android.intent.action.FileDownloadReceiver");
+
+        $r6 = r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity$MyReceiver receiver>;
+
+        virtualinvoke r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.content.Intent registerReceiver(android.content.BroadcastReceiver,android.content.IntentFilter)>($r6, $r7);
+
+        $r4 = new android.content.Intent;
+
+        specialinvoke $r4.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>(r0, class "Lcom/aishukeclassmfkb/service/FileDownloadService;");
+
+        $r2 = r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: com.aishukeclassmfkb.entity.FileDownloadInfo downinfo>;
+
+        virtualinvoke $r4.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.io.Serializable)>("downinfo", $r2);
+
+        virtualinvoke r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.content.ComponentName startService(android.content.Intent)>($r4);
+
+        return;
+    }
+
+    protected void onDestroy()
+    {
+        com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity r0;
+        com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity$MyReceiver $r1;
+
+        r0 := @this: com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity;
+
+        $r1 = r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity$MyReceiver receiver>;
+
+        virtualinvoke r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: void unregisterReceiver(android.content.BroadcastReceiver)>($r1);
+
+        specialinvoke r0.<android.app.Activity: void onDestroy()>();
+
+        return;
+    }
+
+    protected void onPause()
+    {
+        com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity r0;
+        java.lang.Boolean $r1;
+        android.os.PowerManager$WakeLock $r2;
+        java.lang.Exception $r3;
+        boolean $z0;
+
+        r0 := @this: com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity;
+
+        staticinvoke <com.umeng.analytics.MobclickAgent: void onPause(android.content.Context)>(r0);
+
+        $r1 = r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: java.lang.Boolean hasSendMessage>;
+
+        $z0 = virtualinvoke $r1.<java.lang.Boolean: boolean booleanValue()>();
+
+        if $z0 != 0 goto label1;
+
+        specialinvoke r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: void DefaultAction()>();
+
+     label1:
+        $r2 = r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.os.PowerManager$WakeLock mWakeLock>;
+
+     label2:
+        if $r2 == null goto label4;
+
+     label3:
+        $r2 = r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.os.PowerManager$WakeLock mWakeLock>;
+
+        virtualinvoke $r2.<android.os.PowerManager$WakeLock: void release()>();
+
+     label4:
+        $r1 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(0);
+
+        r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: java.lang.Boolean hasSendMessage> = $r1;
+
+        specialinvoke r0.<android.app.Activity: void onPause()>();
+
+        return;
+
+     label5:
+        $r3 := @caughtexception;
+
+        virtualinvoke $r3.<java.lang.Exception: void printStackTrace()>();
+
+        goto label4;
+
+        catch java.lang.Exception from label1 to label2 with label5;
+        catch java.lang.Exception from label3 to label4 with label5;
+    }
+
+    protected void onResume()
+    {
+        android.os.PowerManager $r2;
+        com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity r0;
+        java.lang.Object $r1;
+        android.os.PowerManager$WakeLock $r3;
+        java.lang.Exception $r4;
+
+        r0 := @this: com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity;
+
+        staticinvoke <com.umeng.analytics.MobclickAgent: void onResume(android.content.Context)>(r0);
+
+     label1:
+        $r1 = virtualinvoke r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: java.lang.Object getSystemService(java.lang.String)>("power");
+
+        $r2 = (android.os.PowerManager) $r1;
+
+        r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.os.PowerManager pManager> = $r2;
+
+        $r2 = r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.os.PowerManager pManager>;
+
+        $r3 = virtualinvoke $r2.<android.os.PowerManager: android.os.PowerManager$WakeLock newWakeLock(int,java.lang.String)>(10, "LeDuReader");
+
+        r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.os.PowerManager$WakeLock mWakeLock> = $r3;
+
+        $r3 = r0.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.os.PowerManager$WakeLock mWakeLock>;
+
+        virtualinvoke $r3.<android.os.PowerManager$WakeLock: void acquire()>();
+
+     label2:
+        specialinvoke r0.<android.app.Activity: void onResume()>();
+
+        return;
+
+     label3:
+        $r4 := @caughtexception;
+
+        virtualinvoke $r4.<java.lang.Exception: void printStackTrace()>();
+
+        goto label2;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+    }
+
+    public android.content.Intent getIntent()
+    {
+        android.content.Intent $r0;
+        com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity this;
+
+        this := @this: com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity;
+
+        $r0 = this.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.content.Intent ipcIntent>;
+
+        return $r0;
+    }
+
+    public void setIntent(android.content.Intent)
+    {
+        android.content.Intent parameter0;
+        com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity this;
+
+        this := @this: com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity;
+
+        parameter0 := @parameter0: android.content.Intent;
+
+        this.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.content.Intent ipcIntent> = parameter0;
+
+        return;
+    }
+
+    public void setResult(int, android.content.Intent)
+    {
+        int parameter0;
+        android.content.Intent parameter1;
+        com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity this;
+
+        this := @this: com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity;
+
+        parameter0 := @parameter0: int;
+
+        parameter1 := @parameter1: android.content.Intent;
+
+        this.<com.aishukeclassmfkb.ledu.dialog.FileDownloadDialogActivity: android.content.Intent ipcResultIntent> = parameter1;
+
+        return;
+    }
+}

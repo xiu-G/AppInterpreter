@@ -1,0 +1,1391 @@
+public class com.snowbee.colorize.Twitter.TwitterDataProvider extends android.content.ContentProvider
+{
+    public static final java.lang.String AUTHORITY;
+    public static final android.net.Uri CONTENT_URI;
+    public static final android.net.Uri CONTENT_URI_MAX_ID;
+    public static final android.net.Uri CONTENT_URI_MESSAGE_DATA;
+    public static final android.net.Uri CONTENT_URI_STATUS_DATA;
+    public static final android.net.Uri CONTENT_URI_TIMELINE_DATA;
+    public static final android.net.Uri CONTENT_URI_WIDGET;
+    public static final java.lang.String MESSAGE_TABLE;
+    public static final java.lang.String[] PROJECTION_APPWIDGETS;
+    public static final java.lang.String[] PROJECTION_MESSAGE;
+    public static final java.lang.String STATUS_TABLE;
+    private static final java.lang.String TAG;
+    private static final android.content.UriMatcher URI_MATCHER;
+    private static final int URI_MAXID;
+    private static final int URI_MESSAGE_DATA;
+    private static final int URI_STATUS_DATA;
+    private static final int URI_TIMELINE_DATA;
+    private static final int URI_WIDGET;
+    private static android.content.Context mContext;
+    private android.database.sqlite.SQLiteDatabase twitterDB;
+    public android.content.Intent ipcIntent;
+
+    static void <clinit>()
+    {
+        com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns $r4;
+        com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderMessageColumns $r8;
+        android.net.Uri $r0;
+        java.lang.String[] $r3;
+        android.content.UriMatcher $r2, $r9;
+        java.io.File $r7;
+        java.lang.StringBuilder $r6, $r10;
+        android.net.Uri$Builder $r1;
+        java.lang.String $r5;
+
+        <com.snowbee.colorize.Twitter.TwitterDataProvider: int URI_WIDGET> = 2;
+
+        <com.snowbee.colorize.Twitter.TwitterDataProvider: int URI_TIMELINE_DATA> = 3;
+
+        <com.snowbee.colorize.Twitter.TwitterDataProvider: int URI_STATUS_DATA> = 0;
+
+        <com.snowbee.colorize.Twitter.TwitterDataProvider: int URI_MESSAGE_DATA> = 1;
+
+        <com.snowbee.colorize.Twitter.TwitterDataProvider: int URI_MAXID> = 4;
+
+        <com.snowbee.colorize.Twitter.TwitterDataProvider: java.lang.String TAG> = "Twitter-DataProvider";
+
+        <com.snowbee.colorize.Twitter.TwitterDataProvider: java.lang.String STATUS_TABLE> = "status";
+
+        <com.snowbee.colorize.Twitter.TwitterDataProvider: java.lang.String MESSAGE_TABLE> = "message";
+
+        <com.snowbee.colorize.Twitter.TwitterDataProvider: java.lang.String AUTHORITY> = "com.snowbee.colorize.Twitter.provider";
+
+        $r0 = staticinvoke <android.net.Uri: android.net.Uri parse(java.lang.String)>("content://com.snowbee.colorize.Twitter.provider");
+
+        <com.snowbee.colorize.Twitter.TwitterDataProvider: android.net.Uri CONTENT_URI> = $r0;
+
+        $r0 = <com.snowbee.colorize.Twitter.TwitterDataProvider: android.net.Uri CONTENT_URI>;
+
+        $r1 = virtualinvoke $r0.<android.net.Uri: android.net.Uri$Builder buildUpon()>();
+
+        $r1 = virtualinvoke $r1.<android.net.Uri$Builder: android.net.Uri$Builder appendEncodedPath(java.lang.String)>("status_data");
+
+        $r0 = virtualinvoke $r1.<android.net.Uri$Builder: android.net.Uri build()>();
+
+        <com.snowbee.colorize.Twitter.TwitterDataProvider: android.net.Uri CONTENT_URI_STATUS_DATA> = $r0;
+
+        $r0 = <com.snowbee.colorize.Twitter.TwitterDataProvider: android.net.Uri CONTENT_URI>;
+
+        $r1 = virtualinvoke $r0.<android.net.Uri: android.net.Uri$Builder buildUpon()>();
+
+        $r1 = virtualinvoke $r1.<android.net.Uri$Builder: android.net.Uri$Builder appendEncodedPath(java.lang.String)>("message_data");
+
+        $r0 = virtualinvoke $r1.<android.net.Uri$Builder: android.net.Uri build()>();
+
+        <com.snowbee.colorize.Twitter.TwitterDataProvider: android.net.Uri CONTENT_URI_MESSAGE_DATA> = $r0;
+
+        $r0 = <com.snowbee.colorize.Twitter.TwitterDataProvider: android.net.Uri CONTENT_URI>;
+
+        $r1 = virtualinvoke $r0.<android.net.Uri: android.net.Uri$Builder buildUpon()>();
+
+        $r1 = virtualinvoke $r1.<android.net.Uri$Builder: android.net.Uri$Builder appendEncodedPath(java.lang.String)>("maxid");
+
+        $r0 = virtualinvoke $r1.<android.net.Uri$Builder: android.net.Uri build()>();
+
+        <com.snowbee.colorize.Twitter.TwitterDataProvider: android.net.Uri CONTENT_URI_MAX_ID> = $r0;
+
+        $r0 = <com.snowbee.colorize.Twitter.TwitterDataProvider: android.net.Uri CONTENT_URI>;
+
+        $r1 = virtualinvoke $r0.<android.net.Uri: android.net.Uri$Builder buildUpon()>();
+
+        $r1 = virtualinvoke $r1.<android.net.Uri$Builder: android.net.Uri$Builder appendEncodedPath(java.lang.String)>("widget_twitter");
+
+        $r0 = virtualinvoke $r1.<android.net.Uri$Builder: android.net.Uri build()>();
+
+        <com.snowbee.colorize.Twitter.TwitterDataProvider: android.net.Uri CONTENT_URI_WIDGET> = $r0;
+
+        $r0 = <com.snowbee.colorize.Twitter.TwitterDataProvider: android.net.Uri CONTENT_URI>;
+
+        $r1 = virtualinvoke $r0.<android.net.Uri: android.net.Uri$Builder buildUpon()>();
+
+        $r1 = virtualinvoke $r1.<android.net.Uri$Builder: android.net.Uri$Builder appendEncodedPath(java.lang.String)>("timeline_data");
+
+        $r0 = virtualinvoke $r1.<android.net.Uri$Builder: android.net.Uri build()>();
+
+        <com.snowbee.colorize.Twitter.TwitterDataProvider: android.net.Uri CONTENT_URI_TIMELINE_DATA> = $r0;
+
+        $r9 = new android.content.UriMatcher;
+
+        specialinvoke $r9.<android.content.UriMatcher: void <init>(int)>(-1);
+
+        <com.snowbee.colorize.Twitter.TwitterDataProvider: android.content.UriMatcher URI_MATCHER> = $r9;
+
+        $r3 = newarray (java.lang.String)[14];
+
+        $r4 = <com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns _id>;
+
+        $r5 = virtualinvoke $r4.<com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: java.lang.String toString()>();
+
+        $r3[0] = $r5;
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>(java.lang.String)>("created_at as ");
+
+        $r4 = <com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns updated_time>;
+
+        $r5 = virtualinvoke $r4.<com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: java.lang.String toString()>();
+
+        $r6 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3[1] = $r5;
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>(java.lang.String)>("created_at as ");
+
+        $r4 = <com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns updated_time_str>;
+
+        $r5 = virtualinvoke $r4.<com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: java.lang.String toString()>();
+
+        $r6 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3[2] = $r5;
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>(java.lang.String)>("screenname as ");
+
+        $r4 = <com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns from_name>;
+
+        $r5 = virtualinvoke $r4.<com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: java.lang.String toString()>();
+
+        $r6 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3[3] = $r5;
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>(java.lang.String)>("\'");
+
+        $r7 = <com.snowbee.core.Preferences: java.io.File ExternalStorageDirectory>;
+
+        $r6 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r7);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/.colorize/\'||userid||\'.jpg\' as ");
+
+        $r4 = <com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns user_photo>;
+
+        $r5 = virtualinvoke $r4.<com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: java.lang.String toString()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3[4] = $r5;
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>(java.lang.String)>("content as ");
+
+        $r4 = <com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns message>;
+
+        $r5 = virtualinvoke $r4.<com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: java.lang.String toString()>();
+
+        $r6 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3[5] = $r5;
+
+        $r4 = <com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns profileimageurl>;
+
+        $r5 = virtualinvoke $r4.<com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: java.lang.String toString()>();
+
+        $r3[6] = $r5;
+
+        $r4 = <com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns isretweet>;
+
+        $r5 = virtualinvoke $r4.<com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: java.lang.String toString()>();
+
+        $r3[7] = $r5;
+
+        $r4 = <com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns username>;
+
+        $r5 = virtualinvoke $r4.<com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: java.lang.String toString()>();
+
+        $r3[8] = $r5;
+
+        $r4 = <com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns source>;
+
+        $r5 = virtualinvoke $r4.<com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: java.lang.String toString()>();
+
+        $r3[9] = $r5;
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>(java.lang.String)>("userid as ");
+
+        $r4 = <com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns from_id>;
+
+        $r5 = virtualinvoke $r4.<com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: java.lang.String toString()>();
+
+        $r6 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3[10] = $r5;
+
+        $r4 = <com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns isretweetedbyme>;
+
+        $r5 = virtualinvoke $r4.<com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: java.lang.String toString()>();
+
+        $r3[11] = $r5;
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>(java.lang.String)>("\'");
+
+        $r7 = <com.snowbee.core.Preferences: java.io.File ExternalStorageDirectory>;
+
+        $r6 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r7);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/.colorize/p\'||_id||\'.jpg\' as ");
+
+        $r4 = <com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns image_path>;
+
+        $r5 = virtualinvoke $r4.<com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: java.lang.String toString()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3[12] = $r5;
+
+        $r4 = <com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns twitpicurl>;
+
+        $r5 = virtualinvoke $r4.<com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: java.lang.String toString()>();
+
+        $r3[13] = $r5;
+
+        <com.snowbee.colorize.Twitter.TwitterDataProvider: java.lang.String[] PROJECTION_APPWIDGETS> = $r3;
+
+        $r3 = newarray (java.lang.String)[12];
+
+        $r8 = <com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderMessageColumns: com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderMessageColumns _id>;
+
+        $r5 = virtualinvoke $r8.<com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderMessageColumns: java.lang.String toString()>();
+
+        $r3[0] = $r5;
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>(java.lang.String)>("created_at as ");
+
+        $r8 = <com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderMessageColumns: com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderMessageColumns updated_time>;
+
+        $r5 = virtualinvoke $r8.<com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderMessageColumns: java.lang.String toString()>();
+
+        $r6 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3[1] = $r5;
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>(java.lang.String)>("created_at as ");
+
+        $r8 = <com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderMessageColumns: com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderMessageColumns updated_time_str>;
+
+        $r5 = virtualinvoke $r8.<com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderMessageColumns: java.lang.String toString()>();
+
+        $r6 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3[2] = $r5;
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>(java.lang.String)>("sender_screen_name AS ");
+
+        $r8 = <com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderMessageColumns: com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderMessageColumns from_name>;
+
+        $r5 = virtualinvoke $r8.<com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderMessageColumns: java.lang.String toString()>();
+
+        $r6 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3[3] = $r5;
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>(java.lang.String)>("\'");
+
+        $r7 = <com.snowbee.core.Preferences: java.io.File ExternalStorageDirectory>;
+
+        $r6 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r7);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/.colorize/\'||sender_id||\'.jpg\' as ");
+
+        $r8 = <com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderMessageColumns: com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderMessageColumns user_photo>;
+
+        $r5 = virtualinvoke $r8.<com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderMessageColumns: java.lang.String toString()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3[4] = $r5;
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>(java.lang.String)>("text AS ");
+
+        $r8 = <com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderMessageColumns: com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderMessageColumns message>;
+
+        $r5 = virtualinvoke $r8.<com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderMessageColumns: java.lang.String toString()>();
+
+        $r6 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3[5] = $r5;
+
+        $r8 = <com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderMessageColumns: com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderMessageColumns profileimageurl>;
+
+        $r5 = virtualinvoke $r8.<com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderMessageColumns: java.lang.String toString()>();
+
+        $r3[6] = $r5;
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>(java.lang.String)>("\'8\' as ");
+
+        $r8 = <com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderMessageColumns: com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderMessageColumns isretweet>;
+
+        $r5 = virtualinvoke $r8.<com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderMessageColumns: java.lang.String toString()>();
+
+        $r6 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3[7] = $r5;
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>(java.lang.String)>("\'\' as ");
+
+        $r4 = <com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns username>;
+
+        $r5 = virtualinvoke $r4.<com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: java.lang.String toString()>();
+
+        $r6 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3[8] = $r5;
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>(java.lang.String)>("\'\' as ");
+
+        $r4 = <com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns source>;
+
+        $r5 = virtualinvoke $r4.<com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: java.lang.String toString()>();
+
+        $r6 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3[9] = $r5;
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>(java.lang.String)>("\'\' as ");
+
+        $r4 = <com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns from_id>;
+
+        $r5 = virtualinvoke $r4.<com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: java.lang.String toString()>();
+
+        $r6 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3[10] = $r5;
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>(java.lang.String)>("\'\' as ");
+
+        $r4 = <com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns isretweetedbyme>;
+
+        $r5 = virtualinvoke $r4.<com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: java.lang.String toString()>();
+
+        $r6 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3[11] = $r5;
+
+        <com.snowbee.colorize.Twitter.TwitterDataProvider: java.lang.String[] PROJECTION_MESSAGE> = $r3;
+
+        <com.snowbee.colorize.Twitter.TwitterDataProvider: android.content.Context mContext> = null;
+
+        $r2 = <com.snowbee.colorize.Twitter.TwitterDataProvider: android.content.UriMatcher URI_MATCHER>;
+
+        virtualinvoke $r2.<android.content.UriMatcher: void addURI(java.lang.String,java.lang.String,int)>("com.snowbee.colorize.Twitter.provider", "status_data", 0);
+
+        $r2 = <com.snowbee.colorize.Twitter.TwitterDataProvider: android.content.UriMatcher URI_MATCHER>;
+
+        virtualinvoke $r2.<android.content.UriMatcher: void addURI(java.lang.String,java.lang.String,int)>("com.snowbee.colorize.Twitter.provider", "status_data/#", 0);
+
+        $r2 = <com.snowbee.colorize.Twitter.TwitterDataProvider: android.content.UriMatcher URI_MATCHER>;
+
+        virtualinvoke $r2.<android.content.UriMatcher: void addURI(java.lang.String,java.lang.String,int)>("com.snowbee.colorize.Twitter.provider", "message_data", 1);
+
+        $r2 = <com.snowbee.colorize.Twitter.TwitterDataProvider: android.content.UriMatcher URI_MATCHER>;
+
+        virtualinvoke $r2.<android.content.UriMatcher: void addURI(java.lang.String,java.lang.String,int)>("com.snowbee.colorize.Twitter.provider", "message_data/#", 1);
+
+        $r2 = <com.snowbee.colorize.Twitter.TwitterDataProvider: android.content.UriMatcher URI_MATCHER>;
+
+        virtualinvoke $r2.<android.content.UriMatcher: void addURI(java.lang.String,java.lang.String,int)>("com.snowbee.colorize.Twitter.provider", "timeline_data", 3);
+
+        $r2 = <com.snowbee.colorize.Twitter.TwitterDataProvider: android.content.UriMatcher URI_MATCHER>;
+
+        virtualinvoke $r2.<android.content.UriMatcher: void addURI(java.lang.String,java.lang.String,int)>("com.snowbee.colorize.Twitter.provider", "timeline_data/#", 3);
+
+        $r2 = <com.snowbee.colorize.Twitter.TwitterDataProvider: android.content.UriMatcher URI_MATCHER>;
+
+        virtualinvoke $r2.<android.content.UriMatcher: void addURI(java.lang.String,java.lang.String,int)>("com.snowbee.colorize.Twitter.provider", "widget_twitter", 2);
+
+        $r2 = <com.snowbee.colorize.Twitter.TwitterDataProvider: android.content.UriMatcher URI_MATCHER>;
+
+        virtualinvoke $r2.<android.content.UriMatcher: void addURI(java.lang.String,java.lang.String,int)>("com.snowbee.colorize.Twitter.provider", "widget_twitter/#", 2);
+
+        $r2 = <com.snowbee.colorize.Twitter.TwitterDataProvider: android.content.UriMatcher URI_MATCHER>;
+
+        virtualinvoke $r2.<android.content.UriMatcher: void addURI(java.lang.String,java.lang.String,int)>("com.snowbee.colorize.Twitter.provider", "maxid/#", 4);
+
+        return;
+    }
+
+    public void <init>()
+    {
+        com.snowbee.colorize.Twitter.TwitterDataProvider r0;
+
+        r0 := @this: com.snowbee.colorize.Twitter.TwitterDataProvider;
+
+        specialinvoke r0.<android.content.ContentProvider: void <init>()>();
+
+        r0.<com.snowbee.colorize.Twitter.TwitterDataProvider: android.database.sqlite.SQLiteDatabase twitterDB> = null;
+
+        return;
+    }
+
+    public static void LoadingNewData(android.content.Context, java.lang.Integer, boolean)
+    {
+        android.content.Context $r0;
+        android.os.Bundle r3;
+        com.snowbee.core.twitter.AsyncTwitterRunner r2;
+        java.lang.Integer $r1;
+        int[] $r5;
+        com.snowbee.colorize.Twitter.TwitterDataProvider$StatusRequestListener $r9;
+        android.widget.Toast $r7;
+        int $i0;
+        java.lang.String $r6, $r8;
+        com.snowbee.core.twitter.Twitter r4;
+        com.snowbee.colorize.Twitter.TwitterDataProvider$MessageRequestListener $r10;
+        boolean $z0, $z1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.Integer;
+
+        $z0 := @parameter2: boolean;
+
+        if $r1 != null goto label3;
+
+        $r5 = staticinvoke <com.snowbee.core.Preferences: int[] getAllTwitterWidgetIds(android.content.Context)>($r0);
+
+     label1:
+        $i0 = lengthof $r5;
+
+        if $i0 != 0 goto label2;
+
+        staticinvoke <com.snowbee.colorize.Facebook.UpdateService: void registerService(android.content.Context)>($r0);
+
+        staticinvoke <com.snowbee.colorize.Facebook.UpdateService: void removeService(android.content.Context)>($r0);
+
+     label2:
+        $z1 = staticinvoke <com.snowbee.core.Utils: boolean isOnline(android.content.Context)>($r0);
+
+        if $z1 == 0 goto label7;
+
+        $r6 = staticinvoke <com.snowbee.colorize.Twitter.TwitterLogin: java.lang.String getAccessSecret(android.content.Context)>($r0);
+
+        $z1 = virtualinvoke $r6.<java.lang.String: boolean equals(java.lang.Object)>("");
+
+        if $z1 == 0 goto label4;
+
+        $r6 = virtualinvoke $r0.<android.content.Context: java.lang.String getString(int)>(2131296297);
+
+        $r7 = staticinvoke <android.widget.Toast: android.widget.Toast makeText(android.content.Context,java.lang.CharSequence,int)>($r0, $r6, 1);
+
+        virtualinvoke $r7.<android.widget.Toast: void show()>();
+
+        return;
+
+     label3:
+        $r5 = newarray (int)[1];
+
+        $i0 = virtualinvoke $r1.<java.lang.Integer: int intValue()>();
+
+        $r5[0] = $i0;
+
+        goto label1;
+
+     label4:
+        r4 = new com.snowbee.core.twitter.Twitter;
+
+        $r6 = staticinvoke <com.snowbee.colorize.Twitter.TwitterLogin: java.lang.String getAccessToken(android.content.Context)>($r0);
+
+        $r8 = staticinvoke <com.snowbee.colorize.Twitter.TwitterLogin: java.lang.String getAccessSecret(android.content.Context)>($r0);
+
+        specialinvoke r4.<com.snowbee.core.twitter.Twitter: void <init>(java.lang.String,java.lang.String,java.lang.String,java.lang.String)>("R07fUzuHPmoCDBLGkZoxQ", "lzZxn7f3d2TLYRbQSJYlhG5obiruuQmX1j7g4JCzh0", $r6, $r8);
+
+        r2 = new com.snowbee.core.twitter.AsyncTwitterRunner;
+
+        specialinvoke r2.<com.snowbee.core.twitter.AsyncTwitterRunner: void <init>(com.snowbee.core.twitter.Twitter)>(r4);
+
+        staticinvoke <com.snowbee.colorize.Twitter.TwitterWidget: void setLoading(android.content.Context,int[],java.lang.String,boolean)>($r0, $r5, "com.snowbee.colorize.Twitter.action.NOTIFY_LOADING", 1);
+
+        r3 = new android.os.Bundle;
+
+        specialinvoke r3.<android.os.Bundle: void <init>()>();
+
+        virtualinvoke r3.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("include_rts", "true");
+
+        $r6 = staticinvoke <com.snowbee.core.Preferences: java.lang.String getPreferences(java.lang.String,int)>("PREF_MAX_LOAD_ITEM_%d", 1);
+
+        $r6 = staticinvoke <com.snowbee.core.Preferences: java.lang.String getString(android.content.Context,java.lang.String,java.lang.String)>($r0, $r6, "0");
+
+        $z1 = virtualinvoke $r6.<java.lang.String: boolean equals(java.lang.Object)>("0");
+
+        if $z1 != 0 goto label5;
+
+        virtualinvoke r3.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("count", $r6);
+
+     label5:
+        $r6 = staticinvoke <com.snowbee.core.Preferences: java.lang.String getPreferences(java.lang.String,int)>("PREF_DATA_%d", 1);
+
+        $r6 = staticinvoke <com.snowbee.core.Preferences: java.lang.String getString(android.content.Context,java.lang.String,java.lang.String)>($r0, $r6, "S");
+
+        $z1 = virtualinvoke $r6.<java.lang.String: boolean equals(java.lang.Object)>("S");
+
+        if $z1 == 0 goto label6;
+
+        $r9 = new com.snowbee.colorize.Twitter.TwitterDataProvider$StatusRequestListener;
+
+        specialinvoke $r9.<com.snowbee.colorize.Twitter.TwitterDataProvider$StatusRequestListener: void <init>(android.content.Context,int[],boolean)>($r0, $r5, 0);
+
+        virtualinvoke r2.<com.snowbee.core.twitter.AsyncTwitterRunner: void request(java.lang.String,android.os.Bundle,java.lang.String,com.snowbee.core.twitter.AsyncTwitterRunner$RequestListener)>("statuses/friends_timeline.json", r3, "GET", $r9);
+
+        return;
+
+     label6:
+        $r10 = new com.snowbee.colorize.Twitter.TwitterDataProvider$MessageRequestListener;
+
+        specialinvoke $r10.<com.snowbee.colorize.Twitter.TwitterDataProvider$MessageRequestListener: void <init>(android.content.Context,int[])>($r0, $r5);
+
+        virtualinvoke r2.<com.snowbee.core.twitter.AsyncTwitterRunner: void request(java.lang.String,android.os.Bundle,java.lang.String,com.snowbee.core.twitter.AsyncTwitterRunner$RequestListener)>("direct_messages.json", r3, "GET", $r10);
+
+        return;
+
+     label7:
+        if $r1 != null goto label8;
+
+        staticinvoke <com.snowbee.colorize.Twitter.TwitterDataProvider: void notifyAllWidgetsModification(android.content.Context)>($r0);
+
+        return;
+
+     label8:
+        $i0 = virtualinvoke $r1.<java.lang.Integer: int intValue()>();
+
+        staticinvoke <com.snowbee.colorize.Twitter.TwitterDataProvider: void notifyDatabaseModification(android.content.Context,int)>($r0, $i0);
+
+        return;
+    }
+
+    public static void SaveMessage(android.content.Context, java.util.List)
+    {
+        java.lang.Throwable $r10;
+        android.content.Context $r0;
+        java.util.Iterator $r4;
+        com.snowbee.colorize.Twitter.TwitterDataProvider$DatabaseHelper $r2;
+        long $l0;
+        java.lang.Exception $r9, $r11;
+        android.database.sqlite.SQLiteDatabase $r3;
+        java.util.List r1;
+        int $i1;
+        java.lang.Object $r5;
+        java.lang.StringBuilder $r7;
+        java.lang.String $r8;
+        boolean $z0;
+        com.snowbee.core.twitter.TwitterMessageItem r6;
+
+        $r0 := @parameter0: android.content.Context;
+
+        r1 := @parameter1: java.util.List;
+
+        $r2 = new com.snowbee.colorize.Twitter.TwitterDataProvider$DatabaseHelper;
+
+     label01:
+        specialinvoke $r2.<com.snowbee.colorize.Twitter.TwitterDataProvider$DatabaseHelper: void <init>(android.content.Context)>($r0);
+
+        $r3 = virtualinvoke $r2.<com.snowbee.colorize.Twitter.TwitterDataProvider$DatabaseHelper: android.database.sqlite.SQLiteDatabase getWritableDatabase()>();
+
+     label02:
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: void beginTransaction()>();
+
+        $r4 = interfaceinvoke r1.<java.util.List: java.util.Iterator iterator()>();
+
+     label03:
+        $z0 = interfaceinvoke $r4.<java.util.Iterator: boolean hasNext()>();
+
+     label04:
+        if $z0 != 0 goto label08;
+
+     label05:
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: void setTransactionSuccessful()>();
+
+     label06:
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: void endTransaction()>();
+
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+     label07:
+        return;
+
+     label08:
+        $r5 = interfaceinvoke $r4.<java.util.Iterator: java.lang.Object next()>();
+
+        r6 = (com.snowbee.core.twitter.TwitterMessageItem) $r5;
+
+     label09:
+        $r7 = new java.lang.StringBuilder;
+
+     label10:
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>(java.lang.String)>("INSERT OR REPLACE INTO message(_id, created_at, recipient_id , recipient_screen_name, sender_id, sender_screen_name, text, profileimageurl) SELECT ");
+
+        $l0 = r6.<com.snowbee.core.twitter.TwitterMessageItem: long Id>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(",");
+
+        $l0 = r6.<com.snowbee.core.twitter.TwitterMessageItem: long CreatedAt>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(",");
+
+        $i1 = r6.<com.snowbee.core.twitter.TwitterMessageItem: int RecipientId>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(",\'");
+
+        $r8 = r6.<com.snowbee.core.twitter.TwitterMessageItem: java.lang.String RecipientScreenName>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\',");
+
+        $i1 = r6.<com.snowbee.core.twitter.TwitterMessageItem: int SenderId>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(",\'");
+
+        $r8 = r6.<com.snowbee.core.twitter.TwitterMessageItem: java.lang.String SenderScreenName>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\',\'");
+
+        $r8 = r6.<com.snowbee.core.twitter.TwitterMessageItem: java.lang.String Text>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\',\'");
+
+        $r8 = r6.<com.snowbee.core.twitter.TwitterMessageItem: java.lang.String ProfileImageUrl>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\'");
+
+        $r8 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>($r8);
+
+     label11:
+        goto label03;
+
+     label12:
+        $r9 := @caughtexception;
+
+     label13:
+        virtualinvoke $r9.<java.lang.Exception: void printStackTrace()>();
+
+     label14:
+        goto label03;
+
+     label15:
+        $r10 := @caughtexception;
+
+     label16:
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: void endTransaction()>();
+
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+        throw $r10;
+
+     label17:
+        $r11 := @caughtexception;
+
+        return;
+
+        catch java.lang.Exception from label01 to label02 with label17;
+        catch java.lang.Throwable from label02 to label04 with label15;
+        catch java.lang.Throwable from label05 to label06 with label15;
+        catch java.lang.Exception from label06 to label07 with label17;
+        catch java.lang.Throwable from label08 to label09 with label15;
+        catch java.lang.Exception from label10 to label11 with label12;
+        catch java.lang.Throwable from label09 to label11 with label15;
+        catch java.lang.Throwable from label13 to label14 with label15;
+        catch java.lang.Exception from label16 to label17 with label17;
+    }
+
+    public static void SaveStatus(android.content.Context, java.util.List)
+    {
+        java.lang.Throwable $r10;
+        android.content.Context $r0;
+        com.snowbee.core.twitter.TwitterStatusItem r6;
+        java.util.Iterator $r4;
+        com.snowbee.colorize.Twitter.TwitterDataProvider$DatabaseHelper $r2;
+        long $l0;
+        java.lang.Exception $r9, $r11;
+        android.database.sqlite.SQLiteDatabase $r3;
+        java.util.List r1;
+        int $i1;
+        java.lang.Object $r5;
+        java.lang.StringBuilder $r7;
+        java.lang.String $r8;
+        boolean $z0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        r1 := @parameter1: java.util.List;
+
+        $r2 = new com.snowbee.colorize.Twitter.TwitterDataProvider$DatabaseHelper;
+
+     label01:
+        specialinvoke $r2.<com.snowbee.colorize.Twitter.TwitterDataProvider$DatabaseHelper: void <init>(android.content.Context)>($r0);
+
+        $r3 = virtualinvoke $r2.<com.snowbee.colorize.Twitter.TwitterDataProvider$DatabaseHelper: android.database.sqlite.SQLiteDatabase getWritableDatabase()>();
+
+     label02:
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: void beginTransaction()>();
+
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("delete from status where _id not in (select _id from status order by rowid desc limit 100)");
+
+        $r4 = interfaceinvoke r1.<java.util.List: java.util.Iterator iterator()>();
+
+     label03:
+        $z0 = interfaceinvoke $r4.<java.util.Iterator: boolean hasNext()>();
+
+     label04:
+        if $z0 != 0 goto label08;
+
+     label05:
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: void setTransactionSuccessful()>();
+
+     label06:
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: void endTransaction()>();
+
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+     label07:
+        return;
+
+     label08:
+        $r5 = interfaceinvoke $r4.<java.util.Iterator: java.lang.Object next()>();
+
+        r6 = (com.snowbee.core.twitter.TwitterStatusItem) $r5;
+
+     label09:
+        $r7 = new java.lang.StringBuilder;
+
+     label10:
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>(java.lang.String)>("INSERT OR REPLACE INTO status(_id, screenname, username, userid, content, created_at, source, inreplytostatusid, inreplytoscreenname, inreplytouserid, isfavorited, isretweet, isretweetedbyme, profileimageurl, twitpicurl, isRetweet) SELECT ");
+
+        $l0 = r6.<com.snowbee.core.twitter.TwitterStatusItem: long id>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(",\'");
+
+        $r8 = r6.<com.snowbee.core.twitter.TwitterStatusItem: java.lang.String ScreenName>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\',\'");
+
+        $r8 = r6.<com.snowbee.core.twitter.TwitterStatusItem: java.lang.String UserName>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\',");
+
+        $i1 = r6.<com.snowbee.core.twitter.TwitterStatusItem: int UserID>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(",\'");
+
+        $r8 = r6.<com.snowbee.core.twitter.TwitterStatusItem: java.lang.String Content>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\',");
+
+        $l0 = r6.<com.snowbee.core.twitter.TwitterStatusItem: long CreatedAt>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(",\'");
+
+        $r8 = r6.<com.snowbee.core.twitter.TwitterStatusItem: java.lang.String Source>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\',");
+
+        $l0 = r6.<com.snowbee.core.twitter.TwitterStatusItem: long InReplyToStatusId>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(",\'");
+
+        $l0 = r6.<com.snowbee.core.twitter.TwitterStatusItem: long InReplyToScreenName>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\',");
+
+        $i1 = r6.<com.snowbee.core.twitter.TwitterStatusItem: int InReplyToUserId>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(",");
+
+        $i1 = r6.<com.snowbee.core.twitter.TwitterStatusItem: int isFavorited>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(",");
+
+        $i1 = r6.<com.snowbee.core.twitter.TwitterStatusItem: int isRetweet>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(",");
+
+        $i1 = r6.<com.snowbee.core.twitter.TwitterStatusItem: int isRetweetedByMe>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(",\'");
+
+        $r8 = r6.<com.snowbee.core.twitter.TwitterStatusItem: java.lang.String ProfileImageURL>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\',\'");
+
+        $r8 = r6.<com.snowbee.core.twitter.TwitterStatusItem: java.lang.String twitpicURL>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\',");
+
+        $i1 = r6.<com.snowbee.core.twitter.TwitterStatusItem: int isRetweet>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1);
+
+        $r8 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>($r8);
+
+     label11:
+        goto label03;
+
+     label12:
+        $r9 := @caughtexception;
+
+     label13:
+        virtualinvoke $r9.<java.lang.Exception: void printStackTrace()>();
+
+     label14:
+        goto label03;
+
+     label15:
+        $r10 := @caughtexception;
+
+     label16:
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: void endTransaction()>();
+
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+        throw $r10;
+
+     label17:
+        $r11 := @caughtexception;
+
+        virtualinvoke $r11.<java.lang.Exception: void printStackTrace()>();
+
+        return;
+
+        catch java.lang.Exception from label01 to label02 with label17;
+        catch java.lang.Throwable from label02 to label04 with label15;
+        catch java.lang.Throwable from label05 to label06 with label15;
+        catch java.lang.Exception from label06 to label07 with label17;
+        catch java.lang.Throwable from label08 to label09 with label15;
+        catch java.lang.Exception from label10 to label11 with label12;
+        catch java.lang.Throwable from label09 to label11 with label15;
+        catch java.lang.Throwable from label13 to label14 with label15;
+        catch java.lang.Exception from label16 to label17 with label17;
+    }
+
+    public static void notifyAllWidgetsModification(android.content.Context)
+    {
+        android.content.Context $r0;
+        int[] $r1;
+        int i0, $i1, $i2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = staticinvoke <com.snowbee.core.Preferences: int[] getAllTwitterWidgetIds(android.content.Context)>($r0);
+
+        $i1 = lengthof $r1;
+
+        $i2 = 0;
+
+     label1:
+        if $i2 < $i1 goto label2;
+
+        return;
+
+     label2:
+        i0 = $r1[$i2];
+
+        staticinvoke <com.snowbee.colorize.Twitter.TwitterDataProvider: void notifyDatabaseModification(android.content.Context,int)>($r0, i0);
+
+        $i2 = $i2 + 1;
+
+        goto label1;
+    }
+
+    public static void notifyDatabaseModification(android.content.Context, int)
+    {
+        android.content.Context $r0;
+        android.content.ContentResolver $r4;
+        int $i0;
+        android.net.Uri $r1;
+        android.net.Uri$Builder $r2;
+        java.lang.String $r3;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $i0 := @parameter1: int;
+
+        $r1 = <com.snowbee.colorize.Twitter.TwitterDataProvider: android.net.Uri CONTENT_URI_WIDGET>;
+
+        $r2 = virtualinvoke $r1.<android.net.Uri: android.net.Uri$Builder buildUpon()>();
+
+        $r3 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i0);
+
+        $r2 = virtualinvoke $r2.<android.net.Uri$Builder: android.net.Uri$Builder appendEncodedPath(java.lang.String)>($r3);
+
+        $r1 = virtualinvoke $r2.<android.net.Uri$Builder: android.net.Uri build()>();
+
+        $r4 = virtualinvoke $r0.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        virtualinvoke $r4.<android.content.ContentResolver: void notifyChange(android.net.Uri,android.database.ContentObserver)>($r1, null);
+
+        staticinvoke <com.snowbee.colorize.Twitter.TwitterWidget: void setLoading(android.content.Context,int,java.lang.String,boolean)>($r0, $i0, "com.snowbee.colorize.Twitter.action.NOTIFY_LOADING", 0);
+
+        return;
+    }
+
+    public int delete(android.net.Uri, java.lang.String, java.lang.String[])
+    {
+        android.net.Uri $r1;
+        java.lang.String[] $r3;
+        java.lang.String $r2;
+        com.snowbee.colorize.Twitter.TwitterDataProvider r0;
+
+        r0 := @this: com.snowbee.colorize.Twitter.TwitterDataProvider;
+
+        $r1 := @parameter0: android.net.Uri;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: java.lang.String[];
+
+        return 0;
+    }
+
+    public java.lang.String getType(android.net.Uri)
+    {
+        android.net.Uri $r1;
+        com.snowbee.colorize.Twitter.TwitterDataProvider r0;
+
+        r0 := @this: com.snowbee.colorize.Twitter.TwitterDataProvider;
+
+        $r1 := @parameter0: android.net.Uri;
+
+        return null;
+    }
+
+    public android.net.Uri insert(android.net.Uri, android.content.ContentValues)
+    {
+        android.net.Uri $r1;
+        android.content.ContentValues $r2;
+        com.snowbee.colorize.Twitter.TwitterDataProvider r0;
+
+        r0 := @this: com.snowbee.colorize.Twitter.TwitterDataProvider;
+
+        $r1 := @parameter0: android.net.Uri;
+
+        $r2 := @parameter1: android.content.ContentValues;
+
+        return null;
+    }
+
+    public boolean onCreate()
+    {
+        android.content.Context $r2;
+        android.database.sqlite.SQLiteDatabase $r3;
+        com.snowbee.colorize.Twitter.TwitterDataProvider$DatabaseHelper r1;
+        com.snowbee.colorize.Twitter.TwitterDataProvider r0;
+
+        r0 := @this: com.snowbee.colorize.Twitter.TwitterDataProvider;
+
+        $r2 = virtualinvoke r0.<com.snowbee.colorize.Twitter.TwitterDataProvider: android.content.Context getContext()>();
+
+        <com.snowbee.colorize.Twitter.TwitterDataProvider: android.content.Context mContext> = $r2;
+
+        r1 = new com.snowbee.colorize.Twitter.TwitterDataProvider$DatabaseHelper;
+
+        $r2 = <com.snowbee.colorize.Twitter.TwitterDataProvider: android.content.Context mContext>;
+
+        specialinvoke r1.<com.snowbee.colorize.Twitter.TwitterDataProvider$DatabaseHelper: void <init>(android.content.Context)>($r2);
+
+        $r3 = virtualinvoke r1.<com.snowbee.colorize.Twitter.TwitterDataProvider$DatabaseHelper: android.database.sqlite.SQLiteDatabase getReadableDatabase()>();
+
+        r0.<com.snowbee.colorize.Twitter.TwitterDataProvider: android.database.sqlite.SQLiteDatabase twitterDB> = $r3;
+
+        $r3 = r0.<com.snowbee.colorize.Twitter.TwitterDataProvider: android.database.sqlite.SQLiteDatabase twitterDB>;
+
+        if $r3 != null goto label1;
+
+        return 0;
+
+     label1:
+        return 1;
+    }
+
+    public android.database.Cursor query(android.net.Uri, java.lang.String[], java.lang.String, java.lang.String[], java.lang.String)
+    {
+        java.lang.IllegalStateException $r9;
+        android.content.Context $r13;
+        com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns $r21;
+        java.lang.Object[] $r22;
+        android.net.Uri $r1;
+        java.lang.String[] $r3, $r6;
+        long $l3;
+        android.content.UriMatcher $r8;
+        android.database.sqlite.SQLiteDatabase $r11;
+        android.content.ContentResolver $r14;
+        int $i0, $i1, $i2;
+        java.lang.String $r2, $r7, $r15, $r16, $r17, $r18, $r19, $r20;
+        com.snowbee.colorize.Twitter.TwitterDataProvider r0;
+        boolean z0, $z1, $z2;
+        android.database.Cursor $r12;
+        android.database.sqlite.SQLiteQueryBuilder r4;
+        android.database.MatrixCursor r5;
+        java.lang.StringBuilder $r10;
+
+        r0 := @this: com.snowbee.colorize.Twitter.TwitterDataProvider;
+
+        $r1 := @parameter0: android.net.Uri;
+
+        $r6 := @parameter1: java.lang.String[];
+
+        $r2 := @parameter2: java.lang.String;
+
+        $r3 := @parameter3: java.lang.String[];
+
+        $r7 := @parameter4: java.lang.String;
+
+        r4 = new android.database.sqlite.SQLiteQueryBuilder;
+
+        specialinvoke r4.<android.database.sqlite.SQLiteQueryBuilder: void <init>()>();
+
+        $r7 = null;
+
+        z0 = 0;
+
+        $r8 = <com.snowbee.colorize.Twitter.TwitterDataProvider: android.content.UriMatcher URI_MATCHER>;
+
+        $i0 = virtualinvoke $r8.<android.content.UriMatcher: int match(android.net.Uri)>($r1);
+
+        lookupswitch($i0)
+        {
+            case 0: goto label03;
+            case 1: goto label04;
+            case 2: goto label06;
+            case 3: goto label05;
+            case 4: goto label02;
+            default: goto label01;
+        };
+
+     label01:
+        $r9 = new java.lang.IllegalStateException;
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>(java.lang.String)>("Unrecognized URI:");
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r2 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r9.<java.lang.IllegalStateException: void <init>(java.lang.String)>($r2);
+
+        throw $r9;
+
+     label02:
+        $r7 = "1";
+
+     label03:
+        virtualinvoke r4.<android.database.sqlite.SQLiteQueryBuilder: void setTables(java.lang.String)>("status");
+
+        $r11 = r0.<com.snowbee.colorize.Twitter.TwitterDataProvider: android.database.sqlite.SQLiteDatabase twitterDB>;
+
+        $r12 = virtualinvoke r4.<android.database.sqlite.SQLiteQueryBuilder: android.database.Cursor query(android.database.sqlite.SQLiteDatabase,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String,java.lang.String,java.lang.String,java.lang.String)>($r11, $r6, $r2, $r3, "", "", "ROWID desc", $r7);
+
+        $r13 = virtualinvoke r0.<com.snowbee.colorize.Twitter.TwitterDataProvider: android.content.Context getContext()>();
+
+        $r14 = virtualinvoke $r13.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        interfaceinvoke $r12.<android.database.Cursor: void setNotificationUri(android.content.ContentResolver,android.net.Uri)>($r14, $r1);
+
+        return $r12;
+
+     label04:
+        virtualinvoke r4.<android.database.sqlite.SQLiteQueryBuilder: void setTables(java.lang.String)>("status");
+
+        $r11 = r0.<com.snowbee.colorize.Twitter.TwitterDataProvider: android.database.sqlite.SQLiteDatabase twitterDB>;
+
+        $r12 = virtualinvoke r4.<android.database.sqlite.SQLiteQueryBuilder: android.database.Cursor query(android.database.sqlite.SQLiteDatabase,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String,java.lang.String,java.lang.String,java.lang.String)>($r11, $r6, $r2, $r3, "", "", "ROWID desc", null);
+
+        $r13 = virtualinvoke r0.<com.snowbee.colorize.Twitter.TwitterDataProvider: android.content.Context getContext()>();
+
+        $r14 = virtualinvoke $r13.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        interfaceinvoke $r12.<android.database.Cursor: void setNotificationUri(android.content.ContentResolver,android.net.Uri)>($r14, $r1);
+
+        return $r12;
+
+     label05:
+        z0 = 1;
+
+     label06:
+        $r13 = <com.snowbee.colorize.Twitter.TwitterDataProvider: android.content.Context mContext>;
+
+        $r7 = virtualinvoke $r13.<android.content.Context: java.lang.String getString(int)>(2131296281);
+
+        $r13 = <com.snowbee.colorize.Twitter.TwitterDataProvider: android.content.Context mContext>;
+
+        $r15 = virtualinvoke $r13.<android.content.Context: java.lang.String getString(int)>(2131296282);
+
+        $r13 = <com.snowbee.colorize.Twitter.TwitterDataProvider: android.content.Context mContext>;
+
+        $r16 = virtualinvoke $r13.<android.content.Context: java.lang.String getString(int)>(2131296283);
+
+        $r13 = <com.snowbee.colorize.Twitter.TwitterDataProvider: android.content.Context mContext>;
+
+        $r17 = virtualinvoke $r13.<android.content.Context: java.lang.String getString(int)>(2131296284);
+
+        $r13 = <com.snowbee.colorize.Twitter.TwitterDataProvider: android.content.Context mContext>;
+
+        $r18 = virtualinvoke $r13.<android.content.Context: java.lang.String getString(int)>(2131296285);
+
+        $r13 = <com.snowbee.colorize.Twitter.TwitterDataProvider: android.content.Context mContext>;
+
+        $r19 = virtualinvoke $r13.<android.content.Context: java.lang.String getString(int)>(2131296286);
+
+        $r13 = virtualinvoke r0.<com.snowbee.colorize.Twitter.TwitterDataProvider: android.content.Context getContext()>();
+
+        $r20 = staticinvoke <com.snowbee.core.Preferences: java.lang.String getPreferences(java.lang.String,int)>("PREF_DATA_%d", 7);
+
+        $r20 = staticinvoke <com.snowbee.core.Preferences: java.lang.String getString(android.content.Context,java.lang.String,java.lang.String)>($r13, $r20, "N");
+
+        if z0 == 0 goto label07;
+
+        $z1 = virtualinvoke $r20.<java.lang.String: boolean equals(java.lang.Object)>("M");
+
+        if $z1 == 0 goto label07;
+
+        virtualinvoke r4.<android.database.sqlite.SQLiteQueryBuilder: void setTables(java.lang.String)>("message");
+
+        $r6 = <com.snowbee.colorize.Twitter.TwitterDataProvider: java.lang.String[] PROJECTION_MESSAGE>;
+
+     label07:
+        if z0 != 0 goto label08;
+
+        $r13 = virtualinvoke r0.<com.snowbee.colorize.Twitter.TwitterDataProvider: android.content.Context getContext()>();
+
+        $r20 = staticinvoke <com.snowbee.core.Preferences: java.lang.String getPreferences(java.lang.String,int)>("PREF_DATA_%d", 1);
+
+        $r20 = staticinvoke <com.snowbee.core.Preferences: java.lang.String getString(android.content.Context,java.lang.String,java.lang.String)>($r13, $r20, "S");
+
+        z0 = virtualinvoke $r20.<java.lang.String: boolean equals(java.lang.Object)>("S");
+
+        if z0 == 0 goto label15;
+
+     label08:
+        virtualinvoke r4.<android.database.sqlite.SQLiteQueryBuilder: void setTables(java.lang.String)>("status");
+
+     label09:
+        $r11 = r0.<com.snowbee.colorize.Twitter.TwitterDataProvider: android.database.sqlite.SQLiteDatabase twitterDB>;
+
+        $r12 = virtualinvoke r4.<android.database.sqlite.SQLiteQueryBuilder: android.database.Cursor query(android.database.sqlite.SQLiteDatabase,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String,java.lang.String,java.lang.String,java.lang.String)>($r11, $r6, $r2, $r3, "", "", "_id desc", "100");
+
+        $r13 = <com.snowbee.colorize.Twitter.TwitterDataProvider: android.content.Context mContext>;
+
+        z0 = staticinvoke <com.snowbee.core.Preferences: boolean getShowLastRefreshTimeVal(android.content.Context)>($r13);
+
+        $r13 = <com.snowbee.colorize.Twitter.TwitterDataProvider: android.content.Context mContext>;
+
+        $z1 = staticinvoke <com.snowbee.core.Preferences: boolean getTimeFormatVal(android.content.Context)>($r13);
+
+        $r21 = <com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns updated_time_str>;
+
+        $r2 = virtualinvoke $r21.<com.snowbee.colorize.Twitter.TwitterDataProvider$DataProviderColumns: java.lang.String toString()>();
+
+        $i0 = interfaceinvoke $r12.<android.database.Cursor: int getColumnIndex(java.lang.String)>($r2);
+
+        r5 = new android.database.MatrixCursor;
+
+        specialinvoke r5.<android.database.MatrixCursor: void <init>(java.lang.String[])>($r6);
+
+        if $r12 == null goto label14;
+
+        $z2 = interfaceinvoke $r12.<android.database.Cursor: boolean moveToFirst()>();
+
+        if $z2 == 0 goto label13;
+
+     label10:
+        $i1 = lengthof $r6;
+
+        $r22 = newarray (java.lang.Object)[$i1];
+
+        $i1 = 0;
+
+     label11:
+        $i2 = lengthof $r6;
+
+        if $i1 < $i2 goto label16;
+
+        if z0 == 0 goto label17;
+
+        $l3 = interfaceinvoke $r12.<android.database.Cursor: long getLong(int)>($i0);
+
+        $r2 = staticinvoke <com.snowbee.core.Date.TimeUtils: java.lang.String getNiceTimeStamp(long,boolean)>($l3, $z1);
+
+        $r22[$i0] = $r2;
+
+     label12:
+        virtualinvoke r5.<android.database.MatrixCursor: void addRow(java.lang.Object[])>($r22);
+
+        $z2 = interfaceinvoke $r12.<android.database.Cursor: boolean moveToNext()>();
+
+        if $z2 != 0 goto label10;
+
+     label13:
+        interfaceinvoke $r12.<android.database.Cursor: void close()>();
+
+     label14:
+        $r13 = virtualinvoke r0.<com.snowbee.colorize.Twitter.TwitterDataProvider: android.content.Context getContext()>();
+
+        $r14 = virtualinvoke $r13.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        virtualinvoke r5.<android.database.MatrixCursor: void setNotificationUri(android.content.ContentResolver,android.net.Uri)>($r14, $r1);
+
+        return r5;
+
+     label15:
+        virtualinvoke r4.<android.database.sqlite.SQLiteQueryBuilder: void setTables(java.lang.String)>("message");
+
+        $r6 = <com.snowbee.colorize.Twitter.TwitterDataProvider: java.lang.String[] PROJECTION_MESSAGE>;
+
+        goto label09;
+
+     label16:
+        $r2 = interfaceinvoke $r12.<android.database.Cursor: java.lang.String getString(int)>($i1);
+
+        $r2 = staticinvoke <com.snowbee.core.Utils: java.lang.String unescapeHtml(java.lang.String)>($r2);
+
+        $r22[$i1] = $r2;
+
+        $i1 = $i1 + 1;
+
+        goto label11;
+
+     label17:
+        $l3 = interfaceinvoke $r12.<android.database.Cursor: long getLong(int)>($i0);
+
+        $r2 = staticinvoke <com.snowbee.core.Date.TimeUtils: java.lang.String getNiceTimeStamp(long,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String,java.lang.String)>($l3, $r7, $r15, $r16, $r17, $r18, $r19);
+
+        $r22[$i0] = $r2;
+
+        goto label12;
+    }
+
+    public int update(android.net.Uri, android.content.ContentValues, java.lang.String, java.lang.String[])
+    {
+        android.net.Uri $r1;
+        java.lang.String[] $r4;
+        android.content.ContentValues $r2;
+        java.lang.String $r3;
+        com.snowbee.colorize.Twitter.TwitterDataProvider r0;
+
+        r0 := @this: com.snowbee.colorize.Twitter.TwitterDataProvider;
+
+        $r1 := @parameter0: android.net.Uri;
+
+        $r2 := @parameter1: android.content.ContentValues;
+
+        $r3 := @parameter2: java.lang.String;
+
+        $r4 := @parameter3: java.lang.String[];
+
+        return 0;
+    }
+}

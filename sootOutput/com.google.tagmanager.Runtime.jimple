@@ -1,0 +1,2113 @@
+class com.google.tagmanager.Runtime extends java.lang.Object
+{
+    static final java.lang.String DEFAULT_RULE_NAME;
+    private static final com.google.tagmanager.ObjectAndStatic DEFAULT_VALUE_AND_STATIC;
+    private static final int MAX_CACHE_SIZE;
+    private final com.google.tagmanager.EventInfoDistributor eventInfoDistributor;
+    private volatile java.lang.String mCurrentEventName;
+    private final com.google.tagmanager.Cache mFunctionCallCache;
+    private final com.google.tagmanager.Cache mMacroEvaluationCache;
+    private final java.util.Map mMacroLookup;
+    private final java.util.Map mMacroMap;
+    private final java.util.Map mPredicateMap;
+    private final com.google.tagmanager.ResourceUtil$ExpandedResource mResource;
+    private final java.util.Set mRules;
+    private final java.util.Map mTrackingTagMap;
+
+    static void <clinit>()
+    {
+        com.google.tagmanager.ObjectAndStatic $r0;
+        com.google.analytics.midtier.proto.containertag.TypeSystem$Value $r1;
+
+        <com.google.tagmanager.Runtime: int MAX_CACHE_SIZE> = 1048576;
+
+        <com.google.tagmanager.Runtime: java.lang.String DEFAULT_RULE_NAME> = "Unknown";
+
+        $r0 = new com.google.tagmanager.ObjectAndStatic;
+
+        $r1 = staticinvoke <com.google.tagmanager.Types: com.google.analytics.midtier.proto.containertag.TypeSystem$Value getDefaultValue()>();
+
+        specialinvoke $r0.<com.google.tagmanager.ObjectAndStatic: void <init>(java.lang.Object,boolean)>($r1, 1);
+
+        <com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic DEFAULT_VALUE_AND_STATIC> = $r0;
+
+        return;
+    }
+
+    public void <init>(android.content.Context, com.google.tagmanager.ResourceUtil$ExpandedResource, com.google.tagmanager.DataLayer, com.google.tagmanager.CustomFunctionCall$CustomEvaluator, com.google.tagmanager.CustomFunctionCall$CustomEvaluator)
+    {
+        com.google.tagmanager.Runtime r0;
+        android.content.Context $r1;
+        com.google.tagmanager.ResourceUtil$ExpandedResource $r2;
+        com.google.tagmanager.CustomFunctionCall$CustomEvaluator $r4, $r5;
+        com.google.tagmanager.DataLayer $r3;
+        com.google.tagmanager.NoopEventInfoDistributor $r6;
+
+        r0 := @this: com.google.tagmanager.Runtime;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: com.google.tagmanager.ResourceUtil$ExpandedResource;
+
+        $r3 := @parameter2: com.google.tagmanager.DataLayer;
+
+        $r4 := @parameter3: com.google.tagmanager.CustomFunctionCall$CustomEvaluator;
+
+        $r5 := @parameter4: com.google.tagmanager.CustomFunctionCall$CustomEvaluator;
+
+        $r6 = new com.google.tagmanager.NoopEventInfoDistributor;
+
+        specialinvoke $r6.<com.google.tagmanager.NoopEventInfoDistributor: void <init>()>();
+
+        specialinvoke r0.<com.google.tagmanager.Runtime: void <init>(android.content.Context,com.google.tagmanager.ResourceUtil$ExpandedResource,com.google.tagmanager.DataLayer,com.google.tagmanager.CustomFunctionCall$CustomEvaluator,com.google.tagmanager.CustomFunctionCall$CustomEvaluator,com.google.tagmanager.EventInfoDistributor)>($r1, $r2, $r3, $r4, $r5, $r6);
+
+        return;
+    }
+
+    public void <init>(android.content.Context, com.google.tagmanager.ResourceUtil$ExpandedResource, com.google.tagmanager.DataLayer, com.google.tagmanager.CustomFunctionCall$CustomEvaluator, com.google.tagmanager.CustomFunctionCall$CustomEvaluator, com.google.tagmanager.EventInfoDistributor)
+    {
+        com.google.tagmanager.EqualsPredicate $r20;
+        com.google.tagmanager.SdkVersionMacro $r51;
+        com.google.tagmanager.AppNameMacro $r31;
+        com.google.tagmanager.OsVersionMacro $r45;
+        com.google.tagmanager.AdwordsClickReferrerMacro $r29;
+        com.google.tagmanager.Runtime r0;
+        java.util.Map $r60;
+        com.google.tagmanager.AppVersionMacro $r32;
+        com.google.tagmanager.RuntimeVersionMacro $r50;
+        java.util.Set $r53;
+        com.google.tagmanager.TimeMacro $r52;
+        com.google.tagmanager.InstallReferrerMacro $r41;
+        com.google.tagmanager.UniversalAnalyticsTag $r17;
+        com.google.tagmanager.DataLayerMacro $r34;
+        com.google.tagmanager.ResourceUtil$ExpandedRule $r56;
+        com.google.tagmanager.CustomFunctionCall $r16;
+        java.lang.String $r59, $r61;
+        java.util.Map$Entry $r63;
+        com.google.analytics.midtier.proto.containertag.TypeSystem$Value $r66;
+        com.google.tagmanager.EventMacro $r38;
+        com.google.tagmanager.DeviceNameMacro $r36;
+        com.google.tagmanager.CacheFactory $r11;
+        com.google.tagmanager.EndsWithPredicate $r19;
+        com.google.tagmanager.ResourceUtil$ExpandedFunctionCall $r58;
+        com.google.tagmanager.Runtime$MacroInfo $r62;
+        com.google.tagmanager.GreaterThanPredicate $r22;
+        com.google.tagmanager.Cache $r12;
+        com.google.analytics.containertag.common.Key $r65;
+        com.google.tagmanager.AdvertisingTrackingEnabledMacro $r28;
+        com.google.tagmanager.ResolutionMacro $r49;
+        com.google.tagmanager.Runtime$1 $r10;
+        com.google.tagmanager.Runtime$2 $r13;
+        com.google.tagmanager.StartsWithPredicate $r26;
+        com.google.tagmanager.LessEqualsPredicate $r23;
+        com.google.tagmanager.AppIdMacro $r30;
+        java.lang.NullPointerException $r7;
+        com.google.tagmanager.AdvertiserIdMacro $r27;
+        com.google.tagmanager.CustomFunctionCall$CustomEvaluator $r4, $r5;
+        com.google.tagmanager.PlatformMacro $r46;
+        boolean $z0;
+        com.google.tagmanager.GreaterEqualsPredicate $r21;
+        com.google.tagmanager.GtmVersionMacro $r39;
+        java.util.List $r9, $r57;
+        com.google.tagmanager.LanguageMacro $r43;
+        com.google.tagmanager.JoinerMacro $r42;
+        android.content.Context $r1;
+        com.google.tagmanager.RegexGroupMacro $r48;
+        java.util.HashMap $r14;
+        com.google.tagmanager.EventInfoDistributor $r6;
+        com.google.tagmanager.DeviceIdMacro $r35;
+        com.google.tagmanager.EncodeMacro $r37;
+        com.google.tagmanager.HashMacro $r40;
+        java.util.HashSet $r8;
+        com.google.tagmanager.ConstantMacro $r33;
+        int $i0, $i1;
+        java.lang.Boolean $r67;
+        com.google.tagmanager.ArbitraryPixelTag $r15;
+        com.google.tagmanager.RegexPredicate $r25;
+        java.util.Iterator $r54, $r64;
+        com.google.tagmanager.LessThanPredicate $r24;
+        com.google.tagmanager.MobileAdwordsUniqueIdMacro $r44;
+        com.google.tagmanager.DataLayer $r3;
+        com.google.tagmanager.ResourceUtil$ExpandedResource $r2;
+        com.google.tagmanager.ContainsPredicate $r18;
+        com.google.tagmanager.RandomMacro $r47;
+        java.lang.Object $r55;
+
+        r0 := @this: com.google.tagmanager.Runtime;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: com.google.tagmanager.ResourceUtil$ExpandedResource;
+
+        $r3 := @parameter2: com.google.tagmanager.DataLayer;
+
+        $r4 := @parameter3: com.google.tagmanager.CustomFunctionCall$CustomEvaluator;
+
+        $r5 := @parameter4: com.google.tagmanager.CustomFunctionCall$CustomEvaluator;
+
+        $r6 := @parameter5: com.google.tagmanager.EventInfoDistributor;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        if $r2 != null goto label01;
+
+        $r7 = new java.lang.NullPointerException;
+
+        specialinvoke $r7.<java.lang.NullPointerException: void <init>(java.lang.String)>("resource cannot be null");
+
+        throw $r7;
+
+     label01:
+        r0.<com.google.tagmanager.Runtime: com.google.tagmanager.ResourceUtil$ExpandedResource mResource> = $r2;
+
+        $r8 = new java.util.HashSet;
+
+        $r9 = virtualinvoke $r2.<com.google.tagmanager.ResourceUtil$ExpandedResource: java.util.List getRules()>();
+
+        specialinvoke $r8.<java.util.HashSet: void <init>(java.util.Collection)>($r9);
+
+        r0.<com.google.tagmanager.Runtime: java.util.Set mRules> = $r8;
+
+        r0.<com.google.tagmanager.Runtime: com.google.tagmanager.EventInfoDistributor eventInfoDistributor> = $r6;
+
+        $r10 = new com.google.tagmanager.Runtime$1;
+
+        specialinvoke $r10.<com.google.tagmanager.Runtime$1: void <init>(com.google.tagmanager.Runtime)>(r0);
+
+        $r11 = new com.google.tagmanager.CacheFactory;
+
+        specialinvoke $r11.<com.google.tagmanager.CacheFactory: void <init>()>();
+
+        $r12 = virtualinvoke $r11.<com.google.tagmanager.CacheFactory: com.google.tagmanager.Cache createCache(int,com.google.tagmanager.CacheFactory$CacheSizeManager)>(1048576, $r10);
+
+        r0.<com.google.tagmanager.Runtime: com.google.tagmanager.Cache mFunctionCallCache> = $r12;
+
+        $r13 = new com.google.tagmanager.Runtime$2;
+
+        specialinvoke $r13.<com.google.tagmanager.Runtime$2: void <init>(com.google.tagmanager.Runtime)>(r0);
+
+        $r11 = new com.google.tagmanager.CacheFactory;
+
+        specialinvoke $r11.<com.google.tagmanager.CacheFactory: void <init>()>();
+
+        $r12 = virtualinvoke $r11.<com.google.tagmanager.CacheFactory: com.google.tagmanager.Cache createCache(int,com.google.tagmanager.CacheFactory$CacheSizeManager)>(1048576, $r13);
+
+        r0.<com.google.tagmanager.Runtime: com.google.tagmanager.Cache mMacroEvaluationCache> = $r12;
+
+        $r14 = new java.util.HashMap;
+
+        specialinvoke $r14.<java.util.HashMap: void <init>()>();
+
+        r0.<com.google.tagmanager.Runtime: java.util.Map mTrackingTagMap> = $r14;
+
+        $r15 = new com.google.tagmanager.ArbitraryPixelTag;
+
+        specialinvoke $r15.<com.google.tagmanager.ArbitraryPixelTag: void <init>(android.content.Context)>($r1);
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addTrackingTag(com.google.tagmanager.FunctionCallImplementation)>($r15);
+
+        $r16 = new com.google.tagmanager.CustomFunctionCall;
+
+        specialinvoke $r16.<com.google.tagmanager.CustomFunctionCall: void <init>(com.google.tagmanager.CustomFunctionCall$CustomEvaluator)>($r5);
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addTrackingTag(com.google.tagmanager.FunctionCallImplementation)>($r16);
+
+        $r17 = new com.google.tagmanager.UniversalAnalyticsTag;
+
+        specialinvoke $r17.<com.google.tagmanager.UniversalAnalyticsTag: void <init>(android.content.Context,com.google.tagmanager.DataLayer)>($r1, $r3);
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addTrackingTag(com.google.tagmanager.FunctionCallImplementation)>($r17);
+
+        $r14 = new java.util.HashMap;
+
+        specialinvoke $r14.<java.util.HashMap: void <init>()>();
+
+        r0.<com.google.tagmanager.Runtime: java.util.Map mPredicateMap> = $r14;
+
+        $r18 = new com.google.tagmanager.ContainsPredicate;
+
+        specialinvoke $r18.<com.google.tagmanager.ContainsPredicate: void <init>()>();
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addPredicate(com.google.tagmanager.FunctionCallImplementation)>($r18);
+
+        $r19 = new com.google.tagmanager.EndsWithPredicate;
+
+        specialinvoke $r19.<com.google.tagmanager.EndsWithPredicate: void <init>()>();
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addPredicate(com.google.tagmanager.FunctionCallImplementation)>($r19);
+
+        $r20 = new com.google.tagmanager.EqualsPredicate;
+
+        specialinvoke $r20.<com.google.tagmanager.EqualsPredicate: void <init>()>();
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addPredicate(com.google.tagmanager.FunctionCallImplementation)>($r20);
+
+        $r21 = new com.google.tagmanager.GreaterEqualsPredicate;
+
+        specialinvoke $r21.<com.google.tagmanager.GreaterEqualsPredicate: void <init>()>();
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addPredicate(com.google.tagmanager.FunctionCallImplementation)>($r21);
+
+        $r22 = new com.google.tagmanager.GreaterThanPredicate;
+
+        specialinvoke $r22.<com.google.tagmanager.GreaterThanPredicate: void <init>()>();
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addPredicate(com.google.tagmanager.FunctionCallImplementation)>($r22);
+
+        $r23 = new com.google.tagmanager.LessEqualsPredicate;
+
+        specialinvoke $r23.<com.google.tagmanager.LessEqualsPredicate: void <init>()>();
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addPredicate(com.google.tagmanager.FunctionCallImplementation)>($r23);
+
+        $r24 = new com.google.tagmanager.LessThanPredicate;
+
+        specialinvoke $r24.<com.google.tagmanager.LessThanPredicate: void <init>()>();
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addPredicate(com.google.tagmanager.FunctionCallImplementation)>($r24);
+
+        $r25 = new com.google.tagmanager.RegexPredicate;
+
+        specialinvoke $r25.<com.google.tagmanager.RegexPredicate: void <init>()>();
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addPredicate(com.google.tagmanager.FunctionCallImplementation)>($r25);
+
+        $r26 = new com.google.tagmanager.StartsWithPredicate;
+
+        specialinvoke $r26.<com.google.tagmanager.StartsWithPredicate: void <init>()>();
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addPredicate(com.google.tagmanager.FunctionCallImplementation)>($r26);
+
+        $r14 = new java.util.HashMap;
+
+        specialinvoke $r14.<java.util.HashMap: void <init>()>();
+
+        r0.<com.google.tagmanager.Runtime: java.util.Map mMacroMap> = $r14;
+
+        $r27 = new com.google.tagmanager.AdvertiserIdMacro;
+
+        specialinvoke $r27.<com.google.tagmanager.AdvertiserIdMacro: void <init>(android.content.Context)>($r1);
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addMacro(com.google.tagmanager.FunctionCallImplementation)>($r27);
+
+        $r28 = new com.google.tagmanager.AdvertisingTrackingEnabledMacro;
+
+        specialinvoke $r28.<com.google.tagmanager.AdvertisingTrackingEnabledMacro: void <init>()>();
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addMacro(com.google.tagmanager.FunctionCallImplementation)>($r28);
+
+        $r29 = new com.google.tagmanager.AdwordsClickReferrerMacro;
+
+        specialinvoke $r29.<com.google.tagmanager.AdwordsClickReferrerMacro: void <init>(android.content.Context)>($r1);
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addMacro(com.google.tagmanager.FunctionCallImplementation)>($r29);
+
+        $r30 = new com.google.tagmanager.AppIdMacro;
+
+        specialinvoke $r30.<com.google.tagmanager.AppIdMacro: void <init>(android.content.Context)>($r1);
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addMacro(com.google.tagmanager.FunctionCallImplementation)>($r30);
+
+        $r31 = new com.google.tagmanager.AppNameMacro;
+
+        specialinvoke $r31.<com.google.tagmanager.AppNameMacro: void <init>(android.content.Context)>($r1);
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addMacro(com.google.tagmanager.FunctionCallImplementation)>($r31);
+
+        $r32 = new com.google.tagmanager.AppVersionMacro;
+
+        specialinvoke $r32.<com.google.tagmanager.AppVersionMacro: void <init>(android.content.Context)>($r1);
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addMacro(com.google.tagmanager.FunctionCallImplementation)>($r32);
+
+        $r33 = new com.google.tagmanager.ConstantMacro;
+
+        specialinvoke $r33.<com.google.tagmanager.ConstantMacro: void <init>()>();
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addMacro(com.google.tagmanager.FunctionCallImplementation)>($r33);
+
+        $r16 = new com.google.tagmanager.CustomFunctionCall;
+
+        specialinvoke $r16.<com.google.tagmanager.CustomFunctionCall: void <init>(com.google.tagmanager.CustomFunctionCall$CustomEvaluator)>($r4);
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addMacro(com.google.tagmanager.FunctionCallImplementation)>($r16);
+
+        $r34 = new com.google.tagmanager.DataLayerMacro;
+
+        specialinvoke $r34.<com.google.tagmanager.DataLayerMacro: void <init>(com.google.tagmanager.DataLayer)>($r3);
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addMacro(com.google.tagmanager.FunctionCallImplementation)>($r34);
+
+        $r35 = new com.google.tagmanager.DeviceIdMacro;
+
+        specialinvoke $r35.<com.google.tagmanager.DeviceIdMacro: void <init>(android.content.Context)>($r1);
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addMacro(com.google.tagmanager.FunctionCallImplementation)>($r35);
+
+        $r36 = new com.google.tagmanager.DeviceNameMacro;
+
+        specialinvoke $r36.<com.google.tagmanager.DeviceNameMacro: void <init>()>();
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addMacro(com.google.tagmanager.FunctionCallImplementation)>($r36);
+
+        $r37 = new com.google.tagmanager.EncodeMacro;
+
+        specialinvoke $r37.<com.google.tagmanager.EncodeMacro: void <init>()>();
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addMacro(com.google.tagmanager.FunctionCallImplementation)>($r37);
+
+        $r38 = new com.google.tagmanager.EventMacro;
+
+        specialinvoke $r38.<com.google.tagmanager.EventMacro: void <init>(com.google.tagmanager.Runtime)>(r0);
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addMacro(com.google.tagmanager.FunctionCallImplementation)>($r38);
+
+        $r39 = new com.google.tagmanager.GtmVersionMacro;
+
+        specialinvoke $r39.<com.google.tagmanager.GtmVersionMacro: void <init>()>();
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addMacro(com.google.tagmanager.FunctionCallImplementation)>($r39);
+
+        $r40 = new com.google.tagmanager.HashMacro;
+
+        specialinvoke $r40.<com.google.tagmanager.HashMacro: void <init>()>();
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addMacro(com.google.tagmanager.FunctionCallImplementation)>($r40);
+
+        $r41 = new com.google.tagmanager.InstallReferrerMacro;
+
+        specialinvoke $r41.<com.google.tagmanager.InstallReferrerMacro: void <init>(android.content.Context)>($r1);
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addMacro(com.google.tagmanager.FunctionCallImplementation)>($r41);
+
+        $r42 = new com.google.tagmanager.JoinerMacro;
+
+        specialinvoke $r42.<com.google.tagmanager.JoinerMacro: void <init>()>();
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addMacro(com.google.tagmanager.FunctionCallImplementation)>($r42);
+
+        $r43 = new com.google.tagmanager.LanguageMacro;
+
+        specialinvoke $r43.<com.google.tagmanager.LanguageMacro: void <init>()>();
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addMacro(com.google.tagmanager.FunctionCallImplementation)>($r43);
+
+        $r44 = new com.google.tagmanager.MobileAdwordsUniqueIdMacro;
+
+        specialinvoke $r44.<com.google.tagmanager.MobileAdwordsUniqueIdMacro: void <init>(android.content.Context)>($r1);
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addMacro(com.google.tagmanager.FunctionCallImplementation)>($r44);
+
+        $r45 = new com.google.tagmanager.OsVersionMacro;
+
+        specialinvoke $r45.<com.google.tagmanager.OsVersionMacro: void <init>()>();
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addMacro(com.google.tagmanager.FunctionCallImplementation)>($r45);
+
+        $r46 = new com.google.tagmanager.PlatformMacro;
+
+        specialinvoke $r46.<com.google.tagmanager.PlatformMacro: void <init>()>();
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addMacro(com.google.tagmanager.FunctionCallImplementation)>($r46);
+
+        $r47 = new com.google.tagmanager.RandomMacro;
+
+        specialinvoke $r47.<com.google.tagmanager.RandomMacro: void <init>()>();
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addMacro(com.google.tagmanager.FunctionCallImplementation)>($r47);
+
+        $r48 = new com.google.tagmanager.RegexGroupMacro;
+
+        specialinvoke $r48.<com.google.tagmanager.RegexGroupMacro: void <init>()>();
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addMacro(com.google.tagmanager.FunctionCallImplementation)>($r48);
+
+        $r49 = new com.google.tagmanager.ResolutionMacro;
+
+        specialinvoke $r49.<com.google.tagmanager.ResolutionMacro: void <init>(android.content.Context)>($r1);
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addMacro(com.google.tagmanager.FunctionCallImplementation)>($r49);
+
+        $r50 = new com.google.tagmanager.RuntimeVersionMacro;
+
+        specialinvoke $r50.<com.google.tagmanager.RuntimeVersionMacro: void <init>()>();
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addMacro(com.google.tagmanager.FunctionCallImplementation)>($r50);
+
+        $r51 = new com.google.tagmanager.SdkVersionMacro;
+
+        specialinvoke $r51.<com.google.tagmanager.SdkVersionMacro: void <init>()>();
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addMacro(com.google.tagmanager.FunctionCallImplementation)>($r51);
+
+        $r52 = new com.google.tagmanager.TimeMacro;
+
+        specialinvoke $r52.<com.google.tagmanager.TimeMacro: void <init>()>();
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void addMacro(com.google.tagmanager.FunctionCallImplementation)>($r52);
+
+        $r14 = new java.util.HashMap;
+
+        specialinvoke $r14.<java.util.HashMap: void <init>()>();
+
+        r0.<com.google.tagmanager.Runtime: java.util.Map mMacroLookup> = $r14;
+
+        $r53 = r0.<com.google.tagmanager.Runtime: java.util.Set mRules>;
+
+        $r54 = interfaceinvoke $r53.<java.util.Set: java.util.Iterator iterator()>();
+
+     label02:
+        $z0 = interfaceinvoke $r54.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label09;
+
+        $r55 = interfaceinvoke $r54.<java.util.Iterator: java.lang.Object next()>();
+
+        $r56 = (com.google.tagmanager.ResourceUtil$ExpandedRule) $r55;
+
+        $z0 = interfaceinvoke $r6.<com.google.tagmanager.EventInfoDistributor: boolean debugMode()>();
+
+        if $z0 == 0 goto label03;
+
+        $r9 = virtualinvoke $r56.<com.google.tagmanager.ResourceUtil$ExpandedRule: java.util.List getAddMacros()>();
+
+        $r57 = virtualinvoke $r56.<com.google.tagmanager.ResourceUtil$ExpandedRule: java.util.List getAddMacroRuleNames()>();
+
+        staticinvoke <com.google.tagmanager.Runtime: void verifyFunctionAndNameListSizes(java.util.List,java.util.List,java.lang.String)>($r9, $r57, "add macro");
+
+        $r9 = virtualinvoke $r56.<com.google.tagmanager.ResourceUtil$ExpandedRule: java.util.List getRemoveMacros()>();
+
+        $r57 = virtualinvoke $r56.<com.google.tagmanager.ResourceUtil$ExpandedRule: java.util.List getRemoveMacroRuleNames()>();
+
+        staticinvoke <com.google.tagmanager.Runtime: void verifyFunctionAndNameListSizes(java.util.List,java.util.List,java.lang.String)>($r9, $r57, "remove macro");
+
+        $r9 = virtualinvoke $r56.<com.google.tagmanager.ResourceUtil$ExpandedRule: java.util.List getAddTags()>();
+
+        $r57 = virtualinvoke $r56.<com.google.tagmanager.ResourceUtil$ExpandedRule: java.util.List getAddTagRuleNames()>();
+
+        staticinvoke <com.google.tagmanager.Runtime: void verifyFunctionAndNameListSizes(java.util.List,java.util.List,java.lang.String)>($r9, $r57, "add tag");
+
+        $r9 = virtualinvoke $r56.<com.google.tagmanager.ResourceUtil$ExpandedRule: java.util.List getRemoveTags()>();
+
+        $r57 = virtualinvoke $r56.<com.google.tagmanager.ResourceUtil$ExpandedRule: java.util.List getRemoveTagRuleNames()>();
+
+        staticinvoke <com.google.tagmanager.Runtime: void verifyFunctionAndNameListSizes(java.util.List,java.util.List,java.lang.String)>($r9, $r57, "remove tag");
+
+     label03:
+        $i0 = 0;
+
+     label04:
+        $r9 = virtualinvoke $r56.<com.google.tagmanager.ResourceUtil$ExpandedRule: java.util.List getAddMacros()>();
+
+        $i1 = interfaceinvoke $r9.<java.util.List: int size()>();
+
+        if $i0 >= $i1 goto label06;
+
+        $r9 = virtualinvoke $r56.<com.google.tagmanager.ResourceUtil$ExpandedRule: java.util.List getAddMacros()>();
+
+        $r55 = interfaceinvoke $r9.<java.util.List: java.lang.Object get(int)>($i0);
+
+        $r58 = (com.google.tagmanager.ResourceUtil$ExpandedFunctionCall) $r55;
+
+        $r59 = "Unknown";
+
+        $z0 = interfaceinvoke $r6.<com.google.tagmanager.EventInfoDistributor: boolean debugMode()>();
+
+        if $z0 == 0 goto label05;
+
+        $r9 = virtualinvoke $r56.<com.google.tagmanager.ResourceUtil$ExpandedRule: java.util.List getAddMacroRuleNames()>();
+
+        $i1 = interfaceinvoke $r9.<java.util.List: int size()>();
+
+        if $i0 >= $i1 goto label05;
+
+        $r9 = virtualinvoke $r56.<com.google.tagmanager.ResourceUtil$ExpandedRule: java.util.List getAddMacroRuleNames()>();
+
+        $r55 = interfaceinvoke $r9.<java.util.List: java.lang.Object get(int)>($i0);
+
+        $r59 = (java.lang.String) $r55;
+
+     label05:
+        $r60 = r0.<com.google.tagmanager.Runtime: java.util.Map mMacroLookup>;
+
+        $r61 = staticinvoke <com.google.tagmanager.Runtime: java.lang.String getFunctionName(com.google.tagmanager.ResourceUtil$ExpandedFunctionCall)>($r58);
+
+        $r62 = staticinvoke <com.google.tagmanager.Runtime: com.google.tagmanager.Runtime$MacroInfo getOrAddMacroInfo(java.util.Map,java.lang.String)>($r60, $r61);
+
+        virtualinvoke $r62.<com.google.tagmanager.Runtime$MacroInfo: void addRule(com.google.tagmanager.ResourceUtil$ExpandedRule)>($r56);
+
+        virtualinvoke $r62.<com.google.tagmanager.Runtime$MacroInfo: void addAddMacroForRule(com.google.tagmanager.ResourceUtil$ExpandedRule,com.google.tagmanager.ResourceUtil$ExpandedFunctionCall)>($r56, $r58);
+
+        virtualinvoke $r62.<com.google.tagmanager.Runtime$MacroInfo: void addAddMacroRuleNameForRule(com.google.tagmanager.ResourceUtil$ExpandedRule,java.lang.String)>($r56, $r59);
+
+        $i0 = $i0 + 1;
+
+        goto label04;
+
+     label06:
+        $i0 = 0;
+
+     label07:
+        $r9 = virtualinvoke $r56.<com.google.tagmanager.ResourceUtil$ExpandedRule: java.util.List getRemoveMacros()>();
+
+        $i1 = interfaceinvoke $r9.<java.util.List: int size()>();
+
+        if $i0 >= $i1 goto label02;
+
+        $r9 = virtualinvoke $r56.<com.google.tagmanager.ResourceUtil$ExpandedRule: java.util.List getRemoveMacros()>();
+
+        $r55 = interfaceinvoke $r9.<java.util.List: java.lang.Object get(int)>($i0);
+
+        $r58 = (com.google.tagmanager.ResourceUtil$ExpandedFunctionCall) $r55;
+
+        $r59 = "Unknown";
+
+        $z0 = interfaceinvoke $r6.<com.google.tagmanager.EventInfoDistributor: boolean debugMode()>();
+
+        if $z0 == 0 goto label08;
+
+        $r9 = virtualinvoke $r56.<com.google.tagmanager.ResourceUtil$ExpandedRule: java.util.List getRemoveMacroRuleNames()>();
+
+        $i1 = interfaceinvoke $r9.<java.util.List: int size()>();
+
+        if $i0 >= $i1 goto label08;
+
+        $r9 = virtualinvoke $r56.<com.google.tagmanager.ResourceUtil$ExpandedRule: java.util.List getRemoveMacroRuleNames()>();
+
+        $r55 = interfaceinvoke $r9.<java.util.List: java.lang.Object get(int)>($i0);
+
+        $r59 = (java.lang.String) $r55;
+
+     label08:
+        $r60 = r0.<com.google.tagmanager.Runtime: java.util.Map mMacroLookup>;
+
+        $r61 = staticinvoke <com.google.tagmanager.Runtime: java.lang.String getFunctionName(com.google.tagmanager.ResourceUtil$ExpandedFunctionCall)>($r58);
+
+        $r62 = staticinvoke <com.google.tagmanager.Runtime: com.google.tagmanager.Runtime$MacroInfo getOrAddMacroInfo(java.util.Map,java.lang.String)>($r60, $r61);
+
+        virtualinvoke $r62.<com.google.tagmanager.Runtime$MacroInfo: void addRule(com.google.tagmanager.ResourceUtil$ExpandedRule)>($r56);
+
+        virtualinvoke $r62.<com.google.tagmanager.Runtime$MacroInfo: void addRemoveMacroForRule(com.google.tagmanager.ResourceUtil$ExpandedRule,com.google.tagmanager.ResourceUtil$ExpandedFunctionCall)>($r56, $r58);
+
+        virtualinvoke $r62.<com.google.tagmanager.Runtime$MacroInfo: void addRemoveMacroRuleNameForRule(com.google.tagmanager.ResourceUtil$ExpandedRule,java.lang.String)>($r56, $r59);
+
+        $i0 = $i0 + 1;
+
+        goto label07;
+
+     label09:
+        $r2 = r0.<com.google.tagmanager.Runtime: com.google.tagmanager.ResourceUtil$ExpandedResource mResource>;
+
+        $r60 = virtualinvoke $r2.<com.google.tagmanager.ResourceUtil$ExpandedResource: java.util.Map getAllMacros()>();
+
+        $r53 = interfaceinvoke $r60.<java.util.Map: java.util.Set entrySet()>();
+
+        $r54 = interfaceinvoke $r53.<java.util.Set: java.util.Iterator iterator()>();
+
+     label10:
+        $z0 = interfaceinvoke $r54.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label12;
+
+        $r55 = interfaceinvoke $r54.<java.util.Iterator: java.lang.Object next()>();
+
+        $r63 = (java.util.Map$Entry) $r55;
+
+        $r55 = interfaceinvoke $r63.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+        $r9 = (java.util.List) $r55;
+
+        $r64 = interfaceinvoke $r9.<java.util.List: java.util.Iterator iterator()>();
+
+     label11:
+        $z0 = interfaceinvoke $r64.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label10;
+
+        $r55 = interfaceinvoke $r64.<java.util.Iterator: java.lang.Object next()>();
+
+        $r58 = (com.google.tagmanager.ResourceUtil$ExpandedFunctionCall) $r55;
+
+        $r60 = virtualinvoke $r58.<com.google.tagmanager.ResourceUtil$ExpandedFunctionCall: java.util.Map getProperties()>();
+
+        $r65 = <com.google.analytics.containertag.common.Key: com.google.analytics.containertag.common.Key NOT_DEFAULT_MACRO>;
+
+        $r59 = virtualinvoke $r65.<com.google.analytics.containertag.common.Key: java.lang.String toString()>();
+
+        $r55 = interfaceinvoke $r60.<java.util.Map: java.lang.Object get(java.lang.Object)>($r59);
+
+        $r66 = (com.google.analytics.midtier.proto.containertag.TypeSystem$Value) $r55;
+
+        $r67 = staticinvoke <com.google.tagmanager.Types: java.lang.Boolean valueToBoolean(com.google.analytics.midtier.proto.containertag.TypeSystem$Value)>($r66);
+
+        $z0 = virtualinvoke $r67.<java.lang.Boolean: boolean booleanValue()>();
+
+        if $z0 != 0 goto label11;
+
+        $r60 = r0.<com.google.tagmanager.Runtime: java.util.Map mMacroLookup>;
+
+        $r55 = interfaceinvoke $r63.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+        $r59 = (java.lang.String) $r55;
+
+        $r62 = staticinvoke <com.google.tagmanager.Runtime: com.google.tagmanager.Runtime$MacroInfo getOrAddMacroInfo(java.util.Map,java.lang.String)>($r60, $r59);
+
+        virtualinvoke $r62.<com.google.tagmanager.Runtime$MacroInfo: void setDefault(com.google.tagmanager.ResourceUtil$ExpandedFunctionCall)>($r58);
+
+        goto label11;
+
+     label12:
+        return;
+    }
+
+    private static void addFunctionImplToMap(java.util.Map, com.google.tagmanager.FunctionCallImplementation)
+    {
+        com.google.tagmanager.FunctionCallImplementation $r1;
+        java.util.Map $r0;
+        java.lang.StringBuilder $r4;
+        java.lang.String $r2;
+        java.lang.IllegalArgumentException $r3;
+        boolean $z0;
+
+        $r0 := @parameter0: java.util.Map;
+
+        $r1 := @parameter1: com.google.tagmanager.FunctionCallImplementation;
+
+        $r2 = virtualinvoke $r1.<com.google.tagmanager.FunctionCallImplementation: java.lang.String getInstanceFunctionId()>();
+
+        $z0 = interfaceinvoke $r0.<java.util.Map: boolean containsKey(java.lang.Object)>($r2);
+
+        if $z0 == 0 goto label1;
+
+        $r3 = new java.lang.IllegalArgumentException;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>(java.lang.String)>("Duplicate function type name: ");
+
+        $r2 = virtualinvoke $r1.<com.google.tagmanager.FunctionCallImplementation: java.lang.String getInstanceFunctionId()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r2 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r3.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r2);
+
+        throw $r3;
+
+     label1:
+        $r2 = virtualinvoke $r1.<com.google.tagmanager.FunctionCallImplementation: java.lang.String getInstanceFunctionId()>();
+
+        interfaceinvoke $r0.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r2, $r1);
+
+        return;
+    }
+
+    private com.google.tagmanager.ObjectAndStatic calculateGenericToRun(java.util.Set, java.util.Set, com.google.tagmanager.Runtime$AddRemoveSetPopulator, com.google.tagmanager.RuleEvaluationStepInfoBuilder)
+    {
+        com.google.tagmanager.RuleEvaluationStepInfoBuilder $r4;
+        java.util.Iterator $r7;
+        com.google.tagmanager.ResolvedRuleBuilder $r10;
+        java.util.Set $r1, $r2;
+        com.google.tagmanager.ResourceUtil$ExpandedRule $r9;
+        com.google.tagmanager.Runtime$AddRemoveSetPopulator $r3;
+        java.util.HashSet $r5, $r6;
+        com.google.tagmanager.Runtime r0;
+        java.lang.Boolean $r12;
+        java.lang.Object $r8;
+        com.google.tagmanager.ObjectAndStatic $r11;
+        boolean $z0, $z1;
+
+        r0 := @this: com.google.tagmanager.Runtime;
+
+        $r1 := @parameter0: java.util.Set;
+
+        $r2 := @parameter1: java.util.Set;
+
+        $r3 := @parameter2: com.google.tagmanager.Runtime$AddRemoveSetPopulator;
+
+        $r4 := @parameter3: com.google.tagmanager.RuleEvaluationStepInfoBuilder;
+
+        $r5 = new java.util.HashSet;
+
+        specialinvoke $r5.<java.util.HashSet: void <init>()>();
+
+        $r6 = new java.util.HashSet;
+
+        specialinvoke $r6.<java.util.HashSet: void <init>()>();
+
+        $r7 = interfaceinvoke $r1.<java.util.Set: java.util.Iterator iterator()>();
+
+        $z0 = 1;
+
+     label1:
+        $z1 = interfaceinvoke $r7.<java.util.Iterator: boolean hasNext()>();
+
+        if $z1 == 0 goto label5;
+
+        $r8 = interfaceinvoke $r7.<java.util.Iterator: java.lang.Object next()>();
+
+        $r9 = (com.google.tagmanager.ResourceUtil$ExpandedRule) $r8;
+
+        $r10 = interfaceinvoke $r4.<com.google.tagmanager.RuleEvaluationStepInfoBuilder: com.google.tagmanager.ResolvedRuleBuilder createResolvedRuleBuilder()>();
+
+        $r11 = virtualinvoke r0.<com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic evaluatePredicatesInRule(com.google.tagmanager.ResourceUtil$ExpandedRule,java.util.Set,com.google.tagmanager.ResolvedRuleBuilder)>($r9, $r2, $r10);
+
+        $r8 = virtualinvoke $r11.<com.google.tagmanager.ObjectAndStatic: java.lang.Object getObject()>();
+
+        $r12 = (java.lang.Boolean) $r8;
+
+        $z1 = virtualinvoke $r12.<java.lang.Boolean: boolean booleanValue()>();
+
+        if $z1 == 0 goto label2;
+
+        interfaceinvoke $r3.<com.google.tagmanager.Runtime$AddRemoveSetPopulator: void rulePassed(com.google.tagmanager.ResourceUtil$ExpandedRule,java.util.Set,java.util.Set,com.google.tagmanager.ResolvedRuleBuilder)>($r9, $r5, $r6, $r10);
+
+     label2:
+        if $z0 == 0 goto label4;
+
+        $z0 = virtualinvoke $r11.<com.google.tagmanager.ObjectAndStatic: boolean isStatic()>();
+
+        if $z0 == 0 goto label4;
+
+        $z0 = 1;
+
+     label3:
+        goto label1;
+
+     label4:
+        $z0 = 0;
+
+        goto label3;
+
+     label5:
+        interfaceinvoke $r5.<java.util.Set: boolean removeAll(java.util.Collection)>($r6);
+
+        interfaceinvoke $r4.<com.google.tagmanager.RuleEvaluationStepInfoBuilder: void setEnabledFunctions(java.util.Set)>($r5);
+
+        $r11 = new com.google.tagmanager.ObjectAndStatic;
+
+        specialinvoke $r11.<com.google.tagmanager.ObjectAndStatic: void <init>(java.lang.Object,boolean)>($r5, $z0);
+
+        return $r11;
+    }
+
+    private com.google.tagmanager.ObjectAndStatic evaluateMacroReferenceCycleDetection(java.lang.String, java.util.Set, com.google.tagmanager.MacroEvaluationInfoBuilder)
+    {
+        com.google.tagmanager.Cache $r4;
+        com.google.tagmanager.RuleEvaluationStepInfoBuilder $r15;
+        com.google.tagmanager.EventInfoDistributor $r7;
+        com.google.tagmanager.MacroEvaluationInfoBuilder $r3;
+        com.google.tagmanager.Runtime r0;
+        java.util.Map $r8, $r12, $r13, $r14;
+        int $i0;
+        java.lang.String $r1, $r18;
+        com.google.tagmanager.ObjectAndStatic $r6, $r16;
+        boolean $z0;
+        java.util.Iterator $r19;
+        java.util.Set $r2, $r11;
+        java.lang.Object $r5;
+        java.lang.StringBuilder $r10;
+        com.google.tagmanager.Runtime$MacroInfo $r9;
+        com.google.tagmanager.ResourceUtil$ExpandedFunctionCall $r17;
+        com.google.tagmanager.ResolvedFunctionCallBuilder $r20;
+
+        r0 := @this: com.google.tagmanager.Runtime;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.util.Set;
+
+        $r3 := @parameter2: com.google.tagmanager.MacroEvaluationInfoBuilder;
+
+        $r4 = r0.<com.google.tagmanager.Runtime: com.google.tagmanager.Cache mMacroEvaluationCache>;
+
+        $r5 = interfaceinvoke $r4.<com.google.tagmanager.Cache: java.lang.Object get(java.lang.Object)>($r1);
+
+        $r6 = (com.google.tagmanager.ObjectAndStatic) $r5;
+
+        if $r6 == null goto label01;
+
+        $r7 = r0.<com.google.tagmanager.Runtime: com.google.tagmanager.EventInfoDistributor eventInfoDistributor>;
+
+        $z0 = interfaceinvoke $r7.<com.google.tagmanager.EventInfoDistributor: boolean debugMode()>();
+
+        if $z0 != 0 goto label01;
+
+        return $r6;
+
+     label01:
+        $r8 = r0.<com.google.tagmanager.Runtime: java.util.Map mMacroLookup>;
+
+        $r5 = interfaceinvoke $r8.<java.util.Map: java.lang.Object get(java.lang.Object)>($r1);
+
+        $r9 = (com.google.tagmanager.Runtime$MacroInfo) $r5;
+
+        if $r9 != null goto label02;
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>(java.lang.String)>("Invalid macro: ");
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.google.tagmanager.Log: void e(java.lang.String)>($r1);
+
+        $r6 = <com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic DEFAULT_VALUE_AND_STATIC>;
+
+        return $r6;
+
+     label02:
+        $r11 = virtualinvoke $r9.<com.google.tagmanager.Runtime$MacroInfo: java.util.Set getRules()>();
+
+        $r8 = virtualinvoke $r9.<com.google.tagmanager.Runtime$MacroInfo: java.util.Map getAddMacros()>();
+
+        $r12 = virtualinvoke $r9.<com.google.tagmanager.Runtime$MacroInfo: java.util.Map getAddMacroRuleNames()>();
+
+        $r13 = virtualinvoke $r9.<com.google.tagmanager.Runtime$MacroInfo: java.util.Map getRemoveMacros()>();
+
+        $r14 = virtualinvoke $r9.<com.google.tagmanager.Runtime$MacroInfo: java.util.Map getRemoveMacroRuleNames()>();
+
+        $r15 = interfaceinvoke $r3.<com.google.tagmanager.MacroEvaluationInfoBuilder: com.google.tagmanager.RuleEvaluationStepInfoBuilder createRulesEvaluation()>();
+
+        $r16 = virtualinvoke r0.<com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic calculateMacrosToRun(java.lang.String,java.util.Set,java.util.Map,java.util.Map,java.util.Map,java.util.Map,java.util.Set,com.google.tagmanager.RuleEvaluationStepInfoBuilder)>($r1, $r11, $r8, $r12, $r13, $r14, $r2, $r15);
+
+        $r5 = virtualinvoke $r16.<com.google.tagmanager.ObjectAndStatic: java.lang.Object getObject()>();
+
+        $r11 = (java.util.Set) $r5;
+
+        $z0 = interfaceinvoke $r11.<java.util.Set: boolean isEmpty()>();
+
+        if $z0 == 0 goto label04;
+
+        $r17 = virtualinvoke $r9.<com.google.tagmanager.Runtime$MacroInfo: com.google.tagmanager.ResourceUtil$ExpandedFunctionCall getDefault()>();
+
+     label03:
+        if $r17 != null goto label06;
+
+        $r6 = <com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic DEFAULT_VALUE_AND_STATIC>;
+
+        return $r6;
+
+     label04:
+        $r5 = virtualinvoke $r16.<com.google.tagmanager.ObjectAndStatic: java.lang.Object getObject()>();
+
+        $r11 = (java.util.Set) $r5;
+
+        $i0 = interfaceinvoke $r11.<java.util.Set: int size()>();
+
+        if $i0 <= 1 goto label05;
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>(java.lang.String)>("Multiple macros active for macroName ");
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r18 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.google.tagmanager.Log: void w(java.lang.String)>($r18);
+
+     label05:
+        $r5 = virtualinvoke $r16.<com.google.tagmanager.ObjectAndStatic: java.lang.Object getObject()>();
+
+        $r11 = (java.util.Set) $r5;
+
+        $r19 = interfaceinvoke $r11.<java.util.Set: java.util.Iterator iterator()>();
+
+        $r5 = interfaceinvoke $r19.<java.util.Iterator: java.lang.Object next()>();
+
+        $r17 = (com.google.tagmanager.ResourceUtil$ExpandedFunctionCall) $r5;
+
+        goto label03;
+
+     label06:
+        $r8 = r0.<com.google.tagmanager.Runtime: java.util.Map mMacroMap>;
+
+        $r20 = interfaceinvoke $r3.<com.google.tagmanager.MacroEvaluationInfoBuilder: com.google.tagmanager.ResolvedFunctionCallBuilder createResult()>();
+
+        $r6 = specialinvoke r0.<com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic executeFunction(java.util.Map,com.google.tagmanager.ResourceUtil$ExpandedFunctionCall,java.util.Set,com.google.tagmanager.ResolvedFunctionCallBuilder)>($r8, $r17, $r2, $r20);
+
+        $z0 = virtualinvoke $r16.<com.google.tagmanager.ObjectAndStatic: boolean isStatic()>();
+
+        if $z0 == 0 goto label09;
+
+        $z0 = virtualinvoke $r6.<com.google.tagmanager.ObjectAndStatic: boolean isStatic()>();
+
+        if $z0 == 0 goto label09;
+
+        $z0 = 1;
+
+     label07:
+        $r16 = <com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic DEFAULT_VALUE_AND_STATIC>;
+
+        if $r6 != $r16 goto label10;
+
+        $r6 = <com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic DEFAULT_VALUE_AND_STATIC>;
+
+     label08:
+        $z0 = virtualinvoke $r6.<com.google.tagmanager.ObjectAndStatic: boolean isStatic()>();
+
+        if $z0 == 0 goto label11;
+
+        $r4 = r0.<com.google.tagmanager.Runtime: com.google.tagmanager.Cache mMacroEvaluationCache>;
+
+        interfaceinvoke $r4.<com.google.tagmanager.Cache: void put(java.lang.Object,java.lang.Object)>($r1, $r6);
+
+        return $r6;
+
+     label09:
+        $z0 = 0;
+
+        goto label07;
+
+     label10:
+        $r16 = new com.google.tagmanager.ObjectAndStatic;
+
+        $r5 = virtualinvoke $r6.<com.google.tagmanager.ObjectAndStatic: java.lang.Object getObject()>();
+
+        specialinvoke $r16.<com.google.tagmanager.ObjectAndStatic: void <init>(java.lang.Object,boolean)>($r5, $z0);
+
+        $r6 = $r16;
+
+        goto label08;
+
+     label11:
+        return $r6;
+    }
+
+    private com.google.tagmanager.ObjectAndStatic executeFunction(java.util.Map, com.google.tagmanager.ResourceUtil$ExpandedFunctionCall, java.util.Set, com.google.tagmanager.ResolvedFunctionCallBuilder)
+    {
+        com.google.tagmanager.Cache $r13;
+        com.google.analytics.containertag.common.Key $r7;
+        java.util.HashMap $r5;
+        com.google.tagmanager.EventInfoDistributor $r15;
+        com.google.tagmanager.Runtime r0;
+        java.util.Map $r1, $r6;
+        java.lang.String $r8, $r19;
+        com.google.tagmanager.ObjectAndStatic $r14, $r23;
+        com.google.tagmanager.ValueBuilder $r22;
+        boolean $z0, $z1, $z2;
+        java.util.Map$Entry $r18;
+        java.util.Iterator $r17;
+        java.util.Set $r3, $r16;
+        com.google.analytics.midtier.proto.containertag.TypeSystem$Value $r10, $r21;
+        com.google.tagmanager.FunctionCallImplementation $r11;
+        com.google.tagmanager.ResolvedPropertyBuilder $r20;
+        java.lang.Object $r9, $r24;
+        java.lang.StringBuilder $r12;
+        com.google.tagmanager.ResourceUtil$ExpandedFunctionCall $r2;
+        com.google.tagmanager.ResolvedFunctionCallBuilder $r4;
+
+        r0 := @this: com.google.tagmanager.Runtime;
+
+        $r1 := @parameter0: java.util.Map;
+
+        $r2 := @parameter1: com.google.tagmanager.ResourceUtil$ExpandedFunctionCall;
+
+        $r3 := @parameter2: java.util.Set;
+
+        $r4 := @parameter3: com.google.tagmanager.ResolvedFunctionCallBuilder;
+
+        $z0 = 1;
+
+        $r6 = virtualinvoke $r2.<com.google.tagmanager.ResourceUtil$ExpandedFunctionCall: java.util.Map getProperties()>();
+
+        $r7 = <com.google.analytics.containertag.common.Key: com.google.analytics.containertag.common.Key FUNCTION>;
+
+        $r8 = virtualinvoke $r7.<com.google.analytics.containertag.common.Key: java.lang.String toString()>();
+
+        $r9 = interfaceinvoke $r6.<java.util.Map: java.lang.Object get(java.lang.Object)>($r8);
+
+        $r10 = (com.google.analytics.midtier.proto.containertag.TypeSystem$Value) $r9;
+
+        if $r10 != null goto label01;
+
+        staticinvoke <com.google.tagmanager.Log: void e(java.lang.String)>("No function id in properties");
+
+        $r14 = <com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic DEFAULT_VALUE_AND_STATIC>;
+
+        return $r14;
+
+     label01:
+        $r8 = virtualinvoke $r10.<com.google.analytics.midtier.proto.containertag.TypeSystem$Value: java.lang.String getFunctionId()>();
+
+        $r9 = interfaceinvoke $r1.<java.util.Map: java.lang.Object get(java.lang.Object)>($r8);
+
+        $r11 = (com.google.tagmanager.FunctionCallImplementation) $r9;
+
+        if $r11 != null goto label02;
+
+        $r12 = new java.lang.StringBuilder;
+
+        specialinvoke $r12.<java.lang.StringBuilder: void <init>()>();
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" has no backing implementation.");
+
+        $r8 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.google.tagmanager.Log: void e(java.lang.String)>($r8);
+
+        $r14 = <com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic DEFAULT_VALUE_AND_STATIC>;
+
+        return $r14;
+
+     label02:
+        $r13 = r0.<com.google.tagmanager.Runtime: com.google.tagmanager.Cache mFunctionCallCache>;
+
+        $r9 = interfaceinvoke $r13.<com.google.tagmanager.Cache: java.lang.Object get(java.lang.Object)>($r2);
+
+        $r14 = (com.google.tagmanager.ObjectAndStatic) $r9;
+
+        if $r14 == null goto label03;
+
+        $r15 = r0.<com.google.tagmanager.Runtime: com.google.tagmanager.EventInfoDistributor eventInfoDistributor>;
+
+        $z1 = interfaceinvoke $r15.<com.google.tagmanager.EventInfoDistributor: boolean debugMode()>();
+
+        if $z1 == 0 goto label13;
+
+     label03:
+        $r5 = new java.util.HashMap;
+
+        specialinvoke $r5.<java.util.HashMap: void <init>()>();
+
+        $r1 = virtualinvoke $r2.<com.google.tagmanager.ResourceUtil$ExpandedFunctionCall: java.util.Map getProperties()>();
+
+        $r16 = interfaceinvoke $r1.<java.util.Map: java.util.Set entrySet()>();
+
+        $r17 = interfaceinvoke $r16.<java.util.Set: java.util.Iterator iterator()>();
+
+        $z1 = 1;
+
+     label04:
+        $z2 = interfaceinvoke $r17.<java.util.Iterator: boolean hasNext()>();
+
+        if $z2 == 0 goto label08;
+
+        $r9 = interfaceinvoke $r17.<java.util.Iterator: java.lang.Object next()>();
+
+        $r18 = (java.util.Map$Entry) $r9;
+
+        $r9 = interfaceinvoke $r18.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+        $r19 = (java.lang.String) $r9;
+
+        $r20 = interfaceinvoke $r4.<com.google.tagmanager.ResolvedFunctionCallBuilder: com.google.tagmanager.ResolvedPropertyBuilder createResolvedPropertyBuilder(java.lang.String)>($r19);
+
+        $r9 = interfaceinvoke $r18.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+        $r10 = (com.google.analytics.midtier.proto.containertag.TypeSystem$Value) $r9;
+
+        $r9 = interfaceinvoke $r18.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+        $r21 = (com.google.analytics.midtier.proto.containertag.TypeSystem$Value) $r9;
+
+        $r22 = interfaceinvoke $r20.<com.google.tagmanager.ResolvedPropertyBuilder: com.google.tagmanager.ValueBuilder createPropertyValueBuilder(com.google.analytics.midtier.proto.containertag.TypeSystem$Value)>($r21);
+
+        $r14 = specialinvoke r0.<com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic macroExpandValue(com.google.analytics.midtier.proto.containertag.TypeSystem$Value,java.util.Set,com.google.tagmanager.ValueBuilder)>($r10, $r3, $r22);
+
+        $r23 = <com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic DEFAULT_VALUE_AND_STATIC>;
+
+        if $r14 != $r23 goto label05;
+
+        $r14 = <com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic DEFAULT_VALUE_AND_STATIC>;
+
+        return $r14;
+
+     label05:
+        $z2 = virtualinvoke $r14.<com.google.tagmanager.ObjectAndStatic: boolean isStatic()>();
+
+        if $z2 == 0 goto label07;
+
+        $r9 = interfaceinvoke $r18.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+        $r19 = (java.lang.String) $r9;
+
+        $r9 = virtualinvoke $r14.<com.google.tagmanager.ObjectAndStatic: java.lang.Object getObject()>();
+
+        $r10 = (com.google.analytics.midtier.proto.containertag.TypeSystem$Value) $r9;
+
+        virtualinvoke $r2.<com.google.tagmanager.ResourceUtil$ExpandedFunctionCall: void updateCacheableProperty(java.lang.String,com.google.analytics.midtier.proto.containertag.TypeSystem$Value)>($r19, $r10);
+
+     label06:
+        $r9 = interfaceinvoke $r18.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+        $r24 = virtualinvoke $r14.<com.google.tagmanager.ObjectAndStatic: java.lang.Object getObject()>();
+
+        interfaceinvoke $r5.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r9, $r24);
+
+        goto label04;
+
+     label07:
+        $z1 = 0;
+
+        goto label06;
+
+     label08:
+        $r3 = interfaceinvoke $r5.<java.util.Map: java.util.Set keySet()>();
+
+        $z2 = virtualinvoke $r11.<com.google.tagmanager.FunctionCallImplementation: boolean hasRequiredKeys(java.util.Set)>($r3);
+
+        if $z2 != 0 goto label09;
+
+        $r12 = new java.lang.StringBuilder;
+
+        specialinvoke $r12.<java.lang.StringBuilder: void <init>(java.lang.String)>("Incorrect keys for function ");
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" required ");
+
+        $r3 = virtualinvoke $r11.<com.google.tagmanager.FunctionCallImplementation: java.util.Set getRequiredKeys()>();
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r3);
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" had ");
+
+        $r3 = interfaceinvoke $r5.<java.util.Map: java.util.Set keySet()>();
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r3);
+
+        $r8 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.google.tagmanager.Log: void e(java.lang.String)>($r8);
+
+        $r14 = <com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic DEFAULT_VALUE_AND_STATIC>;
+
+        return $r14;
+
+     label09:
+        if $z1 == 0 goto label12;
+
+        $z1 = virtualinvoke $r11.<com.google.tagmanager.FunctionCallImplementation: boolean isCacheable()>();
+
+        if $z1 == 0 goto label12;
+
+     label10:
+        $r14 = new com.google.tagmanager.ObjectAndStatic;
+
+        $r10 = virtualinvoke $r11.<com.google.tagmanager.FunctionCallImplementation: com.google.analytics.midtier.proto.containertag.TypeSystem$Value evaluate(java.util.Map)>($r5);
+
+        specialinvoke $r14.<com.google.tagmanager.ObjectAndStatic: void <init>(java.lang.Object,boolean)>($r10, $z0);
+
+        if $z0 == 0 goto label11;
+
+        $r13 = r0.<com.google.tagmanager.Runtime: com.google.tagmanager.Cache mFunctionCallCache>;
+
+        interfaceinvoke $r13.<com.google.tagmanager.Cache: void put(java.lang.Object,java.lang.Object)>($r2, $r14);
+
+     label11:
+        $r9 = virtualinvoke $r14.<com.google.tagmanager.ObjectAndStatic: java.lang.Object getObject()>();
+
+        $r10 = (com.google.analytics.midtier.proto.containertag.TypeSystem$Value) $r9;
+
+        interfaceinvoke $r4.<com.google.tagmanager.ResolvedFunctionCallBuilder: void setFunctionResult(com.google.analytics.midtier.proto.containertag.TypeSystem$Value)>($r10);
+
+        return $r14;
+
+     label12:
+        $z0 = 0;
+
+        goto label10;
+
+     label13:
+        return $r14;
+    }
+
+    private static java.lang.String getFunctionName(com.google.tagmanager.ResourceUtil$ExpandedFunctionCall)
+    {
+        com.google.analytics.containertag.common.Key $r2;
+        java.util.Map $r1;
+        java.lang.Object $r4;
+        com.google.tagmanager.ResourceUtil$ExpandedFunctionCall $r0;
+        java.lang.String $r3;
+        com.google.analytics.midtier.proto.containertag.TypeSystem$Value $r5;
+
+        $r0 := @parameter0: com.google.tagmanager.ResourceUtil$ExpandedFunctionCall;
+
+        $r1 = virtualinvoke $r0.<com.google.tagmanager.ResourceUtil$ExpandedFunctionCall: java.util.Map getProperties()>();
+
+        $r2 = <com.google.analytics.containertag.common.Key: com.google.analytics.containertag.common.Key INSTANCE_NAME>;
+
+        $r3 = virtualinvoke $r2.<com.google.analytics.containertag.common.Key: java.lang.String toString()>();
+
+        $r4 = interfaceinvoke $r1.<java.util.Map: java.lang.Object get(java.lang.Object)>($r3);
+
+        $r5 = (com.google.analytics.midtier.proto.containertag.TypeSystem$Value) $r4;
+
+        $r3 = staticinvoke <com.google.tagmanager.Types: java.lang.String valueToString(com.google.analytics.midtier.proto.containertag.TypeSystem$Value)>($r5);
+
+        return $r3;
+    }
+
+    private static com.google.tagmanager.Runtime$MacroInfo getOrAddMacroInfo(java.util.Map, java.lang.String)
+    {
+        java.util.Map $r0;
+        java.lang.Object $r2;
+        java.lang.String $r1;
+        com.google.tagmanager.Runtime$MacroInfo $r3;
+
+        $r0 := @parameter0: java.util.Map;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 = interfaceinvoke $r0.<java.util.Map: java.lang.Object get(java.lang.Object)>($r1);
+
+        $r3 = (com.google.tagmanager.Runtime$MacroInfo) $r2;
+
+        if $r3 != null goto label1;
+
+        $r3 = new com.google.tagmanager.Runtime$MacroInfo;
+
+        specialinvoke $r3.<com.google.tagmanager.Runtime$MacroInfo: void <init>()>();
+
+        interfaceinvoke $r0.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r1, $r3);
+
+     label1:
+        return $r3;
+    }
+
+    private com.google.tagmanager.ObjectAndStatic macroExpandValue(com.google.analytics.midtier.proto.containertag.TypeSystem$Value, java.util.Set, com.google.tagmanager.ValueBuilder)
+    {
+        com.google.analytics.midtier.proto.containertag.TypeSystem$Value$Builder $r9;
+        com.google.tagmanager.MacroEvaluationInfoBuilder $r15;
+        com.google.tagmanager.Runtime r0;
+        int[] $r5;
+        int $i0, $i1;
+        java.lang.String $r8;
+        com.google.tagmanager.ObjectAndStatic $r4, $r12, $r14;
+        com.google.tagmanager.ValueBuilder $r3, $r11;
+        boolean $z0;
+        java.util.Set $r2;
+        com.google.analytics.midtier.proto.containertag.TypeSystem$Value$Type $r6;
+        com.google.analytics.midtier.proto.containertag.TypeSystem$Value $r1, $r10;
+        java.util.List $r16;
+        java.lang.StringBuilder $r7;
+        java.lang.Object $r13;
+
+        r0 := @this: com.google.tagmanager.Runtime;
+
+        $r1 := @parameter0: com.google.analytics.midtier.proto.containertag.TypeSystem$Value;
+
+        $r2 := @parameter1: java.util.Set;
+
+        $r3 := @parameter2: com.google.tagmanager.ValueBuilder;
+
+        $z0 = virtualinvoke $r1.<com.google.analytics.midtier.proto.containertag.TypeSystem$Value: boolean getContainsReferences()>();
+
+        if $z0 != 0 goto label01;
+
+        $r4 = new com.google.tagmanager.ObjectAndStatic;
+
+        specialinvoke $r4.<com.google.tagmanager.ObjectAndStatic: void <init>(java.lang.Object,boolean)>($r1, 1);
+
+        return $r4;
+
+     label01:
+        $r5 = <com.google.tagmanager.Runtime$5: int[] $SwitchMap$com$google$analytics$midtier$proto$containertag$TypeSystem$Value$Type>;
+
+        $r6 = virtualinvoke $r1.<com.google.analytics.midtier.proto.containertag.TypeSystem$Value: com.google.analytics.midtier.proto.containertag.TypeSystem$Value$Type getType()>();
+
+        $i0 = virtualinvoke $r6.<com.google.analytics.midtier.proto.containertag.TypeSystem$Value$Type: int ordinal()>();
+
+        $i0 = $r5[$i0];
+
+        lookupswitch($i0)
+        {
+            case 1: goto label03;
+            case 2: goto label07;
+            case 3: goto label13;
+            case 4: goto label15;
+            default: goto label02;
+        };
+
+     label02:
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>(java.lang.String)>("Unknown type: ");
+
+        $r6 = virtualinvoke $r1.<com.google.analytics.midtier.proto.containertag.TypeSystem$Value: com.google.analytics.midtier.proto.containertag.TypeSystem$Value$Type getType()>();
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r6);
+
+        $r8 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.google.tagmanager.Log: void e(java.lang.String)>($r8);
+
+        $r4 = <com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic DEFAULT_VALUE_AND_STATIC>;
+
+        return $r4;
+
+     label03:
+        $r9 = staticinvoke <com.google.tagmanager.ResourceUtil: com.google.analytics.midtier.proto.containertag.TypeSystem$Value$Builder newValueBuilderBasedOnValue(com.google.analytics.midtier.proto.containertag.TypeSystem$Value)>($r1);
+
+        $i0 = 0;
+
+     label04:
+        $i1 = virtualinvoke $r1.<com.google.analytics.midtier.proto.containertag.TypeSystem$Value: int getListItemCount()>();
+
+        if $i0 >= $i1 goto label06;
+
+        $r10 = virtualinvoke $r1.<com.google.analytics.midtier.proto.containertag.TypeSystem$Value: com.google.analytics.midtier.proto.containertag.TypeSystem$Value getListItem(int)>($i0);
+
+        $r11 = interfaceinvoke $r3.<com.google.tagmanager.ValueBuilder: com.google.tagmanager.ValueBuilder getListItem(int)>($i0);
+
+        $r4 = specialinvoke r0.<com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic macroExpandValue(com.google.analytics.midtier.proto.containertag.TypeSystem$Value,java.util.Set,com.google.tagmanager.ValueBuilder)>($r10, $r2, $r11);
+
+        $r12 = <com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic DEFAULT_VALUE_AND_STATIC>;
+
+        if $r4 != $r12 goto label05;
+
+        $r4 = <com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic DEFAULT_VALUE_AND_STATIC>;
+
+        return $r4;
+
+     label05:
+        $r13 = virtualinvoke $r4.<com.google.tagmanager.ObjectAndStatic: java.lang.Object getObject()>();
+
+        $r10 = (com.google.analytics.midtier.proto.containertag.TypeSystem$Value) $r13;
+
+        virtualinvoke $r9.<com.google.analytics.midtier.proto.containertag.TypeSystem$Value$Builder: com.google.analytics.midtier.proto.containertag.TypeSystem$Value$Builder addListItem(com.google.analytics.midtier.proto.containertag.TypeSystem$Value)>($r10);
+
+        $i0 = $i0 + 1;
+
+        goto label04;
+
+     label06:
+        $r4 = new com.google.tagmanager.ObjectAndStatic;
+
+        $r1 = virtualinvoke $r9.<com.google.analytics.midtier.proto.containertag.TypeSystem$Value$Builder: com.google.analytics.midtier.proto.containertag.TypeSystem$Value build()>();
+
+        specialinvoke $r4.<com.google.tagmanager.ObjectAndStatic: void <init>(java.lang.Object,boolean)>($r1, 0);
+
+        return $r4;
+
+     label07:
+        $r9 = staticinvoke <com.google.tagmanager.ResourceUtil: com.google.analytics.midtier.proto.containertag.TypeSystem$Value$Builder newValueBuilderBasedOnValue(com.google.analytics.midtier.proto.containertag.TypeSystem$Value)>($r1);
+
+        $i0 = virtualinvoke $r1.<com.google.analytics.midtier.proto.containertag.TypeSystem$Value: int getMapKeyCount()>();
+
+        $i1 = virtualinvoke $r1.<com.google.analytics.midtier.proto.containertag.TypeSystem$Value: int getMapValueCount()>();
+
+        if $i0 == $i1 goto label08;
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>(java.lang.String)>("Invalid serving value: ");
+
+        $r8 = virtualinvoke $r1.<java.lang.Object: java.lang.String toString()>();
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r8 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.google.tagmanager.Log: void e(java.lang.String)>($r8);
+
+        $r4 = <com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic DEFAULT_VALUE_AND_STATIC>;
+
+        return $r4;
+
+     label08:
+        $i0 = 0;
+
+     label09:
+        $i1 = virtualinvoke $r1.<com.google.analytics.midtier.proto.containertag.TypeSystem$Value: int getMapKeyCount()>();
+
+        if $i0 >= $i1 goto label12;
+
+        $r10 = virtualinvoke $r1.<com.google.analytics.midtier.proto.containertag.TypeSystem$Value: com.google.analytics.midtier.proto.containertag.TypeSystem$Value getMapKey(int)>($i0);
+
+        $r11 = interfaceinvoke $r3.<com.google.tagmanager.ValueBuilder: com.google.tagmanager.ValueBuilder getMapKey(int)>($i0);
+
+        $r4 = specialinvoke r0.<com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic macroExpandValue(com.google.analytics.midtier.proto.containertag.TypeSystem$Value,java.util.Set,com.google.tagmanager.ValueBuilder)>($r10, $r2, $r11);
+
+        $r10 = virtualinvoke $r1.<com.google.analytics.midtier.proto.containertag.TypeSystem$Value: com.google.analytics.midtier.proto.containertag.TypeSystem$Value getMapValue(int)>($i0);
+
+        $r11 = interfaceinvoke $r3.<com.google.tagmanager.ValueBuilder: com.google.tagmanager.ValueBuilder getMapValue(int)>($i0);
+
+        $r12 = specialinvoke r0.<com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic macroExpandValue(com.google.analytics.midtier.proto.containertag.TypeSystem$Value,java.util.Set,com.google.tagmanager.ValueBuilder)>($r10, $r2, $r11);
+
+        $r14 = <com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic DEFAULT_VALUE_AND_STATIC>;
+
+        if $r4 == $r14 goto label10;
+
+        $r14 = <com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic DEFAULT_VALUE_AND_STATIC>;
+
+        if $r12 != $r14 goto label11;
+
+     label10:
+        $r4 = <com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic DEFAULT_VALUE_AND_STATIC>;
+
+        return $r4;
+
+     label11:
+        $r13 = virtualinvoke $r4.<com.google.tagmanager.ObjectAndStatic: java.lang.Object getObject()>();
+
+        $r10 = (com.google.analytics.midtier.proto.containertag.TypeSystem$Value) $r13;
+
+        virtualinvoke $r9.<com.google.analytics.midtier.proto.containertag.TypeSystem$Value$Builder: com.google.analytics.midtier.proto.containertag.TypeSystem$Value$Builder addMapKey(com.google.analytics.midtier.proto.containertag.TypeSystem$Value)>($r10);
+
+        $r13 = virtualinvoke $r12.<com.google.tagmanager.ObjectAndStatic: java.lang.Object getObject()>();
+
+        $r10 = (com.google.analytics.midtier.proto.containertag.TypeSystem$Value) $r13;
+
+        virtualinvoke $r9.<com.google.analytics.midtier.proto.containertag.TypeSystem$Value$Builder: com.google.analytics.midtier.proto.containertag.TypeSystem$Value$Builder addMapValue(com.google.analytics.midtier.proto.containertag.TypeSystem$Value)>($r10);
+
+        $i0 = $i0 + 1;
+
+        goto label09;
+
+     label12:
+        $r4 = new com.google.tagmanager.ObjectAndStatic;
+
+        $r1 = virtualinvoke $r9.<com.google.analytics.midtier.proto.containertag.TypeSystem$Value$Builder: com.google.analytics.midtier.proto.containertag.TypeSystem$Value build()>();
+
+        specialinvoke $r4.<com.google.tagmanager.ObjectAndStatic: void <init>(java.lang.Object,boolean)>($r1, 0);
+
+        return $r4;
+
+     label13:
+        $r8 = virtualinvoke $r1.<com.google.analytics.midtier.proto.containertag.TypeSystem$Value: java.lang.String getMacroReference()>();
+
+        $z0 = interfaceinvoke $r2.<java.util.Set: boolean contains(java.lang.Object)>($r8);
+
+        if $z0 == 0 goto label14;
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>(java.lang.String)>("Macro cycle detected.  Current macro reference: ");
+
+        $r8 = virtualinvoke $r1.<com.google.analytics.midtier.proto.containertag.TypeSystem$Value: java.lang.String getMacroReference()>();
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(".  Previous macro references: ");
+
+        $r8 = virtualinvoke $r2.<java.lang.Object: java.lang.String toString()>();
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(".");
+
+        $r8 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.google.tagmanager.Log: void e(java.lang.String)>($r8);
+
+        $r4 = <com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic DEFAULT_VALUE_AND_STATIC>;
+
+        return $r4;
+
+     label14:
+        $r8 = virtualinvoke $r1.<com.google.analytics.midtier.proto.containertag.TypeSystem$Value: java.lang.String getMacroReference()>();
+
+        interfaceinvoke $r2.<java.util.Set: boolean add(java.lang.Object)>($r8);
+
+        $r8 = virtualinvoke $r1.<com.google.analytics.midtier.proto.containertag.TypeSystem$Value: java.lang.String getMacroReference()>();
+
+        $r15 = interfaceinvoke $r3.<com.google.tagmanager.ValueBuilder: com.google.tagmanager.MacroEvaluationInfoBuilder createValueMacroEvaluationInfoExtension()>();
+
+        $r4 = specialinvoke r0.<com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic evaluateMacroReferenceCycleDetection(java.lang.String,java.util.Set,com.google.tagmanager.MacroEvaluationInfoBuilder)>($r8, $r2, $r15);
+
+        $r16 = virtualinvoke $r1.<com.google.analytics.midtier.proto.containertag.TypeSystem$Value: java.util.List getEscapingList()>();
+
+        $r4 = staticinvoke <com.google.tagmanager.ValueEscapeUtil: com.google.tagmanager.ObjectAndStatic applyEscapings(com.google.tagmanager.ObjectAndStatic,java.util.List)>($r4, $r16);
+
+        $r8 = virtualinvoke $r1.<com.google.analytics.midtier.proto.containertag.TypeSystem$Value: java.lang.String getMacroReference()>();
+
+        interfaceinvoke $r2.<java.util.Set: boolean remove(java.lang.Object)>($r8);
+
+        return $r4;
+
+     label15:
+        $r9 = staticinvoke <com.google.tagmanager.ResourceUtil: com.google.analytics.midtier.proto.containertag.TypeSystem$Value$Builder newValueBuilderBasedOnValue(com.google.analytics.midtier.proto.containertag.TypeSystem$Value)>($r1);
+
+        $i0 = 0;
+
+     label16:
+        $i1 = virtualinvoke $r1.<com.google.analytics.midtier.proto.containertag.TypeSystem$Value: int getTemplateTokenCount()>();
+
+        if $i0 >= $i1 goto label18;
+
+        $r10 = virtualinvoke $r1.<com.google.analytics.midtier.proto.containertag.TypeSystem$Value: com.google.analytics.midtier.proto.containertag.TypeSystem$Value getTemplateToken(int)>($i0);
+
+        $r11 = interfaceinvoke $r3.<com.google.tagmanager.ValueBuilder: com.google.tagmanager.ValueBuilder getTemplateToken(int)>($i0);
+
+        $r4 = specialinvoke r0.<com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic macroExpandValue(com.google.analytics.midtier.proto.containertag.TypeSystem$Value,java.util.Set,com.google.tagmanager.ValueBuilder)>($r10, $r2, $r11);
+
+        $r12 = <com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic DEFAULT_VALUE_AND_STATIC>;
+
+        if $r4 != $r12 goto label17;
+
+        $r4 = <com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic DEFAULT_VALUE_AND_STATIC>;
+
+        return $r4;
+
+     label17:
+        $r13 = virtualinvoke $r4.<com.google.tagmanager.ObjectAndStatic: java.lang.Object getObject()>();
+
+        $r10 = (com.google.analytics.midtier.proto.containertag.TypeSystem$Value) $r13;
+
+        virtualinvoke $r9.<com.google.analytics.midtier.proto.containertag.TypeSystem$Value$Builder: com.google.analytics.midtier.proto.containertag.TypeSystem$Value$Builder addTemplateToken(com.google.analytics.midtier.proto.containertag.TypeSystem$Value)>($r10);
+
+        $i0 = $i0 + 1;
+
+        goto label16;
+
+     label18:
+        $r4 = new com.google.tagmanager.ObjectAndStatic;
+
+        $r1 = virtualinvoke $r9.<com.google.analytics.midtier.proto.containertag.TypeSystem$Value$Builder: com.google.analytics.midtier.proto.containertag.TypeSystem$Value build()>();
+
+        specialinvoke $r4.<com.google.tagmanager.ObjectAndStatic: void <init>(java.lang.Object,boolean)>($r1, 0);
+
+        return $r4;
+    }
+
+    private static void verifyFunctionAndNameListSizes(java.util.List, java.util.List, java.lang.String)
+    {
+        java.util.List $r0, $r1;
+        int $i0, $i1;
+        java.lang.StringBuilder $r3;
+        java.lang.String $r2;
+
+        $r0 := @parameter0: java.util.List;
+
+        $r1 := @parameter1: java.util.List;
+
+        $r2 := @parameter2: java.lang.String;
+
+        $i0 = interfaceinvoke $r0.<java.util.List: int size()>();
+
+        $i1 = interfaceinvoke $r1.<java.util.List: int size()>();
+
+        if $i0 == $i1 goto label1;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>("Invalid resource: imbalance of rule names of functions for ");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" operation. Using default rule name instead");
+
+        $r2 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.google.tagmanager.Log: void i(java.lang.String)>($r2);
+
+     label1:
+        return;
+    }
+
+    void addMacro(com.google.tagmanager.FunctionCallImplementation)
+    {
+        com.google.tagmanager.Runtime r0;
+        com.google.tagmanager.FunctionCallImplementation $r1;
+        java.util.Map $r2;
+
+        r0 := @this: com.google.tagmanager.Runtime;
+
+        $r1 := @parameter0: com.google.tagmanager.FunctionCallImplementation;
+
+        $r2 = r0.<com.google.tagmanager.Runtime: java.util.Map mMacroMap>;
+
+        staticinvoke <com.google.tagmanager.Runtime: void addFunctionImplToMap(java.util.Map,com.google.tagmanager.FunctionCallImplementation)>($r2, $r1);
+
+        return;
+    }
+
+    void addPredicate(com.google.tagmanager.FunctionCallImplementation)
+    {
+        com.google.tagmanager.Runtime r0;
+        com.google.tagmanager.FunctionCallImplementation $r1;
+        java.util.Map $r2;
+
+        r0 := @this: com.google.tagmanager.Runtime;
+
+        $r1 := @parameter0: com.google.tagmanager.FunctionCallImplementation;
+
+        $r2 = r0.<com.google.tagmanager.Runtime: java.util.Map mPredicateMap>;
+
+        staticinvoke <com.google.tagmanager.Runtime: void addFunctionImplToMap(java.util.Map,com.google.tagmanager.FunctionCallImplementation)>($r2, $r1);
+
+        return;
+    }
+
+    void addTrackingTag(com.google.tagmanager.FunctionCallImplementation)
+    {
+        com.google.tagmanager.Runtime r0;
+        com.google.tagmanager.FunctionCallImplementation $r1;
+        java.util.Map $r2;
+
+        r0 := @this: com.google.tagmanager.Runtime;
+
+        $r1 := @parameter0: com.google.tagmanager.FunctionCallImplementation;
+
+        $r2 = r0.<com.google.tagmanager.Runtime: java.util.Map mTrackingTagMap>;
+
+        staticinvoke <com.google.tagmanager.Runtime: void addFunctionImplToMap(java.util.Map,com.google.tagmanager.FunctionCallImplementation)>($r2, $r1);
+
+        return;
+    }
+
+    com.google.tagmanager.ObjectAndStatic calculateMacrosToRun(java.lang.String, java.util.Set, java.util.Map, java.util.Map, java.util.Map, java.util.Map, java.util.Set, com.google.tagmanager.RuleEvaluationStepInfoBuilder)
+    {
+        com.google.tagmanager.Runtime$3 $r10;
+        com.google.tagmanager.RuleEvaluationStepInfoBuilder $r8;
+        java.util.Set $r2, $r7;
+        com.google.tagmanager.Runtime r0;
+        java.util.Map $r3, $r4, $r5, $r6;
+        java.lang.String $r1;
+        com.google.tagmanager.ObjectAndStatic $r9;
+
+        r0 := @this: com.google.tagmanager.Runtime;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.util.Set;
+
+        $r3 := @parameter2: java.util.Map;
+
+        $r4 := @parameter3: java.util.Map;
+
+        $r5 := @parameter4: java.util.Map;
+
+        $r6 := @parameter5: java.util.Map;
+
+        $r7 := @parameter6: java.util.Set;
+
+        $r8 := @parameter7: com.google.tagmanager.RuleEvaluationStepInfoBuilder;
+
+        $r10 = new com.google.tagmanager.Runtime$3;
+
+        specialinvoke $r10.<com.google.tagmanager.Runtime$3: void <init>(com.google.tagmanager.Runtime,java.util.Map,java.util.Map,java.util.Map,java.util.Map)>(r0, $r3, $r4, $r5, $r6);
+
+        $r9 = specialinvoke r0.<com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic calculateGenericToRun(java.util.Set,java.util.Set,com.google.tagmanager.Runtime$AddRemoveSetPopulator,com.google.tagmanager.RuleEvaluationStepInfoBuilder)>($r2, $r7, $r10, $r8);
+
+        return $r9;
+    }
+
+    com.google.tagmanager.ObjectAndStatic calculateTagsToRun(java.util.Set, com.google.tagmanager.RuleEvaluationStepInfoBuilder)
+    {
+        java.util.HashSet $r5;
+        com.google.tagmanager.Runtime r0;
+        com.google.tagmanager.Runtime$4 $r3;
+        com.google.tagmanager.RuleEvaluationStepInfoBuilder $r2;
+        java.util.Set $r1;
+        com.google.tagmanager.ObjectAndStatic $r4;
+
+        r0 := @this: com.google.tagmanager.Runtime;
+
+        $r1 := @parameter0: java.util.Set;
+
+        $r2 := @parameter1: com.google.tagmanager.RuleEvaluationStepInfoBuilder;
+
+        $r5 = new java.util.HashSet;
+
+        specialinvoke $r5.<java.util.HashSet: void <init>()>();
+
+        $r3 = new com.google.tagmanager.Runtime$4;
+
+        specialinvoke $r3.<com.google.tagmanager.Runtime$4: void <init>(com.google.tagmanager.Runtime)>(r0);
+
+        $r4 = specialinvoke r0.<com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic calculateGenericToRun(java.util.Set,java.util.Set,com.google.tagmanager.Runtime$AddRemoveSetPopulator,com.google.tagmanager.RuleEvaluationStepInfoBuilder)>($r1, $r5, $r3, $r2);
+
+        return $r4;
+    }
+
+    public com.google.tagmanager.ObjectAndStatic evaluateMacroReference(java.lang.String)
+    {
+        com.google.tagmanager.EventInfoBuilder $r3;
+        java.util.HashSet $r4;
+        com.google.tagmanager.Runtime r0;
+        java.lang.String $r1;
+        com.google.tagmanager.EventInfoDistributor $r2;
+        com.google.tagmanager.ObjectAndStatic $r6;
+        com.google.tagmanager.MacroEvaluationInfoBuilder $r5;
+
+        r0 := @this: com.google.tagmanager.Runtime;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = r0.<com.google.tagmanager.Runtime: com.google.tagmanager.EventInfoDistributor eventInfoDistributor>;
+
+        $r3 = interfaceinvoke $r2.<com.google.tagmanager.EventInfoDistributor: com.google.tagmanager.EventInfoBuilder createMacroEvalutionEventInfo(java.lang.String)>($r1);
+
+        $r4 = new java.util.HashSet;
+
+        specialinvoke $r4.<java.util.HashSet: void <init>()>();
+
+        $r5 = interfaceinvoke $r3.<com.google.tagmanager.EventInfoBuilder: com.google.tagmanager.MacroEvaluationInfoBuilder createMacroEvaluationInfoBuilder()>();
+
+        $r6 = specialinvoke r0.<com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic evaluateMacroReferenceCycleDetection(java.lang.String,java.util.Set,com.google.tagmanager.MacroEvaluationInfoBuilder)>($r1, $r4, $r5);
+
+        interfaceinvoke $r3.<com.google.tagmanager.EventInfoBuilder: void processEventInfo()>();
+
+        return $r6;
+    }
+
+    com.google.tagmanager.ObjectAndStatic evaluatePredicate(com.google.tagmanager.ResourceUtil$ExpandedFunctionCall, java.util.Set, com.google.tagmanager.ResolvedFunctionCallBuilder)
+    {
+        java.util.Set $r2;
+        com.google.analytics.midtier.proto.containertag.TypeSystem$Value $r7;
+        com.google.tagmanager.Runtime r0;
+        java.util.Map $r4;
+        java.lang.Boolean $r8;
+        java.lang.Object $r6;
+        com.google.tagmanager.ResourceUtil$ExpandedFunctionCall $r1;
+        com.google.tagmanager.ResolvedFunctionCallBuilder $r3;
+        com.google.tagmanager.ObjectAndStatic $r5, $r9;
+        boolean $z0;
+
+        r0 := @this: com.google.tagmanager.Runtime;
+
+        $r1 := @parameter0: com.google.tagmanager.ResourceUtil$ExpandedFunctionCall;
+
+        $r2 := @parameter1: java.util.Set;
+
+        $r3 := @parameter2: com.google.tagmanager.ResolvedFunctionCallBuilder;
+
+        $r4 = r0.<com.google.tagmanager.Runtime: java.util.Map mPredicateMap>;
+
+        $r5 = specialinvoke r0.<com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic executeFunction(java.util.Map,com.google.tagmanager.ResourceUtil$ExpandedFunctionCall,java.util.Set,com.google.tagmanager.ResolvedFunctionCallBuilder)>($r4, $r1, $r2, $r3);
+
+        $r6 = virtualinvoke $r5.<com.google.tagmanager.ObjectAndStatic: java.lang.Object getObject()>();
+
+        $r7 = (com.google.analytics.midtier.proto.containertag.TypeSystem$Value) $r6;
+
+        $r8 = staticinvoke <com.google.tagmanager.Types: java.lang.Boolean valueToBoolean(com.google.analytics.midtier.proto.containertag.TypeSystem$Value)>($r7);
+
+        $r7 = staticinvoke <com.google.tagmanager.Types: com.google.analytics.midtier.proto.containertag.TypeSystem$Value objectToValue(java.lang.Object)>($r8);
+
+        interfaceinvoke $r3.<com.google.tagmanager.ResolvedFunctionCallBuilder: void setFunctionResult(com.google.analytics.midtier.proto.containertag.TypeSystem$Value)>($r7);
+
+        $r9 = new com.google.tagmanager.ObjectAndStatic;
+
+        $z0 = virtualinvoke $r5.<com.google.tagmanager.ObjectAndStatic: boolean isStatic()>();
+
+        specialinvoke $r9.<com.google.tagmanager.ObjectAndStatic: void <init>(java.lang.Object,boolean)>($r8, $z0);
+
+        return $r9;
+    }
+
+    com.google.tagmanager.ObjectAndStatic evaluatePredicatesInRule(com.google.tagmanager.ResourceUtil$ExpandedRule, java.util.Set, com.google.tagmanager.ResolvedRuleBuilder)
+    {
+        java.util.Iterator $r5;
+        com.google.tagmanager.ResolvedRuleBuilder $r3;
+        java.util.Set $r2;
+        com.google.tagmanager.ResourceUtil$ExpandedRule $r1;
+        com.google.analytics.midtier.proto.containertag.TypeSystem$Value $r11;
+        com.google.tagmanager.Runtime r0;
+        java.util.List $r4;
+        java.lang.Boolean $r10;
+        java.lang.Object $r6;
+        com.google.tagmanager.ResourceUtil$ExpandedFunctionCall $r7;
+        com.google.tagmanager.ResolvedFunctionCallBuilder $r8;
+        com.google.tagmanager.ObjectAndStatic $r9, $r12;
+        boolean $z0, $z1;
+
+        r0 := @this: com.google.tagmanager.Runtime;
+
+        $r1 := @parameter0: com.google.tagmanager.ResourceUtil$ExpandedRule;
+
+        $r2 := @parameter1: java.util.Set;
+
+        $r3 := @parameter2: com.google.tagmanager.ResolvedRuleBuilder;
+
+        $r4 = virtualinvoke $r1.<com.google.tagmanager.ResourceUtil$ExpandedRule: java.util.List getNegativePredicates()>();
+
+        $r5 = interfaceinvoke $r4.<java.util.List: java.util.Iterator iterator()>();
+
+        $z0 = 1;
+
+     label1:
+        $z1 = interfaceinvoke $r5.<java.util.Iterator: boolean hasNext()>();
+
+        if $z1 == 0 goto label5;
+
+        $r6 = interfaceinvoke $r5.<java.util.Iterator: java.lang.Object next()>();
+
+        $r7 = (com.google.tagmanager.ResourceUtil$ExpandedFunctionCall) $r6;
+
+        $r8 = interfaceinvoke $r3.<com.google.tagmanager.ResolvedRuleBuilder: com.google.tagmanager.ResolvedFunctionCallBuilder createNegativePredicate()>();
+
+        $r9 = virtualinvoke r0.<com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic evaluatePredicate(com.google.tagmanager.ResourceUtil$ExpandedFunctionCall,java.util.Set,com.google.tagmanager.ResolvedFunctionCallBuilder)>($r7, $r2, $r8);
+
+        $r6 = virtualinvoke $r9.<com.google.tagmanager.ObjectAndStatic: java.lang.Object getObject()>();
+
+        $r10 = (java.lang.Boolean) $r6;
+
+        $z1 = virtualinvoke $r10.<java.lang.Boolean: boolean booleanValue()>();
+
+        if $z1 == 0 goto label2;
+
+        $r10 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(0);
+
+        $r11 = staticinvoke <com.google.tagmanager.Types: com.google.analytics.midtier.proto.containertag.TypeSystem$Value objectToValue(java.lang.Object)>($r10);
+
+        interfaceinvoke $r3.<com.google.tagmanager.ResolvedRuleBuilder: void setValue(com.google.analytics.midtier.proto.containertag.TypeSystem$Value)>($r11);
+
+        $r12 = new com.google.tagmanager.ObjectAndStatic;
+
+        $r10 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(0);
+
+        $z0 = virtualinvoke $r9.<com.google.tagmanager.ObjectAndStatic: boolean isStatic()>();
+
+        specialinvoke $r12.<com.google.tagmanager.ObjectAndStatic: void <init>(java.lang.Object,boolean)>($r10, $z0);
+
+        return $r12;
+
+     label2:
+        if $z0 == 0 goto label4;
+
+        $z0 = virtualinvoke $r9.<com.google.tagmanager.ObjectAndStatic: boolean isStatic()>();
+
+        if $z0 == 0 goto label4;
+
+        $z0 = 1;
+
+     label3:
+        goto label1;
+
+     label4:
+        $z0 = 0;
+
+        goto label3;
+
+     label5:
+        $r4 = virtualinvoke $r1.<com.google.tagmanager.ResourceUtil$ExpandedRule: java.util.List getPositivePredicates()>();
+
+        $r5 = interfaceinvoke $r4.<java.util.List: java.util.Iterator iterator()>();
+
+     label6:
+        $z1 = interfaceinvoke $r5.<java.util.Iterator: boolean hasNext()>();
+
+        if $z1 == 0 goto label9;
+
+        $r6 = interfaceinvoke $r5.<java.util.Iterator: java.lang.Object next()>();
+
+        $r7 = (com.google.tagmanager.ResourceUtil$ExpandedFunctionCall) $r6;
+
+        $r8 = interfaceinvoke $r3.<com.google.tagmanager.ResolvedRuleBuilder: com.google.tagmanager.ResolvedFunctionCallBuilder createPositivePredicate()>();
+
+        $r9 = virtualinvoke r0.<com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic evaluatePredicate(com.google.tagmanager.ResourceUtil$ExpandedFunctionCall,java.util.Set,com.google.tagmanager.ResolvedFunctionCallBuilder)>($r7, $r2, $r8);
+
+        $r6 = virtualinvoke $r9.<com.google.tagmanager.ObjectAndStatic: java.lang.Object getObject()>();
+
+        $r10 = (java.lang.Boolean) $r6;
+
+        $z1 = virtualinvoke $r10.<java.lang.Boolean: boolean booleanValue()>();
+
+        if $z1 != 0 goto label7;
+
+        $r10 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(0);
+
+        $r11 = staticinvoke <com.google.tagmanager.Types: com.google.analytics.midtier.proto.containertag.TypeSystem$Value objectToValue(java.lang.Object)>($r10);
+
+        interfaceinvoke $r3.<com.google.tagmanager.ResolvedRuleBuilder: void setValue(com.google.analytics.midtier.proto.containertag.TypeSystem$Value)>($r11);
+
+        $r12 = new com.google.tagmanager.ObjectAndStatic;
+
+        $r10 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(0);
+
+        $z0 = virtualinvoke $r9.<com.google.tagmanager.ObjectAndStatic: boolean isStatic()>();
+
+        specialinvoke $r12.<com.google.tagmanager.ObjectAndStatic: void <init>(java.lang.Object,boolean)>($r10, $z0);
+
+        return $r12;
+
+     label7:
+        if $z0 == 0 goto label8;
+
+        $z0 = virtualinvoke $r9.<com.google.tagmanager.ObjectAndStatic: boolean isStatic()>();
+
+        if $z0 == 0 goto label8;
+
+        $z0 = 1;
+
+        goto label6;
+
+     label8:
+        $z0 = 0;
+
+        goto label6;
+
+     label9:
+        $r10 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(1);
+
+        $r11 = staticinvoke <com.google.tagmanager.Types: com.google.analytics.midtier.proto.containertag.TypeSystem$Value objectToValue(java.lang.Object)>($r10);
+
+        interfaceinvoke $r3.<com.google.tagmanager.ResolvedRuleBuilder: void setValue(com.google.analytics.midtier.proto.containertag.TypeSystem$Value)>($r11);
+
+        $r9 = new com.google.tagmanager.ObjectAndStatic;
+
+        $r10 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(1);
+
+        specialinvoke $r9.<com.google.tagmanager.ObjectAndStatic: void <init>(java.lang.Object,boolean)>($r10, $z0);
+
+        return $r9;
+    }
+
+    public void evaluateTags(java.lang.String)
+    {
+        com.google.tagmanager.EventInfoBuilder $r5;
+        java.lang.Throwable $r14;
+        com.google.tagmanager.RuleEvaluationStepInfoBuilder $r8;
+        com.google.tagmanager.DataLayerEventEvaluationInfoBuilder $r6;
+        com.google.tagmanager.EventInfoDistributor $r4;
+        java.util.HashSet $r3;
+        com.google.tagmanager.Runtime r0;
+        java.util.Map $r2;
+        java.lang.String $r1;
+        com.google.tagmanager.ObjectAndStatic $r9;
+        boolean $z0;
+        java.util.Iterator $r11;
+        java.util.Set $r7;
+        java.lang.Object $r10;
+        com.google.tagmanager.ResourceUtil$ExpandedFunctionCall $r12;
+        com.google.tagmanager.ResolvedFunctionCallBuilder $r13;
+
+        r0 := @this: com.google.tagmanager.Runtime;
+
+        $r1 := @parameter0: java.lang.String;
+
+        entermonitor r0;
+
+     label1:
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void setCurrentEventName(java.lang.String)>($r1);
+
+        $r4 = r0.<com.google.tagmanager.Runtime: com.google.tagmanager.EventInfoDistributor eventInfoDistributor>;
+
+        $r5 = interfaceinvoke $r4.<com.google.tagmanager.EventInfoDistributor: com.google.tagmanager.EventInfoBuilder createDataLayerEventEvaluationEventInfo(java.lang.String)>($r1);
+
+        $r6 = interfaceinvoke $r5.<com.google.tagmanager.EventInfoBuilder: com.google.tagmanager.DataLayerEventEvaluationInfoBuilder createDataLayerEventEvaluationInfoBuilder()>();
+
+        $r7 = r0.<com.google.tagmanager.Runtime: java.util.Set mRules>;
+
+        $r8 = interfaceinvoke $r6.<com.google.tagmanager.DataLayerEventEvaluationInfoBuilder: com.google.tagmanager.RuleEvaluationStepInfoBuilder createRulesEvaluation()>();
+
+        $r9 = virtualinvoke r0.<com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic calculateTagsToRun(java.util.Set,com.google.tagmanager.RuleEvaluationStepInfoBuilder)>($r7, $r8);
+
+        $r10 = virtualinvoke $r9.<com.google.tagmanager.ObjectAndStatic: java.lang.Object getObject()>();
+
+        $r7 = (java.util.Set) $r10;
+
+        $r11 = interfaceinvoke $r7.<java.util.Set: java.util.Iterator iterator()>();
+
+     label2:
+        $z0 = interfaceinvoke $r11.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label5;
+
+        $r10 = interfaceinvoke $r11.<java.util.Iterator: java.lang.Object next()>();
+
+        $r12 = (com.google.tagmanager.ResourceUtil$ExpandedFunctionCall) $r10;
+
+        $r2 = r0.<com.google.tagmanager.Runtime: java.util.Map mTrackingTagMap>;
+
+        $r3 = new java.util.HashSet;
+
+        specialinvoke $r3.<java.util.HashSet: void <init>()>();
+
+        $r13 = interfaceinvoke $r6.<com.google.tagmanager.DataLayerEventEvaluationInfoBuilder: com.google.tagmanager.ResolvedFunctionCallBuilder createAndAddResult()>();
+
+        specialinvoke r0.<com.google.tagmanager.Runtime: com.google.tagmanager.ObjectAndStatic executeFunction(java.util.Map,com.google.tagmanager.ResourceUtil$ExpandedFunctionCall,java.util.Set,com.google.tagmanager.ResolvedFunctionCallBuilder)>($r2, $r12, $r3, $r13);
+
+     label3:
+        goto label2;
+
+     label4:
+        $r14 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r14;
+
+     label5:
+        interfaceinvoke $r5.<com.google.tagmanager.EventInfoBuilder: void processEventInfo()>();
+
+        virtualinvoke r0.<com.google.tagmanager.Runtime: void setCurrentEventName(java.lang.String)>(null);
+
+     label6:
+        exitmonitor r0;
+
+        return;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+        catch java.lang.Throwable from label5 to label6 with label4;
+    }
+
+    java.lang.String getCurrentEventName()
+    {
+        java.lang.Throwable $r1;
+        com.google.tagmanager.Runtime r0;
+        java.lang.String r2;
+
+        r0 := @this: com.google.tagmanager.Runtime;
+
+        entermonitor r0;
+
+     label1:
+        r2 = r0.<com.google.tagmanager.Runtime: java.lang.String mCurrentEventName>;
+
+     label2:
+        exitmonitor r0;
+
+        return r2;
+
+     label3:
+        $r1 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public com.google.tagmanager.ResourceUtil$ExpandedResource getResource()
+    {
+        com.google.tagmanager.Runtime r0;
+        com.google.tagmanager.ResourceUtil$ExpandedResource r1;
+
+        r0 := @this: com.google.tagmanager.Runtime;
+
+        r1 = r0.<com.google.tagmanager.Runtime: com.google.tagmanager.ResourceUtil$ExpandedResource mResource>;
+
+        return r1;
+    }
+
+    void setCurrentEventName(java.lang.String)
+    {
+        java.lang.Throwable $r2;
+        com.google.tagmanager.Runtime r0;
+        java.lang.String $r1;
+
+        r0 := @this: com.google.tagmanager.Runtime;
+
+        $r1 := @parameter0: java.lang.String;
+
+        entermonitor r0;
+
+     label1:
+        r0.<com.google.tagmanager.Runtime: java.lang.String mCurrentEventName> = $r1;
+
+     label2:
+        exitmonitor r0;
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+}

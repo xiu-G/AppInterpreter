@@ -1,0 +1,735 @@
+final class com.shwy.bestjoy.DownloadThread extends java.lang.Thread
+{
+    private final java.lang.String TAG;
+    private android.app.Activity activity;
+    private java.lang.StringBuffer cache;
+    private java.net.HttpURLConnection conn;
+    private final java.lang.String dirPath;
+    private android.app.ProgressDialog downloadDialog;
+    private int download_cache;
+    private org.apache.http.client.HttpClient httpClient;
+    private java.io.InputStream is;
+    private android.graphics.Bitmap mPhoto;
+    private com.shwy.bestjoy.BeepAndVibrate media;
+    private java.lang.String note;
+    private byte[] note_byte;
+    private java.lang.String photo;
+    private byte[] photo_byte;
+    private com.google.zxing.client.result.ResultHandler resultHandler;
+    private java.lang.String uri;
+
+    public void <init>(android.app.Activity, android.app.ProgressDialog, com.google.zxing.client.result.ParsedResult, com.google.zxing.client.result.ResultHandler, com.shwy.bestjoy.BeepAndVibrate)
+    {
+        org.apache.http.impl.client.DefaultHttpClient $r7;
+        java.lang.CharSequence $r12;
+        com.google.zxing.client.result.ParsedResult $r3;
+        com.shwy.bestjoy.BeepAndVibrate $r5;
+        android.app.ProgressDialog $r2;
+        java.lang.StringBuffer $r13;
+        java.lang.StringBuilder r6, $r11;
+        com.google.zxing.client.result.AddressBookParsedResult $r8;
+        java.lang.String $r9, $r10;
+        com.shwy.bestjoy.DownloadThread r0;
+        android.app.Activity $r1;
+        com.google.zxing.client.result.ResultHandler $r4;
+
+        r0 := @this: com.shwy.bestjoy.DownloadThread;
+
+        $r1 := @parameter0: android.app.Activity;
+
+        $r2 := @parameter1: android.app.ProgressDialog;
+
+        $r3 := @parameter2: com.google.zxing.client.result.ParsedResult;
+
+        $r4 := @parameter3: com.google.zxing.client.result.ResultHandler;
+
+        $r5 := @parameter4: com.shwy.bestjoy.BeepAndVibrate;
+
+        specialinvoke r0.<java.lang.Thread: void <init>(java.lang.String)>("Download VCF");
+
+        r0.<com.shwy.bestjoy.DownloadThread: java.lang.String TAG> = "DownloadThread";
+
+        r0.<com.shwy.bestjoy.DownloadThread: int download_cache> = 1024;
+
+        $r7 = new org.apache.http.impl.client.DefaultHttpClient;
+
+        specialinvoke $r7.<org.apache.http.impl.client.DefaultHttpClient: void <init>()>();
+
+        r0.<com.shwy.bestjoy.DownloadThread: org.apache.http.client.HttpClient httpClient> = $r7;
+
+        r0.<com.shwy.bestjoy.DownloadThread: android.app.Activity activity> = $r1;
+
+        r0.<com.shwy.bestjoy.DownloadThread: android.app.ProgressDialog downloadDialog> = $r2;
+
+        r0.<com.shwy.bestjoy.DownloadThread: com.google.zxing.client.result.ResultHandler resultHandler> = $r4;
+
+        r0.<com.shwy.bestjoy.DownloadThread: com.shwy.bestjoy.BeepAndVibrate media> = $r5;
+
+        $r8 = (com.google.zxing.client.result.AddressBookParsedResult) $r3;
+
+        $r9 = virtualinvoke $r8.<com.google.zxing.client.result.AddressBookParsedResult: java.lang.String getBid()>();
+
+        r6 = new java.lang.StringBuilder;
+
+        specialinvoke r6.<java.lang.StringBuilder: void <init>()>();
+
+        $r10 = <com.google.zxing.client.result.ResultParser: java.lang.String jb_url_prefix>;
+
+        virtualinvoke r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r10);
+
+        $r11 = new java.lang.StringBuilder;
+
+        specialinvoke $r11.<java.lang.StringBuilder: void <init>()>();
+
+        $r12 = virtualinvoke $r9.<java.lang.String: java.lang.CharSequence subSequence(int,int)>(0, 13);
+
+        $r11 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r12);
+
+        $r11 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/");
+
+        $r10 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r10);
+
+        virtualinvoke r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r9);
+
+        $r9 = <com.google.zxing.client.result.ResultParser: java.lang.String jb_url_suffix>;
+
+        virtualinvoke r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r9);
+
+        $r9 = virtualinvoke r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r9 = virtualinvoke $r9.<java.lang.String: java.lang.String trim()>();
+
+        r0.<com.shwy.bestjoy.DownloadThread: java.lang.String uri> = $r9;
+
+        $r13 = new java.lang.StringBuffer;
+
+        specialinvoke $r13.<java.lang.StringBuffer: void <init>()>();
+
+        r0.<com.shwy.bestjoy.DownloadThread: java.lang.StringBuffer cache> = $r13;
+
+        $r9 = virtualinvoke $r1.<android.app.Activity: java.lang.String getString(int)>(2131165187);
+
+        r0.<com.shwy.bestjoy.DownloadThread: java.lang.String dirPath> = $r9;
+
+        return;
+    }
+
+    public void <init>(android.app.Activity, android.app.ProgressDialog, java.lang.String, com.google.zxing.client.result.ResultHandler, com.shwy.bestjoy.BeepAndVibrate)
+    {
+        org.apache.http.impl.client.DefaultHttpClient $r6;
+        com.shwy.bestjoy.BeepAndVibrate $r5;
+        android.app.ProgressDialog $r2;
+        java.lang.StringBuffer $r7;
+        java.lang.String $r3;
+        com.shwy.bestjoy.DownloadThread r0;
+        android.app.Activity $r1;
+        com.google.zxing.client.result.ResultHandler $r4;
+
+        r0 := @this: com.shwy.bestjoy.DownloadThread;
+
+        $r1 := @parameter0: android.app.Activity;
+
+        $r2 := @parameter1: android.app.ProgressDialog;
+
+        $r3 := @parameter2: java.lang.String;
+
+        $r4 := @parameter3: com.google.zxing.client.result.ResultHandler;
+
+        $r5 := @parameter4: com.shwy.bestjoy.BeepAndVibrate;
+
+        specialinvoke r0.<java.lang.Thread: void <init>(java.lang.String)>("Download VCF");
+
+        r0.<com.shwy.bestjoy.DownloadThread: java.lang.String TAG> = "DownloadThread";
+
+        r0.<com.shwy.bestjoy.DownloadThread: int download_cache> = 1024;
+
+        $r6 = new org.apache.http.impl.client.DefaultHttpClient;
+
+        specialinvoke $r6.<org.apache.http.impl.client.DefaultHttpClient: void <init>()>();
+
+        r0.<com.shwy.bestjoy.DownloadThread: org.apache.http.client.HttpClient httpClient> = $r6;
+
+        r0.<com.shwy.bestjoy.DownloadThread: android.app.Activity activity> = $r1;
+
+        r0.<com.shwy.bestjoy.DownloadThread: android.app.ProgressDialog downloadDialog> = $r2;
+
+        r0.<com.shwy.bestjoy.DownloadThread: com.google.zxing.client.result.ResultHandler resultHandler> = $r4;
+
+        r0.<com.shwy.bestjoy.DownloadThread: java.lang.String uri> = $r3;
+
+        r0.<com.shwy.bestjoy.DownloadThread: com.shwy.bestjoy.BeepAndVibrate media> = $r5;
+
+        $r7 = new java.lang.StringBuffer;
+
+        specialinvoke $r7.<java.lang.StringBuffer: void <init>()>();
+
+        r0.<com.shwy.bestjoy.DownloadThread: java.lang.StringBuffer cache> = $r7;
+
+        $r3 = virtualinvoke $r1.<android.app.Activity: java.lang.String getString(int)>(2131165187);
+
+        r0.<com.shwy.bestjoy.DownloadThread: java.lang.String dirPath> = $r3;
+
+        return;
+    }
+
+    static android.graphics.Bitmap access$0(com.shwy.bestjoy.DownloadThread)
+    {
+        com.shwy.bestjoy.DownloadThread $r0;
+        android.graphics.Bitmap r1;
+
+        $r0 := @parameter0: com.shwy.bestjoy.DownloadThread;
+
+        r1 = $r0.<com.shwy.bestjoy.DownloadThread: android.graphics.Bitmap mPhoto>;
+
+        return r1;
+    }
+
+    static void access$1(com.shwy.bestjoy.DownloadThread, byte[])
+    {
+        byte[] $r1;
+        com.shwy.bestjoy.DownloadThread $r0;
+
+        $r0 := @parameter0: com.shwy.bestjoy.DownloadThread;
+
+        $r1 := @parameter1: byte[];
+
+        $r0.<com.shwy.bestjoy.DownloadThread: byte[] photo_byte> = null;
+
+        return;
+    }
+
+    static com.google.zxing.client.result.ResultHandler access$2(com.shwy.bestjoy.DownloadThread)
+    {
+        com.shwy.bestjoy.DownloadThread $r0;
+        com.google.zxing.client.result.ResultHandler r1;
+
+        $r0 := @parameter0: com.shwy.bestjoy.DownloadThread;
+
+        r1 = $r0.<com.shwy.bestjoy.DownloadThread: com.google.zxing.client.result.ResultHandler resultHandler>;
+
+        return r1;
+    }
+
+    static java.lang.String access$3(com.shwy.bestjoy.DownloadThread)
+    {
+        java.lang.String r1;
+        com.shwy.bestjoy.DownloadThread $r0;
+
+        $r0 := @parameter0: com.shwy.bestjoy.DownloadThread;
+
+        r1 = $r0.<com.shwy.bestjoy.DownloadThread: java.lang.String note>;
+
+        return r1;
+    }
+
+    static byte[] access$4(com.shwy.bestjoy.DownloadThread)
+    {
+        byte[] r1;
+        com.shwy.bestjoy.DownloadThread $r0;
+
+        $r0 := @parameter0: com.shwy.bestjoy.DownloadThread;
+
+        r1 = $r0.<com.shwy.bestjoy.DownloadThread: byte[] photo_byte>;
+
+        return r1;
+    }
+
+    static com.shwy.bestjoy.BeepAndVibrate access$5(com.shwy.bestjoy.DownloadThread)
+    {
+        com.shwy.bestjoy.DownloadThread $r0;
+        com.shwy.bestjoy.BeepAndVibrate r1;
+
+        $r0 := @parameter0: com.shwy.bestjoy.DownloadThread;
+
+        r1 = $r0.<com.shwy.bestjoy.DownloadThread: com.shwy.bestjoy.BeepAndVibrate media>;
+
+        return r1;
+    }
+
+    static android.app.ProgressDialog access$6(com.shwy.bestjoy.DownloadThread)
+    {
+        android.app.ProgressDialog r1;
+        com.shwy.bestjoy.DownloadThread $r0;
+
+        $r0 := @parameter0: com.shwy.bestjoy.DownloadThread;
+
+        r1 = $r0.<com.shwy.bestjoy.DownloadThread: android.app.ProgressDialog downloadDialog>;
+
+        return r1;
+    }
+
+    static android.app.Activity access$7(com.shwy.bestjoy.DownloadThread)
+    {
+        com.shwy.bestjoy.DownloadThread $r0;
+        android.app.Activity r1;
+
+        $r0 := @parameter0: com.shwy.bestjoy.DownloadThread;
+
+        r1 = $r0.<com.shwy.bestjoy.DownloadThread: android.app.Activity activity>;
+
+        return r1;
+    }
+
+    public void run()
+    {
+        com.google.zxing.Result r7, $r35;
+        byte[] $r20;
+        java.net.URL r8, $r28;
+        org.apache.http.StatusLine $r15;
+        com.google.zxing.client.result.AddressBookParsedResult $r23;
+        com.shwy.bestjoy.DownloadThread r0;
+        boolean $z0;
+        org.apache.http.HttpEntity $r18;
+        java.lang.Exception $r41;
+        org.apache.http.client.methods.HttpGet r4, $r29;
+        java.lang.StringBuilder $r21, $r32;
+        java.lang.Throwable $r17, $r24;
+        java.io.ByteArrayOutputStream r6, $r33;
+        java.lang.String[] $r25;
+        java.io.BufferedOutputStream r1, $r39;
+        org.apache.http.client.HttpClient $r13;
+        java.lang.StringBuffer $r22;
+        int $i0, i1;
+        java.lang.String $r11, $r12, $r34;
+        com.shwy.bestjoy.DownloadThread$2 $r31;
+        com.shwy.bestjoy.DownloadThread$3 $r36;
+        java.io.FileOutputStream r5, $r38;
+        java.io.IOException $r42;
+        com.shwy.bestjoy.DownloadThread$1 $r27, $r40;
+        java.io.File r2, r3, $r37;
+        android.content.SharedPreferences $r10;
+        java.lang.InterruptedException $r16, $r30;
+        android.graphics.Bitmap $r26;
+        org.apache.http.HttpResponse $r14;
+        android.app.Activity $r9;
+        java.io.InputStream $r19;
+
+        r0 := @this: com.shwy.bestjoy.DownloadThread;
+
+        $r9 = r0.<com.shwy.bestjoy.DownloadThread: android.app.Activity activity>;
+
+     label01:
+        $r10 = staticinvoke <android.preference.PreferenceManager: android.content.SharedPreferences getDefaultSharedPreferences(android.content.Context)>($r9);
+
+     label02:
+        $r11 = r0.<com.shwy.bestjoy.DownloadThread: java.lang.String uri>;
+
+     label03:
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("DownloadThread", $r11);
+
+     label04:
+        $r28 = new java.net.URL;
+
+        r8 = $r28;
+
+        $r11 = r0.<com.shwy.bestjoy.DownloadThread: java.lang.String uri>;
+
+     label05:
+        specialinvoke $r28.<java.net.URL: void <init>(java.lang.String)>($r11);
+
+        $r11 = virtualinvoke r8.<java.net.URL: java.lang.String getFile()>();
+
+        $i0 = virtualinvoke $r11.<java.lang.String: int lastIndexOf(int)>(47);
+
+     label06:
+        $i0 = $i0 + 1;
+
+     label07:
+        $r11 = virtualinvoke $r11.<java.lang.String: java.lang.String substring(int)>($i0);
+
+     label08:
+        $r29 = new org.apache.http.client.methods.HttpGet;
+
+        r4 = $r29;
+
+        $r12 = r0.<com.shwy.bestjoy.DownloadThread: java.lang.String uri>;
+
+     label09:
+        specialinvoke $r29.<org.apache.http.client.methods.HttpGet: void <init>(java.lang.String)>($r12);
+
+     label10:
+        $r13 = r0.<com.shwy.bestjoy.DownloadThread: org.apache.http.client.HttpClient httpClient>;
+
+     label11:
+        $r14 = interfaceinvoke $r13.<org.apache.http.client.HttpClient: org.apache.http.HttpResponse execute(org.apache.http.client.methods.HttpUriRequest)>(r4);
+
+        $r15 = interfaceinvoke $r14.<org.apache.http.HttpResponse: org.apache.http.StatusLine getStatusLine()>();
+
+        $i0 = interfaceinvoke $r15.<org.apache.http.StatusLine: int getStatusCode()>();
+
+     label12:
+        if $i0 == 200 goto label16;
+
+        $r30 = new java.lang.InterruptedException;
+
+        $r16 = $r30;
+
+     label13:
+        specialinvoke $r30.<java.lang.InterruptedException: void <init>()>();
+
+     label14:
+        throw $r16;
+
+     label15:
+        $r17 := @caughtexception;
+
+        $r9 = r0.<com.shwy.bestjoy.DownloadThread: android.app.Activity activity>;
+
+        $r31 = new com.shwy.bestjoy.DownloadThread$2;
+
+        specialinvoke $r31.<com.shwy.bestjoy.DownloadThread$2: void <init>(com.shwy.bestjoy.DownloadThread)>(r0);
+
+        virtualinvoke $r9.<android.app.Activity: void runOnUiThread(java.lang.Runnable)>($r31);
+
+        return;
+
+     label16:
+        $r18 = interfaceinvoke $r14.<org.apache.http.HttpResponse: org.apache.http.HttpEntity getEntity()>();
+
+        $r19 = interfaceinvoke $r18.<org.apache.http.HttpEntity: java.io.InputStream getContent()>();
+
+     label17:
+        r0.<com.shwy.bestjoy.DownloadThread: java.io.InputStream is> = $r19;
+
+        $i0 = r0.<com.shwy.bestjoy.DownloadThread: int download_cache>;
+
+        $r20 = newarray (byte)[$i0];
+
+     label18:
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("read", "start");
+
+     label19:
+        $r19 = r0.<com.shwy.bestjoy.DownloadThread: java.io.InputStream is>;
+
+     label20:
+        $i0 = virtualinvoke $r19.<java.io.InputStream: int read(byte[])>($r20);
+
+     label21:
+        i1 = $i0;
+
+        $r32 = new java.lang.StringBuilder;
+
+        $r21 = $r32;
+
+     label22:
+        specialinvoke $r32.<java.lang.StringBuilder: void <init>()>();
+
+        $r21 = virtualinvoke $r21.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r12 = virtualinvoke $r21.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("read", $r12);
+
+     label23:
+        $r33 = new java.io.ByteArrayOutputStream;
+
+        r6 = $r33;
+
+     label24:
+        specialinvoke $r33.<java.io.ByteArrayOutputStream: void <init>()>();
+
+     label25:
+        if i1 >= 0 goto label35;
+
+     label26:
+        virtualinvoke r6.<java.io.ByteArrayOutputStream: void flush()>();
+
+        $r20 = virtualinvoke r6.<java.io.ByteArrayOutputStream: byte[] toByteArray()>();
+
+        virtualinvoke r6.<java.io.ByteArrayOutputStream: void close()>();
+
+     label27:
+        $r22 = r0.<com.shwy.bestjoy.DownloadThread: java.lang.StringBuffer cache>;
+
+        $r34 = new java.lang.String;
+
+        $r12 = $r34;
+
+     label28:
+        specialinvoke $r34.<java.lang.String: void <init>(byte[],java.lang.String)>($r20, "UTF-8");
+
+        virtualinvoke $r22.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r12);
+
+     label29:
+        $r35 = new com.google.zxing.Result;
+
+        r7 = $r35;
+
+        $r22 = r0.<com.shwy.bestjoy.DownloadThread: java.lang.StringBuffer cache>;
+
+     label30:
+        $r12 = virtualinvoke $r22.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        specialinvoke $r35.<com.google.zxing.Result: void <init>(java.lang.String)>($r12);
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("download", "photoRaw!=null");
+
+        $r23 = staticinvoke <com.google.zxing.client.result.VCardResultParser: com.google.zxing.client.result.AddressBookParsedResult parse(com.google.zxing.Result)>(r7);
+
+     label31:
+        if $r23 != null goto label39;
+
+        $r30 = new java.lang.InterruptedException;
+
+        $r16 = $r30;
+
+     label32:
+        specialinvoke $r30.<java.lang.InterruptedException: void <init>()>();
+
+     label33:
+        throw $r16;
+
+     label34:
+        $r24 := @caughtexception;
+
+        $r9 = r0.<com.shwy.bestjoy.DownloadThread: android.app.Activity activity>;
+
+        $r36 = new com.shwy.bestjoy.DownloadThread$3;
+
+        $r41 = (java.lang.Exception) $r24;
+
+        specialinvoke $r36.<com.shwy.bestjoy.DownloadThread$3: void <init>(com.shwy.bestjoy.DownloadThread,java.lang.Exception)>(r0, $r41);
+
+        virtualinvoke $r9.<android.app.Activity: void runOnUiThread(java.lang.Runnable)>($r36);
+
+        $r42 = (java.io.IOException) $r24;
+
+        virtualinvoke $r42.<java.io.IOException: void printStackTrace()>();
+
+        return;
+
+     label35:
+        virtualinvoke r6.<java.io.ByteArrayOutputStream: void write(byte[],int,int)>($r20, 0, i1);
+
+     label36:
+        $r19 = r0.<com.shwy.bestjoy.DownloadThread: java.io.InputStream is>;
+
+     label37:
+        $i0 = virtualinvoke $r19.<java.io.InputStream: int read(byte[])>($r20);
+
+     label38:
+        i1 = $i0;
+
+        goto label25;
+
+     label39:
+        $r12 = staticinvoke <android.os.Environment: java.lang.String getExternalStorageState()>();
+
+        $z0 = virtualinvoke $r12.<java.lang.String: boolean equals(java.lang.Object)>("mounted");
+
+     label40:
+        if $z0 == 0 goto label53;
+
+     label41:
+        $z0 = interfaceinvoke $r10.<android.content.SharedPreferences: boolean getBoolean(java.lang.String,boolean)>("preferences_vcf_save", 1);
+
+     label42:
+        if $z0 == 0 goto label53;
+
+        r3 = new java.io.File;
+
+        r2 = r3;
+
+        $r12 = r0.<com.shwy.bestjoy.DownloadThread: java.lang.String dirPath>;
+
+     label43:
+        specialinvoke r3.<java.io.File: void <init>(java.lang.String)>($r12);
+
+        $z0 = virtualinvoke r2.<java.io.File: boolean exists()>();
+
+     label44:
+        if $z0 != 0 goto label46;
+
+     label45:
+        virtualinvoke r2.<java.io.File: boolean mkdirs()>();
+
+     label46:
+        $r25 = virtualinvoke $r23.<com.google.zxing.client.result.AddressBookParsedResult: java.lang.String[] getNames()>();
+
+     label47:
+        $r37 = new java.io.File;
+
+        r3 = $r37;
+
+        $r32 = new java.lang.StringBuilder;
+
+        $r21 = $r32;
+
+        $r12 = $r25[0];
+
+     label48:
+        $r12 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r12);
+
+        specialinvoke $r32.<java.lang.StringBuilder: void <init>(java.lang.String)>($r12);
+
+        $r21 = virtualinvoke $r21.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r11);
+
+        $r11 = virtualinvoke $r21.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r37.<java.io.File: void <init>(java.io.File,java.lang.String)>(r2, $r11);
+
+     label49:
+        $r38 = new java.io.FileOutputStream;
+
+        r5 = $r38;
+
+     label50:
+        specialinvoke $r38.<java.io.FileOutputStream: void <init>(java.io.File)>(r3);
+
+     label51:
+        $r39 = new java.io.BufferedOutputStream;
+
+        r1 = $r39;
+
+     label52:
+        specialinvoke $r39.<java.io.BufferedOutputStream: void <init>(java.io.OutputStream)>(r5);
+
+        virtualinvoke r1.<java.io.BufferedOutputStream: void write(byte[])>($r20);
+
+        virtualinvoke r1.<java.io.BufferedOutputStream: void flush()>();
+
+        virtualinvoke r1.<java.io.BufferedOutputStream: void close()>();
+
+        virtualinvoke r5.<java.io.OutputStream: void close()>();
+
+     label53:
+        $r19 = r0.<com.shwy.bestjoy.DownloadThread: java.io.InputStream is>;
+
+     label54:
+        virtualinvoke $r19.<java.io.InputStream: void close()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("DownloadThread", "addressResult!=null");
+
+        $r11 = virtualinvoke $r23.<com.google.zxing.client.result.AddressBookParsedResult: java.lang.String getNote()>();
+
+     label55:
+        r0.<com.shwy.bestjoy.DownloadThread: java.lang.String note> = $r11;
+
+        $r32 = new java.lang.StringBuilder;
+
+        $r21 = $r32;
+
+     label56:
+        specialinvoke $r32.<java.lang.StringBuilder: void <init>(java.lang.String)>("note:");
+
+     label57:
+        $r11 = r0.<com.shwy.bestjoy.DownloadThread: java.lang.String note>;
+
+     label58:
+        $r21 = virtualinvoke $r21.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r11);
+
+        $r11 = virtualinvoke $r21.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("DownloadThread", $r11);
+
+        $r20 = virtualinvoke $r23.<com.google.zxing.client.result.AddressBookParsedResult: byte[] getPhoto()>();
+
+     label59:
+        r0.<com.shwy.bestjoy.DownloadThread: byte[] photo_byte> = $r20;
+
+        $r20 = r0.<com.shwy.bestjoy.DownloadThread: byte[] photo_byte>;
+
+        if $r20 == null goto label62;
+
+        $r20 = r0.<com.shwy.bestjoy.DownloadThread: byte[] photo_byte>;
+
+     label60:
+        $r26 = staticinvoke <com.shwy.bestjoy.Base64Decoder: android.graphics.Bitmap getDecodeImage(byte[])>($r20);
+
+     label61:
+        r0.<com.shwy.bestjoy.DownloadThread: android.graphics.Bitmap mPhoto> = $r26;
+
+     label62:
+        $r26 = r0.<com.shwy.bestjoy.DownloadThread: android.graphics.Bitmap mPhoto>;
+
+        if $r26 != null goto label63;
+
+        r0.<com.shwy.bestjoy.DownloadThread: byte[] photo_byte> = null;
+
+     label63:
+        r0.<com.shwy.bestjoy.DownloadThread: java.lang.StringBuffer cache> = null;
+
+     label64:
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("DownloadThread", "decoding success");
+
+     label65:
+        $r9 = r0.<com.shwy.bestjoy.DownloadThread: android.app.Activity activity>;
+
+        $r40 = new com.shwy.bestjoy.DownloadThread$1;
+
+        $r27 = $r40;
+
+     label66:
+        specialinvoke $r40.<com.shwy.bestjoy.DownloadThread$1: void <init>(com.shwy.bestjoy.DownloadThread,com.google.zxing.client.result.AddressBookParsedResult)>(r0, $r23);
+
+        virtualinvoke $r9.<android.app.Activity: void runOnUiThread(java.lang.Runnable)>($r27);
+
+     label67:
+        return;
+
+        catch java.lang.InterruptedException from label01 to label02 with label15;
+        catch java.lang.InterruptedException from label03 to label04 with label15;
+        catch java.lang.InterruptedException from label05 to label06 with label15;
+        catch java.lang.InterruptedException from label07 to label08 with label15;
+        catch java.lang.InterruptedException from label09 to label10 with label15;
+        catch java.lang.InterruptedException from label11 to label12 with label15;
+        catch java.lang.InterruptedException from label13 to label15 with label15;
+        catch java.io.IOException from label01 to label02 with label34;
+        catch java.io.IOException from label03 to label04 with label34;
+        catch java.io.IOException from label05 to label06 with label34;
+        catch java.io.IOException from label07 to label08 with label34;
+        catch java.io.IOException from label09 to label10 with label34;
+        catch java.io.IOException from label11 to label12 with label34;
+        catch java.io.IOException from label13 to label14 with label34;
+        catch java.lang.InterruptedException from label16 to label17 with label15;
+        catch java.lang.InterruptedException from label18 to label19 with label15;
+        catch java.lang.InterruptedException from label20 to label21 with label15;
+        catch java.lang.InterruptedException from label22 to label23 with label15;
+        catch java.lang.InterruptedException from label24 to label25 with label15;
+        catch java.lang.InterruptedException from label26 to label27 with label15;
+        catch java.lang.InterruptedException from label28 to label29 with label15;
+        catch java.lang.InterruptedException from label30 to label31 with label15;
+        catch java.lang.InterruptedException from label32 to label34 with label15;
+        catch java.io.IOException from label16 to label17 with label34;
+        catch java.io.IOException from label18 to label19 with label34;
+        catch java.io.IOException from label20 to label21 with label34;
+        catch java.io.IOException from label22 to label23 with label34;
+        catch java.io.IOException from label24 to label25 with label34;
+        catch java.io.IOException from label26 to label27 with label34;
+        catch java.io.IOException from label28 to label29 with label34;
+        catch java.io.IOException from label30 to label31 with label34;
+        catch java.io.IOException from label32 to label33 with label34;
+        catch java.lang.InterruptedException from label35 to label36 with label15;
+        catch java.lang.InterruptedException from label37 to label38 with label15;
+        catch java.lang.InterruptedException from label39 to label40 with label15;
+        catch java.lang.InterruptedException from label41 to label42 with label15;
+        catch java.lang.InterruptedException from label43 to label44 with label15;
+        catch java.lang.InterruptedException from label45 to label47 with label15;
+        catch java.lang.InterruptedException from label48 to label49 with label15;
+        catch java.lang.InterruptedException from label50 to label51 with label15;
+        catch java.lang.InterruptedException from label52 to label53 with label15;
+        catch java.lang.InterruptedException from label54 to label55 with label15;
+        catch java.lang.InterruptedException from label56 to label57 with label15;
+        catch java.lang.InterruptedException from label58 to label59 with label15;
+        catch java.lang.InterruptedException from label60 to label61 with label15;
+        catch java.lang.InterruptedException from label64 to label65 with label15;
+        catch java.lang.InterruptedException from label66 to label67 with label15;
+        catch java.io.IOException from label35 to label36 with label34;
+        catch java.io.IOException from label37 to label38 with label34;
+        catch java.io.IOException from label39 to label40 with label34;
+        catch java.io.IOException from label41 to label42 with label34;
+        catch java.io.IOException from label43 to label44 with label34;
+        catch java.io.IOException from label45 to label47 with label34;
+        catch java.io.IOException from label48 to label49 with label34;
+        catch java.io.IOException from label50 to label51 with label34;
+        catch java.io.IOException from label52 to label53 with label34;
+        catch java.io.IOException from label54 to label55 with label34;
+        catch java.io.IOException from label56 to label57 with label34;
+        catch java.io.IOException from label58 to label59 with label34;
+        catch java.io.IOException from label60 to label61 with label34;
+        catch java.io.IOException from label64 to label65 with label34;
+        catch java.io.IOException from label66 to label67 with label34;
+    }
+}

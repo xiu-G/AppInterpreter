@@ -1,0 +1,322 @@
+public class tw.com.soyong.RingBuffer extends java.lang.Object
+{
+    private static final boolean DEBUG;
+    private static final java.lang.String TAG;
+    private byte[][] mBuf;
+    private volatile int mCount;
+    private int mHead;
+    private volatile boolean[] mReady;
+    private int mTail;
+
+    public void <init>(int)
+    {
+        byte[][] $r2;
+        int $i0, $i1;
+        boolean[] $r1;
+        tw.com.soyong.RingBuffer r0;
+
+        r0 := @this: tw.com.soyong.RingBuffer;
+
+        $i0 := @parameter0: int;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<tw.com.soyong.RingBuffer: int mHead> = 0;
+
+        r0.<tw.com.soyong.RingBuffer: int mTail> = 0;
+
+        r0.<tw.com.soyong.RingBuffer: int mCount> = 0;
+
+        $r2 = newarray (byte[])[4];
+
+        r0.<tw.com.soyong.RingBuffer: byte[][] mBuf> = $r2;
+
+        $r1 = newarray (boolean)[4];
+
+        r0.<tw.com.soyong.RingBuffer: boolean[] mReady> = $r1;
+
+        $i1 = 0;
+
+     label1:
+        if $i1 >= 4 goto label2;
+
+        $r1 = r0.<tw.com.soyong.RingBuffer: boolean[] mReady>;
+
+        $r1[$i1] = 0;
+
+        $i1 = $i1 + 1;
+
+        goto label1;
+
+     label2:
+        return;
+    }
+
+    public void clearAll()
+    {
+        java.lang.Throwable $r2;
+        boolean[] $r1;
+        int $i0, $i1;
+        tw.com.soyong.RingBuffer r0;
+
+        r0 := @this: tw.com.soyong.RingBuffer;
+
+        $i0 = 0;
+
+        entermonitor r0;
+
+     label1:
+        r0.<tw.com.soyong.RingBuffer: int mHead> = 0;
+
+        r0.<tw.com.soyong.RingBuffer: int mTail> = 0;
+
+        r0.<tw.com.soyong.RingBuffer: int mCount> = 0;
+
+        $r1 = r0.<tw.com.soyong.RingBuffer: boolean[] mReady>;
+
+        $i1 = lengthof $r1;
+
+     label2:
+        if $i0 >= $i1 goto label3;
+
+        $r1 = r0.<tw.com.soyong.RingBuffer: boolean[] mReady>;
+
+        $r1[$i0] = 0;
+
+        $i0 = $i0 + 1;
+
+        goto label2;
+
+     label3:
+        virtualinvoke r0.<java.lang.Object: void notifyAll()>();
+
+     label4:
+        exitmonitor r0;
+
+        return;
+
+     label5:
+        $r2 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label4 with label5;
+    }
+
+    public int getCount()
+    {
+        java.lang.Throwable $r1;
+        int i0;
+        tw.com.soyong.RingBuffer r0;
+
+        r0 := @this: tw.com.soyong.RingBuffer;
+
+        entermonitor r0;
+
+     label1:
+        i0 = r0.<tw.com.soyong.RingBuffer: int mCount>;
+
+     label2:
+        exitmonitor r0;
+
+        return i0;
+
+     label3:
+        $r1 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void put(byte[])
+    {
+        java.lang.Throwable $r3;
+        byte[] $r1;
+        boolean[] $r2;
+        byte[][] $r4;
+        int $i0, $i1;
+        tw.com.soyong.RingBuffer r0;
+        boolean $z0;
+
+        r0 := @this: tw.com.soyong.RingBuffer;
+
+        $r1 := @parameter0: byte[];
+
+        entermonitor r0;
+
+     label1:
+        $r2 = r0.<tw.com.soyong.RingBuffer: boolean[] mReady>;
+
+        $i0 = r0.<tw.com.soyong.RingBuffer: int mTail>;
+
+        $z0 = $r2[$i0];
+
+        if 1 != $z0 goto label4;
+
+        virtualinvoke r0.<java.lang.Object: void wait()>();
+
+     label2:
+        goto label1;
+
+     label3:
+        $r3 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r3;
+
+     label4:
+        $r4 = r0.<tw.com.soyong.RingBuffer: byte[][] mBuf>;
+
+        $i0 = lengthof $r4;
+
+        $i1 = r0.<tw.com.soyong.RingBuffer: int mTail>;
+
+        $r4 = r0.<tw.com.soyong.RingBuffer: byte[][] mBuf>;
+
+        $r4[$i1] = $r1;
+
+        $r2 = r0.<tw.com.soyong.RingBuffer: boolean[] mReady>;
+
+        $r2[$i1] = 1;
+
+        $i1 = $i1 + 1;
+
+        $i0 = $i1 % $i0;
+
+        r0.<tw.com.soyong.RingBuffer: int mTail> = $i0;
+
+        $i0 = r0.<tw.com.soyong.RingBuffer: int mCount>;
+
+        $i0 = $i0 + 1;
+
+        r0.<tw.com.soyong.RingBuffer: int mCount> = $i0;
+
+        virtualinvoke r0.<java.lang.Object: void notifyAll()>();
+
+     label5:
+        exitmonitor r0;
+
+        return;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+        catch java.lang.Throwable from label4 to label5 with label3;
+    }
+
+    public byte[] take()
+    {
+        java.lang.Throwable $r2;
+        byte[] $r4;
+        byte[][] $r3;
+        boolean[] $r1;
+        int $i0;
+        tw.com.soyong.RingBuffer r0;
+        boolean $z0;
+
+        r0 := @this: tw.com.soyong.RingBuffer;
+
+        entermonitor r0;
+
+     label1:
+        $r1 = r0.<tw.com.soyong.RingBuffer: boolean[] mReady>;
+
+        $i0 = r0.<tw.com.soyong.RingBuffer: int mHead>;
+
+        $z0 = $r1[$i0];
+
+        if $z0 != 0 goto label4;
+
+        virtualinvoke r0.<java.lang.Object: void wait()>();
+
+     label2:
+        goto label1;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r2;
+
+     label4:
+        $i0 = r0.<tw.com.soyong.RingBuffer: int mHead>;
+
+        $r3 = r0.<tw.com.soyong.RingBuffer: byte[][] mBuf>;
+
+        $r4 = $r3[$i0];
+
+     label5:
+        exitmonitor r0;
+
+        return $r4;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+        catch java.lang.Throwable from label4 to label5 with label3;
+    }
+
+    public void taked()
+    {
+        java.lang.Throwable $r3;
+        byte[][] $r2;
+        boolean[] $r1;
+        int $i0, $i1;
+        tw.com.soyong.RingBuffer r0;
+
+        r0 := @this: tw.com.soyong.RingBuffer;
+
+        entermonitor r0;
+
+     label1:
+        $i0 = r0.<tw.com.soyong.RingBuffer: int mHead>;
+
+        $r2 = r0.<tw.com.soyong.RingBuffer: byte[][] mBuf>;
+
+        $r1 = r0.<tw.com.soyong.RingBuffer: boolean[] mReady>;
+
+        $r1[$i0] = 0;
+
+        $i0 = $i0 + 1;
+
+        $i1 = lengthof $r2;
+
+        $i0 = $i0 % $i1;
+
+        r0.<tw.com.soyong.RingBuffer: int mHead> = $i0;
+
+        $i0 = r0.<tw.com.soyong.RingBuffer: int mCount>;
+
+        $i0 = $i0 - 1;
+
+        r0.<tw.com.soyong.RingBuffer: int mCount> = $i0;
+
+        virtualinvoke r0.<java.lang.Object: void notifyAll()>();
+
+     label2:
+        exitmonitor r0;
+
+        return;
+
+     label3:
+        $r3 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public static void <clinit>()
+    {
+        <tw.com.soyong.RingBuffer: java.lang.String TAG> = "RingBuffer";
+
+        <tw.com.soyong.RingBuffer: boolean DEBUG> = 0;
+
+        return;
+    }
+}

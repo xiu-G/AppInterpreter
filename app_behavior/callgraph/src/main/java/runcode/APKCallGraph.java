@@ -200,14 +200,13 @@ public class APKCallGraph {
 		 * If mapping is found, build extended static call graph of the app, extract subgraph(s), check API(s) and permission.
 		 */
 		// args = new String[]{
-		// 	"/home/data/xiu/apks/github_report/9a0f72cdc9a2846da937676e1efe8bf4.apk",
-		// 	"/home/data/xiu/apks/all_database/benign/fromzz/video/",
-		// 	"/home/data/xiu/code-translation/code/DeepIntent/data/img2widgets/", //inputCSVPath
-		// 	"/home/data/xiu/code-translation/code/DeepIntent/data/permission_output/", //permissionOutput
-		// 	"/home/data/xiu/code-translation/code/iccta/soot-infoflow-android-iccta/ic3_result/", //ic3Output
-		// 	"18",
+		// 	"/home/data/xiu/code-translation/code/guibat/apk/com.voicenotebook.voicenotebook.apk",
+		// 	"/home/data/xiu/code-translation/code/guibat/apk",
+		// 	"data/img2widgets/", //inputCSVPath
+		// 	"data/permission_output/", //permissionOutput
+		// 	"data/ic3_output/", //ic3Output
+		// 	"29",
 		// 	"/home/data/xiu/android-sdk/platforms",
-		// 	"/home/data/xiu/code-translation/code/runCodeComment/data/dex_dirs",
 		// };
 		// args = new String[]{
 		// 	"/home/data/yuec/DeepIntent/data/example/benign/1311833082_net.lepeng.batterydoctor.apk",
@@ -235,7 +234,6 @@ public class APKCallGraph {
 		Configs.initArgs();
 		String api_level = args[5];
 		Configs.platformPath = args[6];
-		Configs.dexPath = args[7];
 		System.out.println("Start analyze apk: " + apk + ".apk");
 
 		// String apkPath = appPath + apk + ".apk";
@@ -325,7 +323,7 @@ public class APKCallGraph {
             @Override
             public void setSootOptions(Options options, InfoflowConfiguration config) {
                 super.setSootOptions(options, config);
-                Options.v().set_output_dir(Configs.dexPath);
+                // Options.v().set_output_dir(Configs.dexPath);
 				Options.v().set_android_api_version(Integer.valueOf(api_level));
 				Options.v().set_process_multiple_dex(true);
 				Options.v().set_keep_line_number(true);

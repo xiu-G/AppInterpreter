@@ -1,0 +1,3720 @@
+public class com.google.mygson.stream.JsonReader extends java.lang.Object implements java.io.Closeable
+{
+    private static final java.lang.String FALSE;
+    private static final char[] NON_EXECUTE_PREFIX;
+    private static final java.lang.String TRUE;
+    private final char[] buffer;
+    private int bufferStartColumn;
+    private int bufferStartLine;
+    private final java.io.Reader in;
+    private boolean lenient;
+    private int limit;
+    private java.lang.String name;
+    private int pos;
+    private boolean skipping;
+    private com.google.mygson.stream.JsonScope[] stack;
+    private int stackSize;
+    private final com.google.mygson.stream.StringPool stringPool;
+    private com.google.mygson.stream.JsonToken token;
+    private java.lang.String value;
+    private int valueLength;
+    private int valuePos;
+
+    static void <clinit>()
+    {
+        char[] $r0;
+        java.lang.String $r1;
+        com.google.mygson.stream.JsonReader$1 $r2;
+
+        <com.google.mygson.stream.JsonReader: java.lang.String TRUE> = "true";
+
+        <com.google.mygson.stream.JsonReader: java.lang.String FALSE> = "false";
+
+        $r1 = ")]}\'\n";
+
+        $r0 = virtualinvoke $r1.<java.lang.String: char[] toCharArray()>();
+
+        <com.google.mygson.stream.JsonReader: char[] NON_EXECUTE_PREFIX> = $r0;
+
+        $r2 = new com.google.mygson.stream.JsonReader$1;
+
+        specialinvoke $r2.<com.google.mygson.stream.JsonReader$1: void <init>()>();
+
+        <com.google.mygson.internal.JsonReaderInternalAccess: com.google.mygson.internal.JsonReaderInternalAccess INSTANCE> = $r2;
+
+        return;
+    }
+
+    public void <init>(java.io.Reader)
+    {
+        com.google.mygson.stream.JsonReader r0;
+        com.google.mygson.stream.JsonScope[] $r4;
+        com.google.mygson.stream.JsonScope $r5;
+        com.google.mygson.stream.StringPool $r2;
+        char[] $r3;
+        java.io.Reader $r1;
+        java.lang.NullPointerException $r6;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        $r1 := @parameter0: java.io.Reader;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        $r2 = new com.google.mygson.stream.StringPool;
+
+        specialinvoke $r2.<com.google.mygson.stream.StringPool: void <init>()>();
+
+        r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.StringPool stringPool> = $r2;
+
+        r0.<com.google.mygson.stream.JsonReader: boolean lenient> = 0;
+
+        $r3 = newarray (char)[1024];
+
+        r0.<com.google.mygson.stream.JsonReader: char[] buffer> = $r3;
+
+        r0.<com.google.mygson.stream.JsonReader: int pos> = 0;
+
+        r0.<com.google.mygson.stream.JsonReader: int limit> = 0;
+
+        r0.<com.google.mygson.stream.JsonReader: int bufferStartLine> = 1;
+
+        r0.<com.google.mygson.stream.JsonReader: int bufferStartColumn> = 1;
+
+        $r4 = newarray (com.google.mygson.stream.JsonScope)[32];
+
+        r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonScope[] stack> = $r4;
+
+        r0.<com.google.mygson.stream.JsonReader: int stackSize> = 0;
+
+        $r5 = <com.google.mygson.stream.JsonScope: com.google.mygson.stream.JsonScope EMPTY_DOCUMENT>;
+
+        specialinvoke r0.<com.google.mygson.stream.JsonReader: void push(com.google.mygson.stream.JsonScope)>($r5);
+
+        r0.<com.google.mygson.stream.JsonReader: boolean skipping> = 0;
+
+        if $r1 != null goto label1;
+
+        $r6 = new java.lang.NullPointerException;
+
+        specialinvoke $r6.<java.lang.NullPointerException: void <init>(java.lang.String)>("in == null");
+
+        throw $r6;
+
+     label1:
+        r0.<com.google.mygson.stream.JsonReader: java.io.Reader in> = $r1;
+
+        return;
+    }
+
+    static com.google.mygson.stream.JsonToken access$000(com.google.mygson.stream.JsonReader)
+    {
+        com.google.mygson.stream.JsonReader $r0;
+        com.google.mygson.stream.JsonToken r1;
+
+        $r0 := @parameter0: com.google.mygson.stream.JsonReader;
+
+        r1 = $r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token>;
+
+        return r1;
+    }
+
+    static com.google.mygson.stream.JsonToken access$002(com.google.mygson.stream.JsonReader, com.google.mygson.stream.JsonToken)
+    {
+        com.google.mygson.stream.JsonReader $r0;
+        com.google.mygson.stream.JsonToken $r1;
+
+        $r0 := @parameter0: com.google.mygson.stream.JsonReader;
+
+        $r1 := @parameter1: com.google.mygson.stream.JsonToken;
+
+        $r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token> = $r1;
+
+        return $r1;
+    }
+
+    static int access$100(com.google.mygson.stream.JsonReader)
+    {
+        int $i0;
+        com.google.mygson.stream.JsonReader $r0;
+
+        $r0 := @parameter0: com.google.mygson.stream.JsonReader;
+
+        $i0 = specialinvoke $r0.<com.google.mygson.stream.JsonReader: int getLineNumber()>();
+
+        return $i0;
+    }
+
+    static int access$200(com.google.mygson.stream.JsonReader)
+    {
+        int $i0;
+        com.google.mygson.stream.JsonReader $r0;
+
+        $r0 := @parameter0: com.google.mygson.stream.JsonReader;
+
+        $i0 = specialinvoke $r0.<com.google.mygson.stream.JsonReader: int getColumnNumber()>();
+
+        return $i0;
+    }
+
+    static java.lang.String access$302(com.google.mygson.stream.JsonReader, java.lang.String)
+    {
+        com.google.mygson.stream.JsonReader $r0;
+        java.lang.String $r1;
+
+        $r0 := @parameter0: com.google.mygson.stream.JsonReader;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r0.<com.google.mygson.stream.JsonReader: java.lang.String value> = $r1;
+
+        return $r1;
+    }
+
+    static java.lang.String access$400(com.google.mygson.stream.JsonReader)
+    {
+        com.google.mygson.stream.JsonReader $r0;
+        java.lang.String r1;
+
+        $r0 := @parameter0: com.google.mygson.stream.JsonReader;
+
+        r1 = $r0.<com.google.mygson.stream.JsonReader: java.lang.String name>;
+
+        return r1;
+    }
+
+    static java.lang.String access$402(com.google.mygson.stream.JsonReader, java.lang.String)
+    {
+        com.google.mygson.stream.JsonReader $r0;
+        java.lang.String $r1;
+
+        $r0 := @parameter0: com.google.mygson.stream.JsonReader;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r0.<com.google.mygson.stream.JsonReader: java.lang.String name> = $r1;
+
+        return $r1;
+    }
+
+    private com.google.mygson.stream.JsonToken advance() throws java.io.IOException
+    {
+        com.google.mygson.stream.JsonReader r0;
+        com.google.mygson.stream.JsonToken r1;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        virtualinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken peek()>();
+
+        r1 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token>;
+
+        r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token> = null;
+
+        r0.<com.google.mygson.stream.JsonReader: java.lang.String value> = null;
+
+        r0.<com.google.mygson.stream.JsonReader: java.lang.String name> = null;
+
+        return r1;
+    }
+
+    private void checkLenient() throws java.io.IOException
+    {
+        com.google.mygson.stream.JsonReader r0;
+        java.io.IOException $r1;
+        boolean $z0;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        $z0 = r0.<com.google.mygson.stream.JsonReader: boolean lenient>;
+
+        if $z0 != 0 goto label1;
+
+        $r1 = specialinvoke r0.<com.google.mygson.stream.JsonReader: java.io.IOException syntaxError(java.lang.String)>("Use JsonReader.setLenient(true) to accept malformed JSON");
+
+        throw $r1;
+
+     label1:
+        return;
+    }
+
+    private void consumeNonExecutePrefix() throws java.io.IOException
+    {
+        com.google.mygson.stream.JsonReader r0;
+        char $c2, $c3;
+        int $i0, $i1, $i4;
+        char[] $r1;
+        boolean $z0;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        specialinvoke r0.<com.google.mygson.stream.JsonReader: int nextNonWhitespace(boolean)>(1);
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        $i0 = $i0 + -1;
+
+        r0.<com.google.mygson.stream.JsonReader: int pos> = $i0;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        $r1 = <com.google.mygson.stream.JsonReader: char[] NON_EXECUTE_PREFIX>;
+
+        $i1 = lengthof $r1;
+
+        $i0 = $i0 + $i1;
+
+        $i1 = r0.<com.google.mygson.stream.JsonReader: int limit>;
+
+        if $i0 <= $i1 goto label1;
+
+        $r1 = <com.google.mygson.stream.JsonReader: char[] NON_EXECUTE_PREFIX>;
+
+        $i0 = lengthof $r1;
+
+        $z0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: boolean fillBuffer(int)>($i0);
+
+        if $z0 != 0 goto label1;
+
+        return;
+
+     label1:
+        $i0 = 0;
+
+     label2:
+        $r1 = <com.google.mygson.stream.JsonReader: char[] NON_EXECUTE_PREFIX>;
+
+        $i1 = lengthof $r1;
+
+        if $i0 >= $i1 goto label3;
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i1 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        $i1 = $i1 + $i0;
+
+        $c2 = $r1[$i1];
+
+        $r1 = <com.google.mygson.stream.JsonReader: char[] NON_EXECUTE_PREFIX>;
+
+        $c3 = $r1[$i0];
+
+        $i1 = (int) $c2;
+
+        $i4 = (int) $c3;
+
+        if $i1 != $i4 goto label4;
+
+        $i0 = $i0 + 1;
+
+        goto label2;
+
+     label3:
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        $r1 = <com.google.mygson.stream.JsonReader: char[] NON_EXECUTE_PREFIX>;
+
+        $i1 = lengthof $r1;
+
+        $i0 = $i0 + $i1;
+
+        r0.<com.google.mygson.stream.JsonReader: int pos> = $i0;
+
+     label4:
+        return;
+    }
+
+    private com.google.mygson.stream.JsonToken decodeLiteral() throws java.io.IOException
+    {
+        com.google.mygson.stream.JsonReader r0;
+        com.google.mygson.stream.JsonToken $r4;
+        com.google.mygson.stream.StringPool $r2;
+        char $c1;
+        int $i0, $i2;
+        char[] $r1;
+        java.lang.String $r3;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valuePos>;
+
+        if $i0 != -1 goto label01;
+
+        $r4 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken STRING>;
+
+        return $r4;
+
+     label01:
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valueLength>;
+
+        if $i0 != 4 goto label06;
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valuePos>;
+
+        $c1 = $r1[$i0];
+
+        $i0 = (int) $c1;
+
+        if 110 == $i0 goto label02;
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valuePos>;
+
+        $c1 = $r1[$i0];
+
+        $i0 = (int) $c1;
+
+        if 78 != $i0 goto label06;
+
+     label02:
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valuePos>;
+
+        $i0 = $i0 + 1;
+
+        $c1 = $r1[$i0];
+
+        $i0 = (int) $c1;
+
+        if 117 == $i0 goto label03;
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valuePos>;
+
+        $i0 = $i0 + 1;
+
+        $c1 = $r1[$i0];
+
+        $i0 = (int) $c1;
+
+        if 85 != $i0 goto label06;
+
+     label03:
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valuePos>;
+
+        $i0 = $i0 + 2;
+
+        $c1 = $r1[$i0];
+
+        $i0 = (int) $c1;
+
+        if 108 == $i0 goto label04;
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valuePos>;
+
+        $i0 = $i0 + 2;
+
+        $c1 = $r1[$i0];
+
+        $i0 = (int) $c1;
+
+        if 76 != $i0 goto label06;
+
+     label04:
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valuePos>;
+
+        $i0 = $i0 + 3;
+
+        $c1 = $r1[$i0];
+
+        $i0 = (int) $c1;
+
+        if 108 == $i0 goto label05;
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valuePos>;
+
+        $i0 = $i0 + 3;
+
+        $c1 = $r1[$i0];
+
+        $i0 = (int) $c1;
+
+        if 76 != $i0 goto label06;
+
+     label05:
+        r0.<com.google.mygson.stream.JsonReader: java.lang.String value> = "null";
+
+        $r4 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken NULL>;
+
+        return $r4;
+
+     label06:
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valueLength>;
+
+        if $i0 != 4 goto label11;
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valuePos>;
+
+        $c1 = $r1[$i0];
+
+        $i0 = (int) $c1;
+
+        if 116 == $i0 goto label07;
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valuePos>;
+
+        $c1 = $r1[$i0];
+
+        $i0 = (int) $c1;
+
+        if 84 != $i0 goto label11;
+
+     label07:
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valuePos>;
+
+        $i0 = $i0 + 1;
+
+        $c1 = $r1[$i0];
+
+        $i0 = (int) $c1;
+
+        if 114 == $i0 goto label08;
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valuePos>;
+
+        $i0 = $i0 + 1;
+
+        $c1 = $r1[$i0];
+
+        $i0 = (int) $c1;
+
+        if 82 != $i0 goto label11;
+
+     label08:
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valuePos>;
+
+        $i0 = $i0 + 2;
+
+        $c1 = $r1[$i0];
+
+        $i0 = (int) $c1;
+
+        if 117 == $i0 goto label09;
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valuePos>;
+
+        $i0 = $i0 + 2;
+
+        $c1 = $r1[$i0];
+
+        $i0 = (int) $c1;
+
+        if 85 != $i0 goto label11;
+
+     label09:
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valuePos>;
+
+        $i0 = $i0 + 3;
+
+        $c1 = $r1[$i0];
+
+        $i0 = (int) $c1;
+
+        if 101 == $i0 goto label10;
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valuePos>;
+
+        $i0 = $i0 + 3;
+
+        $c1 = $r1[$i0];
+
+        $i0 = (int) $c1;
+
+        if 69 != $i0 goto label11;
+
+     label10:
+        r0.<com.google.mygson.stream.JsonReader: java.lang.String value> = "true";
+
+        $r4 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken BOOLEAN>;
+
+        return $r4;
+
+     label11:
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valueLength>;
+
+        if $i0 != 5 goto label17;
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valuePos>;
+
+        $c1 = $r1[$i0];
+
+        $i0 = (int) $c1;
+
+        if 102 == $i0 goto label12;
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valuePos>;
+
+        $c1 = $r1[$i0];
+
+        $i0 = (int) $c1;
+
+        if 70 != $i0 goto label17;
+
+     label12:
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valuePos>;
+
+        $i0 = $i0 + 1;
+
+        $c1 = $r1[$i0];
+
+        $i0 = (int) $c1;
+
+        if 97 == $i0 goto label13;
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valuePos>;
+
+        $i0 = $i0 + 1;
+
+        $c1 = $r1[$i0];
+
+        $i0 = (int) $c1;
+
+        if 65 != $i0 goto label17;
+
+     label13:
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valuePos>;
+
+        $i0 = $i0 + 2;
+
+        $c1 = $r1[$i0];
+
+        $i0 = (int) $c1;
+
+        if 108 == $i0 goto label14;
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valuePos>;
+
+        $i0 = $i0 + 2;
+
+        $c1 = $r1[$i0];
+
+        $i0 = (int) $c1;
+
+        if 76 != $i0 goto label17;
+
+     label14:
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valuePos>;
+
+        $i0 = $i0 + 3;
+
+        $c1 = $r1[$i0];
+
+        $i0 = (int) $c1;
+
+        if 115 == $i0 goto label15;
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valuePos>;
+
+        $i0 = $i0 + 3;
+
+        $c1 = $r1[$i0];
+
+        $i0 = (int) $c1;
+
+        if 83 != $i0 goto label17;
+
+     label15:
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valuePos>;
+
+        $i0 = $i0 + 4;
+
+        $c1 = $r1[$i0];
+
+        $i0 = (int) $c1;
+
+        if 101 == $i0 goto label16;
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valuePos>;
+
+        $i0 = $i0 + 4;
+
+        $c1 = $r1[$i0];
+
+        $i0 = (int) $c1;
+
+        if 69 != $i0 goto label17;
+
+     label16:
+        r0.<com.google.mygson.stream.JsonReader: java.lang.String value> = "false";
+
+        $r4 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken BOOLEAN>;
+
+        return $r4;
+
+     label17:
+        $r2 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.StringPool stringPool>;
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valuePos>;
+
+        $i2 = r0.<com.google.mygson.stream.JsonReader: int valueLength>;
+
+        $r3 = virtualinvoke $r2.<com.google.mygson.stream.StringPool: java.lang.String get(char[],int,int)>($r1, $i0, $i2);
+
+        r0.<com.google.mygson.stream.JsonReader: java.lang.String value> = $r3;
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valuePos>;
+
+        $i2 = r0.<com.google.mygson.stream.JsonReader: int valueLength>;
+
+        $r4 = specialinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken decodeNumber(char[],int,int)>($r1, $i0, $i2);
+
+        return $r4;
+    }
+
+    private com.google.mygson.stream.JsonToken decodeNumber(char[], int, int)
+    {
+        com.google.mygson.stream.JsonReader r0;
+        com.google.mygson.stream.JsonToken r2;
+        char c3;
+        int $i0, $i1, i2, $i4;
+        char[] $r1;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        $r1 := @parameter0: char[];
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        i2 = $i0;
+
+        c3 = $r1[$i0];
+
+        $i4 = (int) c3;
+
+        if $i4 != 45 goto label01;
+
+        i2 = $i0 + 1;
+
+        c3 = $r1[i2];
+
+     label01:
+        $i4 = (int) c3;
+
+        if $i4 != 48 goto label04;
+
+        i2 = i2 + 1;
+
+        c3 = $r1[i2];
+
+     label02:
+        $i4 = (int) c3;
+
+        if $i4 != 46 goto label07;
+
+        i2 = i2 + 1;
+
+        c3 = $r1[i2];
+
+     label03:
+        $i4 = (int) c3;
+
+        if $i4 < 48 goto label07;
+
+        $i4 = (int) c3;
+
+        if $i4 > 57 goto label07;
+
+        i2 = i2 + 1;
+
+        c3 = $r1[i2];
+
+        goto label03;
+
+     label04:
+        $i4 = (int) c3;
+
+        if $i4 < 49 goto label06;
+
+        $i4 = (int) c3;
+
+        if $i4 > 57 goto label06;
+
+        i2 = i2 + 1;
+
+        c3 = $r1[i2];
+
+     label05:
+        $i4 = (int) c3;
+
+        if $i4 < 48 goto label02;
+
+        $i4 = (int) c3;
+
+        if $i4 > 57 goto label02;
+
+        i2 = i2 + 1;
+
+        c3 = $r1[i2];
+
+        goto label05;
+
+     label06:
+        r2 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken STRING>;
+
+        return r2;
+
+     label07:
+        $i4 = (int) c3;
+
+        if $i4 == 101 goto label08;
+
+        $i4 = (int) c3;
+
+        if $i4 != 69 goto label13;
+
+     label08:
+        i2 = i2 + 1;
+
+        c3 = $r1[i2];
+
+        $i4 = (int) c3;
+
+        if $i4 == 43 goto label09;
+
+        $i4 = (int) c3;
+
+        if $i4 != 45 goto label10;
+
+     label09:
+        i2 = i2 + 1;
+
+        c3 = $r1[i2];
+
+     label10:
+        $i4 = (int) c3;
+
+        if $i4 < 48 goto label12;
+
+        $i4 = (int) c3;
+
+        if $i4 > 57 goto label12;
+
+        i2 = i2 + 1;
+
+        c3 = $r1[i2];
+
+     label11:
+        $i4 = (int) c3;
+
+        if $i4 < 48 goto label13;
+
+        $i4 = (int) c3;
+
+        if $i4 > 57 goto label13;
+
+        i2 = i2 + 1;
+
+        c3 = $r1[i2];
+
+        goto label11;
+
+     label12:
+        r2 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken STRING>;
+
+        return r2;
+
+     label13:
+        $i0 = $i0 + $i1;
+
+        if i2 != $i0 goto label14;
+
+        r2 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken NUMBER>;
+
+        return r2;
+
+     label14:
+        r2 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken STRING>;
+
+        return r2;
+    }
+
+    private void expect(com.google.mygson.stream.JsonToken) throws java.io.IOException
+    {
+        com.google.mygson.stream.JsonReader r0;
+        java.lang.IllegalStateException $r3;
+        com.google.mygson.stream.JsonToken $r1, $r2;
+        int $i0;
+        java.lang.StringBuilder $r4;
+        java.lang.String $r5;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        $r1 := @parameter0: com.google.mygson.stream.JsonToken;
+
+        virtualinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken peek()>();
+
+        $r2 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token>;
+
+        if $r2 == $r1 goto label1;
+
+        $r3 = new java.lang.IllegalStateException;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Expected ");
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" but was ");
+
+        $r1 = virtualinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken peek()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" at line ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getLineNumber()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" column ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getColumnNumber()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r3.<java.lang.IllegalStateException: void <init>(java.lang.String)>($r5);
+
+        throw $r3;
+
+     label1:
+        specialinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken advance()>();
+
+        return;
+    }
+
+    private boolean fillBuffer(int) throws java.io.IOException
+    {
+        com.google.mygson.stream.JsonReader r0;
+        char $c5;
+        java.io.Reader $r2;
+        int $i0, i1, $i2, i3, i4, $i6;
+        char[] r1;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        $i0 := @parameter0: int;
+
+        r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i2 = r0.<com.google.mygson.stream.JsonReader: int bufferStartLine>;
+
+        i3 = r0.<com.google.mygson.stream.JsonReader: int bufferStartColumn>;
+
+        i4 = 0;
+
+        i1 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+     label1:
+        if i4 >= i1 goto label4;
+
+        $c5 = r1[i4];
+
+        $i6 = (int) $c5;
+
+        if $i6 != 10 goto label3;
+
+        $i2 = $i2 + 1;
+
+        i3 = 1;
+
+     label2:
+        i4 = i4 + 1;
+
+        goto label1;
+
+     label3:
+        i3 = i3 + 1;
+
+        goto label2;
+
+     label4:
+        r0.<com.google.mygson.stream.JsonReader: int bufferStartLine> = $i2;
+
+        r0.<com.google.mygson.stream.JsonReader: int bufferStartColumn> = i3;
+
+        i1 = r0.<com.google.mygson.stream.JsonReader: int limit>;
+
+        $i2 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        if i1 == $i2 goto label8;
+
+        i1 = r0.<com.google.mygson.stream.JsonReader: int limit>;
+
+        $i2 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        i1 = i1 - $i2;
+
+        r0.<com.google.mygson.stream.JsonReader: int limit> = i1;
+
+        i1 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        $i2 = r0.<com.google.mygson.stream.JsonReader: int limit>;
+
+        staticinvoke <java.lang.System: void arraycopy(java.lang.Object,int,java.lang.Object,int,int)>(r1, i1, r1, 0, $i2);
+
+     label5:
+        r0.<com.google.mygson.stream.JsonReader: int pos> = 0;
+
+     label6:
+        $r2 = r0.<com.google.mygson.stream.JsonReader: java.io.Reader in>;
+
+        i1 = r0.<com.google.mygson.stream.JsonReader: int limit>;
+
+        i3 = lengthof r1;
+
+        $i2 = r0.<com.google.mygson.stream.JsonReader: int limit>;
+
+        $i2 = i3 - $i2;
+
+        i1 = virtualinvoke $r2.<java.io.Reader: int read(char[],int,int)>(r1, i1, $i2);
+
+        if i1 == -1 goto label9;
+
+        $i2 = r0.<com.google.mygson.stream.JsonReader: int limit>;
+
+        i1 = $i2 + i1;
+
+        r0.<com.google.mygson.stream.JsonReader: int limit> = i1;
+
+        i1 = r0.<com.google.mygson.stream.JsonReader: int bufferStartLine>;
+
+        if i1 != 1 goto label7;
+
+        i1 = r0.<com.google.mygson.stream.JsonReader: int bufferStartColumn>;
+
+        if i1 != 1 goto label7;
+
+        i1 = r0.<com.google.mygson.stream.JsonReader: int limit>;
+
+        if i1 <= 0 goto label7;
+
+        $c5 = r1[0];
+
+        i1 = (int) $c5;
+
+        if i1 != 65279 goto label7;
+
+        i1 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        i1 = i1 + 1;
+
+        r0.<com.google.mygson.stream.JsonReader: int pos> = i1;
+
+        i1 = r0.<com.google.mygson.stream.JsonReader: int bufferStartColumn>;
+
+        i1 = i1 + -1;
+
+        r0.<com.google.mygson.stream.JsonReader: int bufferStartColumn> = i1;
+
+     label7:
+        i1 = r0.<com.google.mygson.stream.JsonReader: int limit>;
+
+        if i1 < $i0 goto label6;
+
+        return 1;
+
+     label8:
+        r0.<com.google.mygson.stream.JsonReader: int limit> = 0;
+
+        goto label5;
+
+     label9:
+        return 0;
+    }
+
+    private int getColumnNumber()
+    {
+        com.google.mygson.stream.JsonReader r0;
+        int i0, i1, $i2;
+        char[] $r1;
+        char $c3;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        i0 = r0.<com.google.mygson.stream.JsonReader: int bufferStartColumn>;
+
+        i1 = 0;
+
+     label1:
+        $i2 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        if i1 >= $i2 goto label4;
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $c3 = $r1[i1];
+
+        $i2 = (int) $c3;
+
+        if $i2 != 10 goto label3;
+
+        i0 = 1;
+
+     label2:
+        i1 = i1 + 1;
+
+        goto label1;
+
+     label3:
+        i0 = i0 + 1;
+
+        goto label2;
+
+     label4:
+        return i0;
+    }
+
+    private int getLineNumber()
+    {
+        com.google.mygson.stream.JsonReader r0;
+        int i0, i1, $i2;
+        char[] $r1;
+        char $c3;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        i0 = r0.<com.google.mygson.stream.JsonReader: int bufferStartLine>;
+
+        i1 = 0;
+
+     label1:
+        $i2 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        if i1 >= $i2 goto label3;
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $c3 = $r1[i1];
+
+        $i2 = (int) $c3;
+
+        if $i2 != 10 goto label2;
+
+        i0 = i0 + 1;
+
+     label2:
+        i1 = i1 + 1;
+
+        goto label1;
+
+     label3:
+        return i0;
+    }
+
+    private java.lang.CharSequence getSnippet()
+    {
+        com.google.mygson.stream.JsonReader r0;
+        int $i0, $i1;
+        char[] $r2;
+        java.lang.StringBuilder r1;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        r1 = new java.lang.StringBuilder;
+
+        specialinvoke r1.<java.lang.StringBuilder: void <init>()>();
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        $i0 = staticinvoke <java.lang.Math: int min(int,int)>($i0, 20);
+
+        $r2 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i1 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        $i1 = $i1 - $i0;
+
+        virtualinvoke r1.<java.lang.StringBuilder: java.lang.StringBuilder append(char[],int,int)>($r2, $i1, $i0);
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int limit>;
+
+        $i1 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        $i0 = $i0 - $i1;
+
+        $i0 = staticinvoke <java.lang.Math: int min(int,int)>($i0, 20);
+
+        $r2 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i1 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        virtualinvoke r1.<java.lang.StringBuilder: java.lang.StringBuilder append(char[],int,int)>($r2, $i1, $i0);
+
+        return r1;
+    }
+
+    private com.google.mygson.stream.JsonToken nextInArray(boolean) throws java.io.IOException
+    {
+        com.google.mygson.stream.JsonReader r0;
+        com.google.mygson.stream.JsonScope[] $r2;
+        com.google.mygson.stream.JsonScope $r1;
+        com.google.mygson.stream.JsonToken $r3;
+        int $i0;
+        java.io.IOException $r4;
+        boolean $z0;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        $z0 := @parameter0: boolean;
+
+        if $z0 == 0 goto label3;
+
+        $r2 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonScope[] stack>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int stackSize>;
+
+        $i0 = $i0 + -1;
+
+        $r1 = <com.google.mygson.stream.JsonScope: com.google.mygson.stream.JsonScope NONEMPTY_ARRAY>;
+
+        $r2[$i0] = $r1;
+
+     label1:
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int nextNonWhitespace(boolean)>(1);
+
+        lookupswitch($i0)
+        {
+            case 44: goto label8;
+            case 59: goto label8;
+            case 93: goto label7;
+            default: goto label2;
+        };
+
+     label2:
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        $i0 = $i0 + -1;
+
+        r0.<com.google.mygson.stream.JsonReader: int pos> = $i0;
+
+        $r3 = specialinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken nextValue()>();
+
+        return $r3;
+
+     label3:
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int nextNonWhitespace(boolean)>(1);
+
+        lookupswitch($i0)
+        {
+            case 44: goto label1;
+            case 59: goto label6;
+            case 93: goto label5;
+            default: goto label4;
+        };
+
+     label4:
+        $r4 = specialinvoke r0.<com.google.mygson.stream.JsonReader: java.io.IOException syntaxError(java.lang.String)>("Unterminated array");
+
+        throw $r4;
+
+     label5:
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int stackSize>;
+
+        $i0 = $i0 + -1;
+
+        r0.<com.google.mygson.stream.JsonReader: int stackSize> = $i0;
+
+        $r3 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken END_ARRAY>;
+
+        r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token> = $r3;
+
+        return $r3;
+
+     label6:
+        specialinvoke r0.<com.google.mygson.stream.JsonReader: void checkLenient()>();
+
+        goto label1;
+
+     label7:
+        if $z0 == 0 goto label8;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int stackSize>;
+
+        $i0 = $i0 + -1;
+
+        r0.<com.google.mygson.stream.JsonReader: int stackSize> = $i0;
+
+        $r3 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken END_ARRAY>;
+
+        r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token> = $r3;
+
+        return $r3;
+
+     label8:
+        specialinvoke r0.<com.google.mygson.stream.JsonReader: void checkLenient()>();
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        $i0 = $i0 + -1;
+
+        r0.<com.google.mygson.stream.JsonReader: int pos> = $i0;
+
+        r0.<com.google.mygson.stream.JsonReader: java.lang.String value> = "null";
+
+        $r3 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken NULL>;
+
+        r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token> = $r3;
+
+        return $r3;
+    }
+
+    private com.google.mygson.stream.JsonToken nextInObject(boolean) throws java.io.IOException
+    {
+        com.google.mygson.stream.JsonReader r0;
+        com.google.mygson.stream.JsonScope[] $r5;
+        com.google.mygson.stream.JsonToken $r4;
+        java.io.IOException $r3;
+        char $c1;
+        com.google.mygson.stream.JsonScope $r1;
+        int $i0;
+        java.lang.String $r2;
+        boolean $z0;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        $z0 := @parameter0: boolean;
+
+        if $z0 == 0 goto label05;
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int nextNonWhitespace(boolean)>(1);
+
+        lookupswitch($i0)
+        {
+            case 125: goto label04;
+            default: goto label01;
+        };
+
+     label01:
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        $i0 = $i0 + -1;
+
+        r0.<com.google.mygson.stream.JsonReader: int pos> = $i0;
+
+     label02:
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int nextNonWhitespace(boolean)>(1);
+
+        lookupswitch($i0)
+        {
+            case 34: goto label09;
+            case 39: goto label08;
+            default: goto label03;
+        };
+
+     label03:
+        specialinvoke r0.<com.google.mygson.stream.JsonReader: void checkLenient()>();
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        $i0 = $i0 + -1;
+
+        r0.<com.google.mygson.stream.JsonReader: int pos> = $i0;
+
+        $r2 = specialinvoke r0.<com.google.mygson.stream.JsonReader: java.lang.String nextLiteral(boolean)>(0);
+
+        r0.<com.google.mygson.stream.JsonReader: java.lang.String name> = $r2;
+
+        $r2 = r0.<com.google.mygson.stream.JsonReader: java.lang.String name>;
+
+        $i0 = virtualinvoke $r2.<java.lang.String: int length()>();
+
+        if $i0 != 0 goto label10;
+
+        $r3 = specialinvoke r0.<com.google.mygson.stream.JsonReader: java.io.IOException syntaxError(java.lang.String)>("Expected name");
+
+        throw $r3;
+
+     label04:
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int stackSize>;
+
+        $i0 = $i0 + -1;
+
+        r0.<com.google.mygson.stream.JsonReader: int stackSize> = $i0;
+
+        $r4 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken END_OBJECT>;
+
+        r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token> = $r4;
+
+        return $r4;
+
+     label05:
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int nextNonWhitespace(boolean)>(1);
+
+        lookupswitch($i0)
+        {
+            case 44: goto label02;
+            case 59: goto label02;
+            case 125: goto label07;
+            default: goto label06;
+        };
+
+     label06:
+        $r3 = specialinvoke r0.<com.google.mygson.stream.JsonReader: java.io.IOException syntaxError(java.lang.String)>("Unterminated object");
+
+        throw $r3;
+
+     label07:
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int stackSize>;
+
+        $i0 = $i0 + -1;
+
+        r0.<com.google.mygson.stream.JsonReader: int stackSize> = $i0;
+
+        $r4 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken END_OBJECT>;
+
+        r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token> = $r4;
+
+        return $r4;
+
+     label08:
+        specialinvoke r0.<com.google.mygson.stream.JsonReader: void checkLenient()>();
+
+     label09:
+        $c1 = (char) $i0;
+
+        $r2 = specialinvoke r0.<com.google.mygson.stream.JsonReader: java.lang.String nextString(char)>($c1);
+
+        r0.<com.google.mygson.stream.JsonReader: java.lang.String name> = $r2;
+
+     label10:
+        $r5 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonScope[] stack>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int stackSize>;
+
+        $i0 = $i0 + -1;
+
+        $r1 = <com.google.mygson.stream.JsonScope: com.google.mygson.stream.JsonScope DANGLING_NAME>;
+
+        $r5[$i0] = $r1;
+
+        $r4 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken NAME>;
+
+        r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token> = $r4;
+
+        return $r4;
+    }
+
+    private java.lang.String nextLiteral(boolean) throws java.io.IOException
+    {
+        com.google.mygson.stream.JsonReader r0;
+        com.google.mygson.stream.StringPool $r4;
+        char $c3;
+        int i0, $i1, $i2;
+        char[] $r2;
+        java.lang.StringBuilder r1, $r5;
+        java.lang.String r3;
+        boolean $z0, $z1;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        $z0 := @parameter0: boolean;
+
+        r1 = null;
+
+        r0.<com.google.mygson.stream.JsonReader: int valuePos> = -1;
+
+        r0.<com.google.mygson.stream.JsonReader: int valueLength> = 0;
+
+        i0 = 0;
+
+     label01:
+        $i1 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        $i1 = $i1 + i0;
+
+        $i2 = r0.<com.google.mygson.stream.JsonReader: int limit>;
+
+        if $i1 >= $i2 goto label06;
+
+        $r2 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i1 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        $i1 = $i1 + i0;
+
+        $c3 = $r2[$i1];
+
+        $i1 = (int) $c3;
+
+        lookupswitch($i1)
+        {
+            case 9: goto label04;
+            case 10: goto label04;
+            case 12: goto label04;
+            case 13: goto label04;
+            case 32: goto label04;
+            case 35: goto label03;
+            case 44: goto label04;
+            case 47: goto label03;
+            case 58: goto label04;
+            case 59: goto label03;
+            case 61: goto label03;
+            case 91: goto label04;
+            case 92: goto label03;
+            case 93: goto label04;
+            case 123: goto label04;
+            case 125: goto label04;
+            default: goto label02;
+        };
+
+     label02:
+        i0 = i0 + 1;
+
+        goto label01;
+
+     label03:
+        specialinvoke r0.<com.google.mygson.stream.JsonReader: void checkLenient()>();
+
+     label04:
+        if $z0 == 0 goto label09;
+
+        if r1 != null goto label09;
+
+        $i1 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        r0.<com.google.mygson.stream.JsonReader: int valuePos> = $i1;
+
+        r3 = null;
+
+     label05:
+        $i1 = r0.<com.google.mygson.stream.JsonReader: int valueLength>;
+
+        $i1 = $i1 + i0;
+
+        r0.<com.google.mygson.stream.JsonReader: int valueLength> = $i1;
+
+        $i1 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        i0 = $i1 + i0;
+
+        r0.<com.google.mygson.stream.JsonReader: int pos> = i0;
+
+        return r3;
+
+     label06:
+        $r2 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i1 = lengthof $r2;
+
+        if i0 >= $i1 goto label07;
+
+        $i1 = i0 + 1;
+
+        $z1 = specialinvoke r0.<com.google.mygson.stream.JsonReader: boolean fillBuffer(int)>($i1);
+
+        if $z1 != 0 goto label01;
+
+        $r2 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i1 = r0.<com.google.mygson.stream.JsonReader: int limit>;
+
+        $r2[$i1] = 0;
+
+        goto label04;
+
+     label07:
+        if r1 != null goto label08;
+
+        $r5 = new java.lang.StringBuilder;
+
+        r1 = $r5;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+     label08:
+        $r2 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i1 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        virtualinvoke r1.<java.lang.StringBuilder: java.lang.StringBuilder append(char[],int,int)>($r2, $i1, i0);
+
+        $i1 = r0.<com.google.mygson.stream.JsonReader: int valueLength>;
+
+        $i1 = $i1 + i0;
+
+        r0.<com.google.mygson.stream.JsonReader: int valueLength> = $i1;
+
+        $i1 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        i0 = $i1 + i0;
+
+        r0.<com.google.mygson.stream.JsonReader: int pos> = i0;
+
+        i0 = 0;
+
+        $z1 = specialinvoke r0.<com.google.mygson.stream.JsonReader: boolean fillBuffer(int)>(1);
+
+        if $z1 != 0 goto label01;
+
+        goto label04;
+
+     label09:
+        $z0 = r0.<com.google.mygson.stream.JsonReader: boolean skipping>;
+
+        if $z0 == 0 goto label10;
+
+        r3 = "skipped!";
+
+        goto label05;
+
+     label10:
+        if r1 != null goto label11;
+
+        $r4 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.StringPool stringPool>;
+
+        $r2 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i1 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        r3 = virtualinvoke $r4.<com.google.mygson.stream.StringPool: java.lang.String get(char[],int,int)>($r2, $i1, i0);
+
+        goto label05;
+
+     label11:
+        $r2 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i1 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        virtualinvoke r1.<java.lang.StringBuilder: java.lang.StringBuilder append(char[],int,int)>($r2, $i1, i0);
+
+        r3 = virtualinvoke r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        goto label05;
+    }
+
+    private int nextNonWhitespace(boolean) throws java.io.IOException
+    {
+        com.google.mygson.stream.JsonReader r0;
+        char c1, c4;
+        java.io.IOException $r4;
+        java.io.EOFException $r6;
+        int i0, i2, i3;
+        char[] r1;
+        java.lang.StringBuilder $r2, $r5;
+        java.lang.String $r3;
+        boolean $z0, $z1;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        $z0 := @parameter0: boolean;
+
+        r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        i2 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        i3 = r0.<com.google.mygson.stream.JsonReader: int limit>;
+
+     label01:
+        if i2 != i3 goto label03;
+
+        r0.<com.google.mygson.stream.JsonReader: int pos> = i2;
+
+        $z1 = specialinvoke r0.<com.google.mygson.stream.JsonReader: boolean fillBuffer(int)>(1);
+
+        if $z1 != 0 goto label02;
+
+        if $z0 == 0 goto label13;
+
+        $r6 = new java.io.EOFException;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("End of input at line ");
+
+        i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getLineNumber()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>(i0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" column ");
+
+        i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getColumnNumber()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>(i0);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r6.<java.io.EOFException: void <init>(java.lang.String)>($r3);
+
+        throw $r6;
+
+     label02:
+        i2 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        i3 = r0.<com.google.mygson.stream.JsonReader: int limit>;
+
+     label03:
+        i0 = i2 + 1;
+
+        c4 = r1[i2];
+
+        i2 = (int) c4;
+
+        lookupswitch(i2)
+        {
+            case 9: goto label05;
+            case 10: goto label05;
+            case 13: goto label05;
+            case 32: goto label05;
+            case 35: goto label12;
+            case 47: goto label06;
+            default: goto label04;
+        };
+
+     label04:
+        r0.<com.google.mygson.stream.JsonReader: int pos> = i0;
+
+        i0 = (int) c4;
+
+        return i0;
+
+     label05:
+        i2 = i0;
+
+        goto label01;
+
+     label06:
+        r0.<com.google.mygson.stream.JsonReader: int pos> = i0;
+
+        if i0 != i3 goto label07;
+
+        $z1 = specialinvoke r0.<com.google.mygson.stream.JsonReader: boolean fillBuffer(int)>(1);
+
+        if $z1 != 0 goto label07;
+
+        i0 = (int) c4;
+
+        return i0;
+
+     label07:
+        specialinvoke r0.<com.google.mygson.stream.JsonReader: void checkLenient()>();
+
+        i0 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        c1 = r1[i0];
+
+        i0 = (int) c1;
+
+        lookupswitch(i0)
+        {
+            case 42: goto label09;
+            case 47: goto label11;
+            default: goto label08;
+        };
+
+     label08:
+        i0 = (int) c4;
+
+        return i0;
+
+     label09:
+        i0 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        i0 = i0 + 1;
+
+        r0.<com.google.mygson.stream.JsonReader: int pos> = i0;
+
+        $z1 = specialinvoke r0.<com.google.mygson.stream.JsonReader: boolean skipTo(java.lang.String)>("*/");
+
+        if $z1 != 0 goto label10;
+
+        $r4 = specialinvoke r0.<com.google.mygson.stream.JsonReader: java.io.IOException syntaxError(java.lang.String)>("Unterminated comment");
+
+        throw $r4;
+
+     label10:
+        i0 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        i2 = i0 + 2;
+
+        i3 = r0.<com.google.mygson.stream.JsonReader: int limit>;
+
+        goto label01;
+
+     label11:
+        i0 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        i0 = i0 + 1;
+
+        r0.<com.google.mygson.stream.JsonReader: int pos> = i0;
+
+        specialinvoke r0.<com.google.mygson.stream.JsonReader: void skipToEndOfLine()>();
+
+        i2 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        i3 = r0.<com.google.mygson.stream.JsonReader: int limit>;
+
+        goto label01;
+
+     label12:
+        r0.<com.google.mygson.stream.JsonReader: int pos> = i0;
+
+        specialinvoke r0.<com.google.mygson.stream.JsonReader: void checkLenient()>();
+
+        specialinvoke r0.<com.google.mygson.stream.JsonReader: void skipToEndOfLine()>();
+
+        i2 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        i3 = r0.<com.google.mygson.stream.JsonReader: int limit>;
+
+        goto label01;
+
+     label13:
+        return -1;
+    }
+
+    private java.lang.String nextString(char) throws java.io.IOException
+    {
+        com.google.mygson.stream.JsonReader r0;
+        com.google.mygson.stream.StringPool $r3;
+        char $c0, c1;
+        java.io.IOException $r5;
+        int i2, i3, i4, i5, $i6;
+        char[] r1;
+        java.lang.StringBuilder r2, $r6;
+        java.lang.String $r4;
+        boolean $z0;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        $c0 := @parameter0: char;
+
+        r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        r2 = null;
+
+     label1:
+        i2 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        i3 = r0.<com.google.mygson.stream.JsonReader: int limit>;
+
+        i4 = i2;
+
+        i5 = i2;
+
+     label2:
+        if i5 >= i3 goto label8;
+
+        i2 = i5 + 1;
+
+        c1 = r1[i5];
+
+        i5 = (int) c1;
+
+        $i6 = (int) $c0;
+
+        if i5 != $i6 goto label5;
+
+        r0.<com.google.mygson.stream.JsonReader: int pos> = i2;
+
+        $z0 = r0.<com.google.mygson.stream.JsonReader: boolean skipping>;
+
+        if $z0 == 0 goto label3;
+
+        return "skipped!";
+
+     label3:
+        if r2 != null goto label4;
+
+        $r3 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.StringPool stringPool>;
+
+        i3 = i2 - i4;
+
+        i3 = i3 + -1;
+
+        $r4 = virtualinvoke $r3.<com.google.mygson.stream.StringPool: java.lang.String get(char[],int,int)>(r1, i4, i3);
+
+        return $r4;
+
+     label4:
+        i3 = i2 - i4;
+
+        i3 = i3 + -1;
+
+        virtualinvoke r2.<java.lang.StringBuilder: java.lang.StringBuilder append(char[],int,int)>(r1, i4, i3);
+
+        $r4 = virtualinvoke r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r4;
+
+     label5:
+        i5 = (int) c1;
+
+        if i5 != 92 goto label7;
+
+        r0.<com.google.mygson.stream.JsonReader: int pos> = i2;
+
+        if r2 != null goto label6;
+
+        $r6 = new java.lang.StringBuilder;
+
+        r2 = $r6;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+     label6:
+        i3 = i2 - i4;
+
+        i3 = i3 + -1;
+
+        virtualinvoke r2.<java.lang.StringBuilder: java.lang.StringBuilder append(char[],int,int)>(r1, i4, i3);
+
+        c1 = specialinvoke r0.<com.google.mygson.stream.JsonReader: char readEscapeCharacter()>();
+
+        virtualinvoke r2.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(c1);
+
+        i2 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        i3 = r0.<com.google.mygson.stream.JsonReader: int limit>;
+
+        i4 = i2;
+
+     label7:
+        i5 = i2;
+
+        goto label2;
+
+     label8:
+        if r2 != null goto label9;
+
+        $r6 = new java.lang.StringBuilder;
+
+        r2 = $r6;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+     label9:
+        i3 = i5 - i4;
+
+        virtualinvoke r2.<java.lang.StringBuilder: java.lang.StringBuilder append(char[],int,int)>(r1, i4, i3);
+
+        r0.<com.google.mygson.stream.JsonReader: int pos> = i5;
+
+        $z0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: boolean fillBuffer(int)>(1);
+
+        if $z0 != 0 goto label1;
+
+        $r5 = specialinvoke r0.<com.google.mygson.stream.JsonReader: java.io.IOException syntaxError(java.lang.String)>("Unterminated string");
+
+        throw $r5;
+    }
+
+    private com.google.mygson.stream.JsonToken nextValue() throws java.io.IOException
+    {
+        com.google.mygson.stream.JsonReader r0;
+        com.google.mygson.stream.JsonToken $r1;
+        com.google.mygson.stream.JsonScope $r2;
+        int $i0;
+        char $c1;
+        java.lang.String $r3;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int nextNonWhitespace(boolean)>(1);
+
+        lookupswitch($i0)
+        {
+            case 34: goto label5;
+            case 39: goto label4;
+            case 91: goto label3;
+            case 123: goto label2;
+            default: goto label1;
+        };
+
+     label1:
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        $i0 = $i0 + -1;
+
+        r0.<com.google.mygson.stream.JsonReader: int pos> = $i0;
+
+        $r1 = specialinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken readLiteral()>();
+
+        return $r1;
+
+     label2:
+        $r2 = <com.google.mygson.stream.JsonScope: com.google.mygson.stream.JsonScope EMPTY_OBJECT>;
+
+        specialinvoke r0.<com.google.mygson.stream.JsonReader: void push(com.google.mygson.stream.JsonScope)>($r2);
+
+        $r1 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken BEGIN_OBJECT>;
+
+        r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token> = $r1;
+
+        return $r1;
+
+     label3:
+        $r2 = <com.google.mygson.stream.JsonScope: com.google.mygson.stream.JsonScope EMPTY_ARRAY>;
+
+        specialinvoke r0.<com.google.mygson.stream.JsonReader: void push(com.google.mygson.stream.JsonScope)>($r2);
+
+        $r1 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken BEGIN_ARRAY>;
+
+        r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token> = $r1;
+
+        return $r1;
+
+     label4:
+        specialinvoke r0.<com.google.mygson.stream.JsonReader: void checkLenient()>();
+
+     label5:
+        $c1 = (char) $i0;
+
+        $r3 = specialinvoke r0.<com.google.mygson.stream.JsonReader: java.lang.String nextString(char)>($c1);
+
+        r0.<com.google.mygson.stream.JsonReader: java.lang.String value> = $r3;
+
+        $r1 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken STRING>;
+
+        r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token> = $r1;
+
+        return $r1;
+    }
+
+    private com.google.mygson.stream.JsonToken objectValue() throws java.io.IOException
+    {
+        com.google.mygson.stream.JsonReader r0;
+        com.google.mygson.stream.JsonScope[] $r3;
+        com.google.mygson.stream.JsonToken $r5;
+        java.io.IOException $r1;
+        char $c2;
+        com.google.mygson.stream.JsonScope $r4;
+        int $i0, $i1;
+        char[] $r2;
+        boolean $z0;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int nextNonWhitespace(boolean)>(1);
+
+        lookupswitch($i0)
+        {
+            case 58: goto label4;
+            case 59: goto label1;
+            case 60: goto label1;
+            case 61: goto label2;
+            default: goto label1;
+        };
+
+     label1:
+        $r1 = specialinvoke r0.<com.google.mygson.stream.JsonReader: java.io.IOException syntaxError(java.lang.String)>("Expected \':\'");
+
+        throw $r1;
+
+     label2:
+        specialinvoke r0.<com.google.mygson.stream.JsonReader: void checkLenient()>();
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        $i1 = r0.<com.google.mygson.stream.JsonReader: int limit>;
+
+        if $i0 < $i1 goto label3;
+
+        $z0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: boolean fillBuffer(int)>(1);
+
+        if $z0 == 0 goto label4;
+
+     label3:
+        $r2 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        $c2 = $r2[$i0];
+
+        $i0 = (int) $c2;
+
+        if $i0 != 62 goto label4;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        $i0 = $i0 + 1;
+
+        r0.<com.google.mygson.stream.JsonReader: int pos> = $i0;
+
+     label4:
+        $r3 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonScope[] stack>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int stackSize>;
+
+        $i0 = $i0 + -1;
+
+        $r4 = <com.google.mygson.stream.JsonScope: com.google.mygson.stream.JsonScope NONEMPTY_OBJECT>;
+
+        $r3[$i0] = $r4;
+
+        $r5 = specialinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken nextValue()>();
+
+        return $r5;
+    }
+
+    private void push(com.google.mygson.stream.JsonScope)
+    {
+        com.google.mygson.stream.JsonReader r0;
+        com.google.mygson.stream.JsonScope[] r2, $r3;
+        com.google.mygson.stream.JsonScope $r1;
+        int $i0, $i1;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        $r1 := @parameter0: com.google.mygson.stream.JsonScope;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int stackSize>;
+
+        r2 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonScope[] stack>;
+
+        $i1 = lengthof r2;
+
+        if $i0 != $i1 goto label1;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int stackSize>;
+
+        $i0 = $i0 * 2;
+
+        r2 = newarray (com.google.mygson.stream.JsonScope)[$i0];
+
+        $r3 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonScope[] stack>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int stackSize>;
+
+        staticinvoke <java.lang.System: void arraycopy(java.lang.Object,int,java.lang.Object,int,int)>($r3, 0, r2, 0, $i0);
+
+        r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonScope[] stack> = r2;
+
+     label1:
+        r2 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonScope[] stack>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int stackSize>;
+
+        $i1 = $i0 + 1;
+
+        r0.<com.google.mygson.stream.JsonReader: int stackSize> = $i1;
+
+        r2[$i0] = $r1;
+
+        return;
+    }
+
+    private char readEscapeCharacter() throws java.io.IOException
+    {
+        com.google.mygson.stream.JsonReader r0;
+        com.google.mygson.stream.StringPool $r4;
+        char c0, c3;
+        java.io.IOException $r2;
+        java.lang.NumberFormatException $r7;
+        int i1, $i2, $i4, $i5;
+        char[] $r1;
+        java.lang.StringBuilder $r3, $r6;
+        java.lang.String $r5;
+        boolean $z0;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        i1 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        $i2 = r0.<com.google.mygson.stream.JsonReader: int limit>;
+
+        if i1 != $i2 goto label01;
+
+        $z0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: boolean fillBuffer(int)>(1);
+
+        if $z0 != 0 goto label01;
+
+        $r2 = specialinvoke r0.<com.google.mygson.stream.JsonReader: java.io.IOException syntaxError(java.lang.String)>("Unterminated escape sequence");
+
+        throw $r2;
+
+     label01:
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        i1 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        $i2 = i1 + 1;
+
+        r0.<com.google.mygson.stream.JsonReader: int pos> = $i2;
+
+        c0 = $r1[i1];
+
+        i1 = (int) c0;
+
+        lookupswitch(i1)
+        {
+            case 98: goto label12;
+            case 102: goto label15;
+            case 110: goto label13;
+            case 114: goto label14;
+            case 116: goto label11;
+            case 117: goto label03;
+            default: goto label02;
+        };
+
+     label02:
+        return c0;
+
+     label03:
+        i1 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        i1 = i1 + 4;
+
+        $i2 = r0.<com.google.mygson.stream.JsonReader: int limit>;
+
+        if i1 <= $i2 goto label04;
+
+        $z0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: boolean fillBuffer(int)>(4);
+
+        if $z0 != 0 goto label04;
+
+        $r2 = specialinvoke r0.<com.google.mygson.stream.JsonReader: java.io.IOException syntaxError(java.lang.String)>("Unterminated escape sequence");
+
+        throw $r2;
+
+     label04:
+        c3 = 0;
+
+        $i2 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        i1 = $i2 + 4;
+
+     label05:
+        if $i2 >= i1 goto label10;
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        c0 = $r1[$i2];
+
+        $i4 = c3 << 4;
+
+        c3 = (char) $i4;
+
+        $i4 = (int) c0;
+
+        if $i4 < 48 goto label07;
+
+        $i4 = (int) c0;
+
+        if $i4 > 57 goto label07;
+
+        $i4 = (int) c0;
+
+        $i4 = $i4 + -48;
+
+        $i5 = (int) c3;
+
+        $i4 = $i4 + $i5;
+
+        c3 = (char) $i4;
+
+     label06:
+        $i2 = $i2 + 1;
+
+        goto label05;
+
+     label07:
+        $i4 = (int) c0;
+
+        if $i4 < 97 goto label08;
+
+        $i4 = (int) c0;
+
+        if $i4 > 102 goto label08;
+
+        $i4 = (int) c0;
+
+        $i4 = $i4 + -97;
+
+        $i4 = $i4 + 10;
+
+        $i5 = (int) c3;
+
+        $i4 = $i4 + $i5;
+
+        c3 = (char) $i4;
+
+        goto label06;
+
+     label08:
+        $i4 = (int) c0;
+
+        if $i4 < 65 goto label09;
+
+        $i4 = (int) c0;
+
+        if $i4 > 70 goto label09;
+
+        $i4 = (int) c0;
+
+        $i4 = $i4 + -65;
+
+        $i4 = $i4 + 10;
+
+        $i5 = (int) c3;
+
+        $i4 = $i4 + $i5;
+
+        c3 = (char) $i4;
+
+        goto label06;
+
+     label09:
+        $r7 = new java.lang.NumberFormatException;
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\\u");
+
+        $r4 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.StringPool stringPool>;
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        i1 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        $r5 = virtualinvoke $r4.<com.google.mygson.stream.StringPool: java.lang.String get(char[],int,int)>($r1, i1, 4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r7.<java.lang.NumberFormatException: void <init>(java.lang.String)>($r5);
+
+        throw $r7;
+
+     label10:
+        i1 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        i1 = i1 + 4;
+
+        r0.<com.google.mygson.stream.JsonReader: int pos> = i1;
+
+        return c3;
+
+     label11:
+        return 9;
+
+     label12:
+        return 8;
+
+     label13:
+        return 10;
+
+     label14:
+        return 13;
+
+     label15:
+        return 12;
+    }
+
+    private com.google.mygson.stream.JsonToken readLiteral() throws java.io.IOException
+    {
+        com.google.mygson.stream.JsonReader r0;
+        com.google.mygson.stream.JsonToken $r1, $r4;
+        int $i0;
+        java.io.IOException $r3;
+        java.lang.String $r2;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        $r2 = specialinvoke r0.<com.google.mygson.stream.JsonReader: java.lang.String nextLiteral(boolean)>(1);
+
+        r0.<com.google.mygson.stream.JsonReader: java.lang.String value> = $r2;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int valueLength>;
+
+        if $i0 != 0 goto label1;
+
+        $r3 = specialinvoke r0.<com.google.mygson.stream.JsonReader: java.io.IOException syntaxError(java.lang.String)>("Expected literal value");
+
+        throw $r3;
+
+     label1:
+        $r1 = specialinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken decodeLiteral()>();
+
+        r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token> = $r1;
+
+        $r4 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token>;
+
+        $r1 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken STRING>;
+
+        if $r4 != $r1 goto label2;
+
+        specialinvoke r0.<com.google.mygson.stream.JsonReader: void checkLenient()>();
+
+     label2:
+        $r1 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token>;
+
+        return $r1;
+    }
+
+    private boolean skipTo(java.lang.String) throws java.io.IOException
+    {
+        com.google.mygson.stream.JsonReader r0;
+        char $c2, $c3;
+        int $i0, $i1, $i4;
+        char[] $r2;
+        java.lang.String $r1;
+        boolean $z0;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        $r1 := @parameter0: java.lang.String;
+
+     label1:
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        $i1 = virtualinvoke $r1.<java.lang.String: int length()>();
+
+        $i0 = $i0 + $i1;
+
+        $i1 = r0.<com.google.mygson.stream.JsonReader: int limit>;
+
+        if $i0 <= $i1 goto label2;
+
+        $i0 = virtualinvoke $r1.<java.lang.String: int length()>();
+
+        $z0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: boolean fillBuffer(int)>($i0);
+
+        if $z0 == 0 goto label6;
+
+     label2:
+        $i0 = 0;
+
+     label3:
+        $i1 = virtualinvoke $r1.<java.lang.String: int length()>();
+
+        if $i0 >= $i1 goto label5;
+
+        $r2 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i1 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        $i1 = $i1 + $i0;
+
+        $c2 = $r2[$i1];
+
+        $c3 = virtualinvoke $r1.<java.lang.String: char charAt(int)>($i0);
+
+        $i1 = (int) $c2;
+
+        $i4 = (int) $c3;
+
+        if $i1 == $i4 goto label4;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        $i0 = $i0 + 1;
+
+        r0.<com.google.mygson.stream.JsonReader: int pos> = $i0;
+
+        goto label1;
+
+     label4:
+        $i0 = $i0 + 1;
+
+        goto label3;
+
+     label5:
+        return 1;
+
+     label6:
+        return 0;
+    }
+
+    private void skipToEndOfLine() throws java.io.IOException
+    {
+        com.google.mygson.stream.JsonReader r0;
+        int $i1, $i2;
+        char[] $r1;
+        char c0;
+        boolean $z0;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+     label1:
+        $i1 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        $i2 = r0.<com.google.mygson.stream.JsonReader: int limit>;
+
+        if $i1 < $i2 goto label2;
+
+        $z0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: boolean fillBuffer(int)>(1);
+
+        if $z0 == 0 goto label3;
+
+     label2:
+        $r1 = r0.<com.google.mygson.stream.JsonReader: char[] buffer>;
+
+        $i2 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        $i1 = $i2 + 1;
+
+        r0.<com.google.mygson.stream.JsonReader: int pos> = $i1;
+
+        c0 = $r1[$i2];
+
+        $i1 = (int) c0;
+
+        if $i1 == 13 goto label3;
+
+        $i1 = (int) c0;
+
+        if $i1 != 10 goto label1;
+
+     label3:
+        return;
+    }
+
+    private java.io.IOException syntaxError(java.lang.String) throws java.io.IOException
+    {
+        com.google.mygson.stream.MalformedJsonException $r2;
+        com.google.mygson.stream.JsonReader r0;
+        int $i0;
+        java.lang.StringBuilder $r3;
+        java.lang.String $r1;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = new com.google.mygson.stream.MalformedJsonException;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" at line ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getLineNumber()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" column ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getColumnNumber()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r2.<com.google.mygson.stream.MalformedJsonException: void <init>(java.lang.String)>($r1);
+
+        throw $r2;
+    }
+
+    public void beginArray() throws java.io.IOException
+    {
+        com.google.mygson.stream.JsonReader r0;
+        com.google.mygson.stream.JsonToken $r1;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        $r1 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken BEGIN_ARRAY>;
+
+        specialinvoke r0.<com.google.mygson.stream.JsonReader: void expect(com.google.mygson.stream.JsonToken)>($r1);
+
+        return;
+    }
+
+    public void beginObject() throws java.io.IOException
+    {
+        com.google.mygson.stream.JsonReader r0;
+        com.google.mygson.stream.JsonToken $r1;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        $r1 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken BEGIN_OBJECT>;
+
+        specialinvoke r0.<com.google.mygson.stream.JsonReader: void expect(com.google.mygson.stream.JsonToken)>($r1);
+
+        return;
+    }
+
+    public void close() throws java.io.IOException
+    {
+        com.google.mygson.stream.JsonReader r0;
+        com.google.mygson.stream.JsonScope[] $r2;
+        com.google.mygson.stream.JsonScope $r1;
+        java.io.Reader $r3;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        r0.<com.google.mygson.stream.JsonReader: java.lang.String value> = null;
+
+        r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token> = null;
+
+        $r2 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonScope[] stack>;
+
+        $r1 = <com.google.mygson.stream.JsonScope: com.google.mygson.stream.JsonScope CLOSED>;
+
+        $r2[0] = $r1;
+
+        r0.<com.google.mygson.stream.JsonReader: int stackSize> = 1;
+
+        $r3 = r0.<com.google.mygson.stream.JsonReader: java.io.Reader in>;
+
+        virtualinvoke $r3.<java.io.Reader: void close()>();
+
+        return;
+    }
+
+    public void endArray() throws java.io.IOException
+    {
+        com.google.mygson.stream.JsonReader r0;
+        com.google.mygson.stream.JsonToken $r1;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        $r1 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken END_ARRAY>;
+
+        specialinvoke r0.<com.google.mygson.stream.JsonReader: void expect(com.google.mygson.stream.JsonToken)>($r1);
+
+        return;
+    }
+
+    public void endObject() throws java.io.IOException
+    {
+        com.google.mygson.stream.JsonReader r0;
+        com.google.mygson.stream.JsonToken $r1;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        $r1 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken END_OBJECT>;
+
+        specialinvoke r0.<com.google.mygson.stream.JsonReader: void expect(com.google.mygson.stream.JsonToken)>($r1);
+
+        return;
+    }
+
+    public boolean hasNext() throws java.io.IOException
+    {
+        com.google.mygson.stream.JsonReader r0;
+        com.google.mygson.stream.JsonToken $r1, $r2;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        virtualinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken peek()>();
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token>;
+
+        $r2 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken END_OBJECT>;
+
+        if $r1 == $r2 goto label1;
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token>;
+
+        $r2 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken END_ARRAY>;
+
+        if $r1 == $r2 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public final boolean isLenient()
+    {
+        com.google.mygson.stream.JsonReader r0;
+        boolean z0;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        z0 = r0.<com.google.mygson.stream.JsonReader: boolean lenient>;
+
+        return z0;
+    }
+
+    public boolean nextBoolean() throws java.io.IOException
+    {
+        com.google.mygson.stream.JsonReader r0;
+        java.lang.IllegalStateException $r3;
+        com.google.mygson.stream.JsonToken $r1, $r2;
+        int $i0;
+        java.lang.StringBuilder $r4;
+        java.lang.String $r5;
+        boolean z0;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        virtualinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken peek()>();
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token>;
+
+        $r2 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken BOOLEAN>;
+
+        if $r1 == $r2 goto label1;
+
+        $r3 = new java.lang.IllegalStateException;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Expected a boolean but was ");
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" at line ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getLineNumber()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" column ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getColumnNumber()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r3.<java.lang.IllegalStateException: void <init>(java.lang.String)>($r5);
+
+        throw $r3;
+
+     label1:
+        $r5 = r0.<com.google.mygson.stream.JsonReader: java.lang.String value>;
+
+        if $r5 != "true" goto label3;
+
+        z0 = 1;
+
+     label2:
+        specialinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken advance()>();
+
+        return z0;
+
+     label3:
+        z0 = 0;
+
+        goto label2;
+    }
+
+    public double nextDouble() throws java.io.IOException
+    {
+        com.google.mygson.stream.MalformedJsonException $r7;
+        com.google.mygson.stream.JsonReader r0;
+        java.lang.IllegalStateException $r6;
+        com.google.mygson.stream.JsonToken $r1, $r2;
+        byte $b1;
+        int $i0;
+        java.lang.StringBuilder $r3, $r5;
+        java.lang.String $r4;
+        double $d0;
+        boolean $z0;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        virtualinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken peek()>();
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token>;
+
+        $r2 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken STRING>;
+
+        if $r1 == $r2 goto label1;
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token>;
+
+        $r2 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken NUMBER>;
+
+        if $r1 == $r2 goto label1;
+
+        $r6 = new java.lang.IllegalStateException;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Expected a double but was ");
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token>;
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" at line ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getLineNumber()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" column ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getColumnNumber()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r6.<java.lang.IllegalStateException: void <init>(java.lang.String)>($r4);
+
+        throw $r6;
+
+     label1:
+        $r4 = r0.<com.google.mygson.stream.JsonReader: java.lang.String value>;
+
+        $d0 = staticinvoke <java.lang.Double: double parseDouble(java.lang.String)>($r4);
+
+        $b1 = $d0 cmpl 1.0;
+
+        $i0 = (int) $b1;
+
+        if $i0 < 0 goto label2;
+
+        $r4 = r0.<com.google.mygson.stream.JsonReader: java.lang.String value>;
+
+        $z0 = virtualinvoke $r4.<java.lang.String: boolean startsWith(java.lang.String)>("0");
+
+        if $z0 == 0 goto label2;
+
+        $r7 = new com.google.mygson.stream.MalformedJsonException;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("JSON forbids octal prefixes: ");
+
+        $r4 = r0.<com.google.mygson.stream.JsonReader: java.lang.String value>;
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" at line ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getLineNumber()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" column ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getColumnNumber()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r7.<com.google.mygson.stream.MalformedJsonException: void <init>(java.lang.String)>($r4);
+
+        throw $r7;
+
+     label2:
+        $z0 = r0.<com.google.mygson.stream.JsonReader: boolean lenient>;
+
+        if $z0 != 0 goto label4;
+
+        $z0 = staticinvoke <java.lang.Double: boolean isNaN(double)>($d0);
+
+        if $z0 != 0 goto label3;
+
+        $z0 = staticinvoke <java.lang.Double: boolean isInfinite(double)>($d0);
+
+        if $z0 == 0 goto label4;
+
+     label3:
+        $r7 = new com.google.mygson.stream.MalformedJsonException;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("JSON forbids NaN and infinities: ");
+
+        $r4 = r0.<com.google.mygson.stream.JsonReader: java.lang.String value>;
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" at line ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getLineNumber()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" column ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getColumnNumber()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r7.<com.google.mygson.stream.MalformedJsonException: void <init>(java.lang.String)>($r4);
+
+        throw $r7;
+
+     label4:
+        specialinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken advance()>();
+
+        return $d0;
+    }
+
+    public int nextInt() throws java.io.IOException
+    {
+        java.lang.Throwable r1;
+        java.lang.IllegalStateException $r7;
+        com.google.mygson.stream.JsonToken $r2, $r3;
+        long $l1;
+        byte $b2;
+        int $i0, $i3;
+        java.lang.String $r5;
+        boolean $z0;
+        double $d0, $d1;
+        com.google.mygson.stream.MalformedJsonException $r8;
+        com.google.mygson.stream.JsonReader r0;
+        java.lang.NumberFormatException $r9;
+        java.lang.StringBuilder $r4, $r6;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        virtualinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken peek()>();
+
+        $r2 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token>;
+
+        $r3 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken STRING>;
+
+        if $r2 == $r3 goto label1;
+
+        $r2 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token>;
+
+        $r3 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken NUMBER>;
+
+        if $r2 == $r3 goto label1;
+
+        $r7 = new java.lang.IllegalStateException;
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Expected an int but was ");
+
+        $r2 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r2);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" at line ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getLineNumber()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" column ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getColumnNumber()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r7.<java.lang.IllegalStateException: void <init>(java.lang.String)>($r5);
+
+        throw $r7;
+
+     label1:
+        $r5 = r0.<com.google.mygson.stream.JsonReader: java.lang.String value>;
+
+     label2:
+        $i0 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String)>($r5);
+
+     label3:
+        $l1 = (long) $i0;
+
+        $b2 = $l1 cmp 1L;
+
+        $i3 = (int) $b2;
+
+        if $i3 < 0 goto label5;
+
+        $r5 = r0.<com.google.mygson.stream.JsonReader: java.lang.String value>;
+
+        $z0 = virtualinvoke $r5.<java.lang.String: boolean startsWith(java.lang.String)>("0");
+
+        if $z0 == 0 goto label5;
+
+        $r8 = new com.google.mygson.stream.MalformedJsonException;
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("JSON forbids octal prefixes: ");
+
+        $r5 = r0.<com.google.mygson.stream.JsonReader: java.lang.String value>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" at line ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getLineNumber()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" column ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getColumnNumber()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r8.<com.google.mygson.stream.MalformedJsonException: void <init>(java.lang.String)>($r5);
+
+        throw $r8;
+
+     label4:
+        r1 := @caughtexception;
+
+        $r5 = r0.<com.google.mygson.stream.JsonReader: java.lang.String value>;
+
+        $d0 = staticinvoke <java.lang.Double: double parseDouble(java.lang.String)>($r5);
+
+        $i0 = (int) $d0;
+
+        $d1 = (double) $i0;
+
+        $b2 = $d1 cmpl $d0;
+
+        if $b2 == 0 goto label3;
+
+        $r9 = new java.lang.NumberFormatException;
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Expected an int but was ");
+
+        $r5 = r0.<com.google.mygson.stream.JsonReader: java.lang.String value>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" at line ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getLineNumber()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" column ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getColumnNumber()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r9.<java.lang.NumberFormatException: void <init>(java.lang.String)>($r5);
+
+        throw $r9;
+
+     label5:
+        specialinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken advance()>();
+
+        return $i0;
+
+        catch java.lang.NumberFormatException from label2 to label3 with label4;
+    }
+
+    public long nextLong() throws java.io.IOException
+    {
+        java.lang.Throwable r1;
+        java.lang.IllegalStateException $r7;
+        com.google.mygson.stream.JsonToken $r2, $r3;
+        long $l1;
+        byte $b2;
+        int $i0;
+        java.lang.String $r5;
+        boolean $z0;
+        double $d0, $d1;
+        com.google.mygson.stream.MalformedJsonException $r8;
+        com.google.mygson.stream.JsonReader r0;
+        java.lang.NumberFormatException $r9;
+        java.lang.StringBuilder $r4, $r6;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        virtualinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken peek()>();
+
+        $r2 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token>;
+
+        $r3 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken STRING>;
+
+        if $r2 == $r3 goto label1;
+
+        $r2 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token>;
+
+        $r3 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken NUMBER>;
+
+        if $r2 == $r3 goto label1;
+
+        $r7 = new java.lang.IllegalStateException;
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Expected a long but was ");
+
+        $r2 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r2);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" at line ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getLineNumber()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" column ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getColumnNumber()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r7.<java.lang.IllegalStateException: void <init>(java.lang.String)>($r5);
+
+        throw $r7;
+
+     label1:
+        $r5 = r0.<com.google.mygson.stream.JsonReader: java.lang.String value>;
+
+     label2:
+        $l1 = staticinvoke <java.lang.Long: long parseLong(java.lang.String)>($r5);
+
+     label3:
+        $b2 = $l1 cmp 1L;
+
+        $i0 = (int) $b2;
+
+        if $i0 < 0 goto label5;
+
+        $r5 = r0.<com.google.mygson.stream.JsonReader: java.lang.String value>;
+
+        $z0 = virtualinvoke $r5.<java.lang.String: boolean startsWith(java.lang.String)>("0");
+
+        if $z0 == 0 goto label5;
+
+        $r8 = new com.google.mygson.stream.MalformedJsonException;
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("JSON forbids octal prefixes: ");
+
+        $r5 = r0.<com.google.mygson.stream.JsonReader: java.lang.String value>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" at line ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getLineNumber()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" column ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getColumnNumber()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r8.<com.google.mygson.stream.MalformedJsonException: void <init>(java.lang.String)>($r5);
+
+        throw $r8;
+
+     label4:
+        r1 := @caughtexception;
+
+        $r5 = r0.<com.google.mygson.stream.JsonReader: java.lang.String value>;
+
+        $d0 = staticinvoke <java.lang.Double: double parseDouble(java.lang.String)>($r5);
+
+        $l1 = (long) $d0;
+
+        $d1 = (double) $l1;
+
+        $b2 = $d1 cmpl $d0;
+
+        if $b2 == 0 goto label3;
+
+        $r9 = new java.lang.NumberFormatException;
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Expected a long but was ");
+
+        $r5 = r0.<com.google.mygson.stream.JsonReader: java.lang.String value>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" at line ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getLineNumber()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" column ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getColumnNumber()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r9.<java.lang.NumberFormatException: void <init>(java.lang.String)>($r5);
+
+        throw $r9;
+
+     label5:
+        specialinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken advance()>();
+
+        return $l1;
+
+        catch java.lang.NumberFormatException from label2 to label3 with label4;
+    }
+
+    public java.lang.String nextName() throws java.io.IOException
+    {
+        com.google.mygson.stream.JsonReader r0;
+        java.lang.IllegalStateException $r3;
+        com.google.mygson.stream.JsonToken $r1, $r2;
+        int $i0;
+        java.lang.StringBuilder $r4;
+        java.lang.String $r5;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        virtualinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken peek()>();
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token>;
+
+        $r2 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken NAME>;
+
+        if $r1 == $r2 goto label1;
+
+        $r3 = new java.lang.IllegalStateException;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Expected a name but was ");
+
+        $r1 = virtualinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken peek()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" at line ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getLineNumber()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" column ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getColumnNumber()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r3.<java.lang.IllegalStateException: void <init>(java.lang.String)>($r5);
+
+        throw $r3;
+
+     label1:
+        $r5 = r0.<com.google.mygson.stream.JsonReader: java.lang.String name>;
+
+        specialinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken advance()>();
+
+        return $r5;
+    }
+
+    public void nextNull() throws java.io.IOException
+    {
+        com.google.mygson.stream.JsonReader r0;
+        java.lang.IllegalStateException $r3;
+        com.google.mygson.stream.JsonToken $r1, $r2;
+        int $i0;
+        java.lang.StringBuilder $r4;
+        java.lang.String $r5;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        virtualinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken peek()>();
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token>;
+
+        $r2 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken NULL>;
+
+        if $r1 == $r2 goto label1;
+
+        $r3 = new java.lang.IllegalStateException;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Expected null but was ");
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" at line ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getLineNumber()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" column ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getColumnNumber()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r3.<java.lang.IllegalStateException: void <init>(java.lang.String)>($r5);
+
+        throw $r3;
+
+     label1:
+        specialinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken advance()>();
+
+        return;
+    }
+
+    public java.lang.String nextString() throws java.io.IOException
+    {
+        com.google.mygson.stream.JsonReader r0;
+        java.lang.IllegalStateException $r3;
+        com.google.mygson.stream.JsonToken $r1, $r2;
+        int $i0;
+        java.lang.StringBuilder $r4;
+        java.lang.String $r5;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        virtualinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken peek()>();
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token>;
+
+        $r2 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken STRING>;
+
+        if $r1 == $r2 goto label1;
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token>;
+
+        $r2 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken NUMBER>;
+
+        if $r1 == $r2 goto label1;
+
+        $r3 = new java.lang.IllegalStateException;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Expected a string but was ");
+
+        $r1 = virtualinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken peek()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" at line ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getLineNumber()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" column ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getColumnNumber()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r3.<java.lang.IllegalStateException: void <init>(java.lang.String)>($r5);
+
+        throw $r3;
+
+     label1:
+        $r5 = r0.<com.google.mygson.stream.JsonReader: java.lang.String value>;
+
+        specialinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken advance()>();
+
+        return $r5;
+    }
+
+    public com.google.mygson.stream.JsonToken peek() throws java.io.IOException
+    {
+        java.lang.IllegalStateException $r13;
+        com.google.mygson.stream.JsonScope[] $r3;
+        com.google.mygson.stream.JsonToken $r1, $r5, $r6;
+        java.lang.AssertionError $r10;
+        com.google.mygson.stream.JsonScope $r4;
+        int[] $r2;
+        int $i0;
+        java.lang.String $r9;
+        boolean $z0;
+        com.google.mygson.stream.JsonReader r0;
+        java.io.IOException $r7, $r12;
+        java.lang.StringBuilder $r8, $r11;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token>;
+
+        if $r1 == null goto label01;
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token>;
+
+        return $r1;
+
+     label01:
+        $r2 = <com.google.mygson.stream.JsonReader$2: int[] $SwitchMap$com$google$gson$stream$JsonScope>;
+
+        $r3 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonScope[] stack>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int stackSize>;
+
+        $i0 = $i0 + -1;
+
+        $r4 = $r3[$i0];
+
+        $i0 = virtualinvoke $r4.<com.google.mygson.stream.JsonScope: int ordinal()>();
+
+        $i0 = $r2[$i0];
+
+        lookupswitch($i0)
+        {
+            case 1: goto label03;
+            case 2: goto label05;
+            case 3: goto label06;
+            case 4: goto label07;
+            case 5: goto label08;
+            case 6: goto label09;
+            case 7: goto label10;
+            case 8: goto label13;
+            default: goto label02;
+        };
+
+     label02:
+        $r10 = new java.lang.AssertionError;
+
+        specialinvoke $r10.<java.lang.AssertionError: void <init>()>();
+
+        throw $r10;
+
+     label03:
+        $z0 = r0.<com.google.mygson.stream.JsonReader: boolean lenient>;
+
+        if $z0 == 0 goto label04;
+
+        specialinvoke r0.<com.google.mygson.stream.JsonReader: void consumeNonExecutePrefix()>();
+
+     label04:
+        $r3 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonScope[] stack>;
+
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int stackSize>;
+
+        $i0 = $i0 + -1;
+
+        $r4 = <com.google.mygson.stream.JsonScope: com.google.mygson.stream.JsonScope NONEMPTY_DOCUMENT>;
+
+        $r3[$i0] = $r4;
+
+        $r1 = specialinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken nextValue()>();
+
+        $z0 = r0.<com.google.mygson.stream.JsonReader: boolean lenient>;
+
+        if $z0 != 0 goto label14;
+
+        $r5 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token>;
+
+        $r6 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken BEGIN_ARRAY>;
+
+        if $r5 == $r6 goto label14;
+
+        $r5 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token>;
+
+        $r6 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken BEGIN_OBJECT>;
+
+        if $r5 == $r6 goto label14;
+
+        $r12 = new java.io.IOException;
+
+        $r11 = new java.lang.StringBuilder;
+
+        specialinvoke $r11.<java.lang.StringBuilder: void <init>()>();
+
+        $r8 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Expected JSON document to start with \'[\' or \'{\' but was ");
+
+        $r1 = r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken token>;
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" at line ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getLineNumber()>();
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" column ");
+
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int getColumnNumber()>();
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r9 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r12.<java.io.IOException: void <init>(java.lang.String)>($r9);
+
+        throw $r12;
+
+     label05:
+        $r1 = specialinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken nextInArray(boolean)>(1);
+
+        return $r1;
+
+     label06:
+        $r1 = specialinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken nextInArray(boolean)>(0);
+
+        return $r1;
+
+     label07:
+        $r1 = specialinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken nextInObject(boolean)>(1);
+
+        return $r1;
+
+     label08:
+        $r1 = specialinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken objectValue()>();
+
+        return $r1;
+
+     label09:
+        $r1 = specialinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken nextInObject(boolean)>(0);
+
+        return $r1;
+
+     label10:
+        $i0 = specialinvoke r0.<com.google.mygson.stream.JsonReader: int nextNonWhitespace(boolean)>(0);
+
+        if $i0 != -1 goto label11;
+
+        $r1 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken END_DOCUMENT>;
+
+        return $r1;
+
+     label11:
+        $i0 = r0.<com.google.mygson.stream.JsonReader: int pos>;
+
+        $i0 = $i0 + -1;
+
+        r0.<com.google.mygson.stream.JsonReader: int pos> = $i0;
+
+        $z0 = r0.<com.google.mygson.stream.JsonReader: boolean lenient>;
+
+        if $z0 != 0 goto label12;
+
+        $r7 = specialinvoke r0.<com.google.mygson.stream.JsonReader: java.io.IOException syntaxError(java.lang.String)>("Expected EOF");
+
+        throw $r7;
+
+     label12:
+        $r1 = specialinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken nextValue()>();
+
+        return $r1;
+
+     label13:
+        $r13 = new java.lang.IllegalStateException;
+
+        specialinvoke $r13.<java.lang.IllegalStateException: void <init>(java.lang.String)>("JsonReader is closed");
+
+        throw $r13;
+
+     label14:
+        return $r1;
+    }
+
+    public final void setLenient(boolean)
+    {
+        com.google.mygson.stream.JsonReader r0;
+        boolean $z0;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        $z0 := @parameter0: boolean;
+
+        r0.<com.google.mygson.stream.JsonReader: boolean lenient> = $z0;
+
+        return;
+    }
+
+    public void skipValue() throws java.io.IOException
+    {
+        java.lang.Throwable $r3;
+        com.google.mygson.stream.JsonReader r0;
+        com.google.mygson.stream.JsonToken $r1, $r2;
+        int i0;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        r0.<com.google.mygson.stream.JsonReader: boolean skipping> = 1;
+
+        i0 = 0;
+
+     label01:
+        $r1 = specialinvoke r0.<com.google.mygson.stream.JsonReader: com.google.mygson.stream.JsonToken advance()>();
+
+        $r2 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken BEGIN_ARRAY>;
+
+     label02:
+        if $r1 == $r2 goto label05;
+
+     label03:
+        $r2 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken BEGIN_OBJECT>;
+
+     label04:
+        if $r1 != $r2 goto label07;
+
+     label05:
+        i0 = i0 + 1;
+
+     label06:
+        if i0 != 0 goto label01;
+
+        r0.<com.google.mygson.stream.JsonReader: boolean skipping> = 0;
+
+        return;
+
+     label07:
+        $r2 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken END_ARRAY>;
+
+     label08:
+        if $r1 == $r2 goto label11;
+
+     label09:
+        $r2 = <com.google.mygson.stream.JsonToken: com.google.mygson.stream.JsonToken END_OBJECT>;
+
+     label10:
+        if $r1 != $r2 goto label06;
+
+     label11:
+        i0 = i0 + -1;
+
+        goto label06;
+
+     label12:
+        $r3 := @caughtexception;
+
+        r0.<com.google.mygson.stream.JsonReader: boolean skipping> = 0;
+
+        throw $r3;
+
+        catch java.lang.Throwable from label01 to label02 with label12;
+        catch java.lang.Throwable from label03 to label04 with label12;
+        catch java.lang.Throwable from label07 to label08 with label12;
+        catch java.lang.Throwable from label09 to label10 with label12;
+    }
+
+    public java.lang.String toString()
+    {
+        com.google.mygson.stream.JsonReader r0;
+        java.lang.CharSequence $r4;
+        java.lang.StringBuilder $r1;
+        java.lang.Class $r2;
+        java.lang.String $r3;
+
+        r0 := @this: com.google.mygson.stream.JsonReader;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = virtualinvoke r0.<java.lang.Object: java.lang.Class getClass()>();
+
+        $r3 = virtualinvoke $r2.<java.lang.Class: java.lang.String getSimpleName()>();
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" near ");
+
+        $r4 = specialinvoke r0.<com.google.mygson.stream.JsonReader: java.lang.CharSequence getSnippet()>();
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r4);
+
+        $r3 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r3;
+    }
+}

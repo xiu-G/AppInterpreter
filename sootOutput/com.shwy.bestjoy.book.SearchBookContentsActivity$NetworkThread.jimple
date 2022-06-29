@@ -1,0 +1,437 @@
+final class com.shwy.bestjoy.book.SearchBookContentsActivity$NetworkThread extends java.lang.Thread
+{
+    private final android.os.Handler handler;
+    private final java.lang.String isbn;
+    private final java.lang.String query;
+
+    void <init>(java.lang.String, java.lang.String, android.os.Handler)
+    {
+        com.shwy.bestjoy.book.SearchBookContentsActivity$NetworkThread r0;
+        android.os.Handler $r3;
+        java.lang.String $r1, $r2;
+
+        r0 := @this: com.shwy.bestjoy.book.SearchBookContentsActivity$NetworkThread;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: android.os.Handler;
+
+        specialinvoke r0.<java.lang.Thread: void <init>()>();
+
+        r0.<com.shwy.bestjoy.book.SearchBookContentsActivity$NetworkThread: java.lang.String isbn> = $r1;
+
+        r0.<com.shwy.bestjoy.book.SearchBookContentsActivity$NetworkThread: java.lang.String query> = $r2;
+
+        r0.<com.shwy.bestjoy.book.SearchBookContentsActivity$NetworkThread: android.os.Handler handler> = $r3;
+
+        return;
+    }
+
+    private static java.lang.String getCookie(java.lang.String)
+    {
+        org.apache.http.Header[] $r9;
+        java.lang.Throwable $r11;
+        org.apache.http.client.methods.HttpHead r1;
+        org.apache.http.Header r2;
+        org.apache.http.StatusLine $r8;
+        com.shwy.bestjoy.AndroidHttpClient $r6;
+        android.webkit.CookieManager $r3;
+        int $i0, $i1;
+        org.apache.http.HttpResponse $r7;
+        android.webkit.CookieSyncManager $r10;
+        java.lang.String $r0, $r4, r5;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r3 = staticinvoke <android.webkit.CookieManager: android.webkit.CookieManager getInstance()>();
+
+        $r4 = virtualinvoke $r3.<android.webkit.CookieManager: java.lang.String getCookie(java.lang.String)>($r0);
+
+        r5 = $r4;
+
+        if $r4 == null goto label01;
+
+        $i0 = virtualinvoke $r4.<java.lang.String: int length()>();
+
+        if $i0 != 0 goto label14;
+
+     label01:
+        $r4 = staticinvoke <com.shwy.bestjoy.book.SearchBookContentsActivity: java.lang.String access$4()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>($r4, "Book Search cookie was missing or expired");
+
+        r1 = new org.apache.http.client.methods.HttpHead;
+
+        specialinvoke r1.<org.apache.http.client.methods.HttpHead: void <init>(java.lang.String)>($r0);
+
+        $r6 = staticinvoke <com.shwy.bestjoy.AndroidHttpClient: com.shwy.bestjoy.AndroidHttpClient newInstance(java.lang.String)>("ZXing (Android)");
+
+     label02:
+        $r7 = virtualinvoke $r6.<com.shwy.bestjoy.AndroidHttpClient: org.apache.http.HttpResponse execute(org.apache.http.client.methods.HttpUriRequest)>(r1);
+
+        $r8 = interfaceinvoke $r7.<org.apache.http.HttpResponse: org.apache.http.StatusLine getStatusLine()>();
+
+        $i0 = interfaceinvoke $r8.<org.apache.http.StatusLine: int getStatusCode()>();
+
+     label03:
+        if $i0 != 200 goto label09;
+
+     label04:
+        $r9 = interfaceinvoke $r7.<org.apache.http.HttpResponse: org.apache.http.Header[] getHeaders(java.lang.String)>("set-cookie");
+
+     label05:
+        $i0 = lengthof $r9;
+
+        $i1 = 0;
+
+     label06:
+        if $i1 < $i0 goto label10;
+
+     label07:
+        $r10 = staticinvoke <android.webkit.CookieSyncManager: android.webkit.CookieSyncManager getInstance()>();
+
+        virtualinvoke $r10.<android.webkit.CookieSyncManager: void sync()>();
+
+        $r3 = staticinvoke <android.webkit.CookieManager: android.webkit.CookieManager getInstance()>();
+
+        $r0 = virtualinvoke $r3.<android.webkit.CookieManager: java.lang.String getCookie(java.lang.String)>($r0);
+
+     label08:
+        r5 = $r0;
+
+     label09:
+        virtualinvoke $r6.<com.shwy.bestjoy.AndroidHttpClient: void close()>();
+
+        return r5;
+
+     label10:
+        r2 = $r9[$i1];
+
+     label11:
+        $r3 = staticinvoke <android.webkit.CookieManager: android.webkit.CookieManager getInstance()>();
+
+        $r4 = interfaceinvoke r2.<org.apache.http.Header: java.lang.String getValue()>();
+
+        virtualinvoke $r3.<android.webkit.CookieManager: void setCookie(java.lang.String,java.lang.String)>($r0, $r4);
+
+     label12:
+        $i1 = $i1 + 1;
+
+        goto label06;
+
+     label13:
+        $r11 := @caughtexception;
+
+        $r0 = staticinvoke <com.shwy.bestjoy.book.SearchBookContentsActivity: java.lang.String access$4()>();
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String,java.lang.Throwable)>($r0, "Error setting book search cookie", $r11);
+
+        goto label09;
+
+     label14:
+        return $r4;
+
+        catch java.io.IOException from label02 to label03 with label13;
+        catch java.io.IOException from label04 to label05 with label13;
+        catch java.io.IOException from label07 to label08 with label13;
+        catch java.io.IOException from label11 to label12 with label13;
+    }
+
+    private static java.lang.String getEncoding(org.apache.http.HttpEntity)
+    {
+        org.apache.http.HttpEntity $r0;
+
+        $r0 := @parameter0: org.apache.http.HttpEntity;
+
+        return "windows-1252";
+    }
+
+    public void run()
+    {
+        java.lang.Throwable $r16;
+        java.io.ByteArrayOutputStream r3, $r20;
+        org.apache.http.StatusLine $r10;
+        com.shwy.bestjoy.AndroidHttpClient r4, $r8;
+        org.json.JSONObject r2, $r21;
+        com.shwy.bestjoy.book.SearchBookContentsActivity$NetworkThread r0;
+        android.os.Handler $r12;
+        int $i0;
+        java.lang.String $r5, $r14;
+        java.net.URI r6, $r18;
+        boolean $z0;
+        org.apache.http.HttpEntity $r11;
+        java.lang.Exception $r15;
+        android.os.Message $r13;
+        org.apache.http.client.methods.HttpGet r1, $r19;
+        org.apache.http.HttpResponse $r9;
+        java.lang.StringBuilder $r7, $r17;
+
+        r0 := @this: com.shwy.bestjoy.book.SearchBookContentsActivity$NetworkThread;
+
+        r4 = null;
+
+     label01:
+        $r5 = r0.<com.shwy.bestjoy.book.SearchBookContentsActivity$NetworkThread: java.lang.String isbn>;
+
+        $z0 = virtualinvoke $r5.<java.lang.String: boolean startsWith(java.lang.String)>("http://google.com/books?id=");
+
+     label02:
+        if $z0 == 0 goto label26;
+
+     label03:
+        $r5 = r0.<com.shwy.bestjoy.book.SearchBookContentsActivity$NetworkThread: java.lang.String isbn>;
+
+        $i0 = virtualinvoke $r5.<java.lang.String: int indexOf(int)>(61);
+
+        $r5 = r0.<com.shwy.bestjoy.book.SearchBookContentsActivity$NetworkThread: java.lang.String isbn>;
+
+     label04:
+        $i0 = $i0 + 1;
+
+     label05:
+        $r5 = virtualinvoke $r5.<java.lang.String: java.lang.String substring(int)>($i0);
+
+     label06:
+        $r18 = new java.net.URI;
+
+     label07:
+        r6 = $r18;
+
+     label08:
+        $r17 = new java.lang.StringBuilder;
+
+     label09:
+        $r7 = $r17;
+
+     label10:
+        specialinvoke $r17.<java.lang.StringBuilder: void <init>(java.lang.String)>("id=");
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("&jscmd=SearchWithinVolume2&q=");
+
+        $r5 = r0.<com.shwy.bestjoy.book.SearchBookContentsActivity$NetworkThread: java.lang.String query>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label11:
+        specialinvoke $r18.<java.net.URI: void <init>(java.lang.String,java.lang.String,java.lang.String,int,java.lang.String,java.lang.String,java.lang.String)>("http", null, "www.google.com", -1, "/books", $r5, null);
+
+     label12:
+        $r19 = new org.apache.http.client.methods.HttpGet;
+
+     label13:
+        r1 = $r19;
+
+     label14:
+        specialinvoke $r19.<org.apache.http.client.methods.HttpGet: void <init>(java.net.URI)>(r6);
+
+        $r5 = virtualinvoke r6.<java.net.URI: java.lang.String toString()>();
+
+        $r5 = staticinvoke <com.shwy.bestjoy.book.SearchBookContentsActivity$NetworkThread: java.lang.String getCookie(java.lang.String)>($r5);
+
+        interfaceinvoke r1.<org.apache.http.client.methods.HttpUriRequest: void setHeader(java.lang.String,java.lang.String)>("cookie", $r5);
+
+        $r8 = staticinvoke <com.shwy.bestjoy.AndroidHttpClient: com.shwy.bestjoy.AndroidHttpClient newInstance(java.lang.String)>("ZXing (Android)");
+
+     label15:
+        r4 = $r8;
+
+     label16:
+        $r9 = virtualinvoke $r8.<com.shwy.bestjoy.AndroidHttpClient: org.apache.http.HttpResponse execute(org.apache.http.client.methods.HttpUriRequest)>(r1);
+
+        $r10 = interfaceinvoke $r9.<org.apache.http.HttpResponse: org.apache.http.StatusLine getStatusLine()>();
+
+        $i0 = interfaceinvoke $r10.<org.apache.http.StatusLine: int getStatusCode()>();
+
+     label17:
+        if $i0 != 200 goto label33;
+
+     label18:
+        $r11 = interfaceinvoke $r9.<org.apache.http.HttpResponse: org.apache.http.HttpEntity getEntity()>();
+
+     label19:
+        $r20 = new java.io.ByteArrayOutputStream;
+
+     label20:
+        r3 = $r20;
+
+     label21:
+        specialinvoke $r20.<java.io.ByteArrayOutputStream: void <init>()>();
+
+        interfaceinvoke $r11.<org.apache.http.HttpEntity: void writeTo(java.io.OutputStream)>(r3);
+
+        virtualinvoke r3.<java.io.ByteArrayOutputStream: void flush()>();
+
+     label22:
+        $r21 = new org.json.JSONObject;
+
+     label23:
+        r2 = $r21;
+
+     label24:
+        staticinvoke <FLOWDROID_EXCEPTIONS: void throw_java_lang_Exception_0()>();
+
+        staticinvoke <FLOWDROID_EXCEPTIONS: void throw_java_lang_Throwable_1()>();
+
+        $r5 = virtualinvoke r3.<java.io.ByteArrayOutputStream: java.lang.String toString(java.lang.String)>("windows-1252");
+
+        specialinvoke $r21.<org.json.JSONObject: void <init>(java.lang.String)>($r5);
+
+        virtualinvoke r3.<java.io.ByteArrayOutputStream: void close()>();
+
+        $r12 = r0.<com.shwy.bestjoy.book.SearchBookContentsActivity$NetworkThread: android.os.Handler handler>;
+
+        $r13 = staticinvoke <android.os.Message: android.os.Message obtain(android.os.Handler,int)>($r12, 2131492875);
+
+        $r13.<android.os.Message: java.lang.Object obj> = r2;
+
+        virtualinvoke $r13.<android.os.Message: void sendToTarget()>();
+
+     label25:
+        if $r8 == null goto label43;
+
+        virtualinvoke $r8.<com.shwy.bestjoy.AndroidHttpClient: void close()>();
+
+        return;
+
+     label26:
+        $r18 = new java.net.URI;
+
+     label27:
+        r6 = $r18;
+
+     label28:
+        $r17 = new java.lang.StringBuilder;
+
+     label29:
+        $r7 = $r17;
+
+     label30:
+        specialinvoke $r17.<java.lang.StringBuilder: void <init>(java.lang.String)>("vid=isbn");
+
+        $r5 = r0.<com.shwy.bestjoy.book.SearchBookContentsActivity$NetworkThread: java.lang.String isbn>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("&jscmd=SearchWithinVolume2&q=");
+
+        $r5 = r0.<com.shwy.bestjoy.book.SearchBookContentsActivity$NetworkThread: java.lang.String query>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label31:
+        specialinvoke $r18.<java.net.URI: void <init>(java.lang.String,java.lang.String,java.lang.String,int,java.lang.String,java.lang.String,java.lang.String)>("http", null, "www.google.com", -1, "/books", $r5, null);
+
+     label32:
+        goto label12;
+
+     label33:
+        $r5 = staticinvoke <com.shwy.bestjoy.book.SearchBookContentsActivity: java.lang.String access$4()>();
+
+     label34:
+        $r17 = new java.lang.StringBuilder;
+
+     label35:
+        $r7 = $r17;
+
+     label36:
+        specialinvoke $r17.<java.lang.StringBuilder: void <init>(java.lang.String)>("HTTP returned ");
+
+        $r10 = interfaceinvoke $r9.<org.apache.http.HttpResponse: org.apache.http.StatusLine getStatusLine()>();
+
+        $i0 = interfaceinvoke $r10.<org.apache.http.StatusLine: int getStatusCode()>();
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" for ");
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>(r6);
+
+        $r14 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>($r5, $r14);
+
+        $r12 = r0.<com.shwy.bestjoy.book.SearchBookContentsActivity$NetworkThread: android.os.Handler handler>;
+
+        $r13 = staticinvoke <android.os.Message: android.os.Message obtain(android.os.Handler,int)>($r12, 2131492874);
+
+        virtualinvoke $r13.<android.os.Message: void sendToTarget()>();
+
+     label37:
+        goto label25;
+
+     label38:
+        $r15 := @caughtexception;
+
+     label39:
+        $r5 = staticinvoke <com.shwy.bestjoy.book.SearchBookContentsActivity: java.lang.String access$4()>();
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String,java.lang.Throwable)>($r5, "Error accessing book search", $r15);
+
+        $r12 = r0.<com.shwy.bestjoy.book.SearchBookContentsActivity$NetworkThread: android.os.Handler handler>;
+
+        $r13 = staticinvoke <android.os.Message: android.os.Message obtain(android.os.Handler,int)>($r12, 2131492874);
+
+        virtualinvoke $r13.<android.os.Message: void sendToTarget()>();
+
+     label40:
+        if r4 == null goto label43;
+
+        virtualinvoke r4.<com.shwy.bestjoy.AndroidHttpClient: void close()>();
+
+        return;
+
+     label41:
+        $r16 := @caughtexception;
+
+        if r4 == null goto label42;
+
+        virtualinvoke r4.<com.shwy.bestjoy.AndroidHttpClient: void close()>();
+
+     label42:
+        throw $r16;
+
+     label43:
+        return;
+
+        catch java.lang.Exception from label01 to label02 with label38;
+        catch java.lang.Exception from label03 to label04 with label38;
+        catch java.lang.Exception from label05 to label06 with label38;
+        catch java.lang.Exception from label10 to label11 with label38;
+        catch java.lang.Exception from label11 to label12 with label38;
+        catch java.lang.Exception from label14 to label15 with label38;
+        catch java.lang.Exception from label16 to label17 with label38;
+        catch java.lang.Exception from label18 to label19 with label38;
+        catch java.lang.Exception from label21 to label22 with label38;
+        catch java.lang.Exception from label24 to label25 with label38;
+        catch java.lang.Throwable from label01 to label02 with label41;
+        catch java.lang.Throwable from label03 to label04 with label41;
+        catch java.lang.Throwable from label05 to label07 with label41;
+        catch java.lang.Throwable from label08 to label09 with label41;
+        catch java.lang.Throwable from label10 to label11 with label41;
+        catch java.lang.Throwable from label11 to label13 with label41;
+        catch java.lang.Throwable from label14 to label15 with label41;
+        catch java.lang.Throwable from label16 to label17 with label41;
+        catch java.lang.Throwable from label18 to label20 with label41;
+        catch java.lang.Throwable from label21 to label23 with label41;
+        catch java.lang.Throwable from label24 to label25 with label41;
+        catch java.lang.Exception from label30 to label31 with label38;
+        catch java.lang.Exception from label31 to label32 with label38;
+        catch java.lang.Exception from label33 to label34 with label38;
+        catch java.lang.Exception from label36 to label37 with label38;
+        catch java.lang.Throwable from label26 to label27 with label41;
+        catch java.lang.Throwable from label28 to label29 with label41;
+        catch java.lang.Throwable from label30 to label31 with label41;
+        catch java.lang.Throwable from label31 to label32 with label41;
+        catch java.lang.Throwable from label33 to label35 with label41;
+        catch java.lang.Throwable from label36 to label37 with label41;
+        catch java.lang.Throwable from label39 to label40 with label41;
+    }
+}

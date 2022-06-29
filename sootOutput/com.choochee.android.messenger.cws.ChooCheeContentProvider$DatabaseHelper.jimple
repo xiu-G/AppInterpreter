@@ -1,0 +1,202 @@
+public class com.choochee.android.messenger.cws.ChooCheeContentProvider$DatabaseHelper extends android.database.sqlite.SQLiteOpenHelper
+{
+    java.lang.String dbName;
+
+    public void <init>(android.content.Context, java.lang.String, android.database.sqlite.SQLiteDatabase$CursorFactory, int)
+    {
+        android.content.Context $r1;
+        android.database.sqlite.SQLiteDatabase$CursorFactory $r3;
+        com.choochee.android.messenger.cws.ChooCheeContentProvider$DatabaseHelper r0;
+        int $i0;
+        java.lang.String $r2;
+
+        r0 := @this: com.choochee.android.messenger.cws.ChooCheeContentProvider$DatabaseHelper;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: android.database.sqlite.SQLiteDatabase$CursorFactory;
+
+        $i0 := @parameter3: int;
+
+        specialinvoke r0.<android.database.sqlite.SQLiteOpenHelper: void <init>(android.content.Context,java.lang.String,android.database.sqlite.SQLiteDatabase$CursorFactory,int)>($r1, $r2, null, 65);
+
+        r0.<com.choochee.android.messenger.cws.ChooCheeContentProvider$DatabaseHelper: java.lang.String dbName> = null;
+
+        r0.<com.choochee.android.messenger.cws.ChooCheeContentProvider$DatabaseHelper: java.lang.String dbName> = $r2;
+
+        return;
+    }
+
+    public void dropDatabase(android.content.Context)
+    {
+        android.content.Context $r1;
+        java.lang.RuntimeException $r6;
+        java.io.File r2;
+        com.choochee.android.messenger.cws.ChooCheeContentProvider$DatabaseHelper r0;
+        java.lang.StringBuilder r3;
+        java.lang.String $r4, $r5;
+        boolean $z0;
+
+        r0 := @this: com.choochee.android.messenger.cws.ChooCheeContentProvider$DatabaseHelper;
+
+        $r1 := @parameter0: android.content.Context;
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void w(java.lang.String,java.lang.String)>("ChooCheeContentProvider", "Dropping the databse.");
+
+        r3 = new java.lang.StringBuilder;
+
+     label1:
+        specialinvoke r3.<java.lang.StringBuilder: void <init>()>();
+
+        virtualinvoke r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/data/data/");
+
+        $r4 = virtualinvoke $r1.<android.content.Context: java.lang.String getPackageName()>();
+
+        virtualinvoke r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        virtualinvoke r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/databases/");
+
+        $r4 = staticinvoke <com.choochee.android.messenger.cws.ChooCheeContentProvider: java.lang.String access$000()>();
+
+     label2:
+        if $r4 == null goto label8;
+
+        r2 = new java.io.File;
+
+     label3:
+        $r5 = virtualinvoke r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke r2.<java.io.File: void <init>(java.lang.String,java.lang.String)>($r5, $r4);
+
+        $z0 = virtualinvoke r2.<java.io.File: boolean exists()>();
+
+     label4:
+        if $z0 == 0 goto label8;
+
+     label5:
+        virtualinvoke r2.<java.io.File: boolean delete()>();
+
+     label6:
+        return;
+
+     label7:
+        $r6 := @caughtexception;
+
+        $r4 = virtualinvoke $r6.<java.lang.RuntimeException: java.lang.String toString()>();
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void e(java.lang.String,java.lang.String)>("ChooCheeContentProvider", $r4);
+
+     label8:
+        return;
+
+        catch java.lang.RuntimeException from label1 to label2 with label7;
+        catch java.lang.RuntimeException from label3 to label4 with label7;
+        catch java.lang.RuntimeException from label5 to label6 with label7;
+    }
+
+    public java.lang.String getDBName()
+    {
+        com.choochee.android.messenger.cws.ChooCheeContentProvider$DatabaseHelper r0;
+        java.lang.String r1;
+
+        r0 := @this: com.choochee.android.messenger.cws.ChooCheeContentProvider$DatabaseHelper;
+
+        r1 = r0.<com.choochee.android.messenger.cws.ChooCheeContentProvider$DatabaseHelper: java.lang.String dbName>;
+
+        return r1;
+    }
+
+    public void onCreate(android.database.sqlite.SQLiteDatabase)
+    {
+        android.database.sqlite.SQLiteDatabase $r1;
+        com.choochee.android.messenger.cws.ChooCheeContentProvider$DatabaseHelper r0;
+
+        r0 := @this: com.choochee.android.messenger.cws.ChooCheeContentProvider$DatabaseHelper;
+
+        $r1 := @parameter0: android.database.sqlite.SQLiteDatabase;
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void i(java.lang.String,java.lang.String)>("RevvlCPCreateDB", "In DatabaseHelper.onCreate");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("CREATE TABLE IF NOT EXISTS UserProfile (_id INTEGER PRIMARY KEY UNIQUE, userid TEXT, username TEXT, providerid TEXT, lastaccess TEXT, pin TEXT, password TEXT, authtoken TEXT, fbsessionkey TEXT, authtoken_expiry TEXT, registered BOOLEAN DEFAULT FALSE, status_presence TEXT, status_presence_message TEXT, nativesync BOOLEAN DEFAULT TRUE, first_name TEXT, last_name TEXT, email TEXT, phonenumber TEXT, birthday TEXT, gender TEXT, languagecode TEXT, countryCode TEXT, zipcode TEXT, state TEXT, city TEXT, address TEXT, countryName TEXT, latitude REAL, longitude REAL );");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("CREATE TABLE IF NOT EXISTS Providers (_id INTEGER PRIMARY KEY UNIQUE, provider_id TEXT, provider_name TEXT );");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("CREATE TABLE IF NOT EXISTS ProviderCredentials (_id INTEGER PRIMARY KEY UNIQUE, providerid TEXT, username TEXT, credentialid TEXT, providerstatus INTEGER );");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("CREATE TABLE IF NOT EXISTS ChooCheeContacts (_id INTEGER PRIMARY KEY AUTOINCREMENT, _count INTEGER, providerid TEXT, accountid TEXT, typeindicator TEXT, registereduser BOOLEAN DEFAULT FALSE, registereduservalue INTEGER DEFAULT 2, userid TEXT, displayname COLLATE UNICODE, username COLLATE UNICODE, lastname COLLATE UNICODE, firstname COLLATE UNICODE, nickname COLLATE UNICODE, status TEXT, statusvalue INTEGER DEFAULT 5, address TEXT, bday TEXT, gender TEXT, latitude REAL, longitude REAL, credentialid TEXT, imageurl TEXT, countrycode TEXT, countryname TEXT, city TEXT, zipcode TEXT, languagecode TEXT, contact_status INTEGER DEFAULT 8);");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("CREATE TABLE IF NOT EXISTS EmailAddresses (_id INTEGER, userid TEXT, emails TEXT, type TEXT);");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("CREATE TABLE IF NOT EXISTS PhoneNumbers (_id INTEGER, userid TEXT, phonenumbers TEXT, type TEXT);");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("CREATE TABLE IF NOT EXISTS ImContacts (_id INTEGER, userid TEXT, contactAddress TEXT, providerName TEXT);");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("CREATE TABLE IF NOT EXISTS Messages (_id INTEGER PRIMARY KEY UNIQUE, thread_id TEXT, message_id TEXT, message_provider TEXT, message_received_date REAL, from_user TEXT, to_user TEXT, message TEXT, been_read BOOLEAN DEFAULT FALSE, sent BOOLEAN DEFAULT FALSE );");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("CREATE TABLE IF NOT EXISTS Recipients (_id INTEGER PRIMARY KEY UNIQUE, thread_id TEXT, message_id INTEGER, to_user TEXT, from_user TEXT );");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("CREATE TABLE IF NOT EXISTS Groups (_id INTEGER PIMARY KEY UNIQUE, groupid TEXT KEY UNIQUE, groupname TEXT );");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("CREATE TABLE IF NOT EXISTS GroupMembers (_id INTEGER PIMARY KEY UNIQUE, groupid TEXT KEY, groupmember TEXT );");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("INSERT INTO Providers  (provider_id, provider_name)  VALUES ( \"Google\", \"Google Network\");");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("INSERT INTO Providers  (provider_id, provider_name)  VALUES ( \"AOL\", \"AOL Network\");");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("INSERT INTO Providers  (provider_id, provider_name)  VALUES ( \"Yahoo\", \"Yahoo Network\");");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("INSERT INTO Providers  (provider_id, provider_name)  VALUES ( \"MSN\", \"MSN Network\");");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("INSERT INTO Providers  (provider_id, provider_name)  VALUES ( \"ICQ\", \"ICQ Network\");");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("INSERT INTO Providers  (provider_id, provider_name)  VALUES ( \"Facebook\", \"Facebook Network\");");
+
+        return;
+    }
+
+    public void onUpgrade(android.database.sqlite.SQLiteDatabase, int, int)
+    {
+        android.database.sqlite.SQLiteDatabase $r1;
+        com.choochee.android.messenger.cws.ChooCheeContentProvider$DatabaseHelper r0;
+        int $i0, $i1;
+
+        r0 := @this: com.choochee.android.messenger.cws.ChooCheeContentProvider$DatabaseHelper;
+
+        $r1 := @parameter0: android.database.sqlite.SQLiteDatabase;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        if $i0 == 65 goto label1;
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void w(java.lang.String,java.lang.String)>("ChooCheeContentProvider", "Destroying old data during upgrade.");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("DROP TABLE IF EXISTS UserProfile");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("DROP TABLE IF EXISTS ChooCheeContacts");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("DROP TABLE IF EXISTS EmailAddresses");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("DROP TABLE IF EXISTS PhoneNumbers");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("DROP TABLE IF EXISTS ImContacts");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("DROP TABLE IF EXISTS Messages");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("DROP TABLE IF EXISTS Recipients");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("DROP TABLE IF EXISTS Providers");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("DROP TABLE IF EXISTS ProviderCredentials");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("DROP VIEW IF EXISTS Conversations");
+
+        virtualinvoke r0.<com.choochee.android.messenger.cws.ChooCheeContentProvider$DatabaseHelper: void onCreate(android.database.sqlite.SQLiteDatabase)>($r1);
+
+     label1:
+        return;
+    }
+}

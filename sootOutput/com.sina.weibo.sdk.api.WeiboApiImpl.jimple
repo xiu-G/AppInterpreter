@@ -1,0 +1,560 @@
+public class com.sina.weibo.sdk.api.WeiboApiImpl extends java.lang.Object implements com.sina.weibo.sdk.api.IWeiboAPI
+{
+    private static final java.lang.String TAG;
+    private java.lang.String mAppKey;
+    private android.content.Context mContext;
+    private boolean mDownWeibo;
+    private com.sina.weibo.sdk.api.IWeiboDownloadListener mDownloadListener;
+
+    public void <init>(android.content.Context, java.lang.String, boolean)
+    {
+        android.content.Context $r1;
+        com.sina.weibo.sdk.api.WeiboApiImpl r0;
+        java.lang.String $r2;
+        boolean $z0;
+
+        r0 := @this: com.sina.weibo.sdk.api.WeiboApiImpl;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $z0 := @parameter2: boolean;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<com.sina.weibo.sdk.api.WeiboApiImpl: boolean mDownWeibo> = 1;
+
+        $r1 = virtualinvoke $r1.<android.content.Context: android.content.Context getApplicationContext()>();
+
+        r0.<com.sina.weibo.sdk.api.WeiboApiImpl: android.content.Context mContext> = $r1;
+
+        r0.<com.sina.weibo.sdk.api.WeiboApiImpl: java.lang.String mAppKey> = $r2;
+
+        r0.<com.sina.weibo.sdk.api.WeiboApiImpl: boolean mDownWeibo> = $z0;
+
+        return;
+    }
+
+    public int getWeiboAppSupportAPI()
+    {
+        android.content.Context $r2;
+        com.sina.weibo.sdk.api.ApiUtils$WeiboInfo $r1;
+        com.sina.weibo.sdk.api.WeiboApiImpl r0;
+        int i0;
+
+        r0 := @this: com.sina.weibo.sdk.api.WeiboApiImpl;
+
+        $r2 = r0.<com.sina.weibo.sdk.api.WeiboApiImpl: android.content.Context mContext>;
+
+        $r1 = staticinvoke <com.sina.weibo.sdk.api.ApiUtils: com.sina.weibo.sdk.api.ApiUtils$WeiboInfo queryWeiboInfo(android.content.Context)>($r2);
+
+        if $r1 != null goto label1;
+
+        staticinvoke <com.sina.weibo.sdk.log.Log: void e(java.lang.String,java.lang.String)>("WeiboApiImpl", "getWeiboAppSupportAPI() faild winfo is null");
+
+        i0 = -1;
+
+        return i0;
+
+     label1:
+        i0 = $r1.<com.sina.weibo.sdk.api.ApiUtils$WeiboInfo: int supportApi>;
+
+        return i0;
+    }
+
+    public boolean isWeiboAppInstalled()
+    {
+        android.content.Context $r2;
+        com.sina.weibo.sdk.api.ApiUtils$WeiboInfo $r1;
+        com.sina.weibo.sdk.api.WeiboApiImpl r0;
+
+        r0 := @this: com.sina.weibo.sdk.api.WeiboApiImpl;
+
+        $r2 = r0.<com.sina.weibo.sdk.api.WeiboApiImpl: android.content.Context mContext>;
+
+        $r1 = staticinvoke <com.sina.weibo.sdk.api.ApiUtils: com.sina.weibo.sdk.api.ApiUtils$WeiboInfo queryWeiboInfo(android.content.Context)>($r2);
+
+        if $r1 != null goto label1;
+
+        staticinvoke <com.sina.weibo.sdk.log.Log: void e(java.lang.String,java.lang.String)>("WeiboApiImpl", "isWeiboAppInstalled() faild winfo is null");
+
+        return 0;
+
+     label1:
+        return 1;
+    }
+
+    public boolean isWeiboAppSupportAPI()
+    {
+        int $i0;
+        com.sina.weibo.sdk.api.WeiboApiImpl r0;
+        boolean $z0;
+
+        r0 := @this: com.sina.weibo.sdk.api.WeiboApiImpl;
+
+        $i0 = virtualinvoke r0.<com.sina.weibo.sdk.api.WeiboApiImpl: int getWeiboAppSupportAPI()>();
+
+        $z0 = staticinvoke <com.sina.weibo.sdk.api.ApiUtils: boolean isWeiboAppSupportAPI(int)>($i0);
+
+        return $z0;
+    }
+
+    public boolean registerApp()
+    {
+        android.content.Context $r2;
+        com.sina.weibo.sdk.api.WeiboApiImpl r0;
+        com.sina.weibo.sdk.api.ApiUtils$WeiboInfo $r3;
+        int $i0;
+        java.lang.StringBuilder $r5;
+        java.lang.String r1, $r4;
+        boolean $z0;
+
+        r0 := @this: com.sina.weibo.sdk.api.WeiboApiImpl;
+
+        $r2 = r0.<com.sina.weibo.sdk.api.WeiboApiImpl: android.content.Context mContext>;
+
+        $r3 = staticinvoke <com.sina.weibo.sdk.api.ApiUtils: com.sina.weibo.sdk.api.ApiUtils$WeiboInfo queryWeiboInfo(android.content.Context)>($r2);
+
+        if $r3 != null goto label1;
+
+        staticinvoke <com.sina.weibo.sdk.log.Log: void e(java.lang.String,java.lang.String)>("WeiboApiImpl", "registerApp() failed winfo == null");
+
+        return 0;
+
+     label1:
+        $i0 = $r3.<com.sina.weibo.sdk.api.ApiUtils$WeiboInfo: int supportApi>;
+
+        $z0 = staticinvoke <com.sina.weibo.sdk.api.ApiUtils: boolean isWeiboAppSupportAPI(int)>($i0);
+
+        if $z0 != 0 goto label2;
+
+        staticinvoke <com.sina.weibo.sdk.log.Log: void e(java.lang.String,java.lang.String)>("WeiboApiImpl", "registerApp() failed not isWeiboAppSupportAPI");
+
+        return 0;
+
+     label2:
+        r1 = $r3.<com.sina.weibo.sdk.api.ApiUtils$WeiboInfo: java.lang.String packageName>;
+
+        $r4 = r0.<com.sina.weibo.sdk.api.WeiboApiImpl: java.lang.String mAppKey>;
+
+        if $r4 == null goto label3;
+
+        $r4 = r0.<com.sina.weibo.sdk.api.WeiboApiImpl: java.lang.String mAppKey>;
+
+        $i0 = virtualinvoke $r4.<java.lang.String: int length()>();
+
+        if $i0 != 0 goto label4;
+
+     label3:
+        staticinvoke <com.sina.weibo.sdk.log.Log: void e(java.lang.String,java.lang.String)>("WeiboApiImpl", "registerApp() failed appkey is null");
+
+        return 0;
+
+     label4:
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>(java.lang.String)>("registerApp() packageName : ");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(r1);
+
+        r1 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.sina.weibo.sdk.log.Log: void d(java.lang.String,java.lang.String)>("WeiboApiImpl", r1);
+
+        $r2 = r0.<com.sina.weibo.sdk.api.WeiboApiImpl: android.content.Context mContext>;
+
+        r1 = r0.<com.sina.weibo.sdk.api.WeiboApiImpl: java.lang.String mAppKey>;
+
+        staticinvoke <com.sina.weibo.sdk.handler.ReceiverHandler: void register(android.content.Context,java.lang.String)>($r2, r1);
+
+        return 1;
+    }
+
+    public void registerWeiboDownloadListener(com.sina.weibo.sdk.api.IWeiboDownloadListener)
+    {
+        com.sina.weibo.sdk.api.WeiboApiImpl r0;
+        com.sina.weibo.sdk.api.IWeiboDownloadListener $r1;
+
+        r0 := @this: com.sina.weibo.sdk.api.WeiboApiImpl;
+
+        $r1 := @parameter0: com.sina.weibo.sdk.api.IWeiboDownloadListener;
+
+        r0.<com.sina.weibo.sdk.api.WeiboApiImpl: com.sina.weibo.sdk.api.IWeiboDownloadListener mDownloadListener> = $r1;
+
+        return;
+    }
+
+    public boolean requestListener(android.content.Intent, com.sina.weibo.sdk.api.IWeiboHandler$Request)
+    {
+        android.content.Context $r6;
+        android.os.Bundle $r7;
+        com.sina.weibo.sdk.api.WeiboApiImpl r0;
+        android.content.Intent $r1;
+        com.sina.weibo.sdk.api.IWeiboHandler$Request $r2;
+        com.sina.weibo.sdk.api.ProvideMessageForWeiboRequest r3;
+        java.lang.String $r4, $r5;
+        boolean $z0;
+
+        r0 := @this: com.sina.weibo.sdk.api.WeiboApiImpl;
+
+        $r1 := @parameter0: android.content.Intent;
+
+        $r2 := @parameter1: com.sina.weibo.sdk.api.IWeiboHandler$Request;
+
+        $r4 = virtualinvoke $r1.<android.content.Intent: java.lang.String getStringExtra(java.lang.String)>("_weibo_appPackage");
+
+        if $r4 != null goto label1;
+
+        staticinvoke <com.sina.weibo.sdk.log.Log: void e(java.lang.String,java.lang.String)>("WeiboApiImpl", "requestListener() faild appPackage validateSign faild");
+
+        return 0;
+
+     label1:
+        $r5 = virtualinvoke $r1.<android.content.Intent: java.lang.String getStringExtra(java.lang.String)>("_weibo_transaction");
+
+        if $r5 != null goto label2;
+
+        staticinvoke <com.sina.weibo.sdk.log.Log: void e(java.lang.String,java.lang.String)>("WeiboApiImpl", "requestListener() faild intent TRAN is null");
+
+        return 0;
+
+     label2:
+        $r6 = r0.<com.sina.weibo.sdk.api.WeiboApiImpl: android.content.Context mContext>;
+
+        $z0 = staticinvoke <com.sina.weibo.sdk.api.ApiUtils: boolean validateSign(android.content.Context,java.lang.String)>($r6, $r4);
+
+        if $z0 != 0 goto label3;
+
+        staticinvoke <com.sina.weibo.sdk.log.Log: void e(java.lang.String,java.lang.String)>("WeiboApiImpl", "requestListener() faild appPackage validateSign faild");
+
+        return 0;
+
+     label3:
+        r3 = new com.sina.weibo.sdk.api.ProvideMessageForWeiboRequest;
+
+        $r7 = virtualinvoke $r1.<android.content.Intent: android.os.Bundle getExtras()>();
+
+        specialinvoke r3.<com.sina.weibo.sdk.api.ProvideMessageForWeiboRequest: void <init>(android.os.Bundle)>($r7);
+
+        interfaceinvoke $r2.<com.sina.weibo.sdk.api.IWeiboHandler$Request: void onRequest(com.sina.weibo.sdk.api.BaseRequest)>(r3);
+
+        return 1;
+    }
+
+    public boolean responseListener(android.content.Intent, com.sina.weibo.sdk.api.IWeiboHandler$Response)
+    {
+        android.content.Context $r8;
+        com.sina.weibo.sdk.api.SendMessageToWeiboResponse r3;
+        com.sina.weibo.sdk.api.IWeiboHandler$Response $r2;
+        android.os.Bundle $r9;
+        com.sina.weibo.sdk.api.WeiboApiImpl r0;
+        android.content.Intent $r1;
+        java.lang.StringBuilder $r7;
+        java.lang.String $r4, $r6;
+        android.app.Activity r5;
+        boolean $z0;
+
+        r0 := @this: com.sina.weibo.sdk.api.WeiboApiImpl;
+
+        $r1 := @parameter0: android.content.Intent;
+
+        $r2 := @parameter1: com.sina.weibo.sdk.api.IWeiboHandler$Response;
+
+        $r4 = virtualinvoke $r1.<android.content.Intent: java.lang.String getStringExtra(java.lang.String)>("_weibo_appPackage");
+
+        if $r4 != null goto label1;
+
+        staticinvoke <com.sina.weibo.sdk.log.Log: void e(java.lang.String,java.lang.String)>("WeiboApiImpl", "responseListener() faild appPackage is null");
+
+        return 0;
+
+     label1:
+        $z0 = $r2 instanceof android.app.Activity;
+
+        if $z0 != 0 goto label2;
+
+        staticinvoke <com.sina.weibo.sdk.log.Log: void e(java.lang.String,java.lang.String)>("WeiboApiImpl", "responseListener() faild handler is not Activity");
+
+        return 0;
+
+     label2:
+        r5 = (android.app.Activity) $r2;
+
+        $r6 = virtualinvoke r5.<android.app.Activity: java.lang.String getCallingPackage()>();
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>(java.lang.String)>("responseListener() callPkg : ");
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r6 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.sina.weibo.sdk.log.Log: void d(java.lang.String,java.lang.String)>("WeiboApiImpl", $r6);
+
+        $r6 = virtualinvoke $r1.<android.content.Intent: java.lang.String getStringExtra(java.lang.String)>("_weibo_transaction");
+
+        if $r6 != null goto label3;
+
+        staticinvoke <com.sina.weibo.sdk.log.Log: void e(java.lang.String,java.lang.String)>("WeiboApiImpl", "responseListener() faild intent TRAN is null");
+
+        return 0;
+
+     label3:
+        $r8 = r0.<com.sina.weibo.sdk.api.WeiboApiImpl: android.content.Context mContext>;
+
+        $z0 = staticinvoke <com.sina.weibo.sdk.api.ApiUtils: boolean validateSign(android.content.Context,java.lang.String)>($r8, $r4);
+
+        if $z0 != 0 goto label4;
+
+        staticinvoke <com.sina.weibo.sdk.log.Log: void e(java.lang.String,java.lang.String)>("WeiboApiImpl", "responseListener() faild appPackage validateSign faild");
+
+        return 0;
+
+     label4:
+        r3 = new com.sina.weibo.sdk.api.SendMessageToWeiboResponse;
+
+        $r9 = virtualinvoke $r1.<android.content.Intent: android.os.Bundle getExtras()>();
+
+        specialinvoke r3.<com.sina.weibo.sdk.api.SendMessageToWeiboResponse: void <init>(android.os.Bundle)>($r9);
+
+        interfaceinvoke $r2.<com.sina.weibo.sdk.api.IWeiboHandler$Response: void onResponse(com.sina.weibo.sdk.api.BaseResponse)>(r3);
+
+        return 1;
+    }
+
+    public boolean sendRequest(android.app.Activity, com.sina.weibo.sdk.api.BaseRequest)
+    {
+        android.content.Context $r5;
+        com.sina.weibo.sdk.api.VersionCheckHandler r3;
+        android.os.Bundle r4;
+        com.sina.weibo.sdk.api.WeiboApiImpl r0;
+        com.sina.weibo.sdk.api.BaseRequest $r2;
+        com.sina.weibo.sdk.api.ApiUtils$WeiboInfo $r6;
+        com.sina.weibo.sdk.api.IWeiboDownloadListener $r7;
+        int $i0;
+        java.lang.String $r8, $r9;
+        android.app.Activity $r1;
+        boolean $z0;
+
+        r0 := @this: com.sina.weibo.sdk.api.WeiboApiImpl;
+
+        $r1 := @parameter0: android.app.Activity;
+
+        $r2 := @parameter1: com.sina.weibo.sdk.api.BaseRequest;
+
+        if $r1 == null goto label1;
+
+        if $r2 != null goto label2;
+
+     label1:
+        staticinvoke <com.sina.weibo.sdk.log.Log: void e(java.lang.String,java.lang.String)>("WeiboApiImpl", "sendRequest faild act == null or request == null");
+
+        return 0;
+
+     label2:
+        $r5 = r0.<com.sina.weibo.sdk.api.WeiboApiImpl: android.content.Context mContext>;
+
+        $r6 = staticinvoke <com.sina.weibo.sdk.api.ApiUtils: com.sina.weibo.sdk.api.ApiUtils$WeiboInfo queryWeiboInfo(android.content.Context)>($r5);
+
+        if $r6 != null goto label3;
+
+        staticinvoke <com.sina.weibo.sdk.log.Log: void e(java.lang.String,java.lang.String)>("WeiboApiImpl", "sendRequest faild winfo is null");
+
+        $z0 = r0.<com.sina.weibo.sdk.api.WeiboApiImpl: boolean mDownWeibo>;
+
+        if $z0 == 0 goto label6;
+
+        $r7 = r0.<com.sina.weibo.sdk.api.WeiboApiImpl: com.sina.weibo.sdk.api.IWeiboDownloadListener mDownloadListener>;
+
+        staticinvoke <com.sina.weibo.sdk.utils.Util: void createConfirmDialog(android.app.Activity,com.sina.weibo.sdk.api.IWeiboDownloadListener)>($r1, $r7);
+
+        return 0;
+
+     label3:
+        $i0 = $r6.<com.sina.weibo.sdk.api.ApiUtils$WeiboInfo: int supportApi>;
+
+        $z0 = staticinvoke <com.sina.weibo.sdk.api.ApiUtils: boolean isWeiboAppSupportAPI(int)>($i0);
+
+        if $z0 != 0 goto label4;
+
+        staticinvoke <com.sina.weibo.sdk.log.Log: void e(java.lang.String,java.lang.String)>("WeiboApiImpl", "sendRequest faild isWeiboAppSupportAPI");
+
+        return 0;
+
+     label4:
+        r3 = new com.sina.weibo.sdk.api.VersionCheckHandler;
+
+        $r8 = $r6.<com.sina.weibo.sdk.api.ApiUtils$WeiboInfo: java.lang.String packageName>;
+
+        specialinvoke r3.<com.sina.weibo.sdk.api.VersionCheckHandler: void <init>(java.lang.String)>($r8);
+
+        $r5 = r0.<com.sina.weibo.sdk.api.WeiboApiImpl: android.content.Context mContext>;
+
+        $z0 = virtualinvoke $r2.<com.sina.weibo.sdk.api.BaseRequest: boolean check(android.content.Context,com.sina.weibo.sdk.api.VersionCheckHandler)>($r5, r3);
+
+        if $z0 != 0 goto label5;
+
+        staticinvoke <com.sina.weibo.sdk.log.Log: void e(java.lang.String,java.lang.String)>("WeiboApiImpl", "sendRequest faild request check faild");
+
+        return 0;
+
+     label5:
+        r4 = new android.os.Bundle;
+
+        specialinvoke r4.<android.os.Bundle: void <init>()>();
+
+        virtualinvoke $r2.<com.sina.weibo.sdk.api.BaseRequest: void toBundle(android.os.Bundle)>(r4);
+
+        $r8 = $r6.<com.sina.weibo.sdk.api.ApiUtils$WeiboInfo: java.lang.String packageName>;
+
+        $r9 = r0.<com.sina.weibo.sdk.api.WeiboApiImpl: java.lang.String mAppKey>;
+
+        $z0 = staticinvoke <com.sina.weibo.sdk.handler.ActivityHandler: boolean sendToWeibo(android.app.Activity,java.lang.String,java.lang.String,android.os.Bundle)>($r1, $r8, $r9, r4);
+
+        return $z0;
+
+     label6:
+        return 0;
+    }
+
+    public boolean sendResponse(com.sina.weibo.sdk.api.BaseResponse)
+    {
+        android.content.Context $r3;
+        android.os.Bundle r2;
+        com.sina.weibo.sdk.api.VersionCheckHandler $r4;
+        com.sina.weibo.sdk.api.WeiboApiImpl r0;
+        com.sina.weibo.sdk.api.BaseResponse $r1;
+        java.lang.String $r5, $r6;
+        boolean $z0;
+
+        r0 := @this: com.sina.weibo.sdk.api.WeiboApiImpl;
+
+        $r1 := @parameter0: com.sina.weibo.sdk.api.BaseResponse;
+
+        if $r1 != null goto label1;
+
+        staticinvoke <com.sina.weibo.sdk.log.Log: void e(java.lang.String,java.lang.String)>("WeiboApiImpl", "sendResponse failed response null");
+
+        return 0;
+
+     label1:
+        $r3 = r0.<com.sina.weibo.sdk.api.WeiboApiImpl: android.content.Context mContext>;
+
+        $r4 = new com.sina.weibo.sdk.api.VersionCheckHandler;
+
+        specialinvoke $r4.<com.sina.weibo.sdk.api.VersionCheckHandler: void <init>()>();
+
+        $z0 = virtualinvoke $r1.<com.sina.weibo.sdk.api.BaseResponse: boolean check(android.content.Context,com.sina.weibo.sdk.api.VersionCheckHandler)>($r3, $r4);
+
+        if $z0 != 0 goto label2;
+
+        staticinvoke <com.sina.weibo.sdk.log.Log: void e(java.lang.String,java.lang.String)>("WeiboApiImpl", "sendResponse checkArgs fail");
+
+        return 0;
+
+     label2:
+        r2 = new android.os.Bundle;
+
+        specialinvoke r2.<android.os.Bundle: void <init>()>();
+
+        virtualinvoke $r1.<com.sina.weibo.sdk.api.BaseResponse: void toBundle(android.os.Bundle)>(r2);
+
+        $r3 = r0.<com.sina.weibo.sdk.api.WeiboApiImpl: android.content.Context mContext>;
+
+        $r5 = r0.<com.sina.weibo.sdk.api.WeiboApiImpl: java.lang.String mAppKey>;
+
+        $r6 = $r1.<com.sina.weibo.sdk.api.BaseResponse: java.lang.String reqPackageName>;
+
+        $z0 = staticinvoke <com.sina.weibo.sdk.handler.ReceiverHandler: boolean sendToWeibo(android.content.Context,java.lang.String,android.os.Bundle,java.lang.String)>($r3, $r5, r2, $r6);
+
+        return $z0;
+    }
+
+    public boolean startWeibo()
+    {
+        android.content.Context $r3, $r7;
+        com.sina.weibo.sdk.api.WeiboApiImpl r0;
+        android.content.pm.PackageManager $r8;
+        android.content.Intent $r9;
+        java.lang.Exception r1;
+        com.sina.weibo.sdk.api.ApiUtils$WeiboInfo $r4;
+        java.lang.StringBuilder $r5;
+        java.lang.String r2, $r6;
+        boolean $z0;
+
+        r0 := @this: com.sina.weibo.sdk.api.WeiboApiImpl;
+
+        $r3 = r0.<com.sina.weibo.sdk.api.WeiboApiImpl: android.content.Context mContext>;
+
+        $r4 = staticinvoke <com.sina.weibo.sdk.api.ApiUtils: com.sina.weibo.sdk.api.ApiUtils$WeiboInfo queryWeiboInfo(android.content.Context)>($r3);
+
+        if $r4 != null goto label1;
+
+        staticinvoke <com.sina.weibo.sdk.log.Log: void e(java.lang.String,java.lang.String)>("WeiboApiImpl", "startWeibo() faild winfo is null");
+
+        return 0;
+
+     label1:
+        r2 = $r4.<com.sina.weibo.sdk.api.ApiUtils$WeiboInfo: java.lang.String packageName>;
+
+     label2:
+        $r5 = new java.lang.StringBuilder;
+
+     label3:
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>(java.lang.String)>("startWeibo() packageName : ");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(r2);
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.sina.weibo.sdk.log.Log: void d(java.lang.String,java.lang.String)>("WeiboApiImpl", $r6);
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>(r2);
+
+     label4:
+        if $z0 == 0 goto label8;
+
+     label5:
+        staticinvoke <com.sina.weibo.sdk.log.Log: void e(java.lang.String,java.lang.String)>("WeiboApiImpl", "startWeibo() faild packageName is null");
+
+     label6:
+        return 0;
+
+     label7:
+        r1 := @caughtexception;
+
+        r2 = virtualinvoke r1.<java.lang.Exception: java.lang.String getMessage()>();
+
+        staticinvoke <com.sina.weibo.sdk.log.Log: void e(java.lang.String,java.lang.String,java.lang.Exception)>("WeiboApiImpl", r2, r1);
+
+        return 0;
+
+     label8:
+        $r3 = r0.<com.sina.weibo.sdk.api.WeiboApiImpl: android.content.Context mContext>;
+
+        $r7 = r0.<com.sina.weibo.sdk.api.WeiboApiImpl: android.content.Context mContext>;
+
+        $r8 = virtualinvoke $r7.<android.content.Context: android.content.pm.PackageManager getPackageManager()>();
+
+        $r9 = virtualinvoke $r8.<android.content.pm.PackageManager: android.content.Intent getLaunchIntentForPackage(java.lang.String)>(r2);
+
+        virtualinvoke $r3.<android.content.Context: void startActivity(android.content.Intent)>($r9);
+
+     label9:
+        return 1;
+
+        catch java.lang.Exception from label1 to label2 with label7;
+        catch java.lang.Exception from label3 to label4 with label7;
+        catch java.lang.Exception from label5 to label6 with label7;
+        catch java.lang.Exception from label8 to label9 with label7;
+    }
+
+    public static void <clinit>()
+    {
+        <com.sina.weibo.sdk.api.WeiboApiImpl: java.lang.String TAG> = "WeiboApiImpl";
+
+        return;
+    }
+}

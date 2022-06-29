@@ -1,0 +1,442 @@
+public final class com.facebook.NativeAppCallAttachmentStore extends java.lang.Object implements com.facebook.NativeAppCallContentProvider$AttachmentDataSource
+{
+    static final java.lang.String ATTACHMENTS_DIR_NAME;
+    private static final java.lang.String TAG;
+    private static java.io.File attachmentsDirectory;
+
+    static void <clinit>()
+    {
+        java.lang.Class $r1;
+        java.lang.String $r0;
+
+        <com.facebook.NativeAppCallAttachmentStore: java.lang.String ATTACHMENTS_DIR_NAME> = "com.facebook.NativeAppCallAttachmentStore.files";
+
+        $r1 = class "Lcom/facebook/NativeAppCallAttachmentStore;";
+
+        $r0 = virtualinvoke $r1.<java.lang.Class: java.lang.String getName()>();
+
+        <com.facebook.NativeAppCallAttachmentStore: java.lang.String TAG> = $r0;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        com.facebook.NativeAppCallAttachmentStore r0;
+
+        r0 := @this: com.facebook.NativeAppCallAttachmentStore;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    static java.io.File getAttachmentsDirectory(android.content.Context)
+    {
+        java.lang.Throwable $r3;
+        android.content.Context $r0;
+        java.io.File $r1, $r2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        entermonitor class "Lcom/facebook/NativeAppCallAttachmentStore;";
+
+     label1:
+        $r1 = <com.facebook.NativeAppCallAttachmentStore: java.io.File attachmentsDirectory>;
+
+        if $r1 != null goto label2;
+
+        $r2 = new java.io.File;
+
+        $r1 = virtualinvoke $r0.<android.content.Context: java.io.File getCacheDir()>();
+
+        specialinvoke $r2.<java.io.File: void <init>(java.io.File,java.lang.String)>($r1, "com.facebook.NativeAppCallAttachmentStore.files");
+
+        <com.facebook.NativeAppCallAttachmentStore: java.io.File attachmentsDirectory> = $r2;
+
+     label2:
+        $r1 = <com.facebook.NativeAppCallAttachmentStore: java.io.File attachmentsDirectory>;
+
+     label3:
+        exitmonitor class "Lcom/facebook/NativeAppCallAttachmentStore;";
+
+        return $r1;
+
+     label4:
+        $r3 := @caughtexception;
+
+        exitmonitor class "Lcom/facebook/NativeAppCallAttachmentStore;";
+
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+    }
+
+    public final void addAttachmentsForCall(android.content.Context, java.util.UUID, java.util.Map)
+    {
+        java.lang.Throwable $r15, $r19;
+        android.content.Context $r1;
+        java.util.ArrayList $r7;
+        java.util.Map $r3;
+        int $i0;
+        android.graphics.Bitmap$CompressFormat $r14;
+        java.lang.String $r11, $r17;
+        boolean $z0;
+        java.util.Map$Entry $r10;
+        java.util.Iterator $r8;
+        com.facebook.NativeAppCallAttachmentStore r0;
+        com.facebook.FacebookException $r18;
+        java.util.Collection $r4;
+        java.util.Set $r5;
+        java.io.FileOutputStream $r13;
+        java.util.UUID $r2;
+        java.io.File $r6;
+        java.lang.Exception $r20;
+        android.graphics.Bitmap $r12;
+        java.lang.Object $r9;
+        java.lang.StringBuilder $r16;
+
+        r0 := @this: com.facebook.NativeAppCallAttachmentStore;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.util.UUID;
+
+        $r3 := @parameter2: java.util.Map;
+
+        staticinvoke <com.facebook.internal.Validate: void notNull(java.lang.Object,java.lang.String)>($r1, "context");
+
+        staticinvoke <com.facebook.internal.Validate: void notNull(java.lang.Object,java.lang.String)>($r2, "callId");
+
+        $r4 = interfaceinvoke $r3.<java.util.Map: java.util.Collection values()>();
+
+        staticinvoke <com.facebook.internal.Validate: void containsNoNulls(java.util.Collection,java.lang.String)>($r4, "imageAttachments");
+
+        $r5 = interfaceinvoke $r3.<java.util.Map: java.util.Set keySet()>();
+
+        staticinvoke <com.facebook.internal.Validate: void containsNoNullOrEmpty(java.util.Collection,java.lang.String)>($r5, "imageAttachments");
+
+        $i0 = interfaceinvoke $r3.<java.util.Map: int size()>();
+
+        if $i0 != 0 goto label01;
+
+        return;
+
+     label01:
+        $r6 = <com.facebook.NativeAppCallAttachmentStore: java.io.File attachmentsDirectory>;
+
+        if $r6 != null goto label02;
+
+        $r6 = staticinvoke <com.facebook.NativeAppCallAttachmentStore: java.io.File getAttachmentsDirectory(android.content.Context)>($r1);
+
+        staticinvoke <com.facebook.internal.Utility: void deleteDirectory(java.io.File)>($r6);
+
+     label02:
+        virtualinvoke r0.<com.facebook.NativeAppCallAttachmentStore: java.io.File ensureAttachmentsDirectoryExists(android.content.Context)>($r1);
+
+        $r7 = new java.util.ArrayList;
+
+        specialinvoke $r7.<java.util.ArrayList: void <init>()>();
+
+     label03:
+        $r5 = interfaceinvoke $r3.<java.util.Map: java.util.Set entrySet()>();
+
+        $r8 = interfaceinvoke $r5.<java.util.Set: java.util.Iterator iterator()>();
+
+     label04:
+        $z0 = interfaceinvoke $r8.<java.util.Iterator: boolean hasNext()>();
+
+     label05:
+        if $z0 == 0 goto label26;
+
+     label06:
+        $r9 = interfaceinvoke $r8.<java.util.Iterator: java.lang.Object next()>();
+
+     label07:
+        $r10 = (java.util.Map$Entry) $r9;
+
+     label08:
+        $r9 = interfaceinvoke $r10.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+     label09:
+        $r11 = (java.lang.String) $r9;
+
+     label10:
+        $r9 = interfaceinvoke $r10.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+     label11:
+        $r12 = (android.graphics.Bitmap) $r9;
+
+     label12:
+        $r6 = virtualinvoke r0.<com.facebook.NativeAppCallAttachmentStore: java.io.File getAttachmentFile(java.util.UUID,java.lang.String,boolean)>($r2, $r11, 1);
+
+        interfaceinvoke $r7.<java.util.List: boolean add(java.lang.Object)>($r6);
+
+     label13:
+        $r13 = new java.io.FileOutputStream;
+
+     label14:
+        specialinvoke $r13.<java.io.FileOutputStream: void <init>(java.io.File)>($r6);
+
+     label15:
+        $r14 = <android.graphics.Bitmap$CompressFormat: android.graphics.Bitmap$CompressFormat JPEG>;
+
+        virtualinvoke $r12.<android.graphics.Bitmap: boolean compress(android.graphics.Bitmap$CompressFormat,int,java.io.OutputStream)>($r14, 100, $r13);
+
+     label16:
+        staticinvoke <com.facebook.internal.Utility: void closeQuietly(java.io.Closeable)>($r13);
+
+     label17:
+        goto label04;
+
+     label18:
+        $r15 := @caughtexception;
+
+        $r11 = <com.facebook.NativeAppCallAttachmentStore: java.lang.String TAG>;
+
+        $r16 = new java.lang.StringBuilder;
+
+        specialinvoke $r16.<java.lang.StringBuilder: void <init>(java.lang.String)>("Got unexpected exception:");
+
+        $r16 = virtualinvoke $r16.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r15);
+
+        $r17 = virtualinvoke $r16.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>($r11, $r17);
+
+        $r8 = interfaceinvoke $r7.<java.util.List: java.util.Iterator iterator()>();
+
+     label19:
+        $z0 = interfaceinvoke $r8.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 != 0 goto label22;
+
+        $r18 = new com.facebook.FacebookException;
+
+        specialinvoke $r18.<com.facebook.FacebookException: void <init>(java.lang.Throwable)>($r15);
+
+        throw $r18;
+
+     label20:
+        $r19 := @caughtexception;
+
+     label21:
+        staticinvoke <com.facebook.internal.Utility: void closeQuietly(java.io.Closeable)>($r13);
+
+        throw $r19;
+
+     label22:
+        $r9 = interfaceinvoke $r8.<java.util.Iterator: java.lang.Object next()>();
+
+        $r6 = (java.io.File) $r9;
+
+     label23:
+        virtualinvoke $r6.<java.io.File: boolean delete()>();
+
+     label24:
+        goto label19;
+
+     label25:
+        $r20 := @caughtexception;
+
+        goto label19;
+
+     label26:
+        return;
+
+        catch java.io.IOException from label03 to label05 with label18;
+        catch java.io.IOException from label06 to label07 with label18;
+        catch java.io.IOException from label08 to label09 with label18;
+        catch java.io.IOException from label10 to label11 with label18;
+        catch java.io.IOException from label12 to label13 with label18;
+        catch java.io.IOException from label14 to label15 with label18;
+        catch java.lang.Throwable from label15 to label16 with label20;
+        catch java.io.IOException from label16 to label17 with label18;
+        catch java.io.IOException from label21 to label22 with label18;
+        catch java.lang.Exception from label23 to label24 with label25;
+    }
+
+    final void cleanupAllAttachments(android.content.Context)
+    {
+        android.content.Context $r1;
+        com.facebook.NativeAppCallAttachmentStore r0;
+        java.io.File $r2;
+
+        r0 := @this: com.facebook.NativeAppCallAttachmentStore;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 = staticinvoke <com.facebook.NativeAppCallAttachmentStore: java.io.File getAttachmentsDirectory(android.content.Context)>($r1);
+
+        staticinvoke <com.facebook.internal.Utility: void deleteDirectory(java.io.File)>($r2);
+
+        return;
+    }
+
+    public final void cleanupAttachmentsForCall(android.content.Context, java.util.UUID)
+    {
+        android.content.Context $r1;
+        com.facebook.NativeAppCallAttachmentStore r0;
+        java.util.UUID $r2;
+        java.io.File $r3;
+
+        r0 := @this: com.facebook.NativeAppCallAttachmentStore;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.util.UUID;
+
+        $r3 = virtualinvoke r0.<com.facebook.NativeAppCallAttachmentStore: java.io.File getAttachmentsDirectoryForCall(java.util.UUID,boolean)>($r2, 0);
+
+        staticinvoke <com.facebook.internal.Utility: void deleteDirectory(java.io.File)>($r3);
+
+        return;
+    }
+
+    final java.io.File ensureAttachmentsDirectoryExists(android.content.Context)
+    {
+        android.content.Context $r1;
+        com.facebook.NativeAppCallAttachmentStore r0;
+        java.io.File $r2;
+
+        r0 := @this: com.facebook.NativeAppCallAttachmentStore;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 = staticinvoke <com.facebook.NativeAppCallAttachmentStore: java.io.File getAttachmentsDirectory(android.content.Context)>($r1);
+
+        virtualinvoke $r2.<java.io.File: boolean mkdirs()>();
+
+        return $r2;
+    }
+
+    final java.io.File getAttachmentFile(java.util.UUID, java.lang.String, boolean)
+    {
+        java.lang.Throwable $r5;
+        com.facebook.NativeAppCallAttachmentStore r0;
+        java.util.UUID $r1;
+        java.lang.String $r2;
+        java.io.File $r3, $r4;
+        boolean $z0;
+
+        r0 := @this: com.facebook.NativeAppCallAttachmentStore;
+
+        $r1 := @parameter0: java.util.UUID;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $z0 := @parameter2: boolean;
+
+        $r3 = virtualinvoke r0.<com.facebook.NativeAppCallAttachmentStore: java.io.File getAttachmentsDirectoryForCall(java.util.UUID,boolean)>($r1, $z0);
+
+        if $r3 != null goto label1;
+
+        return null;
+
+     label1:
+        $r4 = new java.io.File;
+
+     label2:
+        $r2 = staticinvoke <java.net.URLEncoder: java.lang.String encode(java.lang.String,java.lang.String)>($r2, "UTF-8");
+
+        specialinvoke $r4.<java.io.File: void <init>(java.io.File,java.lang.String)>($r3, $r2);
+
+     label3:
+        return $r4;
+
+     label4:
+        $r5 := @caughtexception;
+
+        return null;
+
+        catch java.io.UnsupportedEncodingException from label2 to label3 with label4;
+    }
+
+    final java.io.File getAttachmentsDirectoryForCall(java.util.UUID, boolean)
+    {
+        com.facebook.NativeAppCallAttachmentStore r0;
+        java.util.UUID $r1;
+        java.lang.String $r4;
+        java.io.File $r2, $r3;
+        boolean $z0;
+
+        r0 := @this: com.facebook.NativeAppCallAttachmentStore;
+
+        $r1 := @parameter0: java.util.UUID;
+
+        $z0 := @parameter1: boolean;
+
+        $r2 = <com.facebook.NativeAppCallAttachmentStore: java.io.File attachmentsDirectory>;
+
+        if $r2 != null goto label1;
+
+        return null;
+
+     label1:
+        $r2 = new java.io.File;
+
+        $r3 = <com.facebook.NativeAppCallAttachmentStore: java.io.File attachmentsDirectory>;
+
+        $r4 = virtualinvoke $r1.<java.util.UUID: java.lang.String toString()>();
+
+        specialinvoke $r2.<java.io.File: void <init>(java.io.File,java.lang.String)>($r3, $r4);
+
+        if $z0 == 0 goto label2;
+
+        $z0 = virtualinvoke $r2.<java.io.File: boolean exists()>();
+
+        if $z0 != 0 goto label2;
+
+        virtualinvoke $r2.<java.io.File: boolean mkdirs()>();
+
+     label2:
+        return $r2;
+    }
+
+    public final java.io.File openAttachment(java.util.UUID, java.lang.String)
+    {
+        java.lang.Throwable $r5;
+        com.facebook.NativeAppCallAttachmentStore r0;
+        java.util.UUID $r1;
+        java.lang.String $r2;
+        java.io.FileNotFoundException $r3;
+        java.io.File $r4;
+        boolean $z0;
+
+        r0 := @this: com.facebook.NativeAppCallAttachmentStore;
+
+        $r1 := @parameter0: java.util.UUID;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $z0 = staticinvoke <com.facebook.internal.Utility: boolean isNullOrEmpty(java.lang.String)>($r2);
+
+        if $z0 != 0 goto label1;
+
+        if $r1 != null goto label2;
+
+     label1:
+        $r3 = new java.io.FileNotFoundException;
+
+        specialinvoke $r3.<java.io.FileNotFoundException: void <init>()>();
+
+        throw $r3;
+
+     label2:
+        $r4 = virtualinvoke r0.<com.facebook.NativeAppCallAttachmentStore: java.io.File getAttachmentFile(java.util.UUID,java.lang.String,boolean)>($r1, $r2, 0);
+
+     label3:
+        return $r4;
+
+     label4:
+        $r5 := @caughtexception;
+
+        $r3 = new java.io.FileNotFoundException;
+
+        specialinvoke $r3.<java.io.FileNotFoundException: void <init>()>();
+
+        throw $r3;
+
+        catch java.io.IOException from label2 to label3 with label4;
+    }
+}

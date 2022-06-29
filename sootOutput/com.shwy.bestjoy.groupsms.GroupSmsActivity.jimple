@@ -1,0 +1,985 @@
+public class com.shwy.bestjoy.groupsms.GroupSmsActivity extends android.app.Activity implements android.view.View$OnClickListener, android.widget.AdapterView$OnItemClickListener, android.widget.AdapterView$OnItemLongClickListener
+{
+    private static final int DELETE_ID;
+    private static final java.lang.String[] FROM;
+    private static final java.lang.String GROUP_TITLE;
+    private static final android.net.Uri GROUP_URI;
+    private static final java.lang.String[] PROJECTION;
+    private static final int RENAME_ID;
+    private static final java.lang.String TAG;
+    private static final int[] TO;
+    private static final android.net.Uri URI;
+    private static final int VIEW_ID;
+    private android.widget.ImageButton mAddGroup;
+    private android.view.View mAddGroupArea;
+    private android.widget.EditText mGroupName;
+    private android.database.Cursor mGroupsCursor;
+    private android.widget.ListView mGroupsList;
+    public android.content.Intent ipcIntent;
+    public android.content.Intent ipcResultIntent;
+
+    static void <clinit>()
+    {
+        android.net.Uri $r0;
+        java.lang.String[] $r1;
+        int[] $r2;
+
+        <com.shwy.bestjoy.groupsms.GroupSmsActivity: int VIEW_ID> = 10002;
+
+        <com.shwy.bestjoy.groupsms.GroupSmsActivity: java.lang.String TAG> = "GroupSmsActivity";
+
+        <com.shwy.bestjoy.groupsms.GroupSmsActivity: int RENAME_ID> = 10000;
+
+        <com.shwy.bestjoy.groupsms.GroupSmsActivity: java.lang.String GROUP_TITLE> = "title";
+
+        <com.shwy.bestjoy.groupsms.GroupSmsActivity: int DELETE_ID> = 10001;
+
+        $r0 = <android.provider.ContactsContract$Groups: android.net.Uri CONTENT_SUMMARY_URI>;
+
+        <com.shwy.bestjoy.groupsms.GroupSmsActivity: android.net.Uri URI> = $r0;
+
+        $r0 = <android.provider.ContactsContract$Groups: android.net.Uri CONTENT_URI>;
+
+        <com.shwy.bestjoy.groupsms.GroupSmsActivity: android.net.Uri GROUP_URI> = $r0;
+
+        $r1 = newarray (java.lang.String)[5];
+
+        $r1[0] = "_id";
+
+        $r1[1] = "sourceid";
+
+        $r1[2] = "system_id";
+
+        $r1[3] = "title";
+
+        $r1[4] = "summ_count";
+
+        <com.shwy.bestjoy.groupsms.GroupSmsActivity: java.lang.String[] PROJECTION> = $r1;
+
+        $r1 = newarray (java.lang.String)[2];
+
+        $r1[0] = "title";
+
+        $r1[1] = "summ_count";
+
+        <com.shwy.bestjoy.groupsms.GroupSmsActivity: java.lang.String[] FROM> = $r1;
+
+        $r2 = newarray (int)[2];
+
+        $r2[0] = 2131493000;
+
+        $r2[1] = 2131493001;
+
+        <com.shwy.bestjoy.groupsms.GroupSmsActivity: int[] TO> = $r2;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        com.shwy.bestjoy.groupsms.GroupSmsActivity r0;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.GroupSmsActivity;
+
+        specialinvoke r0.<android.app.Activity: void <init>()>();
+
+        return;
+    }
+
+    static android.database.Cursor access$0(com.shwy.bestjoy.groupsms.GroupSmsActivity)
+    {
+        com.shwy.bestjoy.groupsms.GroupSmsActivity $r0;
+        android.database.Cursor r1;
+
+        $r0 := @parameter0: com.shwy.bestjoy.groupsms.GroupSmsActivity;
+
+        r1 = $r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        return r1;
+    }
+
+    static android.net.Uri access$1()
+    {
+        android.net.Uri r0;
+
+        r0 = <com.shwy.bestjoy.groupsms.GroupSmsActivity: android.net.Uri GROUP_URI>;
+
+        return r0;
+    }
+
+    private void getGroups()
+    {
+        android.content.ContentResolver $r2;
+        com.shwy.bestjoy.groupsms.GroupSmsActivity r0;
+        android.net.Uri $r3;
+        java.lang.String[] $r1;
+        android.database.Cursor $r4;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.GroupSmsActivity;
+
+        $r2 = virtualinvoke r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.content.ContentResolver getContentResolver()>();
+
+        $r3 = <com.shwy.bestjoy.groupsms.GroupSmsActivity: android.net.Uri URI>;
+
+        $r1 = <com.shwy.bestjoy.groupsms.GroupSmsActivity: java.lang.String[] PROJECTION>;
+
+        $r4 = virtualinvoke $r2.<android.content.ContentResolver: android.database.Cursor query(android.net.Uri,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String)>($r3, $r1, "deleted=0", null, null);
+
+        r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor> = $r4;
+
+        return;
+    }
+
+    public void onClick(android.view.View)
+    {
+        android.net.Uri $r11;
+        android.text.Editable $r7;
+        android.os.IBinder $r18;
+        android.view.inputmethod.InputMethodManager r17;
+        android.accounts.Account[] $r5;
+        android.content.ContentResolver $r9;
+        int $i0;
+        android.view.View $r1, $r16;
+        java.lang.String $r8;
+        android.accounts.AccountManager r4;
+        android.accounts.Account $r12;
+        com.shwy.bestjoy.groupsms.GroupSmsActivity r0;
+        android.widget.BaseAdapter $r15;
+        android.widget.ListAdapter $r14;
+        java.lang.Object $r3;
+        java.lang.StringBuilder $r10;
+        android.content.ContentValues r2;
+        android.widget.ListView $r13;
+        android.widget.EditText $r6;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.GroupSmsActivity;
+
+        $r1 := @parameter0: android.view.View;
+
+        $i0 = virtualinvoke $r1.<android.view.View: int getId()>();
+
+        lookupswitch($i0)
+        {
+            case 2131492987: goto label4;
+            case 2131492988: goto label1;
+            case 2131492989: goto label1;
+            case 2131492990: goto label5;
+            case 2131492991: goto label2;
+            default: goto label1;
+        };
+
+     label1:
+        return;
+
+     label2:
+        $r3 = virtualinvoke r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: java.lang.Object getSystemService(java.lang.String)>("account");
+
+        r4 = (android.accounts.AccountManager) $r3;
+
+        $r5 = virtualinvoke r4.<android.accounts.AccountManager: android.accounts.Account[] getAccounts()>();
+
+        $r6 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.widget.EditText mGroupName>;
+
+        $r7 = virtualinvoke $r6.<android.widget.EditText: android.text.Editable getText()>();
+
+        $r8 = interfaceinvoke $r7.<android.text.Editable: java.lang.String toString()>();
+
+        $i0 = virtualinvoke $r8.<java.lang.String: int length()>();
+
+        if $i0 <= 0 goto label3;
+
+        $r9 = virtualinvoke r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.content.ContentResolver getContentResolver()>();
+
+        r2 = new android.content.ContentValues;
+
+        specialinvoke r2.<android.content.ContentValues: void <init>()>();
+
+        $r6 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.widget.EditText mGroupName>;
+
+        $r7 = virtualinvoke $r6.<android.widget.EditText: android.text.Editable getText()>();
+
+        $r8 = interfaceinvoke $r7.<android.text.Editable: java.lang.String toString()>();
+
+        virtualinvoke r2.<android.content.ContentValues: void put(java.lang.String,java.lang.String)>("title", $r8);
+
+        $r10 = new java.lang.StringBuilder;
+
+        $r11 = <com.shwy.bestjoy.groupsms.GroupSmsActivity: android.net.Uri GROUP_URI>;
+
+        $r8 = virtualinvoke $r11.<android.net.Uri: java.lang.String toString()>();
+
+        $r8 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r8);
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>(java.lang.String)>($r8);
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("?");
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("account_type");
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("=");
+
+        $r12 = $r5[0];
+
+        $r8 = $r12.<android.accounts.Account: java.lang.String type>;
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("&");
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("account_name");
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("=");
+
+        $r12 = $r5[0];
+
+        $r8 = $r12.<android.accounts.Account: java.lang.String name>;
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r8 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r11 = staticinvoke <android.net.Uri: android.net.Uri parse(java.lang.String)>($r8);
+
+        virtualinvoke $r9.<android.content.ContentResolver: android.net.Uri insert(android.net.Uri,android.content.ContentValues)>($r11, r2);
+
+        specialinvoke r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: void getGroups()>();
+
+        $r13 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.widget.ListView mGroupsList>;
+
+        $r14 = virtualinvoke $r13.<android.widget.ListView: android.widget.ListAdapter getAdapter()>();
+
+        $r15 = (android.widget.BaseAdapter) $r14;
+
+        virtualinvoke $r15.<android.widget.BaseAdapter: void notifyDataSetChanged()>();
+
+     label3:
+        $r16 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.view.View mAddGroupArea>;
+
+        virtualinvoke $r16.<android.view.View: void setVisibility(int)>(8);
+
+        $r6 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.widget.EditText mGroupName>;
+
+        virtualinvoke $r6.<android.widget.EditText: void setText(java.lang.CharSequence)>("");
+
+        $r3 = virtualinvoke r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: java.lang.Object getSystemService(java.lang.String)>("input_method");
+
+        r17 = (android.view.inputmethod.InputMethodManager) $r3;
+
+        $r18 = virtualinvoke $r1.<android.view.View: android.os.IBinder getWindowToken()>();
+
+        virtualinvoke r17.<android.view.inputmethod.InputMethodManager: boolean hideSoftInputFromWindow(android.os.IBinder,int)>($r18, 2);
+
+        return;
+
+     label4:
+        $r1 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.view.View mAddGroupArea>;
+
+        virtualinvoke $r1.<android.view.View: void setVisibility(int)>(0);
+
+        return;
+
+     label5:
+        $r16 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.view.View mAddGroupArea>;
+
+        virtualinvoke $r16.<android.view.View: void setVisibility(int)>(8);
+
+        $r3 = virtualinvoke r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: java.lang.Object getSystemService(java.lang.String)>("input_method");
+
+        r17 = (android.view.inputmethod.InputMethodManager) $r3;
+
+        $r18 = virtualinvoke $r1.<android.view.View: android.os.IBinder getWindowToken()>();
+
+        virtualinvoke r17.<android.view.inputmethod.InputMethodManager: boolean hideSoftInputFromWindow(android.os.IBinder,int)>($r18, 2);
+
+        return;
+    }
+
+    public boolean onContextItemSelected(android.view.MenuItem)
+    {
+        long $l1;
+        android.content.Intent r7, $r16;
+        android.view.MenuItem $r1;
+        int i0;
+        android.widget.AdapterView$AdapterContextMenuInfo r4;
+        java.lang.String $r9;
+        boolean $z0;
+        android.database.Cursor $r6, $r10;
+        com.shwy.bestjoy.groupsms.ContactManager $r15;
+        android.view.ViewGroup$LayoutParams $r12;
+        com.shwy.bestjoy.groupsms.GroupSmsActivity r0;
+        com.shwy.bestjoy.groupsms.GroupSmsActivity$1 $r14;
+        android.app.AlertDialog$Builder $r5, $r13;
+        java.lang.StringBuilder $r8, $r17;
+        android.widget.EditText r2, $r11;
+        android.view.ContextMenu$ContextMenuInfo $r3;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.GroupSmsActivity;
+
+        $r1 := @parameter0: android.view.MenuItem;
+
+        $r3 = interfaceinvoke $r1.<android.view.MenuItem: android.view.ContextMenu$ContextMenuInfo getMenuInfo()>();
+
+        r4 = (android.widget.AdapterView$AdapterContextMenuInfo) $r3;
+
+        i0 = interfaceinvoke $r1.<android.view.MenuItem: int getItemId()>();
+
+        lookupswitch(i0)
+        {
+            case 10000: goto label2;
+            case 10001: goto label3;
+            case 10002: goto label4;
+            default: goto label1;
+        };
+
+     label1:
+        $z0 = specialinvoke r0.<android.app.Activity: boolean onContextItemSelected(android.view.MenuItem)>($r1);
+
+        return $z0;
+
+     label2:
+        $r11 = new android.widget.EditText;
+
+        r2 = $r11;
+
+        specialinvoke $r11.<android.widget.EditText: void <init>(android.content.Context)>(r0);
+
+        $r12 = new android.view.ViewGroup$LayoutParams;
+
+        specialinvoke $r12.<android.view.ViewGroup$LayoutParams: void <init>(int,int)>(200, -2);
+
+        virtualinvoke r2.<android.widget.EditText: void setLayoutParams(android.view.ViewGroup$LayoutParams)>($r12);
+
+        virtualinvoke r2.<android.widget.EditText: void setHint(int)>(2131165280);
+
+        i0 = r4.<android.widget.AdapterView$AdapterContextMenuInfo: int position>;
+
+        $r13 = new android.app.AlertDialog$Builder;
+
+        specialinvoke $r13.<android.app.AlertDialog$Builder: void <init>(android.content.Context)>(r0);
+
+        $r5 = virtualinvoke $r13.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setTitle(int)>(2131165279);
+
+        $r5 = virtualinvoke $r5.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setView(android.view.View)>(r2);
+
+        $r14 = new com.shwy.bestjoy.groupsms.GroupSmsActivity$1;
+
+        specialinvoke $r14.<com.shwy.bestjoy.groupsms.GroupSmsActivity$1: void <init>(com.shwy.bestjoy.groupsms.GroupSmsActivity,android.widget.EditText,int)>(r0, r2, i0);
+
+        $r5 = virtualinvoke $r5.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setPositiveButton(int,android.content.DialogInterface$OnClickListener)>(2131165281, $r14);
+
+        $r5 = virtualinvoke $r5.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setNegativeButton(int,android.content.DialogInterface$OnClickListener)>(2131165282, null);
+
+        virtualinvoke $r5.<android.app.AlertDialog$Builder: android.app.AlertDialog show()>();
+
+        goto label1;
+
+     label3:
+        $r15 = new com.shwy.bestjoy.groupsms.ContactManager;
+
+        specialinvoke $r15.<com.shwy.bestjoy.groupsms.ContactManager: void <init>(android.content.Context)>(r0);
+
+        $l1 = r4.<android.widget.AdapterView$AdapterContextMenuInfo: long id>;
+
+        virtualinvoke $r15.<com.shwy.bestjoy.groupsms.ContactManager: void cancelMembership(long)>($l1);
+
+        goto label1;
+
+     label4:
+        $r6 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        i0 = r4.<android.widget.AdapterView$AdapterContextMenuInfo: int position>;
+
+        interfaceinvoke $r6.<android.database.Cursor: boolean moveToPosition(int)>(i0);
+
+        $r6 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        i0 = interfaceinvoke $r6.<android.database.Cursor: int getInt(int)>(4);
+
+        if i0 == 0 goto label6;
+
+        $r16 = new android.content.Intent;
+
+        r7 = $r16;
+
+        specialinvoke $r16.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>(r0, class "Lcom/shwy/bestjoy/groupsms/MyGroupActivity;");
+
+     label5:
+        $r17 = new java.lang.StringBuilder;
+
+        specialinvoke $r17.<java.lang.StringBuilder: void <init>()>();
+
+        $r6 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        $r9 = interfaceinvoke $r6.<android.database.Cursor: java.lang.String getString(int)>(2);
+
+        $r8 = virtualinvoke $r17.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r9);
+
+        $r9 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke r7.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("system_id", $r9);
+
+        $r17 = new java.lang.StringBuilder;
+
+        specialinvoke $r17.<java.lang.StringBuilder: void <init>()>();
+
+        $r6 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        $r9 = interfaceinvoke $r6.<android.database.Cursor: java.lang.String getString(int)>(3);
+
+        $r8 = virtualinvoke $r17.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r9);
+
+        $r9 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke r7.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("group_name", $r9);
+
+        $r6 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        $l1 = interfaceinvoke $r6.<android.database.Cursor: long getLong(int)>(0);
+
+        virtualinvoke r7.<android.content.Intent: android.content.Intent putExtra(java.lang.String,long)>("group_id", $l1);
+
+        $r17 = new java.lang.StringBuilder;
+
+        specialinvoke $r17.<java.lang.StringBuilder: void <init>()>();
+
+        $r6 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        $r10 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        i0 = interfaceinvoke $r10.<android.database.Cursor: int getColumnIndex(java.lang.String)>("_id");
+
+        $r9 = interfaceinvoke $r6.<android.database.Cursor: java.lang.String getString(int)>(i0);
+
+        $r8 = virtualinvoke $r17.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r9);
+
+        $r9 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("GroupSmsActivity", $r9);
+
+        $r17 = new java.lang.StringBuilder;
+
+        specialinvoke $r17.<java.lang.StringBuilder: void <init>()>();
+
+        $r6 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        $r10 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        i0 = interfaceinvoke $r10.<android.database.Cursor: int getColumnIndex(java.lang.String)>("sourceid");
+
+        $r9 = interfaceinvoke $r6.<android.database.Cursor: java.lang.String getString(int)>(i0);
+
+        $r8 = virtualinvoke $r17.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r9);
+
+        $r9 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("GroupSmsActivity", $r9);
+
+        $r17 = new java.lang.StringBuilder;
+
+        specialinvoke $r17.<java.lang.StringBuilder: void <init>()>();
+
+        $r6 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        $r10 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        i0 = interfaceinvoke $r10.<android.database.Cursor: int getColumnIndex(java.lang.String)>("system_id");
+
+        $r9 = interfaceinvoke $r6.<android.database.Cursor: java.lang.String getString(int)>(i0);
+
+        $r8 = virtualinvoke $r17.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r9);
+
+        $r9 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("GroupSmsActivity", $r9);
+
+        $r17 = new java.lang.StringBuilder;
+
+        specialinvoke $r17.<java.lang.StringBuilder: void <init>()>();
+
+        $r6 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        $r10 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        i0 = interfaceinvoke $r10.<android.database.Cursor: int getColumnIndex(java.lang.String)>("title");
+
+        $r9 = interfaceinvoke $r6.<android.database.Cursor: java.lang.String getString(int)>(i0);
+
+        $r8 = virtualinvoke $r17.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r9);
+
+        $r9 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("GroupSmsActivity", $r9);
+
+        virtualinvoke r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: void startActivity(android.content.Intent)>(r7);
+
+        goto label1;
+
+     label6:
+        $r16 = new android.content.Intent;
+
+        r7 = $r16;
+
+        specialinvoke $r16.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>(r0, class "Lcom/shwy/bestjoy/groupsms/MyEditGroupActivity;");
+
+        goto label5;
+    }
+
+    public void onCreate(android.os.Bundle)
+    {
+        android.widget.ImageButton $r5;
+        android.os.Bundle $r1;
+        com.shwy.bestjoy.groupsms.GroupSmsActivity r0;
+        android.view.View $r2;
+        android.widget.ListView $r3;
+        android.widget.EditText $r4;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.GroupSmsActivity;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("GroupSmsActivity", "onCreate");
+
+        specialinvoke r0.<android.app.Activity: void onCreate(android.os.Bundle)>($r1);
+
+        virtualinvoke r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: void setContentView(int)>(2130903056);
+
+        $r2 = virtualinvoke r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.view.View findViewById(int)>(2131492992);
+
+        $r3 = (android.widget.ListView) $r2;
+
+        r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.widget.ListView mGroupsList> = $r3;
+
+        $r2 = virtualinvoke r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.view.View findViewById(int)>(2131492988);
+
+        r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.view.View mAddGroupArea> = $r2;
+
+        $r2 = virtualinvoke r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.view.View findViewById(int)>(2131492989);
+
+        $r4 = (android.widget.EditText) $r2;
+
+        r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.widget.EditText mGroupName> = $r4;
+
+        $r2 = virtualinvoke r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.view.View findViewById(int)>(2131492991);
+
+        virtualinvoke $r2.<android.view.View: void setOnClickListener(android.view.View$OnClickListener)>(r0);
+
+        $r2 = virtualinvoke r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.view.View findViewById(int)>(2131492990);
+
+        virtualinvoke $r2.<android.view.View: void setOnClickListener(android.view.View$OnClickListener)>(r0);
+
+        $r3 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.widget.ListView mGroupsList>;
+
+        virtualinvoke $r3.<android.widget.ListView: void setOnItemClickListener(android.widget.AdapterView$OnItemClickListener)>(r0);
+
+        $r2 = virtualinvoke r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.view.View findViewById(int)>(2131492987);
+
+        $r5 = (android.widget.ImageButton) $r2;
+
+        r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.widget.ImageButton mAddGroup> = $r5;
+
+        $r5 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.widget.ImageButton mAddGroup>;
+
+        virtualinvoke $r5.<android.widget.ImageButton: void setOnClickListener(android.view.View$OnClickListener)>(r0);
+
+        $r3 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.widget.ListView mGroupsList>;
+
+        virtualinvoke r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: void registerForContextMenu(android.view.View)>($r3);
+
+        return;
+    }
+
+    public void onCreateContextMenu(android.view.ContextMenu, android.view.View, android.view.ContextMenu$ContextMenuInfo)
+    {
+        android.view.ContextMenu $r1;
+        com.shwy.bestjoy.groupsms.GroupSmsActivity r0;
+        int $i0;
+        android.view.View $r2;
+        java.lang.StringBuilder $r5;
+        android.widget.AdapterView$AdapterContextMenuInfo $r4;
+        java.lang.String $r6;
+        android.view.ContextMenu$ContextMenuInfo $r3;
+        android.database.Cursor $r7;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.GroupSmsActivity;
+
+        $r1 := @parameter0: android.view.ContextMenu;
+
+        $r2 := @parameter1: android.view.View;
+
+        $r3 := @parameter2: android.view.ContextMenu$ContextMenuInfo;
+
+        specialinvoke r0.<android.app.Activity: void onCreateContextMenu(android.view.ContextMenu,android.view.View,android.view.ContextMenu$ContextMenuInfo)>($r1, $r2, $r3);
+
+        $r4 = (android.widget.AdapterView$AdapterContextMenuInfo) $r3;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $i0 = $r4.<android.widget.AdapterView$AdapterContextMenuInfo: int position>;
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("GroupSmsActivity", $r6);
+
+        $r7 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        $i0 = $r4.<android.widget.AdapterView$AdapterContextMenuInfo: int position>;
+
+        interfaceinvoke $r7.<android.database.Cursor: boolean moveToPosition(int)>($i0);
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r7 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        $r6 = interfaceinvoke $r7.<android.database.Cursor: java.lang.String getString(int)>(1);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("GroupSmsActivity", $r6);
+
+        $r7 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        $r6 = interfaceinvoke $r7.<android.database.Cursor: java.lang.String getString(int)>(1);
+
+        if $r6 != null goto label1;
+
+        interfaceinvoke $r1.<android.view.ContextMenu: android.view.MenuItem add(int,int,int,int)>(0, 10000, 0, 2131165286);
+
+        interfaceinvoke $r1.<android.view.ContextMenu: android.view.MenuItem add(int,int,int,int)>(0, 10001, 0, 2131165287);
+
+        return;
+
+     label1:
+        interfaceinvoke $r1.<android.view.ContextMenu: android.view.MenuItem add(int,int,int,int)>(0, 10002, 0, 2131165288);
+
+        return;
+    }
+
+    public android.app.Dialog onCreateDialog(int)
+    {
+        int $i0;
+        com.shwy.bestjoy.groupsms.GroupSmsActivity r0;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.GroupSmsActivity;
+
+        $i0 := @parameter0: int;
+
+        return null;
+    }
+
+    public void onDestroy()
+    {
+        com.shwy.bestjoy.groupsms.GroupSmsActivity r0;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.GroupSmsActivity;
+
+        specialinvoke r0.<android.app.Activity: void onDestroy()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("GroupSmsActivity", "onDestroy");
+
+        return;
+    }
+
+    public void onItemClick(android.widget.AdapterView, android.view.View, int, long)
+    {
+        com.shwy.bestjoy.groupsms.GroupSmsActivity r0;
+        long $l1;
+        android.content.Intent r6;
+        int $i0, $i2;
+        android.view.View $r2;
+        java.lang.StringBuilder $r7;
+        android.widget.AdapterView r1;
+        java.lang.String $r5, $r8;
+        android.database.Cursor $r3, $r4;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.GroupSmsActivity;
+
+        r1 := @parameter0: android.widget.AdapterView;
+
+        $r2 := @parameter1: android.view.View;
+
+        $i0 := @parameter2: int;
+
+        $l1 := @parameter3: long;
+
+        $r3 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        interfaceinvoke $r3.<android.database.Cursor: boolean moveToPosition(int)>($i0);
+
+        $r3 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        $r4 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        $i0 = interfaceinvoke $r4.<android.database.Cursor: int getColumnIndex(java.lang.String)>("summ_count");
+
+        $i0 = interfaceinvoke $r3.<android.database.Cursor: int getInt(int)>($i0);
+
+        $r3 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        $r4 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        $i2 = interfaceinvoke $r4.<android.database.Cursor: int getColumnIndex(java.lang.String)>("title");
+
+        $r5 = interfaceinvoke $r3.<android.database.Cursor: java.lang.String getString(int)>($i2);
+
+        if $i0 == 0 goto label2;
+
+        r6 = new android.content.Intent;
+
+        specialinvoke r6.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>(r0, class "Lcom/shwy/bestjoy/groupsms/MyGroupActivity;");
+
+     label1:
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        $r4 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        $i0 = interfaceinvoke $r4.<android.database.Cursor: int getColumnIndex(java.lang.String)>("system_id");
+
+        $r8 = interfaceinvoke $r3.<android.database.Cursor: java.lang.String getString(int)>($i0);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r8 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke r6.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("system_id", $r8);
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>()>();
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke r6.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("group_name", $r5);
+
+        virtualinvoke r6.<android.content.Intent: android.content.Intent putExtra(java.lang.String,long)>("group_id", $l1);
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        $r4 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        $i0 = interfaceinvoke $r4.<android.database.Cursor: int getColumnIndex(java.lang.String)>("_id");
+
+        $r5 = interfaceinvoke $r3.<android.database.Cursor: java.lang.String getString(int)>($i0);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("GroupSmsActivity", $r5);
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        $r4 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        $i0 = interfaceinvoke $r4.<android.database.Cursor: int getColumnIndex(java.lang.String)>("sourceid");
+
+        $r5 = interfaceinvoke $r3.<android.database.Cursor: java.lang.String getString(int)>($i0);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("GroupSmsActivity", $r5);
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        $r4 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        $i0 = interfaceinvoke $r4.<android.database.Cursor: int getColumnIndex(java.lang.String)>("system_id");
+
+        $r5 = interfaceinvoke $r3.<android.database.Cursor: java.lang.String getString(int)>($i0);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("GroupSmsActivity", $r5);
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        $r4 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        $i0 = interfaceinvoke $r4.<android.database.Cursor: int getColumnIndex(java.lang.String)>("title");
+
+        $r5 = interfaceinvoke $r3.<android.database.Cursor: java.lang.String getString(int)>($i0);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("GroupSmsActivity", $r5);
+
+        virtualinvoke r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: void startActivity(android.content.Intent)>(r6);
+
+        return;
+
+     label2:
+        r6 = new android.content.Intent;
+
+        specialinvoke r6.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>(r0, class "Lcom/shwy/bestjoy/groupsms/MyEditGroupActivity;");
+
+        goto label1;
+    }
+
+    public boolean onItemLongClick(android.widget.AdapterView, android.view.View, int, long)
+    {
+        com.shwy.bestjoy.groupsms.GroupSmsActivity r0;
+        int $i0;
+        android.view.View $r2;
+        long $l1;
+        android.widget.AdapterView r1;
+        android.database.Cursor $r3;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.GroupSmsActivity;
+
+        r1 := @parameter0: android.widget.AdapterView;
+
+        $r2 := @parameter1: android.view.View;
+
+        $i0 := @parameter2: int;
+
+        $l1 := @parameter3: long;
+
+        $r3 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        interfaceinvoke $r3.<android.database.Cursor: boolean moveToPosition(int)>($i0);
+
+        $r3 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        interfaceinvoke $r3.<android.database.Cursor: java.lang.String getString(int)>(1);
+
+        return 0;
+    }
+
+    public void onPause()
+    {
+        com.shwy.bestjoy.groupsms.GroupSmsActivity r0;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.GroupSmsActivity;
+
+        specialinvoke r0.<android.app.Activity: void onPause()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("GroupSmsActivity", "onPause");
+
+        return;
+    }
+
+    public void onResume()
+    {
+        int[] $r3;
+        com.shwy.bestjoy.groupsms.GroupSmsActivity r0;
+        java.lang.String[] $r2;
+        android.widget.SimpleCursorAdapter $r5;
+        android.widget.ListView $r4;
+        android.database.Cursor $r1;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.GroupSmsActivity;
+
+        specialinvoke r0.<android.app.Activity: void onResume()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("GroupSmsActivity", "onResume");
+
+        specialinvoke r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: void getGroups()>();
+
+        $r4 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.widget.ListView mGroupsList>;
+
+        $r5 = new android.widget.SimpleCursorAdapter;
+
+        $r1 = r0.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.database.Cursor mGroupsCursor>;
+
+        $r2 = <com.shwy.bestjoy.groupsms.GroupSmsActivity: java.lang.String[] FROM>;
+
+        $r3 = <com.shwy.bestjoy.groupsms.GroupSmsActivity: int[] TO>;
+
+        specialinvoke $r5.<android.widget.SimpleCursorAdapter: void <init>(android.content.Context,int,android.database.Cursor,java.lang.String[],int[])>(r0, 2130903058, $r1, $r2, $r3);
+
+        virtualinvoke $r4.<android.widget.ListView: void setAdapter(android.widget.ListAdapter)>($r5);
+
+        return;
+    }
+
+    public void onStop()
+    {
+        com.shwy.bestjoy.groupsms.GroupSmsActivity r0;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.GroupSmsActivity;
+
+        specialinvoke r0.<android.app.Activity: void onStop()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("GroupSmsActivity", "onStop");
+
+        return;
+    }
+
+    public android.content.Intent getIntent()
+    {
+        android.content.Intent $r0;
+        com.shwy.bestjoy.groupsms.GroupSmsActivity this;
+
+        this := @this: com.shwy.bestjoy.groupsms.GroupSmsActivity;
+
+        $r0 = this.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.content.Intent ipcIntent>;
+
+        return $r0;
+    }
+
+    public void setIntent(android.content.Intent)
+    {
+        android.content.Intent parameter0;
+        com.shwy.bestjoy.groupsms.GroupSmsActivity this;
+
+        this := @this: com.shwy.bestjoy.groupsms.GroupSmsActivity;
+
+        parameter0 := @parameter0: android.content.Intent;
+
+        this.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.content.Intent ipcIntent> = parameter0;
+
+        return;
+    }
+
+    public void setResult(int, android.content.Intent)
+    {
+        int parameter0;
+        android.content.Intent parameter1;
+        com.shwy.bestjoy.groupsms.GroupSmsActivity this;
+
+        this := @this: com.shwy.bestjoy.groupsms.GroupSmsActivity;
+
+        parameter0 := @parameter0: int;
+
+        parameter1 := @parameter1: android.content.Intent;
+
+        this.<com.shwy.bestjoy.groupsms.GroupSmsActivity: android.content.Intent ipcResultIntent> = parameter1;
+
+        return;
+    }
+}

@@ -1,0 +1,1324 @@
+public class com.conradcaine.fairsandevents.Map extends android.app.Activity
+{
+    private final int BOOTH;
+    private final java.lang.String ENCODING;
+    private final java.lang.String FILENAME;
+    private final java.lang.String MIME_TYPE;
+    private final java.lang.String PATH;
+    private final int TOPIC;
+    private final int VIDEO;
+    private boolean allowGPSLocation;
+    private java.lang.String allow_gps;
+    private android.widget.ImageView back_button;
+    private android.os.Bundle bundle;
+    private int currentBoothId;
+    private int currentFairId;
+    private android.app.ProgressDialog downloadingImagesDialog;
+    private com.conradcaine.fairsandevents.GPSAlert gpsAlert;
+    boolean gps_alert_disable;
+    private android.widget.ImageView information;
+    private boolean isLoading;
+    private java.lang.String jsonToLoadPage;
+    private boolean loadPageEnds;
+    private boolean loadingCanceled;
+    private android.location.LocationManager locationManager;
+    private android.widget.ImageView mainVideo;
+    private android.widget.TextView mapName;
+    private android.widget.TextView mapTitle;
+    private com.conradcaine.fairsandevents.util.GPSLocation myLocation;
+    private boolean runningThreadThatWaitPageLoad;
+    private android.widget.ImageView top_button;
+    private com.conradcaine.fairsandevents.data.TopicData topic;
+    private boolean topicComesFromBooth;
+    private com.conradcaine.fairsandevents.Map$WaitingPageLoad waitingPageLoad;
+    private com.conradcaine.fairsandevents.MapWebView webView;
+    private android.widget.ZoomControls zoom;
+    private boolean zoomControlsVisible;
+    public android.content.Intent ipcIntent;
+    public android.content.Intent ipcResultIntent;
+
+    public void <init>()
+    {
+        com.conradcaine.fairsandevents.Map r0;
+
+        r0 := @this: com.conradcaine.fairsandevents.Map;
+
+        specialinvoke r0.<android.app.Activity: void <init>()>();
+
+        r0.<com.conradcaine.fairsandevents.Map: boolean allowGPSLocation> = 0;
+
+        r0.<com.conradcaine.fairsandevents.Map: boolean gps_alert_disable> = 1;
+
+        r0.<com.conradcaine.fairsandevents.Map: java.lang.String allow_gps> = "";
+
+        r0.<com.conradcaine.fairsandevents.Map: boolean zoomControlsVisible> = 1;
+
+        r0.<com.conradcaine.fairsandevents.Map: boolean loadingCanceled> = 0;
+
+        r0.<com.conradcaine.fairsandevents.Map: boolean isLoading> = 0;
+
+        r0.<com.conradcaine.fairsandevents.Map: boolean loadPageEnds> = 0;
+
+        r0.<com.conradcaine.fairsandevents.Map: boolean runningThreadThatWaitPageLoad> = 0;
+
+        r0.<com.conradcaine.fairsandevents.Map: java.lang.String PATH> = "file:///android_asset/";
+
+        r0.<com.conradcaine.fairsandevents.Map: java.lang.String FILENAME> = "map/index.html";
+
+        r0.<com.conradcaine.fairsandevents.Map: java.lang.String MIME_TYPE> = "text/html";
+
+        r0.<com.conradcaine.fairsandevents.Map: java.lang.String ENCODING> = "utf-8";
+
+        r0.<com.conradcaine.fairsandevents.Map: int BOOTH> = 0;
+
+        r0.<com.conradcaine.fairsandevents.Map: int TOPIC> = 1;
+
+        r0.<com.conradcaine.fairsandevents.Map: int VIDEO> = 2;
+
+        r0.<com.conradcaine.fairsandevents.Map: boolean topicComesFromBooth> = 0;
+
+        r0.<com.conradcaine.fairsandevents.Map: java.lang.String jsonToLoadPage> = "";
+
+        return;
+    }
+
+    static com.conradcaine.fairsandevents.MapWebView access$0(com.conradcaine.fairsandevents.Map)
+    {
+        com.conradcaine.fairsandevents.Map $r0;
+        com.conradcaine.fairsandevents.MapWebView r1;
+
+        $r0 := @parameter0: com.conradcaine.fairsandevents.Map;
+
+        r1 = $r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.MapWebView webView>;
+
+        return r1;
+    }
+
+    static void access$1(com.conradcaine.fairsandevents.Map, com.conradcaine.fairsandevents.data.TopicData)
+    {
+        com.conradcaine.fairsandevents.Map $r0;
+        com.conradcaine.fairsandevents.data.TopicData $r1;
+
+        $r0 := @parameter0: com.conradcaine.fairsandevents.Map;
+
+        $r1 := @parameter1: com.conradcaine.fairsandevents.data.TopicData;
+
+        $r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.data.TopicData topic> = $r1;
+
+        return;
+    }
+
+    static int access$10(com.conradcaine.fairsandevents.Map)
+    {
+        com.conradcaine.fairsandevents.Map $r0;
+        int i0;
+
+        $r0 := @parameter0: com.conradcaine.fairsandevents.Map;
+
+        i0 = $r0.<com.conradcaine.fairsandevents.Map: int currentBoothId>;
+
+        return i0;
+    }
+
+    static void access$11(com.conradcaine.fairsandevents.Map, boolean)
+    {
+        com.conradcaine.fairsandevents.Map $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: com.conradcaine.fairsandevents.Map;
+
+        $z0 := @parameter1: boolean;
+
+        $r0.<com.conradcaine.fairsandevents.Map: boolean runningThreadThatWaitPageLoad> = $z0;
+
+        return;
+    }
+
+    static boolean access$12(com.conradcaine.fairsandevents.Map)
+    {
+        com.conradcaine.fairsandevents.Map $r0;
+        boolean z0;
+
+        $r0 := @parameter0: com.conradcaine.fairsandevents.Map;
+
+        z0 = $r0.<com.conradcaine.fairsandevents.Map: boolean loadPageEnds>;
+
+        return z0;
+    }
+
+    static void access$2(com.conradcaine.fairsandevents.Map, boolean)
+    {
+        com.conradcaine.fairsandevents.Map $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: com.conradcaine.fairsandevents.Map;
+
+        $z0 := @parameter1: boolean;
+
+        $r0.<com.conradcaine.fairsandevents.Map: boolean topicComesFromBooth> = $z0;
+
+        return;
+    }
+
+    static android.app.ProgressDialog access$3(com.conradcaine.fairsandevents.Map)
+    {
+        com.conradcaine.fairsandevents.Map $r0;
+        android.app.ProgressDialog r1;
+
+        $r0 := @parameter0: com.conradcaine.fairsandevents.Map;
+
+        r1 = $r0.<com.conradcaine.fairsandevents.Map: android.app.ProgressDialog downloadingImagesDialog>;
+
+        return r1;
+    }
+
+    static void access$4(com.conradcaine.fairsandevents.Map, boolean)
+    {
+        com.conradcaine.fairsandevents.Map $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: com.conradcaine.fairsandevents.Map;
+
+        $z0 := @parameter1: boolean;
+
+        $r0.<com.conradcaine.fairsandevents.Map: boolean isLoading> = $z0;
+
+        return;
+    }
+
+    static java.lang.String access$5(com.conradcaine.fairsandevents.Map)
+    {
+        com.conradcaine.fairsandevents.Map $r0;
+        java.lang.String r1;
+
+        $r0 := @parameter0: com.conradcaine.fairsandevents.Map;
+
+        r1 = $r0.<com.conradcaine.fairsandevents.Map: java.lang.String jsonToLoadPage>;
+
+        return r1;
+    }
+
+    static void access$6(com.conradcaine.fairsandevents.Map, boolean)
+    {
+        com.conradcaine.fairsandevents.Map $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: com.conradcaine.fairsandevents.Map;
+
+        $z0 := @parameter1: boolean;
+
+        $r0.<com.conradcaine.fairsandevents.Map: boolean loadPageEnds> = $z0;
+
+        return;
+    }
+
+    static com.conradcaine.fairsandevents.data.TopicData access$7(com.conradcaine.fairsandevents.Map)
+    {
+        com.conradcaine.fairsandevents.Map $r0;
+        com.conradcaine.fairsandevents.data.TopicData r1;
+
+        $r0 := @parameter0: com.conradcaine.fairsandevents.Map;
+
+        r1 = $r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.data.TopicData topic>;
+
+        return r1;
+    }
+
+    static boolean access$8(com.conradcaine.fairsandevents.Map)
+    {
+        com.conradcaine.fairsandevents.Map $r0;
+        boolean z0;
+
+        $r0 := @parameter0: com.conradcaine.fairsandevents.Map;
+
+        z0 = $r0.<com.conradcaine.fairsandevents.Map: boolean topicComesFromBooth>;
+
+        return z0;
+    }
+
+    static int access$9(com.conradcaine.fairsandevents.Map)
+    {
+        com.conradcaine.fairsandevents.Map $r0;
+        int i0;
+
+        $r0 := @parameter0: com.conradcaine.fairsandevents.Map;
+
+        i0 = $r0.<com.conradcaine.fairsandevents.Map: int currentFairId>;
+
+        return i0;
+    }
+
+    private void loadGPSPreferences()
+    {
+        android.content.Context $r1;
+        com.conradcaine.fairsandevents.MapWebView $r6;
+        com.conradcaine.fairsandevents.Map r0;
+        android.content.SharedPreferences $r2;
+        int $i0;
+        java.lang.Boolean $r5;
+        java.lang.String $r3;
+        com.conradcaine.fairsandevents.util.GPSLocation $r4;
+        android.location.LocationManager $r7;
+        boolean $z0;
+
+        r0 := @this: com.conradcaine.fairsandevents.Map;
+
+        $r1 = virtualinvoke r0.<com.conradcaine.fairsandevents.Map: android.content.Context getBaseContext()>();
+
+        $r2 = staticinvoke <android.preference.PreferenceManager: android.content.SharedPreferences getDefaultSharedPreferences(android.content.Context)>($r1);
+
+        $z0 = interfaceinvoke $r2.<android.content.SharedPreferences: boolean getBoolean(java.lang.String,boolean)>("display", 0);
+
+        r0.<com.conradcaine.fairsandevents.Map: boolean gps_alert_disable> = $z0;
+
+        $r3 = interfaceinvoke $r2.<android.content.SharedPreferences: java.lang.String getString(java.lang.String,java.lang.String)>("option", "-1");
+
+        r0.<com.conradcaine.fairsandevents.Map: java.lang.String allow_gps> = $r3;
+
+        $z0 = r0.<com.conradcaine.fairsandevents.Map: boolean gps_alert_disable>;
+
+        if $z0 == 0 goto label1;
+
+        $r3 = r0.<com.conradcaine.fairsandevents.Map: java.lang.String allow_gps>;
+
+        $z0 = virtualinvoke $r3.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("allow");
+
+        if $z0 == 0 goto label1;
+
+        specialinvoke r0.<com.conradcaine.fairsandevents.Map: void registerAsLocationListener()>();
+
+        $r4 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.util.GPSLocation myLocation>;
+
+        $r5 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(1);
+
+        virtualinvoke $r4.<com.conradcaine.fairsandevents.util.GPSLocation: void setRunning(java.lang.Boolean)>($r5);
+
+        $r4 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.util.GPSLocation myLocation>;
+
+        $r6 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.MapWebView webView>;
+
+        virtualinvoke $r4.<com.conradcaine.fairsandevents.util.GPSLocation: void setWebView(android.webkit.WebView)>($r6);
+
+        $r4 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.util.GPSLocation myLocation>;
+
+        $i0 = r0.<com.conradcaine.fairsandevents.Map: int currentFairId>;
+
+        virtualinvoke $r4.<com.conradcaine.fairsandevents.util.GPSLocation: void setCurrentFairId(int)>($i0);
+
+        return;
+
+     label1:
+        $z0 = r0.<com.conradcaine.fairsandevents.Map: boolean gps_alert_disable>;
+
+        if $z0 == 0 goto label3;
+
+        $r3 = r0.<com.conradcaine.fairsandevents.Map: java.lang.String allow_gps>;
+
+        $z0 = virtualinvoke $r3.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("allow");
+
+        if $z0 != 0 goto label3;
+
+        $r4 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.util.GPSLocation myLocation>;
+
+        $z0 = virtualinvoke $r4.<com.conradcaine.fairsandevents.util.GPSLocation: boolean isRunning()>();
+
+        if $z0 == 0 goto label2;
+
+        $r7 = r0.<com.conradcaine.fairsandevents.Map: android.location.LocationManager locationManager>;
+
+        $r4 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.util.GPSLocation myLocation>;
+
+        virtualinvoke $r7.<android.location.LocationManager: void removeUpdates(android.location.LocationListener)>($r4);
+
+     label2:
+        $r4 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.util.GPSLocation myLocation>;
+
+        $r5 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(0);
+
+        virtualinvoke $r4.<com.conradcaine.fairsandevents.util.GPSLocation: void setRunning(java.lang.Boolean)>($r5);
+
+     label3:
+        return;
+    }
+
+    private void registerAsLocationListener()
+    {
+        com.conradcaine.fairsandevents.Map r0;
+        android.location.LocationProvider $r3;
+        android.widget.Toast $r4;
+        com.conradcaine.fairsandevents.util.GPSLocation $r1;
+        android.location.LocationManager $r2;
+
+        r0 := @this: com.conradcaine.fairsandevents.Map;
+
+        $r2 = r0.<com.conradcaine.fairsandevents.Map: android.location.LocationManager locationManager>;
+
+        $r3 = virtualinvoke $r2.<android.location.LocationManager: android.location.LocationProvider getProvider(java.lang.String)>("gps");
+
+        if $r3 != null goto label1;
+
+        $r4 = staticinvoke <android.widget.Toast: android.widget.Toast makeText(android.content.Context,java.lang.CharSequence,int)>(r0, "Unable to access GPS.", 0);
+
+        virtualinvoke $r4.<android.widget.Toast: void show()>();
+
+        r0.<com.conradcaine.fairsandevents.Map: boolean allowGPSLocation> = 0;
+
+        return;
+
+     label1:
+        r0.<com.conradcaine.fairsandevents.Map: boolean allowGPSLocation> = 1;
+
+        $r2 = r0.<com.conradcaine.fairsandevents.Map: android.location.LocationManager locationManager>;
+
+        $r1 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.util.GPSLocation myLocation>;
+
+        virtualinvoke $r2.<android.location.LocationManager: void requestLocationUpdates(java.lang.String,long,float,android.location.LocationListener)>("gps", 0L, 0.0F, $r1);
+
+        return;
+    }
+
+    public void cancelLoading()
+    {
+        com.conradcaine.fairsandevents.Map r0;
+        android.app.ProgressDialog $r1;
+
+        r0 := @this: com.conradcaine.fairsandevents.Map;
+
+        r0.<com.conradcaine.fairsandevents.Map: boolean isLoading> = 0;
+
+        <com.conradcaine.fairsandevents.data.Constants: boolean needsToRestartLoding> = 0;
+
+        $r1 = r0.<com.conradcaine.fairsandevents.Map: android.app.ProgressDialog downloadingImagesDialog>;
+
+        virtualinvoke $r1.<android.app.ProgressDialog: void cancel()>();
+
+        return;
+    }
+
+    public void onBackPressed()
+    {
+        com.conradcaine.fairsandevents.Map r0;
+        int $i0;
+        android.widget.ImageView $r1;
+
+        r0 := @this: com.conradcaine.fairsandevents.Map;
+
+        $i0 = r0.<com.conradcaine.fairsandevents.Map: int currentBoothId>;
+
+        if $i0 != 0 goto label2;
+
+        $r1 = r0.<com.conradcaine.fairsandevents.Map: android.widget.ImageView back_button>;
+
+        virtualinvoke $r1.<android.widget.ImageView: void setImageResource(int)>(2130837594);
+
+     label1:
+        virtualinvoke r0.<com.conradcaine.fairsandevents.Map: void finish()>();
+
+        return;
+
+     label2:
+        $r1 = r0.<com.conradcaine.fairsandevents.Map: android.widget.ImageView back_button>;
+
+        virtualinvoke $r1.<android.widget.ImageView: void setImageResource(int)>(2130837580);
+
+        goto label1;
+    }
+
+    public void onConfigurationChanged(android.content.res.Configuration)
+    {
+        com.conradcaine.fairsandevents.Map r0;
+        android.content.res.Configuration $r1;
+
+        r0 := @this: com.conradcaine.fairsandevents.Map;
+
+        $r1 := @parameter0: android.content.res.Configuration;
+
+        specialinvoke r0.<android.app.Activity: void onConfigurationChanged(android.content.res.Configuration)>($r1);
+
+        return;
+    }
+
+    protected void onCreate(android.os.Bundle)
+    {
+        com.conradcaine.fairsandevents.Map$1 $r13;
+        com.conradcaine.fairsandevents.Map$2 $r14;
+        com.conradcaine.fairsandevents.Map$3 $r25;
+        android.os.Bundle $r1;
+        com.conradcaine.fairsandevents.Map$4 $r28;
+        android.widget.ZoomControls $r5;
+        com.conradcaine.fairsandevents.Map$5 $r29;
+        com.conradcaine.fairsandevents.Map$6 $r22;
+        android.content.pm.PackageManager $r24;
+        com.conradcaine.fairsandevents.Map$7 $r23;
+        android.widget.ImageView $r4;
+        com.conradcaine.fairsandevents.MapWebView $r2;
+        android.view.View $r3;
+        com.conradcaine.fairsandevents.data.BoothData $r18;
+        boolean $z0;
+        com.conradcaine.fairsandevents.data.FairsDataManager $r16;
+        android.widget.TextView $r6;
+        com.conradcaine.fairsandevents.data.FairData $r17;
+        java.lang.StringBuilder $r15;
+        android.location.LocationManager $r11;
+        com.conradcaine.fairsandevents.Map$MyWebChromeClient $r21;
+        android.content.Intent $r12;
+        com.conradcaine.fairsandevents.Map r0;
+        android.webkit.WebSettings $r19;
+        int $i0;
+        java.lang.String $r8;
+        com.conradcaine.fairsandevents.util.GPSLocation $r9;
+        com.conradcaine.fairsandevents.GPSAlert $r26;
+        android.app.ProgressDialog $r7;
+        com.conradcaine.fairsandevents.Map$JavascriptBridge $r20;
+        java.lang.Object $r10;
+        android.content.res.Resources $r27;
+
+        r0 := @this: com.conradcaine.fairsandevents.Map;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke r0.<android.app.Activity: void onCreate(android.os.Bundle)>($r1);
+
+        virtualinvoke r0.<com.conradcaine.fairsandevents.Map: void setContentView(int)>(2130903056);
+
+        $r3 = virtualinvoke r0.<com.conradcaine.fairsandevents.Map: android.view.View findViewById(int)>(2131492931);
+
+        $r4 = (android.widget.ImageView) $r3;
+
+        r0.<com.conradcaine.fairsandevents.Map: android.widget.ImageView top_button> = $r4;
+
+        $r3 = virtualinvoke r0.<com.conradcaine.fairsandevents.Map: android.view.View findViewById(int)>(2131492929);
+
+        $r4 = (android.widget.ImageView) $r3;
+
+        r0.<com.conradcaine.fairsandevents.Map: android.widget.ImageView back_button> = $r4;
+
+        $r3 = virtualinvoke r0.<com.conradcaine.fairsandevents.Map: android.view.View findViewById(int)>(2131492934);
+
+        $r5 = (android.widget.ZoomControls) $r3;
+
+        r0.<com.conradcaine.fairsandevents.Map: android.widget.ZoomControls zoom> = $r5;
+
+        $r3 = virtualinvoke r0.<com.conradcaine.fairsandevents.Map: android.view.View findViewById(int)>(2131492930);
+
+        $r6 = (android.widget.TextView) $r3;
+
+        r0.<com.conradcaine.fairsandevents.Map: android.widget.TextView mapTitle> = $r6;
+
+        $r3 = virtualinvoke r0.<com.conradcaine.fairsandevents.Map: android.view.View findViewById(int)>(2131492933);
+
+        $r2 = (com.conradcaine.fairsandevents.MapWebView) $r3;
+
+        r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.MapWebView webView> = $r2;
+
+        $r3 = virtualinvoke r0.<com.conradcaine.fairsandevents.Map: android.view.View findViewById(int)>(2131492934);
+
+        $r5 = (android.widget.ZoomControls) $r3;
+
+        r0.<com.conradcaine.fairsandevents.Map: android.widget.ZoomControls zoom> = $r5;
+
+        $r3 = virtualinvoke r0.<com.conradcaine.fairsandevents.Map: android.view.View findViewById(int)>(2131492932);
+
+        $r6 = (android.widget.TextView) $r3;
+
+        r0.<com.conradcaine.fairsandevents.Map: android.widget.TextView mapName> = $r6;
+
+        $r3 = virtualinvoke r0.<com.conradcaine.fairsandevents.Map: android.view.View findViewById(int)>(2131492935);
+
+        $r4 = (android.widget.ImageView) $r3;
+
+        r0.<com.conradcaine.fairsandevents.Map: android.widget.ImageView mainVideo> = $r4;
+
+        $r7 = new android.app.ProgressDialog;
+
+        specialinvoke $r7.<android.app.ProgressDialog: void <init>(android.content.Context)>(r0);
+
+        r0.<com.conradcaine.fairsandevents.Map: android.app.ProgressDialog downloadingImagesDialog> = $r7;
+
+        $r7 = r0.<com.conradcaine.fairsandevents.Map: android.app.ProgressDialog downloadingImagesDialog>;
+
+        $r8 = virtualinvoke r0.<com.conradcaine.fairsandevents.Map: java.lang.String getString(int)>(2131296256);
+
+        virtualinvoke $r7.<android.app.ProgressDialog: void setTitle(java.lang.CharSequence)>($r8);
+
+        $r7 = r0.<com.conradcaine.fairsandevents.Map: android.app.ProgressDialog downloadingImagesDialog>;
+
+        virtualinvoke $r7.<android.app.ProgressDialog: void setMessage(java.lang.CharSequence)>("Downloading");
+
+        $r7 = r0.<com.conradcaine.fairsandevents.Map: android.app.ProgressDialog downloadingImagesDialog>;
+
+        virtualinvoke $r7.<android.app.ProgressDialog: void setIndeterminate(boolean)>(1);
+
+        $r7 = r0.<com.conradcaine.fairsandevents.Map: android.app.ProgressDialog downloadingImagesDialog>;
+
+        virtualinvoke $r7.<android.app.ProgressDialog: void setCancelable(boolean)>(0);
+
+        $r7 = r0.<com.conradcaine.fairsandevents.Map: android.app.ProgressDialog downloadingImagesDialog>;
+
+        virtualinvoke $r7.<android.app.ProgressDialog: void setIcon(int)>(2130837567);
+
+        $z0 = <com.conradcaine.fairsandevents.data.Constants: boolean needsToRestartLoding>;
+
+        if $z0 == 0 goto label01;
+
+        $r7 = r0.<com.conradcaine.fairsandevents.Map: android.app.ProgressDialog downloadingImagesDialog>;
+
+        virtualinvoke $r7.<android.app.ProgressDialog: void show()>();
+
+        r0.<com.conradcaine.fairsandevents.Map: boolean isLoading> = 1;
+
+     label01:
+        $r9 = new com.conradcaine.fairsandevents.util.GPSLocation;
+
+        specialinvoke $r9.<com.conradcaine.fairsandevents.util.GPSLocation: void <init>()>();
+
+        r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.util.GPSLocation myLocation> = $r9;
+
+        $r10 = virtualinvoke r0.<com.conradcaine.fairsandevents.Map: java.lang.Object getSystemService(java.lang.String)>("location");
+
+        $r11 = (android.location.LocationManager) $r10;
+
+        r0.<com.conradcaine.fairsandevents.Map: android.location.LocationManager locationManager> = $r11;
+
+        $r12 = virtualinvoke r0.<com.conradcaine.fairsandevents.Map: android.content.Intent getIntent()>();
+
+        if $r12 == null goto label02;
+
+        $r1 = virtualinvoke $r12.<android.content.Intent: android.os.Bundle getExtras()>();
+
+        if $r1 == null goto label02;
+
+        $i0 = virtualinvoke $r1.<android.os.Bundle: int getInt(java.lang.String)>("current_fair_id");
+
+        r0.<com.conradcaine.fairsandevents.Map: int currentFairId> = $i0;
+
+        $i0 = virtualinvoke $r1.<android.os.Bundle: int getInt(java.lang.String)>("current_booth_id");
+
+        r0.<com.conradcaine.fairsandevents.Map: int currentBoothId> = $i0;
+
+     label02:
+        $i0 = r0.<com.conradcaine.fairsandevents.Map: int currentBoothId>;
+
+        if $i0 == 0 goto label07;
+
+        $r4 = r0.<com.conradcaine.fairsandevents.Map: android.widget.ImageView mainVideo>;
+
+        $i0 = virtualinvoke $r4.<android.widget.ImageView: int getVisibility()>();
+
+        if $i0 != 0 goto label03;
+
+        $r4 = r0.<com.conradcaine.fairsandevents.Map: android.widget.ImageView mainVideo>;
+
+        virtualinvoke $r4.<android.widget.ImageView: void setVisibility(int)>(8);
+
+     label03:
+        $r6 = r0.<com.conradcaine.fairsandevents.Map: android.widget.TextView mapTitle>;
+
+        virtualinvoke $r6.<android.widget.TextView: void setText(java.lang.CharSequence)>("Booth");
+
+        $r4 = r0.<com.conradcaine.fairsandevents.Map: android.widget.ImageView top_button>;
+
+        virtualinvoke $r4.<android.widget.ImageView: void setImageResource(int)>(2130837524);
+
+        $r4 = r0.<com.conradcaine.fairsandevents.Map: android.widget.ImageView top_button>;
+
+        $r13 = new com.conradcaine.fairsandevents.Map$1;
+
+        specialinvoke $r13.<com.conradcaine.fairsandevents.Map$1: void <init>(com.conradcaine.fairsandevents.Map)>(r0);
+
+        virtualinvoke $r4.<android.widget.ImageView: void setOnClickListener(android.view.View$OnClickListener)>($r13);
+
+        $r4 = r0.<com.conradcaine.fairsandevents.Map: android.widget.ImageView back_button>;
+
+        virtualinvoke $r4.<android.widget.ImageView: void setImageResource(int)>(2130837512);
+
+        $r4 = r0.<com.conradcaine.fairsandevents.Map: android.widget.ImageView back_button>;
+
+        $r14 = new com.conradcaine.fairsandevents.Map$2;
+
+        specialinvoke $r14.<com.conradcaine.fairsandevents.Map$2: void <init>(com.conradcaine.fairsandevents.Map)>(r0);
+
+        virtualinvoke $r4.<android.widget.ImageView: void setOnClickListener(android.view.View$OnClickListener)>($r14);
+
+        $r6 = r0.<com.conradcaine.fairsandevents.Map: android.widget.TextView mapName>;
+
+        $r15 = new java.lang.StringBuilder;
+
+        $r16 = staticinvoke <com.conradcaine.fairsandevents.data.FairsDataManager: com.conradcaine.fairsandevents.data.FairsDataManager getInstance()>();
+
+        $i0 = r0.<com.conradcaine.fairsandevents.Map: int currentFairId>;
+
+        $r17 = virtualinvoke $r16.<com.conradcaine.fairsandevents.data.FairsDataManager: com.conradcaine.fairsandevents.data.FairData getFair(int)>($i0);
+
+        $i0 = r0.<com.conradcaine.fairsandevents.Map: int currentBoothId>;
+
+        $r18 = virtualinvoke $r17.<com.conradcaine.fairsandevents.data.FairData: com.conradcaine.fairsandevents.data.BoothData getBooth(int)>($i0);
+
+        $r8 = virtualinvoke $r18.<com.conradcaine.fairsandevents.data.BoothData: java.lang.String getBoothName()>();
+
+        $r8 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r8);
+
+        specialinvoke $r15.<java.lang.StringBuilder: void <init>(java.lang.String)>($r8);
+
+        $r15 = virtualinvoke $r15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" ");
+
+        $r16 = staticinvoke <com.conradcaine.fairsandevents.data.FairsDataManager: com.conradcaine.fairsandevents.data.FairsDataManager getInstance()>();
+
+        $i0 = r0.<com.conradcaine.fairsandevents.Map: int currentFairId>;
+
+        $r17 = virtualinvoke $r16.<com.conradcaine.fairsandevents.data.FairsDataManager: com.conradcaine.fairsandevents.data.FairData getFair(int)>($i0);
+
+        $i0 = r0.<com.conradcaine.fairsandevents.Map: int currentBoothId>;
+
+        $r18 = virtualinvoke $r17.<com.conradcaine.fairsandevents.data.FairData: com.conradcaine.fairsandevents.data.BoothData getBooth(int)>($i0);
+
+        $r8 = virtualinvoke $r18.<com.conradcaine.fairsandevents.data.BoothData: java.lang.String getBoothPlace()>();
+
+        $r15 = virtualinvoke $r15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r15 = virtualinvoke $r15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" at ");
+
+        $r16 = staticinvoke <com.conradcaine.fairsandevents.data.FairsDataManager: com.conradcaine.fairsandevents.data.FairsDataManager getInstance()>();
+
+        $i0 = r0.<com.conradcaine.fairsandevents.Map: int currentFairId>;
+
+        $r17 = virtualinvoke $r16.<com.conradcaine.fairsandevents.data.FairsDataManager: com.conradcaine.fairsandevents.data.FairData getFair(int)>($i0);
+
+        $r8 = virtualinvoke $r17.<com.conradcaine.fairsandevents.data.FairData: java.lang.String getName()>();
+
+        $r15 = virtualinvoke $r15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r8 = virtualinvoke $r15.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r6.<android.widget.TextView: void setText(java.lang.CharSequence)>($r8);
+
+        $r6 = r0.<com.conradcaine.fairsandevents.Map: android.widget.TextView mapName>;
+
+        virtualinvoke $r6.<android.widget.TextView: void setVisibility(int)>(0);
+
+     label04:
+        $r2 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.MapWebView webView>;
+
+        $r19 = virtualinvoke $r2.<com.conradcaine.fairsandevents.MapWebView: android.webkit.WebSettings getSettings()>();
+
+        virtualinvoke $r19.<android.webkit.WebSettings: void setJavaScriptEnabled(boolean)>(1);
+
+        virtualinvoke $r19.<android.webkit.WebSettings: void setLightTouchEnabled(boolean)>(0);
+
+        virtualinvoke $r19.<android.webkit.WebSettings: void setUseWideViewPort(boolean)>(1);
+
+        virtualinvoke $r19.<android.webkit.WebSettings: void setCacheMode(int)>(2);
+
+        $r2 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.MapWebView webView>;
+
+        $r20 = new com.conradcaine.fairsandevents.Map$JavascriptBridge;
+
+        specialinvoke $r20.<com.conradcaine.fairsandevents.Map$JavascriptBridge: void <init>(com.conradcaine.fairsandevents.Map)>(r0);
+
+        virtualinvoke $r2.<com.conradcaine.fairsandevents.MapWebView: void addJavascriptInterface(java.lang.Object,java.lang.String)>($r20, "jb");
+
+        $r2 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.MapWebView webView>;
+
+        $r21 = new com.conradcaine.fairsandevents.Map$MyWebChromeClient;
+
+        specialinvoke $r21.<com.conradcaine.fairsandevents.Map$MyWebChromeClient: void <init>(com.conradcaine.fairsandevents.Map)>(r0);
+
+        virtualinvoke $r2.<com.conradcaine.fairsandevents.MapWebView: void setWebViewClient(android.webkit.WebViewClient)>($r21);
+
+        $r2 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.MapWebView webView>;
+
+        virtualinvoke $r2.<com.conradcaine.fairsandevents.MapWebView: void loadUrl(java.lang.String)>("file:///android_asset/map/index.html");
+
+        $r9 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.util.GPSLocation myLocation>;
+
+        $z0 = virtualinvoke $r9.<com.conradcaine.fairsandevents.util.GPSLocation: boolean isRunning()>();
+
+        if $z0 == 0 goto label05;
+
+        $r9 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.util.GPSLocation myLocation>;
+
+        $r2 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.MapWebView webView>;
+
+        virtualinvoke $r9.<com.conradcaine.fairsandevents.util.GPSLocation: void setWebView(android.webkit.WebView)>($r2);
+
+        $r9 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.util.GPSLocation myLocation>;
+
+        $i0 = r0.<com.conradcaine.fairsandevents.Map: int currentFairId>;
+
+        virtualinvoke $r9.<com.conradcaine.fairsandevents.util.GPSLocation: void setCurrentFairId(int)>($i0);
+
+     label05:
+        $i0 = r0.<com.conradcaine.fairsandevents.Map: int currentBoothId>;
+
+        if $i0 != 0 goto label11;
+
+        $r16 = staticinvoke <com.conradcaine.fairsandevents.data.FairsDataManager: com.conradcaine.fairsandevents.data.FairsDataManager getInstance()>();
+
+        $i0 = r0.<com.conradcaine.fairsandevents.Map: int currentFairId>;
+
+        $r17 = virtualinvoke $r16.<com.conradcaine.fairsandevents.data.FairsDataManager: com.conradcaine.fairsandevents.data.FairData getFair(int)>($i0);
+
+        $r8 = virtualinvoke $r17.<com.conradcaine.fairsandevents.data.FairData: java.lang.String getJson()>();
+
+        r0.<com.conradcaine.fairsandevents.Map: java.lang.String jsonToLoadPage> = $r8;
+
+     label06:
+        $r5 = r0.<com.conradcaine.fairsandevents.Map: android.widget.ZoomControls zoom>;
+
+        $r22 = new com.conradcaine.fairsandevents.Map$6;
+
+        specialinvoke $r22.<com.conradcaine.fairsandevents.Map$6: void <init>(com.conradcaine.fairsandevents.Map)>(r0);
+
+        virtualinvoke $r5.<android.widget.ZoomControls: void setOnZoomInClickListener(android.view.View$OnClickListener)>($r22);
+
+        $r5 = r0.<com.conradcaine.fairsandevents.Map: android.widget.ZoomControls zoom>;
+
+        $r23 = new com.conradcaine.fairsandevents.Map$7;
+
+        specialinvoke $r23.<com.conradcaine.fairsandevents.Map$7: void <init>(com.conradcaine.fairsandevents.Map)>(r0);
+
+        virtualinvoke $r5.<android.widget.ZoomControls: void setOnZoomOutClickListener(android.view.View$OnClickListener)>($r23);
+
+        $r24 = virtualinvoke r0.<com.conradcaine.fairsandevents.Map: android.content.pm.PackageManager getPackageManager()>();
+
+        $z0 = virtualinvoke $r24.<android.content.pm.PackageManager: boolean hasSystemFeature(java.lang.String)>("android.hardware.touchscreen.multitouch");
+
+        if $z0 == 0 goto label12;
+
+        virtualinvoke $r19.<android.webkit.WebSettings: void setBuiltInZoomControls(boolean)>(1);
+
+        $r5 = r0.<com.conradcaine.fairsandevents.Map: android.widget.ZoomControls zoom>;
+
+        virtualinvoke $r5.<android.widget.ZoomControls: void setVisibility(int)>(8);
+
+        return;
+
+     label07:
+        $r6 = r0.<com.conradcaine.fairsandevents.Map: android.widget.TextView mapName>;
+
+        $r15 = new java.lang.StringBuilder;
+
+        specialinvoke $r15.<java.lang.StringBuilder: void <init>(java.lang.String)>("Siemens at ");
+
+        $r16 = staticinvoke <com.conradcaine.fairsandevents.data.FairsDataManager: com.conradcaine.fairsandevents.data.FairsDataManager getInstance()>();
+
+        $i0 = r0.<com.conradcaine.fairsandevents.Map: int currentFairId>;
+
+        $r17 = virtualinvoke $r16.<com.conradcaine.fairsandevents.data.FairsDataManager: com.conradcaine.fairsandevents.data.FairData getFair(int)>($i0);
+
+        $r8 = virtualinvoke $r17.<com.conradcaine.fairsandevents.data.FairData: java.lang.String getName()>();
+
+        $r15 = virtualinvoke $r15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r8 = virtualinvoke $r15.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r6.<android.widget.TextView: void setText(java.lang.CharSequence)>($r8);
+
+        $r6 = r0.<com.conradcaine.fairsandevents.Map: android.widget.TextView mapName>;
+
+        virtualinvoke $r6.<android.widget.TextView: void setVisibility(int)>(0);
+
+        $r16 = staticinvoke <com.conradcaine.fairsandevents.data.FairsDataManager: com.conradcaine.fairsandevents.data.FairsDataManager getInstance()>();
+
+        $i0 = r0.<com.conradcaine.fairsandevents.Map: int currentFairId>;
+
+        $r17 = virtualinvoke $r16.<com.conradcaine.fairsandevents.data.FairsDataManager: com.conradcaine.fairsandevents.data.FairData getFair(int)>($i0);
+
+        $r8 = virtualinvoke $r17.<com.conradcaine.fairsandevents.data.FairData: java.lang.String getMainVideoBig()>();
+
+        if $r8 == null goto label10;
+
+        $r4 = r0.<com.conradcaine.fairsandevents.Map: android.widget.ImageView mainVideo>;
+
+        $r25 = new com.conradcaine.fairsandevents.Map$3;
+
+        specialinvoke $r25.<com.conradcaine.fairsandevents.Map$3: void <init>(com.conradcaine.fairsandevents.Map)>(r0);
+
+        virtualinvoke $r4.<android.widget.ImageView: void setOnClickListener(android.view.View$OnClickListener)>($r25);
+
+     label08:
+        $r26 = new com.conradcaine.fairsandevents.GPSAlert;
+
+        $r9 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.util.GPSLocation myLocation>;
+
+        $r11 = r0.<com.conradcaine.fairsandevents.Map: android.location.LocationManager locationManager>;
+
+        $r2 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.MapWebView webView>;
+
+        $i0 = r0.<com.conradcaine.fairsandevents.Map: int currentFairId>;
+
+        specialinvoke $r26.<com.conradcaine.fairsandevents.GPSAlert: void <init>(android.content.Context,com.conradcaine.fairsandevents.util.GPSLocation,android.location.LocationManager,android.webkit.WebView,int)>(r0, $r9, $r11, $r2, $i0);
+
+        r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.GPSAlert gpsAlert> = $r26;
+
+        specialinvoke r0.<com.conradcaine.fairsandevents.Map: void loadGPSPreferences()>();
+
+        $z0 = r0.<com.conradcaine.fairsandevents.Map: boolean gps_alert_disable>;
+
+        if $z0 != 0 goto label09;
+
+        $r26 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.GPSAlert gpsAlert>;
+
+        virtualinvoke $r26.<com.conradcaine.fairsandevents.GPSAlert: void show()>();
+
+     label09:
+        $r6 = r0.<com.conradcaine.fairsandevents.Map: android.widget.TextView mapTitle>;
+
+        $r27 = virtualinvoke r0.<com.conradcaine.fairsandevents.Map: android.content.res.Resources getResources()>();
+
+        $r8 = virtualinvoke $r27.<android.content.res.Resources: java.lang.String getString(int)>(2131296270);
+
+        virtualinvoke $r6.<android.widget.TextView: void setText(java.lang.CharSequence)>($r8);
+
+        $r4 = r0.<com.conradcaine.fairsandevents.Map: android.widget.ImageView top_button>;
+
+        virtualinvoke $r4.<android.widget.ImageView: void setImageResource(int)>(2130837508);
+
+        $r4 = r0.<com.conradcaine.fairsandevents.Map: android.widget.ImageView top_button>;
+
+        $r28 = new com.conradcaine.fairsandevents.Map$4;
+
+        specialinvoke $r28.<com.conradcaine.fairsandevents.Map$4: void <init>(com.conradcaine.fairsandevents.Map)>(r0);
+
+        virtualinvoke $r4.<android.widget.ImageView: void setOnClickListener(android.view.View$OnClickListener)>($r28);
+
+        $r4 = r0.<com.conradcaine.fairsandevents.Map: android.widget.ImageView back_button>;
+
+        virtualinvoke $r4.<android.widget.ImageView: void setImageResource(int)>(2130837516);
+
+        $r4 = r0.<com.conradcaine.fairsandevents.Map: android.widget.ImageView back_button>;
+
+        $r29 = new com.conradcaine.fairsandevents.Map$5;
+
+        specialinvoke $r29.<com.conradcaine.fairsandevents.Map$5: void <init>(com.conradcaine.fairsandevents.Map)>(r0);
+
+        virtualinvoke $r4.<android.widget.ImageView: void setOnClickListener(android.view.View$OnClickListener)>($r29);
+
+        goto label04;
+
+     label10:
+        $r4 = r0.<com.conradcaine.fairsandevents.Map: android.widget.ImageView mainVideo>;
+
+        virtualinvoke $r4.<android.widget.ImageView: void setVisibility(int)>(8);
+
+        goto label08;
+
+     label11:
+        $r16 = staticinvoke <com.conradcaine.fairsandevents.data.FairsDataManager: com.conradcaine.fairsandevents.data.FairsDataManager getInstance()>();
+
+        $i0 = r0.<com.conradcaine.fairsandevents.Map: int currentFairId>;
+
+        $r17 = virtualinvoke $r16.<com.conradcaine.fairsandevents.data.FairsDataManager: com.conradcaine.fairsandevents.data.FairData getFair(int)>($i0);
+
+        $i0 = r0.<com.conradcaine.fairsandevents.Map: int currentBoothId>;
+
+        $r18 = virtualinvoke $r17.<com.conradcaine.fairsandevents.data.FairData: com.conradcaine.fairsandevents.data.BoothData getBooth(int)>($i0);
+
+        $i0 = r0.<com.conradcaine.fairsandevents.Map: int currentFairId>;
+
+        $r8 = virtualinvoke $r18.<com.conradcaine.fairsandevents.data.BoothData: java.lang.String getBoothJson(int)>($i0);
+
+        r0.<com.conradcaine.fairsandevents.Map: java.lang.String jsonToLoadPage> = $r8;
+
+        goto label06;
+
+     label12:
+        virtualinvoke $r19.<android.webkit.WebSettings: void setBuiltInZoomControls(boolean)>(0);
+
+        return;
+    }
+
+    public boolean onCreateOptionsMenu(android.view.Menu)
+    {
+        android.os.Bundle $r4;
+        android.content.pm.PackageManager $r2;
+        android.content.Intent $r3;
+        com.conradcaine.fairsandevents.Map r0;
+        android.view.MenuInflater $r5;
+        android.view.Menu $r1;
+        int $i0;
+        boolean $z0;
+
+        r0 := @this: com.conradcaine.fairsandevents.Map;
+
+        $r1 := @parameter0: android.view.Menu;
+
+        $r2 = virtualinvoke r0.<com.conradcaine.fairsandevents.Map: android.content.pm.PackageManager getPackageManager()>();
+
+        $z0 = virtualinvoke $r2.<android.content.pm.PackageManager: boolean hasSystemFeature(java.lang.String)>("android.hardware.touchscreen.multitouch");
+
+        if $z0 != 0 goto label4;
+
+        $r3 = virtualinvoke r0.<com.conradcaine.fairsandevents.Map: android.content.Intent getIntent()>();
+
+        if $r3 == null goto label1;
+
+        $r4 = virtualinvoke $r3.<android.content.Intent: android.os.Bundle getExtras()>();
+
+        if $r4 == null goto label1;
+
+        $i0 = virtualinvoke $r4.<android.os.Bundle: int getInt(java.lang.String)>("current_fair_id");
+
+        r0.<com.conradcaine.fairsandevents.Map: int currentFairId> = $i0;
+
+        $i0 = virtualinvoke $r4.<android.os.Bundle: int getInt(java.lang.String)>("current_booth_id");
+
+        r0.<com.conradcaine.fairsandevents.Map: int currentBoothId> = $i0;
+
+     label1:
+        $i0 = r0.<com.conradcaine.fairsandevents.Map: int currentBoothId>;
+
+        if $i0 != 0 goto label3;
+
+        $r5 = virtualinvoke r0.<com.conradcaine.fairsandevents.Map: android.view.MenuInflater getMenuInflater()>();
+
+        virtualinvoke $r5.<android.view.MenuInflater: void inflate(int,android.view.Menu)>(2131427330, $r1);
+
+     label2:
+        return 1;
+
+     label3:
+        $r5 = virtualinvoke r0.<com.conradcaine.fairsandevents.Map: android.view.MenuInflater getMenuInflater()>();
+
+        virtualinvoke $r5.<android.view.MenuInflater: void inflate(int,android.view.Menu)>(2131427328, $r1);
+
+        goto label2;
+
+     label4:
+        $i0 = r0.<com.conradcaine.fairsandevents.Map: int currentBoothId>;
+
+        if $i0 != 0 goto label6;
+
+        $r5 = virtualinvoke r0.<com.conradcaine.fairsandevents.Map: android.view.MenuInflater getMenuInflater()>();
+
+        virtualinvoke $r5.<android.view.MenuInflater: void inflate(int,android.view.Menu)>(2131427331, $r1);
+
+     label5:
+        return 1;
+
+     label6:
+        $r5 = virtualinvoke r0.<com.conradcaine.fairsandevents.Map: android.view.MenuInflater getMenuInflater()>();
+
+        virtualinvoke $r5.<android.view.MenuInflater: void inflate(int,android.view.Menu)>(2131427331, $r1);
+
+        goto label5;
+    }
+
+    protected void onDestroy()
+    {
+        com.conradcaine.fairsandevents.Map r0;
+        com.conradcaine.fairsandevents.Map$WaitingPageLoad $r2;
+        int $i0;
+        com.conradcaine.fairsandevents.util.GPSLocation $r1;
+        android.location.LocationManager $r3;
+        com.conradcaine.fairsandevents.MapWebView $r4;
+        boolean $z0;
+
+        r0 := @this: com.conradcaine.fairsandevents.Map;
+
+        specialinvoke r0.<android.app.Activity: void onDestroy()>();
+
+        $z0 = r0.<com.conradcaine.fairsandevents.Map: boolean runningThreadThatWaitPageLoad>;
+
+        if $z0 == 0 goto label1;
+
+        $r2 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.Map$WaitingPageLoad waitingPageLoad>;
+
+        virtualinvoke $r2.<com.conradcaine.fairsandevents.Map$WaitingPageLoad: void stopThread()>();
+
+     label1:
+        $i0 = r0.<com.conradcaine.fairsandevents.Map: int currentBoothId>;
+
+        if $i0 != 0 goto label2;
+
+        $r1 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.util.GPSLocation myLocation>;
+
+        $z0 = virtualinvoke $r1.<com.conradcaine.fairsandevents.util.GPSLocation: boolean isRunning()>();
+
+        if $z0 == 0 goto label2;
+
+        $r3 = r0.<com.conradcaine.fairsandevents.Map: android.location.LocationManager locationManager>;
+
+        $r1 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.util.GPSLocation myLocation>;
+
+        virtualinvoke $r3.<android.location.LocationManager: void removeUpdates(android.location.LocationListener)>($r1);
+
+     label2:
+        $r4 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.MapWebView webView>;
+
+        virtualinvoke $r4.<com.conradcaine.fairsandevents.MapWebView: void destroyDrawingCache()>();
+
+        $r4 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.MapWebView webView>;
+
+        virtualinvoke $r4.<com.conradcaine.fairsandevents.MapWebView: void destroy()>();
+
+        return;
+    }
+
+    public boolean onOptionsItemSelected(android.view.MenuItem)
+    {
+        com.conradcaine.fairsandevents.Map r0;
+        android.widget.ZoomControls $r3;
+        int $i0;
+        android.content.Intent r2;
+        android.view.MenuItem $r1;
+        boolean $z0;
+
+        r0 := @this: com.conradcaine.fairsandevents.Map;
+
+        $r1 := @parameter0: android.view.MenuItem;
+
+        $i0 = interfaceinvoke $r1.<android.view.MenuItem: int getItemId()>();
+
+        lookupswitch($i0)
+        {
+            case 2131493027: goto label2;
+            case 2131493028: goto label4;
+            default: goto label1;
+        };
+
+     label1:
+        return 1;
+
+     label2:
+        $z0 = r0.<com.conradcaine.fairsandevents.Map: boolean zoomControlsVisible>;
+
+        if $z0 == 0 goto label3;
+
+        r0.<com.conradcaine.fairsandevents.Map: boolean zoomControlsVisible> = 0;
+
+        $r3 = r0.<com.conradcaine.fairsandevents.Map: android.widget.ZoomControls zoom>;
+
+        virtualinvoke $r3.<android.widget.ZoomControls: void setVisibility(int)>(8);
+
+        return 1;
+
+     label3:
+        r0.<com.conradcaine.fairsandevents.Map: boolean zoomControlsVisible> = 1;
+
+        $r3 = r0.<com.conradcaine.fairsandevents.Map: android.widget.ZoomControls zoom>;
+
+        virtualinvoke $r3.<android.widget.ZoomControls: void setVisibility(int)>(0);
+
+        return 1;
+
+     label4:
+        r2 = new android.content.Intent;
+
+        specialinvoke r2.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>(r0, class "Lcom/conradcaine/fairsandevents/GPSPreferences;");
+
+        virtualinvoke r0.<com.conradcaine.fairsandevents.Map: void startActivity(android.content.Intent)>(r2);
+
+        return 1;
+    }
+
+    protected void onPause()
+    {
+        com.conradcaine.fairsandevents.Map r0;
+        int $i0;
+        com.conradcaine.fairsandevents.util.GPSLocation $r1;
+        android.location.LocationManager $r2;
+        boolean $z0;
+
+        r0 := @this: com.conradcaine.fairsandevents.Map;
+
+        specialinvoke r0.<android.app.Activity: void onPause()>();
+
+        $i0 = r0.<com.conradcaine.fairsandevents.Map: int currentBoothId>;
+
+        if $i0 != 0 goto label1;
+
+        $r1 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.util.GPSLocation myLocation>;
+
+        $z0 = virtualinvoke $r1.<com.conradcaine.fairsandevents.util.GPSLocation: boolean isRunning()>();
+
+        if $z0 == 0 goto label1;
+
+        $r2 = r0.<com.conradcaine.fairsandevents.Map: android.location.LocationManager locationManager>;
+
+        $r1 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.util.GPSLocation myLocation>;
+
+        virtualinvoke $r2.<android.location.LocationManager: void removeUpdates(android.location.LocationListener)>($r1);
+
+     label1:
+        return;
+    }
+
+    protected void onResume()
+    {
+        com.conradcaine.fairsandevents.Map r0;
+        com.conradcaine.fairsandevents.Map$WaitingPageLoad $r3;
+        int $i0;
+        com.conradcaine.fairsandevents.util.GPSLocation $r1;
+        android.location.LocationManager $r2;
+        boolean $z0;
+
+        r0 := @this: com.conradcaine.fairsandevents.Map;
+
+        specialinvoke r0.<android.app.Activity: void onResume()>();
+
+        $i0 = r0.<com.conradcaine.fairsandevents.Map: int currentBoothId>;
+
+        if $i0 != 0 goto label1;
+
+        specialinvoke r0.<com.conradcaine.fairsandevents.Map: void loadGPSPreferences()>();
+
+        $r1 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.util.GPSLocation myLocation>;
+
+        $z0 = virtualinvoke $r1.<com.conradcaine.fairsandevents.util.GPSLocation: boolean isRunning()>();
+
+        if $z0 == 0 goto label1;
+
+        $r2 = r0.<com.conradcaine.fairsandevents.Map: android.location.LocationManager locationManager>;
+
+        $r1 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.util.GPSLocation myLocation>;
+
+        virtualinvoke $r2.<android.location.LocationManager: void requestLocationUpdates(java.lang.String,long,float,android.location.LocationListener)>("gps", 0L, 0.0F, $r1);
+
+        $r3 = new com.conradcaine.fairsandevents.Map$WaitingPageLoad;
+
+        specialinvoke $r3.<com.conradcaine.fairsandevents.Map$WaitingPageLoad: void <init>(com.conradcaine.fairsandevents.Map)>(r0);
+
+        r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.Map$WaitingPageLoad waitingPageLoad> = $r3;
+
+        $r3 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.Map$WaitingPageLoad waitingPageLoad>;
+
+        virtualinvoke $r3.<com.conradcaine.fairsandevents.Map$WaitingPageLoad: void startThread()>();
+
+        virtualinvoke r0.<com.conradcaine.fairsandevents.Map: void requestUpdateUserPosition()>();
+
+     label1:
+        return;
+    }
+
+    public void onSaveInstanceState(android.os.Bundle)
+    {
+        com.conradcaine.fairsandevents.Map r0;
+        android.os.Bundle $r1;
+        android.app.ProgressDialog $r2;
+        boolean $z0;
+
+        r0 := @this: com.conradcaine.fairsandevents.Map;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        $z0 = r0.<com.conradcaine.fairsandevents.Map: boolean isLoading>;
+
+        if $z0 == 0 goto label1;
+
+        $r2 = r0.<com.conradcaine.fairsandevents.Map: android.app.ProgressDialog downloadingImagesDialog>;
+
+        virtualinvoke $r2.<android.app.ProgressDialog: void cancel()>();
+
+     label1:
+        return;
+    }
+
+    protected void onStart()
+    {
+        com.conradcaine.fairsandevents.Map r0;
+
+        r0 := @this: com.conradcaine.fairsandevents.Map;
+
+        specialinvoke r0.<android.app.Activity: void onStart()>();
+
+        return;
+    }
+
+    public void requestUpdateUserPosition()
+    {
+        com.conradcaine.fairsandevents.Map r0;
+        android.location.Location $r3;
+        com.conradcaine.fairsandevents.util.GPSLocation $r1;
+        android.location.LocationManager $r2;
+        boolean $z0;
+        double $d0, $d1;
+
+        r0 := @this: com.conradcaine.fairsandevents.Map;
+
+        specialinvoke r0.<com.conradcaine.fairsandevents.Map: void loadGPSPreferences()>();
+
+        $r1 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.util.GPSLocation myLocation>;
+
+        $z0 = virtualinvoke $r1.<com.conradcaine.fairsandevents.util.GPSLocation: boolean isRunning()>();
+
+        if $z0 == 0 goto label2;
+
+        $r2 = r0.<com.conradcaine.fairsandevents.Map: android.location.LocationManager locationManager>;
+
+        $r3 = virtualinvoke $r2.<android.location.LocationManager: android.location.Location getLastKnownLocation(java.lang.String)>("gps");
+
+        if $r3 != null goto label1;
+
+        $r2 = r0.<com.conradcaine.fairsandevents.Map: android.location.LocationManager locationManager>;
+
+        $r3 = virtualinvoke $r2.<android.location.LocationManager: android.location.Location getLastKnownLocation(java.lang.String)>("network");
+
+        if $r3 == null goto label2;
+
+        $r1 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.util.GPSLocation myLocation>;
+
+        $d0 = virtualinvoke $r3.<android.location.Location: double getLatitude()>();
+
+        $d1 = virtualinvoke $r3.<android.location.Location: double getLongitude()>();
+
+        virtualinvoke $r1.<com.conradcaine.fairsandevents.util.GPSLocation: void refreshUserPosiont(double,double)>($d0, $d1);
+
+        return;
+
+     label1:
+        $r1 = r0.<com.conradcaine.fairsandevents.Map: com.conradcaine.fairsandevents.util.GPSLocation myLocation>;
+
+        $d0 = virtualinvoke $r3.<android.location.Location: double getLatitude()>();
+
+        $d1 = virtualinvoke $r3.<android.location.Location: double getLongitude()>();
+
+        virtualinvoke $r1.<com.conradcaine.fairsandevents.util.GPSLocation: void refreshUserPosiont(double,double)>($d0, $d1);
+
+     label2:
+        return;
+    }
+
+    public android.content.Intent getIntent()
+    {
+        com.conradcaine.fairsandevents.Map this;
+        android.content.Intent $r0;
+
+        this := @this: com.conradcaine.fairsandevents.Map;
+
+        $r0 = this.<com.conradcaine.fairsandevents.Map: android.content.Intent ipcIntent>;
+
+        return $r0;
+    }
+
+    public void setIntent(android.content.Intent)
+    {
+        com.conradcaine.fairsandevents.Map this;
+        android.content.Intent parameter0;
+
+        this := @this: com.conradcaine.fairsandevents.Map;
+
+        parameter0 := @parameter0: android.content.Intent;
+
+        this.<com.conradcaine.fairsandevents.Map: android.content.Intent ipcIntent> = parameter0;
+
+        return;
+    }
+
+    public void setResult(int, android.content.Intent)
+    {
+        com.conradcaine.fairsandevents.Map this;
+        int parameter0;
+        android.content.Intent parameter1;
+
+        this := @this: com.conradcaine.fairsandevents.Map;
+
+        parameter0 := @parameter0: int;
+
+        parameter1 := @parameter1: android.content.Intent;
+
+        this.<com.conradcaine.fairsandevents.Map: android.content.Intent ipcResultIntent> = parameter1;
+
+        return;
+    }
+}

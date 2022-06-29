@@ -1,0 +1,1436 @@
+public class cn.com.chinatelecom.account.lib.ct.Authorizer extends java.lang.Object
+{
+    public static final int ACCOUNT_APK_LOW_VERSION;
+    public static final int CURRENT_ACCOUNT_NOT_EXIST;
+    public static final int IS_CURRENT_PHONE_NUMBER;
+    private static final int IS_CURRENT_PHONE_NUMBER_SDKVERSION;
+    private static final int NOTIFICATION;
+    public static final int NOT_ACCURATELY_DETERMINED;
+    private static final int NO_PROMPT;
+    private static final int SDKVERSION;
+    public static final int SIM_NOT_READY;
+    private final java.lang.String AuthWebToken;
+    private final android.content.Context mContext;
+    private final java.lang.String packageName;
+    private android.content.SharedPreferences sp;
+
+    public void <init>(android.content.Context)
+    {
+        android.content.Context $r1;
+        cn.com.chinatelecom.account.lib.ct.Authorizer r0;
+        android.content.SharedPreferences $r2;
+
+        r0 := @this: cn.com.chinatelecom.account.lib.ct.Authorizer;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: java.lang.String packageName> = "cn.com.chinatelecom.account";
+
+        r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: java.lang.String AuthWebToken> = "http://sersh.passport.189.cn/UDBForAndroidInterFaces/AuthWebToken.aspx";
+
+        r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: android.content.Context mContext> = $r1;
+
+        $r1 = r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: android.content.Context mContext>;
+
+        $r2 = virtualinvoke $r1.<android.content.Context: android.content.SharedPreferences getSharedPreferences(java.lang.String,int)>("saveTokenForCT", 0);
+
+        r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: android.content.SharedPreferences sp> = $r2;
+
+        return;
+    }
+
+    private cn.com.chinatelecom.account.lib.apk.AuthResultWeb WebTouchLogin(cn.com.chinatelecom.account.lib.apk.AuthParamWeb)
+    {
+        android.content.Context $r7;
+        cn.com.chinatelecom.account.lib.ct.Authorizer r0;
+        android.content.Intent r4, $r13;
+        android.os.Messenger $r8;
+        java.lang.Exception r3;
+        cn.com.chinatelecom.account.lib.ct.MessageBox r2, $r12;
+        android.os.Message $r9;
+        java.lang.Object $r10;
+        cn.com.chinatelecom.account.lib.apk.AuthResultWeb r5, $r11;
+        java.lang.String $r6;
+        cn.com.chinatelecom.account.lib.apk.AuthParamWeb $r1;
+        boolean $z0;
+
+        r0 := @this: cn.com.chinatelecom.account.lib.ct.Authorizer;
+
+        $r1 := @parameter0: cn.com.chinatelecom.account.lib.apk.AuthParamWeb;
+
+        $r11 = new cn.com.chinatelecom.account.lib.apk.AuthResultWeb;
+
+        r5 = $r11;
+
+        specialinvoke $r11.<cn.com.chinatelecom.account.lib.apk.AuthResultWeb: void <init>()>();
+
+        r5.<cn.com.chinatelecom.account.lib.apk.AuthResultWeb: int ResultCode> = 20482;
+
+        r5.<cn.com.chinatelecom.account.lib.apk.AuthResultWeb: java.lang.String error_description> = "\u5ba2\u6237\u7aef\u672a\u627e\u5230";
+
+        $r6 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthParamWeb: java.lang.String appDeviceNo>;
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r6);
+
+        if $z0 != 0 goto label1;
+
+        $r6 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthParamWeb: java.lang.String appTimeStamp>;
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r6);
+
+        if $z0 != 0 goto label1;
+
+        $r6 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthParamWeb: java.lang.String appAuthenticator>;
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r6);
+
+        if $z0 == 0 goto label2;
+
+     label1:
+        r5.<cn.com.chinatelecom.account.lib.apk.AuthResultWeb: int ResultCode> = 4097;
+
+        r5.<cn.com.chinatelecom.account.lib.apk.AuthResultWeb: java.lang.String error_description> = "\u53c2\u6570\u9519\u8bef";
+
+        return r5;
+
+     label2:
+        $r12 = new cn.com.chinatelecom.account.lib.ct.MessageBox;
+
+        r2 = $r12;
+
+     label3:
+        specialinvoke $r12.<cn.com.chinatelecom.account.lib.ct.MessageBox: void <init>()>();
+
+     label4:
+        $r13 = new android.content.Intent;
+
+        r4 = $r13;
+
+     label5:
+        specialinvoke $r13.<android.content.Intent: void <init>()>();
+
+        $r7 = r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: android.content.Context mContext>;
+
+        virtualinvoke r4.<android.content.Intent: android.content.Intent setClass(android.content.Context,java.lang.Class)>($r7, class "Lcn/com/chinatelecom/account/lib/ct/DownloadApkActivity;");
+
+        $r6 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthParamWeb: java.lang.String appDeviceNo>;
+
+        virtualinvoke r4.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("app_id", $r6);
+
+        $r6 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthParamWeb: java.lang.String appTimeStamp>;
+
+        virtualinvoke r4.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("Timestamp", $r6);
+
+        $r6 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthParamWeb: java.lang.String appAuthenticator>;
+
+        virtualinvoke r4.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("Authenticator", $r6);
+
+        $r6 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthParamWeb: java.lang.String PUserID2>;
+
+        virtualinvoke r4.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("PUserID2", $r6);
+
+        $r6 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthParamWeb: java.lang.String WebToken>;
+
+        virtualinvoke r4.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("WebToken", $r6);
+
+        $r6 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthParamWeb: java.lang.String WebTokenTimestamp>;
+
+        virtualinvoke r4.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("WebTokenTimestamp", $r6);
+
+        $r8 = virtualinvoke r2.<cn.com.chinatelecom.account.lib.ct.MessageBox: android.os.Messenger getMessenger()>();
+
+        virtualinvoke r4.<android.content.Intent: android.content.Intent putExtra(java.lang.String,android.os.Parcelable)>("InstallResult", $r8);
+
+        virtualinvoke r4.<android.content.Intent: android.content.Intent addFlags(int)>(268435456);
+
+        $r7 = r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: android.content.Context mContext>;
+
+        virtualinvoke $r7.<android.content.Context: void startActivity(android.content.Intent)>(r4);
+
+        $r9 = virtualinvoke r2.<cn.com.chinatelecom.account.lib.ct.MessageBox: android.os.Message waitForMessage()>();
+
+        $r10 = $r9.<android.os.Message: java.lang.Object obj>;
+
+        $r11 = (cn.com.chinatelecom.account.lib.apk.AuthResultWeb) $r10;
+
+     label6:
+        r5 = $r11;
+
+     label7:
+        $r11.<cn.com.chinatelecom.account.lib.apk.AuthResultWeb: int SyncBackupRegFlag> = -1;
+
+     label8:
+        return r5;
+
+     label9:
+        r3 := @caughtexception;
+
+        virtualinvoke r3.<java.lang.Exception: void printStackTrace()>();
+
+        r5.<cn.com.chinatelecom.account.lib.apk.AuthResultWeb: int ResultCode> = 65535;
+
+        r5.<cn.com.chinatelecom.account.lib.apk.AuthResultWeb: java.lang.String error_description> = "\u672a\u77e5\u9519\u8bef";
+
+        goto label8;
+
+        catch java.lang.Exception from label3 to label4 with label9;
+        catch java.lang.Exception from label5 to label6 with label9;
+        catch java.lang.Exception from label7 to label8 with label9;
+    }
+
+    private cn.com.chinatelecom.account.lib.apk.AuthWebTokenResult authorizeWebView(cn.com.chinatelecom.account.lib.apk.AuthWebTokenParam)
+    {
+        cn.com.chinatelecom.account.lib.ct.Authorizer r0;
+        org.json.JSONObject $r3;
+        cn.com.chinatelecom.account.lib.apk.AuthWebTokenResult r2, $r4;
+        cn.com.chinatelecom.account.lib.apk.AuthWebTokenParam $r1;
+
+        r0 := @this: cn.com.chinatelecom.account.lib.ct.Authorizer;
+
+        $r1 := @parameter0: cn.com.chinatelecom.account.lib.apk.AuthWebTokenParam;
+
+        $r4 = new cn.com.chinatelecom.account.lib.apk.AuthWebTokenResult;
+
+        r2 = $r4;
+
+        specialinvoke $r4.<cn.com.chinatelecom.account.lib.apk.AuthWebTokenResult: void <init>()>();
+
+        $r3 = virtualinvoke r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: org.json.JSONObject executeAuthMethod(java.lang.String,cn.com.chinatelecom.account.lib.apk.AuthWebTokenParam)>("http://sersh.passport.189.cn/UDBForAndroidInterFaces/AuthWebToken.aspx", $r1);
+
+        if $r3 == null goto label1;
+
+        virtualinvoke r2.<cn.com.chinatelecom.account.lib.apk.AuthWebTokenResult: void parse(org.json.JSONObject)>($r3);
+
+        return r2;
+
+     label1:
+        r2.<cn.com.chinatelecom.account.lib.apk.AuthWebTokenResult: int ResultCode> = 65535;
+
+        r2.<cn.com.chinatelecom.account.lib.apk.AuthWebTokenResult: java.lang.String ErrorDescription> = "\u672a\u77e5\u9519\u8bef";
+
+        return r2;
+    }
+
+    private boolean checkPackage(java.lang.String, android.content.Context)
+    {
+        java.lang.Throwable r3;
+        android.content.Context $r2;
+        cn.com.chinatelecom.account.lib.ct.Authorizer r0;
+        android.content.pm.PackageManager $r6;
+        android.content.pm.PackageManager$NameNotFoundException $r8;
+        java.lang.String $r1, $r4;
+        android.content.pm.ApplicationInfo r5, $r7;
+        boolean $z0;
+
+        r0 := @this: cn.com.chinatelecom.account.lib.ct.Authorizer;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: android.content.Context;
+
+        $r4 = "";
+
+        $z0 = virtualinvoke $r4.<java.lang.String: boolean equals(java.lang.Object)>("cn.com.chinatelecom.account");
+
+        if $z0 == 0 goto label1;
+
+        return 0;
+
+     label1:
+        r5 = null;
+
+     label2:
+        $r6 = virtualinvoke $r2.<android.content.Context: android.content.pm.PackageManager getPackageManager()>();
+
+        $r7 = virtualinvoke $r6.<android.content.pm.PackageManager: android.content.pm.ApplicationInfo getApplicationInfo(java.lang.String,int)>("cn.com.chinatelecom.account", 8192);
+
+     label3:
+        r5 = $r7;
+
+     label4:
+        if r5 == null goto label6;
+
+        return 1;
+
+     label5:
+        r3 := @caughtexception;
+
+        $r8 = (android.content.pm.PackageManager$NameNotFoundException) r3;
+
+        virtualinvoke $r8.<android.content.pm.PackageManager$NameNotFoundException: void printStackTrace()>();
+
+        goto label4;
+
+     label6:
+        return 0;
+
+        catch android.content.pm.PackageManager$NameNotFoundException from label2 to label3 with label5;
+    }
+
+    public static java.lang.String getIpAddress()
+    {
+        java.lang.Throwable r0;
+        java.util.Enumeration $r1, $r4;
+        java.net.NetworkInterface r3;
+        java.net.InetAddress r5;
+        java.net.SocketException $r7;
+        java.lang.Object $r2;
+        java.lang.String $r6;
+        boolean $z0;
+
+     label01:
+        $r1 = staticinvoke <java.net.NetworkInterface: java.util.Enumeration getNetworkInterfaces()>();
+
+     label02:
+        $z0 = interfaceinvoke $r1.<java.util.Enumeration: boolean hasMoreElements()>();
+
+     label03:
+        if $z0 != 0 goto label05;
+
+     label04:
+        return null;
+
+     label05:
+        $r2 = interfaceinvoke $r1.<java.util.Enumeration: java.lang.Object nextElement()>();
+
+     label06:
+        r3 = (java.net.NetworkInterface) $r2;
+
+     label07:
+        $r4 = virtualinvoke r3.<java.net.NetworkInterface: java.util.Enumeration getInetAddresses()>();
+
+     label08:
+        $z0 = interfaceinvoke $r4.<java.util.Enumeration: boolean hasMoreElements()>();
+
+     label09:
+        if $z0 == 0 goto label02;
+
+     label10:
+        $r2 = interfaceinvoke $r4.<java.util.Enumeration: java.lang.Object nextElement()>();
+
+     label11:
+        r5 = (java.net.InetAddress) $r2;
+
+     label12:
+        $z0 = virtualinvoke r5.<java.net.InetAddress: boolean isLoopbackAddress()>();
+
+     label13:
+        if $z0 != 0 goto label08;
+
+     label14:
+        $r6 = virtualinvoke r5.<java.net.InetAddress: java.lang.String getHostAddress()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.String: java.lang.String toString()>();
+
+     label15:
+        return $r6;
+
+     label16:
+        r0 := @caughtexception;
+
+        $r7 = (java.net.SocketException) r0;
+
+        virtualinvoke $r7.<java.net.SocketException: void printStackTrace()>();
+
+        goto label04;
+
+        catch java.net.SocketException from label01 to label03 with label16;
+        catch java.net.SocketException from label05 to label06 with label16;
+        catch java.net.SocketException from label07 to label09 with label16;
+        catch java.net.SocketException from label10 to label11 with label16;
+        catch java.net.SocketException from label12 to label13 with label16;
+        catch java.net.SocketException from label14 to label15 with label16;
+    }
+
+    public static boolean isNetworkAvailable(android.content.Context)
+    {
+        android.net.ConnectivityManager r2;
+        android.content.Context $r0;
+        android.net.NetworkInfo $r3;
+        java.lang.Object $r1;
+        boolean $z0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = virtualinvoke $r0.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("connectivity");
+
+        r2 = (android.net.ConnectivityManager) $r1;
+
+        $r3 = virtualinvoke r2.<android.net.ConnectivityManager: android.net.NetworkInfo getActiveNetworkInfo()>();
+
+        if $r3 == null goto label1;
+
+        $z0 = virtualinvoke $r3.<android.net.NetworkInfo: boolean isConnected()>();
+
+        if $z0 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    private cn.com.chinatelecom.account.lib.apk.AuthResult webCTAuthResult(cn.com.chinatelecom.account.lib.apk.AuthResultWeb)
+    {
+        cn.com.chinatelecom.account.lib.apk.UserInfo r3;
+        cn.com.chinatelecom.account.lib.ct.Authorizer r0;
+        cn.com.chinatelecom.account.lib.apk.AuthResult r2;
+        int $i0;
+        cn.com.chinatelecom.account.lib.apk.AuthResultWeb $r1;
+        java.lang.String $r4;
+
+        r0 := @this: cn.com.chinatelecom.account.lib.ct.Authorizer;
+
+        $r1 := @parameter0: cn.com.chinatelecom.account.lib.apk.AuthResultWeb;
+
+        r2 = new cn.com.chinatelecom.account.lib.apk.AuthResult;
+
+        specialinvoke r2.<cn.com.chinatelecom.account.lib.apk.AuthResult: void <init>()>();
+
+        $i0 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthResultWeb: int ResultCode>;
+
+        r2.<cn.com.chinatelecom.account.lib.apk.AuthResult: int result> = $i0;
+
+        $r4 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthResultWeb: java.lang.String error_description>;
+
+        r2.<cn.com.chinatelecom.account.lib.apk.AuthResult: java.lang.String errorDescription> = $r4;
+
+        $r4 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthResultWeb: java.lang.String SurfingToken>;
+
+        r2.<cn.com.chinatelecom.account.lib.apk.AuthResult: java.lang.String surfingToken> = $r4;
+
+        $r4 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthResultWeb: java.lang.String sfTimeStamp>;
+
+        r2.<cn.com.chinatelecom.account.lib.apk.AuthResult: java.lang.String sfTimeStamp> = $r4;
+
+        r3 = new cn.com.chinatelecom.account.lib.apk.UserInfo;
+
+        specialinvoke r3.<cn.com.chinatelecom.account.lib.apk.UserInfo: void <init>()>();
+
+        $r4 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthResultWeb: java.lang.String PUserID>;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.UserInfo: java.lang.String pUserID> = $r4;
+
+        $r4 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthResultWeb: java.lang.String UserID>;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.UserInfo: java.lang.String userID> = $r4;
+
+        $r4 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthResultWeb: java.lang.String Alias>;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.UserInfo: java.lang.String alias> = $r4;
+
+        $r4 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthResultWeb: java.lang.String UserIDType>;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.UserInfo: java.lang.String userIDType> = $r4;
+
+        $r4 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthResultWeb: java.lang.String UserIDStatus>;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.UserInfo: java.lang.String userIDStatus> = $r4;
+
+        $r4 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthResultWeb: java.lang.String PStatus>;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.UserInfo: java.lang.String pStatus> = $r4;
+
+        r2.<cn.com.chinatelecom.account.lib.apk.AuthResult: cn.com.chinatelecom.account.lib.apk.UserInfo accountInfo> = r3;
+
+        $i0 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthResultWeb: int SyncBackupRegFlag>;
+
+        r2.<cn.com.chinatelecom.account.lib.apk.AuthResult: int SyncBackupRegFlag> = $i0;
+
+        return r2;
+    }
+
+    private cn.com.chinatelecom.account.lib.apk.AuthResult webTokenCTAuthResult(cn.com.chinatelecom.account.lib.apk.AuthWebTokenResult)
+    {
+        cn.com.chinatelecom.account.lib.apk.UserInfo r3;
+        cn.com.chinatelecom.account.lib.ct.Authorizer r0;
+        cn.com.chinatelecom.account.lib.apk.AuthResult r2;
+        cn.com.chinatelecom.account.lib.apk.AuthWebTokenResult $r1;
+        int $i0;
+        java.lang.String $r4;
+
+        r0 := @this: cn.com.chinatelecom.account.lib.ct.Authorizer;
+
+        $r1 := @parameter0: cn.com.chinatelecom.account.lib.apk.AuthWebTokenResult;
+
+        r2 = new cn.com.chinatelecom.account.lib.apk.AuthResult;
+
+        specialinvoke r2.<cn.com.chinatelecom.account.lib.apk.AuthResult: void <init>()>();
+
+        $i0 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthWebTokenResult: int ResultCode>;
+
+        r2.<cn.com.chinatelecom.account.lib.apk.AuthResult: int result> = $i0;
+
+        $r4 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthWebTokenResult: java.lang.String ErrorDescription>;
+
+        r2.<cn.com.chinatelecom.account.lib.apk.AuthResult: java.lang.String errorDescription> = $r4;
+
+        r3 = new cn.com.chinatelecom.account.lib.apk.UserInfo;
+
+        specialinvoke r3.<cn.com.chinatelecom.account.lib.apk.UserInfo: void <init>()>();
+
+        $r4 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthWebTokenResult: java.lang.String PUserID>;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.UserInfo: java.lang.String pUserID> = $r4;
+
+        $r4 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthWebTokenResult: java.lang.String UserID>;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.UserInfo: java.lang.String userID> = $r4;
+
+        $r4 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthWebTokenResult: java.lang.String Alias>;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.UserInfo: java.lang.String alias> = $r4;
+
+        $r4 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthWebTokenResult: java.lang.String UserIDType>;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.UserInfo: java.lang.String userIDType> = $r4;
+
+        $r4 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthWebTokenResult: java.lang.String UserIDStatus>;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.UserInfo: java.lang.String userIDStatus> = $r4;
+
+        $r4 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthWebTokenResult: java.lang.String PStatus>;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.UserInfo: java.lang.String pStatus> = $r4;
+
+        r2.<cn.com.chinatelecom.account.lib.apk.AuthResult: cn.com.chinatelecom.account.lib.apk.UserInfo accountInfo> = r3;
+
+        $r4 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthWebTokenResult: java.lang.String SurfingToken>;
+
+        r2.<cn.com.chinatelecom.account.lib.apk.AuthResult: java.lang.String surfingToken> = $r4;
+
+        $r4 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthWebTokenResult: java.lang.String sfTimeStamp>;
+
+        r2.<cn.com.chinatelecom.account.lib.apk.AuthResult: java.lang.String sfTimeStamp> = $r4;
+
+        $i0 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthWebTokenResult: int SyncBackupRegFlag>;
+
+        r2.<cn.com.chinatelecom.account.lib.apk.AuthResult: int SyncBackupRegFlag> = $i0;
+
+        return r2;
+    }
+
+    public cn.com.chinatelecom.account.lib.apk.AppRegisterResult SyncBackupConfigRegsiter(cn.com.chinatelecom.account.lib.apk.SyncBackupConfigRegisterParam) throws cn.com.chinatelecom.account.exception.TelecomAccountException
+    {
+        android.content.Context $r2;
+        cn.com.chinatelecom.account.lib.ct.Authorizer r0;
+        cn.com.chinatelecom.account.lib.apk.Authorizer r5;
+        cn.com.chinatelecom.account.service.ApiFactory $r9;
+        java.lang.Exception r6, r8;
+        cn.com.chinatelecom.account.lib.apk.AppRegisterResult r3, $r7;
+        int $i0;
+        cn.com.chinatelecom.account.lib.apk.SyncBackupConfigRegisterParam $r1;
+        java.lang.Object $r4;
+        boolean $z0;
+
+        r0 := @this: cn.com.chinatelecom.account.lib.ct.Authorizer;
+
+        $r1 := @parameter0: cn.com.chinatelecom.account.lib.apk.SyncBackupConfigRegisterParam;
+
+        $r2 = r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: android.content.Context mContext>;
+
+        $z0 = specialinvoke r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: boolean checkPackage(java.lang.String,android.content.Context)>("cn.com.chinatelecom.account", $r2);
+
+        $r7 = new cn.com.chinatelecom.account.lib.apk.AppRegisterResult;
+
+        r3 = $r7;
+
+        specialinvoke $r7.<cn.com.chinatelecom.account.lib.apk.AppRegisterResult: void <init>()>();
+
+        if $z0 != 0 goto label1;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.AppRegisterResult: int result> = 20482;
+
+        return r3;
+
+     label1:
+        $r9 = new cn.com.chinatelecom.account.service.ApiFactory;
+
+        $r2 = r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: android.content.Context mContext>;
+
+        specialinvoke $r9.<cn.com.chinatelecom.account.service.ApiFactory: void <init>(android.content.Context)>($r2);
+
+        $r4 = virtualinvoke $r9.<cn.com.chinatelecom.account.service.ApiFactory: java.lang.Object getImpl(java.lang.Class)>(class "Lcn/com/chinatelecom/account/lib/apk/Authorizer;");
+
+        r5 = (cn.com.chinatelecom.account.lib.apk.Authorizer) $r4;
+
+     label2:
+        $z0 = interfaceinvoke r5.<cn.com.chinatelecom.account.lib.apk.Authorizer: boolean checkVersion(int,int)>(100, 1);
+
+     label3:
+        if $z0 != 0 goto label5;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.AppRegisterResult: int result> = 24578;
+
+        return r3;
+
+     label4:
+        r6 := @caughtexception;
+
+        virtualinvoke r6.<java.lang.Exception: void printStackTrace()>();
+
+        $z0 = 1;
+
+        goto label3;
+
+     label5:
+        $r7 = interfaceinvoke r5.<cn.com.chinatelecom.account.lib.apk.Authorizer: cn.com.chinatelecom.account.lib.apk.AppRegisterResult SyncBackupConfigRegsiter(cn.com.chinatelecom.account.lib.apk.SyncBackupConfigRegisterParam)>($r1);
+
+     label6:
+        return $r7;
+
+     label7:
+        r8 := @caughtexception;
+
+        virtualinvoke r8.<java.lang.Exception: void printStackTrace()>();
+
+        $i0 = 65535;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.AppRegisterResult: int result> = $i0;
+
+        return r3;
+
+        catch java.lang.Exception from label2 to label3 with label4;
+        catch java.lang.Exception from label5 to label6 with label7;
+    }
+
+    public void SyncBackupStateNotify(cn.com.chinatelecom.account.lib.apk.SyncBackupStateParam) throws cn.com.chinatelecom.account.exception.TelecomAccountException
+    {
+        android.content.Context $r4;
+        cn.com.chinatelecom.account.lib.ct.Authorizer r0;
+        cn.com.chinatelecom.account.lib.apk.Authorizer r6;
+        cn.com.chinatelecom.account.service.ApiFactory r3;
+        java.lang.Exception r7, r8;
+        cn.com.chinatelecom.account.lib.apk.SyncBackupStateParam $r1;
+        cn.com.chinatelecom.account.lib.apk.SurfingTokenResult r2;
+        java.lang.Object $r5;
+        boolean $z0;
+
+        r0 := @this: cn.com.chinatelecom.account.lib.ct.Authorizer;
+
+        $r1 := @parameter0: cn.com.chinatelecom.account.lib.apk.SyncBackupStateParam;
+
+        $r4 = r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: android.content.Context mContext>;
+
+        $z0 = specialinvoke r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: boolean checkPackage(java.lang.String,android.content.Context)>("cn.com.chinatelecom.account", $r4);
+
+        r2 = new cn.com.chinatelecom.account.lib.apk.SurfingTokenResult;
+
+        specialinvoke r2.<cn.com.chinatelecom.account.lib.apk.SurfingTokenResult: void <init>()>();
+
+        if $z0 != 0 goto label1;
+
+        r2.<cn.com.chinatelecom.account.lib.apk.SurfingTokenResult: int result> = 20482;
+
+        return;
+
+     label1:
+        r3 = new cn.com.chinatelecom.account.service.ApiFactory;
+
+        $r4 = r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: android.content.Context mContext>;
+
+        specialinvoke r3.<cn.com.chinatelecom.account.service.ApiFactory: void <init>(android.content.Context)>($r4);
+
+        $r5 = virtualinvoke r3.<cn.com.chinatelecom.account.service.ApiFactory: java.lang.Object getImpl(java.lang.Class)>(class "Lcn/com/chinatelecom/account/lib/apk/Authorizer;");
+
+        r6 = (cn.com.chinatelecom.account.lib.apk.Authorizer) $r5;
+
+     label2:
+        $z0 = interfaceinvoke r6.<cn.com.chinatelecom.account.lib.apk.Authorizer: boolean checkVersion(int,int)>(100, 1);
+
+     label3:
+        if $z0 != 0 goto label5;
+
+        r2.<cn.com.chinatelecom.account.lib.apk.SurfingTokenResult: int result> = 24578;
+
+        return;
+
+     label4:
+        r7 := @caughtexception;
+
+        virtualinvoke r7.<java.lang.Exception: void printStackTrace()>();
+
+        $z0 = 1;
+
+        goto label3;
+
+     label5:
+        interfaceinvoke r6.<cn.com.chinatelecom.account.lib.apk.Authorizer: void SyncBackupStateNotify(cn.com.chinatelecom.account.lib.apk.SyncBackupStateParam)>($r1);
+
+     label6:
+        return;
+
+     label7:
+        r8 := @caughtexception;
+
+        virtualinvoke r8.<java.lang.Exception: void printStackTrace()>();
+
+        return;
+
+        catch java.lang.Exception from label2 to label3 with label4;
+        catch java.lang.Exception from label5 to label6 with label7;
+    }
+
+    public cn.com.chinatelecom.account.lib.apk.AuthResult eAccountLogin(cn.com.chinatelecom.account.lib.apk.AuthParam) throws cn.com.chinatelecom.account.exception.TelecomAccountException
+    {
+        android.content.SharedPreferences$Editor $r11;
+        android.content.Context $r4;
+        cn.com.chinatelecom.account.lib.ct.Authorizer r0;
+        cn.com.chinatelecom.account.lib.apk.AuthResult r5, $r15;
+        cn.com.chinatelecom.account.lib.apk.AuthParam $r1;
+        cn.com.chinatelecom.account.lib.apk.AuthWebTokenResult $r8;
+        cn.com.chinatelecom.account.lib.apk.AuthWebTokenParam r3, $r18;
+        cn.com.chinatelecom.account.service.ApiFactory $r19;
+        int $i0;
+        java.lang.String $r6, $r9;
+        cn.com.chinatelecom.account.lib.apk.AuthResultWeb $r10;
+        cn.com.chinatelecom.account.lib.apk.AuthParamWeb r2, $r17;
+        boolean $z0, $z1;
+        cn.com.chinatelecom.account.lib.apk.Authorizer r13;
+        java.lang.Exception r14, r16;
+        android.content.SharedPreferences $r7;
+        java.lang.Object $r12;
+
+        r0 := @this: cn.com.chinatelecom.account.lib.ct.Authorizer;
+
+        $r1 := @parameter0: cn.com.chinatelecom.account.lib.apk.AuthParam;
+
+        $r4 = r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: android.content.Context mContext>;
+
+        $z0 = specialinvoke r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: boolean checkPackage(java.lang.String,android.content.Context)>("cn.com.chinatelecom.account", $r4);
+
+        $r15 = new cn.com.chinatelecom.account.lib.apk.AuthResult;
+
+        r5 = $r15;
+
+        specialinvoke $r15.<cn.com.chinatelecom.account.lib.apk.AuthResult: void <init>()>();
+
+        $r10 = new cn.com.chinatelecom.account.lib.apk.AuthResultWeb;
+
+        specialinvoke $r10.<cn.com.chinatelecom.account.lib.apk.AuthResultWeb: void <init>()>();
+
+        if $r1 != null goto label01;
+
+        r5.<cn.com.chinatelecom.account.lib.apk.AuthResult: int result> = 4097;
+
+        r5.<cn.com.chinatelecom.account.lib.apk.AuthResult: java.lang.String errorDescription> = "\u53c2\u6570\u9519\u8bef";
+
+        return r5;
+
+     label01:
+        $r6 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthParam: java.lang.String appAuthenticator>;
+
+        $z1 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r6);
+
+        if $z1 != 0 goto label02;
+
+        $r6 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthParam: java.lang.String appDeviceNo>;
+
+        $z1 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r6);
+
+        if $z1 != 0 goto label02;
+
+        $r6 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthParam: java.lang.String appTimeStamp>;
+
+        $z1 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r6);
+
+        if $z1 == 0 goto label03;
+
+     label02:
+        r5.<cn.com.chinatelecom.account.lib.apk.AuthResult: int result> = 4097;
+
+        r5.<cn.com.chinatelecom.account.lib.apk.AuthResult: java.lang.String errorDescription> = "\u53c2\u6570\u9519\u8bef";
+
+        return r5;
+
+     label03:
+        $r17 = new cn.com.chinatelecom.account.lib.apk.AuthParamWeb;
+
+        r2 = $r17;
+
+        specialinvoke $r17.<cn.com.chinatelecom.account.lib.apk.AuthParamWeb: void <init>()>();
+
+        $r6 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthParam: java.lang.String appAuthenticator>;
+
+        r2.<cn.com.chinatelecom.account.lib.apk.AuthParamWeb: java.lang.String appAuthenticator> = $r6;
+
+        $r6 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthParam: java.lang.String appDeviceNo>;
+
+        r2.<cn.com.chinatelecom.account.lib.apk.AuthParamWeb: java.lang.String appDeviceNo> = $r6;
+
+        $r6 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthParam: java.lang.String appTimeStamp>;
+
+        r2.<cn.com.chinatelecom.account.lib.apk.AuthParamWeb: java.lang.String appTimeStamp> = $r6;
+
+        r2.<cn.com.chinatelecom.account.lib.apk.AuthParamWeb: java.lang.String RequestType> = "01";
+
+        $r7 = r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: android.content.SharedPreferences sp>;
+
+        $r6 = interfaceinvoke $r7.<android.content.SharedPreferences: java.lang.String getString(java.lang.String,java.lang.String)>("PUserID2", null);
+
+        r2.<cn.com.chinatelecom.account.lib.apk.AuthParamWeb: java.lang.String PUserID2> = $r6;
+
+        $r7 = r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: android.content.SharedPreferences sp>;
+
+        $r6 = interfaceinvoke $r7.<android.content.SharedPreferences: java.lang.String getString(java.lang.String,java.lang.String)>("WebToken", null);
+
+        r2.<cn.com.chinatelecom.account.lib.apk.AuthParamWeb: java.lang.String WebToken> = $r6;
+
+        $r7 = r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: android.content.SharedPreferences sp>;
+
+        $r6 = interfaceinvoke $r7.<android.content.SharedPreferences: java.lang.String getString(java.lang.String,java.lang.String)>("WebTokenTimestamp", null);
+
+        r2.<cn.com.chinatelecom.account.lib.apk.AuthParamWeb: java.lang.String WebTokenTimestamp> = $r6;
+
+        if $z0 != 0 goto label09;
+
+        $r4 = r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: android.content.Context mContext>;
+
+        $z0 = staticinvoke <cn.com.chinatelecom.account.lib.ct.Authorizer: boolean isNetworkAvailable(android.content.Context)>($r4);
+
+        if $z0 != 0 goto label04;
+
+        r5.<cn.com.chinatelecom.account.lib.apk.AuthResult: int result> = 8193;
+
+        r5.<cn.com.chinatelecom.account.lib.apk.AuthResult: java.lang.String errorDescription> = "\u7f51\u7edc\u9519\u8bef";
+
+        return r5;
+
+     label04:
+        $z0 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthParam: boolean WebLoginSupport>;
+
+        if $z0 == 0 goto label08;
+
+        if r2 == null goto label07;
+
+        $r6 = r2.<cn.com.chinatelecom.account.lib.apk.AuthParamWeb: java.lang.String WebToken>;
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r6);
+
+        if $z0 != 0 goto label07;
+
+        $r6 = r2.<cn.com.chinatelecom.account.lib.apk.AuthParamWeb: java.lang.String WebTokenTimestamp>;
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r6);
+
+        if $z0 != 0 goto label07;
+
+        $r6 = r2.<cn.com.chinatelecom.account.lib.apk.AuthParamWeb: java.lang.String PUserID2>;
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r6);
+
+        if $z0 != 0 goto label07;
+
+        $r18 = new cn.com.chinatelecom.account.lib.apk.AuthWebTokenParam;
+
+        r3 = $r18;
+
+        specialinvoke $r18.<cn.com.chinatelecom.account.lib.apk.AuthWebTokenParam: void <init>()>();
+
+        $r6 = r2.<cn.com.chinatelecom.account.lib.apk.AuthParamWeb: java.lang.String appAuthenticator>;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.AuthWebTokenParam: java.lang.String appAuthenticator> = $r6;
+
+        $r6 = r2.<cn.com.chinatelecom.account.lib.apk.AuthParamWeb: java.lang.String appDeviceNo>;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.AuthWebTokenParam: java.lang.String appDeviceNo> = $r6;
+
+        $r6 = r2.<cn.com.chinatelecom.account.lib.apk.AuthParamWeb: java.lang.String appTimeStamp>;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.AuthWebTokenParam: java.lang.String appTimeStamp> = $r6;
+
+        $r6 = r2.<cn.com.chinatelecom.account.lib.apk.AuthParamWeb: java.lang.String RequestType>;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.AuthWebTokenParam: java.lang.String RequestType> = $r6;
+
+        $r6 = r2.<cn.com.chinatelecom.account.lib.apk.AuthParamWeb: java.lang.String PUserID2>;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.AuthWebTokenParam: java.lang.String PUserID2> = $r6;
+
+        $r6 = r2.<cn.com.chinatelecom.account.lib.apk.AuthParamWeb: java.lang.String WebToken>;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.AuthWebTokenParam: java.lang.String WebToken> = $r6;
+
+        $r6 = r2.<cn.com.chinatelecom.account.lib.apk.AuthParamWeb: java.lang.String WebTokenTimestamp>;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.AuthWebTokenParam: java.lang.String WebTokenTimestamp> = $r6;
+
+        $r6 = staticinvoke <cn.com.chinatelecom.account.lib.ct.Authorizer: java.lang.String getIpAddress()>();
+
+        r3.<cn.com.chinatelecom.account.lib.apk.AuthWebTokenParam: java.lang.String IPAddress> = $r6;
+
+        $r8 = specialinvoke r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: cn.com.chinatelecom.account.lib.apk.AuthWebTokenResult authorizeWebView(cn.com.chinatelecom.account.lib.apk.AuthWebTokenParam)>(r3);
+
+        if $r8 == null goto label07;
+
+        $i0 = $r8.<cn.com.chinatelecom.account.lib.apk.AuthWebTokenResult: int ResultCode>;
+
+        if $i0 != 0 goto label05;
+
+        r5 = specialinvoke r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: cn.com.chinatelecom.account.lib.apk.AuthResult webTokenCTAuthResult(cn.com.chinatelecom.account.lib.apk.AuthWebTokenResult)>($r8);
+
+        return r5;
+
+     label05:
+        if $r8 == null goto label07;
+
+        $i0 = $r8.<cn.com.chinatelecom.account.lib.apk.AuthWebTokenResult: int ResultCode>;
+
+        if -1 != $i0 goto label06;
+
+        r5.<cn.com.chinatelecom.account.lib.apk.AuthResult: int result> = 8193;
+
+        r5.<cn.com.chinatelecom.account.lib.apk.AuthResult: java.lang.String errorDescription> = "\u7f51\u7edc\u9519\u8bef";
+
+        return r5;
+
+     label06:
+        if $r8 == null goto label07;
+
+        $i0 = $r8.<cn.com.chinatelecom.account.lib.apk.AuthWebTokenResult: int ResultCode>;
+
+        if 2 != $i0 goto label07;
+
+        $r6 = "1007";
+
+        $r9 = $r8.<cn.com.chinatelecom.account.lib.apk.AuthWebTokenResult: java.lang.String Error>;
+
+        $z0 = virtualinvoke $r6.<java.lang.String: boolean equals(java.lang.Object)>($r9);
+
+        if $z0 != 0 goto label07;
+
+        r5 = specialinvoke r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: cn.com.chinatelecom.account.lib.apk.AuthResult webTokenCTAuthResult(cn.com.chinatelecom.account.lib.apk.AuthWebTokenResult)>($r8);
+
+        return r5;
+
+     label07:
+        $r10 = specialinvoke r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: cn.com.chinatelecom.account.lib.apk.AuthResultWeb WebTouchLogin(cn.com.chinatelecom.account.lib.apk.AuthParamWeb)>(r2);
+
+        $r7 = r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: android.content.SharedPreferences sp>;
+
+        $r11 = interfaceinvoke $r7.<android.content.SharedPreferences: android.content.SharedPreferences$Editor edit()>();
+
+        $r6 = $r10.<cn.com.chinatelecom.account.lib.apk.AuthResultWeb: java.lang.String WebToken>;
+
+        $r11 = interfaceinvoke $r11.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putString(java.lang.String,java.lang.String)>("WebToken", $r6);
+
+        interfaceinvoke $r11.<android.content.SharedPreferences$Editor: boolean commit()>();
+
+        $r7 = r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: android.content.SharedPreferences sp>;
+
+        $r11 = interfaceinvoke $r7.<android.content.SharedPreferences: android.content.SharedPreferences$Editor edit()>();
+
+        $r6 = $r10.<cn.com.chinatelecom.account.lib.apk.AuthResultWeb: java.lang.String WebTokenTimestamp>;
+
+        $r11 = interfaceinvoke $r11.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putString(java.lang.String,java.lang.String)>("WebTokenTimestamp", $r6);
+
+        interfaceinvoke $r11.<android.content.SharedPreferences$Editor: boolean commit()>();
+
+        $r7 = r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: android.content.SharedPreferences sp>;
+
+        $r11 = interfaceinvoke $r7.<android.content.SharedPreferences: android.content.SharedPreferences$Editor edit()>();
+
+        $r6 = $r10.<cn.com.chinatelecom.account.lib.apk.AuthResultWeb: java.lang.String PUserID2>;
+
+        $r11 = interfaceinvoke $r11.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putString(java.lang.String,java.lang.String)>("PUserID2", $r6);
+
+        interfaceinvoke $r11.<android.content.SharedPreferences$Editor: boolean commit()>();
+
+        r5 = specialinvoke r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: cn.com.chinatelecom.account.lib.apk.AuthResult webCTAuthResult(cn.com.chinatelecom.account.lib.apk.AuthResultWeb)>($r10);
+
+        return r5;
+
+     label08:
+        r5.<cn.com.chinatelecom.account.lib.apk.AuthResult: int result> = 20482;
+
+        r5.<cn.com.chinatelecom.account.lib.apk.AuthResult: java.lang.String errorDescription> = "\u5ba2\u6237\u7aef\u672a\u627e\u5230";
+
+        return r5;
+
+     label09:
+        $r19 = new cn.com.chinatelecom.account.service.ApiFactory;
+
+        $r4 = r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: android.content.Context mContext>;
+
+        specialinvoke $r19.<cn.com.chinatelecom.account.service.ApiFactory: void <init>(android.content.Context)>($r4);
+
+        $r12 = virtualinvoke $r19.<cn.com.chinatelecom.account.service.ApiFactory: java.lang.Object getImpl(java.lang.Class)>(class "Lcn/com/chinatelecom/account/lib/apk/Authorizer;");
+
+        r13 = (cn.com.chinatelecom.account.lib.apk.Authorizer) $r12;
+
+     label10:
+        $z0 = interfaceinvoke r13.<cn.com.chinatelecom.account.lib.apk.Authorizer: boolean checkVersion(int,int)>(100, 1);
+
+     label11:
+        if $z0 != 0 goto label13;
+
+        r5.<cn.com.chinatelecom.account.lib.apk.AuthResult: int result> = 24578;
+
+        r5.<cn.com.chinatelecom.account.lib.apk.AuthResult: java.lang.String errorDescription> = "APK\u7248\u672c\u8f83\u4f4e";
+
+        return r5;
+
+     label12:
+        r14 := @caughtexception;
+
+        virtualinvoke r14.<java.lang.Exception: void printStackTrace()>();
+
+        $z0 = 1;
+
+        goto label11;
+
+     label13:
+        $r15 = interfaceinvoke r13.<cn.com.chinatelecom.account.lib.apk.Authorizer: cn.com.chinatelecom.account.lib.apk.AuthResult eAccountLogin(cn.com.chinatelecom.account.lib.apk.AuthParam)>($r1);
+
+     label14:
+        r5 = $r15;
+
+     label15:
+        $i0 = $r15.<cn.com.chinatelecom.account.lib.apk.AuthResult: int result>;
+
+     label16:
+        if 65535 == $i0 goto label19;
+
+     label17:
+        $i0 = $r15.<cn.com.chinatelecom.account.lib.apk.AuthResult: int result>;
+
+     label18:
+        if 20481 != $i0 goto label24;
+
+     label19:
+        $z0 = $r1.<cn.com.chinatelecom.account.lib.apk.AuthParam: boolean WebLoginSupport>;
+
+     label20:
+        if $z0 == 0 goto label24;
+
+     label21:
+        $r10 = specialinvoke r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: cn.com.chinatelecom.account.lib.apk.AuthResultWeb WebTouchLogin(cn.com.chinatelecom.account.lib.apk.AuthParamWeb)>(r2);
+
+        $r15 = specialinvoke r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: cn.com.chinatelecom.account.lib.apk.AuthResult webCTAuthResult(cn.com.chinatelecom.account.lib.apk.AuthResultWeb)>($r10);
+
+     label22:
+        return $r15;
+
+     label23:
+        r16 := @caughtexception;
+
+        virtualinvoke r16.<java.lang.Exception: void printStackTrace()>();
+
+        r5.<cn.com.chinatelecom.account.lib.apk.AuthResult: int result> = 65535;
+
+        r5.<cn.com.chinatelecom.account.lib.apk.AuthResult: java.lang.String errorDescription> = "\u672a\u77e5\u9519\u8bef";
+
+     label24:
+        return r5;
+
+        catch java.lang.Exception from label10 to label11 with label12;
+        catch java.lang.Exception from label13 to label14 with label23;
+        catch java.lang.Exception from label15 to label16 with label23;
+        catch java.lang.Exception from label17 to label18 with label23;
+        catch java.lang.Exception from label19 to label20 with label23;
+        catch java.lang.Exception from label21 to label22 with label23;
+    }
+
+    public cn.com.chinatelecom.account.lib.apk.eAccountSwitchResult eAccountSwitch(cn.com.chinatelecom.account.lib.apk.eAccountSwitchParam) throws cn.com.chinatelecom.account.exception.TelecomAccountException
+    {
+        android.content.Context $r2;
+        cn.com.chinatelecom.account.lib.ct.Authorizer r0;
+        cn.com.chinatelecom.account.lib.apk.eAccountSwitchParam $r1;
+        cn.com.chinatelecom.account.lib.apk.eAccountSwitchResult r3, $r8;
+        cn.com.chinatelecom.account.lib.apk.Authorizer r6;
+        cn.com.chinatelecom.account.service.ApiFactory $r10;
+        java.lang.Exception r7, r9;
+        java.lang.Object $r5;
+        java.lang.String $r4;
+        boolean $z0, $z1;
+
+        r0 := @this: cn.com.chinatelecom.account.lib.ct.Authorizer;
+
+        $r1 := @parameter0: cn.com.chinatelecom.account.lib.apk.eAccountSwitchParam;
+
+        $r2 = r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: android.content.Context mContext>;
+
+        $z0 = specialinvoke r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: boolean checkPackage(java.lang.String,android.content.Context)>("cn.com.chinatelecom.account", $r2);
+
+        $r8 = new cn.com.chinatelecom.account.lib.apk.eAccountSwitchResult;
+
+        r3 = $r8;
+
+        specialinvoke $r8.<cn.com.chinatelecom.account.lib.apk.eAccountSwitchResult: void <init>()>();
+
+        if $r1 != null goto label01;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.eAccountSwitchResult: int result> = 4097;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.eAccountSwitchResult: java.lang.String errorDescription> = "\u53c2\u6570\u9519\u8bef";
+
+        return r3;
+
+     label01:
+        $r4 = $r1.<cn.com.chinatelecom.account.lib.apk.eAccountSwitchParam: java.lang.String appAuthenticator>;
+
+        $z1 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r4);
+
+        if $z1 != 0 goto label02;
+
+        $r4 = $r1.<cn.com.chinatelecom.account.lib.apk.eAccountSwitchParam: java.lang.String appDeviceNo>;
+
+        $z1 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r4);
+
+        if $z1 != 0 goto label02;
+
+        $r4 = $r1.<cn.com.chinatelecom.account.lib.apk.eAccountSwitchParam: java.lang.String appTimeStamp>;
+
+        $z1 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r4);
+
+        if $z1 == 0 goto label03;
+
+     label02:
+        r3.<cn.com.chinatelecom.account.lib.apk.eAccountSwitchResult: int result> = 4097;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.eAccountSwitchResult: java.lang.String errorDescription> = "\u53c2\u6570\u9519\u8bef";
+
+        return r3;
+
+     label03:
+        if $z0 != 0 goto label04;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.eAccountSwitchResult: int result> = 20482;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.eAccountSwitchResult: java.lang.String errorDescription> = "\u5ba2\u6237\u7aef\u672a\u627e\u5230";
+
+        return r3;
+
+     label04:
+        $r10 = new cn.com.chinatelecom.account.service.ApiFactory;
+
+        $r2 = r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: android.content.Context mContext>;
+
+        specialinvoke $r10.<cn.com.chinatelecom.account.service.ApiFactory: void <init>(android.content.Context)>($r2);
+
+        $r5 = virtualinvoke $r10.<cn.com.chinatelecom.account.service.ApiFactory: java.lang.Object getImpl(java.lang.Class)>(class "Lcn/com/chinatelecom/account/lib/apk/Authorizer;");
+
+        r6 = (cn.com.chinatelecom.account.lib.apk.Authorizer) $r5;
+
+     label05:
+        $z0 = interfaceinvoke r6.<cn.com.chinatelecom.account.lib.apk.Authorizer: boolean checkVersion(int,int)>(100, 1);
+
+     label06:
+        if $z0 != 0 goto label08;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.eAccountSwitchResult: int result> = 24578;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.eAccountSwitchResult: java.lang.String errorDescription> = "APK\u7248\u672c\u8f83\u4f4e";
+
+        return r3;
+
+     label07:
+        r7 := @caughtexception;
+
+        virtualinvoke r7.<java.lang.Exception: void printStackTrace()>();
+
+        $z0 = 1;
+
+        goto label06;
+
+     label08:
+        $r8 = interfaceinvoke r6.<cn.com.chinatelecom.account.lib.apk.Authorizer: cn.com.chinatelecom.account.lib.apk.eAccountSwitchResult eAccountSwitch(cn.com.chinatelecom.account.lib.apk.eAccountSwitchParam)>($r1);
+
+     label09:
+        return $r8;
+
+     label10:
+        r9 := @caughtexception;
+
+        virtualinvoke r9.<java.lang.Exception: void printStackTrace()>();
+
+        r3.<cn.com.chinatelecom.account.lib.apk.eAccountSwitchResult: int result> = 65535;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.eAccountSwitchResult: java.lang.String errorDescription> = "\u672a\u77e5\u9519\u8bef";
+
+        return r3;
+
+        catch java.lang.Exception from label05 to label06 with label07;
+        catch java.lang.Exception from label08 to label09 with label10;
+    }
+
+    protected org.json.JSONObject executeAuthMethod(java.lang.String, cn.com.chinatelecom.account.lib.apk.AuthWebTokenParam)
+    {
+        cn.com.chinatelecom.account.lib.ct.Authorizer r0;
+        java.util.List $r5;
+        org.json.JSONObject $r4;
+        java.lang.String $r1;
+        cn.com.chinatelecom.account.lib.apk.AuthWebTokenParam $r2;
+        cn.com.chinatelecom.account.lib.apk.HttpTransmitData r3;
+
+        r0 := @this: cn.com.chinatelecom.account.lib.ct.Authorizer;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: cn.com.chinatelecom.account.lib.apk.AuthWebTokenParam;
+
+        if $r2 != null goto label1;
+
+        $r4 = virtualinvoke r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: org.json.JSONObject setErrReturnJsonObject(int,java.lang.String)>(4097, "\u53c2\u6570\u9519\u8bef");
+
+        return $r4;
+
+     label1:
+        r3 = new cn.com.chinatelecom.account.lib.apk.HttpTransmitData;
+
+        specialinvoke r3.<cn.com.chinatelecom.account.lib.apk.HttpTransmitData: void <init>()>();
+
+        virtualinvoke r3.<cn.com.chinatelecom.account.lib.apk.HttpTransmitData: void setUrl(java.lang.String)>("http://sersh.passport.189.cn/UDBForAndroidInterFaces/AuthWebToken.aspx");
+
+        $r5 = virtualinvoke $r2.<cn.com.chinatelecom.account.lib.apk.AuthWebTokenParam: java.util.List preparePostList()>();
+
+        if $r5 != null goto label2;
+
+        $r4 = virtualinvoke r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: org.json.JSONObject setErrReturnJsonObject(int,java.lang.String)>(4097, "\u53c2\u6570\u9519\u8bef");
+
+        return $r4;
+
+     label2:
+        $r4 = virtualinvoke r3.<cn.com.chinatelecom.account.lib.apk.HttpTransmitData: org.json.JSONObject doPost_SendList_returnJsonObject(java.util.List)>($r5);
+
+        if $r4 != null goto label3;
+
+        $r4 = virtualinvoke r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: org.json.JSONObject setErrReturnJsonObject(int,java.lang.String)>(8193, "\u7f51\u7edc\u9519\u8bef");
+
+     label3:
+        return $r4;
+    }
+
+    public cn.com.chinatelecom.account.lib.apk.SurfingTokenResult getSurfingToken(cn.com.chinatelecom.account.lib.apk.SurfingTokenParam) throws cn.com.chinatelecom.account.exception.TelecomAccountException
+    {
+        android.content.Context $r2;
+        cn.com.chinatelecom.account.lib.ct.Authorizer r0;
+        cn.com.chinatelecom.account.lib.apk.Authorizer r6;
+        cn.com.chinatelecom.account.service.ApiFactory $r10;
+        java.lang.Exception r7, r9;
+        cn.com.chinatelecom.account.lib.apk.SurfingTokenResult r3, $r8;
+        int $i0;
+        java.lang.Object $r5;
+        java.lang.String $r4;
+        cn.com.chinatelecom.account.lib.apk.SurfingTokenParam $r1;
+        boolean $z0, $z1;
+
+        r0 := @this: cn.com.chinatelecom.account.lib.ct.Authorizer;
+
+        $r1 := @parameter0: cn.com.chinatelecom.account.lib.apk.SurfingTokenParam;
+
+        $r2 = r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: android.content.Context mContext>;
+
+        $z0 = specialinvoke r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: boolean checkPackage(java.lang.String,android.content.Context)>("cn.com.chinatelecom.account", $r2);
+
+        $r8 = new cn.com.chinatelecom.account.lib.apk.SurfingTokenResult;
+
+        r3 = $r8;
+
+        specialinvoke $r8.<cn.com.chinatelecom.account.lib.apk.SurfingTokenResult: void <init>()>();
+
+        if $r1 != null goto label1;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.SurfingTokenResult: int result> = 4097;
+
+        return r3;
+
+     label1:
+        $r4 = $r1.<cn.com.chinatelecom.account.lib.apk.SurfingTokenParam: java.lang.String appDeviceNo>;
+
+        $z1 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r4);
+
+        if $z1 == 0 goto label2;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.SurfingTokenResult: int result> = 4097;
+
+        return r3;
+
+     label2:
+        if $z0 != 0 goto label3;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.SurfingTokenResult: int result> = 20482;
+
+        return r3;
+
+     label3:
+        $r10 = new cn.com.chinatelecom.account.service.ApiFactory;
+
+        $r2 = r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: android.content.Context mContext>;
+
+        specialinvoke $r10.<cn.com.chinatelecom.account.service.ApiFactory: void <init>(android.content.Context)>($r2);
+
+        $r5 = virtualinvoke $r10.<cn.com.chinatelecom.account.service.ApiFactory: java.lang.Object getImpl(java.lang.Class)>(class "Lcn/com/chinatelecom/account/lib/apk/Authorizer;");
+
+        r6 = (cn.com.chinatelecom.account.lib.apk.Authorizer) $r5;
+
+     label4:
+        $z0 = interfaceinvoke r6.<cn.com.chinatelecom.account.lib.apk.Authorizer: boolean checkVersion(int,int)>(100, 1);
+
+     label5:
+        if $z0 != 0 goto label7;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.SurfingTokenResult: int result> = 24578;
+
+        return r3;
+
+     label6:
+        r7 := @caughtexception;
+
+        virtualinvoke r7.<java.lang.Exception: void printStackTrace()>();
+
+        $z0 = 1;
+
+        goto label5;
+
+     label7:
+        $r8 = interfaceinvoke r6.<cn.com.chinatelecom.account.lib.apk.Authorizer: cn.com.chinatelecom.account.lib.apk.SurfingTokenResult getSurfingToken(cn.com.chinatelecom.account.lib.apk.SurfingTokenParam)>($r1);
+
+     label8:
+        return $r8;
+
+     label9:
+        r9 := @caughtexception;
+
+        virtualinvoke r9.<java.lang.Exception: void printStackTrace()>();
+
+        $i0 = 65535;
+
+        r3.<cn.com.chinatelecom.account.lib.apk.SurfingTokenResult: int result> = $i0;
+
+        return r3;
+
+        catch java.lang.Exception from label4 to label5 with label6;
+        catch java.lang.Exception from label7 to label8 with label9;
+    }
+
+    public int isCurrentPhoneNumber()
+    {
+        android.content.Context $r1;
+        cn.com.chinatelecom.account.lib.ct.Authorizer r0;
+        cn.com.chinatelecom.account.lib.apk.Authorizer r3;
+        cn.com.chinatelecom.account.service.ApiFactory $r6;
+        java.lang.Exception r4, r5;
+        int $i0;
+        java.lang.Object $r2;
+        boolean $z0;
+
+        r0 := @this: cn.com.chinatelecom.account.lib.ct.Authorizer;
+
+        $r1 = r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: android.content.Context mContext>;
+
+        $z0 = specialinvoke r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: boolean checkPackage(java.lang.String,android.content.Context)>("cn.com.chinatelecom.account", $r1);
+
+        if $z0 != 0 goto label1;
+
+        return 20482;
+
+     label1:
+        $r6 = new cn.com.chinatelecom.account.service.ApiFactory;
+
+        $r1 = r0.<cn.com.chinatelecom.account.lib.ct.Authorizer: android.content.Context mContext>;
+
+        specialinvoke $r6.<cn.com.chinatelecom.account.service.ApiFactory: void <init>(android.content.Context)>($r1);
+
+        $r2 = virtualinvoke $r6.<cn.com.chinatelecom.account.service.ApiFactory: java.lang.Object getImpl(java.lang.Class)>(class "Lcn/com/chinatelecom/account/lib/apk/Authorizer;");
+
+        r3 = (cn.com.chinatelecom.account.lib.apk.Authorizer) $r2;
+
+     label2:
+        $z0 = interfaceinvoke r3.<cn.com.chinatelecom.account.lib.apk.Authorizer: boolean checkVersion(int,int)>(200, 0);
+
+     label3:
+        if $z0 == 0 goto label8;
+
+     label4:
+        $i0 = interfaceinvoke r3.<cn.com.chinatelecom.account.lib.apk.Authorizer: int isCurrentPhoneNumber()>();
+
+     label5:
+        return $i0;
+
+     label6:
+        r4 := @caughtexception;
+
+        virtualinvoke r4.<java.lang.Exception: void printStackTrace()>();
+
+        $z0 = 0;
+
+        goto label3;
+
+     label7:
+        r5 := @caughtexception;
+
+        virtualinvoke r5.<java.lang.Exception: void printStackTrace()>();
+
+        $i0 = 65535;
+
+        return $i0;
+
+     label8:
+        return 4;
+
+        catch java.lang.Exception from label2 to label3 with label6;
+        catch java.lang.Exception from label4 to label5 with label7;
+    }
+
+    protected org.json.JSONObject setErrReturnJsonObject(int, java.lang.String)
+    {
+        cn.com.chinatelecom.account.lib.ct.Authorizer r0;
+        org.json.JSONException r2;
+        org.json.JSONObject r3;
+        int $i0;
+        java.lang.String $r1;
+
+        r0 := @this: cn.com.chinatelecom.account.lib.ct.Authorizer;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: java.lang.String;
+
+        r3 = new org.json.JSONObject;
+
+        specialinvoke r3.<org.json.JSONObject: void <init>()>();
+
+     label1:
+        virtualinvoke r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,int)>("Result", $i0);
+
+        virtualinvoke r3.<org.json.JSONObject: org.json.JSONObject put(java.lang.String,java.lang.Object)>("ErrorDescription", $r1);
+
+     label2:
+        return r3;
+
+     label3:
+        r2 := @caughtexception;
+
+        virtualinvoke r2.<org.json.JSONException: void printStackTrace()>();
+
+        return null;
+
+        catch org.json.JSONException from label1 to label2 with label3;
+    }
+
+    public static void <clinit>()
+    {
+        <cn.com.chinatelecom.account.lib.ct.Authorizer: int SIM_NOT_READY> = 2;
+
+        <cn.com.chinatelecom.account.lib.ct.Authorizer: int SDKVERSION> = 100;
+
+        <cn.com.chinatelecom.account.lib.ct.Authorizer: int NO_PROMPT> = 0;
+
+        <cn.com.chinatelecom.account.lib.ct.Authorizer: int NOT_ACCURATELY_DETERMINED> = 1;
+
+        <cn.com.chinatelecom.account.lib.ct.Authorizer: int NOTIFICATION> = 1;
+
+        <cn.com.chinatelecom.account.lib.ct.Authorizer: int IS_CURRENT_PHONE_NUMBER_SDKVERSION> = 200;
+
+        <cn.com.chinatelecom.account.lib.ct.Authorizer: int IS_CURRENT_PHONE_NUMBER> = 0;
+
+        <cn.com.chinatelecom.account.lib.ct.Authorizer: int CURRENT_ACCOUNT_NOT_EXIST> = 3;
+
+        <cn.com.chinatelecom.account.lib.ct.Authorizer: int ACCOUNT_APK_LOW_VERSION> = 4;
+
+        return;
+    }
+}

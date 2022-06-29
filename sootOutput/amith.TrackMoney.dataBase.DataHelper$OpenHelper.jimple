@@ -1,0 +1,114 @@
+class amith.TrackMoney.dataBase.DataHelper$OpenHelper extends android.database.sqlite.SQLiteOpenHelper
+{
+
+    void <init>(android.content.Context)
+    {
+        android.content.Context $r1;
+        amith.TrackMoney.dataBase.DataHelper$OpenHelper r0;
+
+        r0 := @this: amith.TrackMoney.dataBase.DataHelper$OpenHelper;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke r0.<android.database.sqlite.SQLiteOpenHelper: void <init>(android.content.Context,java.lang.String,android.database.sqlite.SQLiteDatabase$CursorFactory,int)>($r1, "TrackMoney.db", null, 2);
+
+        return;
+    }
+
+    private void performVersion_2_Updates(android.database.sqlite.SQLiteDatabase)
+    {
+        android.database.sqlite.SQLiteDatabase $r1;
+        amith.TrackMoney.dataBase.DataHelper$OpenHelper r0;
+        java.lang.Exception $r2;
+
+        r0 := @this: amith.TrackMoney.dataBase.DataHelper$OpenHelper;
+
+        $r1 := @parameter0: android.database.sqlite.SQLiteDatabase;
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>("TrackMoney", "Running performVersion_2_Updates");
+
+     label1:
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("ALTER TABLE TRANSACTIONS ADD T_ACCOUNT TEXT DEFAULT \'-1\' NOT NULL");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("CREATE TABLE ACCOUNTS (A_ID INTEGER PRIMARY KEY AUTOINCREMENT,A_NAME TEXT,A_NUMBER TEXT,A_TYPE TEXT,A_CARD_TYPE TEXT,A_BALANCE REAL);");
+
+     label2:
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>("TrackMoney", "performVersion_2_Updates Failed!");
+
+        return;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+    }
+
+    public void onCreate(android.database.sqlite.SQLiteDatabase)
+    {
+        android.database.sqlite.SQLiteDatabase $r1;
+        amith.TrackMoney.dataBase.DataHelper$OpenHelper r0;
+        java.lang.Exception $r2;
+
+        r0 := @this: amith.TrackMoney.dataBase.DataHelper$OpenHelper;
+
+        $r1 := @parameter0: android.database.sqlite.SQLiteDatabase;
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>("TrackMoney", "Creating Tables");
+
+     label1:
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("CREATE TABLE TRANSACTIONS (T_ID INTEGER PRIMARY KEY AUTOINCREMENT,T_DATE TEXT,T_CATEGORY_ID INTEGER,T_TRANSACTION_AMOUNT REAL,T_NOTE TEXT);");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("CREATE TABLE CATEGORIES (C_ID INTEGER PRIMARY KEY AUTOINCREMENT,C_DESCRIPTION TEXT,C_ICON TEXT);");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("CREATE TABLE OTHERS (O_ID INTEGER PRIMARY KEY AUTOINCREMENT,O_KEY TEXT,O_VALUE TEXT);");
+
+     label2:
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>("TrackMoney", "Creating Tables, Done!");
+
+        specialinvoke r0.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: void performVersion_2_Updates(android.database.sqlite.SQLiteDatabase)>($r1);
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>("TrackMoney", "Table Creation Failed!");
+
+        goto label2;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+    }
+
+    public void onUpgrade(android.database.sqlite.SQLiteDatabase, int, int)
+    {
+        android.database.sqlite.SQLiteDatabase $r1;
+        amith.TrackMoney.dataBase.DataHelper$OpenHelper r0;
+        int $i0, $i1;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r3;
+
+        r0 := @this: amith.TrackMoney.dataBase.DataHelper$OpenHelper;
+
+        $r1 := @parameter0: android.database.sqlite.SQLiteDatabase;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("Upgrading database to Version ");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>("TrackMoney", $r3);
+
+        virtualinvoke r0.<amith.TrackMoney.dataBase.DataHelper$OpenHelper: void onCreate(android.database.sqlite.SQLiteDatabase)>($r1);
+
+        return;
+    }
+}

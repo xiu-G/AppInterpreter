@@ -1,0 +1,449 @@
+public class com.kingroot.sdk.util.e extends java.lang.Object
+{
+
+    public static long a(java.io.InputStream, java.io.OutputStream)
+    {
+        java.io.OutputStream $r1;
+        byte[] $r2;
+        int $i0;
+        long $l1, $l2;
+        java.io.InputStream $r0;
+
+        $r0 := @parameter0: java.io.InputStream;
+
+        $r1 := @parameter1: java.io.OutputStream;
+
+        $r2 = newarray (byte)[4096];
+
+        $l1 = 0L;
+
+     label1:
+        $i0 = virtualinvoke $r0.<java.io.InputStream: int read(byte[])>($r2);
+
+        if $i0 == -1 goto label2;
+
+        virtualinvoke $r1.<java.io.OutputStream: void write(byte[],int,int)>($r2, 0, $i0);
+
+        $l2 = (long) $i0;
+
+        $l1 = $l1 + $l2;
+
+        goto label1;
+
+     label2:
+        return $l1;
+    }
+
+    public static void a(java.io.Closeable)
+    {
+        java.lang.Throwable $r1;
+        java.io.Closeable $r0;
+
+        $r0 := @parameter0: java.io.Closeable;
+
+        if $r0 == null goto label4;
+
+     label1:
+        interfaceinvoke $r0.<java.io.Closeable: void close()>();
+
+     label2:
+        return;
+
+     label3:
+        $r1 := @caughtexception;
+
+     label4:
+        return;
+
+        catch java.io.IOException from label1 to label2 with label3;
+    }
+
+    public static void a(java.io.File, java.lang.String)
+    {
+        java.lang.Throwable $r7, $r8, $r9;
+        byte[] $r5;
+        long $l0;
+        byte $b1;
+        int $i2;
+        java.lang.String $r1, $r4, $r12;
+        boolean $z0;
+        java.io.BufferedWriter $r2, $r11;
+        java.io.FileWriter $r3, $r10;
+        java.io.IOException $r13;
+        java.io.File $r0;
+        java.io.Writer $r6;
+
+        $r0 := @parameter0: java.io.File;
+
+        $r1 := @parameter1: java.lang.String;
+
+        if $r0 == null goto label01;
+
+        $z0 = virtualinvoke $r0.<java.io.File: boolean exists()>();
+
+        if $z0 == 0 goto label01;
+
+        $l0 = virtualinvoke $r0.<java.io.File: long length()>();
+
+        $b1 = $l0 cmp 102400L;
+
+        $i2 = (int) $b1;
+
+        if $i2 <= 0 goto label01;
+
+        virtualinvoke $r0.<java.io.File: boolean delete()>();
+
+     label01:
+        $r11 = new java.io.BufferedWriter;
+
+     label02:
+        $r2 = $r11;
+
+     label03:
+        $r10 = new java.io.FileWriter;
+
+     label04:
+        $r3 = $r10;
+
+     label05:
+        specialinvoke $r10.<java.io.FileWriter: void <init>(java.io.File,boolean)>($r0, 1);
+
+        specialinvoke $r11.<java.io.BufferedWriter: void <init>(java.io.Writer)>($r3);
+
+     label06:
+        $r12 = new java.lang.String;
+
+     label07:
+        $r4 = $r12;
+
+     label08:
+        $r5 = virtualinvoke $r1.<java.lang.String: byte[] getBytes()>();
+
+        $r5 = staticinvoke <android.util.Base64: byte[] encode(byte[],int)>($r5, 2);
+
+        specialinvoke $r12.<java.lang.String: void <init>(byte[])>($r5);
+
+        $r6 = virtualinvoke $r2.<java.io.BufferedWriter: java.io.Writer append(java.lang.CharSequence)>($r4);
+
+        virtualinvoke $r6.<java.io.Writer: java.io.Writer append(java.lang.CharSequence)>("\n");
+
+        virtualinvoke $r2.<java.io.BufferedWriter: void flush()>();
+
+     label09:
+        staticinvoke <com.kingroot.sdk.util.e: void a(java.io.Closeable)>($r2);
+
+        return;
+
+     label10:
+        $r7 := @caughtexception;
+
+        $r2 = null;
+
+     label11:
+        $r13 = (java.io.IOException) $r7;
+
+        virtualinvoke $r13.<java.io.IOException: void printStackTrace()>();
+
+     label12:
+        staticinvoke <com.kingroot.sdk.util.e: void a(java.io.Closeable)>($r2);
+
+        return;
+
+     label13:
+        $r8 := @caughtexception;
+
+        $r2 = null;
+
+     label14:
+        virtualinvoke $r8.<java.lang.Throwable: void printStackTrace()>();
+
+     label15:
+        staticinvoke <com.kingroot.sdk.util.e: void a(java.io.Closeable)>($r2);
+
+        return;
+
+     label16:
+        staticinvoke <com.kingroot.sdk.util.e: void a(java.io.Closeable)>($r2);
+
+        throw $r9;
+
+     label17:
+        $r9 := @caughtexception;
+
+        goto label16;
+
+     label18:
+        $r8 := @caughtexception;
+
+        goto label14;
+
+     label19:
+        $r7 := @caughtexception;
+
+        goto label11;
+
+        catch java.io.IOException from label05 to label06 with label10;
+        catch java.lang.Throwable from label01 to label02 with label13;
+        catch java.lang.Throwable from label03 to label04 with label13;
+        catch java.lang.Throwable from label05 to label06 with label13;
+        catch java.io.IOException from label08 to label09 with label19;
+        catch java.lang.Throwable from label06 to label07 with label18;
+        catch java.lang.Throwable from label08 to label09 with label18;
+        catch java.lang.Throwable from label11 to label12 with label17;
+        catch java.lang.Throwable from label14 to label15 with label17;
+    }
+
+    public static transient void a(java.io.File, java.lang.String[])
+    {
+        java.lang.Throwable $r6;
+        java.io.BufferedWriter $r2;
+        java.io.FileWriter $r3;
+        java.lang.String[] $r1;
+        java.io.File $r0;
+        int $i0, $i1;
+        java.lang.StringBuilder $r5;
+        java.lang.String $r4;
+
+        $r0 := @parameter0: java.io.File;
+
+        $r1 := @parameter1: java.lang.String[];
+
+     label01:
+        $r2 = new java.io.BufferedWriter;
+
+        $r3 = new java.io.FileWriter;
+
+        specialinvoke $r3.<java.io.FileWriter: void <init>(java.io.File)>($r0);
+
+        specialinvoke $r2.<java.io.BufferedWriter: void <init>(java.io.Writer)>($r3);
+
+     label02:
+        $i0 = lengthof $r1;
+
+     label03:
+        $i1 = 0;
+
+     label04:
+        if $i1 >= $i0 goto label07;
+
+     label05:
+        $r4 = $r1[$i1];
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\n");
+
+        $r4 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r2.<java.io.BufferedWriter: void write(java.lang.String)>($r4);
+
+     label06:
+        $i1 = $i1 + 1;
+
+        goto label04;
+
+     label07:
+        virtualinvoke $r2.<java.io.BufferedWriter: void flush()>();
+
+     label08:
+        staticinvoke <com.kingroot.sdk.util.e: void a(java.io.Closeable)>($r2);
+
+        return;
+
+     label09:
+        $r6 := @caughtexception;
+
+        $r2 = null;
+
+     label10:
+        staticinvoke <com.kingroot.sdk.util.e: void a(java.io.Closeable)>($r2);
+
+        throw $r6;
+
+     label11:
+        $r6 := @caughtexception;
+
+        goto label10;
+
+        catch java.lang.Throwable from label01 to label02 with label09;
+        catch java.lang.Throwable from label02 to label03 with label11;
+        catch java.lang.Throwable from label05 to label06 with label11;
+        catch java.lang.Throwable from label07 to label08 with label11;
+    }
+
+    public static java.util.List j(java.io.File)
+    {
+        java.lang.Throwable $r7, $r8, $r10, $r11;
+        byte[] $r6;
+        java.util.ArrayList $r1, $r12;
+        java.lang.String $r4, $r5, $r15;
+        boolean $z0;
+        java.io.IOException $r17;
+        java.lang.ArrayIndexOutOfBoundsException $r9;
+        java.lang.IllegalArgumentException $r16;
+        java.io.File $r0;
+        java.io.BufferedReader $r2, $r14;
+        java.io.FileReader $r3, $r13;
+
+        $r0 := @parameter0: java.io.File;
+
+        $r12 = new java.util.ArrayList;
+
+        $r1 = $r12;
+
+        specialinvoke $r12.<java.util.ArrayList: void <init>()>();
+
+        $z0 = virtualinvoke $r0.<java.io.File: boolean exists()>();
+
+        if $z0 == 0 goto label31;
+
+     label01:
+        $r14 = new java.io.BufferedReader;
+
+     label02:
+        $r2 = $r14;
+
+     label03:
+        $r13 = new java.io.FileReader;
+
+     label04:
+        $r3 = $r13;
+
+     label05:
+        specialinvoke $r13.<java.io.FileReader: void <init>(java.io.File)>($r0);
+
+        specialinvoke $r14.<java.io.BufferedReader: void <init>(java.io.Reader)>($r3);
+
+     label06:
+        $r4 = virtualinvoke $r2.<java.io.BufferedReader: java.lang.String readLine()>();
+
+     label07:
+        if $r4 == null goto label19;
+
+     label08:
+        $r15 = new java.lang.String;
+
+     label09:
+        $r5 = $r15;
+
+     label10:
+        $r6 = staticinvoke <android.util.Base64: byte[] decode(java.lang.String,int)>($r4, 2);
+
+        specialinvoke $r15.<java.lang.String: void <init>(byte[])>($r6);
+
+        interfaceinvoke $r1.<java.util.List: boolean add(java.lang.Object)>($r5);
+
+     label11:
+        goto label06;
+
+     label12:
+        $r7 := @caughtexception;
+
+     label13:
+        $r16 = (java.lang.IllegalArgumentException) $r7;
+
+     label14:
+        virtualinvoke $r16.<java.lang.IllegalArgumentException: void printStackTrace()>();
+
+     label15:
+        goto label06;
+
+     label16:
+        $r8 := @caughtexception;
+
+     label17:
+        $r17 = (java.io.IOException) $r8;
+
+        virtualinvoke $r17.<java.io.IOException: void printStackTrace()>();
+
+     label18:
+        staticinvoke <com.kingroot.sdk.util.e: void a(java.io.Closeable)>($r2);
+
+        return $r1;
+
+     label19:
+        staticinvoke <com.kingroot.sdk.util.e: void a(java.io.Closeable)>($r2);
+
+        return $r1;
+
+     label20:
+        $r9 := @caughtexception;
+
+        $r2 = null;
+
+     label21:
+        virtualinvoke $r9.<java.lang.ArrayIndexOutOfBoundsException: void printStackTrace()>();
+
+     label22:
+        staticinvoke <com.kingroot.sdk.util.e: void a(java.io.Closeable)>($r2);
+
+        return $r1;
+
+     label23:
+        $r10 := @caughtexception;
+
+        $r2 = null;
+
+     label24:
+        virtualinvoke $r10.<java.lang.Throwable: void printStackTrace()>();
+
+     label25:
+        staticinvoke <com.kingroot.sdk.util.e: void a(java.io.Closeable)>($r2);
+
+        return $r1;
+
+     label26:
+        staticinvoke <com.kingroot.sdk.util.e: void a(java.io.Closeable)>($r2);
+
+        throw $r11;
+
+     label27:
+        $r11 := @caughtexception;
+
+        goto label26;
+
+     label28:
+        $r10 := @caughtexception;
+
+        goto label24;
+
+     label29:
+        $r9 := @caughtexception;
+
+        goto label21;
+
+     label30:
+        $r8 := @caughtexception;
+
+        $r2 = null;
+
+        goto label17;
+
+     label31:
+        return $r1;
+
+        catch java.io.IOException from label05 to label06 with label30;
+        catch java.lang.ArrayIndexOutOfBoundsException from label05 to label06 with label20;
+        catch java.lang.Throwable from label01 to label02 with label23;
+        catch java.lang.Throwable from label03 to label04 with label23;
+        catch java.lang.Throwable from label05 to label06 with label23;
+        catch java.io.IOException from label06 to label07 with label16;
+        catch java.lang.ArrayIndexOutOfBoundsException from label06 to label07 with label29;
+        catch java.lang.Throwable from label06 to label07 with label28;
+        catch java.lang.IllegalArgumentException from label10 to label11 with label12;
+        catch java.io.IOException from label10 to label11 with label16;
+        catch java.lang.ArrayIndexOutOfBoundsException from label10 to label11 with label29;
+        catch java.lang.Throwable from label08 to label09 with label28;
+        catch java.lang.Throwable from label10 to label11 with label28;
+        catch java.io.IOException from label14 to label15 with label16;
+        catch java.lang.ArrayIndexOutOfBoundsException from label14 to label15 with label29;
+        catch java.lang.Throwable from label13 to label15 with label28;
+        catch java.lang.Throwable from label17 to label18 with label27;
+        catch java.lang.Throwable from label21 to label22 with label27;
+        catch java.lang.Throwable from label24 to label25 with label27;
+    }
+}

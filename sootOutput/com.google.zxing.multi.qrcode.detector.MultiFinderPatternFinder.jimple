@@ -1,0 +1,666 @@
+final class com.google.zxing.multi.qrcode.detector.MultiFinderPatternFinder extends com.google.zxing.qrcode.detector.FinderPatternFinder
+{
+    private static final float DIFF_MODSIZE_CUTOFF;
+    private static final float DIFF_MODSIZE_CUTOFF_PERCENT;
+    private static final com.google.zxing.qrcode.detector.FinderPatternInfo[] EMPTY_RESULT_ARRAY;
+    private static final float MAX_MODULE_COUNT_PER_EDGE;
+    private static final float MIN_MODULE_COUNT_PER_EDGE;
+
+    static void <clinit>()
+    {
+        com.google.zxing.qrcode.detector.FinderPatternInfo[] $r0;
+
+        <com.google.zxing.multi.qrcode.detector.MultiFinderPatternFinder: float MIN_MODULE_COUNT_PER_EDGE> = 9.0F;
+
+        <com.google.zxing.multi.qrcode.detector.MultiFinderPatternFinder: float MAX_MODULE_COUNT_PER_EDGE> = 180.0F;
+
+        <com.google.zxing.multi.qrcode.detector.MultiFinderPatternFinder: float DIFF_MODSIZE_CUTOFF_PERCENT> = 0.05F;
+
+        <com.google.zxing.multi.qrcode.detector.MultiFinderPatternFinder: float DIFF_MODSIZE_CUTOFF> = 0.5F;
+
+        $r0 = newarray (com.google.zxing.qrcode.detector.FinderPatternInfo)[0];
+
+        <com.google.zxing.multi.qrcode.detector.MultiFinderPatternFinder: com.google.zxing.qrcode.detector.FinderPatternInfo[] EMPTY_RESULT_ARRAY> = $r0;
+
+        return;
+    }
+
+    void <init>(com.google.zxing.common.BitMatrix)
+    {
+        com.google.zxing.multi.qrcode.detector.MultiFinderPatternFinder r0;
+        com.google.zxing.common.BitMatrix $r1;
+
+        r0 := @this: com.google.zxing.multi.qrcode.detector.MultiFinderPatternFinder;
+
+        $r1 := @parameter0: com.google.zxing.common.BitMatrix;
+
+        specialinvoke r0.<com.google.zxing.qrcode.detector.FinderPatternFinder: void <init>(com.google.zxing.common.BitMatrix)>($r1);
+
+        return;
+    }
+
+    void <init>(com.google.zxing.common.BitMatrix, com.google.zxing.ResultPointCallback)
+    {
+        com.google.zxing.multi.qrcode.detector.MultiFinderPatternFinder r0;
+        com.google.zxing.common.BitMatrix $r1;
+        com.google.zxing.ResultPointCallback $r2;
+
+        r0 := @this: com.google.zxing.multi.qrcode.detector.MultiFinderPatternFinder;
+
+        $r1 := @parameter0: com.google.zxing.common.BitMatrix;
+
+        $r2 := @parameter1: com.google.zxing.ResultPointCallback;
+
+        specialinvoke r0.<com.google.zxing.qrcode.detector.FinderPatternFinder: void <init>(com.google.zxing.common.BitMatrix,com.google.zxing.ResultPointCallback)>($r1, $r2);
+
+        return;
+    }
+
+    private com.google.zxing.qrcode.detector.FinderPattern[][] selectBestPatterns() throws com.google.zxing.NotFoundException
+    {
+        com.google.zxing.qrcode.detector.FinderPatternInfo $r10, $r14;
+        com.google.zxing.qrcode.detector.FinderPattern[] $r5;
+        java.util.Vector $r1, $r2, $r13;
+        byte $b4;
+        int $i0, $i1, $i2, $i3, $i5;
+        com.google.zxing.qrcode.detector.FinderPattern[][] $r4;
+        double $d0;
+        boolean $z0;
+        com.google.zxing.multi.qrcode.detector.MultiFinderPatternFinder r0;
+        com.google.zxing.multi.qrcode.detector.MultiFinderPatternFinder$ModuleSizeComparator $r12;
+        com.google.zxing.NotFoundException $r3;
+        float $f0, $f1, $f2, $f3, $f4;
+        java.lang.Object $r6;
+        com.google.zxing.qrcode.detector.FinderPattern $r7, $r8, $r9, $r11;
+
+        r0 := @this: com.google.zxing.multi.qrcode.detector.MultiFinderPatternFinder;
+
+        $r2 = virtualinvoke r0.<com.google.zxing.multi.qrcode.detector.MultiFinderPatternFinder: java.util.Vector getPossibleCenters()>();
+
+        $i0 = virtualinvoke $r2.<java.util.Vector: int size()>();
+
+        if $i0 >= 3 goto label01;
+
+        $r3 = staticinvoke <com.google.zxing.NotFoundException: com.google.zxing.NotFoundException getNotFoundInstance()>();
+
+        throw $r3;
+
+     label01:
+        if $i0 != 3 goto label02;
+
+        $r4 = newarray (com.google.zxing.qrcode.detector.FinderPattern[])[1];
+
+        $r5 = newarray (com.google.zxing.qrcode.detector.FinderPattern)[3];
+
+        $r6 = virtualinvoke $r2.<java.util.Vector: java.lang.Object elementAt(int)>(0);
+
+        $r7 = (com.google.zxing.qrcode.detector.FinderPattern) $r6;
+
+        $r5[0] = $r7;
+
+        $r6 = virtualinvoke $r2.<java.util.Vector: java.lang.Object elementAt(int)>(1);
+
+        $r7 = (com.google.zxing.qrcode.detector.FinderPattern) $r6;
+
+        $r5[1] = $r7;
+
+        $r6 = virtualinvoke $r2.<java.util.Vector: java.lang.Object elementAt(int)>(2);
+
+        $r7 = (com.google.zxing.qrcode.detector.FinderPattern) $r6;
+
+        $r5[2] = $r7;
+
+        $r4[0] = $r5;
+
+        return $r4;
+
+     label02:
+        $r12 = new com.google.zxing.multi.qrcode.detector.MultiFinderPatternFinder$ModuleSizeComparator;
+
+        specialinvoke $r12.<com.google.zxing.multi.qrcode.detector.MultiFinderPatternFinder$ModuleSizeComparator: void <init>(com.google.zxing.multi.qrcode.detector.MultiFinderPatternFinder$1)>(null);
+
+        staticinvoke <com.google.zxing.common.Collections: void insertionSort(java.util.Vector,com.google.zxing.common.Comparator)>($r2, $r12);
+
+        $r13 = new java.util.Vector;
+
+        $r1 = $r13;
+
+        specialinvoke $r13.<java.util.Vector: void <init>()>();
+
+        $i1 = 0;
+
+     label03:
+        $i2 = -2;
+
+        $i2 = $i0 + $i2;
+
+        if $i1 >= $i2 goto label14;
+
+        $r6 = virtualinvoke $r2.<java.util.Vector: java.lang.Object elementAt(int)>($i1);
+
+        $r7 = (com.google.zxing.qrcode.detector.FinderPattern) $r6;
+
+        if $r7 != null goto label05;
+
+     label04:
+        $i1 = $i1 + 1;
+
+        goto label03;
+
+     label05:
+        $i2 = $i1 + 1;
+
+     label06:
+        $i3 = -1;
+
+        $i3 = $i0 + $i3;
+
+        if $i2 >= $i3 goto label04;
+
+        $r6 = virtualinvoke $r2.<java.util.Vector: java.lang.Object elementAt(int)>($i2);
+
+        $r8 = (com.google.zxing.qrcode.detector.FinderPattern) $r6;
+
+        if $r8 != null goto label08;
+
+     label07:
+        $i2 = $i2 + 1;
+
+        goto label06;
+
+     label08:
+        $f0 = virtualinvoke $r7.<com.google.zxing.qrcode.detector.FinderPattern: float getEstimatedModuleSize()>();
+
+        $f1 = virtualinvoke $r8.<com.google.zxing.qrcode.detector.FinderPattern: float getEstimatedModuleSize()>();
+
+        $f0 = $f0 - $f1;
+
+        $f1 = virtualinvoke $r7.<com.google.zxing.qrcode.detector.FinderPattern: float getEstimatedModuleSize()>();
+
+        $f2 = virtualinvoke $r8.<com.google.zxing.qrcode.detector.FinderPattern: float getEstimatedModuleSize()>();
+
+        $f1 = staticinvoke <java.lang.Math: float min(float,float)>($f1, $f2);
+
+        $f0 = $f0 / $f1;
+
+        $f1 = virtualinvoke $r7.<com.google.zxing.qrcode.detector.FinderPattern: float getEstimatedModuleSize()>();
+
+        $f2 = virtualinvoke $r8.<com.google.zxing.qrcode.detector.FinderPattern: float getEstimatedModuleSize()>();
+
+        $f1 = $f1 - $f2;
+
+        $f1 = staticinvoke <java.lang.Math: float abs(float)>($f1);
+
+        $b4 = $f1 cmpl 0.5F;
+
+        $i3 = (int) $b4;
+
+        if $i3 <= 0 goto label09;
+
+        $b4 = $f0 cmpl 0.05F;
+
+        $i3 = (int) $b4;
+
+        if $i3 >= 0 goto label04;
+
+     label09:
+        $i3 = $i2 + 1;
+
+     label10:
+        if $i3 >= $i0 goto label07;
+
+        $r6 = virtualinvoke $r2.<java.util.Vector: java.lang.Object elementAt(int)>($i3);
+
+        $r9 = (com.google.zxing.qrcode.detector.FinderPattern) $r6;
+
+        if $r9 != null goto label12;
+
+     label11:
+        $i3 = $i3 + 1;
+
+        goto label10;
+
+     label12:
+        $f0 = virtualinvoke $r8.<com.google.zxing.qrcode.detector.FinderPattern: float getEstimatedModuleSize()>();
+
+        $f1 = virtualinvoke $r9.<com.google.zxing.qrcode.detector.FinderPattern: float getEstimatedModuleSize()>();
+
+        $f0 = $f0 - $f1;
+
+        $f1 = virtualinvoke $r8.<com.google.zxing.qrcode.detector.FinderPattern: float getEstimatedModuleSize()>();
+
+        $f2 = virtualinvoke $r9.<com.google.zxing.qrcode.detector.FinderPattern: float getEstimatedModuleSize()>();
+
+        $f1 = staticinvoke <java.lang.Math: float min(float,float)>($f1, $f2);
+
+        $f0 = $f0 / $f1;
+
+        $f1 = virtualinvoke $r8.<com.google.zxing.qrcode.detector.FinderPattern: float getEstimatedModuleSize()>();
+
+        $f2 = virtualinvoke $r9.<com.google.zxing.qrcode.detector.FinderPattern: float getEstimatedModuleSize()>();
+
+        $f1 = $f1 - $f2;
+
+        $f1 = staticinvoke <java.lang.Math: float abs(float)>($f1);
+
+        $b4 = $f1 cmpl 0.5F;
+
+        $i5 = (int) $b4;
+
+        if $i5 <= 0 goto label13;
+
+        $b4 = $f0 cmpl 0.05F;
+
+        $i5 = (int) $b4;
+
+        if $i5 >= 0 goto label07;
+
+     label13:
+        $r5 = newarray (com.google.zxing.qrcode.detector.FinderPattern)[3];
+
+        $r5[0] = $r7;
+
+        $r5[1] = $r8;
+
+        $r5[2] = $r9;
+
+        staticinvoke <com.google.zxing.ResultPoint: void orderBestPatterns(com.google.zxing.ResultPoint[])>($r5);
+
+        $r14 = new com.google.zxing.qrcode.detector.FinderPatternInfo;
+
+        $r10 = $r14;
+
+        specialinvoke $r14.<com.google.zxing.qrcode.detector.FinderPatternInfo: void <init>(com.google.zxing.qrcode.detector.FinderPattern[])>($r5);
+
+        $r9 = virtualinvoke $r10.<com.google.zxing.qrcode.detector.FinderPatternInfo: com.google.zxing.qrcode.detector.FinderPattern getTopLeft()>();
+
+        $r11 = virtualinvoke $r10.<com.google.zxing.qrcode.detector.FinderPatternInfo: com.google.zxing.qrcode.detector.FinderPattern getBottomLeft()>();
+
+        $f2 = staticinvoke <com.google.zxing.ResultPoint: float distance(com.google.zxing.ResultPoint,com.google.zxing.ResultPoint)>($r9, $r11);
+
+        $r9 = virtualinvoke $r10.<com.google.zxing.qrcode.detector.FinderPatternInfo: com.google.zxing.qrcode.detector.FinderPattern getTopRight()>();
+
+        $r11 = virtualinvoke $r10.<com.google.zxing.qrcode.detector.FinderPatternInfo: com.google.zxing.qrcode.detector.FinderPattern getBottomLeft()>();
+
+        $f0 = staticinvoke <com.google.zxing.ResultPoint: float distance(com.google.zxing.ResultPoint,com.google.zxing.ResultPoint)>($r9, $r11);
+
+        $r9 = virtualinvoke $r10.<com.google.zxing.qrcode.detector.FinderPatternInfo: com.google.zxing.qrcode.detector.FinderPattern getTopLeft()>();
+
+        $r11 = virtualinvoke $r10.<com.google.zxing.qrcode.detector.FinderPatternInfo: com.google.zxing.qrcode.detector.FinderPattern getTopRight()>();
+
+        $f1 = staticinvoke <com.google.zxing.ResultPoint: float distance(com.google.zxing.ResultPoint,com.google.zxing.ResultPoint)>($r9, $r11);
+
+        $f3 = $f2 + $f1;
+
+        $f4 = virtualinvoke $r7.<com.google.zxing.qrcode.detector.FinderPattern: float getEstimatedModuleSize()>();
+
+        $f3 = $f3 / $f4;
+
+        $f3 = $f3 / 2.0F;
+
+        $b4 = $f3 cmpl 180.0F;
+
+        $i5 = (int) $b4;
+
+        if $i5 > 0 goto label11;
+
+        $b4 = $f3 cmpg 9.0F;
+
+        $i5 = (int) $b4;
+
+        if $i5 < 0 goto label11;
+
+        $f3 = $f2 - $f1;
+
+        $f4 = staticinvoke <java.lang.Math: float min(float,float)>($f2, $f1);
+
+        $f3 = $f3 / $f4;
+
+        $f3 = staticinvoke <java.lang.Math: float abs(float)>($f3);
+
+        $b4 = $f3 cmpl 0.1F;
+
+        $i5 = (int) $b4;
+
+        if $i5 >= 0 goto label11;
+
+        $f2 = $f2 * $f2;
+
+        $f1 = $f1 * $f1;
+
+        $f1 = $f1 + $f2;
+
+        $d0 = (double) $f1;
+
+        $d0 = staticinvoke <java.lang.Math: double sqrt(double)>($d0);
+
+        $f2 = (float) $d0;
+
+        $f1 = $f0 - $f2;
+
+        $f0 = staticinvoke <java.lang.Math: float min(float,float)>($f0, $f2);
+
+        $f0 = $f1 / $f0;
+
+        $f0 = staticinvoke <java.lang.Math: float abs(float)>($f0);
+
+        $b4 = $f0 cmpl 0.1F;
+
+        $i5 = (int) $b4;
+
+        if $i5 >= 0 goto label11;
+
+        virtualinvoke $r1.<java.util.Vector: void addElement(java.lang.Object)>($r5);
+
+        goto label11;
+
+     label14:
+        $z0 = virtualinvoke $r1.<java.util.Vector: boolean isEmpty()>();
+
+        if $z0 != 0 goto label17;
+
+        $i0 = virtualinvoke $r1.<java.util.Vector: int size()>();
+
+        $r4 = newarray (com.google.zxing.qrcode.detector.FinderPattern[])[$i0];
+
+        $i0 = 0;
+
+     label15:
+        $i1 = virtualinvoke $r1.<java.util.Vector: int size()>();
+
+        if $i0 >= $i1 goto label16;
+
+        $r6 = virtualinvoke $r1.<java.util.Vector: java.lang.Object elementAt(int)>($i0);
+
+        $r5 = (com.google.zxing.qrcode.detector.FinderPattern[]) $r6;
+
+        $r4[$i0] = $r5;
+
+        $i0 = $i0 + 1;
+
+        goto label15;
+
+     label16:
+        return $r4;
+
+     label17:
+        $r3 = staticinvoke <com.google.zxing.NotFoundException: com.google.zxing.NotFoundException getNotFoundInstance()>();
+
+        throw $r3;
+    }
+
+    public com.google.zxing.qrcode.detector.FinderPatternInfo[] findMulti(java.util.Hashtable) throws com.google.zxing.NotFoundException
+    {
+        com.google.zxing.qrcode.detector.FinderPatternInfo $r8, $r12;
+        com.google.zxing.qrcode.detector.FinderPattern[] $r7;
+        java.util.Vector $r6, $r11;
+        com.google.zxing.qrcode.detector.FinderPatternInfo[] $r9;
+        int[] $r2;
+        int $i0, $i1, $i2, $i3, $i4, $i5, $i6, $i7;
+        com.google.zxing.qrcode.detector.FinderPattern[][] $r5;
+        java.util.Hashtable $r1;
+        boolean $z0;
+        com.google.zxing.multi.qrcode.detector.MultiFinderPatternFinder r0;
+        com.google.zxing.DecodeHintType $r3;
+        float $f0;
+        com.google.zxing.common.BitMatrix $r4;
+        java.lang.Object $r10;
+
+        r0 := @this: com.google.zxing.multi.qrcode.detector.MultiFinderPatternFinder;
+
+        $r1 := @parameter0: java.util.Hashtable;
+
+        $i0 = 0;
+
+        if $r1 == null goto label08;
+
+        $r3 = <com.google.zxing.DecodeHintType: com.google.zxing.DecodeHintType TRY_HARDER>;
+
+        $z0 = virtualinvoke $r1.<java.util.Hashtable: boolean containsKey(java.lang.Object)>($r3);
+
+        if $z0 == 0 goto label08;
+
+        $z0 = 1;
+
+     label01:
+        $r4 = virtualinvoke r0.<com.google.zxing.multi.qrcode.detector.MultiFinderPatternFinder: com.google.zxing.common.BitMatrix getImage()>();
+
+        $i1 = virtualinvoke $r4.<com.google.zxing.common.BitMatrix: int getHeight()>();
+
+        $i2 = virtualinvoke $r4.<com.google.zxing.common.BitMatrix: int getWidth()>();
+
+        $f0 = (float) $i1;
+
+        $f0 = $f0 / 228.0F;
+
+        $f0 = $f0 * 3.0F;
+
+        $i3 = (int) $f0;
+
+        if $i3 < 3 goto label02;
+
+        if $z0 == 0 goto label25;
+
+     label02:
+        $i3 = 3;
+
+     label03:
+        $r2 = newarray (int)[5];
+
+        $i4 = -1;
+
+        $i4 = $i3 + $i4;
+
+     label04:
+        if $i4 >= $i1 goto label18;
+
+        $r2[0] = 0;
+
+        $r2[1] = 0;
+
+        $r2[2] = 0;
+
+        $r2[3] = 0;
+
+        $r2[4] = 0;
+
+        $i5 = 0;
+
+        $i6 = 0;
+
+     label05:
+        if $i5 >= $i2 goto label16;
+
+        $z0 = virtualinvoke $r4.<com.google.zxing.common.BitMatrix: boolean get(int,int)>($i5, $i4);
+
+        if $z0 == 0 goto label09;
+
+        $i7 = $i6 & 1;
+
+        if $i7 != 1 goto label06;
+
+        $i6 = $i6 + 1;
+
+     label06:
+        $i7 = $r2[$i6];
+
+        $i7 = $i7 + 1;
+
+        $r2[$i6] = $i7;
+
+     label07:
+        $i5 = $i5 + 1;
+
+        goto label05;
+
+     label08:
+        $z0 = 0;
+
+        goto label01;
+
+     label09:
+        $i7 = $i6 & 1;
+
+        if $i7 != 0 goto label15;
+
+        if $i6 != 4 goto label14;
+
+        $z0 = staticinvoke <com.google.zxing.multi.qrcode.detector.MultiFinderPatternFinder: boolean foundPatternCross(int[])>($r2);
+
+        if $z0 == 0 goto label13;
+
+        $z0 = virtualinvoke r0.<com.google.zxing.multi.qrcode.detector.MultiFinderPatternFinder: boolean handlePossibleCenter(int[],int,int)>($r2, $i4, $i5);
+
+        if $z0 != 0 goto label24;
+
+     label10:
+        $i5 = $i5 + 1;
+
+        if $i5 >= $i2 goto label11;
+
+        $z0 = virtualinvoke $r4.<com.google.zxing.common.BitMatrix: boolean get(int,int)>($i5, $i4);
+
+        if $z0 == 0 goto label10;
+
+     label11:
+        $i6 = -1;
+
+        $i5 = $i5 + $i6;
+
+     label12:
+        $r2[0] = 0;
+
+        $r2[1] = 0;
+
+        $r2[2] = 0;
+
+        $r2[3] = 0;
+
+        $r2[4] = 0;
+
+        $i6 = 0;
+
+        goto label07;
+
+     label13:
+        $i6 = $r2[2];
+
+        $r2[0] = $i6;
+
+        $i6 = $r2[3];
+
+        $r2[1] = $i6;
+
+        $i6 = $r2[4];
+
+        $r2[2] = $i6;
+
+        $r2[3] = 1;
+
+        $r2[4] = 0;
+
+        $i6 = 3;
+
+        goto label07;
+
+     label14:
+        $i6 = $i6 + 1;
+
+        $i7 = $r2[$i6];
+
+        $i7 = $i7 + 1;
+
+        $r2[$i6] = $i7;
+
+        goto label07;
+
+     label15:
+        $i7 = $r2[$i6];
+
+        $i7 = $i7 + 1;
+
+        $r2[$i6] = $i7;
+
+        goto label07;
+
+     label16:
+        $z0 = staticinvoke <com.google.zxing.multi.qrcode.detector.MultiFinderPatternFinder: boolean foundPatternCross(int[])>($r2);
+
+        if $z0 == 0 goto label17;
+
+        virtualinvoke r0.<com.google.zxing.multi.qrcode.detector.MultiFinderPatternFinder: boolean handlePossibleCenter(int[],int,int)>($r2, $i4, $i2);
+
+     label17:
+        $i4 = $i4 + $i3;
+
+        goto label04;
+
+     label18:
+        $r5 = specialinvoke r0.<com.google.zxing.multi.qrcode.detector.MultiFinderPatternFinder: com.google.zxing.qrcode.detector.FinderPattern[][] selectBestPatterns()>();
+
+        $r11 = new java.util.Vector;
+
+        $r6 = $r11;
+
+        specialinvoke $r11.<java.util.Vector: void <init>()>();
+
+        $i1 = 0;
+
+     label19:
+        $i2 = lengthof $r5;
+
+        if $i1 >= $i2 goto label20;
+
+        $r7 = $r5[$i1];
+
+        staticinvoke <com.google.zxing.ResultPoint: void orderBestPatterns(com.google.zxing.ResultPoint[])>($r7);
+
+        $r12 = new com.google.zxing.qrcode.detector.FinderPatternInfo;
+
+        specialinvoke $r12.<com.google.zxing.qrcode.detector.FinderPatternInfo: void <init>(com.google.zxing.qrcode.detector.FinderPattern[])>($r7);
+
+        virtualinvoke $r6.<java.util.Vector: void addElement(java.lang.Object)>($r12);
+
+        $i1 = $i1 + 1;
+
+        goto label19;
+
+     label20:
+        $z0 = virtualinvoke $r6.<java.util.Vector: boolean isEmpty()>();
+
+        if $z0 == 0 goto label21;
+
+        $r9 = <com.google.zxing.multi.qrcode.detector.MultiFinderPatternFinder: com.google.zxing.qrcode.detector.FinderPatternInfo[] EMPTY_RESULT_ARRAY>;
+
+        return $r9;
+
+     label21:
+        $i1 = virtualinvoke $r6.<java.util.Vector: int size()>();
+
+        $r9 = newarray (com.google.zxing.qrcode.detector.FinderPatternInfo)[$i1];
+
+     label22:
+        $i1 = virtualinvoke $r6.<java.util.Vector: int size()>();
+
+        if $i0 >= $i1 goto label23;
+
+        $r10 = virtualinvoke $r6.<java.util.Vector: java.lang.Object elementAt(int)>($i0);
+
+        $r8 = (com.google.zxing.qrcode.detector.FinderPatternInfo) $r10;
+
+        $r9[$i0] = $r8;
+
+        $i0 = $i0 + 1;
+
+        goto label22;
+
+     label23:
+        return $r9;
+
+     label24:
+        goto label12;
+
+     label25:
+        goto label03;
+    }
+}

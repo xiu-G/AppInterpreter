@@ -1,0 +1,417 @@
+public class org.ormma.controller.OrmmaLocationController extends org.ormma.controller.OrmmaController
+{
+    private static final java.lang.String LOG_TAG;
+    final int INTERVAL;
+    private boolean allowLocationServices;
+    private boolean hasPermission;
+    private org.ormma.controller.listeners.LocListener mGps;
+    private int mLocListenerCount;
+    private android.location.LocationManager mLocationManager;
+    private org.ormma.controller.listeners.LocListener mNetwork;
+
+    public void <init>(org.ormma.view.OrmmaView, android.content.Context)
+    {
+        java.lang.Throwable $r7;
+        android.content.Context $r2;
+        org.ormma.view.OrmmaView $r1;
+        org.ormma.controller.listeners.LocListener $r6;
+        org.ormma.controller.OrmmaLocationController r0;
+        android.location.LocationProvider $r5;
+        java.lang.Object $r3;
+        android.location.LocationManager $r4;
+
+        r0 := @this: org.ormma.controller.OrmmaLocationController;
+
+        $r1 := @parameter0: org.ormma.view.OrmmaView;
+
+        $r2 := @parameter1: android.content.Context;
+
+        specialinvoke r0.<org.ormma.controller.OrmmaController: void <init>(org.ormma.view.OrmmaView,android.content.Context)>($r1, $r2);
+
+        r0.<org.ormma.controller.OrmmaLocationController: boolean hasPermission> = 0;
+
+        r0.<org.ormma.controller.OrmmaLocationController: int INTERVAL> = 1000;
+
+        r0.<org.ormma.controller.OrmmaLocationController: boolean allowLocationServices> = 0;
+
+     label01:
+        $r3 = virtualinvoke $r2.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("location");
+
+     label02:
+        $r4 = (android.location.LocationManager) $r3;
+
+        r0.<org.ormma.controller.OrmmaLocationController: android.location.LocationManager mLocationManager> = $r4;
+
+        $r4 = r0.<org.ormma.controller.OrmmaLocationController: android.location.LocationManager mLocationManager>;
+
+     label03:
+        $r5 = virtualinvoke $r4.<android.location.LocationManager: android.location.LocationProvider getProvider(java.lang.String)>("gps");
+
+     label04:
+        if $r5 == null goto label07;
+
+        $r6 = new org.ormma.controller.listeners.LocListener;
+
+     label05:
+        specialinvoke $r6.<org.ormma.controller.listeners.LocListener: void <init>(android.content.Context,int,org.ormma.controller.OrmmaLocationController,java.lang.String)>($r2, 1000, r0, "gps");
+
+     label06:
+        r0.<org.ormma.controller.OrmmaLocationController: org.ormma.controller.listeners.LocListener mGps> = $r6;
+
+     label07:
+        $r4 = r0.<org.ormma.controller.OrmmaLocationController: android.location.LocationManager mLocationManager>;
+
+     label08:
+        $r5 = virtualinvoke $r4.<android.location.LocationManager: android.location.LocationProvider getProvider(java.lang.String)>("network");
+
+     label09:
+        if $r5 == null goto label12;
+
+        $r6 = new org.ormma.controller.listeners.LocListener;
+
+     label10:
+        specialinvoke $r6.<org.ormma.controller.listeners.LocListener: void <init>(android.content.Context,int,org.ormma.controller.OrmmaLocationController,java.lang.String)>($r2, 1000, r0, "network");
+
+     label11:
+        r0.<org.ormma.controller.OrmmaLocationController: org.ormma.controller.listeners.LocListener mNetwork> = $r6;
+
+     label12:
+        r0.<org.ormma.controller.OrmmaLocationController: boolean hasPermission> = 1;
+
+        return;
+
+     label13:
+        $r7 := @caughtexception;
+
+        return;
+
+        catch java.lang.SecurityException from label01 to label02 with label13;
+        catch java.lang.SecurityException from label03 to label04 with label13;
+        catch java.lang.SecurityException from label05 to label06 with label13;
+        catch java.lang.SecurityException from label08 to label09 with label13;
+        catch java.lang.SecurityException from label10 to label11 with label13;
+    }
+
+    private static java.lang.String formatLocation(android.location.Location)
+    {
+        float $f0;
+        java.lang.StringBuilder $r1;
+        java.lang.String $r2;
+        android.location.Location $r0;
+        double $d0;
+
+        $r0 := @parameter0: android.location.Location;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("{ lat: ");
+
+        $d0 = virtualinvoke $r0.<android.location.Location: double getLatitude()>();
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(double)>($d0);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(", lon: ");
+
+        $d0 = virtualinvoke $r0.<android.location.Location: double getLongitude()>();
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(double)>($d0);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(", acc: ");
+
+        $f0 = virtualinvoke $r0.<android.location.Location: float getAccuracy()>();
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(float)>($f0);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("}");
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r2;
+    }
+
+    public void allowLocationServices(boolean)
+    {
+        org.ormma.controller.OrmmaLocationController r0;
+        boolean $z0;
+
+        r0 := @this: org.ormma.controller.OrmmaLocationController;
+
+        $z0 := @parameter0: boolean;
+
+        r0.<org.ormma.controller.OrmmaLocationController: boolean allowLocationServices> = $z0;
+
+        return;
+    }
+
+    public boolean allowLocationServices()
+    {
+        org.ormma.controller.OrmmaLocationController r0;
+        boolean z0;
+
+        r0 := @this: org.ormma.controller.OrmmaLocationController;
+
+        z0 = r0.<org.ormma.controller.OrmmaLocationController: boolean allowLocationServices>;
+
+        return z0;
+    }
+
+    public void fail()
+    {
+        org.ormma.view.OrmmaView $r1;
+        org.ormma.controller.OrmmaLocationController r0;
+
+        r0 := @this: org.ormma.controller.OrmmaLocationController;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("OrmmaLocationController", "Location can\'t be determined");
+
+        $r1 = r0.<org.ormma.controller.OrmmaLocationController: org.ormma.view.OrmmaView mOrmmaView>;
+
+        virtualinvoke $r1.<org.ormma.view.OrmmaView: void injectJavaScript(java.lang.String)>("window.ormmaview.fireErrorEvent(\"Location cannot be identified\", \"OrmmaLocationController\")");
+
+        return;
+    }
+
+    public java.lang.String getLocation()
+    {
+        java.util.Iterator $r5;
+        java.util.List $r4;
+        org.ormma.controller.OrmmaLocationController r0;
+        java.lang.StringBuilder $r1;
+        java.lang.Object $r7;
+        java.lang.String $r2;
+        android.location.Location r6, $r8;
+        android.location.LocationManager $r3;
+        boolean $z0;
+
+        r0 := @this: org.ormma.controller.OrmmaLocationController;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("getLocation: hasPermission: ");
+
+        $z0 = r0.<org.ormma.controller.OrmmaLocationController: boolean hasPermission>;
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(boolean)>($z0);
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("OrmmaLocationController", $r2);
+
+        $z0 = r0.<org.ormma.controller.OrmmaLocationController: boolean hasPermission>;
+
+        if $z0 != 0 goto label1;
+
+        return null;
+
+     label1:
+        $r3 = r0.<org.ormma.controller.OrmmaLocationController: android.location.LocationManager mLocationManager>;
+
+        $r4 = virtualinvoke $r3.<android.location.LocationManager: java.util.List getProviders(boolean)>(1);
+
+        $r5 = interfaceinvoke $r4.<java.util.List: java.util.Iterator iterator()>();
+
+        r6 = null;
+
+     label2:
+        $z0 = interfaceinvoke $r5.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label3;
+
+        $r3 = r0.<org.ormma.controller.OrmmaLocationController: android.location.LocationManager mLocationManager>;
+
+        $r7 = interfaceinvoke $r5.<java.util.Iterator: java.lang.Object next()>();
+
+        $r2 = (java.lang.String) $r7;
+
+        $r8 = virtualinvoke $r3.<android.location.LocationManager: android.location.Location getLastKnownLocation(java.lang.String)>($r2);
+
+        r6 = $r8;
+
+        if $r8 == null goto label2;
+
+     label3:
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("getLocation: ");
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>(r6);
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("OrmmaLocationController", $r2);
+
+        if r6 == null goto label4;
+
+        $r2 = staticinvoke <org.ormma.controller.OrmmaLocationController: java.lang.String formatLocation(android.location.Location)>(r6);
+
+        return $r2;
+
+     label4:
+        return null;
+    }
+
+    public void startLocationListener()
+    {
+        int $i0;
+        org.ormma.controller.listeners.LocListener $r1;
+        org.ormma.controller.OrmmaLocationController r0;
+
+        r0 := @this: org.ormma.controller.OrmmaLocationController;
+
+        $i0 = r0.<org.ormma.controller.OrmmaLocationController: int mLocListenerCount>;
+
+        if $i0 != 0 goto label2;
+
+        $r1 = r0.<org.ormma.controller.OrmmaLocationController: org.ormma.controller.listeners.LocListener mNetwork>;
+
+        if $r1 == null goto label1;
+
+        $r1 = r0.<org.ormma.controller.OrmmaLocationController: org.ormma.controller.listeners.LocListener mNetwork>;
+
+        virtualinvoke $r1.<org.ormma.controller.listeners.LocListener: void start()>();
+
+     label1:
+        $r1 = r0.<org.ormma.controller.OrmmaLocationController: org.ormma.controller.listeners.LocListener mGps>;
+
+        if $r1 == null goto label2;
+
+        $r1 = r0.<org.ormma.controller.OrmmaLocationController: org.ormma.controller.listeners.LocListener mGps>;
+
+        virtualinvoke $r1.<org.ormma.controller.listeners.LocListener: void start()>();
+
+     label2:
+        $i0 = r0.<org.ormma.controller.OrmmaLocationController: int mLocListenerCount>;
+
+        $i0 = $i0 + 1;
+
+        r0.<org.ormma.controller.OrmmaLocationController: int mLocListenerCount> = $i0;
+
+        return;
+    }
+
+    public void stopAllListeners()
+    {
+        org.ormma.controller.OrmmaLocationController r0;
+        org.ormma.controller.listeners.LocListener $r1;
+        java.lang.Exception $r2, $r3;
+
+        r0 := @this: org.ormma.controller.OrmmaLocationController;
+
+        r0.<org.ormma.controller.OrmmaLocationController: int mLocListenerCount> = 0;
+
+     label1:
+        $r1 = r0.<org.ormma.controller.OrmmaLocationController: org.ormma.controller.listeners.LocListener mGps>;
+
+        virtualinvoke $r1.<org.ormma.controller.listeners.LocListener: void stop()>();
+
+     label2:
+        $r1 = r0.<org.ormma.controller.OrmmaLocationController: org.ormma.controller.listeners.LocListener mNetwork>;
+
+        virtualinvoke $r1.<org.ormma.controller.listeners.LocListener: void stop()>();
+
+     label3:
+        return;
+
+     label4:
+        $r2 := @caughtexception;
+
+        return;
+
+     label5:
+        $r3 := @caughtexception;
+
+        goto label2;
+
+        catch java.lang.Exception from label1 to label2 with label5;
+        catch java.lang.Exception from label2 to label3 with label4;
+    }
+
+    public void stopLocationListener()
+    {
+        org.ormma.controller.OrmmaLocationController r0;
+        int $i0, $i1;
+        org.ormma.controller.listeners.LocListener $r1;
+
+        r0 := @this: org.ormma.controller.OrmmaLocationController;
+
+        $i0 = r0.<org.ormma.controller.OrmmaLocationController: int mLocListenerCount>;
+
+        $i1 = -1;
+
+        $i0 = $i0 + $i1;
+
+        r0.<org.ormma.controller.OrmmaLocationController: int mLocListenerCount> = $i0;
+
+        $i0 = r0.<org.ormma.controller.OrmmaLocationController: int mLocListenerCount>;
+
+        if $i0 != 0 goto label2;
+
+        $r1 = r0.<org.ormma.controller.OrmmaLocationController: org.ormma.controller.listeners.LocListener mNetwork>;
+
+        if $r1 == null goto label1;
+
+        $r1 = r0.<org.ormma.controller.OrmmaLocationController: org.ormma.controller.listeners.LocListener mNetwork>;
+
+        virtualinvoke $r1.<org.ormma.controller.listeners.LocListener: void stop()>();
+
+     label1:
+        $r1 = r0.<org.ormma.controller.OrmmaLocationController: org.ormma.controller.listeners.LocListener mGps>;
+
+        if $r1 == null goto label2;
+
+        $r1 = r0.<org.ormma.controller.OrmmaLocationController: org.ormma.controller.listeners.LocListener mGps>;
+
+        virtualinvoke $r1.<org.ormma.controller.listeners.LocListener: void stop()>();
+
+     label2:
+        return;
+    }
+
+    public void success(android.location.Location)
+    {
+        org.ormma.view.OrmmaView $r4;
+        org.ormma.controller.OrmmaLocationController r0;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r3;
+        android.location.Location $r1;
+
+        r0 := @this: org.ormma.controller.OrmmaLocationController;
+
+        $r1 := @parameter0: android.location.Location;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("window.ormmaview.fireChangeEvent({ location: ");
+
+        $r3 = staticinvoke <org.ormma.controller.OrmmaLocationController: java.lang.String formatLocation(android.location.Location)>($r1);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("})");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("OrmmaLocationController", $r3);
+
+        $r4 = r0.<org.ormma.controller.OrmmaLocationController: org.ormma.view.OrmmaView mOrmmaView>;
+
+        virtualinvoke $r4.<org.ormma.view.OrmmaView: void injectJavaScript(java.lang.String)>($r3);
+
+        return;
+    }
+
+    public static void <clinit>()
+    {
+        <org.ormma.controller.OrmmaLocationController: java.lang.String LOG_TAG> = "OrmmaLocationController";
+
+        return;
+    }
+}

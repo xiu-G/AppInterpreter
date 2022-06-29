@@ -1,0 +1,150 @@
+final class com.yellowbook.android2.mobile.barcode.MobileDecodeThread extends java.lang.Thread
+{
+    public static final java.lang.String BARCODE_BITMAP;
+    private final com.yellowbook.android2.mobile.barcode.MobileBarcodeActivity activity;
+    private android.os.Handler handler;
+    private final java.util.concurrent.CountDownLatch handlerInitLatch;
+    private final java.util.Hashtable hints;
+
+    void <init>(com.yellowbook.android2.mobile.barcode.MobileBarcodeActivity, java.util.Vector, java.lang.String)
+    {
+        com.google.zxing.DecodeHintType $r7;
+        com.yellowbook.android2.mobile.barcode.MobileBarcodeActivity $r1;
+        java.util.concurrent.CountDownLatch $r4;
+        java.util.Vector r3, $r6;
+        com.yellowbook.android2.mobile.barcode.MobileDecodeThread r0;
+        java.lang.String $r2;
+        java.util.Hashtable $r5;
+        boolean $z0;
+
+        r0 := @this: com.yellowbook.android2.mobile.barcode.MobileDecodeThread;
+
+        $r1 := @parameter0: com.yellowbook.android2.mobile.barcode.MobileBarcodeActivity;
+
+        r3 := @parameter1: java.util.Vector;
+
+        $r2 := @parameter2: java.lang.String;
+
+        specialinvoke r0.<java.lang.Thread: void <init>()>();
+
+        r0.<com.yellowbook.android2.mobile.barcode.MobileDecodeThread: com.yellowbook.android2.mobile.barcode.MobileBarcodeActivity activity> = $r1;
+
+        $r4 = new java.util.concurrent.CountDownLatch;
+
+        specialinvoke $r4.<java.util.concurrent.CountDownLatch: void <init>(int)>(1);
+
+        r0.<com.yellowbook.android2.mobile.barcode.MobileDecodeThread: java.util.concurrent.CountDownLatch handlerInitLatch> = $r4;
+
+        $r5 = new java.util.Hashtable;
+
+        specialinvoke $r5.<java.util.Hashtable: void <init>(int)>(3);
+
+        r0.<com.yellowbook.android2.mobile.barcode.MobileDecodeThread: java.util.Hashtable hints> = $r5;
+
+        if r3 == null goto label1;
+
+        $z0 = virtualinvoke r3.<java.util.Vector: boolean isEmpty()>();
+
+        if $z0 == 0 goto label2;
+
+     label1:
+        r3 = new java.util.Vector;
+
+        specialinvoke r3.<java.util.Vector: void <init>()>();
+
+        $r6 = <com.yellowbook.android2.mobile.barcode.MobileDecodeFormatManager: java.util.Vector ONE_D_FORMATS>;
+
+        virtualinvoke r3.<java.util.Vector: boolean addAll(java.util.Collection)>($r6);
+
+        $r6 = <com.yellowbook.android2.mobile.barcode.MobileDecodeFormatManager: java.util.Vector QR_CODE_FORMATS>;
+
+        virtualinvoke r3.<java.util.Vector: boolean addAll(java.util.Collection)>($r6);
+
+        $r6 = <com.yellowbook.android2.mobile.barcode.MobileDecodeFormatManager: java.util.Vector DATA_MATRIX_FORMATS>;
+
+        virtualinvoke r3.<java.util.Vector: boolean addAll(java.util.Collection)>($r6);
+
+     label2:
+        $r5 = r0.<com.yellowbook.android2.mobile.barcode.MobileDecodeThread: java.util.Hashtable hints>;
+
+        $r7 = <com.google.zxing.DecodeHintType: com.google.zxing.DecodeHintType POSSIBLE_FORMATS>;
+
+        virtualinvoke $r5.<java.util.Hashtable: java.lang.Object put(java.lang.Object,java.lang.Object)>($r7, r3);
+
+        if $r2 == null goto label3;
+
+        $r5 = r0.<com.yellowbook.android2.mobile.barcode.MobileDecodeThread: java.util.Hashtable hints>;
+
+        $r7 = <com.google.zxing.DecodeHintType: com.google.zxing.DecodeHintType CHARACTER_SET>;
+
+        virtualinvoke $r5.<java.util.Hashtable: java.lang.Object put(java.lang.Object,java.lang.Object)>($r7, $r2);
+
+     label3:
+        return;
+    }
+
+    android.os.Handler getHandler()
+    {
+        java.lang.Throwable $r2;
+        java.util.concurrent.CountDownLatch $r1;
+        com.yellowbook.android2.mobile.barcode.MobileDecodeThread r0;
+        android.os.Handler r3;
+
+        r0 := @this: com.yellowbook.android2.mobile.barcode.MobileDecodeThread;
+
+        $r1 = r0.<com.yellowbook.android2.mobile.barcode.MobileDecodeThread: java.util.concurrent.CountDownLatch handlerInitLatch>;
+
+     label1:
+        virtualinvoke $r1.<java.util.concurrent.CountDownLatch: void await()>();
+
+     label2:
+        r3 = r0.<com.yellowbook.android2.mobile.barcode.MobileDecodeThread: android.os.Handler handler>;
+
+        return r3;
+
+     label3:
+        $r2 := @caughtexception;
+
+        goto label2;
+
+        catch java.lang.InterruptedException from label1 to label2 with label3;
+    }
+
+    public void run()
+    {
+        java.util.concurrent.CountDownLatch $r4;
+        com.yellowbook.android2.mobile.barcode.MobileDecodeThread r0;
+        com.yellowbook.android2.mobile.barcode.MobileDecodeHandler $r3;
+        java.util.Hashtable $r2;
+        com.yellowbook.android2.mobile.barcode.MobileBarcodeActivity $r1;
+
+        r0 := @this: com.yellowbook.android2.mobile.barcode.MobileDecodeThread;
+
+        staticinvoke <android.os.Looper: void prepare()>();
+
+        $r3 = new com.yellowbook.android2.mobile.barcode.MobileDecodeHandler;
+
+        $r1 = r0.<com.yellowbook.android2.mobile.barcode.MobileDecodeThread: com.yellowbook.android2.mobile.barcode.MobileBarcodeActivity activity>;
+
+        $r2 = r0.<com.yellowbook.android2.mobile.barcode.MobileDecodeThread: java.util.Hashtable hints>;
+
+        specialinvoke $r3.<com.yellowbook.android2.mobile.barcode.MobileDecodeHandler: void <init>(com.yellowbook.android2.mobile.barcode.MobileBarcodeActivity,java.util.Hashtable)>($r1, $r2);
+
+        r0.<com.yellowbook.android2.mobile.barcode.MobileDecodeThread: android.os.Handler handler> = $r3;
+
+        $r4 = r0.<com.yellowbook.android2.mobile.barcode.MobileDecodeThread: java.util.concurrent.CountDownLatch handlerInitLatch>;
+
+        virtualinvoke $r4.<java.util.concurrent.CountDownLatch: void countDown()>();
+
+        staticinvoke <android.os.Looper: void loop()>();
+
+        return;
+    }
+
+    public static void <clinit>()
+    {
+        <com.yellowbook.android2.mobile.barcode.MobileDecodeThread: java.lang.String BARCODE_BITMAP> = "barcode_bitmap";
+
+        return;
+    }
+}

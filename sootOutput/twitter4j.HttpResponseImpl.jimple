@@ -1,0 +1,157 @@
+public class twitter4j.HttpResponseImpl extends twitter4j.HttpResponse
+{
+    private java.net.HttpURLConnection con;
+
+    void <init>(java.lang.String)
+    {
+        java.lang.String $r1;
+        twitter4j.HttpResponseImpl r0;
+
+        r0 := @this: twitter4j.HttpResponseImpl;
+
+        $r1 := @parameter0: java.lang.String;
+
+        specialinvoke r0.<twitter4j.HttpResponse: void <init>()>();
+
+        r0.<twitter4j.HttpResponseImpl: java.lang.String responseAsString> = $r1;
+
+        return;
+    }
+
+    void <init>(java.net.HttpURLConnection, twitter4j.HttpClientConfiguration)
+    {
+        java.net.HttpURLConnection $r1;
+        java.lang.Throwable $r6;
+        twitter4j.HttpResponseImpl r0;
+        twitter4j.HttpClientConfiguration $r2;
+        java.io.IOException $r8;
+        int $i0;
+        java.lang.String $r4, $r5;
+        twitter4j.StreamingGZIPInputStream $r7;
+        java.io.InputStream $r3;
+        boolean $z0;
+
+        r0 := @this: twitter4j.HttpResponseImpl;
+
+        $r1 := @parameter0: java.net.HttpURLConnection;
+
+        $r2 := @parameter1: twitter4j.HttpClientConfiguration;
+
+        specialinvoke r0.<twitter4j.HttpResponse: void <init>(twitter4j.HttpClientConfiguration)>($r2);
+
+        r0.<twitter4j.HttpResponseImpl: java.net.HttpURLConnection con> = $r1;
+
+     label1:
+        $i0 = virtualinvoke $r1.<java.net.HttpURLConnection: int getResponseCode()>();
+
+     label2:
+        r0.<twitter4j.HttpResponseImpl: int statusCode> = $i0;
+
+     label3:
+        $r3 = virtualinvoke $r1.<java.net.HttpURLConnection: java.io.InputStream getErrorStream()>();
+
+        r0.<twitter4j.HttpResponseImpl: java.io.InputStream is> = $r3;
+
+        if $r3 != null goto label4;
+
+        $r3 = virtualinvoke $r1.<java.net.HttpURLConnection: java.io.InputStream getInputStream()>();
+
+        r0.<twitter4j.HttpResponseImpl: java.io.InputStream is> = $r3;
+
+     label4:
+        $r3 = r0.<twitter4j.HttpResponseImpl: java.io.InputStream is>;
+
+        if $r3 == null goto label7;
+
+        $r4 = "gzip";
+
+        $r5 = virtualinvoke $r1.<java.net.HttpURLConnection: java.lang.String getContentEncoding()>();
+
+        $z0 = virtualinvoke $r4.<java.lang.String: boolean equals(java.lang.Object)>($r5);
+
+        if $z0 == 0 goto label7;
+
+        $r7 = new twitter4j.StreamingGZIPInputStream;
+
+        $r3 = r0.<twitter4j.HttpResponseImpl: java.io.InputStream is>;
+
+        specialinvoke $r7.<twitter4j.StreamingGZIPInputStream: void <init>(java.io.InputStream)>($r3);
+
+        r0.<twitter4j.HttpResponseImpl: java.io.InputStream is> = $r7;
+
+        return;
+
+     label5:
+        $r6 := @caughtexception;
+
+        $r4 = "Received authentication challenge is null";
+
+        $r8 = (java.io.IOException) $r6;
+
+        $r5 = virtualinvoke $r8.<java.io.IOException: java.lang.String getMessage()>();
+
+        $z0 = virtualinvoke $r4.<java.lang.String: boolean equals(java.lang.Object)>($r5);
+
+        if $z0 == 0 goto label6;
+
+        $i0 = virtualinvoke $r1.<java.net.HttpURLConnection: int getResponseCode()>();
+
+        r0.<twitter4j.HttpResponseImpl: int statusCode> = $i0;
+
+        goto label3;
+
+     label6:
+        throw $r6;
+
+     label7:
+        return;
+
+        catch java.io.IOException from label1 to label2 with label5;
+    }
+
+    public void disconnect()
+    {
+        java.net.HttpURLConnection $r1;
+        twitter4j.HttpResponseImpl r0;
+
+        r0 := @this: twitter4j.HttpResponseImpl;
+
+        $r1 = r0.<twitter4j.HttpResponseImpl: java.net.HttpURLConnection con>;
+
+        virtualinvoke $r1.<java.net.HttpURLConnection: void disconnect()>();
+
+        return;
+    }
+
+    public java.lang.String getResponseHeader(java.lang.String)
+    {
+        java.net.HttpURLConnection $r2;
+        java.lang.String $r1;
+        twitter4j.HttpResponseImpl r0;
+
+        r0 := @this: twitter4j.HttpResponseImpl;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = r0.<twitter4j.HttpResponseImpl: java.net.HttpURLConnection con>;
+
+        $r1 = virtualinvoke $r2.<java.net.HttpURLConnection: java.lang.String getHeaderField(java.lang.String)>($r1);
+
+        return $r1;
+    }
+
+    public java.util.Map getResponseHeaderFields()
+    {
+        java.net.HttpURLConnection $r2;
+        twitter4j.HttpResponseImpl r0;
+        java.util.Map $r1;
+
+        r0 := @this: twitter4j.HttpResponseImpl;
+
+        $r2 = r0.<twitter4j.HttpResponseImpl: java.net.HttpURLConnection con>;
+
+        $r1 = virtualinvoke $r2.<java.net.HttpURLConnection: java.util.Map getHeaderFields()>();
+
+        return $r1;
+    }
+}

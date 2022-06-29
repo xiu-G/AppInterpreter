@@ -1,0 +1,1801 @@
+class com.google.android.apps.analytics.PersistentEventStore extends java.lang.Object implements com.google.android.apps.analytics.EventStore
+{
+    private static final java.lang.String ACCOUNT_ID;
+    private static final java.lang.String ACTION;
+    private static final java.lang.String CATEGORY;
+    private static final java.lang.String CUSTOMVAR_ID;
+    private static final java.lang.String CUSTOMVAR_INDEX;
+    private static final java.lang.String CUSTOMVAR_NAME;
+    private static final java.lang.String CUSTOMVAR_SCOPE;
+    private static final java.lang.String CUSTOMVAR_VALUE;
+    private static final java.lang.String CUSTOM_VARIABLE_COLUMN_TYPE;
+    private static final java.lang.String DATABASE_NAME;
+    private static final int DATABASE_VERSION;
+    private static final java.lang.String EVENT_ID;
+    private static final java.lang.String LABEL;
+    private static final int MAX_EVENTS;
+    private static final java.lang.String RANDOM_VAL;
+    private static final java.lang.String REFERRER;
+    private static final java.lang.String SCREEN_HEIGHT;
+    private static final java.lang.String SCREEN_WIDTH;
+    private static final java.lang.String STORE_ID;
+    private static final java.lang.String TIMESTAMP_CURRENT;
+    private static final java.lang.String TIMESTAMP_FIRST;
+    private static final java.lang.String TIMESTAMP_PREVIOUS;
+    private static final java.lang.String USER_ID;
+    private static final java.lang.String VALUE;
+    private static final java.lang.String VISITS;
+    private android.database.sqlite.SQLiteStatement compiledCountStatement;
+    private com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper databaseHelper;
+    private int numStoredEvents;
+    private boolean sessionUpdated;
+    private int storeId;
+    private long timestampCurrent;
+    private long timestampFirst;
+    private long timestampPrevious;
+    private boolean useStoredVisitorVars;
+    private int visits;
+
+    void <init>(com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper)
+    {
+        java.lang.Throwable $r3;
+        android.database.sqlite.SQLiteDatabase $r2;
+        android.database.sqlite.SQLiteException $r5;
+        com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper $r1;
+        java.lang.String $r4;
+        com.google.android.apps.analytics.PersistentEventStore r0;
+
+        r0 := @this: com.google.android.apps.analytics.PersistentEventStore;
+
+        $r1 := @parameter0: com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<com.google.android.apps.analytics.PersistentEventStore: android.database.sqlite.SQLiteStatement compiledCountStatement> = null;
+
+        r0.<com.google.android.apps.analytics.PersistentEventStore: com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper databaseHelper> = $r1;
+
+     label1:
+        $r2 = virtualinvoke $r1.<com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper: android.database.sqlite.SQLiteDatabase getWritableDatabase()>();
+
+        virtualinvoke $r2.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+     label2:
+        return;
+
+     label3:
+        $r3 := @caughtexception;
+
+        $r5 = (android.database.sqlite.SQLiteException) $r3;
+
+        $r4 = virtualinvoke $r5.<android.database.sqlite.SQLiteException: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("googleanalytics", $r4);
+
+        return;
+
+        catch android.database.sqlite.SQLiteException from label1 to label2 with label3;
+    }
+
+    public void deleteEvent(long)
+    {
+        java.lang.Throwable $r5;
+        com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper $r3;
+        long $l0;
+        com.google.android.apps.analytics.PersistentEventStore r0;
+        android.database.sqlite.SQLiteDatabase $r4;
+        android.database.sqlite.SQLiteException $r7;
+        int $i1;
+        java.lang.StringBuilder $r1, $r6;
+        java.lang.String $r2;
+
+        r0 := @this: com.google.android.apps.analytics.PersistentEventStore;
+
+        $l0 := @parameter0: long;
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+        $r1 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("event_id=");
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = r0.<com.google.android.apps.analytics.PersistentEventStore: com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper databaseHelper>;
+
+     label1:
+        $r4 = virtualinvoke $r3.<com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper: android.database.sqlite.SQLiteDatabase getWritableDatabase()>();
+
+        $i1 = virtualinvoke $r4.<android.database.sqlite.SQLiteDatabase: int delete(java.lang.String,java.lang.String,java.lang.String[])>("events", $r2, null);
+
+     label2:
+        if $i1 == 0 goto label6;
+
+        $i1 = r0.<com.google.android.apps.analytics.PersistentEventStore: int numStoredEvents>;
+
+        $i1 = $i1 - 1;
+
+        r0.<com.google.android.apps.analytics.PersistentEventStore: int numStoredEvents> = $i1;
+
+     label3:
+        virtualinvoke $r4.<android.database.sqlite.SQLiteDatabase: int delete(java.lang.String,java.lang.String,java.lang.String[])>("custom_variables", $r2, null);
+
+     label4:
+        return;
+
+     label5:
+        $r5 := @caughtexception;
+
+        $r7 = (android.database.sqlite.SQLiteException) $r5;
+
+        $r2 = virtualinvoke $r7.<android.database.sqlite.SQLiteException: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("googleanalytics", $r2);
+
+     label6:
+        return;
+
+        catch android.database.sqlite.SQLiteException from label1 to label2 with label5;
+        catch android.database.sqlite.SQLiteException from label3 to label4 with label5;
+    }
+
+    com.google.android.apps.analytics.CustomVariableBuffer getCustomVariables(long)
+    {
+        java.lang.Throwable $r9, $r10, $r11, $r12;
+        com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper $r2;
+        long $l0;
+        com.google.android.apps.analytics.CustomVariable $r7, $r15;
+        com.google.android.apps.analytics.PersistentEventStore r0;
+        android.database.sqlite.SQLiteDatabase $r3;
+        android.database.sqlite.SQLiteException $r16;
+        int $i1, $i2;
+        java.lang.String $r5, $r8;
+        com.google.android.apps.analytics.CustomVariableBuffer $r1, $r13;
+        android.database.Cursor $r6;
+        boolean $z0;
+        java.lang.StringBuilder $r4, $r14;
+
+        r0 := @this: com.google.android.apps.analytics.PersistentEventStore;
+
+        $l0 := @parameter0: long;
+
+        $r13 = new com.google.android.apps.analytics.CustomVariableBuffer;
+
+        $r1 = $r13;
+
+        specialinvoke $r13.<com.google.android.apps.analytics.CustomVariableBuffer: void <init>()>();
+
+     label01:
+        $r2 = r0.<com.google.android.apps.analytics.PersistentEventStore: com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper databaseHelper>;
+
+     label02:
+        $r3 = virtualinvoke $r2.<com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper: android.database.sqlite.SQLiteDatabase getReadableDatabase()>();
+
+     label03:
+        $r14 = new java.lang.StringBuilder;
+
+     label04:
+        $r4 = $r14;
+
+     label05:
+        specialinvoke $r14.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("event_id=");
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r6 = virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: android.database.Cursor query(java.lang.String,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String,java.lang.String,java.lang.String)>("custom_variables", null, $r5, null, null, null, null);
+
+     label06:
+        $z0 = interfaceinvoke $r6.<android.database.Cursor: boolean moveToNext()>();
+
+     label07:
+        if $z0 == 0 goto label15;
+
+     label08:
+        $r15 = new com.google.android.apps.analytics.CustomVariable;
+
+     label09:
+        $r7 = $r15;
+
+     label10:
+        $i1 = interfaceinvoke $r6.<android.database.Cursor: int getColumnIndex(java.lang.String)>("cv_index");
+
+        $i1 = interfaceinvoke $r6.<android.database.Cursor: int getInt(int)>($i1);
+
+        $i2 = interfaceinvoke $r6.<android.database.Cursor: int getColumnIndex(java.lang.String)>("cv_name");
+
+        $r5 = interfaceinvoke $r6.<android.database.Cursor: java.lang.String getString(int)>($i2);
+
+        $i2 = interfaceinvoke $r6.<android.database.Cursor: int getColumnIndex(java.lang.String)>("cv_value");
+
+        $r8 = interfaceinvoke $r6.<android.database.Cursor: java.lang.String getString(int)>($i2);
+
+        $i2 = interfaceinvoke $r6.<android.database.Cursor: int getColumnIndex(java.lang.String)>("cv_scope");
+
+        $i2 = interfaceinvoke $r6.<android.database.Cursor: int getInt(int)>($i2);
+
+        specialinvoke $r15.<com.google.android.apps.analytics.CustomVariable: void <init>(int,java.lang.String,java.lang.String,int)>($i1, $r5, $r8, $i2);
+
+        virtualinvoke $r1.<com.google.android.apps.analytics.CustomVariableBuffer: void setCustomVariable(com.google.android.apps.analytics.CustomVariable)>($r7);
+
+     label11:
+        goto label06;
+
+     label12:
+        $r9 := @caughtexception;
+
+        $r10 = $r9;
+
+     label13:
+        $r16 = (android.database.sqlite.SQLiteException) $r10;
+
+        $r5 = virtualinvoke $r16.<android.database.sqlite.SQLiteException: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("googleanalytics", $r5);
+
+     label14:
+        if $r6 == null goto label22;
+
+        interfaceinvoke $r6.<android.database.Cursor: void close()>();
+
+        return $r1;
+
+     label15:
+        if $r6 == null goto label22;
+
+        interfaceinvoke $r6.<android.database.Cursor: void close()>();
+
+        return $r1;
+
+     label16:
+        $r11 := @caughtexception;
+
+        $r6 = null;
+
+     label17:
+        if $r6 == null goto label18;
+
+        interfaceinvoke $r6.<android.database.Cursor: void close()>();
+
+     label18:
+        throw $r11;
+
+     label19:
+        $r12 := @caughtexception;
+
+        $r11 = $r12;
+
+        goto label17;
+
+     label20:
+        $r11 := @caughtexception;
+
+        goto label17;
+
+     label21:
+        $r10 := @caughtexception;
+
+        $r6 = null;
+
+        goto label13;
+
+     label22:
+        return $r1;
+
+        catch android.database.sqlite.SQLiteException from label02 to label03 with label21;
+        catch android.database.sqlite.SQLiteException from label05 to label06 with label21;
+        catch java.lang.Throwable from label01 to label04 with label16;
+        catch java.lang.Throwable from label05 to label06 with label16;
+        catch android.database.sqlite.SQLiteException from label06 to label07 with label12;
+        catch android.database.sqlite.SQLiteException from label10 to label11 with label12;
+        catch java.lang.Throwable from label06 to label07 with label19;
+        catch java.lang.Throwable from label08 to label09 with label19;
+        catch java.lang.Throwable from label10 to label11 with label19;
+        catch java.lang.Throwable from label13 to label14 with label20;
+    }
+
+    public int getNumStoredEvents()
+    {
+        java.lang.Throwable $r4;
+        com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper $r2;
+        long $l0;
+        com.google.android.apps.analytics.PersistentEventStore r0;
+        android.database.sqlite.SQLiteDatabase $r3;
+        android.database.sqlite.SQLiteException $r6;
+        int $i1;
+        android.database.sqlite.SQLiteStatement $r1;
+        java.lang.String $r5;
+
+        r0 := @this: com.google.android.apps.analytics.PersistentEventStore;
+
+        $r1 = r0.<com.google.android.apps.analytics.PersistentEventStore: android.database.sqlite.SQLiteStatement compiledCountStatement>;
+
+        if $r1 != null goto label3;
+
+        $r2 = r0.<com.google.android.apps.analytics.PersistentEventStore: com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper databaseHelper>;
+
+     label1:
+        $r3 = virtualinvoke $r2.<com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper: android.database.sqlite.SQLiteDatabase getReadableDatabase()>();
+
+        $r1 = virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: android.database.sqlite.SQLiteStatement compileStatement(java.lang.String)>("SELECT COUNT(*) from events");
+
+     label2:
+        r0.<com.google.android.apps.analytics.PersistentEventStore: android.database.sqlite.SQLiteStatement compiledCountStatement> = $r1;
+
+     label3:
+        $r1 = r0.<com.google.android.apps.analytics.PersistentEventStore: android.database.sqlite.SQLiteStatement compiledCountStatement>;
+
+     label4:
+        $l0 = virtualinvoke $r1.<android.database.sqlite.SQLiteStatement: long simpleQueryForLong()>();
+
+     label5:
+        $i1 = (int) $l0;
+
+        return $i1;
+
+     label6:
+        $r4 := @caughtexception;
+
+        $r6 = (android.database.sqlite.SQLiteException) $r4;
+
+        $r5 = virtualinvoke $r6.<android.database.sqlite.SQLiteException: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("googleanalytics", $r5);
+
+        return 0;
+
+        catch android.database.sqlite.SQLiteException from label1 to label2 with label6;
+        catch android.database.sqlite.SQLiteException from label4 to label5 with label6;
+    }
+
+    public java.lang.String getReferrer()
+    {
+        java.lang.Throwable $r6, $r7, $r8, $r9;
+        com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper $r1;
+        java.lang.String[] $r3;
+        com.google.android.apps.analytics.PersistentEventStore r0;
+        android.database.sqlite.SQLiteDatabase $r2;
+        android.database.sqlite.SQLiteException $r10;
+        java.lang.String $r5;
+        android.database.Cursor $r4;
+        boolean $z0;
+
+        r0 := @this: com.google.android.apps.analytics.PersistentEventStore;
+
+     label01:
+        $r1 = r0.<com.google.android.apps.analytics.PersistentEventStore: com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper databaseHelper>;
+
+     label02:
+        $r2 = virtualinvoke $r1.<com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper: android.database.sqlite.SQLiteDatabase getReadableDatabase()>();
+
+     label03:
+        $r3 = newarray (java.lang.String)[1];
+
+        $r3[0] = "referrer";
+
+     label04:
+        $r4 = virtualinvoke $r2.<android.database.sqlite.SQLiteDatabase: android.database.Cursor query(java.lang.String,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String,java.lang.String,java.lang.String)>("install_referrer", $r3, null, null, null, null, null);
+
+     label05:
+        $z0 = interfaceinvoke $r4.<android.database.Cursor: boolean moveToFirst()>();
+
+     label06:
+        if $z0 == 0 goto label20;
+
+     label07:
+        $r5 = interfaceinvoke $r4.<android.database.Cursor: java.lang.String getString(int)>(0);
+
+     label08:
+        if $r4 == null goto label09;
+
+        interfaceinvoke $r4.<android.database.Cursor: void close()>();
+
+     label09:
+        return $r5;
+
+     label10:
+        $r6 := @caughtexception;
+
+        $r4 = null;
+
+     label11:
+        $r10 = (android.database.sqlite.SQLiteException) $r6;
+
+        $r5 = virtualinvoke $r10.<android.database.sqlite.SQLiteException: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("googleanalytics", $r5);
+
+     label12:
+        if $r4 == null goto label13;
+
+        interfaceinvoke $r4.<android.database.Cursor: void close()>();
+
+     label13:
+        return null;
+
+     label14:
+        $r7 := @caughtexception;
+
+        $r4 = null;
+
+     label15:
+        if $r4 == null goto label16;
+
+        interfaceinvoke $r4.<android.database.Cursor: void close()>();
+
+     label16:
+        throw $r7;
+
+     label17:
+        $r8 := @caughtexception;
+
+        $r7 = $r8;
+
+        goto label15;
+
+     label18:
+        $r7 := @caughtexception;
+
+        goto label15;
+
+     label19:
+        $r9 := @caughtexception;
+
+        $r6 = $r9;
+
+        goto label11;
+
+     label20:
+        $r5 = null;
+
+        goto label08;
+
+        catch android.database.sqlite.SQLiteException from label02 to label03 with label10;
+        catch android.database.sqlite.SQLiteException from label04 to label05 with label10;
+        catch java.lang.Throwable from label01 to label05 with label14;
+        catch android.database.sqlite.SQLiteException from label05 to label06 with label19;
+        catch android.database.sqlite.SQLiteException from label07 to label08 with label19;
+        catch java.lang.Throwable from label05 to label06 with label17;
+        catch java.lang.Throwable from label07 to label08 with label17;
+        catch java.lang.Throwable from label11 to label12 with label18;
+    }
+
+    public int getStoreId()
+    {
+        int i0;
+        com.google.android.apps.analytics.PersistentEventStore r0;
+
+        r0 := @this: com.google.android.apps.analytics.PersistentEventStore;
+
+        i0 = r0.<com.google.android.apps.analytics.PersistentEventStore: int storeId>;
+
+        return i0;
+    }
+
+    public java.lang.String getVisitorCustomVar(int)
+    {
+        java.lang.Throwable $r7, $r8;
+        com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper $r1;
+        com.google.android.apps.analytics.PersistentEventStore r0;
+        android.database.sqlite.SQLiteDatabase $r2;
+        android.database.sqlite.SQLiteException $r10;
+        int $i0;
+        java.lang.StringBuilder $r3, $r9;
+        java.lang.String $r4;
+        android.database.Cursor $r5, $r6;
+
+        r0 := @this: com.google.android.apps.analytics.PersistentEventStore;
+
+        $i0 := @parameter0: int;
+
+     label01:
+        $r1 = r0.<com.google.android.apps.analytics.PersistentEventStore: com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper databaseHelper>;
+
+     label02:
+        $r2 = virtualinvoke $r1.<com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper: android.database.sqlite.SQLiteDatabase getReadableDatabase()>();
+
+     label03:
+        $r9 = new java.lang.StringBuilder;
+
+     label04:
+        $r3 = $r9;
+
+     label05:
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("cv_scope = 1 AND cv_index = ");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r5 = virtualinvoke $r2.<android.database.sqlite.SQLiteDatabase: android.database.Cursor query(java.lang.String,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String,java.lang.String,java.lang.String)>("custom_var_cache", null, $r4, null, null, null, null);
+
+     label06:
+        $r6 = $r5;
+
+     label07:
+        $i0 = interfaceinvoke $r5.<android.database.Cursor: int getCount()>();
+
+     label08:
+        if $i0 <= 0 goto label13;
+
+     label09:
+        interfaceinvoke $r5.<android.database.Cursor: boolean moveToFirst()>();
+
+        $i0 = interfaceinvoke $r5.<android.database.Cursor: int getColumnIndex(java.lang.String)>("cv_value");
+
+        $r4 = interfaceinvoke $r5.<android.database.Cursor: java.lang.String getString(int)>($i0);
+
+     label10:
+        virtualinvoke $r2.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+     label11:
+        if $r5 == null goto label12;
+
+        interfaceinvoke $r5.<android.database.Cursor: void close()>();
+
+     label12:
+        return $r4;
+
+     label13:
+        $r4 = null;
+
+        goto label10;
+
+     label14:
+        $r7 := @caughtexception;
+
+        $r6 = null;
+
+     label15:
+        $r10 = (android.database.sqlite.SQLiteException) $r7;
+
+        $r4 = virtualinvoke $r10.<android.database.sqlite.SQLiteException: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("googleanalytics", $r4);
+
+     label16:
+        if $r6 == null goto label17;
+
+        interfaceinvoke $r6.<android.database.Cursor: void close()>();
+
+     label17:
+        return null;
+
+     label18:
+        $r8 := @caughtexception;
+
+        $r6 = null;
+
+     label19:
+        if $r6 == null goto label20;
+
+        interfaceinvoke $r6.<android.database.Cursor: void close()>();
+
+     label20:
+        throw $r8;
+
+     label21:
+        $r8 := @caughtexception;
+
+        goto label19;
+
+     label22:
+        $r7 := @caughtexception;
+
+        goto label15;
+
+        catch android.database.sqlite.SQLiteException from label02 to label03 with label14;
+        catch android.database.sqlite.SQLiteException from label05 to label06 with label14;
+        catch java.lang.Throwable from label01 to label04 with label18;
+        catch java.lang.Throwable from label05 to label06 with label18;
+        catch android.database.sqlite.SQLiteException from label07 to label08 with label22;
+        catch android.database.sqlite.SQLiteException from label09 to label10 with label22;
+        catch android.database.sqlite.SQLiteException from label10 to label11 with label22;
+        catch java.lang.Throwable from label07 to label08 with label21;
+        catch java.lang.Throwable from label09 to label10 with label21;
+        catch java.lang.Throwable from label10 to label11 with label21;
+        catch java.lang.Throwable from label15 to label16 with label21;
+    }
+
+    com.google.android.apps.analytics.CustomVariableBuffer getVisitorVarBuffer()
+    {
+        java.lang.Throwable $r8;
+        com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper $r2;
+        com.google.android.apps.analytics.CustomVariable $r5, $r10;
+        com.google.android.apps.analytics.PersistentEventStore r0;
+        android.database.sqlite.SQLiteDatabase $r3;
+        android.database.sqlite.SQLiteException $r11;
+        int $i0, $i1;
+        java.lang.String $r6, $r7;
+        com.google.android.apps.analytics.CustomVariableBuffer $r1, $r9;
+        android.database.Cursor $r4;
+        boolean $z0;
+
+        r0 := @this: com.google.android.apps.analytics.PersistentEventStore;
+
+        $r9 = new com.google.android.apps.analytics.CustomVariableBuffer;
+
+        $r1 = $r9;
+
+        specialinvoke $r9.<com.google.android.apps.analytics.CustomVariableBuffer: void <init>()>();
+
+        $r2 = r0.<com.google.android.apps.analytics.PersistentEventStore: com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper databaseHelper>;
+
+     label1:
+        $r3 = virtualinvoke $r2.<com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper: android.database.sqlite.SQLiteDatabase getReadableDatabase()>();
+
+        $r4 = virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: android.database.Cursor query(java.lang.String,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String,java.lang.String,java.lang.String)>("custom_var_cache", null, "cv_scope=1", null, null, null, null);
+
+     label2:
+        $z0 = interfaceinvoke $r4.<android.database.Cursor: boolean moveToNext()>();
+
+     label3:
+        if $z0 == 0 goto label7;
+
+        $r10 = new com.google.android.apps.analytics.CustomVariable;
+
+        $r5 = $r10;
+
+     label4:
+        $i0 = interfaceinvoke $r4.<android.database.Cursor: int getColumnIndex(java.lang.String)>("cv_index");
+
+        $i0 = interfaceinvoke $r4.<android.database.Cursor: int getInt(int)>($i0);
+
+        $i1 = interfaceinvoke $r4.<android.database.Cursor: int getColumnIndex(java.lang.String)>("cv_name");
+
+        $r6 = interfaceinvoke $r4.<android.database.Cursor: java.lang.String getString(int)>($i1);
+
+        $i1 = interfaceinvoke $r4.<android.database.Cursor: int getColumnIndex(java.lang.String)>("cv_value");
+
+        $r7 = interfaceinvoke $r4.<android.database.Cursor: java.lang.String getString(int)>($i1);
+
+        $i1 = interfaceinvoke $r4.<android.database.Cursor: int getColumnIndex(java.lang.String)>("cv_scope");
+
+        $i1 = interfaceinvoke $r4.<android.database.Cursor: int getInt(int)>($i1);
+
+        specialinvoke $r10.<com.google.android.apps.analytics.CustomVariable: void <init>(int,java.lang.String,java.lang.String,int)>($i0, $r6, $r7, $i1);
+
+        virtualinvoke $r1.<com.google.android.apps.analytics.CustomVariableBuffer: void setCustomVariable(com.google.android.apps.analytics.CustomVariable)>($r5);
+
+     label5:
+        goto label2;
+
+     label6:
+        $r8 := @caughtexception;
+
+        $r11 = (android.database.sqlite.SQLiteException) $r8;
+
+        $r6 = virtualinvoke $r11.<android.database.sqlite.SQLiteException: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("googleanalytics", $r6);
+
+        return $r1;
+
+     label7:
+        interfaceinvoke $r4.<android.database.Cursor: void close()>();
+
+     label8:
+        return $r1;
+
+        catch android.database.sqlite.SQLiteException from label1 to label3 with label6;
+        catch android.database.sqlite.SQLiteException from label4 to label5 with label6;
+        catch android.database.sqlite.SQLiteException from label7 to label8 with label6;
+    }
+
+    public com.google.android.apps.analytics.Event[] peekEvents()
+    {
+        com.google.android.apps.analytics.Event[] $r1;
+        com.google.android.apps.analytics.PersistentEventStore r0;
+
+        r0 := @this: com.google.android.apps.analytics.PersistentEventStore;
+
+        $r1 = virtualinvoke r0.<com.google.android.apps.analytics.PersistentEventStore: com.google.android.apps.analytics.Event[] peekEvents(int)>(1000);
+
+        return $r1;
+    }
+
+    public com.google.android.apps.analytics.Event[] peekEvents(int)
+    {
+        java.lang.Throwable $r11, $r14;
+        com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper $r2;
+        java.lang.Object[] $r13;
+        long $l1;
+        com.google.android.apps.analytics.PersistentEventStore r1;
+        java.util.ArrayList $r0, $r15;
+        android.database.sqlite.SQLiteDatabase $r3;
+        android.database.sqlite.SQLiteException $r17;
+        int $i0, $i2, $i3, $i4, $i5, $i6, $i7, $i8, $i9;
+        java.lang.String $r4, $r7, $r8, $r9;
+        com.google.android.apps.analytics.CustomVariableBuffer $r10;
+        android.database.Cursor $r5;
+        boolean $z0;
+        com.google.android.apps.analytics.Event $r6, $r16;
+        com.google.android.apps.analytics.Event[] $r12;
+
+        r1 := @this: com.google.android.apps.analytics.PersistentEventStore;
+
+        $i0 := @parameter0: int;
+
+        $r15 = new java.util.ArrayList;
+
+        $r0 = $r15;
+
+        specialinvoke $r15.<java.util.ArrayList: void <init>()>();
+
+     label01:
+        $r2 = r1.<com.google.android.apps.analytics.PersistentEventStore: com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper databaseHelper>;
+
+     label02:
+        $r3 = virtualinvoke $r2.<com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper: android.database.sqlite.SQLiteDatabase getReadableDatabase()>();
+
+        $r4 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i0);
+
+        $r5 = virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: android.database.Cursor query(java.lang.String,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String,java.lang.String,java.lang.String,java.lang.String)>("events", null, null, null, null, null, "event_id", $r4);
+
+     label03:
+        $z0 = interfaceinvoke $r5.<android.database.Cursor: boolean moveToNext()>();
+
+     label04:
+        if $z0 == 0 goto label12;
+
+     label05:
+        $r16 = new com.google.android.apps.analytics.Event;
+
+     label06:
+        $r6 = $r16;
+
+     label07:
+        $l1 = interfaceinvoke $r5.<android.database.Cursor: long getLong(int)>(0);
+
+        $i0 = interfaceinvoke $r5.<android.database.Cursor: int getInt(int)>(1);
+
+        $r4 = interfaceinvoke $r5.<android.database.Cursor: java.lang.String getString(int)>(2);
+
+        $i2 = interfaceinvoke $r5.<android.database.Cursor: int getInt(int)>(3);
+
+        $i3 = interfaceinvoke $r5.<android.database.Cursor: int getInt(int)>(4);
+
+        $i4 = interfaceinvoke $r5.<android.database.Cursor: int getInt(int)>(5);
+
+        $i5 = interfaceinvoke $r5.<android.database.Cursor: int getInt(int)>(6);
+
+        $i6 = interfaceinvoke $r5.<android.database.Cursor: int getInt(int)>(7);
+
+        $r7 = interfaceinvoke $r5.<android.database.Cursor: java.lang.String getString(int)>(8);
+
+        $r8 = interfaceinvoke $r5.<android.database.Cursor: java.lang.String getString(int)>(9);
+
+        $r9 = interfaceinvoke $r5.<android.database.Cursor: java.lang.String getString(int)>(10);
+
+        $i7 = interfaceinvoke $r5.<android.database.Cursor: int getInt(int)>(11);
+
+        $i8 = interfaceinvoke $r5.<android.database.Cursor: int getInt(int)>(12);
+
+        $i9 = interfaceinvoke $r5.<android.database.Cursor: int getInt(int)>(13);
+
+        specialinvoke $r16.<com.google.android.apps.analytics.Event: void <init>(long,int,java.lang.String,int,int,int,int,int,java.lang.String,java.lang.String,java.lang.String,int,int,int)>($l1, $i0, $r4, $i2, $i3, $i4, $i5, $i6, $r7, $r8, $r9, $i7, $i8, $i9);
+
+        $i0 = interfaceinvoke $r5.<android.database.Cursor: int getColumnIndex(java.lang.String)>("event_id");
+
+        $l1 = interfaceinvoke $r5.<android.database.Cursor: long getLong(int)>($i0);
+
+        $r10 = virtualinvoke r1.<com.google.android.apps.analytics.PersistentEventStore: com.google.android.apps.analytics.CustomVariableBuffer getCustomVariables(long)>($l1);
+
+        virtualinvoke $r6.<com.google.android.apps.analytics.Event: void setCustomVariableBuffer(com.google.android.apps.analytics.CustomVariableBuffer)>($r10);
+
+        interfaceinvoke $r0.<java.util.List: boolean add(java.lang.Object)>($r6);
+
+     label08:
+        goto label03;
+
+     label09:
+        $r11 := @caughtexception;
+
+     label10:
+        $r17 = (android.database.sqlite.SQLiteException) $r11;
+
+        $r4 = virtualinvoke $r17.<android.database.sqlite.SQLiteException: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("googleanalytics", $r4);
+
+        $r12 = newarray (com.google.android.apps.analytics.Event)[0];
+
+     label11:
+        if $r5 == null goto label20;
+
+        interfaceinvoke $r5.<android.database.Cursor: void close()>();
+
+        return $r12;
+
+     label12:
+        if $r5 == null goto label13;
+
+        interfaceinvoke $r5.<android.database.Cursor: void close()>();
+
+     label13:
+        $i0 = interfaceinvoke $r0.<java.util.List: int size()>();
+
+        $r12 = newarray (com.google.android.apps.analytics.Event)[$i0];
+
+        $r13 = interfaceinvoke $r0.<java.util.List: java.lang.Object[] toArray(java.lang.Object[])>($r12);
+
+        $r12 = (com.google.android.apps.analytics.Event[]) $r13;
+
+        return $r12;
+
+     label14:
+        $r14 := @caughtexception;
+
+        $r5 = null;
+
+     label15:
+        if $r5 == null goto label16;
+
+        interfaceinvoke $r5.<android.database.Cursor: void close()>();
+
+     label16:
+        throw $r14;
+
+     label17:
+        $r14 := @caughtexception;
+
+        goto label15;
+
+     label18:
+        $r14 := @caughtexception;
+
+        goto label15;
+
+     label19:
+        $r11 := @caughtexception;
+
+        $r5 = null;
+
+        goto label10;
+
+     label20:
+        return $r12;
+
+        catch android.database.sqlite.SQLiteException from label02 to label03 with label19;
+        catch java.lang.Throwable from label01 to label03 with label14;
+        catch android.database.sqlite.SQLiteException from label03 to label04 with label09;
+        catch android.database.sqlite.SQLiteException from label07 to label08 with label09;
+        catch java.lang.Throwable from label03 to label04 with label17;
+        catch java.lang.Throwable from label05 to label06 with label17;
+        catch java.lang.Throwable from label07 to label08 with label17;
+        catch java.lang.Throwable from label10 to label11 with label18;
+    }
+
+    void putCustomVariables(com.google.android.apps.analytics.Event, long)
+    {
+        java.lang.Throwable $r13;
+        com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper $r2;
+        long $l0;
+        com.google.android.apps.analytics.CustomVariable $r6, $r7;
+        com.google.android.apps.analytics.PersistentEventStore r0;
+        java.lang.Integer $r10;
+        android.database.sqlite.SQLiteDatabase $r3;
+        android.database.sqlite.SQLiteException $r16;
+        java.lang.Long $r9;
+        int $i1, $i2;
+        java.lang.String $r11;
+        com.google.android.apps.analytics.CustomVariableBuffer $r4, $r5;
+        boolean $z0;
+        com.google.android.apps.analytics.Event $r1;
+        java.lang.StringBuilder $r12, $r15;
+        android.content.ContentValues $r8, $r14;
+
+        r0 := @this: com.google.android.apps.analytics.PersistentEventStore;
+
+        $r1 := @parameter0: com.google.android.apps.analytics.Event;
+
+        $l0 := @parameter1: long;
+
+        $r2 = r0.<com.google.android.apps.analytics.PersistentEventStore: com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper databaseHelper>;
+
+     label01:
+        $r3 = virtualinvoke $r2.<com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper: android.database.sqlite.SQLiteDatabase getWritableDatabase()>();
+
+        $r4 = virtualinvoke $r1.<com.google.android.apps.analytics.Event: com.google.android.apps.analytics.CustomVariableBuffer getCustomVariableBuffer()>();
+
+     label02:
+        $r5 = $r4;
+
+        $z0 = r0.<com.google.android.apps.analytics.PersistentEventStore: boolean useStoredVisitorVars>;
+
+        if $z0 == 0 goto label12;
+
+        if $r4 != null goto label04;
+
+        $r4 = new com.google.android.apps.analytics.CustomVariableBuffer;
+
+        $r5 = $r4;
+
+     label03:
+        specialinvoke $r4.<com.google.android.apps.analytics.CustomVariableBuffer: void <init>()>();
+
+        virtualinvoke $r1.<com.google.android.apps.analytics.Event: void setCustomVariableBuffer(com.google.android.apps.analytics.CustomVariableBuffer)>($r5);
+
+     label04:
+        $r4 = virtualinvoke r0.<com.google.android.apps.analytics.PersistentEventStore: com.google.android.apps.analytics.CustomVariableBuffer getVisitorVarBuffer()>();
+
+     label05:
+        $i1 = 1;
+
+     label06:
+        if $i1 > 5 goto label11;
+
+     label07:
+        $r6 = virtualinvoke $r4.<com.google.android.apps.analytics.CustomVariableBuffer: com.google.android.apps.analytics.CustomVariable getCustomVariableAt(int)>($i1);
+
+        $r7 = virtualinvoke $r5.<com.google.android.apps.analytics.CustomVariableBuffer: com.google.android.apps.analytics.CustomVariable getCustomVariableAt(int)>($i1);
+
+     label08:
+        if $r6 == null goto label10;
+
+        if $r7 != null goto label10;
+
+     label09:
+        virtualinvoke $r5.<com.google.android.apps.analytics.CustomVariableBuffer: void setCustomVariable(com.google.android.apps.analytics.CustomVariable)>($r6);
+
+     label10:
+        $i1 = $i1 + 1;
+
+        goto label06;
+
+     label11:
+        r0.<com.google.android.apps.analytics.PersistentEventStore: boolean useStoredVisitorVars> = 0;
+
+     label12:
+        if $r5 == null goto label23;
+
+        $i1 = 1;
+
+     label13:
+        if $i1 > 5 goto label23;
+
+     label14:
+        $z0 = virtualinvoke $r5.<com.google.android.apps.analytics.CustomVariableBuffer: boolean isIndexAvailable(int)>($i1);
+
+     label15:
+        if $z0 != 0 goto label21;
+
+     label16:
+        $r6 = virtualinvoke $r5.<com.google.android.apps.analytics.CustomVariableBuffer: com.google.android.apps.analytics.CustomVariable getCustomVariableAt(int)>($i1);
+
+     label17:
+        $r14 = new android.content.ContentValues;
+
+        $r8 = $r14;
+
+     label18:
+        specialinvoke $r14.<android.content.ContentValues: void <init>()>();
+
+        $r9 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l0);
+
+        virtualinvoke $r8.<android.content.ContentValues: void put(java.lang.String,java.lang.Long)>("event_id", $r9);
+
+        $i2 = virtualinvoke $r6.<com.google.android.apps.analytics.CustomVariable: int getIndex()>();
+
+        $r10 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i2);
+
+        virtualinvoke $r8.<android.content.ContentValues: void put(java.lang.String,java.lang.Integer)>("cv_index", $r10);
+
+        $r11 = virtualinvoke $r6.<com.google.android.apps.analytics.CustomVariable: java.lang.String getName()>();
+
+        virtualinvoke $r8.<android.content.ContentValues: void put(java.lang.String,java.lang.String)>("cv_name", $r11);
+
+        $i2 = virtualinvoke $r6.<com.google.android.apps.analytics.CustomVariable: int getScope()>();
+
+        $r10 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i2);
+
+        virtualinvoke $r8.<android.content.ContentValues: void put(java.lang.String,java.lang.Integer)>("cv_scope", $r10);
+
+        $r11 = virtualinvoke $r6.<com.google.android.apps.analytics.CustomVariable: java.lang.String getValue()>();
+
+        virtualinvoke $r8.<android.content.ContentValues: void put(java.lang.String,java.lang.String)>("cv_value", $r11);
+
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: long insert(java.lang.String,java.lang.String,android.content.ContentValues)>("custom_variables", "event_id", $r8);
+
+     label19:
+        $r15 = new java.lang.StringBuilder;
+
+        $r12 = $r15;
+
+     label20:
+        specialinvoke $r15.<java.lang.StringBuilder: void <init>()>();
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("cv_index=");
+
+        $i2 = virtualinvoke $r6.<com.google.android.apps.analytics.CustomVariable: int getIndex()>();
+
+        $r12 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i2);
+
+        $r11 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: int update(java.lang.String,android.content.ContentValues,java.lang.String,java.lang.String[])>("custom_var_cache", $r8, $r11, null);
+
+     label21:
+        $i1 = $i1 + 1;
+
+        goto label13;
+
+     label22:
+        $r13 := @caughtexception;
+
+        $r16 = (android.database.sqlite.SQLiteException) $r13;
+
+        $r11 = virtualinvoke $r16.<android.database.sqlite.SQLiteException: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("googleanalytics", $r11);
+
+     label23:
+        return;
+
+        catch android.database.sqlite.SQLiteException from label01 to label02 with label22;
+        catch android.database.sqlite.SQLiteException from label03 to label05 with label22;
+        catch android.database.sqlite.SQLiteException from label07 to label08 with label22;
+        catch android.database.sqlite.SQLiteException from label09 to label10 with label22;
+        catch android.database.sqlite.SQLiteException from label14 to label15 with label22;
+        catch android.database.sqlite.SQLiteException from label16 to label17 with label22;
+        catch android.database.sqlite.SQLiteException from label18 to label19 with label22;
+        catch android.database.sqlite.SQLiteException from label20 to label21 with label22;
+    }
+
+    public void putEvent(com.google.android.apps.analytics.Event)
+    {
+        java.lang.Throwable $r11, $r12, $r13, $r14;
+        com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper $r2;
+        long $l1, $l3;
+        java.lang.String[] $r8;
+        com.google.android.apps.analytics.PersistentEventStore r0;
+        java.lang.Integer $r5;
+        android.database.sqlite.SQLiteDatabase $r3;
+        android.database.sqlite.SQLiteException $r17;
+        byte $b2;
+        java.lang.Long $r7;
+        int $i0;
+        java.lang.String $r6;
+        boolean $z0;
+        double $d0;
+        android.database.Cursor $r9;
+        com.google.android.apps.analytics.Event $r1;
+        java.lang.StringBuilder $r10, $r16;
+        android.content.ContentValues $r4, $r15;
+
+        r0 := @this: com.google.android.apps.analytics.PersistentEventStore;
+
+        $r1 := @parameter0: com.google.android.apps.analytics.Event;
+
+        $i0 = r0.<com.google.android.apps.analytics.PersistentEventStore: int numStoredEvents>;
+
+        if $i0 < 1000 goto label01;
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>("googleanalytics", "Store full. Not storing last event.");
+
+        return;
+
+     label01:
+        $z0 = r0.<com.google.android.apps.analytics.PersistentEventStore: boolean sessionUpdated>;
+
+        if $z0 != 0 goto label02;
+
+        virtualinvoke r0.<com.google.android.apps.analytics.PersistentEventStore: void storeUpdatedSession()>();
+
+     label02:
+        $r2 = r0.<com.google.android.apps.analytics.PersistentEventStore: com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper databaseHelper>;
+
+     label03:
+        $r3 = virtualinvoke $r2.<com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper: android.database.sqlite.SQLiteDatabase getWritableDatabase()>();
+
+     label04:
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: void beginTransaction()>();
+
+     label05:
+        $r15 = new android.content.ContentValues;
+
+     label06:
+        $r4 = $r15;
+
+     label07:
+        specialinvoke $r15.<android.content.ContentValues: void <init>()>();
+
+     label08:
+        $i0 = $r1.<com.google.android.apps.analytics.Event: int userId>;
+
+     label09:
+        $r5 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        virtualinvoke $r4.<android.content.ContentValues: void put(java.lang.String,java.lang.Integer)>("user_id", $r5);
+
+     label10:
+        $r6 = $r1.<com.google.android.apps.analytics.Event: java.lang.String accountId>;
+
+     label11:
+        virtualinvoke $r4.<android.content.ContentValues: void put(java.lang.String,java.lang.String)>("account_id", $r6);
+
+        $d0 = staticinvoke <java.lang.Math: double random()>();
+
+     label12:
+        $d0 = $d0 * 2.147483647E9;
+
+        $i0 = (int) $d0;
+
+     label13:
+        $r5 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        virtualinvoke $r4.<android.content.ContentValues: void put(java.lang.String,java.lang.Integer)>("random_val", $r5);
+
+     label14:
+        $l1 = r0.<com.google.android.apps.analytics.PersistentEventStore: long timestampFirst>;
+
+     label15:
+        $r7 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l1);
+
+        virtualinvoke $r4.<android.content.ContentValues: void put(java.lang.String,java.lang.Long)>("timestamp_first", $r7);
+
+     label16:
+        $l1 = r0.<com.google.android.apps.analytics.PersistentEventStore: long timestampPrevious>;
+
+     label17:
+        $r7 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l1);
+
+        virtualinvoke $r4.<android.content.ContentValues: void put(java.lang.String,java.lang.Long)>("timestamp_previous", $r7);
+
+     label18:
+        $l1 = r0.<com.google.android.apps.analytics.PersistentEventStore: long timestampCurrent>;
+
+     label19:
+        $r7 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l1);
+
+        virtualinvoke $r4.<android.content.ContentValues: void put(java.lang.String,java.lang.Long)>("timestamp_current", $r7);
+
+     label20:
+        $i0 = r0.<com.google.android.apps.analytics.PersistentEventStore: int visits>;
+
+     label21:
+        $r5 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        virtualinvoke $r4.<android.content.ContentValues: void put(java.lang.String,java.lang.Integer)>("visits", $r5);
+
+     label22:
+        $r6 = $r1.<com.google.android.apps.analytics.Event: java.lang.String category>;
+
+     label23:
+        virtualinvoke $r4.<android.content.ContentValues: void put(java.lang.String,java.lang.String)>("category", $r6);
+
+     label24:
+        $r6 = $r1.<com.google.android.apps.analytics.Event: java.lang.String action>;
+
+     label25:
+        virtualinvoke $r4.<android.content.ContentValues: void put(java.lang.String,java.lang.String)>("action", $r6);
+
+     label26:
+        $r6 = $r1.<com.google.android.apps.analytics.Event: java.lang.String label>;
+
+     label27:
+        virtualinvoke $r4.<android.content.ContentValues: void put(java.lang.String,java.lang.String)>("label", $r6);
+
+     label28:
+        $i0 = $r1.<com.google.android.apps.analytics.Event: int value>;
+
+     label29:
+        $r5 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        virtualinvoke $r4.<android.content.ContentValues: void put(java.lang.String,java.lang.Integer)>("value", $r5);
+
+     label30:
+        $i0 = $r1.<com.google.android.apps.analytics.Event: int screenWidth>;
+
+     label31:
+        $r5 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        virtualinvoke $r4.<android.content.ContentValues: void put(java.lang.String,java.lang.Integer)>("screen_width", $r5);
+
+     label32:
+        $i0 = $r1.<com.google.android.apps.analytics.Event: int screenHeight>;
+
+     label33:
+        $r5 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        virtualinvoke $r4.<android.content.ContentValues: void put(java.lang.String,java.lang.Integer)>("screen_height", $r5);
+
+        $l1 = virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: long insert(java.lang.String,java.lang.String,android.content.ContentValues)>("events", "event_id", $r4);
+
+     label34:
+        $b2 = $l1 cmp -1L;
+
+        if $b2 == 0 goto label43;
+
+     label35:
+        $i0 = r0.<com.google.android.apps.analytics.PersistentEventStore: int numStoredEvents>;
+
+     label36:
+        $i0 = $i0 + 1;
+
+     label37:
+        r0.<com.google.android.apps.analytics.PersistentEventStore: int numStoredEvents> = $i0;
+
+        $r8 = newarray (java.lang.String)[1];
+
+        $r8[0] = "event_id";
+
+     label38:
+        $r9 = virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: android.database.Cursor query(java.lang.String,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String,java.lang.String,java.lang.String,java.lang.String)>("events", $r8, null, null, null, null, "event_id DESC", null);
+
+        interfaceinvoke $r9.<android.database.Cursor: boolean moveToPosition(int)>(0);
+
+        $l3 = interfaceinvoke $r9.<android.database.Cursor: long getLong(int)>(0);
+
+     label39:
+        $r16 = new java.lang.StringBuilder;
+
+     label40:
+        $r10 = $r16;
+
+     label41:
+        specialinvoke $r16.<java.lang.StringBuilder: void <init>()>();
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Row ID: ");
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l1);
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(", Event ID: ");
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l3);
+
+        $r6 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("PersistentEventStore/putEvent", $r6);
+
+        interfaceinvoke $r9.<android.database.Cursor: void close()>();
+
+        virtualinvoke r0.<com.google.android.apps.analytics.PersistentEventStore: void putCustomVariables(com.google.android.apps.analytics.Event,long)>($r1, $l3);
+
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: void setTransactionSuccessful()>();
+
+     label42:
+        if $r3 == null goto label54;
+
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: void endTransaction()>();
+
+        return;
+
+     label43:
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("PersistentEventStore/putEvent", "Error when attempting to add event to database.");
+
+     label44:
+        goto label42;
+
+     label45:
+        $r11 := @caughtexception;
+
+        $r12 = $r11;
+
+     label46:
+        $r17 = (android.database.sqlite.SQLiteException) $r12;
+
+        $r6 = virtualinvoke $r17.<android.database.sqlite.SQLiteException: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("googleanalytics", $r6);
+
+     label47:
+        if $r3 == null goto label54;
+
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: void endTransaction()>();
+
+        return;
+
+     label48:
+        $r13 := @caughtexception;
+
+        $r3 = null;
+
+     label49:
+        if $r3 == null goto label50;
+
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: void endTransaction()>();
+
+     label50:
+        throw $r13;
+
+     label51:
+        $r14 := @caughtexception;
+
+        $r13 = $r14;
+
+        goto label49;
+
+     label52:
+        $r13 := @caughtexception;
+
+        goto label49;
+
+     label53:
+        $r12 := @caughtexception;
+
+        $r3 = null;
+
+        goto label46;
+
+     label54:
+        return;
+
+        catch android.database.sqlite.SQLiteException from label03 to label04 with label53;
+        catch java.lang.Throwable from label02 to label04 with label48;
+        catch android.database.sqlite.SQLiteException from label04 to label05 with label45;
+        catch android.database.sqlite.SQLiteException from label07 to label08 with label45;
+        catch android.database.sqlite.SQLiteException from label09 to label10 with label45;
+        catch android.database.sqlite.SQLiteException from label11 to label12 with label45;
+        catch android.database.sqlite.SQLiteException from label13 to label14 with label45;
+        catch android.database.sqlite.SQLiteException from label15 to label16 with label45;
+        catch android.database.sqlite.SQLiteException from label17 to label18 with label45;
+        catch android.database.sqlite.SQLiteException from label19 to label20 with label45;
+        catch android.database.sqlite.SQLiteException from label21 to label22 with label45;
+        catch android.database.sqlite.SQLiteException from label23 to label24 with label45;
+        catch android.database.sqlite.SQLiteException from label25 to label26 with label45;
+        catch android.database.sqlite.SQLiteException from label27 to label28 with label45;
+        catch android.database.sqlite.SQLiteException from label29 to label30 with label45;
+        catch android.database.sqlite.SQLiteException from label31 to label32 with label45;
+        catch android.database.sqlite.SQLiteException from label33 to label34 with label45;
+        catch android.database.sqlite.SQLiteException from label38 to label39 with label45;
+        catch android.database.sqlite.SQLiteException from label41 to label42 with label45;
+        catch java.lang.Throwable from label04 to label06 with label51;
+        catch java.lang.Throwable from label07 to label12 with label51;
+        catch java.lang.Throwable from label13 to label34 with label51;
+        catch java.lang.Throwable from label35 to label36 with label51;
+        catch java.lang.Throwable from label37 to label40 with label51;
+        catch java.lang.Throwable from label41 to label42 with label51;
+        catch android.database.sqlite.SQLiteException from label43 to label44 with label45;
+        catch java.lang.Throwable from label43 to label44 with label51;
+        catch java.lang.Throwable from label46 to label47 with label52;
+    }
+
+    public void setReferrer(java.lang.String)
+    {
+        java.lang.Throwable $r5;
+        com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper $r2;
+        com.google.android.apps.analytics.PersistentEventStore r0;
+        android.database.sqlite.SQLiteDatabase $r3;
+        android.database.sqlite.SQLiteException $r7;
+        java.lang.String $r1;
+        android.content.ContentValues $r4, $r6;
+
+        r0 := @this: com.google.android.apps.analytics.PersistentEventStore;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = r0.<com.google.android.apps.analytics.PersistentEventStore: com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper databaseHelper>;
+
+     label1:
+        $r3 = virtualinvoke $r2.<com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper: android.database.sqlite.SQLiteDatabase getWritableDatabase()>();
+
+     label2:
+        $r6 = new android.content.ContentValues;
+
+        $r4 = $r6;
+
+     label3:
+        specialinvoke $r6.<android.content.ContentValues: void <init>()>();
+
+        virtualinvoke $r4.<android.content.ContentValues: void put(java.lang.String,java.lang.String)>("referrer", $r1);
+
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: long insert(java.lang.String,java.lang.String,android.content.ContentValues)>("install_referrer", null, $r4);
+
+     label4:
+        return;
+
+     label5:
+        $r5 := @caughtexception;
+
+        $r7 = (android.database.sqlite.SQLiteException) $r5;
+
+        $r1 = virtualinvoke $r7.<android.database.sqlite.SQLiteException: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("googleanalytics", $r1);
+
+        return;
+
+        catch android.database.sqlite.SQLiteException from label1 to label2 with label5;
+        catch android.database.sqlite.SQLiteException from label3 to label4 with label5;
+    }
+
+    public void startNewVisit()
+    {
+        java.lang.Throwable $r9, $r11;
+        com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper $r1;
+        long $l1;
+        com.google.android.apps.analytics.PersistentEventStore r0;
+        java.lang.Integer $r8;
+        java.security.SecureRandom $r5, $r12;
+        android.database.sqlite.SQLiteDatabase $r2;
+        android.database.sqlite.SQLiteException $r14;
+        java.lang.Long $r7;
+        int $i0;
+        java.lang.String $r10;
+        android.database.Cursor $r3, $r4;
+        boolean $z0;
+        android.content.ContentValues $r6, $r13;
+
+        r0 := @this: com.google.android.apps.analytics.PersistentEventStore;
+
+        r0.<com.google.android.apps.analytics.PersistentEventStore: boolean sessionUpdated> = 0;
+
+        r0.<com.google.android.apps.analytics.PersistentEventStore: boolean useStoredVisitorVars> = 1;
+
+        $i0 = virtualinvoke r0.<com.google.android.apps.analytics.PersistentEventStore: int getNumStoredEvents()>();
+
+        r0.<com.google.android.apps.analytics.PersistentEventStore: int numStoredEvents> = $i0;
+
+     label01:
+        $r1 = r0.<com.google.android.apps.analytics.PersistentEventStore: com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper databaseHelper>;
+
+     label02:
+        $r2 = virtualinvoke $r1.<com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper: android.database.sqlite.SQLiteDatabase getWritableDatabase()>();
+
+        $r3 = virtualinvoke $r2.<android.database.sqlite.SQLiteDatabase: android.database.Cursor query(java.lang.String,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String,java.lang.String,java.lang.String)>("session", null, null, null, null, null, null);
+
+     label03:
+        $r4 = $r3;
+
+     label04:
+        $z0 = interfaceinvoke $r3.<android.database.Cursor: boolean moveToFirst()>();
+
+     label05:
+        if $z0 != 0 goto label26;
+
+     label06:
+        $l1 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+     label07:
+        $l1 = $l1 / 1000L;
+
+     label08:
+        r0.<com.google.android.apps.analytics.PersistentEventStore: long timestampFirst> = $l1;
+
+        r0.<com.google.android.apps.analytics.PersistentEventStore: long timestampPrevious> = $l1;
+
+        r0.<com.google.android.apps.analytics.PersistentEventStore: long timestampCurrent> = $l1;
+
+        r0.<com.google.android.apps.analytics.PersistentEventStore: int visits> = 1;
+
+        $r12 = new java.security.SecureRandom;
+
+     label09:
+        $r5 = $r12;
+
+     label10:
+        specialinvoke $r12.<java.security.SecureRandom: void <init>()>();
+
+        $i0 = virtualinvoke $r5.<java.security.SecureRandom: int nextInt()>();
+
+     label11:
+        $i0 = $i0 & 2147483647;
+
+     label12:
+        r0.<com.google.android.apps.analytics.PersistentEventStore: int storeId> = $i0;
+
+        $r13 = new android.content.ContentValues;
+
+     label13:
+        $r6 = $r13;
+
+     label14:
+        specialinvoke $r13.<android.content.ContentValues: void <init>()>();
+
+     label15:
+        $l1 = r0.<com.google.android.apps.analytics.PersistentEventStore: long timestampFirst>;
+
+     label16:
+        $r7 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l1);
+
+        virtualinvoke $r6.<android.content.ContentValues: void put(java.lang.String,java.lang.Long)>("timestamp_first", $r7);
+
+     label17:
+        $l1 = r0.<com.google.android.apps.analytics.PersistentEventStore: long timestampPrevious>;
+
+     label18:
+        $r7 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l1);
+
+        virtualinvoke $r6.<android.content.ContentValues: void put(java.lang.String,java.lang.Long)>("timestamp_previous", $r7);
+
+     label19:
+        $l1 = r0.<com.google.android.apps.analytics.PersistentEventStore: long timestampCurrent>;
+
+     label20:
+        $r7 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l1);
+
+        virtualinvoke $r6.<android.content.ContentValues: void put(java.lang.String,java.lang.Long)>("timestamp_current", $r7);
+
+     label21:
+        $i0 = r0.<com.google.android.apps.analytics.PersistentEventStore: int visits>;
+
+     label22:
+        $r8 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        virtualinvoke $r6.<android.content.ContentValues: void put(java.lang.String,java.lang.Integer)>("visits", $r8);
+
+     label23:
+        $i0 = r0.<com.google.android.apps.analytics.PersistentEventStore: int storeId>;
+
+     label24:
+        $r8 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        virtualinvoke $r6.<android.content.ContentValues: void put(java.lang.String,java.lang.Integer)>("store_id", $r8);
+
+        virtualinvoke $r2.<android.database.sqlite.SQLiteDatabase: long insert(java.lang.String,java.lang.String,android.content.ContentValues)>("session", "timestamp_first", $r6);
+
+     label25:
+        if $r3 == null goto label47;
+
+        interfaceinvoke $r3.<android.database.Cursor: void close()>();
+
+        return;
+
+     label26:
+        $l1 = interfaceinvoke $r3.<android.database.Cursor: long getLong(int)>(0);
+
+     label27:
+        r0.<com.google.android.apps.analytics.PersistentEventStore: long timestampFirst> = $l1;
+
+     label28:
+        $l1 = interfaceinvoke $r3.<android.database.Cursor: long getLong(int)>(2);
+
+     label29:
+        r0.<com.google.android.apps.analytics.PersistentEventStore: long timestampPrevious> = $l1;
+
+     label30:
+        $l1 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+     label31:
+        $l1 = $l1 / 1000L;
+
+     label32:
+        r0.<com.google.android.apps.analytics.PersistentEventStore: long timestampCurrent> = $l1;
+
+     label33:
+        $i0 = interfaceinvoke $r3.<android.database.Cursor: int getInt(int)>(3);
+
+     label34:
+        $i0 = $i0 + 1;
+
+     label35:
+        r0.<com.google.android.apps.analytics.PersistentEventStore: int visits> = $i0;
+
+     label36:
+        $i0 = interfaceinvoke $r3.<android.database.Cursor: int getInt(int)>(4);
+
+     label37:
+        r0.<com.google.android.apps.analytics.PersistentEventStore: int storeId> = $i0;
+
+     label38:
+        goto label25;
+
+     label39:
+        $r9 := @caughtexception;
+
+     label40:
+        $r14 = (android.database.sqlite.SQLiteException) $r9;
+
+        $r10 = virtualinvoke $r14.<android.database.sqlite.SQLiteException: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("googleanalytics", $r10);
+
+     label41:
+        if $r4 == null goto label47;
+
+        interfaceinvoke $r4.<android.database.Cursor: void close()>();
+
+        return;
+
+     label42:
+        $r11 := @caughtexception;
+
+        $r4 = null;
+
+     label43:
+        if $r4 == null goto label44;
+
+        interfaceinvoke $r4.<android.database.Cursor: void close()>();
+
+     label44:
+        throw $r11;
+
+     label45:
+        $r11 := @caughtexception;
+
+        goto label43;
+
+     label46:
+        $r9 := @caughtexception;
+
+        $r4 = null;
+
+        goto label40;
+
+     label47:
+        return;
+
+        catch android.database.sqlite.SQLiteException from label02 to label03 with label46;
+        catch java.lang.Throwable from label01 to label03 with label42;
+        catch android.database.sqlite.SQLiteException from label04 to label05 with label39;
+        catch android.database.sqlite.SQLiteException from label06 to label07 with label39;
+        catch android.database.sqlite.SQLiteException from label10 to label11 with label39;
+        catch android.database.sqlite.SQLiteException from label14 to label15 with label39;
+        catch android.database.sqlite.SQLiteException from label16 to label17 with label39;
+        catch android.database.sqlite.SQLiteException from label18 to label19 with label39;
+        catch android.database.sqlite.SQLiteException from label20 to label21 with label39;
+        catch android.database.sqlite.SQLiteException from label22 to label23 with label39;
+        catch android.database.sqlite.SQLiteException from label24 to label25 with label39;
+        catch java.lang.Throwable from label04 to label05 with label45;
+        catch java.lang.Throwable from label06 to label07 with label45;
+        catch java.lang.Throwable from label08 to label09 with label45;
+        catch java.lang.Throwable from label10 to label11 with label45;
+        catch java.lang.Throwable from label12 to label13 with label45;
+        catch java.lang.Throwable from label14 to label25 with label45;
+        catch android.database.sqlite.SQLiteException from label26 to label27 with label39;
+        catch android.database.sqlite.SQLiteException from label28 to label29 with label39;
+        catch android.database.sqlite.SQLiteException from label30 to label31 with label39;
+        catch android.database.sqlite.SQLiteException from label33 to label34 with label39;
+        catch android.database.sqlite.SQLiteException from label36 to label37 with label39;
+        catch java.lang.Throwable from label26 to label31 with label45;
+        catch java.lang.Throwable from label32 to label34 with label45;
+        catch java.lang.Throwable from label35 to label38 with label45;
+        catch java.lang.Throwable from label40 to label41 with label45;
+    }
+
+    void storeUpdatedSession()
+    {
+        java.lang.Throwable $r8;
+        com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper $r1;
+        long $l0;
+        java.lang.String[] $r6;
+        com.google.android.apps.analytics.PersistentEventStore r0;
+        java.lang.Integer $r5;
+        android.database.sqlite.SQLiteDatabase $r2;
+        android.database.sqlite.SQLiteException $r10;
+        java.lang.Long $r4;
+        int $i1;
+        android.content.ContentValues $r3, $r9;
+        java.lang.String $r7;
+
+        r0 := @this: com.google.android.apps.analytics.PersistentEventStore;
+
+        $r1 = r0.<com.google.android.apps.analytics.PersistentEventStore: com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper databaseHelper>;
+
+     label01:
+        $r2 = virtualinvoke $r1.<com.google.android.apps.analytics.PersistentEventStore$DataBaseHelper: android.database.sqlite.SQLiteDatabase getWritableDatabase()>();
+
+     label02:
+        $r9 = new android.content.ContentValues;
+
+        $r3 = $r9;
+
+     label03:
+        specialinvoke $r9.<android.content.ContentValues: void <init>()>();
+
+     label04:
+        $l0 = r0.<com.google.android.apps.analytics.PersistentEventStore: long timestampPrevious>;
+
+     label05:
+        $r4 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l0);
+
+        virtualinvoke $r3.<android.content.ContentValues: void put(java.lang.String,java.lang.Long)>("timestamp_previous", $r4);
+
+     label06:
+        $l0 = r0.<com.google.android.apps.analytics.PersistentEventStore: long timestampCurrent>;
+
+     label07:
+        $r4 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l0);
+
+        virtualinvoke $r3.<android.content.ContentValues: void put(java.lang.String,java.lang.Long)>("timestamp_current", $r4);
+
+     label08:
+        $i1 = r0.<com.google.android.apps.analytics.PersistentEventStore: int visits>;
+
+     label09:
+        $r5 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i1);
+
+        virtualinvoke $r3.<android.content.ContentValues: void put(java.lang.String,java.lang.Integer)>("visits", $r5);
+
+     label10:
+        $r6 = newarray (java.lang.String)[1];
+
+        $l0 = r0.<com.google.android.apps.analytics.PersistentEventStore: long timestampFirst>;
+
+     label11:
+        $r7 = staticinvoke <java.lang.Long: java.lang.String toString(long)>($l0);
+
+     label12:
+        $r6[0] = $r7;
+
+     label13:
+        virtualinvoke $r2.<android.database.sqlite.SQLiteDatabase: int update(java.lang.String,android.content.ContentValues,java.lang.String,java.lang.String[])>("session", $r3, "timestamp_first=?", $r6);
+
+     label14:
+        r0.<com.google.android.apps.analytics.PersistentEventStore: boolean sessionUpdated> = 1;
+
+        return;
+
+     label15:
+        $r8 := @caughtexception;
+
+        $r10 = (android.database.sqlite.SQLiteException) $r8;
+
+        $r7 = virtualinvoke $r10.<android.database.sqlite.SQLiteException: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("googleanalytics", $r7);
+
+        return;
+
+        catch android.database.sqlite.SQLiteException from label01 to label02 with label15;
+        catch android.database.sqlite.SQLiteException from label03 to label04 with label15;
+        catch android.database.sqlite.SQLiteException from label05 to label06 with label15;
+        catch android.database.sqlite.SQLiteException from label07 to label08 with label15;
+        catch android.database.sqlite.SQLiteException from label09 to label10 with label15;
+        catch android.database.sqlite.SQLiteException from label11 to label12 with label15;
+        catch android.database.sqlite.SQLiteException from label13 to label14 with label15;
+    }
+
+    public static void <clinit>()
+    {
+        <com.google.android.apps.analytics.PersistentEventStore: java.lang.String VISITS> = "visits";
+
+        <com.google.android.apps.analytics.PersistentEventStore: java.lang.String VALUE> = "value";
+
+        <com.google.android.apps.analytics.PersistentEventStore: java.lang.String USER_ID> = "user_id";
+
+        <com.google.android.apps.analytics.PersistentEventStore: java.lang.String TIMESTAMP_PREVIOUS> = "timestamp_previous";
+
+        <com.google.android.apps.analytics.PersistentEventStore: java.lang.String TIMESTAMP_FIRST> = "timestamp_first";
+
+        <com.google.android.apps.analytics.PersistentEventStore: java.lang.String TIMESTAMP_CURRENT> = "timestamp_current";
+
+        <com.google.android.apps.analytics.PersistentEventStore: java.lang.String STORE_ID> = "store_id";
+
+        <com.google.android.apps.analytics.PersistentEventStore: java.lang.String SCREEN_WIDTH> = "screen_width";
+
+        <com.google.android.apps.analytics.PersistentEventStore: java.lang.String SCREEN_HEIGHT> = "screen_height";
+
+        <com.google.android.apps.analytics.PersistentEventStore: java.lang.String REFERRER> = "referrer";
+
+        <com.google.android.apps.analytics.PersistentEventStore: java.lang.String RANDOM_VAL> = "random_val";
+
+        <com.google.android.apps.analytics.PersistentEventStore: int MAX_EVENTS> = 1000;
+
+        <com.google.android.apps.analytics.PersistentEventStore: java.lang.String LABEL> = "label";
+
+        <com.google.android.apps.analytics.PersistentEventStore: java.lang.String EVENT_ID> = "event_id";
+
+        <com.google.android.apps.analytics.PersistentEventStore: int DATABASE_VERSION> = 2;
+
+        <com.google.android.apps.analytics.PersistentEventStore: java.lang.String DATABASE_NAME> = "google_analytics.db";
+
+        <com.google.android.apps.analytics.PersistentEventStore: java.lang.String CUSTOM_VARIABLE_COLUMN_TYPE> = "CHAR(64) NOT NULL";
+
+        <com.google.android.apps.analytics.PersistentEventStore: java.lang.String CUSTOMVAR_VALUE> = "cv_value";
+
+        <com.google.android.apps.analytics.PersistentEventStore: java.lang.String CUSTOMVAR_SCOPE> = "cv_scope";
+
+        <com.google.android.apps.analytics.PersistentEventStore: java.lang.String CUSTOMVAR_NAME> = "cv_name";
+
+        <com.google.android.apps.analytics.PersistentEventStore: java.lang.String CUSTOMVAR_INDEX> = "cv_index";
+
+        <com.google.android.apps.analytics.PersistentEventStore: java.lang.String CUSTOMVAR_ID> = "cv_id";
+
+        <com.google.android.apps.analytics.PersistentEventStore: java.lang.String CATEGORY> = "category";
+
+        <com.google.android.apps.analytics.PersistentEventStore: java.lang.String ACTION> = "action";
+
+        <com.google.android.apps.analytics.PersistentEventStore: java.lang.String ACCOUNT_ID> = "account_id";
+
+        return;
+    }
+}

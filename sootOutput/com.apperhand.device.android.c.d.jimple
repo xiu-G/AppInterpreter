@@ -1,0 +1,588 @@
+public final class com.apperhand.device.android.c.d extends java.lang.Object
+{
+
+    public static java.lang.String a(java.lang.String, byte[], java.util.List) throws com.apperhand.device.a.d.f
+    {
+        org.apache.http.impl.client.DefaultHttpClient $r3, $r37;
+        byte[] $r1, $r25;
+        org.apache.http.client.methods.HttpPost $r4, $r39;
+        org.apache.http.HeaderElement[] $r28;
+        java.util.zip.GZIPInputStream $r44;
+        org.apache.http.params.BasicHttpParams $r6, $r36;
+        org.apache.http.Header $r9;
+        org.apache.http.StatusLine $r14;
+        boolean $z0;
+        org.apache.http.conn.ClientConnectionManager $r22;
+        org.apache.http.HttpEntity $r13;
+        java.util.List $r2;
+        java.lang.StringBuilder $r15, $r16;
+        java.util.zip.GZIPOutputStream $r24, $r43;
+        java.lang.Throwable $r20, $r21, $r26, $r34;
+        java.io.ByteArrayOutputStream $r23, $r42;
+        org.apache.http.entity.ByteArrayEntity $r11, $r40;
+        com.apperhand.device.a.d.f $r17, $r41;
+        com.apperhand.device.android.c.d$1 $r38;
+        int $i0, $i1;
+        java.lang.String $r0, $r19;
+        java.util.Iterator $r7;
+        java.io.StringWriter $r30, $r45;
+        java.io.IOException $r48;
+        org.apache.http.HeaderElement $r29;
+        java.lang.RuntimeException $r35;
+        com.apperhand.device.a.d.f$a $r18;
+        java.io.InputStreamReader $r33, $r46;
+        org.apache.http.params.HttpParams $r10;
+        org.apache.http.HttpResponse $r5, $r12;
+        char[] $r31;
+        java.lang.Object $r8;
+        java.io.BufferedReader $r32, $r47;
+        java.io.InputStream $r27;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: byte[];
+
+        $r2 := @parameter2: java.util.List;
+
+        $r5 = null;
+
+        $r36 = new org.apache.http.params.BasicHttpParams;
+
+        $r6 = $r36;
+
+        specialinvoke $r36.<org.apache.http.params.BasicHttpParams: void <init>()>();
+
+        staticinvoke <org.apache.http.params.HttpConnectionParams: void setConnectionTimeout(org.apache.http.params.HttpParams,int)>($r6, 60000);
+
+        staticinvoke <org.apache.http.params.HttpConnectionParams: void setSoTimeout(org.apache.http.params.HttpParams,int)>($r6, 60000);
+
+        $r37 = new org.apache.http.impl.client.DefaultHttpClient;
+
+        $r3 = $r37;
+
+        specialinvoke $r37.<org.apache.http.impl.client.DefaultHttpClient: void <init>(org.apache.http.params.HttpParams)>($r6);
+
+        $r38 = new com.apperhand.device.android.c.d$1;
+
+        specialinvoke $r38.<com.apperhand.device.android.c.d$1: void <init>()>();
+
+        virtualinvoke $r3.<org.apache.http.impl.client.DefaultHttpClient: void setHttpRequestRetryHandler(org.apache.http.client.HttpRequestRetryHandler)>($r38);
+
+        $r39 = new org.apache.http.client.methods.HttpPost;
+
+        $r4 = $r39;
+
+        specialinvoke $r39.<org.apache.http.client.methods.HttpPost: void <init>(java.lang.String)>($r0);
+
+        if $r2 == null goto label02;
+
+        $r7 = interfaceinvoke $r2.<java.util.List: java.util.Iterator iterator()>();
+
+     label01:
+        $z0 = interfaceinvoke $r7.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label02;
+
+        $r8 = interfaceinvoke $r7.<java.util.Iterator: java.lang.Object next()>();
+
+        $r9 = (org.apache.http.Header) $r8;
+
+        virtualinvoke $r4.<org.apache.http.client.methods.HttpPost: void setHeader(org.apache.http.Header)>($r9);
+
+        goto label01;
+
+     label02:
+        $r10 = virtualinvoke $r4.<org.apache.http.client.methods.HttpPost: org.apache.http.params.HttpParams getParams()>();
+
+        interfaceinvoke $r10.<org.apache.http.params.HttpParams: org.apache.http.params.HttpParams setBooleanParameter(java.lang.String,boolean)>("http.protocol.expect-continue", 0);
+
+        virtualinvoke $r4.<org.apache.http.client.methods.HttpPost: void setHeader(java.lang.String,java.lang.String)>("Content-Type", "application/json");
+
+        virtualinvoke $r4.<org.apache.http.client.methods.HttpPost: void setHeader(java.lang.String,java.lang.String)>("Accept-Encoding", "gzip");
+
+        virtualinvoke $r4.<org.apache.http.client.methods.HttpPost: void setHeader(java.lang.String,java.lang.String)>("Accept", "application/json");
+
+        $i0 = lengthof $r1;
+
+        if $i0 >= 2048 goto label25;
+
+        $r40 = new org.apache.http.entity.ByteArrayEntity;
+
+        $r11 = $r40;
+
+     label03:
+        specialinvoke $r40.<org.apache.http.entity.ByteArrayEntity: void <init>(byte[])>($r1);
+
+     label04:
+        virtualinvoke $r4.<org.apache.http.client.methods.HttpPost: void setEntity(org.apache.http.HttpEntity)>($r11);
+
+     label05:
+        $r12 = virtualinvoke $r3.<org.apache.http.impl.client.DefaultHttpClient: org.apache.http.HttpResponse execute(org.apache.http.client.methods.HttpUriRequest)>($r4);
+
+     label06:
+        $r5 = $r12;
+
+     label07:
+        $r13 = interfaceinvoke $r12.<org.apache.http.HttpResponse: org.apache.http.HttpEntity getEntity()>();
+
+        $r14 = interfaceinvoke $r12.<org.apache.http.HttpResponse: org.apache.http.StatusLine getStatusLine()>();
+
+        $i0 = interfaceinvoke $r14.<org.apache.http.StatusLine: int getStatusCode()>();
+
+     label08:
+        if $i0 == 200 goto label33;
+
+        if $r13 == null goto label10;
+
+     label09:
+        interfaceinvoke $r13.<org.apache.http.HttpEntity: void consumeContent()>();
+
+     label10:
+        $r16 = new java.lang.StringBuilder;
+
+     label11:
+        $r15 = $r16;
+
+     label12:
+        specialinvoke $r16.<java.lang.StringBuilder: void <init>()>();
+
+        $r16 = virtualinvoke $r15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Status code is ");
+
+        $r14 = interfaceinvoke $r12.<org.apache.http.HttpResponse: org.apache.http.StatusLine getStatusLine()>();
+
+        $i0 = interfaceinvoke $r14.<org.apache.http.StatusLine: int getStatusCode()>();
+
+        $r16 = virtualinvoke $r16.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        virtualinvoke $r16.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(", ");
+
+        $r16 = staticinvoke <com.apperhand.device.android.c.d: java.lang.StringBuilder a(java.lang.String,org.apache.http.message.AbstractHttpMessage,org.apache.http.HttpResponse)>($r0, $r4, $r12);
+
+        virtualinvoke $r15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.CharSequence)>($r16);
+
+     label13:
+        $r41 = new com.apperhand.device.a.d.f;
+
+     label14:
+        $r17 = $r41;
+
+     label15:
+        $r18 = <com.apperhand.device.a.d.f$a: com.apperhand.device.a.d.f$a a>;
+
+     label16:
+        $r19 = virtualinvoke $r15.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r41.<com.apperhand.device.a.d.f: void <init>(com.apperhand.device.a.d.f$a,java.lang.String,java.lang.Throwable,boolean)>($r18, $r19, null, 0);
+
+     label17:
+        throw $r17;
+
+     label18:
+        $r20 := @caughtexception;
+
+        $r5 = $r12;
+
+     label19:
+        $r16 = new java.lang.StringBuilder;
+
+     label20:
+        $r15 = $r16;
+
+     label21:
+        specialinvoke $r16.<java.lang.StringBuilder: void <init>()>();
+
+        $r16 = virtualinvoke $r15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Error execute Exception ");
+
+        $r48 = (java.io.IOException) $r20;
+
+        $r19 = virtualinvoke $r48.<java.io.IOException: java.lang.String getMessage()>();
+
+        $r16 = virtualinvoke $r16.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r19);
+
+        virtualinvoke $r16.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(", ");
+
+        $r16 = staticinvoke <com.apperhand.device.android.c.d: java.lang.StringBuilder a(java.lang.String,org.apache.http.message.AbstractHttpMessage,org.apache.http.HttpResponse)>($r0, $r4, $r5);
+
+        virtualinvoke $r15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.CharSequence)>($r16);
+
+        $r41 = new com.apperhand.device.a.d.f;
+
+     label22:
+        $r17 = $r41;
+
+     label23:
+        $r18 = <com.apperhand.device.a.d.f$a: com.apperhand.device.a.d.f$a a>;
+
+        $r0 = virtualinvoke $r15.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r41.<com.apperhand.device.a.d.f: void <init>(com.apperhand.device.a.d.f$a,java.lang.String,java.lang.Throwable,boolean)>($r18, $r0, $r20, 0);
+
+        throw $r17;
+
+     label24:
+        $r21 := @caughtexception;
+
+        $r22 = virtualinvoke $r3.<org.apache.http.impl.client.DefaultHttpClient: org.apache.http.conn.ClientConnectionManager getConnectionManager()>();
+
+        interfaceinvoke $r22.<org.apache.http.conn.ClientConnectionManager: void shutdown()>();
+
+        throw $r21;
+
+     label25:
+        $r42 = new java.io.ByteArrayOutputStream;
+
+        $r23 = $r42;
+
+     label26:
+        specialinvoke $r42.<java.io.ByteArrayOutputStream: void <init>()>();
+
+     label27:
+        $r43 = new java.util.zip.GZIPOutputStream;
+
+        $r24 = $r43;
+
+     label28:
+        specialinvoke $r43.<java.util.zip.GZIPOutputStream: void <init>(java.io.OutputStream)>($r23);
+
+        virtualinvoke $r24.<java.io.OutputStream: void write(byte[])>($r1);
+
+        virtualinvoke $r24.<java.io.OutputStream: void close()>();
+
+     label29:
+        $r40 = new org.apache.http.entity.ByteArrayEntity;
+
+        $r11 = $r40;
+
+     label30:
+        $r25 = virtualinvoke $r23.<java.io.ByteArrayOutputStream: byte[] toByteArray()>();
+
+        specialinvoke $r40.<org.apache.http.entity.ByteArrayEntity: void <init>(byte[])>($r25);
+
+        virtualinvoke $r11.<org.apache.http.entity.AbstractHttpEntity: void setContentEncoding(java.lang.String)>("gzip");
+
+     label31:
+        goto label04;
+
+     label32:
+        $r26 := @caughtexception;
+
+        $r40 = new org.apache.http.entity.ByteArrayEntity;
+
+        specialinvoke $r40.<org.apache.http.entity.ByteArrayEntity: void <init>(byte[])>($r1);
+
+        virtualinvoke $r4.<org.apache.http.client.methods.HttpPost: void setEntity(org.apache.http.HttpEntity)>($r40);
+
+        goto label05;
+
+     label33:
+        if $r13 == null goto label82;
+
+     label34:
+        $r27 = interfaceinvoke $r13.<org.apache.http.HttpEntity: java.io.InputStream getContent()>();
+
+     label35:
+        $r8 = $r27;
+
+     label36:
+        $r9 = interfaceinvoke $r13.<org.apache.http.HttpEntity: org.apache.http.Header getContentEncoding()>();
+
+     label37:
+        if $r9 == null goto label47;
+
+        if $r27 == null goto label47;
+
+     label38:
+        $r28 = interfaceinvoke $r9.<org.apache.http.Header: org.apache.http.HeaderElement[] getElements()>();
+
+     label39:
+        $i0 = 0;
+
+     label40:
+        $i1 = lengthof $r28;
+
+     label41:
+        if $i0 >= $i1 goto label47;
+
+     label42:
+        $r29 = $r28[$i0];
+
+        $r19 = interfaceinvoke $r29.<org.apache.http.HeaderElement: java.lang.String getName()>();
+
+        $z0 = virtualinvoke $r19.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("gzip");
+
+     label43:
+        if $z0 == 0 goto label72;
+
+     label44:
+        $r44 = new java.util.zip.GZIPInputStream;
+
+     label45:
+        specialinvoke $r44.<java.util.zip.GZIPInputStream: void <init>(java.io.InputStream)>($r27);
+
+     label46:
+        $r8 = $r44;
+
+     label47:
+        if $r8 == null goto label81;
+
+     label48:
+        $r45 = new java.io.StringWriter;
+
+     label49:
+        $r30 = $r45;
+
+     label50:
+        specialinvoke $r45.<java.io.StringWriter: void <init>()>();
+
+     label51:
+        $r31 = newarray (char)[1024];
+
+     label52:
+        $r47 = new java.io.BufferedReader;
+
+     label53:
+        $r32 = $r47;
+
+     label54:
+        $r46 = new java.io.InputStreamReader;
+
+     label55:
+        $r33 = $r46;
+
+     label56:
+        $r27 = (java.io.InputStream) $r8;
+
+        specialinvoke $r46.<java.io.InputStreamReader: void <init>(java.io.InputStream,java.lang.String)>($r27, "UTF-8");
+
+        specialinvoke $r47.<java.io.BufferedReader: void <init>(java.io.Reader)>($r33);
+
+     label57:
+        $i0 = virtualinvoke $r32.<java.io.Reader: int read(char[])>($r31);
+
+     label58:
+        if $i0 == -1 goto label73;
+
+     label59:
+        virtualinvoke $r30.<java.io.Writer: void write(char[],int,int)>($r31, 0, $i0);
+
+     label60:
+        goto label57;
+
+     label61:
+        $r34 := @caughtexception;
+
+     label62:
+        if $r8 == null goto label65;
+
+     label63:
+        $r27 = (java.io.InputStream) $r8;
+
+     label64:
+        virtualinvoke $r27.<java.io.InputStream: void close()>();
+
+     label65:
+        throw $r34;
+
+     label66:
+        $r35 := @caughtexception;
+
+     label67:
+        virtualinvoke $r4.<org.apache.http.client.methods.HttpPost: void abort()>();
+
+        $r16 = new java.lang.StringBuilder;
+
+     label68:
+        $r15 = $r16;
+
+     label69:
+        specialinvoke $r16.<java.lang.StringBuilder: void <init>()>();
+
+        $r16 = virtualinvoke $r15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Error execute Exception ");
+
+        $r19 = virtualinvoke $r35.<java.lang.RuntimeException: java.lang.String getMessage()>();
+
+        $r16 = virtualinvoke $r16.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r19);
+
+        virtualinvoke $r16.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(", ");
+
+        $r16 = staticinvoke <com.apperhand.device.android.c.d: java.lang.StringBuilder a(java.lang.String,org.apache.http.message.AbstractHttpMessage,org.apache.http.HttpResponse)>($r0, $r4, $r5);
+
+        virtualinvoke $r15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.CharSequence)>($r16);
+
+        $r41 = new com.apperhand.device.a.d.f;
+
+     label70:
+        $r17 = $r41;
+
+     label71:
+        $r18 = <com.apperhand.device.a.d.f$a: com.apperhand.device.a.d.f$a a>;
+
+        $r0 = virtualinvoke $r15.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r41.<com.apperhand.device.a.d.f: void <init>(com.apperhand.device.a.d.f$a,java.lang.String,java.lang.Throwable,boolean)>($r18, $r0, $r35, 0);
+
+        throw $r17;
+
+     label72:
+        $i0 = $i0 + 1;
+
+        goto label40;
+
+     label73:
+        $r19 = virtualinvoke $r30.<java.lang.Object: java.lang.String toString()>();
+
+     label74:
+        if $r8 == null goto label77;
+
+     label75:
+        $r27 = (java.io.InputStream) $r8;
+
+     label76:
+        virtualinvoke $r27.<java.io.InputStream: void close()>();
+
+     label77:
+        $r22 = virtualinvoke $r3.<org.apache.http.impl.client.DefaultHttpClient: org.apache.http.conn.ClientConnectionManager getConnectionManager()>();
+
+        interfaceinvoke $r22.<org.apache.http.conn.ClientConnectionManager: void shutdown()>();
+
+        return $r19;
+
+     label78:
+        $r35 := @caughtexception;
+
+        $r5 = null;
+
+        goto label67;
+
+     label79:
+        $r20 := @caughtexception;
+
+        goto label19;
+
+     label80:
+        $r34 := @caughtexception;
+
+        $r8 = $r27;
+
+        goto label62;
+
+     label81:
+        $r19 = null;
+
+        goto label74;
+
+     label82:
+        $r19 = null;
+
+        goto label77;
+
+        catch java.io.IOException from label03 to label05 with label32;
+        catch java.io.IOException from label05 to label06 with label79;
+        catch java.lang.RuntimeException from label05 to label06 with label78;
+        catch java.lang.Throwable from label05 to label06 with label24;
+        catch java.io.IOException from label07 to label08 with label18;
+        catch java.io.IOException from label09 to label10 with label18;
+        catch java.io.IOException from label12 to label13 with label18;
+        catch java.io.IOException from label16 to label17 with label18;
+        catch java.lang.RuntimeException from label07 to label08 with label66;
+        catch java.lang.RuntimeException from label09 to label10 with label66;
+        catch java.lang.RuntimeException from label12 to label13 with label66;
+        catch java.lang.RuntimeException from label16 to label18 with label66;
+        catch java.lang.Throwable from label07 to label08 with label24;
+        catch java.lang.Throwable from label09 to label11 with label24;
+        catch java.lang.Throwable from label12 to label14 with label24;
+        catch java.lang.Throwable from label15 to label18 with label24;
+        catch java.lang.Throwable from label19 to label20 with label24;
+        catch java.lang.Throwable from label21 to label22 with label24;
+        catch java.lang.Throwable from label23 to label24 with label24;
+        catch java.io.IOException from label26 to label27 with label32;
+        catch java.io.IOException from label28 to label29 with label32;
+        catch java.io.IOException from label30 to label31 with label32;
+        catch java.io.IOException from label34 to label35 with label18;
+        catch java.lang.RuntimeException from label34 to label35 with label66;
+        catch java.lang.Throwable from label34 to label35 with label24;
+        catch java.lang.Throwable from label36 to label37 with label80;
+        catch java.lang.Throwable from label38 to label39 with label80;
+        catch java.lang.Throwable from label40 to label41 with label80;
+        catch java.lang.Throwable from label42 to label43 with label80;
+        catch java.lang.Throwable from label44 to label45 with label80;
+        catch java.lang.Throwable from label45 to label46 with label80;
+        catch java.lang.Throwable from label48 to label49 with label61;
+        catch java.lang.Throwable from label50 to label51 with label61;
+        catch java.lang.Throwable from label52 to label53 with label61;
+        catch java.lang.Throwable from label54 to label55 with label61;
+        catch java.lang.Throwable from label56 to label58 with label61;
+        catch java.lang.Throwable from label59 to label60 with label61;
+        catch java.io.IOException from label64 to label66 with label18;
+        catch java.lang.RuntimeException from label63 to label66 with label66;
+        catch java.lang.Throwable from label63 to label66 with label24;
+        catch java.lang.Throwable from label67 to label68 with label24;
+        catch java.lang.Throwable from label69 to label70 with label24;
+        catch java.lang.Throwable from label71 to label72 with label24;
+        catch java.lang.Throwable from label73 to label74 with label61;
+        catch java.io.IOException from label76 to label77 with label18;
+        catch java.lang.RuntimeException from label75 to label77 with label66;
+        catch java.lang.Throwable from label75 to label77 with label24;
+    }
+
+    private static java.lang.StringBuilder a(java.lang.String, org.apache.http.message.AbstractHttpMessage, org.apache.http.HttpResponse)
+    {
+        org.apache.http.Header[] $r5;
+        org.apache.http.HttpResponse $r2;
+        org.apache.http.message.AbstractHttpMessage $r1;
+        java.lang.StringBuilder $r3, $r4;
+        java.lang.String $r0;
+        org.apache.http.StatusLine $r6;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: org.apache.http.message.AbstractHttpMessage;
+
+        $r2 := @parameter2: org.apache.http.HttpResponse;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        if $r0 == null goto label1;
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("address = [");
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r0);
+
+        virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("],");
+
+     label1:
+        if $r1 == null goto label2;
+
+        $r5 = virtualinvoke $r1.<org.apache.http.message.AbstractHttpMessage: org.apache.http.Header[] getAllHeaders()>();
+
+        if $r5 == null goto label2;
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Headers = [");
+
+        $r5 = virtualinvoke $r1.<org.apache.http.message.AbstractHttpMessage: org.apache.http.Header[] getAllHeaders()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r5);
+
+        virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("],");
+
+     label2:
+        if $r2 == null goto label3;
+
+        $r6 = interfaceinvoke $r2.<org.apache.http.HttpResponse: org.apache.http.StatusLine getStatusLine()>();
+
+        if $r6 == null goto label3;
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("statusLine = [");
+
+        $r6 = interfaceinvoke $r2.<org.apache.http.HttpResponse: org.apache.http.StatusLine getStatusLine()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r6);
+
+        virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("]");
+
+     label3:
+        return $r3;
+    }
+}

@@ -1,0 +1,240 @@
+class cs.utils.io.ImageMemoryCache extends java.lang.Object
+{
+    private static final int SOFT_CACHE_SIZE;
+    private static android.util.LruCache mLruCache;
+    private static java.util.LinkedHashMap mSoftCache;
+
+    public void <init>(android.content.Context)
+    {
+        cs.utils.io.ImageMemoryCache$2 $r5;
+        android.content.Context $r1;
+        android.app.ActivityManager $r3;
+        cs.utils.io.ImageMemoryCache$1 $r4;
+        int i0;
+        java.lang.Object $r2;
+        cs.utils.io.ImageMemoryCache r0;
+
+        r0 := @this: cs.utils.io.ImageMemoryCache;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        $r2 = virtualinvoke $r1.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("activity");
+
+        $r3 = (android.app.ActivityManager) $r2;
+
+        i0 = virtualinvoke $r3.<android.app.ActivityManager: int getMemoryClass()>();
+
+        i0 = 1048576 * i0;
+
+        i0 = i0 / 4;
+
+        $r4 = new cs.utils.io.ImageMemoryCache$1;
+
+        specialinvoke $r4.<cs.utils.io.ImageMemoryCache$1: void <init>(cs.utils.io.ImageMemoryCache,int)>(r0, i0);
+
+        <cs.utils.io.ImageMemoryCache: android.util.LruCache mLruCache> = $r4;
+
+        $r5 = new cs.utils.io.ImageMemoryCache$2;
+
+        specialinvoke $r5.<cs.utils.io.ImageMemoryCache$2: void <init>(cs.utils.io.ImageMemoryCache,int,float,boolean)>(r0, 15, 0.75F, 1);
+
+        <cs.utils.io.ImageMemoryCache: java.util.LinkedHashMap mSoftCache> = $r5;
+
+        return;
+    }
+
+    static java.util.LinkedHashMap access$0()
+    {
+        java.util.LinkedHashMap r0;
+
+        r0 = <cs.utils.io.ImageMemoryCache: java.util.LinkedHashMap mSoftCache>;
+
+        return r0;
+    }
+
+    public void addBitmapToCache(java.lang.String, android.graphics.Bitmap)
+    {
+        java.lang.Throwable $r5;
+        android.graphics.Bitmap $r2;
+        android.util.LruCache $r3, $r4;
+        java.lang.String $r1;
+        cs.utils.io.ImageMemoryCache r0;
+
+        r0 := @this: cs.utils.io.ImageMemoryCache;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: android.graphics.Bitmap;
+
+        if $r2 == null goto label5;
+
+        $r3 = <cs.utils.io.ImageMemoryCache: android.util.LruCache mLruCache>;
+
+        entermonitor $r3;
+
+     label1:
+        $r4 = <cs.utils.io.ImageMemoryCache: android.util.LruCache mLruCache>;
+
+        virtualinvoke $r4.<android.util.LruCache: java.lang.Object put(java.lang.Object,java.lang.Object)>($r1, $r2);
+
+        exitmonitor $r3;
+
+     label2:
+        return;
+
+     label3:
+        $r5 := @caughtexception;
+
+        exitmonitor $r3;
+
+     label4:
+        throw $r5;
+
+     label5:
+        return;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+        catch java.lang.Throwable from label3 to label4 with label3;
+    }
+
+    public void clearCache()
+    {
+        java.util.LinkedHashMap $r1;
+        android.util.LruCache $r2;
+        cs.utils.io.ImageMemoryCache r0;
+
+        r0 := @this: cs.utils.io.ImageMemoryCache;
+
+        $r1 = <cs.utils.io.ImageMemoryCache: java.util.LinkedHashMap mSoftCache>;
+
+        virtualinvoke $r1.<java.util.LinkedHashMap: void clear()>();
+
+        $r2 = <cs.utils.io.ImageMemoryCache: android.util.LruCache mLruCache>;
+
+        virtualinvoke $r2.<android.util.LruCache: void evictAll()>();
+
+        return;
+    }
+
+    public android.graphics.Bitmap getBitmapFromCache(java.lang.String)
+    {
+        java.lang.Throwable $r9, $r10;
+        android.util.LruCache $r2, $r3;
+        java.util.LinkedHashMap $r6, $r7;
+        android.graphics.Bitmap r5;
+        java.lang.Object $r4;
+        java.lang.String $r1;
+        java.lang.ref.SoftReference r8;
+        cs.utils.io.ImageMemoryCache r0;
+
+        r0 := @this: cs.utils.io.ImageMemoryCache;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = <cs.utils.io.ImageMemoryCache: android.util.LruCache mLruCache>;
+
+        entermonitor $r2;
+
+     label01:
+        $r3 = <cs.utils.io.ImageMemoryCache: android.util.LruCache mLruCache>;
+
+        $r4 = virtualinvoke $r3.<android.util.LruCache: java.lang.Object get(java.lang.Object)>($r1);
+
+        r5 = (android.graphics.Bitmap) $r4;
+
+        if r5 == null goto label03;
+
+        $r3 = <cs.utils.io.ImageMemoryCache: android.util.LruCache mLruCache>;
+
+        virtualinvoke $r3.<android.util.LruCache: java.lang.Object remove(java.lang.Object)>($r1);
+
+        $r3 = <cs.utils.io.ImageMemoryCache: android.util.LruCache mLruCache>;
+
+        virtualinvoke $r3.<android.util.LruCache: java.lang.Object put(java.lang.Object,java.lang.Object)>($r1, r5);
+
+        exitmonitor $r2;
+
+     label02:
+        return r5;
+
+     label03:
+        exitmonitor $r2;
+
+     label04:
+        $r6 = <cs.utils.io.ImageMemoryCache: java.util.LinkedHashMap mSoftCache>;
+
+        entermonitor $r6;
+
+     label05:
+        $r7 = <cs.utils.io.ImageMemoryCache: java.util.LinkedHashMap mSoftCache>;
+
+        $r4 = virtualinvoke $r7.<java.util.LinkedHashMap: java.lang.Object get(java.lang.Object)>($r1);
+
+        r8 = (java.lang.ref.SoftReference) $r4;
+
+        if r8 == null goto label11;
+
+        $r4 = virtualinvoke r8.<java.lang.ref.SoftReference: java.lang.Object get()>();
+
+        r5 = (android.graphics.Bitmap) $r4;
+
+        if r5 == null goto label10;
+
+        $r2 = <cs.utils.io.ImageMemoryCache: android.util.LruCache mLruCache>;
+
+        virtualinvoke $r2.<android.util.LruCache: java.lang.Object put(java.lang.Object,java.lang.Object)>($r1, r5);
+
+        $r7 = <cs.utils.io.ImageMemoryCache: java.util.LinkedHashMap mSoftCache>;
+
+        virtualinvoke $r7.<java.util.LinkedHashMap: java.lang.Object remove(java.lang.Object)>($r1);
+
+        exitmonitor $r6;
+
+     label06:
+        return r5;
+
+     label07:
+        $r9 := @caughtexception;
+
+     label08:
+        exitmonitor $r2;
+
+     label09:
+        throw $r9;
+
+     label10:
+        $r7 = <cs.utils.io.ImageMemoryCache: java.util.LinkedHashMap mSoftCache>;
+
+        virtualinvoke $r7.<java.util.LinkedHashMap: java.lang.Object remove(java.lang.Object)>($r1);
+
+     label11:
+        exitmonitor $r6;
+
+     label12:
+        return null;
+
+     label13:
+        $r10 := @caughtexception;
+
+        exitmonitor $r6;
+
+     label14:
+        throw $r10;
+
+        catch java.lang.Throwable from label01 to label02 with label07;
+        catch java.lang.Throwable from label03 to label04 with label07;
+        catch java.lang.Throwable from label05 to label06 with label13;
+        catch java.lang.Throwable from label08 to label09 with label07;
+        catch java.lang.Throwable from label10 to label12 with label13;
+        catch java.lang.Throwable from label13 to label14 with label13;
+    }
+
+    public static void <clinit>()
+    {
+        <cs.utils.io.ImageMemoryCache: int SOFT_CACHE_SIZE> = 15;
+
+        return;
+    }
+}

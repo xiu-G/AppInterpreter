@@ -1,0 +1,142 @@
+public class oauth.signpost.signature.HmacSha1MessageSigner extends oauth.signpost.signature.OAuthMessageSigner
+{
+    private static final java.lang.String MAC_NAME;
+
+    public void <init>()
+    {
+        oauth.signpost.signature.HmacSha1MessageSigner r0;
+
+        r0 := @this: oauth.signpost.signature.HmacSha1MessageSigner;
+
+        specialinvoke r0.<oauth.signpost.signature.OAuthMessageSigner: void <init>()>();
+
+        return;
+    }
+
+    public java.lang.String getSignatureMethod()
+    {
+        oauth.signpost.signature.HmacSha1MessageSigner r0;
+
+        r0 := @this: oauth.signpost.signature.HmacSha1MessageSigner;
+
+        return "HMAC-SHA1";
+    }
+
+    public java.lang.String sign(oauth.signpost.http.HttpRequest, oauth.signpost.http.HttpParameters) throws oauth.signpost.exception.OAuthMessageSignerException
+    {
+        java.lang.Throwable r9, r10;
+        byte[] $r6;
+        oauth.signpost.signature.SignatureBaseString $r8, $r13;
+        javax.crypto.spec.SecretKeySpec r3, $r12;
+        oauth.signpost.http.HttpRequest $r1;
+        java.lang.String $r5;
+        javax.crypto.Mac $r7;
+        java.lang.Exception $r15;
+        oauth.signpost.http.HttpParameters $r2;
+        oauth.signpost.signature.HmacSha1MessageSigner r0;
+        java.lang.StringBuilder $r4, $r11;
+        oauth.signpost.exception.OAuthMessageSignerException $r14;
+
+        r0 := @this: oauth.signpost.signature.HmacSha1MessageSigner;
+
+        $r1 := @parameter0: oauth.signpost.http.HttpRequest;
+
+        $r2 := @parameter1: oauth.signpost.http.HttpParameters;
+
+        $r11 = new java.lang.StringBuilder;
+
+        $r4 = $r11;
+
+     label1:
+        specialinvoke $r11.<java.lang.StringBuilder: void <init>()>();
+
+        $r5 = virtualinvoke r0.<oauth.signpost.signature.HmacSha1MessageSigner: java.lang.String getConsumerSecret()>();
+
+        $r5 = staticinvoke <oauth.signpost.OAuth: java.lang.String percentEncode(java.lang.String)>($r5);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(38);
+
+        $r5 = virtualinvoke r0.<oauth.signpost.signature.HmacSha1MessageSigner: java.lang.String getTokenSecret()>();
+
+        $r5 = staticinvoke <oauth.signpost.OAuth: java.lang.String percentEncode(java.lang.String)>($r5);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r6 = virtualinvoke $r5.<java.lang.String: byte[] getBytes(java.lang.String)>("UTF-8");
+
+     label2:
+        $r12 = new javax.crypto.spec.SecretKeySpec;
+
+        r3 = $r12;
+
+     label3:
+        specialinvoke $r12.<javax.crypto.spec.SecretKeySpec: void <init>(byte[],java.lang.String)>($r6, "HmacSHA1");
+
+        $r7 = staticinvoke <javax.crypto.Mac: javax.crypto.Mac getInstance(java.lang.String)>("HmacSHA1");
+
+        virtualinvoke $r7.<javax.crypto.Mac: void init(java.security.Key)>(r3);
+
+     label4:
+        $r13 = new oauth.signpost.signature.SignatureBaseString;
+
+        $r8 = $r13;
+
+     label5:
+        specialinvoke $r13.<oauth.signpost.signature.SignatureBaseString: void <init>(oauth.signpost.http.HttpRequest,oauth.signpost.http.HttpParameters)>($r1, $r2);
+
+        $r5 = virtualinvoke $r8.<oauth.signpost.signature.SignatureBaseString: java.lang.String generate()>();
+
+        staticinvoke <oauth.signpost.OAuth: void debugOut(java.lang.String,java.lang.String)>("SBS", $r5);
+
+        $r6 = virtualinvoke $r5.<java.lang.String: byte[] getBytes(java.lang.String)>("UTF-8");
+
+        $r6 = virtualinvoke $r7.<javax.crypto.Mac: byte[] doFinal(byte[])>($r6);
+
+        $r5 = virtualinvoke r0.<oauth.signpost.signature.HmacSha1MessageSigner: java.lang.String base64Encode(byte[])>($r6);
+
+        $r5 = virtualinvoke $r5.<java.lang.String: java.lang.String trim()>();
+
+     label6:
+        return $r5;
+
+     label7:
+        r9 := @caughtexception;
+
+        $r14 = new oauth.signpost.exception.OAuthMessageSignerException;
+
+        $r15 = (java.lang.Exception) r9;
+
+        specialinvoke $r14.<oauth.signpost.exception.OAuthMessageSignerException: void <init>(java.lang.Exception)>($r15);
+
+        throw $r14;
+
+     label8:
+        r10 := @caughtexception;
+
+        $r14 = new oauth.signpost.exception.OAuthMessageSignerException;
+
+        $r15 = (java.lang.Exception) r10;
+
+        specialinvoke $r14.<oauth.signpost.exception.OAuthMessageSignerException: void <init>(java.lang.Exception)>($r15);
+
+        throw $r14;
+
+        catch java.security.GeneralSecurityException from label1 to label2 with label7;
+        catch java.security.GeneralSecurityException from label3 to label4 with label7;
+        catch java.security.GeneralSecurityException from label5 to label6 with label7;
+        catch java.io.UnsupportedEncodingException from label1 to label2 with label8;
+        catch java.io.UnsupportedEncodingException from label3 to label4 with label8;
+        catch java.io.UnsupportedEncodingException from label5 to label6 with label8;
+    }
+
+    public static void <clinit>()
+    {
+        <oauth.signpost.signature.HmacSha1MessageSigner: java.lang.String MAC_NAME> = "HmacSHA1";
+
+        return;
+    }
+}

@@ -1,0 +1,600 @@
+public class com.feiyuapp.manager.CompassActivity extends com.feiyuapp.utils.MyActivity implements android.hardware.SensorEventListener
+{
+    private android.hardware.Sensor aSensor;
+    private float[] accelerometerValues;
+    private android.widget.ImageView compassImg;
+    android.widget.LinearLayout container;
+    private float fromDegrees;
+    private android.hardware.Sensor mSensor;
+    private float[] magneticValues;
+    private android.widget.TextView orientText;
+    private java.lang.String orientTextStr;
+    private android.widget.TextView orientValue;
+    private java.lang.String orientValueStr;
+    private android.view.animation.RotateAnimation rotateAnimation;
+    private android.hardware.SensorManager sensorManager;
+    public android.content.Intent ipcIntent;
+    public android.content.Intent ipcResultIntent;
+
+    public void <init>()
+    {
+        com.feiyuapp.manager.CompassActivity r0;
+        float[] $r1;
+
+        r0 := @this: com.feiyuapp.manager.CompassActivity;
+
+        specialinvoke r0.<com.feiyuapp.utils.MyActivity: void <init>()>();
+
+        $r1 = newarray (float)[3];
+
+        r0.<com.feiyuapp.manager.CompassActivity: float[] accelerometerValues> = $r1;
+
+        $r1 = newarray (float)[3];
+
+        r0.<com.feiyuapp.manager.CompassActivity: float[] magneticValues> = $r1;
+
+        return;
+    }
+
+    public void getOrientation()
+    {
+        float[] r1, r2, $r3, $r4;
+        com.feiyuapp.manager.CompassActivity r0;
+        byte $b1;
+        int i0;
+        float $f0, $f1;
+        java.lang.StringBuilder $r5, $r7;
+        java.lang.String $r6;
+        double $d0;
+
+        r0 := @this: com.feiyuapp.manager.CompassActivity;
+
+        r2 = newarray (float)[3];
+
+        r1 = newarray (float)[9];
+
+        $r4 = r0.<com.feiyuapp.manager.CompassActivity: float[] accelerometerValues>;
+
+        $r3 = r0.<com.feiyuapp.manager.CompassActivity: float[] magneticValues>;
+
+        staticinvoke <android.hardware.SensorManager: boolean getRotationMatrix(float[],float[],float[],float[])>(r1, null, $r4, $r3);
+
+        staticinvoke <android.hardware.SensorManager: float[] getOrientation(float[],float[])>(r1, r2);
+
+        $f0 = r2[0];
+
+        $d0 = (double) $f0;
+
+        $d0 = staticinvoke <java.lang.Math: double toDegrees(double)>($d0);
+
+        $f0 = (float) $d0;
+
+        r2[0] = $f0;
+
+        $f0 = r2[0];
+
+        $b1 = $f0 cmpl 0.0F;
+
+        if $b1 != 0 goto label02;
+
+        r0.<com.feiyuapp.manager.CompassActivity: java.lang.String orientTextStr> = "\u6b63\u5317";
+
+     label01:
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>(java.lang.String)>("X=");
+
+        $f0 = r2[0];
+
+        $r5 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(float)>($f0);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" Y=");
+
+        $f0 = r2[1];
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(float)>($f0);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" Z=");
+
+        $f0 = r2[2];
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(float)>($f0);
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        r0.<com.feiyuapp.manager.CompassActivity: java.lang.String orientValueStr> = $r6;
+
+        virtualinvoke r0.<com.feiyuapp.manager.CompassActivity: void initDate()>();
+
+        $f0 = r0.<com.feiyuapp.manager.CompassActivity: float fromDegrees>;
+
+        $f1 = r2[0];
+
+        $f1 = neg $f1;
+
+        $b1 = $f0 cmpl $f1;
+
+        if $b1 == 0 goto label11;
+
+        $f0 = r0.<com.feiyuapp.manager.CompassActivity: float fromDegrees>;
+
+        $f1 = r2[0];
+
+        $f0 = $f0 + $f1;
+
+        $f0 = staticinvoke <java.lang.Math: float abs(float)>($f0);
+
+        $b1 = $f0 cmpl 1.0F;
+
+        i0 = (int) $b1;
+
+        if i0 <= 0 goto label11;
+
+        $f0 = r0.<com.feiyuapp.manager.CompassActivity: float fromDegrees>;
+
+        $f1 = r2[0];
+
+        $f0 = $f0 + $f1;
+
+        $f0 = staticinvoke <java.lang.Math: float abs(float)>($f0);
+
+        $b1 = $f0 cmpg 300.0F;
+
+        i0 = (int) $b1;
+
+        if i0 >= 0 goto label11;
+
+        $f0 = r2[0];
+
+        $f0 = neg $f0;
+
+        virtualinvoke r0.<com.feiyuapp.manager.CompassActivity: void rotateImg(float)>($f0);
+
+        return;
+
+     label02:
+        $f0 = r2[0];
+
+        $b1 = $f0 cmpl 90.0F;
+
+        if $b1 != 0 goto label03;
+
+        r0.<com.feiyuapp.manager.CompassActivity: java.lang.String orientTextStr> = "\u6b63\u4e1c";
+
+        goto label01;
+
+     label03:
+        $f0 = r2[0];
+
+        $b1 = $f0 cmpl 180.0F;
+
+        if $b1 == 0 goto label04;
+
+        $f0 = r2[0];
+
+        $b1 = $f0 cmpl -180.0F;
+
+        if $b1 != 0 goto label05;
+
+     label04:
+        r0.<com.feiyuapp.manager.CompassActivity: java.lang.String orientTextStr> = "\u6b63\u5357";
+
+        goto label01;
+
+     label05:
+        $f0 = r2[0];
+
+        $b1 = $f0 cmpl 270.0F;
+
+        if $b1 == 0 goto label06;
+
+        $f0 = r2[0];
+
+        $b1 = $f0 cmpl -90.0F;
+
+        if $b1 != 0 goto label07;
+
+     label06:
+        r0.<com.feiyuapp.manager.CompassActivity: java.lang.String orientTextStr> = "\u6b63\u897f";
+
+        goto label01;
+
+     label07:
+        $f0 = r2[0];
+
+        i0 = (int) $f0;
+
+        if i0 <= 0 goto label08;
+
+        if i0 >= 90 goto label08;
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>(java.lang.String)>("\u5317\u504f\u4e1c");
+
+        $r5 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>(i0);
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        r0.<com.feiyuapp.manager.CompassActivity: java.lang.String orientTextStr> = $r6;
+
+        goto label01;
+
+     label08:
+        if i0 <= 90 goto label09;
+
+        if i0 >= 180 goto label09;
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>(java.lang.String)>("\u5357\u504f\u4e1c");
+
+        i0 = 180 - i0;
+
+        $r5 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>(i0);
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        r0.<com.feiyuapp.manager.CompassActivity: java.lang.String orientTextStr> = $r6;
+
+        goto label01;
+
+     label09:
+        if i0 <= -180 goto label10;
+
+        if i0 >= -90 goto label10;
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>(java.lang.String)>("\u5357\u504f\u897f");
+
+        i0 = i0 + 180;
+
+        $r5 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>(i0);
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        r0.<com.feiyuapp.manager.CompassActivity: java.lang.String orientTextStr> = $r6;
+
+        goto label01;
+
+     label10:
+        if i0 <= -90 goto label01;
+
+        if i0 >= 0 goto label01;
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>(java.lang.String)>("\u5317\u504f\u897f");
+
+        i0 = neg i0;
+
+        $r5 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>(i0);
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        r0.<com.feiyuapp.manager.CompassActivity: java.lang.String orientTextStr> = $r6;
+
+        goto label01;
+
+     label11:
+        return;
+    }
+
+    public void initDate()
+    {
+        com.feiyuapp.manager.CompassActivity r0;
+        android.widget.TextView $r1;
+        java.lang.String $r2;
+
+        r0 := @this: com.feiyuapp.manager.CompassActivity;
+
+        $r1 = r0.<com.feiyuapp.manager.CompassActivity: android.widget.TextView orientText>;
+
+        $r2 = r0.<com.feiyuapp.manager.CompassActivity: java.lang.String orientTextStr>;
+
+        virtualinvoke $r1.<android.widget.TextView: void setText(java.lang.CharSequence)>($r2);
+
+        $r1 = r0.<com.feiyuapp.manager.CompassActivity: android.widget.TextView orientValue>;
+
+        $r2 = r0.<com.feiyuapp.manager.CompassActivity: java.lang.String orientValueStr>;
+
+        virtualinvoke $r1.<android.widget.TextView: void setText(java.lang.CharSequence)>($r2);
+
+        return;
+    }
+
+    public void intiView()
+    {
+        com.feiyuapp.manager.CompassActivity r0;
+        android.hardware.SensorManager $r5;
+        android.widget.TextView $r3;
+        android.widget.ImageView $r2;
+        android.view.View $r1;
+        java.lang.Object $r4;
+        android.hardware.Sensor $r6;
+
+        r0 := @this: com.feiyuapp.manager.CompassActivity;
+
+        $r1 = virtualinvoke r0.<com.feiyuapp.manager.CompassActivity: android.view.View findViewById(int)>(2131099670);
+
+        $r2 = (android.widget.ImageView) $r1;
+
+        r0.<com.feiyuapp.manager.CompassActivity: android.widget.ImageView compassImg> = $r2;
+
+        $r1 = virtualinvoke r0.<com.feiyuapp.manager.CompassActivity: android.view.View findViewById(int)>(2131099669);
+
+        $r3 = (android.widget.TextView) $r1;
+
+        r0.<com.feiyuapp.manager.CompassActivity: android.widget.TextView orientText> = $r3;
+
+        $r1 = virtualinvoke r0.<com.feiyuapp.manager.CompassActivity: android.view.View findViewById(int)>(2131099671);
+
+        $r3 = (android.widget.TextView) $r1;
+
+        r0.<com.feiyuapp.manager.CompassActivity: android.widget.TextView orientValue> = $r3;
+
+        $r4 = virtualinvoke r0.<com.feiyuapp.manager.CompassActivity: java.lang.Object getSystemService(java.lang.String)>("sensor");
+
+        $r5 = (android.hardware.SensorManager) $r4;
+
+        r0.<com.feiyuapp.manager.CompassActivity: android.hardware.SensorManager sensorManager> = $r5;
+
+        $r5 = r0.<com.feiyuapp.manager.CompassActivity: android.hardware.SensorManager sensorManager>;
+
+        $r6 = virtualinvoke $r5.<android.hardware.SensorManager: android.hardware.Sensor getDefaultSensor(int)>(1);
+
+        r0.<com.feiyuapp.manager.CompassActivity: android.hardware.Sensor aSensor> = $r6;
+
+        $r5 = r0.<com.feiyuapp.manager.CompassActivity: android.hardware.SensorManager sensorManager>;
+
+        $r6 = virtualinvoke $r5.<android.hardware.SensorManager: android.hardware.Sensor getDefaultSensor(int)>(2);
+
+        r0.<com.feiyuapp.manager.CompassActivity: android.hardware.Sensor mSensor> = $r6;
+
+        return;
+    }
+
+    public void onAccuracyChanged(android.hardware.Sensor, int)
+    {
+        com.feiyuapp.manager.CompassActivity r0;
+        int $i0;
+        android.hardware.Sensor $r1;
+
+        r0 := @this: com.feiyuapp.manager.CompassActivity;
+
+        $r1 := @parameter0: android.hardware.Sensor;
+
+        $i0 := @parameter1: int;
+
+        return;
+    }
+
+    protected void onCreate(android.os.Bundle)
+    {
+        com.feiyuapp.manager.CompassActivity r0;
+        android.os.Bundle $r1;
+
+        r0 := @this: com.feiyuapp.manager.CompassActivity;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke r0.<com.feiyuapp.utils.MyActivity: void onCreate(android.os.Bundle)>($r1);
+
+        virtualinvoke r0.<com.feiyuapp.manager.CompassActivity: void setContentView(int)>(2130903046);
+
+        virtualinvoke r0.<com.feiyuapp.manager.CompassActivity: void intiView()>();
+
+        return;
+    }
+
+    protected void onDestroy()
+    {
+        com.feiyuapp.manager.CompassActivity r0;
+
+        r0 := @this: com.feiyuapp.manager.CompassActivity;
+
+        specialinvoke r0.<com.feiyuapp.utils.MyActivity: void onDestroy()>();
+
+        return;
+    }
+
+    protected void onPause()
+    {
+        com.feiyuapp.manager.CompassActivity r0;
+        android.hardware.SensorManager $r1;
+        android.hardware.Sensor $r2;
+
+        r0 := @this: com.feiyuapp.manager.CompassActivity;
+
+        specialinvoke r0.<com.feiyuapp.utils.MyActivity: void onPause()>();
+
+        $r1 = r0.<com.feiyuapp.manager.CompassActivity: android.hardware.SensorManager sensorManager>;
+
+        $r2 = r0.<com.feiyuapp.manager.CompassActivity: android.hardware.Sensor aSensor>;
+
+        virtualinvoke $r1.<android.hardware.SensorManager: void unregisterListener(android.hardware.SensorEventListener,android.hardware.Sensor)>(r0, $r2);
+
+        $r1 = r0.<com.feiyuapp.manager.CompassActivity: android.hardware.SensorManager sensorManager>;
+
+        $r2 = r0.<com.feiyuapp.manager.CompassActivity: android.hardware.Sensor mSensor>;
+
+        virtualinvoke $r1.<android.hardware.SensorManager: void unregisterListener(android.hardware.SensorEventListener,android.hardware.Sensor)>(r0, $r2);
+
+        return;
+    }
+
+    protected void onResume()
+    {
+        com.feiyuapp.manager.CompassActivity r0;
+        android.hardware.SensorManager $r1;
+        android.hardware.Sensor $r2;
+
+        r0 := @this: com.feiyuapp.manager.CompassActivity;
+
+        specialinvoke r0.<com.feiyuapp.utils.MyActivity: void onResume()>();
+
+        $r1 = r0.<com.feiyuapp.manager.CompassActivity: android.hardware.SensorManager sensorManager>;
+
+        $r2 = r0.<com.feiyuapp.manager.CompassActivity: android.hardware.Sensor aSensor>;
+
+        virtualinvoke $r1.<android.hardware.SensorManager: boolean registerListener(android.hardware.SensorEventListener,android.hardware.Sensor,int)>(r0, $r2, 3);
+
+        $r1 = r0.<com.feiyuapp.manager.CompassActivity: android.hardware.SensorManager sensorManager>;
+
+        $r2 = r0.<com.feiyuapp.manager.CompassActivity: android.hardware.Sensor mSensor>;
+
+        virtualinvoke $r1.<android.hardware.SensorManager: boolean registerListener(android.hardware.SensorEventListener,android.hardware.Sensor,int)>(r0, $r2, 3);
+
+        return;
+    }
+
+    public void onSensorChanged(android.hardware.SensorEvent)
+    {
+        com.feiyuapp.manager.CompassActivity r0;
+        android.hardware.SensorEvent $r1;
+        int $i0;
+        float[] $r3, $r4;
+        android.hardware.Sensor $r2;
+
+        r0 := @this: com.feiyuapp.manager.CompassActivity;
+
+        $r1 := @parameter0: android.hardware.SensorEvent;
+
+        $r2 = $r1.<android.hardware.SensorEvent: android.hardware.Sensor sensor>;
+
+        $i0 = virtualinvoke $r2.<android.hardware.Sensor: int getType()>();
+
+        if $i0 != 1 goto label1;
+
+        $r3 = $r1.<android.hardware.SensorEvent: float[] values>;
+
+        r0.<com.feiyuapp.manager.CompassActivity: float[] accelerometerValues> = $r3;
+
+     label1:
+        $r2 = $r1.<android.hardware.SensorEvent: android.hardware.Sensor sensor>;
+
+        $i0 = virtualinvoke $r2.<android.hardware.Sensor: int getType()>();
+
+        if $i0 != 2 goto label2;
+
+        $r3 = $r1.<android.hardware.SensorEvent: float[] values>;
+
+        r0.<com.feiyuapp.manager.CompassActivity: float[] magneticValues> = $r3;
+
+     label2:
+        $r3 = r0.<com.feiyuapp.manager.CompassActivity: float[] accelerometerValues>;
+
+        $r4 = r0.<com.feiyuapp.manager.CompassActivity: float[] magneticValues>;
+
+        if $r3 == $r4 goto label3;
+
+        virtualinvoke r0.<com.feiyuapp.manager.CompassActivity: void getOrientation()>();
+
+     label3:
+        return;
+    }
+
+    protected void onStart()
+    {
+        com.feiyuapp.manager.CompassActivity r0;
+
+        r0 := @this: com.feiyuapp.manager.CompassActivity;
+
+        specialinvoke r0.<com.feiyuapp.utils.MyActivity: void onStart()>();
+
+        return;
+    }
+
+    protected void onStop()
+    {
+        com.feiyuapp.manager.CompassActivity r0;
+
+        r0 := @this: com.feiyuapp.manager.CompassActivity;
+
+        specialinvoke r0.<com.feiyuapp.utils.MyActivity: void onStop()>();
+
+        return;
+    }
+
+    public void rotateImg(float)
+    {
+        com.feiyuapp.manager.CompassActivity r0;
+        android.widget.ImageView $r2;
+        float $f0, $f1;
+        android.view.animation.RotateAnimation $r1;
+
+        r0 := @this: com.feiyuapp.manager.CompassActivity;
+
+        $f0 := @parameter0: float;
+
+        $r1 = new android.view.animation.RotateAnimation;
+
+        $f1 = r0.<com.feiyuapp.manager.CompassActivity: float fromDegrees>;
+
+        specialinvoke $r1.<android.view.animation.RotateAnimation: void <init>(float,float,int,float,int,float)>($f1, $f0, 1, 0.5F, 1, 0.5F);
+
+        r0.<com.feiyuapp.manager.CompassActivity: android.view.animation.RotateAnimation rotateAnimation> = $r1;
+
+        $r1 = r0.<com.feiyuapp.manager.CompassActivity: android.view.animation.RotateAnimation rotateAnimation>;
+
+        virtualinvoke $r1.<android.view.animation.RotateAnimation: void setDuration(long)>(500L);
+
+        $r1 = r0.<com.feiyuapp.manager.CompassActivity: android.view.animation.RotateAnimation rotateAnimation>;
+
+        virtualinvoke $r1.<android.view.animation.RotateAnimation: void setFillAfter(boolean)>(1);
+
+        $r2 = r0.<com.feiyuapp.manager.CompassActivity: android.widget.ImageView compassImg>;
+
+        $r1 = r0.<com.feiyuapp.manager.CompassActivity: android.view.animation.RotateAnimation rotateAnimation>;
+
+        virtualinvoke $r2.<android.widget.ImageView: void startAnimation(android.view.animation.Animation)>($r1);
+
+        r0.<com.feiyuapp.manager.CompassActivity: float fromDegrees> = $f0;
+
+        return;
+    }
+
+    public android.content.Intent getIntent()
+    {
+        com.feiyuapp.manager.CompassActivity this;
+        android.content.Intent $r0;
+
+        this := @this: com.feiyuapp.manager.CompassActivity;
+
+        $r0 = this.<com.feiyuapp.manager.CompassActivity: android.content.Intent ipcIntent>;
+
+        return $r0;
+    }
+
+    public void setIntent(android.content.Intent)
+    {
+        com.feiyuapp.manager.CompassActivity this;
+        android.content.Intent parameter0;
+
+        this := @this: com.feiyuapp.manager.CompassActivity;
+
+        parameter0 := @parameter0: android.content.Intent;
+
+        this.<com.feiyuapp.manager.CompassActivity: android.content.Intent ipcIntent> = parameter0;
+
+        return;
+    }
+
+    public void setResult(int, android.content.Intent)
+    {
+        com.feiyuapp.manager.CompassActivity this;
+        int parameter0;
+        android.content.Intent parameter1;
+
+        this := @this: com.feiyuapp.manager.CompassActivity;
+
+        parameter0 := @parameter0: int;
+
+        parameter1 := @parameter1: android.content.Intent;
+
+        this.<com.feiyuapp.manager.CompassActivity: android.content.Intent ipcResultIntent> = parameter1;
+
+        return;
+    }
+}

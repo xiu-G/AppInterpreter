@@ -1,0 +1,827 @@
+public class com.parse.ParseTestUtils extends java.lang.Object
+{
+    private static final java.lang.String TAG;
+    private static int serverPort;
+    private static com.parse.bp synchronizer;
+
+    static void <clinit>()
+    {
+        <com.parse.ParseTestUtils: java.lang.String TAG> = "com.parse.ParseTestUtils";
+
+        <com.parse.ParseTestUtils: int serverPort> = 9000;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        com.parse.ParseTestUtils r0;
+
+        r0 := @this: com.parse.ParseTestUtils;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    public static void allowSleep(int)
+    {
+        int $i0;
+        java.util.concurrent.Semaphore $r0;
+
+        $i0 := @parameter0: int;
+
+        $r0 = <com.parse.PushService: java.util.concurrent.Semaphore sleepSemaphore>;
+
+        virtualinvoke $r0.<java.util.concurrent.Semaphore: void release(int)>($i0);
+
+        return;
+    }
+
+    public static void assertFinishes()
+    {
+        java.lang.Throwable $r6;
+        java.lang.RuntimeException $r8;
+        com.parse.bp $r1;
+        java.util.concurrent.TimeUnit $r0;
+        java.util.concurrent.CountDownLatch $r5;
+        java.lang.InterruptedException $r9;
+        java.lang.Thread $r2, $r4;
+        android.os.Looper $r3;
+        java.lang.String $r7;
+        boolean $z0;
+
+        $r1 = <com.parse.ParseTestUtils: com.parse.bp synchronizer>;
+
+        $r2 = staticinvoke <java.lang.Thread: java.lang.Thread currentThread()>();
+
+        $r3 = staticinvoke <android.os.Looper: android.os.Looper getMainLooper()>();
+
+        $r4 = virtualinvoke $r3.<android.os.Looper: java.lang.Thread getThread()>();
+
+        if $r2 != $r4 goto label1;
+
+        $r8 = new java.lang.RuntimeException;
+
+        specialinvoke $r8.<java.lang.RuntimeException: void <init>(java.lang.String)>("assertFinishes() should *not* be called from the UI thread");
+
+        throw $r8;
+
+     label1:
+        staticinvoke <java.lang.Thread: void sleep(long)>(500L);
+
+     label2:
+        $r5 = $r1.<com.parse.bp: java.util.concurrent.CountDownLatch b>;
+
+        $r0 = <java.util.concurrent.TimeUnit: java.util.concurrent.TimeUnit SECONDS>;
+
+     label3:
+        $z0 = virtualinvoke $r5.<java.util.concurrent.CountDownLatch: boolean await(long,java.util.concurrent.TimeUnit)>(10L, $r0);
+
+     label4:
+        $r1.<com.parse.bp: boolean a> = $z0;
+
+        $z0 = $r1.<com.parse.bp: boolean a>;
+
+        if $z0 != 0 goto label6;
+
+        $r8 = new java.lang.RuntimeException;
+
+        specialinvoke $r8.<java.lang.RuntimeException: void <init>(java.lang.String)>("finish() was never called");
+
+        throw $r8;
+
+     label5:
+        $r6 := @caughtexception;
+
+        $r8 = new java.lang.RuntimeException;
+
+        $r9 = (java.lang.InterruptedException) $r6;
+
+        $r7 = virtualinvoke $r9.<java.lang.InterruptedException: java.lang.String getMessage()>();
+
+        specialinvoke $r8.<java.lang.RuntimeException: void <init>(java.lang.String)>($r7);
+
+        throw $r8;
+
+     label6:
+        return;
+
+        catch java.lang.InterruptedException from label1 to label2 with label5;
+        catch java.lang.InterruptedException from label3 to label4 with label5;
+    }
+
+    public static void assertSlept()
+    {
+        java.lang.Throwable $r1;
+        java.lang.InterruptedException $r4;
+        java.util.concurrent.Semaphore $r0;
+        int $i0;
+        java.lang.String $r2;
+        java.lang.RuntimeException $r3;
+
+     label1:
+        $r0 = <com.parse.PushService: java.util.concurrent.Semaphore sleepSemaphore>;
+
+        $i0 = virtualinvoke $r0.<java.util.concurrent.Semaphore: int availablePermits()>();
+
+        if $i0 != 0 goto label2;
+
+        return;
+
+     label2:
+        staticinvoke <java.lang.Thread: void sleep(long)>(50L);
+
+     label3:
+        goto label1;
+
+     label4:
+        $r1 := @caughtexception;
+
+        $r3 = new java.lang.RuntimeException;
+
+        $r4 = (java.lang.InterruptedException) $r1;
+
+        $r2 = virtualinvoke $r4.<java.lang.InterruptedException: java.lang.String getMessage()>();
+
+        specialinvoke $r3.<java.lang.RuntimeException: void <init>(java.lang.String)>($r2);
+
+        throw $r3;
+
+        catch java.lang.InterruptedException from label2 to label3 with label4;
+    }
+
+    public static void beginFakeSleep()
+    {
+        java.util.concurrent.Semaphore $r0;
+
+        $r0 = new java.util.concurrent.Semaphore;
+
+        specialinvoke $r0.<java.util.concurrent.Semaphore: void <init>(int)>(0);
+
+        <com.parse.PushService: java.util.concurrent.Semaphore sleepSemaphore> = $r0;
+
+        return;
+    }
+
+    public static void clearApp()
+    {
+        com.parse.ParseException $r2;
+        com.parse.l $r1;
+        java.lang.String $r0;
+        java.lang.RuntimeException $r3;
+
+        $r1 = new com.parse.l;
+
+        specialinvoke $r1.<com.parse.l: void <init>(java.lang.String)>("clear_app");
+
+     label1:
+        virtualinvoke $r1.<com.parse.l: java.lang.Object c()>();
+
+     label2:
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        $r3 = new java.lang.RuntimeException;
+
+        $r0 = virtualinvoke $r2.<com.parse.ParseException: java.lang.String getMessage()>();
+
+        specialinvoke $r3.<java.lang.RuntimeException: void <init>(java.lang.String)>($r0);
+
+        throw $r3;
+
+        catch com.parse.ParseException from label1 to label2 with label3;
+    }
+
+    public static void clearCurrentInstallationFromMemory()
+    {
+        <com.parse.ParseInstallation: com.parse.ParseInstallation currentInstallation> = null;
+
+        return;
+    }
+
+    public static void clearFiles()
+    {
+        com.parse.ParseCommandCache $r1;
+        java.io.File $r0;
+
+        $r0 = staticinvoke <com.parse.Parse: java.io.File getParseDir()>();
+
+        staticinvoke <com.parse.ParseTestUtils: void recursiveDelete(java.io.File)>($r0);
+
+        $r0 = staticinvoke <com.parse.Parse: java.io.File getKeyValueCacheDir()>();
+
+        staticinvoke <com.parse.ParseTestUtils: void recursiveDelete(java.io.File)>($r0);
+
+        $r1 = <com.parse.Parse: com.parse.ParseCommandCache commandCache>;
+
+        if $r1 == null goto label1;
+
+        $r1 = <com.parse.Parse: com.parse.ParseCommandCache commandCache>;
+
+        virtualinvoke $r1.<com.parse.ParseCommandCache: void a()>();
+
+        <com.parse.Parse: com.parse.ParseCommandCache commandCache> = null;
+
+     label1:
+        return;
+    }
+
+    public static void clearPushRouterStateFromMemory()
+    {
+        staticinvoke <com.parse.ap: void a()>();
+
+        return;
+    }
+
+    public static int consecutiveFailures()
+    {
+        int i0;
+
+        i0 = <com.parse.PushService: int consecutiveFailures>;
+
+        return i0;
+    }
+
+    public static void endFakeSleep()
+    {
+        java.util.concurrent.Semaphore $r0;
+
+        $r0 = <com.parse.PushService: java.util.concurrent.Semaphore sleepSemaphore>;
+
+        virtualinvoke $r0.<java.util.concurrent.Semaphore: void release(int)>(1000000);
+
+        return;
+    }
+
+    public static void finish()
+    {
+        java.util.concurrent.CountDownLatch $r5;
+        java.lang.Thread $r1, $r3;
+        android.os.Looper $r2;
+        java.lang.RuntimeException $r4;
+        com.parse.bp $r0;
+        boolean $z0;
+
+        $r0 = <com.parse.ParseTestUtils: com.parse.bp synchronizer>;
+
+        $r1 = staticinvoke <java.lang.Thread: java.lang.Thread currentThread()>();
+
+        $r2 = staticinvoke <android.os.Looper: android.os.Looper getMainLooper()>();
+
+        $r3 = virtualinvoke $r2.<android.os.Looper: java.lang.Thread getThread()>();
+
+        if $r1 == $r3 goto label1;
+
+        $r4 = new java.lang.RuntimeException;
+
+        specialinvoke $r4.<java.lang.RuntimeException: void <init>(java.lang.String)>("finish() should be called from the UI thread");
+
+        throw $r4;
+
+     label1:
+        $z0 = $r0.<com.parse.bp: boolean a>;
+
+        if $z0 == 0 goto label2;
+
+        $r4 = new java.lang.RuntimeException;
+
+        specialinvoke $r4.<java.lang.RuntimeException: void <init>(java.lang.String)>("finish() was called too much");
+
+        throw $r4;
+
+     label2:
+        $r5 = $r0.<com.parse.bp: java.util.concurrent.CountDownLatch b>;
+
+        virtualinvoke $r5.<java.util.concurrent.CountDownLatch: void countDown()>();
+
+        return;
+    }
+
+    public static java.lang.String getIgnoreAfterTime()
+    {
+        java.lang.String r0;
+
+        r0 = <com.parse.ap: java.lang.String d>;
+
+        return r0;
+    }
+
+    public static java.lang.String getInstallationId(android.content.Context)
+    {
+        android.content.Context $r0;
+        com.parse.ParseInstallation $r1;
+        java.lang.String $r2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = staticinvoke <com.parse.ParseInstallation: com.parse.ParseInstallation getCurrentInstallation()>();
+
+        $r2 = virtualinvoke $r1.<com.parse.ParseInstallation: java.lang.String getInstallationId()>();
+
+        return $r2;
+    }
+
+    public static java.lang.String getLastTime()
+    {
+        java.lang.String r0;
+
+        r0 = <com.parse.ap: java.lang.String c>;
+
+        return r0;
+    }
+
+    public static com.parse.ParseObject getObjectFromDisk(android.content.Context, java.lang.String)
+    {
+        android.content.Context $r0;
+        java.lang.String $r1;
+        com.parse.ParseObject $r2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 = staticinvoke <com.parse.ParseObject: com.parse.ParseObject getFromDisk(android.content.Context,java.lang.String)>($r0, $r1);
+
+        return $r2;
+    }
+
+    static java.io.File getParseDir(android.content.Context)
+    {
+        android.content.Context $r0;
+        java.io.File $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = virtualinvoke $r0.<android.content.Context: java.io.File getDir(java.lang.String,int)>("Parse", 0);
+
+        return $r1;
+    }
+
+    public static org.json.JSONObject getPushRequestJSON(android.content.Context)
+    {
+        android.content.Context $r0;
+        org.json.JSONObject $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = staticinvoke <com.parse.ap: org.json.JSONObject e(android.content.Context)>($r0);
+
+        return $r1;
+    }
+
+    public static com.parse.ParseUser getUserObjectFromDisk(android.content.Context, java.lang.String)
+    {
+        android.content.Context $r0;
+        java.lang.String $r1;
+        com.parse.ParseObject $r2;
+        com.parse.ParseUser $r3;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 = staticinvoke <com.parse.ParseObject: com.parse.ParseObject getFromDisk(android.content.Context,java.lang.String)>($r0, $r1);
+
+        $r3 = (com.parse.ParseUser) $r2;
+
+        return $r3;
+    }
+
+    public static void initSynchronizer()
+    {
+        com.parse.bp $r0;
+
+        $r0 = new com.parse.bp;
+
+        specialinvoke $r0.<com.parse.bp: void <init>()>();
+
+        <com.parse.ParseTestUtils: com.parse.bp synchronizer> = $r0;
+
+        return;
+    }
+
+    public static java.util.Set keySet(com.parse.ParseObject)
+    {
+        java.util.Set $r1;
+        com.parse.ParseObject $r0;
+
+        $r0 := @parameter0: com.parse.ParseObject;
+
+        $r1 = virtualinvoke $r0.<com.parse.ParseObject: java.util.Set keySet()>();
+
+        return $r1;
+    }
+
+    public static java.net.ServerSocket mockPushServer()
+    {
+        java.lang.Throwable $r2;
+        java.io.IOException $r6;
+        java.lang.RuntimeException $r5;
+        java.net.ServerSocket $r4;
+        int $i0;
+        java.lang.StringBuilder $r0, $r3;
+        java.lang.String $r1;
+
+        $i0 = <com.parse.ParseTestUtils: int serverPort>;
+
+        $i0 = $i0 + 1;
+
+        <com.parse.ParseTestUtils: int serverPort> = $i0;
+
+        staticinvoke <com.parse.PushService: void usePort(int)>($i0);
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>("running mockPushServer on port ");
+
+        $i0 = <com.parse.ParseTestUtils: int serverPort>;
+
+        $r0 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r1 = virtualinvoke $r0.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.parse.Parse: void logI(java.lang.String,java.lang.String)>("com.parse.ParseTestUtils", $r1);
+
+        $r4 = new java.net.ServerSocket;
+
+        $i0 = <com.parse.ParseTestUtils: int serverPort>;
+
+     label1:
+        specialinvoke $r4.<java.net.ServerSocket: void <init>(int)>($i0);
+
+     label2:
+        return $r4;
+
+     label3:
+        $r2 := @caughtexception;
+
+        $r5 = new java.lang.RuntimeException;
+
+        $r6 = (java.io.IOException) $r2;
+
+        $r1 = virtualinvoke $r6.<java.io.IOException: java.lang.String getMessage()>();
+
+        specialinvoke $r5.<java.lang.RuntimeException: void <init>(java.lang.String)>($r1);
+
+        throw $r5;
+
+        catch java.io.IOException from label1 to label2 with label3;
+    }
+
+    public static int numKeyValueCacheFiles()
+    {
+        int $i0;
+        java.io.File[] $r1;
+        java.io.File $r0;
+
+        $r0 = staticinvoke <com.parse.Parse: java.io.File getKeyValueCacheDir()>();
+
+        $r1 = virtualinvoke $r0.<java.io.File: java.io.File[] listFiles()>();
+
+        $i0 = lengthof $r1;
+
+        return $i0;
+    }
+
+    public static void onPush(android.content.Context, java.lang.String, com.parse.PushCallback)
+    {
+        android.content.Context $r0;
+        java.lang.String $r1;
+        com.parse.PushCallback $r2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 := @parameter2: com.parse.PushCallback;
+
+        staticinvoke <com.parse.ap: void a(android.content.Context,java.lang.String,com.parse.PushCallback)>($r0, $r1, $r2);
+
+        staticinvoke <com.parse.PushService: void startServiceIfRequired(android.content.Context)>($r0);
+
+        return;
+    }
+
+    public static java.util.Set pushRoutes(android.content.Context)
+    {
+        android.content.Context $r0;
+        java.util.Set $r1;
+        java.util.Map $r2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        staticinvoke <com.parse.ap: void b(android.content.Context)>($r0);
+
+        $r2 = <com.parse.ap: java.util.Map a>;
+
+        $r1 = interfaceinvoke $r2.<java.util.Map: java.util.Set keySet()>();
+
+        return $r1;
+    }
+
+    public static void recursiveDelete(java.io.File)
+    {
+        int $i0, $i1;
+        java.io.File[] $r2;
+        java.io.File $r0, $r1;
+        boolean $z0;
+
+        $r0 := @parameter0: java.io.File;
+
+        $z0 = virtualinvoke $r0.<java.io.File: boolean exists()>();
+
+        if $z0 != 0 goto label1;
+
+        return;
+
+     label1:
+        $z0 = virtualinvoke $r0.<java.io.File: boolean isDirectory()>();
+
+        if $z0 == 0 goto label3;
+
+        $r2 = virtualinvoke $r0.<java.io.File: java.io.File[] listFiles()>();
+
+        $i0 = lengthof $r2;
+
+        $i1 = 0;
+
+     label2:
+        if $i1 >= $i0 goto label3;
+
+        $r1 = $r2[$i1];
+
+        staticinvoke <com.parse.ParseTestUtils: void recursiveDelete(java.io.File)>($r1);
+
+        $i1 = $i1 + 1;
+
+        goto label2;
+
+     label3:
+        virtualinvoke $r0.<java.io.File: boolean delete()>();
+
+        return;
+    }
+
+    public static void saveObjectToDisk(com.parse.ParseObject, android.content.Context, java.lang.String)
+    {
+        android.content.Context $r1;
+        java.lang.String $r2;
+        com.parse.ParseObject $r0;
+
+        $r0 := @parameter0: com.parse.ParseObject;
+
+        $r1 := @parameter1: android.content.Context;
+
+        $r2 := @parameter2: java.lang.String;
+
+        virtualinvoke $r0.<com.parse.ParseObject: void saveToDisk(android.content.Context,java.lang.String)>($r1, $r2);
+
+        return;
+    }
+
+    public static void saveStringToDisk(java.lang.String, android.content.Context, java.lang.String)
+    {
+        java.lang.Throwable $r7, $r8;
+        android.content.Context $r1;
+        byte[] $r6;
+        java.io.FileOutputStream $r5;
+        java.io.File $r3, $r4;
+        java.lang.String $r0, $r2;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: android.content.Context;
+
+        $r2 := @parameter2: java.lang.String;
+
+        $r3 = new java.io.File;
+
+        $r4 = staticinvoke <com.parse.ParseTestUtils: java.io.File getParseDir(android.content.Context)>($r1);
+
+        specialinvoke $r3.<java.io.File: void <init>(java.io.File,java.lang.String)>($r4, $r2);
+
+        $r5 = new java.io.FileOutputStream;
+
+     label1:
+        specialinvoke $r5.<java.io.FileOutputStream: void <init>(java.io.File)>($r3);
+
+        $r6 = virtualinvoke $r0.<java.lang.String: byte[] getBytes(java.lang.String)>("UTF-8");
+
+        virtualinvoke $r5.<java.io.FileOutputStream: void write(byte[])>($r6);
+
+        virtualinvoke $r5.<java.io.FileOutputStream: void close()>();
+
+     label2:
+        return;
+
+     label3:
+        $r7 := @caughtexception;
+
+        return;
+
+     label4:
+        $r8 := @caughtexception;
+
+        return;
+
+        catch java.io.UnsupportedEncodingException from label1 to label2 with label4;
+        catch java.io.IOException from label1 to label2 with label3;
+    }
+
+    public static void setCommandInitialDelay(double)
+    {
+        double $d0;
+
+        $d0 := @parameter0: double;
+
+        staticinvoke <com.parse.l: void a(double)>($d0);
+
+        return;
+    }
+
+    public static void setMaxKeyValueCacheBytes(int)
+    {
+        int $i0;
+
+        $i0 := @parameter0: int;
+
+        <com.parse.Parse: int maxKeyValueCacheBytes> = $i0;
+
+        return;
+    }
+
+    public static void setMaxKeyValueCacheFiles(int)
+    {
+        int $i0;
+
+        $i0 := @parameter0: int;
+
+        <com.parse.Parse: int maxKeyValueCacheFiles> = $i0;
+
+        return;
+    }
+
+    public static int setPushHistoryLength(int)
+    {
+        int $i0, i1;
+
+        $i0 := @parameter0: int;
+
+        i1 = <com.parse.ap: int f>;
+
+        <com.parse.ap: int f> = $i0;
+
+        return i1;
+    }
+
+    public static void setUpPushTest(android.content.Context)
+    {
+        android.content.Context $r0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        <com.parse.StandardPushCallback: boolean disableNotifications> = 1;
+
+        <com.parse.StandardPushCallback: int totalNotifications> = 0;
+
+        <com.parse.PushService: java.util.concurrent.Semaphore sleepSemaphore> = null;
+
+        staticinvoke <com.parse.PushService: void useServer(java.lang.String)>("localhost");
+
+        staticinvoke <com.parse.ParseTestUtils: java.lang.String useServer(java.lang.String)>("http://10.0.2.2:3000");
+
+        staticinvoke <com.parse.ap: void f(android.content.Context)>($r0);
+
+        staticinvoke <com.parse.ParseInstallation: void clearCurrentInstallationFromDisk(android.content.Context)>($r0);
+
+        staticinvoke <com.parse.ParseTestUtils: void initSynchronizer()>();
+
+        return;
+    }
+
+    public static void start(int)
+    {
+        int $i0;
+        java.util.concurrent.CountDownLatch $r1;
+        com.parse.bp $r0;
+
+        $i0 := @parameter0: int;
+
+        $r0 = <com.parse.ParseTestUtils: com.parse.bp synchronizer>;
+
+        $r1 = new java.util.concurrent.CountDownLatch;
+
+        specialinvoke $r1.<java.util.concurrent.CountDownLatch: void <init>(int)>($i0);
+
+        $r0.<com.parse.bp: java.util.concurrent.CountDownLatch b> = $r1;
+
+        return;
+    }
+
+    public static void startServiceIfRequired(android.content.Context)
+    {
+        android.content.Context $r0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        staticinvoke <com.parse.PushService: void startServiceIfRequired(android.content.Context)>($r0);
+
+        return;
+    }
+
+    public static void tearDownPushTest(android.content.Context)
+    {
+        android.content.Context $r0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        staticinvoke <com.parse.ParseTestUtils: void clearFiles()>();
+
+        staticinvoke <com.parse.ParseInstallation: void clearCurrentInstallationFromDisk(android.content.Context)>($r0);
+
+        staticinvoke <com.parse.ap: void f(android.content.Context)>($r0);
+
+        <com.parse.PushService: java.net.Socket socket> = null;
+
+        return;
+    }
+
+    public static java.lang.String toDeterministicString(java.lang.Object)
+    {
+        org.json.JSONException $r3;
+        java.lang.Object $r0;
+        java.lang.RuntimeException $r1;
+        java.lang.String $r2;
+
+        $r0 := @parameter0: java.lang.Object;
+
+     label1:
+        $r2 = staticinvoke <com.parse.l: java.lang.String a(java.lang.Object)>($r0);
+
+     label2:
+        return $r2;
+
+     label3:
+        $r3 := @caughtexception;
+
+        $r1 = new java.lang.RuntimeException;
+
+        $r2 = virtualinvoke $r3.<org.json.JSONException: java.lang.String getMessage()>();
+
+        specialinvoke $r1.<java.lang.RuntimeException: void <init>(java.lang.String)>($r2);
+
+        throw $r1;
+
+        catch org.json.JSONException from label1 to label2 with label3;
+    }
+
+    public static int totalNotifications()
+    {
+        int i0;
+
+        i0 = <com.parse.StandardPushCallback: int totalNotifications>;
+
+        return i0;
+    }
+
+    public static java.lang.String useBadServerPort()
+    {
+        java.lang.String $r0;
+
+        $r0 = staticinvoke <com.parse.ParseTestUtils: java.lang.String useServer(java.lang.String)>("http://10.0.2.2:6666");
+
+        return $r0;
+    }
+
+    public static void useDevPushServer()
+    {
+        staticinvoke <com.parse.PushService: void useServer(java.lang.String)>("10.0.2.2");
+
+        return;
+    }
+
+    public static java.lang.String useInvalidServer()
+    {
+        java.lang.String $r0;
+
+        $r0 = staticinvoke <com.parse.ParseTestUtils: java.lang.String useServer(java.lang.String)>("http://invalid.server:3000");
+
+        return $r0;
+    }
+
+    public static java.lang.String useServer(java.lang.String)
+    {
+        java.lang.String $r0, r1;
+
+        $r0 := @parameter0: java.lang.String;
+
+        r1 = <com.parse.ParseObject: java.lang.String server>;
+
+        <com.parse.ParseObject: java.lang.String server> = $r0;
+
+        return r1;
+    }
+}

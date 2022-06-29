@@ -1,0 +1,285 @@
+public class com.leduoworks.speed.service.GpsService extends android.app.Service
+{
+    protected static final java.lang.String t;
+    private int fixCount;
+    private android.location.GpsStatus$Listener gpsStateListener;
+    private android.location.GpsStatus gpsStatus;
+    private android.location.LocationListener localListener;
+    private android.location.LocationManager locationManager;
+    public android.content.Intent ipcIntent;
+    public android.os.IBinder ipcBinder_0;
+
+    public void <init>()
+    {
+        com.leduoworks.speed.service.GpsService$2 $r2;
+        com.leduoworks.speed.service.GpsService$1 $r1;
+        com.leduoworks.speed.service.GpsService r0;
+
+        r0 := @this: com.leduoworks.speed.service.GpsService;
+
+        specialinvoke r0.<android.app.Service: void <init>()>();
+
+        r0.<com.leduoworks.speed.service.GpsService: int fixCount> = 0;
+
+        $r1 = new com.leduoworks.speed.service.GpsService$1;
+
+        specialinvoke $r1.<com.leduoworks.speed.service.GpsService$1: void <init>(com.leduoworks.speed.service.GpsService)>(r0);
+
+        r0.<com.leduoworks.speed.service.GpsService: android.location.GpsStatus$Listener gpsStateListener> = $r1;
+
+        $r2 = new com.leduoworks.speed.service.GpsService$2;
+
+        specialinvoke $r2.<com.leduoworks.speed.service.GpsService$2: void <init>(com.leduoworks.speed.service.GpsService)>(r0);
+
+        r0.<com.leduoworks.speed.service.GpsService: android.location.LocationListener localListener> = $r2;
+
+        return;
+    }
+
+    static android.location.LocationManager access$0(com.leduoworks.speed.service.GpsService)
+    {
+        com.leduoworks.speed.service.GpsService $r0;
+        android.location.LocationManager r1;
+
+        $r0 := @parameter0: com.leduoworks.speed.service.GpsService;
+
+        r1 = $r0.<com.leduoworks.speed.service.GpsService: android.location.LocationManager locationManager>;
+
+        return r1;
+    }
+
+    static android.location.GpsStatus access$1(com.leduoworks.speed.service.GpsService)
+    {
+        android.location.GpsStatus r1;
+        com.leduoworks.speed.service.GpsService $r0;
+
+        $r0 := @parameter0: com.leduoworks.speed.service.GpsService;
+
+        r1 = $r0.<com.leduoworks.speed.service.GpsService: android.location.GpsStatus gpsStatus>;
+
+        return r1;
+    }
+
+    static void access$2(com.leduoworks.speed.service.GpsService, android.location.GpsStatus)
+    {
+        android.location.GpsStatus $r1;
+        com.leduoworks.speed.service.GpsService $r0;
+
+        $r0 := @parameter0: com.leduoworks.speed.service.GpsService;
+
+        $r1 := @parameter1: android.location.GpsStatus;
+
+        $r0.<com.leduoworks.speed.service.GpsService: android.location.GpsStatus gpsStatus> = $r1;
+
+        return;
+    }
+
+    static int access$3(com.leduoworks.speed.service.GpsService)
+    {
+        int i0;
+        com.leduoworks.speed.service.GpsService $r0;
+
+        $r0 := @parameter0: com.leduoworks.speed.service.GpsService;
+
+        i0 = $r0.<com.leduoworks.speed.service.GpsService: int fixCount>;
+
+        return i0;
+    }
+
+    static void access$4(com.leduoworks.speed.service.GpsService, int)
+    {
+        int $i0;
+        com.leduoworks.speed.service.GpsService $r0;
+
+        $r0 := @parameter0: com.leduoworks.speed.service.GpsService;
+
+        $i0 := @parameter1: int;
+
+        $r0.<com.leduoworks.speed.service.GpsService: int fixCount> = $i0;
+
+        return;
+    }
+
+    private void initLocation()
+    {
+        com.leduoworks.speed.service.GpsService r0;
+        java.lang.Object $r3;
+        android.location.GpsStatus$Listener $r5;
+        android.location.LocationListener $r1;
+        android.location.Location $r6;
+        android.location.LocationManager $r4;
+        java.lang.Exception r2;
+
+        r0 := @this: com.leduoworks.speed.service.GpsService;
+
+     label1:
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("GpsService", "GpsService initLocation.");
+
+        $r3 = virtualinvoke r0.<com.leduoworks.speed.service.GpsService: java.lang.Object getSystemService(java.lang.String)>("location");
+
+        $r4 = (android.location.LocationManager) $r3;
+
+        r0.<com.leduoworks.speed.service.GpsService: android.location.LocationManager locationManager> = $r4;
+
+        $r4 = r0.<com.leduoworks.speed.service.GpsService: android.location.LocationManager locationManager>;
+
+        $r5 = r0.<com.leduoworks.speed.service.GpsService: android.location.GpsStatus$Listener gpsStateListener>;
+
+        virtualinvoke $r4.<android.location.LocationManager: boolean addGpsStatusListener(android.location.GpsStatus$Listener)>($r5);
+
+        $r4 = r0.<com.leduoworks.speed.service.GpsService: android.location.LocationManager locationManager>;
+
+        $r1 = r0.<com.leduoworks.speed.service.GpsService: android.location.LocationListener localListener>;
+
+        virtualinvoke $r4.<android.location.LocationManager: void requestLocationUpdates(java.lang.String,long,float,android.location.LocationListener)>("gps", 0L, 0.0F, $r1);
+
+        $r4 = r0.<com.leduoworks.speed.service.GpsService: android.location.LocationManager locationManager>;
+
+        $r6 = virtualinvoke $r4.<android.location.LocationManager: android.location.Location getLastKnownLocation(java.lang.String)>("gps");
+
+     label2:
+        <com.leduoworks.speed.MainActivity: android.location.Location lastKnownLocation> = $r6;
+
+        return;
+
+     label3:
+        r2 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("GpsService", "initLocation error.", r2);
+
+        return;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+    }
+
+    public android.os.IBinder onBind(android.content.Intent)
+    {
+        android.content.Intent parameter0;
+        com.leduoworks.speed.service.GpsService this;
+
+        this := @this: com.leduoworks.speed.service.GpsService;
+
+        parameter0 := @parameter0: android.content.Intent;
+
+        parameter0 = virtualinvoke this.<com.leduoworks.speed.service.GpsService: android.content.Intent getIntent()>();
+
+        this.<com.leduoworks.speed.service.GpsService: android.os.IBinder ipcBinder_0> = parameter0;
+
+        this.<com.leduoworks.speed.service.GpsService: android.os.IBinder ipcBinder_0> = parameter0;
+
+        this.<com.leduoworks.speed.service.GpsService: android.os.IBinder ipcBinder_0> = parameter0;
+
+        this.<com.leduoworks.speed.service.GpsService: android.os.IBinder ipcBinder_0> = parameter0;
+
+        return parameter0;
+    }
+
+    public void onCreate()
+    {
+        com.leduoworks.speed.service.GpsService r0;
+        android.location.LocationManager $r1;
+
+        r0 := @this: com.leduoworks.speed.service.GpsService;
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("GpsService", "GpsService onCreate.");
+
+        specialinvoke r0.<android.app.Service: void onCreate()>();
+
+        $r1 = r0.<com.leduoworks.speed.service.GpsService: android.location.LocationManager locationManager>;
+
+        if $r1 != null goto label1;
+
+        specialinvoke r0.<com.leduoworks.speed.service.GpsService: void initLocation()>();
+
+     label1:
+        return;
+    }
+
+    public void onDestroy()
+    {
+        com.leduoworks.speed.service.GpsService r0;
+        android.location.GpsStatus$Listener $r4;
+        android.location.LocationListener $r3;
+        android.location.LocationManager $r2;
+        java.lang.Exception r1;
+
+        r0 := @this: com.leduoworks.speed.service.GpsService;
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("GpsService", "GpsService ondestroy.");
+
+        specialinvoke r0.<android.app.Service: void onDestroy()>();
+
+     label1:
+        $r2 = r0.<com.leduoworks.speed.service.GpsService: android.location.LocationManager locationManager>;
+
+        $r3 = r0.<com.leduoworks.speed.service.GpsService: android.location.LocationListener localListener>;
+
+        virtualinvoke $r2.<android.location.LocationManager: void removeUpdates(android.location.LocationListener)>($r3);
+
+        $r2 = r0.<com.leduoworks.speed.service.GpsService: android.location.LocationManager locationManager>;
+
+        $r4 = r0.<com.leduoworks.speed.service.GpsService: android.location.GpsStatus$Listener gpsStateListener>;
+
+        virtualinvoke $r2.<android.location.LocationManager: void removeGpsStatusListener(android.location.GpsStatus$Listener)>($r4);
+
+     label2:
+        return;
+
+     label3:
+        r1 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("GpsService", "ondestroy is error.", r1);
+
+        return;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+    }
+
+    public void onStart(android.content.Intent, int)
+    {
+        com.leduoworks.speed.service.GpsService r0;
+        int $i0;
+        android.content.Intent $r1;
+        android.location.LocationManager $r2;
+
+        r0 := @this: com.leduoworks.speed.service.GpsService;
+
+        $r1 := @parameter0: android.content.Intent;
+
+        $i0 := @parameter1: int;
+
+        $r1 = virtualinvoke r0.<com.leduoworks.speed.service.GpsService: android.content.Intent getIntent()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("GpsService", "GpsService onStart.");
+
+        specialinvoke r0.<android.app.Service: void onStart(android.content.Intent,int)>($r1, $i0);
+
+        $r2 = r0.<com.leduoworks.speed.service.GpsService: android.location.LocationManager locationManager>;
+
+        if $r2 != null goto label1;
+
+        specialinvoke r0.<com.leduoworks.speed.service.GpsService: void initLocation()>();
+
+     label1:
+        return;
+    }
+
+    public android.content.Intent getIntent()
+    {
+        android.content.Intent $r0;
+        com.leduoworks.speed.service.GpsService this;
+
+        this := @this: com.leduoworks.speed.service.GpsService;
+
+        $r0 = this.<com.leduoworks.speed.service.GpsService: android.content.Intent ipcIntent>;
+
+        return $r0;
+    }
+
+    public static void <clinit>()
+    {
+        <com.leduoworks.speed.service.GpsService: java.lang.String t> = "GpsService";
+
+        return;
+    }
+}

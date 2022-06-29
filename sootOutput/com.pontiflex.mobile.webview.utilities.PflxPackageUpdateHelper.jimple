@@ -1,0 +1,1746 @@
+public class com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper extends java.lang.Object
+{
+    protected static final java.lang.String DefaultPontiflexPackageDirName;
+    protected static final java.lang.String DefaultPontiflexPackageName;
+    protected static final java.lang.String DefaultPontiflexTempPackageDirName;
+    private static final java.lang.String PontiflexSdkVersionBasename;
+    private static com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper instance;
+    private java.lang.String pontiflexPackageDirName;
+    private java.lang.String pontiflexPackageName;
+    private java.lang.String pontiflexTempPackageDirName;
+
+    private void <init>(android.content.Context)
+    {
+        android.content.Context $r1;
+        com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper r0;
+
+        r0 := @this: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: java.lang.String pontiflexPackageDirName> = "pflx";
+
+        r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: java.lang.String pontiflexPackageName> = "js-client-android.zip";
+
+        r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: java.lang.String pontiflexTempPackageDirName> = "pflx_tmp";
+
+        return;
+    }
+
+    private void closeStreams(java.io.InputStream, java.io.FileOutputStream, java.io.FileWriter)
+    {
+        java.lang.Throwable $r4;
+        com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper r0;
+        java.io.FileWriter $r3;
+        java.io.FileOutputStream $r2;
+        java.io.InputStream $r1;
+
+        r0 := @this: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper;
+
+        $r1 := @parameter0: java.io.InputStream;
+
+        $r2 := @parameter1: java.io.FileOutputStream;
+
+        $r3 := @parameter2: java.io.FileWriter;
+
+        if $r1 == null goto label2;
+
+     label1:
+        virtualinvoke $r1.<java.io.InputStream: void close()>();
+
+     label2:
+        if $r2 == null goto label4;
+
+     label3:
+        virtualinvoke $r2.<java.io.FileOutputStream: void close()>();
+
+     label4:
+        if $r3 == null goto label8;
+
+     label5:
+        virtualinvoke $r3.<java.io.FileWriter: void close()>();
+
+     label6:
+        return;
+
+     label7:
+        $r4 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("Pontiflex SDK", "Not able to extract html package", $r4);
+
+     label8:
+        return;
+
+        catch java.io.IOException from label1 to label2 with label7;
+        catch java.io.IOException from label3 to label4 with label7;
+        catch java.io.IOException from label5 to label6 with label7;
+    }
+
+    private boolean copyPflxPackageFromApplicationPackage(android.content.Context, java.io.File)
+    {
+        java.lang.Throwable $r7;
+        android.content.Context $r1;
+        android.content.pm.PackageManager $r4;
+        java.io.File $r2;
+        com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper r0;
+        java.lang.String $r3, $r5;
+        android.content.pm.ApplicationInfo $r6;
+        boolean $z0;
+
+        r0 := @this: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.io.File;
+
+        $r3 = null;
+
+     label1:
+        $r4 = virtualinvoke $r1.<android.content.Context: android.content.pm.PackageManager getPackageManager()>();
+
+        $r5 = virtualinvoke $r1.<android.content.Context: java.lang.String getPackageName()>();
+
+        $r6 = virtualinvoke $r4.<android.content.pm.PackageManager: android.content.pm.ApplicationInfo getApplicationInfo(java.lang.String,int)>($r5, 0);
+
+     label2:
+        $r3 = $r6.<android.content.pm.ApplicationInfo: java.lang.String sourceDir>;
+
+     label3:
+        if $r3 == null goto label5;
+
+        $z0 = specialinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: boolean copyPflxPackageFromJar(android.content.Context,java.lang.String,java.io.File)>($r1, $r3, $r2);
+
+        return $z0;
+
+     label4:
+        $r7 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("Pontiflex SDK", "Not able to extract html package", $r7);
+
+        goto label3;
+
+     label5:
+        return 0;
+
+        catch android.content.pm.PackageManager$NameNotFoundException from label1 to label2 with label4;
+    }
+
+    private boolean copyPflxPackageFromAssets(android.content.Context, java.io.File)
+    {
+        java.lang.Throwable $r8, $r10, $r11, $r12;
+        android.content.Context $r1;
+        byte[] $r3;
+        java.io.FileOutputStream $r7;
+        java.io.File $r2, $r6;
+        android.content.res.AssetManager $r4;
+        com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper r0;
+        int $i0;
+        java.lang.String $r9;
+        java.io.InputStream $r5;
+        boolean $z0;
+
+        r0 := @this: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.io.File;
+
+        $r3 = newarray (byte)[1024];
+
+     label01:
+        $r4 = virtualinvoke $r1.<android.content.Context: android.content.res.AssetManager getAssets()>();
+
+        $r5 = virtualinvoke $r4.<android.content.res.AssetManager: java.io.InputStream open(java.lang.String)>("pontiflex_sdk.jar");
+
+     label02:
+        $r6 = new java.io.File;
+
+     label03:
+        specialinvoke $r6.<java.io.File: void <init>(java.io.File,java.lang.String)>($r2, "pontiflex_sdk.jar");
+
+     label04:
+        $r7 = new java.io.FileOutputStream;
+
+     label05:
+        specialinvoke $r7.<java.io.FileOutputStream: void <init>(java.io.File)>($r6);
+
+     label06:
+        $i0 = virtualinvoke $r5.<java.io.InputStream: int read(byte[])>($r3);
+
+     label07:
+        if $i0 <= 0 goto label14;
+
+     label08:
+        virtualinvoke $r7.<java.io.FileOutputStream: void write(byte[],int,int)>($r3, 0, $i0);
+
+     label09:
+        goto label06;
+
+     label10:
+        $r8 := @caughtexception;
+
+     label11:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("Pontiflex SDK", "Not able to extract html package. pontiflex_sdk.jar is not present in assets folder");
+
+     label12:
+        specialinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: void closeStreams(java.io.InputStream,java.io.FileOutputStream,java.io.FileWriter)>(null, $r7, null);
+
+        $z0 = 0;
+
+     label13:
+        if $z0 == 0 goto label20;
+
+        $r6 = new java.io.File;
+
+        specialinvoke $r6.<java.io.File: void <init>(java.io.File,java.lang.String)>($r2, "pontiflex_sdk.jar");
+
+        $r9 = virtualinvoke $r6.<java.io.File: java.lang.String getAbsolutePath()>();
+
+        $z0 = specialinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: boolean copyPflxPackageFromJar(android.content.Context,java.lang.String,java.io.File)>($r1, $r9, $r2);
+
+        return $z0;
+
+     label14:
+        $z0 = 1;
+
+        specialinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: void closeStreams(java.io.InputStream,java.io.FileOutputStream,java.io.FileWriter)>(null, $r7, null);
+
+        goto label13;
+
+     label15:
+        $r10 := @caughtexception;
+
+        $r7 = null;
+
+     label16:
+        specialinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: void closeStreams(java.io.InputStream,java.io.FileOutputStream,java.io.FileWriter)>(null, $r7, null);
+
+        throw $r10;
+
+     label17:
+        $r10 := @caughtexception;
+
+        goto label16;
+
+     label18:
+        $r11 := @caughtexception;
+
+        $r10 = $r11;
+
+        goto label16;
+
+     label19:
+        $r12 := @caughtexception;
+
+        $r7 = null;
+
+        goto label11;
+
+     label20:
+        return $z0;
+
+        catch java.io.IOException from label01 to label02 with label19;
+        catch java.io.IOException from label03 to label04 with label19;
+        catch java.io.IOException from label05 to label06 with label19;
+        catch java.lang.Throwable from label01 to label06 with label15;
+        catch java.io.IOException from label06 to label07 with label10;
+        catch java.io.IOException from label08 to label09 with label10;
+        catch java.lang.Throwable from label06 to label07 with label17;
+        catch java.lang.Throwable from label08 to label09 with label17;
+        catch java.lang.Throwable from label11 to label12 with label18;
+    }
+
+    private boolean copyPflxPackageFromJar(android.content.Context, java.lang.String, java.io.File)
+    {
+        java.lang.Throwable $r15, $r16, $r17, $r18, $r19, $r20;
+        android.content.Context $r1;
+        byte[] $r4;
+        java.util.Enumeration $r7;
+        java.util.jar.JarFile $r5;
+        java.util.jar.JarEntry $r11;
+        int $i0;
+        java.lang.String $r2, $r12;
+        boolean $z0;
+        java.io.FileOutputStream $r8, $r14;
+        java.io.File $r3, $r6;
+        com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper r0;
+        java.lang.Object $r10;
+        java.io.InputStream $r9, $r13;
+
+        r0 := @this: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: java.io.File;
+
+        $r4 = newarray (byte)[1024];
+
+     label01:
+        $r5 = new java.util.jar.JarFile;
+
+        $r6 = new java.io.File;
+
+     label02:
+        specialinvoke $r6.<java.io.File: void <init>(java.lang.String)>($r2);
+
+        specialinvoke $r5.<java.util.jar.JarFile: void <init>(java.io.File)>($r6);
+
+        $r7 = virtualinvoke $r5.<java.util.jar.JarFile: java.util.Enumeration entries()>();
+
+     label03:
+        $r8 = null;
+
+        $r9 = null;
+
+     label04:
+        $z0 = interfaceinvoke $r7.<java.util.Enumeration: boolean hasMoreElements()>();
+
+     label05:
+        if $z0 == 0 goto label22;
+
+     label06:
+        $r10 = interfaceinvoke $r7.<java.util.Enumeration: java.lang.Object nextElement()>();
+
+     label07:
+        $r11 = (java.util.jar.JarEntry) $r10;
+
+     label08:
+        $r2 = virtualinvoke $r11.<java.util.jar.JarEntry: java.lang.String getName()>();
+
+        $r12 = virtualinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: java.lang.String getPontiflexPackageName()>();
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>($r12);
+
+     label09:
+        if $z0 == 0 goto label04;
+
+     label10:
+        $r13 = virtualinvoke $r5.<java.util.jar.JarFile: java.io.InputStream getInputStream(java.util.zip.ZipEntry)>($r11);
+
+     label11:
+        $r6 = new java.io.File;
+
+     label12:
+        $r2 = virtualinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: java.lang.String getPontiflexPackageName()>();
+
+        specialinvoke $r6.<java.io.File: void <init>(java.io.File,java.lang.String)>($r3, $r2);
+
+     label13:
+        $r14 = new java.io.FileOutputStream;
+
+     label14:
+        specialinvoke $r14.<java.io.FileOutputStream: void <init>(java.io.File)>($r6);
+
+     label15:
+        $i0 = virtualinvoke $r13.<java.io.InputStream: int read(byte[])>($r4);
+
+     label16:
+        if $i0 <= 0 goto label32;
+
+     label17:
+        virtualinvoke $r14.<java.io.FileOutputStream: void write(byte[],int,int)>($r4, 0, $i0);
+
+     label18:
+        goto label15;
+
+     label19:
+        $r15 := @caughtexception;
+
+        $r9 = $r13;
+
+        $r16 = $r15;
+
+        $r8 = $r14;
+
+     label20:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("Pontiflex SDK", "Not able to extract html package", $r16);
+
+     label21:
+        specialinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: void closeStreams(java.io.InputStream,java.io.FileOutputStream,java.io.FileWriter)>($r9, $r8, null);
+
+        return 0;
+
+     label22:
+        specialinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: void closeStreams(java.io.InputStream,java.io.FileOutputStream,java.io.FileWriter)>($r9, $r8, null);
+
+        return 1;
+
+     label23:
+        $r17 := @caughtexception;
+
+        $r8 = null;
+
+        $r9 = null;
+
+     label24:
+        specialinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: void closeStreams(java.io.InputStream,java.io.FileOutputStream,java.io.FileWriter)>($r9, $r8, null);
+
+        throw $r17;
+
+     label25:
+        $r18 := @caughtexception;
+
+        $r9 = $r13;
+
+        $r17 = $r18;
+
+        $r8 = $r14;
+
+        goto label24;
+
+     label26:
+        $r17 := @caughtexception;
+
+        goto label24;
+
+     label27:
+        $r19 := @caughtexception;
+
+        $r9 = $r13;
+
+        $r17 = $r19;
+
+        goto label24;
+
+     label28:
+        $r17 := @caughtexception;
+
+        goto label24;
+
+     label29:
+        $r16 := @caughtexception;
+
+        $r8 = null;
+
+        $r9 = null;
+
+        goto label20;
+
+     label30:
+        $r16 := @caughtexception;
+
+        goto label20;
+
+     label31:
+        $r20 := @caughtexception;
+
+        $r9 = $r13;
+
+        $r16 = $r20;
+
+        goto label20;
+
+     label32:
+        $r9 = $r13;
+
+        $r8 = $r14;
+
+        goto label04;
+
+        catch java.io.IOException from label02 to label03 with label29;
+        catch java.lang.Throwable from label01 to label03 with label23;
+        catch java.io.IOException from label04 to label05 with label30;
+        catch java.io.IOException from label06 to label07 with label30;
+        catch java.io.IOException from label08 to label09 with label30;
+        catch java.io.IOException from label10 to label11 with label30;
+        catch java.lang.Throwable from label04 to label05 with label26;
+        catch java.lang.Throwable from label06 to label09 with label26;
+        catch java.lang.Throwable from label10 to label11 with label26;
+        catch java.io.IOException from label12 to label13 with label31;
+        catch java.io.IOException from label14 to label15 with label31;
+        catch java.lang.Throwable from label11 to label15 with label27;
+        catch java.io.IOException from label15 to label16 with label19;
+        catch java.io.IOException from label17 to label18 with label19;
+        catch java.lang.Throwable from label15 to label16 with label25;
+        catch java.lang.Throwable from label17 to label18 with label25;
+        catch java.lang.Throwable from label20 to label21 with label28;
+    }
+
+    private boolean copyPflxPackageZipFromAssets(android.content.Context)
+    {
+        java.lang.Throwable $r10, $r12, $r13, $r14, $r15, $r16;
+        android.content.Context $r1;
+        byte[] $r5;
+        android.content.res.AssetManager $r6;
+        int $i0;
+        java.lang.String $r4;
+        java.io.FileOutputStream $r9;
+        java.io.File $r2, $r3;
+        com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper r0;
+        java.lang.StringBuilder $r11;
+        java.io.InputStream $r7, $r8;
+
+        r0 := @this: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 = new java.io.File;
+
+        $r3 = virtualinvoke $r1.<android.content.Context: java.io.File getFilesDir()>();
+
+        $r4 = virtualinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: java.lang.String getPontiflexPackageDirName()>();
+
+        specialinvoke $r2.<java.io.File: void <init>(java.io.File,java.lang.String)>($r3, $r4);
+
+        $r5 = newarray (byte)[1024];
+
+     label01:
+        $r6 = virtualinvoke $r1.<android.content.Context: android.content.res.AssetManager getAssets()>();
+
+        $r4 = virtualinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: java.lang.String getPontiflexPackageName()>();
+
+        $r7 = virtualinvoke $r6.<android.content.res.AssetManager: java.io.InputStream open(java.lang.String)>($r4);
+
+     label02:
+        $r8 = $r7;
+
+     label03:
+        specialinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: void deletePflxDir(android.content.Context)>($r1);
+
+        virtualinvoke $r2.<java.io.File: boolean mkdir()>();
+
+     label04:
+        $r3 = new java.io.File;
+
+     label05:
+        $r4 = virtualinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: java.lang.String getPontiflexPackageName()>();
+
+        specialinvoke $r3.<java.io.File: void <init>(java.io.File,java.lang.String)>($r2, $r4);
+
+     label06:
+        $r9 = new java.io.FileOutputStream;
+
+     label07:
+        specialinvoke $r9.<java.io.FileOutputStream: void <init>(java.io.File)>($r3);
+
+     label08:
+        $i0 = virtualinvoke $r7.<java.io.InputStream: int read(byte[])>($r5);
+
+     label09:
+        if $i0 <= 0 goto label15;
+
+     label10:
+        virtualinvoke $r9.<java.io.FileOutputStream: void write(byte[],int,int)>($r5, 0, $i0);
+
+     label11:
+        goto label08;
+
+     label12:
+        $r10 := @caughtexception;
+
+     label13:
+        $r11 = new java.lang.StringBuilder;
+
+        specialinvoke $r11.<java.lang.StringBuilder: void <init>()>();
+
+        $r11 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Not able to get ");
+
+        $r4 = virtualinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: java.lang.String getPontiflexPackageName()>();
+
+        $r11 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r11 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" from assets folder");
+
+        $r4 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("Pontiflex SDK", $r4);
+
+     label14:
+        specialinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: void closeStreams(java.io.InputStream,java.io.FileOutputStream,java.io.FileWriter)>($r7, $r9, null);
+
+        return 0;
+
+     label15:
+        specialinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: void closeStreams(java.io.InputStream,java.io.FileOutputStream,java.io.FileWriter)>($r7, $r9, null);
+
+        return 1;
+
+     label16:
+        $r12 := @caughtexception;
+
+        $r9 = null;
+
+        $r8 = null;
+
+     label17:
+        specialinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: void closeStreams(java.io.InputStream,java.io.FileOutputStream,java.io.FileWriter)>($r8, $r9, null);
+
+        throw $r12;
+
+     label18:
+        $r12 := @caughtexception;
+
+        $r9 = null;
+
+        goto label17;
+
+     label19:
+        $r13 := @caughtexception;
+
+        $r12 = $r13;
+
+        goto label17;
+
+     label20:
+        $r14 := @caughtexception;
+
+        $r8 = $r7;
+
+        $r12 = $r14;
+
+        goto label17;
+
+     label21:
+        $r15 := @caughtexception;
+
+        $r9 = null;
+
+        $r7 = null;
+
+        goto label13;
+
+     label22:
+        $r16 := @caughtexception;
+
+        $r9 = null;
+
+        goto label13;
+
+        catch java.io.IOException from label01 to label02 with label21;
+        catch java.lang.Throwable from label01 to label02 with label16;
+        catch java.io.IOException from label03 to label04 with label22;
+        catch java.io.IOException from label05 to label06 with label22;
+        catch java.io.IOException from label07 to label08 with label22;
+        catch java.lang.Throwable from label03 to label08 with label18;
+        catch java.io.IOException from label08 to label09 with label12;
+        catch java.io.IOException from label10 to label11 with label12;
+        catch java.lang.Throwable from label08 to label09 with label19;
+        catch java.lang.Throwable from label10 to label11 with label19;
+        catch java.lang.Throwable from label13 to label14 with label20;
+    }
+
+    public static com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper createInstance(android.content.Context)
+    {
+        android.content.Context $r0;
+        com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = <com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper instance>;
+
+        if $r1 != null goto label1;
+
+        $r1 = new com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper;
+
+        specialinvoke $r1.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: void <init>(android.content.Context)>($r0);
+
+        <com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper instance> = $r1;
+
+     label1:
+        $r1 = <com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper instance>;
+
+        return $r1;
+    }
+
+    protected static boolean deleteDir(java.io.File)
+    {
+        int $i0, $i1;
+        java.lang.String[] $r2;
+        java.lang.String $r1;
+        java.io.File $r0, $r3;
+        boolean $z0;
+
+        $r0 := @parameter0: java.io.File;
+
+        if $r0 != null goto label1;
+
+        return 0;
+
+     label1:
+        $z0 = virtualinvoke $r0.<java.io.File: boolean exists()>();
+
+        if $z0 != 0 goto label2;
+
+        return 0;
+
+     label2:
+        $z0 = virtualinvoke $r0.<java.io.File: boolean isDirectory()>();
+
+        if $z0 == 0 goto label5;
+
+        $r2 = virtualinvoke $r0.<java.io.File: java.lang.String[] list()>();
+
+        $i0 = 0;
+
+     label3:
+        $i1 = lengthof $r2;
+
+        if $i0 >= $i1 goto label5;
+
+        $r3 = new java.io.File;
+
+        $r1 = $r2[$i0];
+
+        specialinvoke $r3.<java.io.File: void <init>(java.io.File,java.lang.String)>($r0, $r1);
+
+        $z0 = staticinvoke <com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: boolean deleteDir(java.io.File)>($r3);
+
+        if $z0 != 0 goto label4;
+
+        return 0;
+
+     label4:
+        $i0 = $i0 + 1;
+
+        goto label3;
+
+     label5:
+        $z0 = virtualinvoke $r0.<java.io.File: boolean delete()>();
+
+        return $z0;
+    }
+
+    private void deletePflxDir(android.content.Context)
+    {
+        android.content.Context $r1;
+        com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper r0;
+        java.lang.String $r4;
+        java.io.File $r2, $r3;
+
+        r0 := @this: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 = new java.io.File;
+
+        $r3 = virtualinvoke $r1.<android.content.Context: java.io.File getFilesDir()>();
+
+        $r4 = virtualinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: java.lang.String getPontiflexPackageDirName()>();
+
+        specialinvoke $r2.<java.io.File: void <init>(java.io.File,java.lang.String)>($r3, $r4);
+
+        staticinvoke <com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: boolean deleteDir(java.io.File)>($r2);
+
+        return;
+    }
+
+    private void extractPflxPackage(android.content.Context, java.io.File)
+    {
+        java.lang.Throwable $r15, $r20, $r21, $r22, $r23, $r24;
+        android.content.Context $r1;
+        byte[] $r6;
+        java.util.Enumeration $r8;
+        int $i0;
+        java.util.zip.ZipFile $r7;
+        java.lang.String $r5, $r14;
+        java.util.zip.ZipEntry $r13;
+        boolean $z0;
+        java.io.FileWriter $r4, $r18;
+        java.io.FileOutputStream $r10, $r17;
+        java.io.File $r2, $r3;
+        com.pontiflex.mobile.webview.utilities.VersionHelper $r19;
+        com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper r0;
+        java.lang.StringBuilder $r9;
+        java.lang.Object $r12;
+        java.io.InputStream $r11, $r16;
+
+        r0 := @this: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.io.File;
+
+        $r4 = null;
+
+        $r3 = new java.io.File;
+
+        $r5 = virtualinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: java.lang.String getPontiflexPackageName()>();
+
+        specialinvoke $r3.<java.io.File: void <init>(java.io.File,java.lang.String)>($r2, $r5);
+
+        $r6 = newarray (byte)[1024];
+
+     label01:
+        $z0 = virtualinvoke $r3.<java.io.File: boolean exists()>();
+
+     label02:
+        if $z0 == 0 goto label58;
+
+     label03:
+        $r7 = new java.util.zip.ZipFile;
+
+     label04:
+        specialinvoke $r7.<java.util.zip.ZipFile: void <init>(java.io.File)>($r3);
+
+        $r8 = virtualinvoke $r7.<java.util.zip.ZipFile: java.util.Enumeration entries()>();
+
+     label05:
+        $r9 = new java.lang.StringBuilder;
+
+     label06:
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>()>();
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("file://");
+
+        $r3 = virtualinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: java.io.File getPontiflexPackageDir(android.content.Context)>($r1);
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r3);
+
+     label07:
+        $r5 = <java.io.File: java.lang.String separator>;
+
+     label08:
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label09:
+        $r10 = null;
+
+        $r11 = null;
+
+     label10:
+        $z0 = interfaceinvoke $r8.<java.util.Enumeration: boolean hasMoreElements()>();
+
+     label11:
+        if $z0 == 0 goto label39;
+
+     label12:
+        $r12 = interfaceinvoke $r8.<java.util.Enumeration: java.lang.Object nextElement()>();
+
+     label13:
+        $r13 = (java.util.zip.ZipEntry) $r12;
+
+        $r3 = new java.io.File;
+
+     label14:
+        $r14 = virtualinvoke $r13.<java.util.zip.ZipEntry: java.lang.String getName()>();
+
+        specialinvoke $r3.<java.io.File: void <init>(java.io.File,java.lang.String)>($r2, $r14);
+
+        $z0 = virtualinvoke $r13.<java.util.zip.ZipEntry: boolean isDirectory()>();
+
+     label15:
+        if $z0 == 0 goto label21;
+
+     label16:
+        virtualinvoke $r3.<java.io.File: boolean mkdir()>();
+
+     label17:
+        goto label10;
+
+     label18:
+        $r15 := @caughtexception;
+
+     label19:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("Pontiflex SDK", "Not able to extract html package", $r15);
+
+     label20:
+        specialinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: void closeStreams(java.io.InputStream,java.io.FileOutputStream,java.io.FileWriter)>($r11, $r10, $r4);
+
+        return;
+
+     label21:
+        $r16 = virtualinvoke $r7.<java.util.zip.ZipFile: java.io.InputStream getInputStream(java.util.zip.ZipEntry)>($r13);
+
+     label22:
+        $r11 = $r16;
+
+     label23:
+        $r17 = new java.io.FileOutputStream;
+
+     label24:
+        specialinvoke $r17.<java.io.FileOutputStream: void <init>(java.io.File)>($r3);
+
+     label25:
+        $r14 = virtualinvoke $r13.<java.util.zip.ZipEntry: java.lang.String getName()>();
+
+        $z0 = virtualinvoke $r14.<java.lang.String: boolean endsWith(java.lang.String)>(".html");
+
+     label26:
+        if $z0 == 0 goto label34;
+
+     label27:
+        $r14 = staticinvoke <com.pontiflex.mobile.webview.utilities.PackageHelper: java.lang.String convertStreamToString(java.io.InputStream)>($r16);
+
+        $r14 = virtualinvoke $r14.<java.lang.String: java.lang.String replaceAll(java.lang.String,java.lang.String)>("file:///android_asset", $r5);
+
+     label28:
+        $r18 = new java.io.FileWriter;
+
+     label29:
+        specialinvoke $r18.<java.io.FileWriter: void <init>(java.io.File)>($r3);
+
+     label30:
+        virtualinvoke $r18.<java.io.FileWriter: void write(java.lang.String)>($r14);
+
+        virtualinvoke $r18.<java.io.FileWriter: void flush()>();
+
+        virtualinvoke $r18.<java.io.FileWriter: void close()>();
+
+     label31:
+        $r4 = $r18;
+
+     label32:
+        virtualinvoke $r17.<java.io.FileOutputStream: void close()>();
+
+     label33:
+        $r10 = $r17;
+
+        goto label10;
+
+     label34:
+        $i0 = virtualinvoke $r16.<java.io.InputStream: int read(byte[])>($r6);
+
+     label35:
+        if $i0 <= 0 goto label32;
+
+     label36:
+        virtualinvoke $r17.<java.io.FileOutputStream: void write(byte[],int,int)>($r6, 0, $i0);
+
+     label37:
+        goto label34;
+
+     label38:
+        $r15 := @caughtexception;
+
+        $r10 = $r17;
+
+        $r11 = $r16;
+
+        goto label19;
+
+     label39:
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("Pontiflex SDK", "Extracting pontiflex package is successful");
+
+        $r19 = staticinvoke <com.pontiflex.mobile.webview.utilities.VersionHelper: com.pontiflex.mobile.webview.utilities.VersionHelper getInstance(android.content.Context)>($r1);
+
+        virtualinvoke $r19.<com.pontiflex.mobile.webview.utilities.VersionHelper: void resetCache()>();
+
+     label40:
+        specialinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: void closeStreams(java.io.InputStream,java.io.FileOutputStream,java.io.FileWriter)>($r11, $r10, $r4);
+
+        return;
+
+     label41:
+        $r20 := @caughtexception;
+
+        $r4 = null;
+
+        $r10 = null;
+
+        $r11 = null;
+
+     label42:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("Pontiflex SDK", "Not able to extract html package", $r20);
+
+     label43:
+        specialinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: void closeStreams(java.io.InputStream,java.io.FileOutputStream,java.io.FileWriter)>($r11, $r10, $r4);
+
+        return;
+
+     label44:
+        $r21 := @caughtexception;
+
+        $r4 = null;
+
+        $r10 = null;
+
+        $r11 = null;
+
+     label45:
+        specialinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: void closeStreams(java.io.InputStream,java.io.FileOutputStream,java.io.FileWriter)>($r11, $r10, $r4);
+
+        throw $r21;
+
+     label46:
+        $r21 := @caughtexception;
+
+        $r4 = $r18;
+
+        $r10 = $r17;
+
+        $r11 = $r16;
+
+        goto label45;
+
+     label47:
+        $r22 := @caughtexception;
+
+        $r10 = $r17;
+
+        $r11 = $r16;
+
+        $r21 = $r22;
+
+        goto label45;
+
+     label48:
+        $r21 := @caughtexception;
+
+        goto label45;
+
+     label49:
+        $r21 := @caughtexception;
+
+        $r10 = $r17;
+
+        $r11 = $r16;
+
+        goto label45;
+
+     label50:
+        $r21 := @caughtexception;
+
+        goto label45;
+
+     label51:
+        $r20 := @caughtexception;
+
+        $r4 = $r18;
+
+        $r10 = $r17;
+
+        $r11 = $r16;
+
+        goto label42;
+
+     label52:
+        $r23 := @caughtexception;
+
+        $r10 = $r17;
+
+        $r11 = $r16;
+
+        $r20 = $r23;
+
+        goto label42;
+
+     label53:
+        $r20 := @caughtexception;
+
+        goto label42;
+
+     label54:
+        $r20 := @caughtexception;
+
+        $r10 = $r17;
+
+        $r11 = $r16;
+
+        goto label42;
+
+     label55:
+        $r15 := @caughtexception;
+
+        $r4 = null;
+
+        $r10 = null;
+
+        $r11 = null;
+
+        goto label19;
+
+     label56:
+        $r15 := @caughtexception;
+
+        $r4 = $r18;
+
+        $r10 = $r17;
+
+        $r11 = $r16;
+
+        goto label19;
+
+     label57:
+        $r24 := @caughtexception;
+
+        $r10 = $r17;
+
+        $r11 = $r16;
+
+        $r15 = $r24;
+
+        goto label19;
+
+     label58:
+        $r4 = null;
+
+        $r10 = null;
+
+        $r11 = null;
+
+        goto label40;
+
+        catch java.util.zip.ZipException from label01 to label02 with label55;
+        catch java.util.zip.ZipException from label04 to label05 with label55;
+        catch java.util.zip.ZipException from label06 to label07 with label55;
+        catch java.util.zip.ZipException from label08 to label09 with label55;
+        catch java.io.IOException from label01 to label02 with label41;
+        catch java.io.IOException from label04 to label05 with label41;
+        catch java.io.IOException from label06 to label07 with label41;
+        catch java.io.IOException from label08 to label09 with label41;
+        catch java.lang.Throwable from label01 to label02 with label44;
+        catch java.lang.Throwable from label03 to label09 with label44;
+        catch java.util.zip.ZipException from label10 to label11 with label18;
+        catch java.util.zip.ZipException from label12 to label13 with label18;
+        catch java.util.zip.ZipException from label14 to label15 with label18;
+        catch java.util.zip.ZipException from label16 to label17 with label18;
+        catch java.io.IOException from label10 to label11 with label53;
+        catch java.io.IOException from label12 to label13 with label53;
+        catch java.io.IOException from label14 to label15 with label53;
+        catch java.io.IOException from label16 to label17 with label53;
+        catch java.lang.Throwable from label10 to label11 with label48;
+        catch java.lang.Throwable from label12 to label15 with label48;
+        catch java.lang.Throwable from label16 to label17 with label48;
+        catch java.lang.Throwable from label19 to label20 with label50;
+        catch java.util.zip.ZipException from label21 to label22 with label18;
+        catch java.util.zip.ZipException from label24 to label25 with label18;
+        catch java.io.IOException from label21 to label22 with label53;
+        catch java.io.IOException from label24 to label25 with label53;
+        catch java.lang.Throwable from label21 to label22 with label48;
+        catch java.lang.Throwable from label23 to label25 with label48;
+        catch java.util.zip.ZipException from label25 to label26 with label38;
+        catch java.util.zip.ZipException from label27 to label28 with label38;
+        catch java.util.zip.ZipException from label29 to label30 with label38;
+        catch java.io.IOException from label25 to label26 with label54;
+        catch java.io.IOException from label27 to label28 with label54;
+        catch java.io.IOException from label29 to label30 with label54;
+        catch java.lang.Throwable from label25 to label26 with label49;
+        catch java.lang.Throwable from label27 to label30 with label49;
+        catch java.util.zip.ZipException from label30 to label31 with label56;
+        catch java.io.IOException from label30 to label31 with label51;
+        catch java.lang.Throwable from label30 to label31 with label46;
+        catch java.util.zip.ZipException from label32 to label33 with label57;
+        catch java.io.IOException from label32 to label33 with label52;
+        catch java.lang.Throwable from label32 to label33 with label47;
+        catch java.util.zip.ZipException from label34 to label35 with label38;
+        catch java.util.zip.ZipException from label36 to label37 with label38;
+        catch java.io.IOException from label34 to label35 with label54;
+        catch java.io.IOException from label36 to label37 with label54;
+        catch java.lang.Throwable from label34 to label35 with label49;
+        catch java.lang.Throwable from label36 to label37 with label49;
+        catch java.util.zip.ZipException from label39 to label40 with label18;
+        catch java.io.IOException from label39 to label40 with label53;
+        catch java.lang.Throwable from label39 to label40 with label48;
+        catch java.lang.Throwable from label42 to label43 with label50;
+    }
+
+    public static com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper getInstance(android.content.Context)
+    {
+        android.content.Context $r0;
+        java.lang.IllegalStateException $r2;
+        com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = <com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper instance>;
+
+        if $r1 != null goto label1;
+
+        $r1 = staticinvoke <com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper createInstance(android.content.Context)>($r0);
+
+        <com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper instance> = $r1;
+
+     label1:
+        $r1 = <com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper instance>;
+
+        if $r1 != null goto label2;
+
+        $r2 = new java.lang.IllegalStateException;
+
+        specialinvoke $r2.<java.lang.IllegalStateException: void <init>()>();
+
+        throw $r2;
+
+     label2:
+        $r1 = <com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper instance>;
+
+        return $r1;
+    }
+
+    private void movePflxPackage(android.content.Context, java.io.File, java.io.File, java.io.File)
+    {
+        java.lang.Throwable $r9;
+        android.content.Context $r0, $r5;
+        java.io.File $r1, $r2, $r3;
+        java.lang.Exception $r8;
+        android.app.Application r6;
+        com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper r4;
+        boolean $z0, $z1;
+        com.pontiflex.mobile.webview.sdk.AdManager $r7;
+
+        r4 := @this: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.io.File;
+
+        $r2 := @parameter2: java.io.File;
+
+        $r3 := @parameter3: java.io.File;
+
+        $z0 = 1;
+
+     label01:
+        $r5 = virtualinvoke $r0.<android.content.Context: android.content.Context getApplicationContext()>();
+
+        r6 = (android.app.Application) $r5;
+
+        $r7 = staticinvoke <com.pontiflex.mobile.webview.sdk.AdManager: com.pontiflex.mobile.webview.sdk.AdManager getAdManagerInstance(android.app.Application)>(r6);
+
+        virtualinvoke $r7.<com.pontiflex.mobile.webview.sdk.AdManager: void setPackageUpdateInProgress(boolean)>(1);
+
+        staticinvoke <com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: boolean deleteDir(java.io.File)>($r3);
+
+        virtualinvoke $r2.<java.io.File: boolean renameTo(java.io.File)>($r3);
+
+     label02:
+        virtualinvoke $r1.<java.io.File: boolean renameTo(java.io.File)>($r2);
+
+     label03:
+        staticinvoke <com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: boolean deleteDir(java.io.File)>($r3);
+
+     label04:
+        $r0 = virtualinvoke $r0.<android.content.Context: android.content.Context getApplicationContext()>();
+
+        r6 = (android.app.Application) $r0;
+
+        $r7 = staticinvoke <com.pontiflex.mobile.webview.sdk.AdManager: com.pontiflex.mobile.webview.sdk.AdManager getAdManagerInstance(android.app.Application)>(r6);
+
+        virtualinvoke $r7.<com.pontiflex.mobile.webview.sdk.AdManager: void setPackageUpdateInProgress(boolean)>(0);
+
+        return;
+
+     label05:
+        $r8 := @caughtexception;
+
+        $z1 = 0;
+
+        $z0 = 0;
+
+     label06:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("Pontiflex SDK", "Error during copying of files", $r8);
+
+     label07:
+        if $z1 == 0 goto label09;
+
+     label08:
+        $r0 = virtualinvoke $r0.<android.content.Context: android.content.Context getApplicationContext()>();
+
+        r6 = (android.app.Application) $r0;
+
+        $r7 = staticinvoke <com.pontiflex.mobile.webview.sdk.AdManager: com.pontiflex.mobile.webview.sdk.AdManager getAdManagerInstance(android.app.Application)>(r6);
+
+        virtualinvoke $r7.<com.pontiflex.mobile.webview.sdk.AdManager: void setPackageUpdateInProgress(boolean)>(0);
+
+        return;
+
+     label09:
+        if $z0 == 0 goto label08;
+
+     label10:
+        virtualinvoke $r3.<java.io.File: boolean renameTo(java.io.File)>($r2);
+
+     label11:
+        goto label08;
+
+     label12:
+        $r9 := @caughtexception;
+
+        $r0 = virtualinvoke $r0.<android.content.Context: android.content.Context getApplicationContext()>();
+
+        r6 = (android.app.Application) $r0;
+
+        $r7 = staticinvoke <com.pontiflex.mobile.webview.sdk.AdManager: com.pontiflex.mobile.webview.sdk.AdManager getAdManagerInstance(android.app.Application)>(r6);
+
+        virtualinvoke $r7.<com.pontiflex.mobile.webview.sdk.AdManager: void setPackageUpdateInProgress(boolean)>(0);
+
+        throw $r9;
+
+     label13:
+        $r8 := @caughtexception;
+
+        $z1 = 0;
+
+        goto label06;
+
+     label14:
+        $r8 := @caughtexception;
+
+        $z1 = 1;
+
+        goto label06;
+
+        catch java.lang.Exception from label01 to label02 with label05;
+        catch java.lang.Throwable from label01 to label02 with label12;
+        catch java.lang.Exception from label02 to label03 with label13;
+        catch java.lang.Throwable from label02 to label03 with label12;
+        catch java.lang.Exception from label03 to label04 with label14;
+        catch java.lang.Throwable from label03 to label04 with label12;
+        catch java.lang.Throwable from label06 to label07 with label12;
+        catch java.lang.Throwable from label10 to label11 with label12;
+    }
+
+    private boolean validateCurrentVersion(android.content.Context, java.io.File, java.io.File)
+    {
+        java.lang.Throwable $r12;
+        android.content.Context $r1;
+        java.util.Properties $r4, $r7;
+        java.io.FileInputStream $r5;
+        com.pontiflex.mobile.webview.utilities.PackageHelper $r8;
+        java.io.File $r2, $r3, $r6;
+        com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper r0;
+        java.lang.String $r9, $r10;
+        com.pontiflex.mobile.webview.utilities.UpdateJsTask $r11;
+        boolean $z0;
+
+        r0 := @this: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.io.File;
+
+        $r3 := @parameter2: java.io.File;
+
+        $z0 = virtualinvoke $r3.<java.io.File: boolean exists()>();
+
+        if $z0 != 0 goto label01;
+
+        return 1;
+
+     label01:
+        $r6 = new java.io.File;
+
+     label02:
+        specialinvoke $r6.<java.io.File: void <init>(java.io.File,java.lang.String)>($r3, "pflx_version.xml");
+
+     label03:
+        $r3 = new java.io.File;
+
+     label04:
+        specialinvoke $r3.<java.io.File: void <init>(java.io.File,java.lang.String)>($r2, "pflx_version.xml");
+
+        $z0 = virtualinvoke $r6.<java.io.File: boolean exists()>();
+
+     label05:
+        if $z0 != 0 goto label06;
+
+        return 1;
+
+     label06:
+        $z0 = virtualinvoke $r3.<java.io.File: boolean exists()>();
+
+     label07:
+        if $z0 != 0 goto label08;
+
+        return 0;
+
+     label08:
+        $r7 = new java.util.Properties;
+
+     label09:
+        specialinvoke $r7.<java.util.Properties: void <init>()>();
+
+     label10:
+        $r4 = new java.util.Properties;
+
+     label11:
+        specialinvoke $r4.<java.util.Properties: void <init>()>();
+
+        $r8 = staticinvoke <com.pontiflex.mobile.webview.utilities.PackageHelper: com.pontiflex.mobile.webview.utilities.PackageHelper getInstance(android.content.Context)>($r1);
+
+     label12:
+        $r5 = new java.io.FileInputStream;
+
+     label13:
+        specialinvoke $r5.<java.io.FileInputStream: void <init>(java.io.File)>($r6);
+
+        virtualinvoke $r8.<com.pontiflex.mobile.webview.utilities.PackageHelper: java.util.Properties parsePontiflexStrings(java.io.InputStream,java.util.Properties)>($r5, $r7);
+
+        $r8 = staticinvoke <com.pontiflex.mobile.webview.utilities.PackageHelper: com.pontiflex.mobile.webview.utilities.PackageHelper getInstance(android.content.Context)>($r1);
+
+     label14:
+        $r5 = new java.io.FileInputStream;
+
+     label15:
+        specialinvoke $r5.<java.io.FileInputStream: void <init>(java.io.File)>($r3);
+
+        virtualinvoke $r8.<com.pontiflex.mobile.webview.utilities.PackageHelper: java.util.Properties parsePontiflexStrings(java.io.InputStream,java.util.Properties)>($r5, $r4);
+
+        $r9 = virtualinvoke $r7.<java.util.Properties: java.lang.String getProperty(java.lang.String)>("PFLEX_SDK_VERSION_CODE");
+
+        $r10 = virtualinvoke $r4.<java.util.Properties: java.lang.String getProperty(java.lang.String)>("PFLEX_SDK_VERSION_CODE");
+
+     label16:
+        $r11 = new com.pontiflex.mobile.webview.utilities.UpdateJsTask;
+
+     label17:
+        specialinvoke $r11.<com.pontiflex.mobile.webview.utilities.UpdateJsTask: void <init>()>();
+
+        $z0 = virtualinvoke $r11.<com.pontiflex.mobile.webview.utilities.UpdateJsTask: boolean compareVersion(java.lang.String,java.lang.String)>($r9, $r10);
+
+     label18:
+        if $z0 != 0 goto label19;
+
+        return 1;
+
+     label19:
+        return 0;
+
+     label20:
+        $r12 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("Pontiflex SDK", "Not able to compare version", $r12);
+
+        return 1;
+
+        catch java.io.FileNotFoundException from label02 to label03 with label20;
+        catch java.io.FileNotFoundException from label04 to label05 with label20;
+        catch java.io.FileNotFoundException from label06 to label07 with label20;
+        catch java.io.FileNotFoundException from label09 to label10 with label20;
+        catch java.io.FileNotFoundException from label11 to label12 with label20;
+        catch java.io.FileNotFoundException from label13 to label14 with label20;
+        catch java.io.FileNotFoundException from label15 to label16 with label20;
+        catch java.io.FileNotFoundException from label17 to label18 with label20;
+    }
+
+    private boolean validatePflxDir(android.content.Context, java.io.File, java.io.File)
+    {
+        android.content.Context $r1;
+        com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper r0;
+        java.io.File $r2, $r3, $r4;
+        boolean $z0;
+
+        r0 := @this: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.io.File;
+
+        $r3 := @parameter2: java.io.File;
+
+        $r4 = new java.io.File;
+
+        specialinvoke $r4.<java.io.File: void <init>(java.io.File,java.lang.String)>($r2, "html");
+
+        $z0 = virtualinvoke $r4.<java.io.File: boolean exists()>();
+
+        if $z0 == 0 goto label1;
+
+        $z0 = virtualinvoke $r4.<java.io.File: boolean isDirectory()>();
+
+        if $z0 != 0 goto label2;
+
+     label1:
+        return 0;
+
+     label2:
+        $z0 = specialinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: boolean validateCurrentVersion(android.content.Context,java.io.File,java.io.File)>($r1, $r2, $r3);
+
+        return $z0;
+    }
+
+    public void extractAndMovePflxPackage(android.content.Context, java.io.File, java.io.File, java.io.File)
+    {
+        android.content.Context $r1;
+        com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper r0;
+        java.io.File $r2, $r3, $r4;
+
+        r0 := @this: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.io.File;
+
+        $r3 := @parameter2: java.io.File;
+
+        $r4 := @parameter3: java.io.File;
+
+        specialinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: void extractPflxPackage(android.content.Context,java.io.File)>($r1, $r2);
+
+        specialinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: void movePflxPackage(android.content.Context,java.io.File,java.io.File,java.io.File)>($r1, $r2, $r3, $r4);
+
+        return;
+    }
+
+    public java.lang.String getBasePath(android.content.Context)
+    {
+        java.lang.Throwable $r7, $r8;
+        android.content.Context $r1;
+        java.io.File $r6;
+        android.content.res.AssetManager $r2;
+        com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper r0;
+        java.lang.StringBuilder $r5;
+        java.lang.String $r3;
+        java.io.InputStream $r4;
+
+        r0 := @this: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper;
+
+        $r1 := @parameter0: android.content.Context;
+
+     label1:
+        $r2 = virtualinvoke $r1.<android.content.Context: android.content.res.AssetManager getAssets()>();
+
+        $r3 = virtualinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: java.lang.String getPontiflexPackageName()>();
+
+        $r4 = virtualinvoke $r2.<android.content.res.AssetManager: java.io.InputStream open(java.lang.String)>($r3);
+
+     label2:
+        specialinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: void closeStreams(java.io.InputStream,java.io.FileOutputStream,java.io.FileWriter)>($r4, null, null);
+
+        $r3 = "file:///android_asset/";
+
+     label3:
+        if $r3 != null goto label6;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("file://");
+
+        $r6 = virtualinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: java.io.File getPontiflexPackageDir(android.content.Context)>($r1);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r6);
+
+        $r3 = <java.io.File: java.lang.String separator>;
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r3;
+
+     label4:
+        $r7 := @caughtexception;
+
+        specialinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: void closeStreams(java.io.InputStream,java.io.FileOutputStream,java.io.FileWriter)>(null, null, null);
+
+        $r3 = null;
+
+        goto label3;
+
+     label5:
+        $r8 := @caughtexception;
+
+        specialinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: void closeStreams(java.io.InputStream,java.io.FileOutputStream,java.io.FileWriter)>(null, null, null);
+
+        throw $r8;
+
+     label6:
+        return $r3;
+
+        catch java.io.IOException from label1 to label2 with label4;
+        catch java.lang.Throwable from label1 to label2 with label5;
+    }
+
+    public java.io.File getPontiflexPackageDir(android.content.Context)
+    {
+        android.content.Context $r1;
+        com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper r0;
+        java.lang.String $r4;
+        java.io.File $r2, $r3;
+
+        r0 := @this: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 = new java.io.File;
+
+        $r3 = virtualinvoke $r1.<android.content.Context: java.io.File getFilesDir()>();
+
+        $r4 = virtualinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: java.lang.String getPontiflexPackageDirName()>();
+
+        specialinvoke $r2.<java.io.File: void <init>(java.io.File,java.lang.String)>($r3, $r4);
+
+        return $r2;
+    }
+
+    public java.lang.String getPontiflexPackageDirName()
+    {
+        java.lang.String r1;
+        com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper r0;
+
+        r0 := @this: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper;
+
+        r1 = r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: java.lang.String pontiflexPackageDirName>;
+
+        return r1;
+    }
+
+    public java.lang.String getPontiflexPackageName()
+    {
+        java.lang.String r1;
+        com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper r0;
+
+        r0 := @this: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper;
+
+        r1 = r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: java.lang.String pontiflexPackageName>;
+
+        return r1;
+    }
+
+    public java.lang.String getPontiflexTempPackageDirName()
+    {
+        java.lang.String r1;
+        com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper r0;
+
+        r0 := @this: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper;
+
+        r1 = r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: java.lang.String pontiflexTempPackageDirName>;
+
+        return r1;
+    }
+
+    public void initializePflxPackageLocation(android.content.Context)
+    {
+        android.content.Context $r1;
+        java.io.File $r3, $r4, $r5, $r6;
+        com.pontiflex.mobile.webview.utilities.VersionHelper $r7;
+        com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper r0;
+        java.lang.String $r2;
+        boolean $z0, $z1;
+
+        r0 := @this: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r3 = new java.io.File;
+
+        $r4 = virtualinvoke $r1.<android.content.Context: java.io.File getFilesDir()>();
+
+        $r2 = virtualinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: java.lang.String getPontiflexPackageDirName()>();
+
+        specialinvoke $r3.<java.io.File: void <init>(java.io.File,java.lang.String)>($r4, $r2);
+
+        $r4 = new java.io.File;
+
+        $r5 = virtualinvoke $r1.<android.content.Context: java.io.File getFilesDir()>();
+
+        $r2 = virtualinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: java.lang.String getPontiflexTempPackageDirName()>();
+
+        specialinvoke $r4.<java.io.File: void <init>(java.io.File,java.lang.String)>($r5, $r2);
+
+        $z0 = virtualinvoke $r4.<java.io.File: boolean exists()>();
+
+        if $z0 != 0 goto label1;
+
+        virtualinvoke $r4.<java.io.File: boolean mkdir()>();
+
+     label1:
+        $z0 = specialinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: boolean copyPflxPackageZipFromAssets(android.content.Context)>($r1);
+
+        $z1 = $z0;
+
+        if $z0 == 0 goto label2;
+
+        specialinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: void extractPflxPackage(android.content.Context,java.io.File)>($r1, $r3);
+
+     label2:
+        if $z0 != 0 goto label3;
+
+        $z1 = specialinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: boolean copyPflxPackageFromAssets(android.content.Context,java.io.File)>($r1, $r4);
+
+     label3:
+        if $z1 != 0 goto label4;
+
+        $z1 = specialinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: boolean copyPflxPackageFromApplicationPackage(android.content.Context,java.io.File)>($r1, $r4);
+
+     label4:
+        if $z1 == 0 goto label5;
+
+        specialinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: void extractPflxPackage(android.content.Context,java.io.File)>($r1, $r4);
+
+     label5:
+        $z0 = virtualinvoke $r3.<java.io.File: boolean exists()>();
+
+        if $z0 == 0 goto label6;
+
+        $z0 = specialinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: boolean validatePflxDir(android.content.Context,java.io.File,java.io.File)>($r1, $r3, $r4);
+
+        if $z0 == 0 goto label6;
+
+        staticinvoke <com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: boolean deleteDir(java.io.File)>($r4);
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("Pontiflex SDK", "Pontiflex package is already extracted");
+
+        return;
+
+     label6:
+        $r5 = new java.io.File;
+
+        $r6 = virtualinvoke $r1.<android.content.Context: java.io.File getFilesDir()>();
+
+        $r2 = <com.pontiflex.mobile.webview.utilities.UpdateJsTask: java.lang.String pflxTransitionLocation>;
+
+        specialinvoke $r5.<java.io.File: void <init>(java.io.File,java.lang.String)>($r6, $r2);
+
+        specialinvoke r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: void movePflxPackage(android.content.Context,java.io.File,java.io.File,java.io.File)>($r1, $r4, $r3, $r5);
+
+        $r7 = staticinvoke <com.pontiflex.mobile.webview.utilities.VersionHelper: com.pontiflex.mobile.webview.utilities.VersionHelper getInstance(android.content.Context)>($r1);
+
+        virtualinvoke $r7.<com.pontiflex.mobile.webview.utilities.VersionHelper: void resetCache()>();
+
+        return;
+    }
+
+    public void setPontiflexPackageDirName(java.lang.String)
+    {
+        java.lang.String $r1;
+        com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper r0;
+
+        r0 := @this: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: java.lang.String pontiflexPackageDirName> = $r1;
+
+        return;
+    }
+
+    public void setPontiflexPackageName(java.lang.String)
+    {
+        java.lang.String $r1;
+        com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper r0;
+
+        r0 := @this: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: java.lang.String pontiflexPackageName> = $r1;
+
+        return;
+    }
+
+    public void setPontiflexTempPackageDirName(java.lang.String)
+    {
+        java.lang.String $r1;
+        com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper r0;
+
+        r0 := @this: com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r0.<com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: java.lang.String pontiflexTempPackageDirName> = $r1;
+
+        return;
+    }
+
+    public static void <clinit>()
+    {
+        <com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: java.lang.String PontiflexSdkVersionBasename> = "pflx_version";
+
+        <com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: java.lang.String DefaultPontiflexTempPackageDirName> = "pflx_tmp";
+
+        <com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: java.lang.String DefaultPontiflexPackageName> = "js-client-android.zip";
+
+        <com.pontiflex.mobile.webview.utilities.PflxPackageUpdateHelper: java.lang.String DefaultPontiflexPackageDirName> = "pflx";
+
+        return;
+    }
+}

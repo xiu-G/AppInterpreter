@@ -1,0 +1,324 @@
+class com.google.ads.AdViewCommunicator extends java.lang.Object
+{
+    private static final java.lang.String AFMA_MESSAGE_HOST;
+    private static final java.lang.String JS_PROTOCOL_PREFIX;
+    public static final java.lang.String JS_SEND_FUNCTION;
+    private static final java.lang.String RESPONSE_SCHEME;
+    private java.util.Map mAdResponses;
+    private com.google.ads.GoogleAdView mView;
+
+    public void <init>(com.google.ads.GoogleAdView)
+    {
+        java.util.HashMap $r2;
+        com.google.ads.AdViewCommunicator r0;
+        com.google.ads.GoogleAdView $r1;
+
+        r0 := @this: com.google.ads.AdViewCommunicator;
+
+        $r1 := @parameter0: com.google.ads.GoogleAdView;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        $r2 = new java.util.HashMap;
+
+        specialinvoke $r2.<java.util.HashMap: void <init>()>();
+
+        r0.<com.google.ads.AdViewCommunicator: java.util.Map mAdResponses> = $r2;
+
+        r0.<com.google.ads.AdViewCommunicator: com.google.ads.GoogleAdView mView> = $r1;
+
+        return;
+    }
+
+    private static java.util.Map generateParamMap(android.net.Uri)
+    {
+        android.net.Uri $r0;
+        java.util.HashMap r1, $r6;
+        java.lang.String[] $r3;
+        java.util.Map $r5;
+        int i0, $i1, $i2, $i3;
+        java.lang.String $r2, $r4;
+
+        $r0 := @parameter0: android.net.Uri;
+
+        if $r0 != null goto label1;
+
+        return null;
+
+     label1:
+        $r6 = new java.util.HashMap;
+
+        r1 = $r6;
+
+        specialinvoke $r6.<java.util.HashMap: void <init>()>();
+
+        $r2 = virtualinvoke $r0.<android.net.Uri: java.lang.String getEncodedQuery()>();
+
+        if $r2 == null goto label6;
+
+        $r3 = virtualinvoke $r2.<java.lang.String: java.lang.String[] split(java.lang.String)>("&");
+
+        i0 = 0;
+
+     label2:
+        $i1 = lengthof $r3;
+
+        if i0 >= $i1 goto label5;
+
+        $r2 = $r3[i0];
+
+        $i1 = virtualinvoke $r2.<java.lang.String: int indexOf(int)>(61);
+
+        $i2 = -1;
+
+        if $i1 != $i2 goto label3;
+
+        return null;
+
+     label3:
+        $r2 = $r3[i0];
+
+        $i2 = $i1 + 1;
+
+        $i2 = virtualinvoke $r2.<java.lang.String: int indexOf(int,int)>(61, $i2);
+
+        $i3 = -1;
+
+        if $i2 == $i3 goto label4;
+
+        return null;
+
+     label4:
+        $r2 = $r3[i0];
+
+        $r2 = virtualinvoke $r2.<java.lang.String: java.lang.String substring(int,int)>(0, $i1);
+
+        $r4 = $r3[i0];
+
+        $i1 = $i1 + 1;
+
+        $r4 = virtualinvoke $r4.<java.lang.String: java.lang.String substring(int)>($i1);
+
+        $r2 = staticinvoke <java.net.URLDecoder: java.lang.String decode(java.lang.String)>($r2);
+
+        $r4 = staticinvoke <java.net.URLDecoder: java.lang.String decode(java.lang.String)>($r4);
+
+        virtualinvoke r1.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r2, $r4);
+
+        i0 = i0 + 1;
+
+        goto label2;
+
+     label5:
+        $r5 = staticinvoke <java.util.Collections: java.util.Map unmodifiableMap(java.util.Map)>(r1);
+
+        return $r5;
+
+     label6:
+        return r1;
+    }
+
+    public static boolean isMessage(android.net.Uri)
+    {
+        android.net.Uri $r0;
+        java.lang.String $r1;
+        boolean $z0;
+
+        $r0 := @parameter0: android.net.Uri;
+
+        if $r0 == null goto label2;
+
+        $z0 = virtualinvoke $r0.<android.net.Uri: boolean isHierarchical()>();
+
+        if $z0 == 0 goto label2;
+
+        $r1 = virtualinvoke $r0.<android.net.Uri: java.lang.String getScheme()>();
+
+        if $r1 == null goto label2;
+
+        $r1 = virtualinvoke $r0.<android.net.Uri: java.lang.String getScheme()>();
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>("gmsg");
+
+        if $z0 != 0 goto label1;
+
+        return 0;
+
+     label1:
+        $r1 = virtualinvoke $r0.<android.net.Uri: java.lang.String getAuthority()>();
+
+        if $r1 == null goto label2;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>("afma.google.com");
+
+        if $z0 == 0 goto label2;
+
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    public static void sendJavaScriptMessage(android.webkit.WebView, com.google.ads.AdViewCommunicator$JsMessageAction, java.util.List)
+    {
+        java.util.List r2;
+        com.google.ads.AdViewCommunicator$JsMessageAction $r1;
+        java.lang.StringBuilder $r5;
+        java.lang.String $r4, $r6;
+        android.webkit.WebView $r0;
+        java.lang.NullPointerException $r3;
+
+        $r0 := @parameter0: android.webkit.WebView;
+
+        $r1 := @parameter1: com.google.ads.AdViewCommunicator$JsMessageAction;
+
+        r2 := @parameter2: java.util.List;
+
+        if r2 == null goto label1;
+
+        if $r0 != null goto label2;
+
+     label1:
+        $r3 = new java.lang.NullPointerException;
+
+        specialinvoke $r3.<java.lang.NullPointerException: void <init>()>();
+
+        throw $r3;
+
+     label2:
+        $r4 = staticinvoke <com.google.ads.AdUtil: java.lang.String generateJSONParameters(java.util.List)>(r2);
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("adsense.mobileads.afmanotify.receiveMessage(\"");
+
+        $r6 = virtualinvoke $r1.<com.google.ads.AdViewCommunicator$JsMessageAction: java.lang.String getMessageString()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\", ");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(");");
+
+        $r4 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("javascript: ");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r0.<android.webkit.WebView: void loadUrl(java.lang.String)>($r4);
+
+        return;
+    }
+
+    public com.google.ads.AdResponse registerAdResponse(java.lang.String, com.google.ads.AdResponse)
+    {
+        com.google.ads.AdViewCommunicator r0;
+        com.google.ads.AdResponse $r2;
+        java.util.Map $r4;
+        java.lang.Object $r3;
+        java.lang.String $r1;
+
+        r0 := @this: com.google.ads.AdViewCommunicator;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: com.google.ads.AdResponse;
+
+        $r4 = r0.<com.google.ads.AdViewCommunicator: java.util.Map mAdResponses>;
+
+        $r3 = interfaceinvoke $r4.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r1, $r2);
+
+        $r2 = (com.google.ads.AdResponse) $r3;
+
+        return $r2;
+    }
+
+    public boolean testAndForwardMessage(android.net.Uri)
+    {
+        com.google.ads.AdViewCommunicator r0;
+        com.google.ads.GoogleAdView $r8;
+        android.net.Uri $r1;
+        java.lang.IllegalArgumentException $r2;
+        com.google.ads.AdResponse r7;
+        java.util.Map $r5;
+        java.lang.StringBuilder $r3;
+        java.lang.Object $r6;
+        java.lang.String $r4;
+        boolean $z0;
+
+        r0 := @this: com.google.ads.AdViewCommunicator;
+
+        $r1 := @parameter0: android.net.Uri;
+
+        $z0 = staticinvoke <com.google.ads.AdViewCommunicator: boolean isMessage(android.net.Uri)>($r1);
+
+        if $z0 != 0 goto label1;
+
+        $r2 = new java.lang.IllegalArgumentException;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Invalid syntax in forwarded message: ");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r4);
+
+        throw $r2;
+
+     label1:
+        $r4 = virtualinvoke $r1.<android.net.Uri: java.lang.String getPath()>();
+
+        $r5 = r0.<com.google.ads.AdViewCommunicator: java.util.Map mAdResponses>;
+
+        $r6 = interfaceinvoke $r5.<java.util.Map: java.lang.Object get(java.lang.Object)>($r4);
+
+        r7 = (com.google.ads.AdResponse) $r6;
+
+        if r7 != null goto label2;
+
+        return 0;
+
+     label2:
+        $r5 = staticinvoke <com.google.ads.AdViewCommunicator: java.util.Map generateParamMap(android.net.Uri)>($r1);
+
+        if $r5 == null goto label3;
+
+        $r8 = r0.<com.google.ads.AdViewCommunicator: com.google.ads.GoogleAdView mView>;
+
+        interfaceinvoke r7.<com.google.ads.AdResponse: void run(java.util.Map,com.google.ads.GoogleAdView)>($r5, $r8);
+
+        return 1;
+
+     label3:
+        return 0;
+    }
+
+    public static void <clinit>()
+    {
+        <com.google.ads.AdViewCommunicator: java.lang.String RESPONSE_SCHEME> = "gmsg";
+
+        <com.google.ads.AdViewCommunicator: java.lang.String JS_SEND_FUNCTION> = "adsense.mobileads.afmanotify.receiveMessage";
+
+        <com.google.ads.AdViewCommunicator: java.lang.String JS_PROTOCOL_PREFIX> = "javascript: ";
+
+        <com.google.ads.AdViewCommunicator: java.lang.String AFMA_MESSAGE_HOST> = "afma.google.com";
+
+        return;
+    }
+}

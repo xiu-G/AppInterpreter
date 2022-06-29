@@ -1,0 +1,281 @@
+public class com.yang.longrubblishclear.database.DbHelper extends android.database.sqlite.SQLiteOpenHelper
+{
+    private static final java.lang.String CREATE_CACHE;
+    private static final java.lang.String CREATE_LOG;
+    public static final java.lang.String DATABASE_NAME;
+    public static final int DATABASE_VERSION;
+    public static final java.lang.String TABLE_CACHE;
+    public static final java.lang.String TABLE_LOG;
+
+    public void <init>(android.content.Context)
+    {
+        android.content.Context $r1;
+        com.yang.longrubblishclear.database.DbHelper r0;
+
+        r0 := @this: com.yang.longrubblishclear.database.DbHelper;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke r0.<android.database.sqlite.SQLiteOpenHelper: void <init>(android.content.Context,java.lang.String,android.database.sqlite.SQLiteDatabase$CursorFactory,int)>($r1, "uninstall.db", null, 2);
+
+        return;
+    }
+
+    public void addLog(com.yang.longrubblishclear.util.APKInfo, boolean)
+    {
+        com.yang.longrubblishclear.util.APKInfo $r1;
+        long $l2;
+        java.lang.Integer $r4;
+        android.database.sqlite.SQLiteDatabase $r7;
+        byte $b0, $b1;
+        com.yang.longrubblishclear.database.DbHelper r0;
+        java.lang.Long $r5;
+        com.yang.longrubblishclear.util.SystemUninstallerApp $r6;
+        android.content.ContentValues r2;
+        java.lang.String $r3;
+        boolean $z0, $z1;
+
+        r0 := @this: com.yang.longrubblishclear.database.DbHelper;
+
+        $r1 := @parameter0: com.yang.longrubblishclear.util.APKInfo;
+
+        $z0 := @parameter1: boolean;
+
+        $b0 = 1;
+
+        r2 = new android.content.ContentValues;
+
+        specialinvoke r2.<android.content.ContentValues: void <init>()>();
+
+        $r3 = $r1.<com.yang.longrubblishclear.util.APKInfo: java.lang.String name>;
+
+        virtualinvoke r2.<android.content.ContentValues: void put(java.lang.String,java.lang.String)>("name", $r3);
+
+        $z1 = $r1.<com.yang.longrubblishclear.util.APKInfo: boolean systemApp>;
+
+        if $z1 == 0 goto label4;
+
+        $b1 = 1;
+
+     label1:
+        $r4 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($b1);
+
+        virtualinvoke r2.<android.content.ContentValues: void put(java.lang.String,java.lang.Integer)>("system", $r4);
+
+        $l2 = $r1.<com.yang.longrubblishclear.util.APKInfo: long fileSize>;
+
+        $r5 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l2);
+
+        virtualinvoke r2.<android.content.ContentValues: void put(java.lang.String,java.lang.Long)>("size", $r5);
+
+        $r3 = $r1.<com.yang.longrubblishclear.util.APKInfo: java.lang.String versionName>;
+
+        virtualinvoke r2.<android.content.ContentValues: void put(java.lang.String,java.lang.String)>("verName", $r3);
+
+        $l2 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $r5 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l2);
+
+        virtualinvoke r2.<android.content.ContentValues: void put(java.lang.String,java.lang.Long)>("date", $r5);
+
+        $r6 = staticinvoke <com.yang.longrubblishclear.util.SystemUninstallerApp: com.yang.longrubblishclear.util.SystemUninstallerApp getInstance()>();
+
+        $z1 = virtualinvoke $r6.<com.yang.longrubblishclear.util.SystemUninstallerApp: boolean isBackuped(com.yang.longrubblishclear.util.APKInfo)>($r1);
+
+        if $z1 == 0 goto label5;
+
+        $b1 = 1;
+
+     label2:
+        $r4 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($b1);
+
+        virtualinvoke r2.<android.content.ContentValues: void put(java.lang.String,java.lang.Integer)>("hasBackUp", $r4);
+
+        if $z0 == 0 goto label6;
+
+     label3:
+        $r4 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($b0);
+
+        virtualinvoke r2.<android.content.ContentValues: void put(java.lang.String,java.lang.Integer)>("state", $r4);
+
+        $r7 = virtualinvoke r0.<com.yang.longrubblishclear.database.DbHelper: android.database.sqlite.SQLiteDatabase getWritableDatabase()>();
+
+        virtualinvoke $r7.<android.database.sqlite.SQLiteDatabase: long insert(java.lang.String,java.lang.String,android.content.ContentValues)>("log_table", null, r2);
+
+        return;
+
+     label4:
+        $b1 = 0;
+
+        goto label1;
+
+     label5:
+        $b1 = 0;
+
+        goto label2;
+
+     label6:
+        $b0 = 0;
+
+        goto label3;
+    }
+
+    public android.database.Cursor getApkCacheCursor()
+    {
+        android.database.sqlite.SQLiteDatabase $r1;
+        com.yang.longrubblishclear.database.DbHelper r0;
+        android.database.Cursor $r2;
+
+        r0 := @this: com.yang.longrubblishclear.database.DbHelper;
+
+        $r1 = virtualinvoke r0.<com.yang.longrubblishclear.database.DbHelper: android.database.sqlite.SQLiteDatabase getWritableDatabase()>();
+
+        $r2 = virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: android.database.Cursor query(java.lang.String,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String,java.lang.String,java.lang.String)>("cache_table", null, null, null, null, null, null);
+
+        return $r2;
+    }
+
+    public void onCreate(android.database.sqlite.SQLiteDatabase)
+    {
+        android.database.sqlite.SQLiteDatabase $r1;
+        com.yang.longrubblishclear.database.DbHelper r0;
+
+        r0 := @this: com.yang.longrubblishclear.database.DbHelper;
+
+        $r1 := @parameter0: android.database.sqlite.SQLiteDatabase;
+
+        virtualinvoke r0.<com.yang.longrubblishclear.database.DbHelper: void onUpgrade(android.database.sqlite.SQLiteDatabase,int,int)>($r1, 0, 2);
+
+        return;
+    }
+
+    public void onUpgrade(android.database.sqlite.SQLiteDatabase, int, int)
+    {
+        android.database.sqlite.SQLiteDatabase $r1;
+        com.yang.longrubblishclear.database.DbHelper r0;
+        int $i0, $i1;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r3;
+
+        r0 := @this: com.yang.longrubblishclear.database.DbHelper;
+
+        $r1 := @parameter0: android.database.sqlite.SQLiteDatabase;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("onUpgrade ++ :");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("->");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.yang.longrubblishclear.util.Debug: void w(java.lang.String)>($r3);
+
+        if $i0 >= 1 goto label1;
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("CREATE TABLE log_table (_id INTEGER PRIMARY KEY,name TEXT,system INTEGER,size INTEGER,verName TEXT,date LONG,hasBackUp INTEGER,state INTEGER,outPut TEXT);");
+
+     label1:
+        if $i0 >= 2 goto label2;
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("CREATE TABLE cache_table (pkg TEXT PRIMARY KEY,appName TEXT,icon BLOB);");
+
+     label2:
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("onUpgrade -- :");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("->");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.yang.longrubblishclear.util.Debug: void w(java.lang.String)>($r3);
+
+        return;
+    }
+
+    public long saveApkCache(com.yang.longrubblishclear.util.ApkCacheHelper$ApkCache)
+    {
+        byte[] $r7;
+        java.io.ByteArrayOutputStream r2;
+        long $l0;
+        android.graphics.drawable.Drawable $r4;
+        android.database.sqlite.SQLiteDatabase $r9;
+        com.yang.longrubblishclear.database.DbHelper r0;
+        android.graphics.Bitmap $r5;
+        android.graphics.Bitmap$CompressFormat $r6;
+        android.content.ContentValues r3;
+        java.lang.String $r8;
+        com.yang.longrubblishclear.util.ApkCacheHelper$ApkCache $r1;
+
+        r0 := @this: com.yang.longrubblishclear.database.DbHelper;
+
+        $r1 := @parameter0: com.yang.longrubblishclear.util.ApkCacheHelper$ApkCache;
+
+        r3 = new android.content.ContentValues;
+
+        specialinvoke r3.<android.content.ContentValues: void <init>()>();
+
+        r2 = new java.io.ByteArrayOutputStream;
+
+        specialinvoke r2.<java.io.ByteArrayOutputStream: void <init>()>();
+
+        $r4 = $r1.<com.yang.longrubblishclear.util.ApkCacheHelper$ApkCache: android.graphics.drawable.Drawable icon>;
+
+        $r5 = staticinvoke <com.yang.longrubblishclear.util.Uitils: android.graphics.Bitmap drawableToBitmap(android.graphics.drawable.Drawable)>($r4);
+
+        if $r5 == null goto label1;
+
+        $r6 = <android.graphics.Bitmap$CompressFormat: android.graphics.Bitmap$CompressFormat PNG>;
+
+        virtualinvoke $r5.<android.graphics.Bitmap: boolean compress(android.graphics.Bitmap$CompressFormat,int,java.io.OutputStream)>($r6, 100, r2);
+
+        $r7 = virtualinvoke r2.<java.io.ByteArrayOutputStream: byte[] toByteArray()>();
+
+        virtualinvoke r3.<android.content.ContentValues: void put(java.lang.String,byte[])>("icon", $r7);
+
+     label1:
+        $r8 = $r1.<com.yang.longrubblishclear.util.ApkCacheHelper$ApkCache: java.lang.String pkgName>;
+
+        virtualinvoke r3.<android.content.ContentValues: void put(java.lang.String,java.lang.String)>("pkg", $r8);
+
+        $r8 = $r1.<com.yang.longrubblishclear.util.ApkCacheHelper$ApkCache: java.lang.String appName>;
+
+        virtualinvoke r3.<android.content.ContentValues: void put(java.lang.String,java.lang.String)>("appName", $r8);
+
+        $r9 = virtualinvoke r0.<com.yang.longrubblishclear.database.DbHelper: android.database.sqlite.SQLiteDatabase getWritableDatabase()>();
+
+        $l0 = virtualinvoke $r9.<android.database.sqlite.SQLiteDatabase: long insert(java.lang.String,java.lang.String,android.content.ContentValues)>("cache_table", null, r3);
+
+        return $l0;
+    }
+
+    public static void <clinit>()
+    {
+        <com.yang.longrubblishclear.database.DbHelper: java.lang.String TABLE_LOG> = "log_table";
+
+        <com.yang.longrubblishclear.database.DbHelper: java.lang.String TABLE_CACHE> = "cache_table";
+
+        <com.yang.longrubblishclear.database.DbHelper: int DATABASE_VERSION> = 2;
+
+        <com.yang.longrubblishclear.database.DbHelper: java.lang.String DATABASE_NAME> = "uninstall.db";
+
+        <com.yang.longrubblishclear.database.DbHelper: java.lang.String CREATE_LOG> = "CREATE TABLE log_table (_id INTEGER PRIMARY KEY,name TEXT,system INTEGER,size INTEGER,verName TEXT,date LONG,hasBackUp INTEGER,state INTEGER,outPut TEXT);";
+
+        <com.yang.longrubblishclear.database.DbHelper: java.lang.String CREATE_CACHE> = "CREATE TABLE cache_table (pkg TEXT PRIMARY KEY,appName TEXT,icon BLOB);";
+
+        return;
+    }
+}

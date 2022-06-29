@@ -1,0 +1,121 @@
+public class com.conradcaine.fairsandevents.util.Connectivity extends java.lang.Object
+{
+    private android.content.Context context;
+
+    public void <init>(android.content.Context)
+    {
+        android.content.Context $r1;
+        com.conradcaine.fairsandevents.util.Connectivity r0;
+
+        r0 := @this: com.conradcaine.fairsandevents.util.Connectivity;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<com.conradcaine.fairsandevents.util.Connectivity: android.content.Context context> = $r1;
+
+        return;
+    }
+
+    public boolean checkInternetConnection()
+    {
+        java.net.HttpURLConnection r9;
+        java.lang.Throwable $r10, $r11;
+        android.content.Context $r2;
+        java.net.URL r1, $r12;
+        java.net.URLConnection $r8;
+        int $i0;
+        boolean $z0;
+        android.net.ConnectivityManager r4;
+        java.net.MalformedURLException $r13;
+        android.net.NetworkInfo $r5, $r6;
+        java.io.IOException $r14;
+        java.lang.Exception $r7;
+        java.lang.Object $r3;
+        com.conradcaine.fairsandevents.util.Connectivity r0;
+
+        r0 := @this: com.conradcaine.fairsandevents.util.Connectivity;
+
+        $r2 = r0.<com.conradcaine.fairsandevents.util.Connectivity: android.content.Context context>;
+
+        $r3 = virtualinvoke $r2.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("connectivity");
+
+        r4 = (android.net.ConnectivityManager) $r3;
+
+        $r5 = virtualinvoke r4.<android.net.ConnectivityManager: android.net.NetworkInfo getNetworkInfo(int)>(1);
+
+        $r6 = virtualinvoke r4.<android.net.ConnectivityManager: android.net.NetworkInfo getNetworkInfo(int)>(0);
+
+        $z0 = virtualinvoke $r5.<android.net.NetworkInfo: boolean isConnected()>();
+
+        if $z0 == 0 goto label01;
+
+        return 1;
+
+     label01:
+        $z0 = virtualinvoke $r6.<android.net.NetworkInfo: boolean isConnected()>();
+
+     label02:
+        if $z0 != 0 goto label04;
+
+        return 0;
+
+     label03:
+        $r7 := @caughtexception;
+
+     label04:
+        $r12 = new java.net.URL;
+
+        r1 = $r12;
+
+     label05:
+        specialinvoke $r12.<java.net.URL: void <init>(java.lang.String)>("http://www.google.com");
+
+        $r8 = virtualinvoke r1.<java.net.URL: java.net.URLConnection openConnection()>();
+
+     label06:
+        r9 = (java.net.HttpURLConnection) $r8;
+
+     label07:
+        virtualinvoke r9.<java.net.HttpURLConnection: void setRequestProperty(java.lang.String,java.lang.String)>("User-Agent", "Test");
+
+        virtualinvoke r9.<java.net.HttpURLConnection: void setRequestProperty(java.lang.String,java.lang.String)>("Connection", "close");
+
+        virtualinvoke r9.<java.net.HttpURLConnection: void setConnectTimeout(int)>(3000);
+
+        virtualinvoke r9.<java.net.HttpURLConnection: void connect()>();
+
+        $i0 = virtualinvoke r9.<java.net.HttpURLConnection: int getResponseCode()>();
+
+     label08:
+        if $i0 != 200 goto label10;
+
+        return 1;
+
+     label09:
+        $r10 := @caughtexception;
+
+        $r13 = (java.net.MalformedURLException) $r10;
+
+        virtualinvoke $r13.<java.net.MalformedURLException: void printStackTrace()>();
+
+     label10:
+        return 0;
+
+     label11:
+        $r11 := @caughtexception;
+
+        $r14 = (java.io.IOException) $r11;
+
+        virtualinvoke $r14.<java.io.IOException: void printStackTrace()>();
+
+        goto label10;
+
+        catch java.lang.Exception from label01 to label02 with label03;
+        catch java.net.MalformedURLException from label05 to label06 with label09;
+        catch java.net.MalformedURLException from label07 to label08 with label09;
+        catch java.io.IOException from label05 to label06 with label11;
+        catch java.io.IOException from label07 to label08 with label11;
+    }
+}

@@ -1,0 +1,789 @@
+class com.google.tagmanager.ResourceStorageImpl extends java.lang.Object implements com.google.tagmanager.Container$ResourceStorage
+{
+    private static final java.lang.String SAVED_RESOURCE_FILENAME_PREFIX;
+    private static final java.lang.String SAVED_RESOURCE_SUB_DIR;
+    private com.google.tagmanager.LoadCallback mCallback;
+    private final java.lang.String mContainerId;
+    private final android.content.Context mContext;
+    private final java.util.concurrent.ExecutorService mExecutor;
+
+    void <init>(android.content.Context, java.lang.String)
+    {
+        android.content.Context $r1;
+        com.google.tagmanager.ResourceStorageImpl r0;
+        java.lang.String $r2;
+        java.util.concurrent.ExecutorService $r3;
+
+        r0 := @this: com.google.tagmanager.ResourceStorageImpl;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<com.google.tagmanager.ResourceStorageImpl: android.content.Context mContext> = $r1;
+
+        r0.<com.google.tagmanager.ResourceStorageImpl: java.lang.String mContainerId> = $r2;
+
+        $r3 = staticinvoke <java.util.concurrent.Executors: java.util.concurrent.ExecutorService newSingleThreadExecutor()>();
+
+        r0.<com.google.tagmanager.ResourceStorageImpl: java.util.concurrent.ExecutorService mExecutor> = $r3;
+
+        return;
+    }
+
+    private java.lang.String stringFromInputStream(java.io.InputStream)
+    {
+        java.io.StringWriter $r3, $r6;
+        java.io.InputStreamReader $r7;
+        com.google.tagmanager.ResourceStorageImpl r0;
+        int $i0, $i1;
+        char[] $r4;
+        java.io.BufferedReader $r2, $r8;
+        java.lang.String $r5;
+        java.io.InputStream $r1;
+
+        r0 := @this: com.google.tagmanager.ResourceStorageImpl;
+
+        $r1 := @parameter0: java.io.InputStream;
+
+        $r6 = new java.io.StringWriter;
+
+        $r3 = $r6;
+
+        specialinvoke $r6.<java.io.StringWriter: void <init>()>();
+
+        $r4 = newarray (char)[1024];
+
+        $r8 = new java.io.BufferedReader;
+
+        $r2 = $r8;
+
+        $r7 = new java.io.InputStreamReader;
+
+        specialinvoke $r7.<java.io.InputStreamReader: void <init>(java.io.InputStream,java.lang.String)>($r1, "UTF-8");
+
+        specialinvoke $r8.<java.io.BufferedReader: void <init>(java.io.Reader)>($r7);
+
+     label1:
+        $i0 = virtualinvoke $r2.<java.io.Reader: int read(char[])>($r4);
+
+        $i1 = -1;
+
+        if $i0 == $i1 goto label2;
+
+        virtualinvoke $r3.<java.io.Writer: void write(char[],int,int)>($r4, 0, $i0);
+
+        goto label1;
+
+     label2:
+        $r5 = virtualinvoke $r3.<java.lang.Object: java.lang.String toString()>();
+
+        return $r5;
+    }
+
+    public void close()
+    {
+        java.lang.Throwable $r2;
+        com.google.tagmanager.ResourceStorageImpl r0;
+        java.util.concurrent.ExecutorService $r1;
+
+        r0 := @this: com.google.tagmanager.ResourceStorageImpl;
+
+        entermonitor r0;
+
+     label1:
+        $r1 = r0.<com.google.tagmanager.ResourceStorageImpl: java.util.concurrent.ExecutorService mExecutor>;
+
+        interfaceinvoke $r1.<java.util.concurrent.ExecutorService: void shutdown()>();
+
+     label2:
+        exitmonitor r0;
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    java.io.File getResourceFile()
+    {
+        android.content.Context $r3;
+        com.google.tagmanager.ResourceStorageImpl r0;
+        java.lang.StringBuilder $r1;
+        java.lang.String $r2;
+        java.io.File $r4, $r5;
+
+        r0 := @this: com.google.tagmanager.ResourceStorageImpl;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>(java.lang.String)>("resource_");
+
+        $r2 = r0.<com.google.tagmanager.ResourceStorageImpl: java.lang.String mContainerId>;
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r3 = r0.<com.google.tagmanager.ResourceStorageImpl: android.content.Context mContext>;
+
+        $r4 = virtualinvoke $r3.<android.content.Context: java.io.File getDir(java.lang.String,int)>("google_tagmanager", 0);
+
+        $r5 = new java.io.File;
+
+        specialinvoke $r5.<java.io.File: void <init>(java.io.File,java.lang.String)>($r4, $r2);
+
+        return $r5;
+    }
+
+    public com.google.tagmanager.ResourceUtil$ExpandedResource loadExpandedResourceFromJsonAsset(java.lang.String)
+    {
+        java.lang.Throwable $r9, $r10, $r11, $r13, $r14, $r15, $r16, $r18;
+        android.content.Context $r4;
+        org.json.JSONException $r12, $r17;
+        android.content.res.AssetManager $r5;
+        java.lang.String $r1, $r3;
+        com.google.tagmanager.ResourceUtil$ExpandedResource $r8;
+        com.google.tagmanager.ResourceStorageImpl r0;
+        java.lang.StringBuilder $r2;
+        java.io.InputStream $r6, $r7;
+
+        r0 := @this: com.google.tagmanager.ResourceStorageImpl;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("loading default container from ");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.google.tagmanager.Log: void v(java.lang.String)>($r3);
+
+        $r4 = r0.<com.google.tagmanager.ResourceStorageImpl: android.content.Context mContext>;
+
+        $r5 = virtualinvoke $r4.<android.content.Context: android.content.res.AssetManager getAssets()>();
+
+        if $r5 != null goto label01;
+
+        staticinvoke <com.google.tagmanager.Log: void w(java.lang.String)>("Looking for default JSON container in package, but no assets were found.");
+
+        return null;
+
+     label01:
+        $r6 = virtualinvoke $r5.<android.content.res.AssetManager: java.io.InputStream open(java.lang.String)>($r1);
+
+     label02:
+        $r7 = $r6;
+
+     label03:
+        $r3 = specialinvoke r0.<com.google.tagmanager.ResourceStorageImpl: java.lang.String stringFromInputStream(java.io.InputStream)>($r6);
+
+        $r8 = staticinvoke <com.google.tagmanager.JsonUtils: com.google.tagmanager.ResourceUtil$ExpandedResource expandedResourceFromJsonString(java.lang.String)>($r3);
+
+     label04:
+        if $r6 == null goto label29;
+
+     label05:
+        virtualinvoke $r6.<java.io.InputStream: void close()>();
+
+     label06:
+        return $r8;
+
+     label07:
+        $r9 := @caughtexception;
+
+        return $r8;
+
+     label08:
+        $r10 := @caughtexception;
+
+        $r7 = null;
+
+     label09:
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("No asset file: ");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" found (or errors reading it).");
+
+        $r1 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.google.tagmanager.Log: void w(java.lang.String)>($r1);
+
+     label10:
+        if $r7 == null goto label30;
+
+     label11:
+        virtualinvoke $r7.<java.io.InputStream: void close()>();
+
+     label12:
+        return null;
+
+     label13:
+        $r11 := @caughtexception;
+
+        return null;
+
+     label14:
+        $r12 := @caughtexception;
+
+        $r6 = null;
+
+     label15:
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("Error parsing JSON file");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" : ");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r12);
+
+        $r1 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.google.tagmanager.Log: void w(java.lang.String)>($r1);
+
+     label16:
+        if $r6 == null goto label30;
+
+     label17:
+        virtualinvoke $r6.<java.io.InputStream: void close()>();
+
+     label18:
+        return null;
+
+     label19:
+        $r13 := @caughtexception;
+
+        return null;
+
+     label20:
+        $r14 := @caughtexception;
+
+        $r7 = null;
+
+        $r15 = $r14;
+
+     label21:
+        if $r7 == null goto label23;
+
+     label22:
+        virtualinvoke $r7.<java.io.InputStream: void close()>();
+
+     label23:
+        throw $r15;
+
+     label24:
+        $r16 := @caughtexception;
+
+        goto label23;
+
+     label25:
+        $r15 := @caughtexception;
+
+        goto label21;
+
+     label26:
+        $r15 := @caughtexception;
+
+        $r7 = $r6;
+
+        goto label21;
+
+     label27:
+        $r17 := @caughtexception;
+
+        $r12 = $r17;
+
+        goto label15;
+
+     label28:
+        $r18 := @caughtexception;
+
+        goto label09;
+
+     label29:
+        return $r8;
+
+     label30:
+        return null;
+
+        catch java.io.IOException from label01 to label02 with label08;
+        catch org.json.JSONException from label01 to label02 with label14;
+        catch java.lang.Throwable from label01 to label02 with label20;
+        catch java.io.IOException from label03 to label04 with label28;
+        catch org.json.JSONException from label03 to label04 with label27;
+        catch java.lang.Throwable from label03 to label04 with label25;
+        catch java.io.IOException from label05 to label06 with label07;
+        catch java.lang.Throwable from label09 to label10 with label25;
+        catch java.io.IOException from label11 to label12 with label13;
+        catch java.lang.Throwable from label15 to label16 with label26;
+        catch java.io.IOException from label17 to label18 with label19;
+        catch java.io.IOException from label22 to label23 with label24;
+    }
+
+    public com.google.analytics.containertag.proto.Serving$Resource loadResourceFromContainerAsset(java.lang.String)
+    {
+        java.lang.Throwable $r9, $r10, $r11, $r12, $r13, $r14;
+        android.content.Context $r4;
+        com.google.analytics.containertag.proto.Serving$Resource $r8;
+        com.google.tagmanager.protobuf.ExtensionRegistryLite $r7;
+        com.google.tagmanager.ResourceStorageImpl r0;
+        android.content.res.AssetManager $r5;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r1, $r3;
+        java.io.InputStream $r6;
+
+        r0 := @this: com.google.tagmanager.ResourceStorageImpl;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("Loading default container from ");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.google.tagmanager.Log: void v(java.lang.String)>($r3);
+
+        $r4 = r0.<com.google.tagmanager.ResourceStorageImpl: android.content.Context mContext>;
+
+        $r5 = virtualinvoke $r4.<android.content.Context: android.content.res.AssetManager getAssets()>();
+
+        if $r5 != null goto label01;
+
+        staticinvoke <com.google.tagmanager.Log: void e(java.lang.String)>("No assets found in package");
+
+        return null;
+
+     label01:
+        $r6 = virtualinvoke $r5.<android.content.res.AssetManager: java.io.InputStream open(java.lang.String)>($r1);
+
+     label02:
+        $r7 = staticinvoke <com.google.tagmanager.ProtoExtensionRegistry: com.google.tagmanager.protobuf.ExtensionRegistryLite getRegistry()>();
+
+        $r8 = staticinvoke <com.google.analytics.containertag.proto.Serving$Resource: com.google.analytics.containertag.proto.Serving$Resource parseFrom(java.io.InputStream,com.google.tagmanager.protobuf.ExtensionRegistryLite)>($r6, $r7);
+
+     label03:
+        $r2 = new java.lang.StringBuilder;
+
+     label04:
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("Parsed default container: ");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r8);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.google.tagmanager.Log: void v(java.lang.String)>($r3);
+
+     label05:
+        virtualinvoke $r6.<java.io.InputStream: void close()>();
+
+     label06:
+        return $r8;
+
+     label07:
+        $r9 := @caughtexception;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("No asset file: ");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" found.");
+
+        $r1 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.google.tagmanager.Log: void w(java.lang.String)>($r1);
+
+        return null;
+
+     label08:
+        $r10 := @caughtexception;
+
+     label09:
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("Error when parsing: ");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.google.tagmanager.Log: void w(java.lang.String)>($r1);
+
+     label10:
+        virtualinvoke $r6.<java.io.InputStream: void close()>();
+
+     label11:
+        return null;
+
+     label12:
+        $r11 := @caughtexception;
+
+        return null;
+
+     label13:
+        $r12 := @caughtexception;
+
+     label14:
+        virtualinvoke $r6.<java.io.InputStream: void close()>();
+
+     label15:
+        throw $r12;
+
+     label16:
+        $r13 := @caughtexception;
+
+        goto label06;
+
+     label17:
+        $r14 := @caughtexception;
+
+        goto label15;
+
+        catch java.io.IOException from label01 to label02 with label07;
+        catch java.io.IOException from label02 to label03 with label08;
+        catch java.io.IOException from label04 to label05 with label08;
+        catch java.lang.Throwable from label02 to label05 with label13;
+        catch java.io.IOException from label05 to label06 with label16;
+        catch java.lang.Throwable from label09 to label10 with label13;
+        catch java.io.IOException from label10 to label11 with label12;
+        catch java.io.IOException from label14 to label15 with label17;
+    }
+
+    void loadResourceFromDisk()
+    {
+        com.google.tagmanager.PreviewManager$PreviewMode $r4, $r5;
+        java.lang.Throwable $r13, $r14, $r15, $r16, $r17, $r18;
+        java.lang.IllegalStateException $r2;
+        com.google.tagmanager.protobuf.ExtensionRegistryLite $r11;
+        com.google.tagmanager.LoadCallback $r1;
+        java.lang.String $r6, $r7;
+        com.google.tagmanager.proto.Resource$ResourceWithMetadata $r12;
+        boolean $z0;
+        java.io.FileInputStream $r9;
+        java.io.File $r10;
+        com.google.tagmanager.ResourceStorageImpl r0;
+        com.google.tagmanager.LoadCallback$Failure $r8;
+        com.google.tagmanager.PreviewManager $r3;
+
+        r0 := @this: com.google.tagmanager.ResourceStorageImpl;
+
+        $r1 = r0.<com.google.tagmanager.ResourceStorageImpl: com.google.tagmanager.LoadCallback mCallback>;
+
+        if $r1 != null goto label01;
+
+        $r2 = new java.lang.IllegalStateException;
+
+        specialinvoke $r2.<java.lang.IllegalStateException: void <init>(java.lang.String)>("callback must be set before execute");
+
+        throw $r2;
+
+     label01:
+        $r1 = r0.<com.google.tagmanager.ResourceStorageImpl: com.google.tagmanager.LoadCallback mCallback>;
+
+        interfaceinvoke $r1.<com.google.tagmanager.LoadCallback: void startLoad()>();
+
+        staticinvoke <com.google.tagmanager.Log: void v(java.lang.String)>("Start loading resource from disk ...");
+
+        $r3 = staticinvoke <com.google.tagmanager.PreviewManager: com.google.tagmanager.PreviewManager getInstance()>();
+
+        $r4 = virtualinvoke $r3.<com.google.tagmanager.PreviewManager: com.google.tagmanager.PreviewManager$PreviewMode getPreviewMode()>();
+
+        $r5 = <com.google.tagmanager.PreviewManager$PreviewMode: com.google.tagmanager.PreviewManager$PreviewMode CONTAINER>;
+
+        if $r4 == $r5 goto label02;
+
+        $r3 = staticinvoke <com.google.tagmanager.PreviewManager: com.google.tagmanager.PreviewManager getInstance()>();
+
+        $r4 = virtualinvoke $r3.<com.google.tagmanager.PreviewManager: com.google.tagmanager.PreviewManager$PreviewMode getPreviewMode()>();
+
+        $r5 = <com.google.tagmanager.PreviewManager$PreviewMode: com.google.tagmanager.PreviewManager$PreviewMode CONTAINER_DEBUG>;
+
+        if $r4 != $r5 goto label03;
+
+     label02:
+        $r6 = r0.<com.google.tagmanager.ResourceStorageImpl: java.lang.String mContainerId>;
+
+        $r3 = staticinvoke <com.google.tagmanager.PreviewManager: com.google.tagmanager.PreviewManager getInstance()>();
+
+        $r7 = virtualinvoke $r3.<com.google.tagmanager.PreviewManager: java.lang.String getContainerId()>();
+
+        $z0 = virtualinvoke $r6.<java.lang.String: boolean equals(java.lang.Object)>($r7);
+
+        if $z0 == 0 goto label03;
+
+        $r1 = r0.<com.google.tagmanager.ResourceStorageImpl: com.google.tagmanager.LoadCallback mCallback>;
+
+        $r8 = <com.google.tagmanager.LoadCallback$Failure: com.google.tagmanager.LoadCallback$Failure NOT_AVAILABLE>;
+
+        interfaceinvoke $r1.<com.google.tagmanager.LoadCallback: void onFailure(com.google.tagmanager.LoadCallback$Failure)>($r8);
+
+        return;
+
+     label03:
+        $r9 = new java.io.FileInputStream;
+
+     label04:
+        $r10 = virtualinvoke r0.<com.google.tagmanager.ResourceStorageImpl: java.io.File getResourceFile()>();
+
+        specialinvoke $r9.<java.io.FileInputStream: void <init>(java.io.File)>($r10);
+
+     label05:
+        $r1 = r0.<com.google.tagmanager.ResourceStorageImpl: com.google.tagmanager.LoadCallback mCallback>;
+
+     label06:
+        $r11 = staticinvoke <com.google.tagmanager.ProtoExtensionRegistry: com.google.tagmanager.protobuf.ExtensionRegistryLite getRegistry()>();
+
+        $r12 = staticinvoke <com.google.tagmanager.proto.Resource$ResourceWithMetadata: com.google.tagmanager.proto.Resource$ResourceWithMetadata parseFrom(java.io.InputStream,com.google.tagmanager.protobuf.ExtensionRegistryLite)>($r9, $r11);
+
+        interfaceinvoke $r1.<com.google.tagmanager.LoadCallback: void onSuccess(java.lang.Object)>($r12);
+
+     label07:
+        virtualinvoke $r9.<java.io.FileInputStream: void close()>();
+
+     label08:
+        staticinvoke <com.google.tagmanager.Log: void v(java.lang.String)>("Load resource from disk finished.");
+
+        return;
+
+     label09:
+        $r13 := @caughtexception;
+
+        staticinvoke <com.google.tagmanager.Log: void d(java.lang.String)>("resource not on disk");
+
+        $r1 = r0.<com.google.tagmanager.ResourceStorageImpl: com.google.tagmanager.LoadCallback mCallback>;
+
+        $r8 = <com.google.tagmanager.LoadCallback$Failure: com.google.tagmanager.LoadCallback$Failure NOT_AVAILABLE>;
+
+        interfaceinvoke $r1.<com.google.tagmanager.LoadCallback: void onFailure(com.google.tagmanager.LoadCallback$Failure)>($r8);
+
+        return;
+
+     label10:
+        $r14 := @caughtexception;
+
+        staticinvoke <com.google.tagmanager.Log: void w(java.lang.String)>("error closing stream for reading resource from disk");
+
+        goto label08;
+
+     label11:
+        $r15 := @caughtexception;
+
+     label12:
+        staticinvoke <com.google.tagmanager.Log: void w(java.lang.String)>("error reading resource from disk");
+
+        $r1 = r0.<com.google.tagmanager.ResourceStorageImpl: com.google.tagmanager.LoadCallback mCallback>;
+
+        $r8 = <com.google.tagmanager.LoadCallback$Failure: com.google.tagmanager.LoadCallback$Failure IO_ERROR>;
+
+        interfaceinvoke $r1.<com.google.tagmanager.LoadCallback: void onFailure(com.google.tagmanager.LoadCallback$Failure)>($r8);
+
+     label13:
+        virtualinvoke $r9.<java.io.FileInputStream: void close()>();
+
+     label14:
+        goto label08;
+
+     label15:
+        $r16 := @caughtexception;
+
+        staticinvoke <com.google.tagmanager.Log: void w(java.lang.String)>("error closing stream for reading resource from disk");
+
+        goto label08;
+
+     label16:
+        $r17 := @caughtexception;
+
+     label17:
+        virtualinvoke $r9.<java.io.FileInputStream: void close()>();
+
+     label18:
+        throw $r17;
+
+     label19:
+        $r18 := @caughtexception;
+
+        staticinvoke <com.google.tagmanager.Log: void w(java.lang.String)>("error closing stream for reading resource from disk");
+
+        goto label18;
+
+        catch java.io.FileNotFoundException from label04 to label05 with label09;
+        catch java.io.IOException from label06 to label07 with label11;
+        catch java.lang.Throwable from label05 to label07 with label16;
+        catch java.io.IOException from label07 to label08 with label10;
+        catch java.lang.Throwable from label12 to label13 with label16;
+        catch java.io.IOException from label13 to label14 with label15;
+        catch java.io.IOException from label17 to label18 with label19;
+    }
+
+    public void loadResourceFromDiskInBackground()
+    {
+        com.google.tagmanager.ResourceStorageImpl r0;
+        com.google.tagmanager.ResourceStorageImpl$1 $r2;
+        java.util.concurrent.ExecutorService $r1;
+
+        r0 := @this: com.google.tagmanager.ResourceStorageImpl;
+
+        $r1 = r0.<com.google.tagmanager.ResourceStorageImpl: java.util.concurrent.ExecutorService mExecutor>;
+
+        $r2 = new com.google.tagmanager.ResourceStorageImpl$1;
+
+        specialinvoke $r2.<com.google.tagmanager.ResourceStorageImpl$1: void <init>(com.google.tagmanager.ResourceStorageImpl)>(r0);
+
+        interfaceinvoke $r1.<java.util.concurrent.ExecutorService: void execute(java.lang.Runnable)>($r2);
+
+        return;
+    }
+
+    boolean saveResourceToDisk(com.google.tagmanager.proto.Resource$ResourceWithMetadata)
+    {
+        java.lang.Throwable $r4, $r5, $r6, $r7, $r8, $r9;
+        java.io.FileOutputStream $r2;
+        java.io.File $r3;
+        com.google.tagmanager.ResourceStorageImpl r0;
+        com.google.tagmanager.proto.Resource$ResourceWithMetadata $r1;
+
+        r0 := @this: com.google.tagmanager.ResourceStorageImpl;
+
+        $r1 := @parameter0: com.google.tagmanager.proto.Resource$ResourceWithMetadata;
+
+        $r3 = virtualinvoke r0.<com.google.tagmanager.ResourceStorageImpl: java.io.File getResourceFile()>();
+
+        $r2 = new java.io.FileOutputStream;
+
+     label01:
+        specialinvoke $r2.<java.io.FileOutputStream: void <init>(java.io.File)>($r3);
+
+     label02:
+        virtualinvoke $r1.<com.google.tagmanager.proto.Resource$ResourceWithMetadata: void writeTo(java.io.OutputStream)>($r2);
+
+     label03:
+        virtualinvoke $r2.<java.io.FileOutputStream: void close()>();
+
+     label04:
+        return 1;
+
+     label05:
+        $r4 := @caughtexception;
+
+        staticinvoke <com.google.tagmanager.Log: void e(java.lang.String)>("Error opening resource file for writing");
+
+        return 0;
+
+     label06:
+        $r5 := @caughtexception;
+
+        staticinvoke <com.google.tagmanager.Log: void w(java.lang.String)>("error closing stream for writing resource to disk");
+
+        goto label04;
+
+     label07:
+        $r6 := @caughtexception;
+
+     label08:
+        staticinvoke <com.google.tagmanager.Log: void w(java.lang.String)>("Error writing resource to disk. Removing resource from disk.");
+
+        virtualinvoke $r3.<java.io.File: boolean delete()>();
+
+     label09:
+        virtualinvoke $r2.<java.io.FileOutputStream: void close()>();
+
+     label10:
+        return 0;
+
+     label11:
+        $r7 := @caughtexception;
+
+        staticinvoke <com.google.tagmanager.Log: void w(java.lang.String)>("error closing stream for writing resource to disk");
+
+        return 0;
+
+     label12:
+        $r8 := @caughtexception;
+
+     label13:
+        virtualinvoke $r2.<java.io.FileOutputStream: void close()>();
+
+     label14:
+        throw $r8;
+
+     label15:
+        $r9 := @caughtexception;
+
+        staticinvoke <com.google.tagmanager.Log: void w(java.lang.String)>("error closing stream for writing resource to disk");
+
+        goto label14;
+
+        catch java.io.FileNotFoundException from label01 to label02 with label05;
+        catch java.io.IOException from label02 to label03 with label07;
+        catch java.lang.Throwable from label02 to label03 with label12;
+        catch java.io.IOException from label03 to label04 with label06;
+        catch java.lang.Throwable from label08 to label09 with label12;
+        catch java.io.IOException from label09 to label10 with label11;
+        catch java.io.IOException from label13 to label14 with label15;
+    }
+
+    public void saveResourceToDiskInBackground(com.google.tagmanager.proto.Resource$ResourceWithMetadata)
+    {
+        com.google.tagmanager.ResourceStorageImpl r0;
+        com.google.tagmanager.ResourceStorageImpl$2 $r3;
+        com.google.tagmanager.proto.Resource$ResourceWithMetadata $r1;
+        java.util.concurrent.ExecutorService $r2;
+
+        r0 := @this: com.google.tagmanager.ResourceStorageImpl;
+
+        $r1 := @parameter0: com.google.tagmanager.proto.Resource$ResourceWithMetadata;
+
+        $r2 = r0.<com.google.tagmanager.ResourceStorageImpl: java.util.concurrent.ExecutorService mExecutor>;
+
+        $r3 = new com.google.tagmanager.ResourceStorageImpl$2;
+
+        specialinvoke $r3.<com.google.tagmanager.ResourceStorageImpl$2: void <init>(com.google.tagmanager.ResourceStorageImpl,com.google.tagmanager.proto.Resource$ResourceWithMetadata)>(r0, $r1);
+
+        interfaceinvoke $r2.<java.util.concurrent.ExecutorService: void execute(java.lang.Runnable)>($r3);
+
+        return;
+    }
+
+    public void setLoadCallback(com.google.tagmanager.LoadCallback)
+    {
+        com.google.tagmanager.LoadCallback $r1;
+        com.google.tagmanager.ResourceStorageImpl r0;
+
+        r0 := @this: com.google.tagmanager.ResourceStorageImpl;
+
+        $r1 := @parameter0: com.google.tagmanager.LoadCallback;
+
+        r0.<com.google.tagmanager.ResourceStorageImpl: com.google.tagmanager.LoadCallback mCallback> = $r1;
+
+        return;
+    }
+
+    public static void <clinit>()
+    {
+        <com.google.tagmanager.ResourceStorageImpl: java.lang.String SAVED_RESOURCE_SUB_DIR> = "google_tagmanager";
+
+        <com.google.tagmanager.ResourceStorageImpl: java.lang.String SAVED_RESOURCE_FILENAME_PREFIX> = "resource_";
+
+        return;
+    }
+}

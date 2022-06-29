@@ -1,0 +1,551 @@
+class cn.hi321.browser.weave.client.WeaveTransport extends java.lang.Object
+{
+    private static final int HTTPS_PORT_DEFAULT;
+    private static final int HTTP_PORT_DEFAULT;
+    private static final org.apache.http.params.HttpParams sm_httpParams;
+    private static final org.apache.http.HttpRequestInterceptor sm_preemptiveAuth;
+    private static final cn.hi321.browser.weave.client.WeaveTransport$MyResponseHandler sm_responseHandler;
+    private final org.apache.http.conn.ClientConnectionManager m_clientConMgr;
+    private final org.apache.http.conn.scheme.SocketFactory m_sslSocketFactory;
+
+    static void <clinit>()
+    {
+        org.apache.http.HttpVersion $r4;
+        org.apache.http.conn.params.ConnPerRouteBean $r6;
+        org.apache.http.params.BasicHttpParams r0;
+        cn.hi321.browser.weave.client.WeaveTransport$MyInterceptor $r2;
+        java.lang.String $r5;
+        java.lang.Integer $r1;
+        cn.hi321.browser.weave.client.WeaveTransport$MyResponseHandler $r3;
+
+        <cn.hi321.browser.weave.client.WeaveTransport: int HTTP_PORT_DEFAULT> = 80;
+
+        <cn.hi321.browser.weave.client.WeaveTransport: int HTTPS_PORT_DEFAULT> = 443;
+
+        $r2 = new cn.hi321.browser.weave.client.WeaveTransport$MyInterceptor;
+
+        specialinvoke $r2.<cn.hi321.browser.weave.client.WeaveTransport$MyInterceptor: void <init>(cn.hi321.browser.weave.client.WeaveTransport$MyInterceptor)>(null);
+
+        <cn.hi321.browser.weave.client.WeaveTransport: org.apache.http.HttpRequestInterceptor sm_preemptiveAuth> = $r2;
+
+        $r3 = new cn.hi321.browser.weave.client.WeaveTransport$MyResponseHandler;
+
+        specialinvoke $r3.<cn.hi321.browser.weave.client.WeaveTransport$MyResponseHandler: void <init>(cn.hi321.browser.weave.client.WeaveTransport$MyResponseHandler)>(null);
+
+        <cn.hi321.browser.weave.client.WeaveTransport: cn.hi321.browser.weave.client.WeaveTransport$MyResponseHandler sm_responseHandler> = $r3;
+
+        r0 = new org.apache.http.params.BasicHttpParams;
+
+        specialinvoke r0.<org.apache.http.params.BasicHttpParams: void <init>()>();
+
+        $r4 = <org.apache.http.HttpVersion: org.apache.http.HttpVersion HTTP_1_1>;
+
+        staticinvoke <org.apache.http.params.HttpProtocolParams: void setVersion(org.apache.http.params.HttpParams,org.apache.http.ProtocolVersion)>(r0, $r4);
+
+        staticinvoke <org.apache.http.params.HttpProtocolParams: void setContentCharset(org.apache.http.params.HttpParams,java.lang.String)>(r0, "UTF-8");
+
+        $r5 = <cn.hi321.browser.weave.client.WeaveConstants: java.lang.String USER_AGENT>;
+
+        staticinvoke <org.apache.http.params.HttpProtocolParams: void setUserAgent(org.apache.http.params.HttpParams,java.lang.String)>(r0, $r5);
+
+        staticinvoke <org.apache.http.params.HttpProtocolParams: void setUseExpectContinue(org.apache.http.params.HttpParams,boolean)>(r0, 0);
+
+        $r1 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(30);
+
+        interfaceinvoke r0.<org.apache.http.params.HttpParams: org.apache.http.params.HttpParams setParameter(java.lang.String,java.lang.Object)>("http.conn-manager.max-total", $r1);
+
+        $r6 = new org.apache.http.conn.params.ConnPerRouteBean;
+
+        specialinvoke $r6.<org.apache.http.conn.params.ConnPerRouteBean: void <init>(int)>(30);
+
+        interfaceinvoke r0.<org.apache.http.params.HttpParams: org.apache.http.params.HttpParams setParameter(java.lang.String,java.lang.Object)>("http.conn-manager.max-per-route", $r6);
+
+        <cn.hi321.browser.weave.client.WeaveTransport: org.apache.http.params.HttpParams sm_httpParams> = r0;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        cn.hi321.browser.weave.client.WeaveTransport r0;
+
+        r0 := @this: cn.hi321.browser.weave.client.WeaveTransport;
+
+        specialinvoke r0.<cn.hi321.browser.weave.client.WeaveTransport: void <init>(boolean)>(1);
+
+        return;
+    }
+
+    public void <init>(boolean)
+    {
+        cn.hi321.browser.weave.client.WeaveTransport r0;
+        boolean $z0;
+
+        r0 := @this: cn.hi321.browser.weave.client.WeaveTransport;
+
+        $z0 := @parameter0: boolean;
+
+        specialinvoke r0.<cn.hi321.browser.weave.client.WeaveTransport: void <init>(boolean,boolean)>($z0, 1);
+
+        return;
+    }
+
+    public void <init>(boolean, boolean)
+    {
+        org.apache.http.conn.ClientConnectionManager $r2;
+        org.apache.http.conn.scheme.SocketFactory $r1;
+        cn.hi321.browser.weave.client.WeaveTransport r0;
+        boolean $z0, $z1;
+
+        r0 := @this: cn.hi321.browser.weave.client.WeaveTransport;
+
+        $z0 := @parameter0: boolean;
+
+        $z1 := @parameter1: boolean;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        $r1 = staticinvoke <cn.hi321.browser.weave.client.WeaveTransport: org.apache.http.conn.scheme.SocketFactory createSocketFactory(boolean)>($z1);
+
+        r0.<cn.hi321.browser.weave.client.WeaveTransport: org.apache.http.conn.scheme.SocketFactory m_sslSocketFactory> = $r1;
+
+        if $z0 == 0 goto label2;
+
+        $r2 = specialinvoke r0.<cn.hi321.browser.weave.client.WeaveTransport: org.apache.http.conn.ClientConnectionManager createClientConnectionManager(boolean)>(1);
+
+     label1:
+        r0.<cn.hi321.browser.weave.client.WeaveTransport: org.apache.http.conn.ClientConnectionManager m_clientConMgr> = $r2;
+
+        return;
+
+     label2:
+        $r2 = null;
+
+        goto label1;
+    }
+
+    private org.apache.http.conn.ClientConnectionManager createClientConnectionManager(boolean)
+    {
+        org.apache.http.conn.scheme.PlainSocketFactory $r2;
+        org.apache.http.conn.scheme.SchemeRegistry r1;
+        cn.hi321.browser.weave.client.WeaveTransport r0;
+        org.apache.http.conn.scheme.Scheme $r3;
+        org.apache.http.impl.conn.SingleClientConnManager $r7;
+        org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager $r5;
+        org.apache.http.conn.scheme.SocketFactory $r4;
+        org.apache.http.params.HttpParams $r6;
+        boolean $z0;
+
+        r0 := @this: cn.hi321.browser.weave.client.WeaveTransport;
+
+        $z0 := @parameter0: boolean;
+
+        r1 = new org.apache.http.conn.scheme.SchemeRegistry;
+
+        specialinvoke r1.<org.apache.http.conn.scheme.SchemeRegistry: void <init>()>();
+
+        $r3 = new org.apache.http.conn.scheme.Scheme;
+
+        $r2 = staticinvoke <org.apache.http.conn.scheme.PlainSocketFactory: org.apache.http.conn.scheme.PlainSocketFactory getSocketFactory()>();
+
+        specialinvoke $r3.<org.apache.http.conn.scheme.Scheme: void <init>(java.lang.String,org.apache.http.conn.scheme.SocketFactory,int)>("http", $r2, 80);
+
+        virtualinvoke r1.<org.apache.http.conn.scheme.SchemeRegistry: org.apache.http.conn.scheme.Scheme register(org.apache.http.conn.scheme.Scheme)>($r3);
+
+        $r3 = new org.apache.http.conn.scheme.Scheme;
+
+        $r4 = r0.<cn.hi321.browser.weave.client.WeaveTransport: org.apache.http.conn.scheme.SocketFactory m_sslSocketFactory>;
+
+        specialinvoke $r3.<org.apache.http.conn.scheme.Scheme: void <init>(java.lang.String,org.apache.http.conn.scheme.SocketFactory,int)>("https", $r4, 443);
+
+        virtualinvoke r1.<org.apache.http.conn.scheme.SchemeRegistry: org.apache.http.conn.scheme.Scheme register(org.apache.http.conn.scheme.Scheme)>($r3);
+
+        if $z0 == 0 goto label1;
+
+        $r5 = new org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+
+        $r6 = <cn.hi321.browser.weave.client.WeaveTransport: org.apache.http.params.HttpParams sm_httpParams>;
+
+        specialinvoke $r5.<org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager: void <init>(org.apache.http.params.HttpParams,org.apache.http.conn.scheme.SchemeRegistry)>($r6, r1);
+
+        return $r5;
+
+     label1:
+        $r7 = new org.apache.http.impl.conn.SingleClientConnManager;
+
+        $r6 = <cn.hi321.browser.weave.client.WeaveTransport: org.apache.http.params.HttpParams sm_httpParams>;
+
+        specialinvoke $r7.<org.apache.http.impl.conn.SingleClientConnManager: void <init>(org.apache.http.params.HttpParams,org.apache.http.conn.scheme.SchemeRegistry)>($r6, r1);
+
+        return $r7;
+    }
+
+    private org.apache.http.impl.client.DefaultHttpClient createDefaultHttpClient()
+    {
+        org.apache.http.impl.client.DefaultHttpClient $r3;
+        org.apache.http.conn.ClientConnectionManager $r2;
+        org.apache.http.params.HttpParams $r1;
+        cn.hi321.browser.weave.client.WeaveTransport r0;
+
+        r0 := @this: cn.hi321.browser.weave.client.WeaveTransport;
+
+        $r2 = r0.<cn.hi321.browser.weave.client.WeaveTransport: org.apache.http.conn.ClientConnectionManager m_clientConMgr>;
+
+        if $r2 == null goto label2;
+
+        $r2 = r0.<cn.hi321.browser.weave.client.WeaveTransport: org.apache.http.conn.ClientConnectionManager m_clientConMgr>;
+
+     label1:
+        $r3 = new org.apache.http.impl.client.DefaultHttpClient;
+
+        $r1 = <cn.hi321.browser.weave.client.WeaveTransport: org.apache.http.params.HttpParams sm_httpParams>;
+
+        specialinvoke $r3.<org.apache.http.impl.client.DefaultHttpClient: void <init>(org.apache.http.conn.ClientConnectionManager,org.apache.http.params.HttpParams)>($r2, $r1);
+
+        return $r3;
+
+     label2:
+        $r2 = specialinvoke r0.<cn.hi321.browser.weave.client.WeaveTransport: org.apache.http.conn.ClientConnectionManager createClientConnectionManager(boolean)>(0);
+
+        goto label1;
+    }
+
+    private org.apache.http.client.HttpClient createHttpClient(java.lang.String, java.lang.String)
+    {
+        org.apache.http.impl.client.DefaultHttpClient $r4;
+        cn.hi321.browser.weave.client.WeaveTransport r0;
+        org.apache.http.auth.UsernamePasswordCredentials r3;
+        org.apache.http.auth.AuthScope $r6;
+        java.lang.String $r1, $r2;
+        org.apache.http.client.CredentialsProvider $r5;
+        org.apache.http.HttpRequestInterceptor $r7;
+
+        r0 := @this: cn.hi321.browser.weave.client.WeaveTransport;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r4 = specialinvoke r0.<cn.hi321.browser.weave.client.WeaveTransport: org.apache.http.impl.client.DefaultHttpClient createDefaultHttpClient()>();
+
+        r3 = new org.apache.http.auth.UsernamePasswordCredentials;
+
+        specialinvoke r3.<org.apache.http.auth.UsernamePasswordCredentials: void <init>(java.lang.String,java.lang.String)>($r1, $r2);
+
+        $r5 = virtualinvoke $r4.<org.apache.http.impl.client.DefaultHttpClient: org.apache.http.client.CredentialsProvider getCredentialsProvider()>();
+
+        $r6 = <org.apache.http.auth.AuthScope: org.apache.http.auth.AuthScope ANY>;
+
+        interfaceinvoke $r5.<org.apache.http.client.CredentialsProvider: void setCredentials(org.apache.http.auth.AuthScope,org.apache.http.auth.Credentials)>($r6, r3);
+
+        $r7 = <cn.hi321.browser.weave.client.WeaveTransport: org.apache.http.HttpRequestInterceptor sm_preemptiveAuth>;
+
+        virtualinvoke $r4.<org.apache.http.impl.client.DefaultHttpClient: void addRequestInterceptor(org.apache.http.HttpRequestInterceptor,int)>($r7, 0);
+
+        return $r4;
+    }
+
+    private static org.apache.http.conn.scheme.SocketFactory createSocketFactory(boolean)
+    {
+        cn.hi321.browser.weave.client.WeaveTransport$WeaveHostnameVerifier $r0;
+        org.apache.http.conn.ssl.SSLSocketFactory $r1, $r3;
+        cn.hi321.browser.weave.client.WeaveSSLSocketFactory r2;
+        boolean $z0;
+
+        $z0 := @parameter0: boolean;
+
+        if $z0 == 0 goto label1;
+
+        r2 = new cn.hi321.browser.weave.client.WeaveSSLSocketFactory;
+
+        specialinvoke r2.<cn.hi321.browser.weave.client.WeaveSSLSocketFactory: void <init>()>();
+
+        return r2;
+
+     label1:
+        $r1 = staticinvoke <org.apache.http.conn.ssl.SSLSocketFactory: org.apache.http.conn.ssl.SSLSocketFactory getSocketFactory()>();
+
+        $r3 = $r1;
+
+        $r0 = new cn.hi321.browser.weave.client.WeaveTransport$WeaveHostnameVerifier;
+
+        specialinvoke $r0.<cn.hi321.browser.weave.client.WeaveTransport$WeaveHostnameVerifier: void <init>()>();
+
+        virtualinvoke $r3.<org.apache.http.conn.ssl.SSLSocketFactory: void setHostnameVerifier(org.apache.http.conn.ssl.X509HostnameVerifier)>($r0);
+
+        return $r1;
+    }
+
+    private cn.hi321.browser.weave.client.WeaveResponse execGenericMethod(java.lang.String, java.lang.String, java.net.URI, org.apache.http.client.methods.HttpRequestBase) throws java.io.IOException, cn.hi321.browser.weave.client.WeaveException
+    {
+        java.lang.Throwable $r9;
+        org.apache.http.conn.ClientConnectionManager $r8;
+        org.apache.http.client.methods.HttpRequestBase $r4;
+        cn.hi321.browser.weave.client.WeaveTransport r0;
+        cn.hi321.browser.weave.client.WeaveResponse $r7;
+        org.apache.http.client.HttpClient r5, $r6;
+        java.lang.String $r1, $r2;
+        java.net.URI $r3;
+
+        r0 := @this: cn.hi321.browser.weave.client.WeaveTransport;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: java.net.URI;
+
+        $r4 := @parameter3: org.apache.http.client.methods.HttpRequestBase;
+
+        r5 = null;
+
+     label1:
+        $r6 = specialinvoke r0.<cn.hi321.browser.weave.client.WeaveTransport: org.apache.http.client.HttpClient createHttpClient(java.lang.String,java.lang.String)>($r1, $r2);
+
+     label2:
+        r5 = $r6;
+
+     label3:
+        $r7 = specialinvoke r0.<cn.hi321.browser.weave.client.WeaveTransport: cn.hi321.browser.weave.client.WeaveResponse execGenericMethod(org.apache.http.client.HttpClient,java.net.URI,org.apache.http.client.methods.HttpRequestBase)>($r6, $r3, $r4);
+
+     label4:
+        $r8 = r0.<cn.hi321.browser.weave.client.WeaveTransport: org.apache.http.conn.ClientConnectionManager m_clientConMgr>;
+
+        if $r8 != null goto label7;
+
+        if $r6 == null goto label7;
+
+        $r8 = interfaceinvoke $r6.<org.apache.http.client.HttpClient: org.apache.http.conn.ClientConnectionManager getConnectionManager()>();
+
+        interfaceinvoke $r8.<org.apache.http.conn.ClientConnectionManager: void shutdown()>();
+
+        return $r7;
+
+     label5:
+        $r9 := @caughtexception;
+
+        $r8 = r0.<cn.hi321.browser.weave.client.WeaveTransport: org.apache.http.conn.ClientConnectionManager m_clientConMgr>;
+
+        if $r8 != null goto label6;
+
+        if r5 == null goto label6;
+
+        $r8 = interfaceinvoke r5.<org.apache.http.client.HttpClient: org.apache.http.conn.ClientConnectionManager getConnectionManager()>();
+
+        interfaceinvoke $r8.<org.apache.http.conn.ClientConnectionManager: void shutdown()>();
+
+     label6:
+        throw $r9;
+
+     label7:
+        return $r7;
+
+        catch java.lang.Throwable from label1 to label2 with label5;
+        catch java.lang.Throwable from label3 to label4 with label5;
+    }
+
+    private cn.hi321.browser.weave.client.WeaveResponse execGenericMethod(org.apache.http.client.HttpClient, java.net.URI, org.apache.http.client.methods.HttpRequestBase) throws java.io.IOException, cn.hi321.browser.weave.client.WeaveException
+    {
+        java.lang.Throwable $r7;
+        org.apache.http.client.methods.HttpRequestBase $r3;
+        cn.hi321.browser.weave.client.WeaveTransport$WeaveResponseException r4;
+        cn.hi321.browser.weave.client.WeaveTransport r0;
+        cn.hi321.browser.weave.client.WeaveResponse r11;
+        cn.hi321.browser.weave.client.WeaveTransport$MyResponseHandler r6;
+        org.apache.http.client.HttpClient $r1;
+        int $i0;
+        java.lang.Object $r10;
+        java.net.URI $r2;
+        java.lang.String $r8, $r9;
+        org.apache.http.HttpHost r5;
+
+        r0 := @this: cn.hi321.browser.weave.client.WeaveTransport;
+
+        $r1 := @parameter0: org.apache.http.client.HttpClient;
+
+        $r2 := @parameter1: java.net.URI;
+
+        $r3 := @parameter2: org.apache.http.client.methods.HttpRequestBase;
+
+        specialinvoke r0.<cn.hi321.browser.weave.client.WeaveTransport: void setMethodHeaders(org.apache.http.HttpMessage)>($r3);
+
+        r6 = <cn.hi321.browser.weave.client.WeaveTransport: cn.hi321.browser.weave.client.WeaveTransport$MyResponseHandler sm_responseHandler>;
+
+        $r8 = virtualinvoke $r2.<java.net.URI: java.lang.String getScheme()>();
+
+        $r9 = virtualinvoke $r2.<java.net.URI: java.lang.String getHost()>();
+
+        $i0 = virtualinvoke $r2.<java.net.URI: int getPort()>();
+
+        r5 = new org.apache.http.HttpHost;
+
+        specialinvoke r5.<org.apache.http.HttpHost: void <init>(java.lang.String,int,java.lang.String)>($r9, $i0, $r8);
+
+     label1:
+        $r10 = interfaceinvoke $r1.<org.apache.http.client.HttpClient: java.lang.Object execute(org.apache.http.HttpHost,org.apache.http.HttpRequest,org.apache.http.client.ResponseHandler)>(r5, $r3, r6);
+
+     label2:
+        r11 = (cn.hi321.browser.weave.client.WeaveResponse) $r10;
+
+     label3:
+        virtualinvoke r11.<cn.hi321.browser.weave.client.WeaveResponse: void setUri(java.net.URI)>($r2);
+
+        virtualinvoke r11.<cn.hi321.browser.weave.client.WeaveResponse: cn.hi321.browser.weave.client.WeaveTransport$WeaveResponseHeaders getResponseHeaders()>();
+
+     label4:
+        return r11;
+
+     label5:
+        r4 := @caughtexception;
+
+     label6:
+        virtualinvoke r4.<cn.hi321.browser.weave.client.WeaveTransport$WeaveResponseException: cn.hi321.browser.weave.client.WeaveTransport$WeaveResponseHeaders getResponseHeaders()>();
+
+        throw r4;
+
+     label7:
+        $r7 := @caughtexception;
+
+        throw $r7;
+
+        catch cn.hi321.browser.weave.client.WeaveTransport$WeaveResponseException from label1 to label2 with label5;
+        catch cn.hi321.browser.weave.client.WeaveTransport$WeaveResponseException from label3 to label4 with label5;
+        catch java.lang.Throwable from label1 to label4 with label7;
+        catch java.lang.Throwable from label6 to label7 with label7;
+    }
+
+    private void setMethodHeaders(org.apache.http.HttpMessage)
+    {
+        org.apache.http.HttpMessage $r1;
+        cn.hi321.browser.weave.client.WeaveTransport r0;
+
+        r0 := @this: cn.hi321.browser.weave.client.WeaveTransport;
+
+        $r1 := @parameter0: org.apache.http.HttpMessage;
+
+        interfaceinvoke $r1.<org.apache.http.HttpMessage: void addHeader(java.lang.String,java.lang.String)>("Pragma", "no-cache");
+
+        interfaceinvoke $r1.<org.apache.http.HttpMessage: void addHeader(java.lang.String,java.lang.String)>("Cache-Control", "no-cache");
+
+        return;
+    }
+
+    public cn.hi321.browser.weave.client.WeaveResponse execDeleteMethod(java.lang.String, java.lang.String, java.net.URI) throws java.io.IOException, cn.hi321.browser.weave.client.WeaveException
+    {
+        org.apache.http.client.methods.HttpDelete r4;
+        cn.hi321.browser.weave.client.WeaveTransport r0;
+        java.lang.String $r1, $r2;
+        java.net.URI $r3;
+        cn.hi321.browser.weave.client.WeaveResponse $r5;
+
+        r0 := @this: cn.hi321.browser.weave.client.WeaveTransport;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: java.net.URI;
+
+        r4 = new org.apache.http.client.methods.HttpDelete;
+
+        specialinvoke r4.<org.apache.http.client.methods.HttpDelete: void <init>(java.net.URI)>($r3);
+
+        $r5 = specialinvoke r0.<cn.hi321.browser.weave.client.WeaveTransport: cn.hi321.browser.weave.client.WeaveResponse execGenericMethod(java.lang.String,java.lang.String,java.net.URI,org.apache.http.client.methods.HttpRequestBase)>($r1, $r2, $r3, r4);
+
+        return $r5;
+    }
+
+    public cn.hi321.browser.weave.client.WeaveResponse execGetMethod(java.lang.String, java.lang.String, java.net.URI) throws java.io.IOException, cn.hi321.browser.weave.client.WeaveException
+    {
+        org.apache.http.client.methods.HttpGet r4;
+        cn.hi321.browser.weave.client.WeaveTransport r0;
+        java.lang.String $r1, $r2;
+        java.net.URI $r3;
+        cn.hi321.browser.weave.client.WeaveResponse $r5;
+
+        r0 := @this: cn.hi321.browser.weave.client.WeaveTransport;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: java.net.URI;
+
+        r4 = new org.apache.http.client.methods.HttpGet;
+
+        specialinvoke r4.<org.apache.http.client.methods.HttpGet: void <init>(java.net.URI)>($r3);
+
+        $r5 = specialinvoke r0.<cn.hi321.browser.weave.client.WeaveTransport: cn.hi321.browser.weave.client.WeaveResponse execGenericMethod(java.lang.String,java.lang.String,java.net.URI,org.apache.http.client.methods.HttpRequestBase)>($r1, $r2, $r3, r4);
+
+        return $r5;
+    }
+
+    public cn.hi321.browser.weave.client.WeaveResponse execPostMethod(java.lang.String, java.lang.String, java.net.URI, org.apache.http.HttpEntity) throws java.io.IOException, cn.hi321.browser.weave.client.WeaveException
+    {
+        org.apache.http.client.methods.HttpPost r5;
+        org.apache.http.HttpEntity $r4;
+        cn.hi321.browser.weave.client.WeaveTransport r0;
+        java.lang.String $r1, $r2;
+        java.net.URI $r3;
+        cn.hi321.browser.weave.client.WeaveResponse $r6;
+
+        r0 := @this: cn.hi321.browser.weave.client.WeaveTransport;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: java.net.URI;
+
+        $r4 := @parameter3: org.apache.http.HttpEntity;
+
+        r5 = new org.apache.http.client.methods.HttpPost;
+
+        specialinvoke r5.<org.apache.http.client.methods.HttpPost: void <init>(java.net.URI)>($r3);
+
+        virtualinvoke r5.<org.apache.http.client.methods.HttpPost: void setEntity(org.apache.http.HttpEntity)>($r4);
+
+        $r6 = specialinvoke r0.<cn.hi321.browser.weave.client.WeaveTransport: cn.hi321.browser.weave.client.WeaveResponse execGenericMethod(java.lang.String,java.lang.String,java.net.URI,org.apache.http.client.methods.HttpRequestBase)>($r1, $r2, $r3, r5);
+
+        return $r6;
+    }
+
+    public cn.hi321.browser.weave.client.WeaveResponse execPutMethod(java.lang.String, java.lang.String, java.net.URI, org.apache.http.HttpEntity) throws java.io.IOException, cn.hi321.browser.weave.client.WeaveException
+    {
+        org.apache.http.client.methods.HttpPut r5;
+        org.apache.http.HttpEntity $r4;
+        cn.hi321.browser.weave.client.WeaveTransport r0;
+        java.lang.String $r1, $r2;
+        java.net.URI $r3;
+        cn.hi321.browser.weave.client.WeaveResponse $r6;
+
+        r0 := @this: cn.hi321.browser.weave.client.WeaveTransport;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: java.net.URI;
+
+        $r4 := @parameter3: org.apache.http.HttpEntity;
+
+        r5 = new org.apache.http.client.methods.HttpPut;
+
+        specialinvoke r5.<org.apache.http.client.methods.HttpPut: void <init>(java.net.URI)>($r3);
+
+        virtualinvoke r5.<org.apache.http.client.methods.HttpPut: void setEntity(org.apache.http.HttpEntity)>($r4);
+
+        $r6 = specialinvoke r0.<cn.hi321.browser.weave.client.WeaveTransport: cn.hi321.browser.weave.client.WeaveResponse execGenericMethod(java.lang.String,java.lang.String,java.net.URI,org.apache.http.client.methods.HttpRequestBase)>($r1, $r2, $r3, r5);
+
+        return $r6;
+    }
+
+    public void shutdown()
+    {
+        cn.hi321.browser.weave.client.WeaveTransport r0;
+
+        r0 := @this: cn.hi321.browser.weave.client.WeaveTransport;
+
+        return;
+    }
+}

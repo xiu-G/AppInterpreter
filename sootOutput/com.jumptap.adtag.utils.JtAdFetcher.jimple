@@ -1,0 +1,378 @@
+public class com.jumptap.adtag.utils.JtAdFetcher extends java.lang.Object implements java.lang.Runnable
+{
+    private static final java.lang.String ADVIEW_HTML_FILE_NAME;
+    private static final java.lang.String ADVIEW_JS_FILE_NAME;
+    private static final java.lang.String AD_CONTENT_HERE_STR;
+    private static final int BUFFER_SIZE;
+    private static final java.lang.String JS_CONTENT_HERE_STR;
+    private static final java.lang.String XJT_RESPONSE_ID;
+    private java.lang.String adRequestId;
+    private com.jumptap.adtag.listeners.JtAdViewInnerListener contentListener;
+    private android.content.Context context;
+    private java.lang.String strHtml;
+    private java.lang.String url;
+    private java.lang.String wrapperContent;
+    private android.webkit.WebView wv;
+
+    public void <init>(android.content.Context, com.jumptap.adtag.listeners.JtAdViewInnerListener) throws com.jumptap.adtag.utils.JtException
+    {
+        com.jumptap.adtag.utils.JtAdFetcher r0;
+        android.content.Context $r1;
+        com.jumptap.adtag.listeners.JtAdViewInnerListener $r2;
+
+        r0 := @this: com.jumptap.adtag.utils.JtAdFetcher;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: com.jumptap.adtag.listeners.JtAdViewInnerListener;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<com.jumptap.adtag.utils.JtAdFetcher: java.lang.String strHtml> = null;
+
+        r0.<com.jumptap.adtag.utils.JtAdFetcher: com.jumptap.adtag.listeners.JtAdViewInnerListener contentListener> = null;
+
+        r0.<com.jumptap.adtag.utils.JtAdFetcher: java.lang.String wrapperContent> = null;
+
+        r0.<com.jumptap.adtag.utils.JtAdFetcher: com.jumptap.adtag.listeners.JtAdViewInnerListener contentListener> = $r2;
+
+        r0.<com.jumptap.adtag.utils.JtAdFetcher: android.content.Context context> = $r1;
+
+        specialinvoke r0.<com.jumptap.adtag.utils.JtAdFetcher: void makeContentWrapper()>();
+
+        return;
+    }
+
+    private void getAdContent()
+    {
+        org.apache.http.impl.client.DefaultHttpClient r2, $r13;
+        java.lang.Throwable r3;
+        byte[] r1;
+        org.apache.http.Header $r9;
+        org.apache.http.StatusLine $r10;
+        java.lang.StringBuffer r6, $r17;
+        int $i0;
+        java.lang.String $r7, $r16;
+        org.apache.http.HttpEntity $r11;
+        java.io.IOException $r18;
+        org.apache.http.client.methods.HttpGet r4, $r14;
+        com.jumptap.adtag.utils.JtAdFetcher r0;
+        org.apache.http.HttpResponse $r8;
+        java.lang.StringBuilder r5, $r15;
+        java.io.InputStream $r12;
+
+        r0 := @this: com.jumptap.adtag.utils.JtAdFetcher;
+
+        $r13 = new org.apache.http.impl.client.DefaultHttpClient;
+
+        r2 = $r13;
+
+        specialinvoke $r13.<org.apache.http.impl.client.DefaultHttpClient: void <init>()>();
+
+        $r14 = new org.apache.http.client.methods.HttpGet;
+
+        r4 = $r14;
+
+        $r7 = r0.<com.jumptap.adtag.utils.JtAdFetcher: java.lang.String url>;
+
+        specialinvoke $r14.<org.apache.http.client.methods.HttpGet: void <init>(java.lang.String)>($r7);
+
+        $r15 = new java.lang.StringBuilder;
+
+        specialinvoke $r15.<java.lang.StringBuilder: void <init>()>();
+
+        r5 = virtualinvoke $r15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Created html client for: ");
+
+        $r7 = r0.<com.jumptap.adtag.utils.JtAdFetcher: java.lang.String url>;
+
+        r5 = virtualinvoke r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $r7 = virtualinvoke r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("JtAd", $r7);
+
+     label01:
+        $r8 = interfaceinvoke r2.<org.apache.http.client.HttpClient: org.apache.http.HttpResponse execute(org.apache.http.client.methods.HttpUriRequest)>(r4);
+
+        $r9 = interfaceinvoke $r8.<org.apache.http.HttpResponse: org.apache.http.Header getFirstHeader(java.lang.String)>("Xjt-Responseid");
+
+     label02:
+        if $r9 == null goto label05;
+
+     label03:
+        $r7 = interfaceinvoke $r9.<org.apache.http.Header: java.lang.String getValue()>();
+
+     label04:
+        r0.<com.jumptap.adtag.utils.JtAdFetcher: java.lang.String adRequestId> = $r7;
+
+     label05:
+        $r10 = interfaceinvoke $r8.<org.apache.http.HttpResponse: org.apache.http.StatusLine getStatusLine()>();
+
+        $i0 = interfaceinvoke $r10.<org.apache.http.StatusLine: int getStatusCode()>();
+
+     label06:
+        if $i0 != 200 goto label17;
+
+     label07:
+        $r11 = interfaceinvoke $r8.<org.apache.http.HttpResponse: org.apache.http.HttpEntity getEntity()>();
+
+        interfaceinvoke $r11.<org.apache.http.HttpEntity: long getContentLength()>();
+
+        $r12 = interfaceinvoke $r11.<org.apache.http.HttpEntity: java.io.InputStream getContent()>();
+
+     label08:
+        r1 = newarray (byte)[1024];
+
+        $r15 = new java.lang.StringBuilder;
+
+        r5 = $r15;
+
+     label09:
+        specialinvoke $r15.<java.lang.StringBuilder: void <init>()>();
+
+     label10:
+        $i0 = virtualinvoke $r12.<java.io.InputStream: int read(byte[])>(r1);
+
+     label11:
+        if $i0 <= 0 goto label15;
+
+        $r17 = new java.lang.StringBuffer;
+
+        r6 = $r17;
+
+        $r16 = new java.lang.String;
+
+        $r7 = $r16;
+
+     label12:
+        specialinvoke $r16.<java.lang.String: void <init>(byte[],int,int)>(r1, 0, $i0);
+
+        specialinvoke $r17.<java.lang.StringBuffer: void <init>(java.lang.String)>($r7);
+
+        virtualinvoke r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.StringBuffer)>(r6);
+
+     label13:
+        goto label10;
+
+     label14:
+        r3 := @caughtexception;
+
+        $r15 = new java.lang.StringBuilder;
+
+        specialinvoke $r15.<java.lang.StringBuilder: void <init>()>();
+
+        r5 = virtualinvoke $r15.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("JtAdFetcher.getAdContent:");
+
+        $r18 = (java.io.IOException) r3;
+
+        $r7 = virtualinvoke $r18.<java.io.IOException: java.lang.String toString()>();
+
+        r5 = virtualinvoke r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $r7 = virtualinvoke r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("JtAd", $r7);
+
+        r0.<com.jumptap.adtag.utils.JtAdFetcher: java.lang.String strHtml> = null;
+
+        return;
+
+     label15:
+        $r7 = virtualinvoke r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label16:
+        r0.<com.jumptap.adtag.utils.JtAdFetcher: java.lang.String strHtml> = $r7;
+
+        return;
+
+     label17:
+        $r15 = new java.lang.StringBuilder;
+
+        r5 = $r15;
+
+     label18:
+        specialinvoke $r15.<java.lang.StringBuilder: void <init>()>();
+
+        r5 = virtualinvoke r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("JtAdFetcher.getAdContent: Recieve error Code=[");
+
+        r5 = virtualinvoke r5.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        r5 = virtualinvoke r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("] when sending url=[");
+
+     label19:
+        $r7 = r0.<com.jumptap.adtag.utils.JtAdFetcher: java.lang.String url>;
+
+     label20:
+        r5 = virtualinvoke r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        r5 = virtualinvoke r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("]");
+
+        $r7 = virtualinvoke r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("JtAd", $r7);
+
+     label21:
+        r0.<com.jumptap.adtag.utils.JtAdFetcher: java.lang.String strHtml> = null;
+
+        return;
+
+        catch java.io.IOException from label01 to label02 with label14;
+        catch java.io.IOException from label03 to label04 with label14;
+        catch java.io.IOException from label05 to label06 with label14;
+        catch java.io.IOException from label07 to label08 with label14;
+        catch java.io.IOException from label09 to label11 with label14;
+        catch java.io.IOException from label12 to label13 with label14;
+        catch java.io.IOException from label15 to label16 with label14;
+        catch java.io.IOException from label18 to label19 with label14;
+        catch java.io.IOException from label20 to label21 with label14;
+    }
+
+    private void makeContentWrapper() throws com.jumptap.adtag.utils.JtException
+    {
+        android.content.Context $r2;
+        com.jumptap.adtag.utils.JtAdFetcher r0;
+        java.lang.StringBuilder $r3, $r4;
+        java.lang.String $r1;
+
+        r0 := @this: com.jumptap.adtag.utils.JtAdFetcher;
+
+        $r1 = r0.<com.jumptap.adtag.utils.JtAdFetcher: java.lang.String wrapperContent>;
+
+        if $r1 != null goto label1;
+
+        $r2 = r0.<com.jumptap.adtag.utils.JtAdFetcher: android.content.Context context>;
+
+        $r3 = staticinvoke <com.jumptap.adtag.utils.FileReaderUtil: java.lang.StringBuilder getFileContent(android.content.Context,java.lang.String)>($r2, "adview.html");
+
+        $r2 = r0.<com.jumptap.adtag.utils.JtAdFetcher: android.content.Context context>;
+
+        $r4 = staticinvoke <com.jumptap.adtag.utils.FileReaderUtil: java.lang.StringBuilder getFileContent(android.content.Context,java.lang.String)>($r2, "adview.js");
+
+        $r1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r1 = virtualinvoke $r1.<java.lang.String: java.lang.String replace(java.lang.CharSequence,java.lang.CharSequence)>("%JS_CONTENT_HERE%", $r4);
+
+        r0.<com.jumptap.adtag.utils.JtAdFetcher: java.lang.String wrapperContent> = $r1;
+
+     label1:
+        return;
+    }
+
+    private java.lang.String modifyHtml(java.lang.String)
+    {
+        com.jumptap.adtag.utils.JtAdFetcher r0;
+        int $i0;
+        java.lang.String $r1, $r2;
+
+        r0 := @this: com.jumptap.adtag.utils.JtAdFetcher;
+
+        $r1 := @parameter0: java.lang.String;
+
+        if $r1 == null goto label2;
+
+        $i0 = virtualinvoke $r1.<java.lang.String: int length()>();
+
+        if $i0 <= 0 goto label1;
+
+        $r2 = r0.<com.jumptap.adtag.utils.JtAdFetcher: java.lang.String wrapperContent>;
+
+        $r1 = virtualinvoke $r2.<java.lang.String: java.lang.String replace(java.lang.CharSequence,java.lang.CharSequence)>("%AD_CONTENT_HERE%", $r1);
+
+        return $r1;
+
+     label1:
+        return "";
+
+     label2:
+        return null;
+    }
+
+    public void kickOffUrlFetch(android.webkit.WebView, java.lang.String)
+    {
+        java.lang.Thread r3;
+        com.jumptap.adtag.utils.JtAdFetcher r0;
+        java.lang.String $r2;
+        android.webkit.WebView $r1;
+
+        r0 := @this: com.jumptap.adtag.utils.JtAdFetcher;
+
+        $r1 := @parameter0: android.webkit.WebView;
+
+        $r2 := @parameter1: java.lang.String;
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("JtAd", "Kicked off fetcher");
+
+        r0.<com.jumptap.adtag.utils.JtAdFetcher: android.webkit.WebView wv> = $r1;
+
+        r0.<com.jumptap.adtag.utils.JtAdFetcher: java.lang.String url> = $r2;
+
+        r3 = new java.lang.Thread;
+
+        specialinvoke r3.<java.lang.Thread: void <init>(java.lang.Runnable)>(r0);
+
+        virtualinvoke r3.<java.lang.Thread: void start()>();
+
+        return;
+    }
+
+    public void run()
+    {
+        com.jumptap.adtag.listeners.JtAdViewInnerListener $r3;
+        com.jumptap.adtag.utils.JtAdFetcher r0;
+        java.lang.String $r1;
+        android.webkit.WebView $r2;
+
+        r0 := @this: com.jumptap.adtag.utils.JtAdFetcher;
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("JtAd", "Started Url Thread");
+
+        specialinvoke r0.<com.jumptap.adtag.utils.JtAdFetcher: void getAdContent()>();
+
+        $r1 = r0.<com.jumptap.adtag.utils.JtAdFetcher: java.lang.String strHtml>;
+
+        $r1 = specialinvoke r0.<com.jumptap.adtag.utils.JtAdFetcher: java.lang.String modifyHtml(java.lang.String)>($r1);
+
+        if $r1 == null goto label1;
+
+        $r2 = r0.<com.jumptap.adtag.utils.JtAdFetcher: android.webkit.WebView wv>;
+
+        virtualinvoke $r2.<android.webkit.WebView: void loadData(java.lang.String,java.lang.String,java.lang.String)>($r1, "text/html", "iso-8859-1");
+
+     label1:
+        $r3 = r0.<com.jumptap.adtag.utils.JtAdFetcher: com.jumptap.adtag.listeners.JtAdViewInnerListener contentListener>;
+
+        if $r3 == null goto label2;
+
+        $r3 = r0.<com.jumptap.adtag.utils.JtAdFetcher: com.jumptap.adtag.listeners.JtAdViewInnerListener contentListener>;
+
+        interfaceinvoke $r3.<com.jumptap.adtag.listeners.JtAdViewInnerListener: void setContent(java.lang.String)>($r1);
+
+        $r3 = r0.<com.jumptap.adtag.utils.JtAdFetcher: com.jumptap.adtag.listeners.JtAdViewInnerListener contentListener>;
+
+        $r1 = r0.<com.jumptap.adtag.utils.JtAdFetcher: java.lang.String adRequestId>;
+
+        interfaceinvoke $r3.<com.jumptap.adtag.listeners.JtAdViewInnerListener: void setAdRequestId(java.lang.String)>($r1);
+
+     label2:
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("JtAd", "called load data");
+
+        return;
+    }
+
+    public static void <clinit>()
+    {
+        <com.jumptap.adtag.utils.JtAdFetcher: java.lang.String XJT_RESPONSE_ID> = "Xjt-Responseid";
+
+        <com.jumptap.adtag.utils.JtAdFetcher: java.lang.String JS_CONTENT_HERE_STR> = "%JS_CONTENT_HERE%";
+
+        <com.jumptap.adtag.utils.JtAdFetcher: int BUFFER_SIZE> = 1024;
+
+        <com.jumptap.adtag.utils.JtAdFetcher: java.lang.String AD_CONTENT_HERE_STR> = "%AD_CONTENT_HERE%";
+
+        <com.jumptap.adtag.utils.JtAdFetcher: java.lang.String ADVIEW_JS_FILE_NAME> = "adview.js";
+
+        <com.jumptap.adtag.utils.JtAdFetcher: java.lang.String ADVIEW_HTML_FILE_NAME> = "adview.html";
+
+        return;
+    }
+}

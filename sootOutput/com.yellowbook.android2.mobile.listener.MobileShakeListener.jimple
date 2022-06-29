@@ -1,0 +1,307 @@
+public class com.yellowbook.android2.mobile.listener.MobileShakeListener extends java.lang.Object implements android.hardware.SensorEventListener
+{
+    private static final int FORCE_THRESHOLD;
+    private static final int SHAKE_COUNT;
+    private static final int SHAKE_DURATION;
+    private static final int SHAKE_TIMEOUT;
+    private static final int TIME_THRESHOLD;
+    private android.content.Context mContext;
+    private long mLastForce;
+    private long mLastShake;
+    private long mLastTime;
+    private float mLastX;
+    private float mLastY;
+    private float mLastZ;
+    private android.hardware.SensorManager mSensorMgr;
+    private int mShakeCount;
+    private com.yellowbook.android2.mobile.listener.MobileShakeListener$OnShakeListener mShakeListener;
+
+    public void <init>(android.content.Context)
+    {
+        android.content.Context $r1;
+        com.yellowbook.android2.mobile.listener.MobileShakeListener r0;
+
+        r0 := @this: com.yellowbook.android2.mobile.listener.MobileShakeListener;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: float mLastX> = -1.0F;
+
+        r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: float mLastY> = -1.0F;
+
+        r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: float mLastZ> = -1.0F;
+
+        r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: int mShakeCount> = 0;
+
+        r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: android.content.Context mContext> = $r1;
+
+        virtualinvoke r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: void resume()>();
+
+        return;
+    }
+
+    public void onAccuracyChanged(android.hardware.Sensor, int)
+    {
+        int $i0;
+        android.hardware.Sensor $r1;
+        com.yellowbook.android2.mobile.listener.MobileShakeListener r0;
+
+        r0 := @this: com.yellowbook.android2.mobile.listener.MobileShakeListener;
+
+        $r1 := @parameter0: android.hardware.Sensor;
+
+        $i0 := @parameter1: int;
+
+        return;
+    }
+
+    public void onSensorChanged(android.hardware.SensorEvent)
+    {
+        long l0, $l2;
+        float[] $r3;
+        com.yellowbook.android2.mobile.listener.MobileShakeListener$OnShakeListener $r4;
+        android.hardware.SensorEvent $r1;
+        byte $b3;
+        com.yellowbook.android2.mobile.listener.MobileShakeListener r0;
+        int $i1;
+        float f0, $f1;
+        android.hardware.Sensor $r2;
+
+        r0 := @this: com.yellowbook.android2.mobile.listener.MobileShakeListener;
+
+        $r1 := @parameter0: android.hardware.SensorEvent;
+
+        $r2 = $r1.<android.hardware.SensorEvent: android.hardware.Sensor sensor>;
+
+        $i1 = virtualinvoke $r2.<android.hardware.Sensor: int getType()>();
+
+        if $i1 == 1 goto label1;
+
+        return;
+
+     label1:
+        $l2 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        l0 = r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: long mLastForce>;
+
+        l0 = $l2 - l0;
+
+        $b3 = l0 cmp 400L;
+
+        $i1 = (int) $b3;
+
+        if $i1 <= 0 goto label2;
+
+        r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: int mShakeCount> = 0;
+
+     label2:
+        l0 = r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: long mLastTime>;
+
+        l0 = $l2 - l0;
+
+        $b3 = l0 cmp 100L;
+
+        $i1 = (int) $b3;
+
+        if $i1 <= 0 goto label5;
+
+        l0 = r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: long mLastTime>;
+
+        l0 = $l2 - l0;
+
+        $r3 = $r1.<android.hardware.SensorEvent: float[] values>;
+
+        f0 = $r3[0];
+
+        $r3 = $r1.<android.hardware.SensorEvent: float[] values>;
+
+        $f1 = $r3[1];
+
+        f0 = f0 + $f1;
+
+        $r3 = $r1.<android.hardware.SensorEvent: float[] values>;
+
+        $f1 = $r3[2];
+
+        f0 = f0 + $f1;
+
+        $f1 = r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: float mLastX>;
+
+        f0 = f0 - $f1;
+
+        $f1 = r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: float mLastY>;
+
+        f0 = f0 - $f1;
+
+        $f1 = r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: float mLastZ>;
+
+        f0 = f0 - $f1;
+
+        f0 = staticinvoke <java.lang.Math: float abs(float)>(f0);
+
+        $f1 = (float) l0;
+
+        f0 = f0 / $f1;
+
+        f0 = f0 * 10000.0F;
+
+        $b3 = f0 cmpl 2000.0F;
+
+        $i1 = (int) $b3;
+
+        if $i1 <= 0 goto label4;
+
+        $i1 = r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: int mShakeCount>;
+
+        $i1 = $i1 + 1;
+
+        r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: int mShakeCount> = $i1;
+
+        if $i1 < 6 goto label3;
+
+        l0 = r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: long mLastShake>;
+
+        l0 = $l2 - l0;
+
+        $b3 = l0 cmp 800L;
+
+        $i1 = (int) $b3;
+
+        if $i1 <= 0 goto label3;
+
+        r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: long mLastShake> = $l2;
+
+        r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: int mShakeCount> = 0;
+
+        $r4 = r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: com.yellowbook.android2.mobile.listener.MobileShakeListener$OnShakeListener mShakeListener>;
+
+        if $r4 == null goto label3;
+
+        $r4 = r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: com.yellowbook.android2.mobile.listener.MobileShakeListener$OnShakeListener mShakeListener>;
+
+        interfaceinvoke $r4.<com.yellowbook.android2.mobile.listener.MobileShakeListener$OnShakeListener: void onShake()>();
+
+     label3:
+        r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: long mLastForce> = $l2;
+
+     label4:
+        r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: long mLastTime> = $l2;
+
+        $r3 = $r1.<android.hardware.SensorEvent: float[] values>;
+
+        f0 = $r3[0];
+
+        r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: float mLastX> = f0;
+
+        $r3 = $r1.<android.hardware.SensorEvent: float[] values>;
+
+        f0 = $r3[1];
+
+        r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: float mLastY> = f0;
+
+        $r3 = $r1.<android.hardware.SensorEvent: float[] values>;
+
+        f0 = $r3[2];
+
+        r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: float mLastZ> = f0;
+
+     label5:
+        return;
+    }
+
+    public void pause()
+    {
+        android.hardware.SensorManager $r1;
+        com.yellowbook.android2.mobile.listener.MobileShakeListener r0;
+
+        r0 := @this: com.yellowbook.android2.mobile.listener.MobileShakeListener;
+
+        $r1 = r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: android.hardware.SensorManager mSensorMgr>;
+
+        if $r1 == null goto label1;
+
+        $r1 = r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: android.hardware.SensorManager mSensorMgr>;
+
+        virtualinvoke $r1.<android.hardware.SensorManager: void unregisterListener(android.hardware.SensorEventListener)>(r0);
+
+        r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: android.hardware.SensorManager mSensorMgr> = null;
+
+     label1:
+        return;
+    }
+
+    public void resume()
+    {
+        android.content.Context $r1;
+        android.hardware.SensorManager $r3, $r4;
+        com.yellowbook.android2.mobile.listener.MobileShakeListener r0;
+        java.lang.Object $r2;
+        android.hardware.Sensor $r5;
+        boolean $z0;
+
+        r0 := @this: com.yellowbook.android2.mobile.listener.MobileShakeListener;
+
+        $r1 = r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: android.content.Context mContext>;
+
+        $r2 = virtualinvoke $r1.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("sensor");
+
+        $r3 = (android.hardware.SensorManager) $r2;
+
+        r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: android.hardware.SensorManager mSensorMgr> = $r3;
+
+        $r3 = r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: android.hardware.SensorManager mSensorMgr>;
+
+        if $r3 != null goto label1;
+
+        return;
+
+     label1:
+        $r3 = r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: android.hardware.SensorManager mSensorMgr>;
+
+        $r4 = r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: android.hardware.SensorManager mSensorMgr>;
+
+        $r5 = virtualinvoke $r4.<android.hardware.SensorManager: android.hardware.Sensor getDefaultSensor(int)>(1);
+
+        $z0 = virtualinvoke $r3.<android.hardware.SensorManager: boolean registerListener(android.hardware.SensorEventListener,android.hardware.Sensor,int)>(r0, $r5, 2);
+
+        if $z0 != 0 goto label2;
+
+        $r3 = r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: android.hardware.SensorManager mSensorMgr>;
+
+        virtualinvoke $r3.<android.hardware.SensorManager: void unregisterListener(android.hardware.SensorEventListener)>(r0);
+
+     label2:
+        return;
+    }
+
+    public void setOnShakeListener(com.yellowbook.android2.mobile.listener.MobileShakeListener$OnShakeListener)
+    {
+        com.yellowbook.android2.mobile.listener.MobileShakeListener r0;
+        com.yellowbook.android2.mobile.listener.MobileShakeListener$OnShakeListener $r1;
+
+        r0 := @this: com.yellowbook.android2.mobile.listener.MobileShakeListener;
+
+        $r1 := @parameter0: com.yellowbook.android2.mobile.listener.MobileShakeListener$OnShakeListener;
+
+        r0.<com.yellowbook.android2.mobile.listener.MobileShakeListener: com.yellowbook.android2.mobile.listener.MobileShakeListener$OnShakeListener mShakeListener> = $r1;
+
+        return;
+    }
+
+    public static void <clinit>()
+    {
+        <com.yellowbook.android2.mobile.listener.MobileShakeListener: int TIME_THRESHOLD> = 100;
+
+        <com.yellowbook.android2.mobile.listener.MobileShakeListener: int SHAKE_TIMEOUT> = 400;
+
+        <com.yellowbook.android2.mobile.listener.MobileShakeListener: int SHAKE_DURATION> = 800;
+
+        <com.yellowbook.android2.mobile.listener.MobileShakeListener: int SHAKE_COUNT> = 6;
+
+        <com.yellowbook.android2.mobile.listener.MobileShakeListener: int FORCE_THRESHOLD> = 2000;
+
+        return;
+    }
+}

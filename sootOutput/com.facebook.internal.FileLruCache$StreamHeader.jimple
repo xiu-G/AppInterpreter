@@ -1,0 +1,228 @@
+final class com.facebook.internal.FileLruCache$StreamHeader extends java.lang.Object
+{
+    private static final int HEADER_VERSION;
+
+    private void <init>()
+    {
+        com.facebook.internal.FileLruCache$StreamHeader r0;
+
+        r0 := @this: com.facebook.internal.FileLruCache$StreamHeader;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    static org.json.JSONObject readHeader(java.io.InputStream)
+    {
+        byte[] $r1;
+        java.lang.Integer $r9;
+        com.facebook.LoggingBehavior $r5;
+        org.json.JSONException $r11;
+        org.json.JSONObject $r10;
+        int $i0, $i1, $i2, $i3;
+        java.lang.String $r2, $r8;
+        boolean $z0;
+        org.json.JSONTokener $r3, $r12;
+        java.io.IOException $r14;
+        java.lang.Object $r4;
+        java.lang.StringBuilder $r6, $r13;
+        java.lang.Class $r7;
+        java.io.InputStream $r0;
+
+        $r0 := @parameter0: java.io.InputStream;
+
+        $i0 = 0;
+
+        $i1 = virtualinvoke $r0.<java.io.InputStream: int read()>();
+
+        if $i1 == 0 goto label01;
+
+        return null;
+
+     label01:
+        $i1 = 0;
+
+        $i2 = 0;
+
+     label02:
+        if $i1 < 3 goto label08;
+
+        $r1 = newarray (byte)[$i2];
+
+     label03:
+        $i1 = lengthof $r1;
+
+        if $i0 < $i1 goto label10;
+
+        $r8 = new java.lang.String;
+
+        specialinvoke $r8.<java.lang.String: void <init>(byte[])>($r1);
+
+        $r12 = new org.json.JSONTokener;
+
+        $r3 = $r12;
+
+        specialinvoke $r12.<org.json.JSONTokener: void <init>(java.lang.String)>($r8);
+
+     label04:
+        $r4 = virtualinvoke $r3.<org.json.JSONTokener: java.lang.Object nextValue()>();
+
+     label05:
+        $z0 = $r4 instanceof org.json.JSONObject;
+
+        if $z0 != 0 goto label12;
+
+        $r5 = <com.facebook.LoggingBehavior: com.facebook.LoggingBehavior CACHE>;
+
+        $r2 = <com.facebook.internal.FileLruCache: java.lang.String TAG>;
+
+        $r13 = new java.lang.StringBuilder;
+
+        $r6 = $r13;
+
+     label06:
+        specialinvoke $r13.<java.lang.StringBuilder: void <init>(java.lang.String)>("readHeader: expected JSONObject, got ");
+
+        $r7 = virtualinvoke $r4.<java.lang.Object: java.lang.Class getClass()>();
+
+        $r8 = virtualinvoke $r7.<java.lang.Class: java.lang.String getCanonicalName()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r8);
+
+        $r8 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.facebook.internal.Logger: void log(com.facebook.LoggingBehavior,java.lang.String,java.lang.String)>($r5, $r2, $r8);
+
+     label07:
+        return null;
+
+     label08:
+        $i3 = virtualinvoke $r0.<java.io.InputStream: int read()>();
+
+        if $i3 != -1 goto label09;
+
+        $r5 = <com.facebook.LoggingBehavior: com.facebook.LoggingBehavior CACHE>;
+
+        $r2 = <com.facebook.internal.FileLruCache: java.lang.String TAG>;
+
+        staticinvoke <com.facebook.internal.Logger: void log(com.facebook.LoggingBehavior,java.lang.String,java.lang.String)>($r5, $r2, "readHeader: stream.read returned -1 while reading header size");
+
+        return null;
+
+     label09:
+        $i2 = $i2 << 8;
+
+        $i3 = $i3 & 255;
+
+        $i2 = $i2 + $i3;
+
+        $i1 = $i1 + 1;
+
+        goto label02;
+
+     label10:
+        $i1 = lengthof $r1;
+
+        $i1 = $i1 - $i0;
+
+        $i1 = virtualinvoke $r0.<java.io.InputStream: int read(byte[],int,int)>($r1, $i0, $i1);
+
+        if $i1 > 0 goto label11;
+
+        $r5 = <com.facebook.LoggingBehavior: com.facebook.LoggingBehavior CACHE>;
+
+        $r2 = <com.facebook.internal.FileLruCache: java.lang.String TAG>;
+
+        $r13 = new java.lang.StringBuilder;
+
+        specialinvoke $r13.<java.lang.StringBuilder: void <init>(java.lang.String)>("readHeader: stream.read stopped at ");
+
+        $r9 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        $r6 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r9);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" when expected ");
+
+        $i0 = lengthof $r1;
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r8 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.facebook.internal.Logger: void log(com.facebook.LoggingBehavior,java.lang.String,java.lang.String)>($r5, $r2, $r8);
+
+        return null;
+
+     label11:
+        $i0 = $i0 + $i1;
+
+        goto label03;
+
+     label12:
+        $r10 = (org.json.JSONObject) $r4;
+
+        return $r10;
+
+     label13:
+        $r11 := @caughtexception;
+
+        $r14 = new java.io.IOException;
+
+        $r2 = virtualinvoke $r11.<org.json.JSONException: java.lang.String getMessage()>();
+
+        specialinvoke $r14.<java.io.IOException: void <init>(java.lang.String)>($r2);
+
+        throw $r14;
+
+        catch org.json.JSONException from label04 to label05 with label13;
+        catch org.json.JSONException from label06 to label07 with label13;
+    }
+
+    static void writeHeader(java.io.OutputStream, org.json.JSONObject)
+    {
+        java.io.OutputStream $r0;
+        byte[] $r3;
+        org.json.JSONObject $r1;
+        int $i0;
+        java.lang.String $r2;
+
+        $r0 := @parameter0: java.io.OutputStream;
+
+        $r1 := @parameter1: org.json.JSONObject;
+
+        $r2 = virtualinvoke $r1.<org.json.JSONObject: java.lang.String toString()>();
+
+        $r3 = virtualinvoke $r2.<java.lang.String: byte[] getBytes()>();
+
+        virtualinvoke $r0.<java.io.OutputStream: void write(int)>(0);
+
+        $i0 = lengthof $r3;
+
+        $i0 = $i0 >> 16;
+
+        $i0 = $i0 & 255;
+
+        virtualinvoke $r0.<java.io.OutputStream: void write(int)>($i0);
+
+        $i0 = lengthof $r3;
+
+        $i0 = $i0 >> 8;
+
+        $i0 = $i0 & 255;
+
+        virtualinvoke $r0.<java.io.OutputStream: void write(int)>($i0);
+
+        $i0 = lengthof $r3;
+
+        $i0 = $i0 >> 0;
+
+        $i0 = $i0 & 255;
+
+        virtualinvoke $r0.<java.io.OutputStream: void write(int)>($i0);
+
+        virtualinvoke $r0.<java.io.OutputStream: void write(byte[])>($r3);
+
+        return;
+    }
+}

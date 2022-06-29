@@ -1,0 +1,387 @@
+class com.baidu.mobstat.w extends java.lang.Object implements java.lang.Runnable
+{
+    android.os.Message a;
+    final com.baidu.mobstat.Download b;
+
+    void <init>(com.baidu.mobstat.Download)
+    {
+        android.os.Message $r3;
+        android.os.Handler $r2;
+        com.baidu.mobstat.Download $r1;
+        com.baidu.mobstat.w r0;
+
+        r0 := @this: com.baidu.mobstat.w;
+
+        $r1 := @parameter0: com.baidu.mobstat.Download;
+
+        r0.<com.baidu.mobstat.w: com.baidu.mobstat.Download b> = $r1;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        $r1 = r0.<com.baidu.mobstat.w: com.baidu.mobstat.Download b>;
+
+        $r2 = staticinvoke <com.baidu.mobstat.Download: android.os.Handler a(com.baidu.mobstat.Download)>($r1);
+
+        $r3 = virtualinvoke $r2.<android.os.Handler: android.os.Message obtainMessage()>();
+
+        r0.<com.baidu.mobstat.w: android.os.Message a> = $r3;
+
+        return;
+    }
+
+    public long a(java.lang.String, java.io.File)
+    {
+        java.net.HttpURLConnection $r6;
+        java.lang.Throwable $r11, $r12, $r16, $r17;
+        byte[] $r15;
+        java.net.URL $r4, $r18;
+        long $l0, $l2, $l3;
+        com.baidu.mobstat.Download $r7;
+        byte $b4;
+        java.net.URLConnection $r5;
+        android.os.Handler $r9;
+        int $i1, $i5;
+        com.baidu.mobstat.w r0;
+        java.lang.String $r1;
+        java.io.FileOutputStream $r13, $r20;
+        java.io.File $r2, $r8;
+        java.lang.Exception $r10, $r19;
+        java.io.InputStream $r3, $r14;
+
+        r0 := @this: com.baidu.mobstat.w;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.io.File;
+
+        $l0 = 0L;
+
+        $r3 = null;
+
+     label01:
+        $r18 = new java.net.URL;
+
+     label02:
+        $r4 = $r18;
+
+     label03:
+        specialinvoke $r18.<java.net.URL: void <init>(java.lang.String)>($r1);
+
+        $r5 = virtualinvoke $r4.<java.net.URL: java.net.URLConnection openConnection()>();
+
+        $r6 = (java.net.HttpURLConnection) $r5;
+
+     label04:
+        virtualinvoke $r6.<java.net.HttpURLConnection: void setRequestProperty(java.lang.String,java.lang.String)>("User-Agent", "PacificHttpClient");
+
+        virtualinvoke $r6.<java.net.HttpURLConnection: void setConnectTimeout(int)>(10000);
+
+        virtualinvoke $r6.<java.net.HttpURLConnection: void setReadTimeout(int)>(20000);
+
+        $i1 = virtualinvoke $r6.<java.net.HttpURLConnection: int getContentLength()>();
+
+        $r7 = r0.<com.baidu.mobstat.w: com.baidu.mobstat.Download b>;
+
+        $r8 = staticinvoke <com.baidu.mobstat.Download: java.io.File c(com.baidu.mobstat.Download)>($r7);
+
+        $l2 = virtualinvoke $r8.<java.io.File: long length()>();
+
+     label05:
+        $l3 = (long) $i1;
+
+        $b4 = $l2 cmp $l3;
+
+        if $b4 != 0 goto label11;
+
+     label06:
+        $r7 = r0.<com.baidu.mobstat.w: com.baidu.mobstat.Download b>;
+
+        $r8 = staticinvoke <com.baidu.mobstat.Download: java.io.File c(com.baidu.mobstat.Download)>($r7);
+
+        $l2 = virtualinvoke $r8.<java.io.File: long lastModified()>();
+
+        $l3 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+     label07:
+        $l2 = $l2 - $l3;
+
+        $b4 = $l2 cmp 172800000L;
+
+        $i5 = (int) $b4;
+
+        if $i5 >= 0 goto label11;
+
+     label08:
+        $r7 = r0.<com.baidu.mobstat.w: com.baidu.mobstat.Download b>;
+
+        $r9 = staticinvoke <com.baidu.mobstat.Download: android.os.Handler a(com.baidu.mobstat.Download)>($r7);
+
+        $i5 = <com.baidu.mobstat.Download: int a>;
+
+        virtualinvoke $r9.<android.os.Handler: boolean sendEmptyMessage(int)>($i5);
+
+     label09:
+        $l0 = (long) $i1;
+
+        if $r6 == null goto label10;
+
+        virtualinvoke $r6.<java.net.HttpURLConnection: void disconnect()>();
+
+     label10:
+        return $l0;
+
+     label11:
+        $i5 = virtualinvoke $r6.<java.net.HttpURLConnection: int getResponseCode()>();
+
+     label12:
+        if $i5 != 404 goto label21;
+
+     label13:
+        $r7 = r0.<com.baidu.mobstat.w: com.baidu.mobstat.Download b>;
+
+        $r9 = staticinvoke <com.baidu.mobstat.Download: android.os.Handler a(com.baidu.mobstat.Download)>($r7);
+
+        $i1 = <com.baidu.mobstat.Download: int b>;
+
+        virtualinvoke $r9.<android.os.Handler: boolean sendEmptyMessage(int)>($i1);
+
+        $r19 = new java.lang.Exception;
+
+     label14:
+        $r10 = $r19;
+
+     label15:
+        specialinvoke $r19.<java.lang.Exception: void <init>(java.lang.String)>("fail!");
+
+        throw $r10;
+
+     label16:
+        $r11 := @caughtexception;
+
+        $r12 = $r11;
+
+        $r13 = null;
+
+     label17:
+        if $r6 == null goto label18;
+
+        virtualinvoke $r6.<java.net.HttpURLConnection: void disconnect()>();
+
+     label18:
+        if $r3 == null goto label19;
+
+        virtualinvoke $r3.<java.io.InputStream: void close()>();
+
+     label19:
+        if $r13 == null goto label20;
+
+        virtualinvoke $r13.<java.io.FileOutputStream: void close()>();
+
+     label20:
+        throw $r12;
+
+     label21:
+        if $i1 >= 10 goto label25;
+
+     label22:
+        $r7 = r0.<com.baidu.mobstat.w: com.baidu.mobstat.Download b>;
+
+        $r9 = staticinvoke <com.baidu.mobstat.Download: android.os.Handler a(com.baidu.mobstat.Download)>($r7);
+
+        $i1 = <com.baidu.mobstat.Download: int b>;
+
+        virtualinvoke $r9.<android.os.Handler: boolean sendEmptyMessage(int)>($i1);
+
+        $r19 = new java.lang.Exception;
+
+     label23:
+        $r10 = $r19;
+
+     label24:
+        specialinvoke $r19.<java.lang.Exception: void <init>(java.lang.String)>("fail!");
+
+        throw $r10;
+
+     label25:
+        $r14 = virtualinvoke $r6.<java.net.HttpURLConnection: java.io.InputStream getInputStream()>();
+
+     label26:
+        $r20 = new java.io.FileOutputStream;
+
+     label27:
+        $r13 = $r20;
+
+     label28:
+        specialinvoke $r20.<java.io.FileOutputStream: void <init>(java.io.File,boolean)>($r2, 0);
+
+     label29:
+        $r15 = newarray (byte)[4096];
+
+        $l2 = 0L;
+
+     label30:
+        $i5 = virtualinvoke $r14.<java.io.InputStream: int read(byte[])>($r15);
+
+     label31:
+        if $i5 <= 0 goto label34;
+
+     label32:
+        virtualinvoke $r13.<java.io.FileOutputStream: void write(byte[],int,int)>($r15, 0, $i5);
+
+     label33:
+        $l3 = (long) $i5;
+
+        $l2 = $l2 + $l3;
+
+        goto label30;
+
+     label34:
+        $l3 = (long) $i1;
+
+        $b4 = $l2 cmp $l3;
+
+        if $b4 == 0 goto label40;
+
+     label35:
+        $r7 = r0.<com.baidu.mobstat.w: com.baidu.mobstat.Download b>;
+
+        $r9 = staticinvoke <com.baidu.mobstat.Download: android.os.Handler a(com.baidu.mobstat.Download)>($r7);
+
+        $i1 = <com.baidu.mobstat.Download: int b>;
+
+        virtualinvoke $r9.<android.os.Handler: boolean sendEmptyMessage(int)>($i1);
+
+     label36:
+        if $r6 == null goto label37;
+
+        virtualinvoke $r6.<java.net.HttpURLConnection: void disconnect()>();
+
+     label37:
+        if $r14 == null goto label38;
+
+        virtualinvoke $r14.<java.io.InputStream: void close()>();
+
+     label38:
+        if $r13 == null goto label39;
+
+        virtualinvoke $r13.<java.io.FileOutputStream: void close()>();
+
+     label39:
+        return $l0;
+
+     label40:
+        $r7 = r0.<com.baidu.mobstat.w: com.baidu.mobstat.Download b>;
+
+        $r9 = staticinvoke <com.baidu.mobstat.Download: android.os.Handler a(com.baidu.mobstat.Download)>($r7);
+
+        $i1 = <com.baidu.mobstat.Download: int a>;
+
+        virtualinvoke $r9.<android.os.Handler: boolean sendEmptyMessage(int)>($i1);
+
+     label41:
+        $l0 = $l2;
+
+        goto label36;
+
+     label42:
+        $r12 := @caughtexception;
+
+        $r13 = null;
+
+        $r6 = null;
+
+        goto label17;
+
+     label43:
+        $r16 := @caughtexception;
+
+        $r12 = $r16;
+
+        $r13 = null;
+
+        $r3 = $r14;
+
+        goto label17;
+
+     label44:
+        $r17 := @caughtexception;
+
+        $r3 = $r14;
+
+        $r12 = $r17;
+
+        goto label17;
+
+        catch java.lang.Throwable from label01 to label02 with label42;
+        catch java.lang.Throwable from label03 to label04 with label42;
+        catch java.lang.Throwable from label04 to label05 with label16;
+        catch java.lang.Throwable from label06 to label07 with label16;
+        catch java.lang.Throwable from label08 to label09 with label16;
+        catch java.lang.Throwable from label11 to label12 with label16;
+        catch java.lang.Throwable from label13 to label14 with label16;
+        catch java.lang.Throwable from label15 to label16 with label16;
+        catch java.lang.Throwable from label22 to label23 with label16;
+        catch java.lang.Throwable from label24 to label26 with label16;
+        catch java.lang.Throwable from label26 to label27 with label43;
+        catch java.lang.Throwable from label28 to label29 with label43;
+        catch java.lang.Throwable from label30 to label31 with label44;
+        catch java.lang.Throwable from label32 to label33 with label44;
+        catch java.lang.Throwable from label35 to label36 with label44;
+        catch java.lang.Throwable from label40 to label41 with label44;
+    }
+
+    public void run()
+    {
+        com.baidu.mobstat.Download $r1;
+        java.io.File $r4;
+        java.lang.Exception $r5;
+        android.os.Message $r2;
+        android.os.Handler $r6;
+        int $i0;
+        com.baidu.mobstat.w r0;
+        java.lang.String $r3;
+
+        r0 := @this: com.baidu.mobstat.w;
+
+        $r1 = r0.<com.baidu.mobstat.w: com.baidu.mobstat.Download b>;
+
+        staticinvoke <com.baidu.mobstat.Download: boolean b(com.baidu.mobstat.Download,boolean)>($r1, 1);
+
+        $r2 = r0.<com.baidu.mobstat.w: android.os.Message a>;
+
+        $i0 = <com.baidu.mobstat.Download: int a>;
+
+        $r2.<android.os.Message: int what> = $i0;
+
+     label1:
+        $r1 = r0.<com.baidu.mobstat.w: com.baidu.mobstat.Download b>;
+
+        $r3 = staticinvoke <com.baidu.mobstat.Download: java.lang.String b(com.baidu.mobstat.Download)>($r1);
+
+        $r1 = r0.<com.baidu.mobstat.w: com.baidu.mobstat.Download b>;
+
+        $r4 = staticinvoke <com.baidu.mobstat.Download: java.io.File c(com.baidu.mobstat.Download)>($r1);
+
+        virtualinvoke r0.<com.baidu.mobstat.w: long a(java.lang.String,java.io.File)>($r3, $r4);
+
+     label2:
+        return;
+
+     label3:
+        $r5 := @caughtexception;
+
+        virtualinvoke $r5.<java.lang.Exception: void printStackTrace()>();
+
+        $r1 = r0.<com.baidu.mobstat.w: com.baidu.mobstat.Download b>;
+
+        $r6 = staticinvoke <com.baidu.mobstat.Download: android.os.Handler a(com.baidu.mobstat.Download)>($r1);
+
+        $i0 = <com.baidu.mobstat.Download: int b>;
+
+        virtualinvoke $r6.<android.os.Handler: boolean sendEmptyMessage(int)>($i0);
+
+        return;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+    }
+}

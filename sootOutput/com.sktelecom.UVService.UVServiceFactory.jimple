@@ -1,0 +1,367 @@
+public class com.sktelecom.UVService.UVServiceFactory extends java.lang.Object
+{
+    private static final int HTTP_TIMEOUT;
+    private static final java.lang.String UVPageUrl;
+    private static final java.lang.String logTag;
+    private static android.content.Context target;
+
+    static void <clinit>()
+    {
+        <com.sktelecom.UVService.UVServiceFactory: java.lang.String logTag> = "UVService";
+
+        <com.sktelecom.UVService.UVServiceFactory: java.lang.String UVPageUrl> = "http://uvsvc.nate.com:8080/app/log/uvlog";
+
+        <com.sktelecom.UVService.UVServiceFactory: int HTTP_TIMEOUT> = 6000;
+
+        <com.sktelecom.UVService.UVServiceFactory: android.content.Context target> = null;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        com.sktelecom.UVService.UVServiceFactory r0;
+
+        r0 := @this: com.sktelecom.UVService.UVServiceFactory;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    private static boolean availableNetwork()
+    {
+        android.net.ConnectivityManager r2;
+        android.content.Context $r0;
+        android.net.NetworkInfo $r3, $r4;
+        java.lang.Object $r1;
+        boolean $z0;
+
+        $r0 = <com.sktelecom.UVService.UVServiceFactory: android.content.Context target>;
+
+        $r1 = virtualinvoke $r0.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("connectivity");
+
+        r2 = (android.net.ConnectivityManager) $r1;
+
+        $r3 = virtualinvoke r2.<android.net.ConnectivityManager: android.net.NetworkInfo getNetworkInfo(int)>(0);
+
+        $r4 = virtualinvoke r2.<android.net.ConnectivityManager: android.net.NetworkInfo getNetworkInfo(int)>(1);
+
+        $z0 = virtualinvoke $r3.<android.net.NetworkInfo: boolean isAvailable()>();
+
+        if $z0 != 0 goto label1;
+
+        $z0 = virtualinvoke $r4.<android.net.NetworkInfo: boolean isAvailable()>();
+
+        if $z0 != 0 goto label1;
+
+        return 0;
+
+     label1:
+        return 1;
+    }
+
+    private static java.lang.String getDateStr()
+    {
+        java.util.GregorianCalendar r0;
+        java.util.Date $r2;
+        java.text.SimpleDateFormat r1;
+        java.lang.String $r3;
+
+        r0 = new java.util.GregorianCalendar;
+
+        specialinvoke r0.<java.util.GregorianCalendar: void <init>()>();
+
+        $r2 = virtualinvoke r0.<java.util.GregorianCalendar: java.util.Date getTime()>();
+
+        r1 = new java.text.SimpleDateFormat;
+
+        specialinvoke r1.<java.text.SimpleDateFormat: void <init>()>();
+
+        virtualinvoke r1.<java.text.SimpleDateFormat: void applyPattern(java.lang.String)>("yyyyMMdd");
+
+        $r3 = virtualinvoke r1.<java.text.SimpleDateFormat: java.lang.String format(java.util.Date)>($r2);
+
+        return $r3;
+    }
+
+    private static void requestHTTP(java.lang.String)
+    {
+        java.net.HttpURLConnection r3, $r5;
+        java.io.OutputStream $r8;
+        java.lang.Throwable $r10;
+        java.net.URL r2;
+        java.lang.Exception $r9, $r11, $r12;
+        java.net.URLConnection $r4;
+        int $i0;
+        java.io.OutputStreamWriter r1;
+        java.lang.StringBuilder $r6;
+        java.lang.String $r0, $r7;
+
+        $r0 := @parameter0: java.lang.String;
+
+        r3 = null;
+
+     label01:
+        r2 = new java.net.URL;
+
+     label02:
+        specialinvoke r2.<java.net.URL: void <init>(java.lang.String)>("http://uvsvc.nate.com:8080/app/log/uvlog");
+
+     label03:
+        $r4 = virtualinvoke r2.<java.net.URL: java.net.URLConnection openConnection()>();
+
+        $r5 = (java.net.HttpURLConnection) $r4;
+
+     label04:
+        r3 = $r5;
+
+     label05:
+        virtualinvoke $r5.<java.net.HttpURLConnection: void setConnectTimeout(int)>(6000);
+
+        virtualinvoke $r5.<java.net.HttpURLConnection: void setReadTimeout(int)>(6000);
+
+        virtualinvoke $r5.<java.net.HttpURLConnection: void setRequestMethod(java.lang.String)>("POST");
+
+        virtualinvoke $r5.<java.net.HttpURLConnection: void setDoOutput(boolean)>(1);
+
+        virtualinvoke $r5.<java.net.HttpURLConnection: void setDoInput(boolean)>(1);
+
+        virtualinvoke $r5.<java.net.HttpURLConnection: void setUseCaches(boolean)>(0);
+
+        virtualinvoke $r5.<java.net.HttpURLConnection: void setDefaultUseCaches(boolean)>(0);
+
+     label06:
+        $r6 = new java.lang.StringBuilder;
+
+     label07:
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>(java.lang.String)>("Response URL : ");
+
+        r2 = virtualinvoke $r5.<java.net.HttpURLConnection: java.net.URL getURL()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>(r2);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("UVService", $r7);
+
+     label08:
+        $r6 = new java.lang.StringBuilder;
+
+     label09:
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>(java.lang.String)>("send data:");
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r0);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("UVService", $r7);
+
+     label10:
+        r1 = new java.io.OutputStreamWriter;
+
+     label11:
+        $r8 = virtualinvoke $r5.<java.net.HttpURLConnection: java.io.OutputStream getOutputStream()>();
+
+        specialinvoke r1.<java.io.OutputStreamWriter: void <init>(java.io.OutputStream)>($r8);
+
+     label12:
+        virtualinvoke r1.<java.io.OutputStreamWriter: void write(java.lang.String)>($r0);
+
+        virtualinvoke r1.<java.io.OutputStreamWriter: void flush()>();
+
+        $i0 = virtualinvoke $r5.<java.net.HttpURLConnection: int getResponseCode()>();
+
+     label13:
+        $r6 = new java.lang.StringBuilder;
+
+     label14:
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>(java.lang.String)>("Response Code : ");
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r0 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("UVService", $r0);
+
+     label15:
+        $r6 = new java.lang.StringBuilder;
+
+     label16:
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>(java.lang.String)>("Response Message : ");
+
+        $r0 = virtualinvoke $r5.<java.net.HttpURLConnection: java.lang.String getResponseMessage()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r0);
+
+        $r0 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("UVService", $r0);
+
+        virtualinvoke r1.<java.io.OutputStreamWriter: void close()>();
+
+     label17:
+        virtualinvoke $r5.<java.net.HttpURLConnection: void disconnect()>();
+
+        return;
+
+     label18:
+        $r9 := @caughtexception;
+
+     label19:
+        virtualinvoke $r9.<java.lang.Exception: void printStackTrace()>();
+
+     label20:
+        virtualinvoke r3.<java.net.HttpURLConnection: void disconnect()>();
+
+        return;
+
+     label21:
+        $r10 := @caughtexception;
+
+     label22:
+        virtualinvoke r3.<java.net.HttpURLConnection: void disconnect()>();
+
+        throw $r10;
+
+     label23:
+        $r10 := @caughtexception;
+
+        goto label22;
+
+     label24:
+        $r10 := @caughtexception;
+
+        goto label22;
+
+     label25:
+        $r11 := @caughtexception;
+
+        $r9 = $r11;
+
+        goto label19;
+
+     label26:
+        $r12 := @caughtexception;
+
+        $r9 = $r12;
+
+        goto label19;
+
+        catch java.lang.Exception from label02 to label03 with label18;
+        catch java.lang.Throwable from label01 to label03 with label21;
+        catch java.lang.Exception from label03 to label04 with label25;
+        catch java.lang.Exception from label05 to label06 with label25;
+        catch java.lang.Exception from label07 to label08 with label25;
+        catch java.lang.Exception from label09 to label10 with label25;
+        catch java.lang.Exception from label11 to label12 with label25;
+        catch java.lang.Throwable from label03 to label04 with label23;
+        catch java.lang.Throwable from label05 to label12 with label23;
+        catch java.lang.Exception from label12 to label13 with label26;
+        catch java.lang.Exception from label14 to label15 with label26;
+        catch java.lang.Exception from label16 to label17 with label26;
+        catch java.lang.Throwable from label12 to label17 with label24;
+        catch java.lang.Throwable from label19 to label20 with label21;
+    }
+
+    public static void serviceForApp(android.content.Context, java.lang.String, java.lang.String, java.lang.String)
+    {
+        android.content.Context $r0;
+        java.lang.StringBuffer r4, $r5;
+        java.lang.String $r1, $r2, $r3;
+        boolean $z0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 := @parameter2: java.lang.String;
+
+        $r3 := @parameter3: java.lang.String;
+
+        <com.sktelecom.UVService.UVServiceFactory: android.content.Context target> = $r0;
+
+        $z0 = staticinvoke <com.sktelecom.UVService.UVServiceFactory: boolean availableNetwork()>();
+
+        if $z0 == 0 goto label1;
+
+        r4 = new java.lang.StringBuffer;
+
+        specialinvoke r4.<java.lang.StringBuffer: void <init>()>();
+
+        $r5 = virtualinvoke r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("APATH=");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("Mobile Application");
+
+        virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("&");
+
+        $r5 = virtualinvoke r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("IMSI=");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r2);
+
+        virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("&");
+
+        $r5 = virtualinvoke r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("PDFUVID=");
+
+        virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("PDF11021801");
+
+        $r1 = virtualinvoke r4.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        staticinvoke <com.sktelecom.UVService.UVServiceFactory: void requestHTTP(java.lang.String)>($r1);
+
+     label1:
+        return;
+    }
+
+    public static void serviceForPage(java.lang.String, java.lang.String, java.lang.String, java.lang.String)
+    {
+        java.lang.StringBuffer r4, $r5;
+        java.lang.String $r0, $r1, $r2, $r3;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 := @parameter2: java.lang.String;
+
+        $r3 := @parameter3: java.lang.String;
+
+        $z0 = staticinvoke <com.sktelecom.UVService.UVServiceFactory: boolean availableNetwork()>();
+
+        if $z0 == 0 goto label1;
+
+        r4 = new java.lang.StringBuffer;
+
+        specialinvoke r4.<java.lang.StringBuffer: void <init>()>();
+
+        $r5 = virtualinvoke r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("APATH=");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r0);
+
+        virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("&");
+
+        $r5 = virtualinvoke r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("IMSI=");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r1);
+
+        virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("&");
+
+        $r5 = virtualinvoke r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("PDFUVID=");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r2);
+
+        virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("&");
+
+        $r5 = virtualinvoke r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("PAGECODE=");
+
+        virtualinvoke $r5.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r3);
+
+        $r0 = virtualinvoke r4.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        staticinvoke <com.sktelecom.UVService.UVServiceFactory: void requestHTTP(java.lang.String)>($r0);
+
+     label1:
+        return;
+    }
+}

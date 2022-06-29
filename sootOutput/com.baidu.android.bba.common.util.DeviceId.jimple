@@ -1,0 +1,566 @@
+public final class com.baidu.android.bba.common.util.DeviceId extends java.lang.Object
+{
+    private static final java.lang.String AES_KEY;
+    private static final boolean DEBUG;
+    private static final java.lang.String EXT_FILE;
+    private static final java.lang.String KEY_DEVICE_ID;
+    private static final java.lang.String KEY_IMEI;
+    private static final java.lang.String TAG;
+
+    private void <init>()
+    {
+        com.baidu.android.bba.common.util.DeviceId r0;
+
+        r0 := @this: com.baidu.android.bba.common.util.DeviceId;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    private static void checkPermission(android.content.Context, java.lang.String)
+    {
+        android.content.Context $r0;
+        int $i0;
+        java.lang.SecurityException $r2;
+        java.lang.StringBuilder $r3;
+        java.lang.String $r1;
+        boolean $z0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $i0 = virtualinvoke $r0.<android.content.Context: int checkCallingOrSelfPermission(java.lang.String)>($r1);
+
+        if $i0 != 0 goto label2;
+
+        $z0 = 1;
+
+     label1:
+        if $z0 != 0 goto label3;
+
+        $r2 = new java.lang.SecurityException;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Permission Denial: requires permission ");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r2.<java.lang.SecurityException: void <init>(java.lang.String)>($r1);
+
+        throw $r2;
+
+     label2:
+        $z0 = 0;
+
+        goto label1;
+
+     label3:
+        return;
+    }
+
+    public static java.lang.String getAndroidId(android.content.Context)
+    {
+        android.content.Context $r0;
+        android.content.ContentResolver $r1;
+        java.lang.String $r2;
+        boolean $z0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = virtualinvoke $r0.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        $r2 = staticinvoke <android.provider.Settings$Secure: java.lang.String getString(android.content.ContentResolver,java.lang.String)>($r1, "android_id");
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r2);
+
+        if $z0 == 0 goto label1;
+
+        return "";
+
+     label1:
+        return $r2;
+    }
+
+    public static java.lang.String getDeviceID(android.content.Context)
+    {
+        android.content.Context $r0;
+        byte[] $r6;
+        java.util.UUID $r11;
+        java.lang.Exception $r7, $r8;
+        android.content.ContentResolver $r2;
+        java.lang.StringBuilder $r5;
+        java.lang.String $r1, $r3, $r4, $r9, $r10;
+        boolean $z0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        staticinvoke <com.baidu.android.bba.common.util.DeviceId: void checkPermission(android.content.Context,java.lang.String)>($r0, "android.permission.WRITE_SETTINGS");
+
+        staticinvoke <com.baidu.android.bba.common.util.DeviceId: void checkPermission(android.content.Context,java.lang.String)>($r0, "android.permission.READ_PHONE_STATE");
+
+        staticinvoke <com.baidu.android.bba.common.util.DeviceId: void checkPermission(android.content.Context,java.lang.String)>($r0, "android.permission.WRITE_EXTERNAL_STORAGE");
+
+        $z0 = 0;
+
+        $r1 = "";
+
+     label01:
+        $r2 = virtualinvoke $r0.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        $r3 = staticinvoke <android.provider.Settings$System: java.lang.String getString(android.content.ContentResolver,java.lang.String)>($r2, "bd_setting_i");
+
+     label02:
+        $r1 = $r3;
+
+        if $r3 != null goto label13;
+
+     label03:
+        $r3 = staticinvoke <com.baidu.android.bba.common.util.DeviceId: java.lang.String getIMEI(android.content.Context)>($r0);
+
+     label04:
+        $r1 = $r3;
+
+     label05:
+        $r2 = virtualinvoke $r0.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        staticinvoke <android.provider.Settings$System: boolean putString(android.content.ContentResolver,java.lang.String,java.lang.String)>($r2, "bd_setting_i", $r1);
+
+     label06:
+        $r4 = staticinvoke <com.baidu.android.bba.common.util.DeviceId: java.lang.String getAndroidId(android.content.Context)>($r0);
+
+        if $z0 == 0 goto label09;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("com.baidu");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r1 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r6 = virtualinvoke $r1.<java.lang.String: byte[] getBytes()>();
+
+        $r1 = staticinvoke <com.baidu.android.bba.common.util.Util: java.lang.String toMd5(byte[],boolean)>($r6, 1);
+
+        return $r1;
+
+     label07:
+        $r7 := @caughtexception;
+
+        $r8 = $r7;
+
+     label08:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("DeviceId", "Settings.System.getString or putString failed", $r8);
+
+        $z0 = 1;
+
+        goto label06;
+
+     label09:
+        $r3 = null;
+
+        $r2 = virtualinvoke $r0.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        $r9 = staticinvoke <android.provider.Settings$System: java.lang.String getString(android.content.ContentResolver,java.lang.String)>($r2, "com.baidu.deviceid");
+
+        $r10 = $r9;
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r9);
+
+        if $z0 == 0 goto label10;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("com.baidu");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r6 = virtualinvoke $r3.<java.lang.String: byte[] getBytes()>();
+
+        $r10 = staticinvoke <com.baidu.android.bba.common.util.Util: java.lang.String toMd5(byte[],boolean)>($r6, 1);
+
+        $r3 = $r10;
+
+        $r2 = virtualinvoke $r0.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        $r9 = staticinvoke <android.provider.Settings$System: java.lang.String getString(android.content.ContentResolver,java.lang.String)>($r2, $r10);
+
+        $r10 = $r9;
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r9);
+
+        if $z0 != 0 goto label10;
+
+        $r2 = virtualinvoke $r0.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        staticinvoke <android.provider.Settings$System: boolean putString(android.content.ContentResolver,java.lang.String,java.lang.String)>($r2, "com.baidu.deviceid", $r9);
+
+        staticinvoke <com.baidu.android.bba.common.util.DeviceId: void setExternalDeviceId(java.lang.String,java.lang.String)>($r1, $r9);
+
+     label10:
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r10);
+
+        if $z0 == 0 goto label11;
+
+        $r9 = staticinvoke <com.baidu.android.bba.common.util.DeviceId: java.lang.String getExternalDeviceId(java.lang.String)>($r1);
+
+        $r10 = $r9;
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r9);
+
+        if $z0 != 0 goto label11;
+
+        $r2 = virtualinvoke $r0.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        staticinvoke <android.provider.Settings$System: boolean putString(android.content.ContentResolver,java.lang.String,java.lang.String)>($r2, $r3, $r9);
+
+        $r2 = virtualinvoke $r0.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        staticinvoke <android.provider.Settings$System: boolean putString(android.content.ContentResolver,java.lang.String,java.lang.String)>($r2, "com.baidu.deviceid", $r9);
+
+     label11:
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r10);
+
+        if $z0 == 0 goto label14;
+
+        $r11 = staticinvoke <java.util.UUID: java.util.UUID randomUUID()>();
+
+        $r10 = virtualinvoke $r11.<java.util.UUID: java.lang.String toString()>();
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r10);
+
+        $r4 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r6 = virtualinvoke $r4.<java.lang.String: byte[] getBytes()>();
+
+        $r4 = staticinvoke <com.baidu.android.bba.common.util.Util: java.lang.String toMd5(byte[],boolean)>($r6, 1);
+
+        $r2 = virtualinvoke $r0.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        staticinvoke <android.provider.Settings$System: boolean putString(android.content.ContentResolver,java.lang.String,java.lang.String)>($r2, $r3, $r4);
+
+        $r2 = virtualinvoke $r0.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        staticinvoke <android.provider.Settings$System: boolean putString(android.content.ContentResolver,java.lang.String,java.lang.String)>($r2, "com.baidu.deviceid", $r4);
+
+        staticinvoke <com.baidu.android.bba.common.util.DeviceId: void setExternalDeviceId(java.lang.String,java.lang.String)>($r1, $r4);
+
+        return $r4;
+
+     label12:
+        $r8 := @caughtexception;
+
+        goto label08;
+
+     label13:
+        $r1 = $r3;
+
+        goto label05;
+
+     label14:
+        return $r10;
+
+        catch java.lang.Exception from label01 to label02 with label07;
+        catch java.lang.Exception from label03 to label04 with label07;
+        catch java.lang.Exception from label05 to label06 with label12;
+    }
+
+    private static java.lang.String getExternalDeviceId(java.lang.String)
+    {
+        java.lang.Throwable $r7, $r12;
+        byte[] $r9;
+        java.lang.String[] $r10;
+        java.io.File $r1, $r2;
+        java.lang.Exception $r11;
+        int $i0;
+        java.lang.StringBuilder $r5;
+        java.lang.String $r0, $r6, $r8;
+        java.io.FileReader $r3;
+        java.io.BufferedReader $r4;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r0);
+
+        if $z0 == 0 goto label01;
+
+        return "";
+
+     label01:
+        $r1 = new java.io.File;
+
+        $r2 = staticinvoke <android.os.Environment: java.io.File getExternalStorageDirectory()>();
+
+        specialinvoke $r1.<java.io.File: void <init>(java.io.File,java.lang.String)>($r2, "baidu/.cuid");
+
+        $r3 = new java.io.FileReader;
+
+     label02:
+        specialinvoke $r3.<java.io.FileReader: void <init>(java.io.File)>($r1);
+
+     label03:
+        $r4 = new java.io.BufferedReader;
+
+     label04:
+        specialinvoke $r4.<java.io.BufferedReader: void <init>(java.io.Reader)>($r3);
+
+     label05:
+        $r5 = new java.lang.StringBuilder;
+
+     label06:
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+     label07:
+        $r6 = virtualinvoke $r4.<java.io.BufferedReader: java.lang.String readLine()>();
+
+     label08:
+        if $r6 == null goto label12;
+
+     label09:
+        virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\r\n");
+
+     label10:
+        goto label07;
+
+     label11:
+        $r7 := @caughtexception;
+
+        return "";
+
+     label12:
+        virtualinvoke $r4.<java.io.BufferedReader: void close()>();
+
+     label13:
+        $r6 = new java.lang.String;
+
+     label14:
+        $r8 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r9 = virtualinvoke $r8.<java.lang.String: byte[] getBytes()>();
+
+        $r9 = staticinvoke <com.baidu.android.bba.common.security.Base64: byte[] decode(byte[])>($r9);
+
+        $r9 = staticinvoke <com.baidu.android.bba.common.security.AESUtil: byte[] decrypt(java.lang.String,java.lang.String,byte[])>("30212102dicudiab", "30212102dicudiab", $r9);
+
+        specialinvoke $r6.<java.lang.String: void <init>(byte[])>($r9);
+
+        $r10 = virtualinvoke $r6.<java.lang.String: java.lang.String[] split(java.lang.String)>("=");
+
+     label15:
+        if $r10 == null goto label25;
+
+     label16:
+        $i0 = lengthof $r10;
+
+     label17:
+        if $i0 != 2 goto label25;
+
+     label18:
+        $r6 = $r10[0];
+
+     label19:
+        $z0 = virtualinvoke $r0.<java.lang.String: boolean equals(java.lang.Object)>($r6);
+
+     label20:
+        if $z0 == 0 goto label25;
+
+     label21:
+        $r0 = $r10[1];
+
+     label22:
+        return $r0;
+
+     label23:
+        $r11 := @caughtexception;
+
+        return "";
+
+     label24:
+        $r12 := @caughtexception;
+
+     label25:
+        return "";
+
+        catch java.io.FileNotFoundException from label02 to label03 with label11;
+        catch java.io.FileNotFoundException from label04 to label05 with label11;
+        catch java.io.FileNotFoundException from label06 to label08 with label11;
+        catch java.io.FileNotFoundException from label09 to label10 with label11;
+        catch java.io.FileNotFoundException from label12 to label13 with label11;
+        catch java.io.FileNotFoundException from label14 to label15 with label11;
+        catch java.io.FileNotFoundException from label19 to label20 with label11;
+        catch java.io.IOException from label02 to label03 with label24;
+        catch java.io.IOException from label04 to label05 with label24;
+        catch java.io.IOException from label06 to label08 with label24;
+        catch java.io.IOException from label09 to label10 with label24;
+        catch java.io.IOException from label12 to label13 with label24;
+        catch java.io.IOException from label14 to label15 with label24;
+        catch java.io.IOException from label19 to label20 with label24;
+        catch java.lang.Exception from label02 to label03 with label23;
+        catch java.lang.Exception from label04 to label05 with label23;
+        catch java.lang.Exception from label06 to label08 with label23;
+        catch java.lang.Exception from label09 to label10 with label23;
+        catch java.lang.Exception from label12 to label13 with label23;
+        catch java.lang.Exception from label14 to label15 with label23;
+        catch java.lang.Exception from label16 to label17 with label23;
+        catch java.lang.Exception from label18 to label20 with label23;
+        catch java.lang.Exception from label21 to label22 with label23;
+    }
+
+    public static java.lang.String getIMEI(android.content.Context)
+    {
+        android.content.Context $r0;
+        android.telephony.TelephonyManager $r2;
+        java.lang.Object $r1;
+        java.lang.String $r3;
+        boolean $z0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = virtualinvoke $r0.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("phone");
+
+        $r2 = (android.telephony.TelephonyManager) $r1;
+
+        if $r2 == null goto label1;
+
+        $r3 = virtualinvoke $r2.<android.telephony.TelephonyManager: java.lang.String getDeviceId()>();
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r3);
+
+        if $z0 == 0 goto label2;
+
+     label1:
+        return "";
+
+     label2:
+        return $r3;
+    }
+
+    private static void setExternalDeviceId(java.lang.String, java.lang.String)
+    {
+        java.lang.Throwable $r7;
+        byte[] $r6;
+        java.io.FileWriter $r5;
+        java.io.File $r3, $r4;
+        java.lang.Exception $r8;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r0, $r1;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r0);
+
+        if $z0 == 0 goto label1;
+
+        return;
+
+     label1:
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r0);
+
+        virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("=");
+
+        virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r3 = new java.io.File;
+
+        $r4 = staticinvoke <android.os.Environment: java.io.File getExternalStorageDirectory()>();
+
+        specialinvoke $r3.<java.io.File: void <init>(java.io.File,java.lang.String)>($r4, "baidu/.cuid");
+
+        $r4 = new java.io.File;
+
+     label2:
+        $r0 = virtualinvoke $r3.<java.io.File: java.lang.String getParent()>();
+
+        specialinvoke $r4.<java.io.File: void <init>(java.lang.String)>($r0);
+
+        virtualinvoke $r4.<java.io.File: boolean mkdirs()>();
+
+     label3:
+        $r5 = new java.io.FileWriter;
+
+     label4:
+        specialinvoke $r5.<java.io.FileWriter: void <init>(java.io.File,boolean)>($r3, 0);
+
+        $r0 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r6 = virtualinvoke $r0.<java.lang.String: byte[] getBytes()>();
+
+        $r6 = staticinvoke <com.baidu.android.bba.common.security.AESUtil: byte[] encrypt(java.lang.String,java.lang.String,byte[])>("30212102dicudiab", "30212102dicudiab", $r6);
+
+        $r0 = staticinvoke <com.baidu.android.bba.common.security.Base64: java.lang.String encode(byte[],java.lang.String)>($r6, "utf-8");
+
+        virtualinvoke $r5.<java.io.FileWriter: void write(java.lang.String)>($r0);
+
+        virtualinvoke $r5.<java.io.FileWriter: void flush()>();
+
+        virtualinvoke $r5.<java.io.FileWriter: void close()>();
+
+     label5:
+        return;
+
+     label6:
+        $r7 := @caughtexception;
+
+        return;
+
+     label7:
+        $r8 := @caughtexception;
+
+        return;
+
+        catch java.io.IOException from label2 to label3 with label6;
+        catch java.io.IOException from label4 to label5 with label6;
+        catch java.lang.Exception from label2 to label3 with label7;
+        catch java.lang.Exception from label4 to label5 with label7;
+    }
+
+    public static void <clinit>()
+    {
+        <com.baidu.android.bba.common.util.DeviceId: java.lang.String TAG> = "DeviceId";
+
+        <com.baidu.android.bba.common.util.DeviceId: java.lang.String KEY_IMEI> = "bd_setting_i";
+
+        <com.baidu.android.bba.common.util.DeviceId: java.lang.String KEY_DEVICE_ID> = "com.baidu.deviceid";
+
+        <com.baidu.android.bba.common.util.DeviceId: java.lang.String EXT_FILE> = "baidu/.cuid";
+
+        <com.baidu.android.bba.common.util.DeviceId: boolean DEBUG> = 0;
+
+        <com.baidu.android.bba.common.util.DeviceId: java.lang.String AES_KEY> = "30212102dicudiab";
+
+        return;
+    }
+}

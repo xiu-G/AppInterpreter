@@ -1,0 +1,412 @@
+public class com.snowbee.core.Google.GoogleAPI extends java.lang.Object
+{
+    private static final java.lang.String _API_URL;
+    private static final java.lang.String _AUTHPARAMS;
+    private static final java.lang.String _GOOGLE_LOGIN_URL;
+    private static final java.lang.String _READER_BASE_URL;
+    private static final int _TIMEOUT;
+    private static final java.lang.String _TOKEN_URL;
+    private static final java.lang.String _USERAGENT;
+    private static final java.lang.String _USER_INFO_URL;
+
+    public void <init>()
+    {
+        com.snowbee.core.Google.GoogleAPI r0;
+
+        r0 := @this: com.snowbee.core.Google.GoogleAPI;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    public static java.lang.String getAuthToken(android.app.Activity, android.accounts.Account)
+    {
+        android.accounts.AccountManager $r3;
+        java.lang.Throwable $r8, $r9, $r10;
+        android.content.Context $r2;
+        android.os.Bundle r6;
+        android.accounts.Account $r1;
+        android.accounts.OperationCanceledException $r11;
+        java.io.IOException $r13;
+        android.accounts.AccountManagerFuture $r4;
+        android.accounts.AuthenticatorException $r12;
+        java.lang.Object $r5;
+        java.lang.String $r7;
+        android.app.Activity $r0;
+
+        $r0 := @parameter0: android.app.Activity;
+
+        $r1 := @parameter1: android.accounts.Account;
+
+        $r2 = virtualinvoke $r0.<android.app.Activity: android.content.Context getApplicationContext()>();
+
+        $r3 = staticinvoke <android.accounts.AccountManager: android.accounts.AccountManager get(android.content.Context)>($r2);
+
+        $r4 = virtualinvoke $r3.<android.accounts.AccountManager: android.accounts.AccountManagerFuture getAuthToken(android.accounts.Account,java.lang.String,android.os.Bundle,android.app.Activity,android.accounts.AccountManagerCallback,android.os.Handler)>($r1, "ah", null, $r0, null, null);
+
+     label1:
+        $r5 = interfaceinvoke $r4.<android.accounts.AccountManagerFuture: java.lang.Object getResult()>();
+
+     label2:
+        r6 = (android.os.Bundle) $r5;
+
+     label3:
+        $r5 = virtualinvoke r6.<android.os.Bundle: java.lang.Object get(java.lang.String)>("authtoken");
+
+        $r7 = virtualinvoke $r5.<java.lang.Object: java.lang.String toString()>();
+
+     label4:
+        return $r7;
+
+     label5:
+        $r8 := @caughtexception;
+
+        $r11 = (android.accounts.OperationCanceledException) $r8;
+
+        virtualinvoke $r11.<android.accounts.OperationCanceledException: void printStackTrace()>();
+
+     label6:
+        return null;
+
+     label7:
+        $r9 := @caughtexception;
+
+        $r12 = (android.accounts.AuthenticatorException) $r9;
+
+        virtualinvoke $r12.<android.accounts.AuthenticatorException: void printStackTrace()>();
+
+        goto label6;
+
+     label8:
+        $r10 := @caughtexception;
+
+        $r13 = (java.io.IOException) $r10;
+
+        virtualinvoke $r13.<java.io.IOException: void printStackTrace()>();
+
+        goto label6;
+
+        catch android.accounts.OperationCanceledException from label1 to label2 with label5;
+        catch android.accounts.OperationCanceledException from label3 to label4 with label5;
+        catch android.accounts.AuthenticatorException from label1 to label2 with label7;
+        catch android.accounts.AuthenticatorException from label3 to label4 with label7;
+        catch java.io.IOException from label1 to label2 with label8;
+        catch java.io.IOException from label3 to label4 with label8;
+    }
+
+    public static android.accounts.Account[] getGmailAccounts(android.content.Context)
+    {
+        android.accounts.AccountManager $r4;
+        android.content.Context $r0;
+        android.accounts.Account r1;
+        java.util.ArrayList r2;
+        android.accounts.Account[] r3;
+        int $i0, $i1;
+        java.lang.String $r5;
+        boolean $z0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        r2 = new java.util.ArrayList;
+
+        specialinvoke r2.<java.util.ArrayList: void <init>()>();
+
+        $r4 = staticinvoke <android.accounts.AccountManager: android.accounts.AccountManager get(android.content.Context)>($r0);
+
+        r3 = virtualinvoke $r4.<android.accounts.AccountManager: android.accounts.Account[] getAccounts()>();
+
+        $i0 = lengthof r3;
+
+        $i1 = 0;
+
+     label1:
+        if $i1 < $i0 goto label2;
+
+        $i0 = virtualinvoke r2.<java.util.ArrayList: int size()>();
+
+        r3 = newarray (android.accounts.Account)[$i0];
+
+        virtualinvoke r2.<java.util.ArrayList: java.lang.Object[] toArray(java.lang.Object[])>(r3);
+
+        return r3;
+
+     label2:
+        r1 = r3[$i1];
+
+        $r5 = r1.<android.accounts.Account: java.lang.String type>;
+
+        $z0 = virtualinvoke $r5.<java.lang.String: boolean equals(java.lang.Object)>("com.google");
+
+        if $z0 == 0 goto label3;
+
+        virtualinvoke r2.<java.util.ArrayList: boolean add(java.lang.Object)>(r1);
+
+     label3:
+        $i1 = $i1 + 1;
+
+        goto label1;
+    }
+
+    public static java.lang.String getGoogleAuthKey(java.lang.String, java.lang.String) throws java.io.UnsupportedEncodingException, java.io.IOException
+    {
+        java.lang.String[] $r3;
+        org.jsoup.nodes.Document $r4;
+        org.jsoup.nodes.Element $r5;
+        org.jsoup.Connection $r2;
+        int $i0, $i1;
+        java.lang.String $r0, $r1;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 = staticinvoke <org.jsoup.Jsoup: org.jsoup.Connection connect(java.lang.String)>("https://www.google.com/accounts/ClientLogin");
+
+        $r3 = newarray (java.lang.String)[10];
+
+        $r3[0] = "accountType";
+
+        $r3[1] = "GOOGLE";
+
+        $r3[2] = "Email";
+
+        $r3[3] = $r0;
+
+        $r3[4] = "Passwd";
+
+        $r3[5] = $r1;
+
+        $r3[6] = "service";
+
+        $r3[7] = "reader";
+
+        $r3[8] = "source";
+
+        $r3[9] = "Mozilla";
+
+        $r2 = interfaceinvoke $r2.<org.jsoup.Connection: org.jsoup.Connection data(java.lang.String[])>($r3);
+
+        $r2 = interfaceinvoke $r2.<org.jsoup.Connection: org.jsoup.Connection userAgent(java.lang.String)>("Mozilla");
+
+        $r2 = interfaceinvoke $r2.<org.jsoup.Connection: org.jsoup.Connection timeout(int)>(10000);
+
+        $r4 = interfaceinvoke $r2.<org.jsoup.Connection: org.jsoup.nodes.Document post()>();
+
+        $r5 = virtualinvoke $r4.<org.jsoup.nodes.Document: org.jsoup.nodes.Element body()>();
+
+        $r0 = virtualinvoke $r5.<org.jsoup.nodes.Element: java.lang.String text()>();
+
+        $r5 = virtualinvoke $r4.<org.jsoup.nodes.Document: org.jsoup.nodes.Element body()>();
+
+        $r1 = virtualinvoke $r5.<org.jsoup.nodes.Element: java.lang.String text()>();
+
+        $i0 = virtualinvoke $r1.<java.lang.String: int indexOf(java.lang.String)>("Auth=");
+
+        $r5 = virtualinvoke $r4.<org.jsoup.nodes.Document: org.jsoup.nodes.Element body()>();
+
+        $r1 = virtualinvoke $r5.<org.jsoup.nodes.Element: java.lang.String text()>();
+
+        $i1 = virtualinvoke $r1.<java.lang.String: int length()>();
+
+        $r0 = virtualinvoke $r0.<java.lang.String: java.lang.String substring(int,int)>($i0, $i1);
+
+        $r0 = virtualinvoke $r0.<java.lang.String: java.lang.String replace(java.lang.CharSequence,java.lang.CharSequence)>("Auth=", "");
+
+        return $r0;
+    }
+
+    public static java.lang.String getGoogleToken(java.lang.String) throws java.io.UnsupportedEncodingException, java.io.IOException
+    {
+        org.jsoup.nodes.Document $r3;
+        org.jsoup.nodes.Element $r4;
+        org.jsoup.Connection $r1;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 = staticinvoke <org.jsoup.Jsoup: org.jsoup.Connection connect(java.lang.String)>("http://www.google.com/reader/api/0/token");
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("GoogleLogin auth=");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r0);
+
+        $r0 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r1 = interfaceinvoke $r1.<org.jsoup.Connection: org.jsoup.Connection header(java.lang.String,java.lang.String)>("Authorization", $r0);
+
+        $r1 = interfaceinvoke $r1.<org.jsoup.Connection: org.jsoup.Connection userAgent(java.lang.String)>("Mozilla");
+
+        $r1 = interfaceinvoke $r1.<org.jsoup.Connection: org.jsoup.Connection timeout(int)>(10000);
+
+        $r3 = interfaceinvoke $r1.<org.jsoup.Connection: org.jsoup.nodes.Document get()>();
+
+        $r4 = virtualinvoke $r3.<org.jsoup.nodes.Document: org.jsoup.nodes.Element body()>();
+
+        $r0 = virtualinvoke $r4.<org.jsoup.nodes.Element: java.lang.String text()>();
+
+        return $r0;
+    }
+
+    public static java.lang.String getGoogleToken(java.lang.String, java.lang.String) throws java.io.UnsupportedEncodingException, java.io.IOException
+    {
+        org.jsoup.nodes.Document $r4;
+        org.jsoup.nodes.Element $r5;
+        org.jsoup.Connection $r2;
+        java.lang.StringBuilder $r3;
+        java.lang.String $r0, $r1;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 = staticinvoke <org.jsoup.Jsoup: org.jsoup.Connection connect(java.lang.String)>("http://www.google.com/reader/api/0/token");
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>("GoogleLogin auth=");
+
+        $r0 = staticinvoke <com.snowbee.core.Google.GoogleAPI: java.lang.String getGoogleAuthKey(java.lang.String,java.lang.String)>($r0, $r1);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r0);
+
+        $r0 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r2 = interfaceinvoke $r2.<org.jsoup.Connection: org.jsoup.Connection header(java.lang.String,java.lang.String)>("Authorization", $r0);
+
+        $r2 = interfaceinvoke $r2.<org.jsoup.Connection: org.jsoup.Connection userAgent(java.lang.String)>("Mozilla");
+
+        $r2 = interfaceinvoke $r2.<org.jsoup.Connection: org.jsoup.Connection timeout(int)>(10000);
+
+        $r4 = interfaceinvoke $r2.<org.jsoup.Connection: org.jsoup.nodes.Document get()>();
+
+        $r5 = virtualinvoke $r4.<org.jsoup.nodes.Document: org.jsoup.nodes.Element body()>();
+
+        $r0 = virtualinvoke $r5.<org.jsoup.nodes.Element: java.lang.String text()>();
+
+        return $r0;
+    }
+
+    public static java.lang.String getGoogleUserID(java.lang.String) throws java.io.UnsupportedEncodingException, java.io.IOException
+    {
+        java.lang.String $r0;
+        java.lang.CharSequence $r1;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r0 = staticinvoke <com.snowbee.core.Google.GoogleAPI: java.lang.String getUserInfo(java.lang.String)>($r0);
+
+        $r1 = virtualinvoke $r0.<java.lang.String: java.lang.CharSequence subSequence(int,int)>(11, 31);
+
+        $r0 = (java.lang.String) $r1;
+
+        return $r0;
+    }
+
+    public static java.lang.String getUserInfo(java.lang.String) throws java.io.UnsupportedEncodingException, java.io.IOException
+    {
+        java.lang.String $r0;
+        org.jsoup.nodes.Document $r1;
+        org.jsoup.nodes.Element $r2;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 = staticinvoke <com.snowbee.core.Google.GoogleAPI: org.jsoup.nodes.Document requestGoogleDocument(java.lang.String,java.lang.String)>("http://www.google.com/reader/api/0/user-info", $r0);
+
+        $r2 = virtualinvoke $r1.<org.jsoup.nodes.Document: org.jsoup.nodes.Element body()>();
+
+        $r0 = virtualinvoke $r2.<org.jsoup.nodes.Element: java.lang.String text()>();
+
+        return $r0;
+    }
+
+    public static java.lang.String requestGoogleData(java.lang.String, java.lang.String) throws java.io.UnsupportedEncodingException, java.io.IOException
+    {
+        org.jsoup.Connection$Response $r4;
+        org.jsoup.Connection $r2;
+        java.lang.StringBuilder $r3;
+        java.lang.String $r0, $r1;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 = staticinvoke <org.jsoup.Jsoup: org.jsoup.Connection connect(java.lang.String)>($r0);
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>("GoogleLogin auth=");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r0 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r2 = interfaceinvoke $r2.<org.jsoup.Connection: org.jsoup.Connection header(java.lang.String,java.lang.String)>("Authorization", $r0);
+
+        $r2 = interfaceinvoke $r2.<org.jsoup.Connection: org.jsoup.Connection userAgent(java.lang.String)>("&lt;your app name&gt;");
+
+        $r2 = interfaceinvoke $r2.<org.jsoup.Connection: org.jsoup.Connection timeout(int)>(10000);
+
+        $r4 = interfaceinvoke $r2.<org.jsoup.Connection: org.jsoup.Connection$Response execute()>();
+
+        $r0 = interfaceinvoke $r4.<org.jsoup.Connection$Response: java.lang.String body()>();
+
+        return $r0;
+    }
+
+    public static org.jsoup.nodes.Document requestGoogleDocument(java.lang.String, java.lang.String) throws java.io.UnsupportedEncodingException, java.io.IOException
+    {
+        org.jsoup.nodes.Document $r4;
+        org.jsoup.Connection $r2;
+        java.lang.StringBuilder $r3;
+        java.lang.String $r0, $r1;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 = staticinvoke <org.jsoup.Jsoup: org.jsoup.Connection connect(java.lang.String)>($r0);
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>("GoogleLogin auth=");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r0 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r2 = interfaceinvoke $r2.<org.jsoup.Connection: org.jsoup.Connection header(java.lang.String,java.lang.String)>("Authorization", $r0);
+
+        $r2 = interfaceinvoke $r2.<org.jsoup.Connection: org.jsoup.Connection userAgent(java.lang.String)>("Mozilla");
+
+        $r2 = interfaceinvoke $r2.<org.jsoup.Connection: org.jsoup.Connection timeout(int)>(10000);
+
+        $r4 = interfaceinvoke $r2.<org.jsoup.Connection: org.jsoup.nodes.Document get()>();
+
+        return $r4;
+    }
+
+    public static void <clinit>()
+    {
+        <com.snowbee.core.Google.GoogleAPI: java.lang.String _USER_INFO_URL> = "http://www.google.com/reader/api/0/user-info";
+
+        <com.snowbee.core.Google.GoogleAPI: java.lang.String _USERAGENT> = "Mozilla";
+
+        <com.snowbee.core.Google.GoogleAPI: java.lang.String _TOKEN_URL> = "http://www.google.com/reader/api/0/token";
+
+        <com.snowbee.core.Google.GoogleAPI: int _TIMEOUT> = 10000;
+
+        <com.snowbee.core.Google.GoogleAPI: java.lang.String _READER_BASE_URL> = "http://www.google.com/reader/";
+
+        <com.snowbee.core.Google.GoogleAPI: java.lang.String _GOOGLE_LOGIN_URL> = "https://www.google.com/accounts/ClientLogin";
+
+        <com.snowbee.core.Google.GoogleAPI: java.lang.String _AUTHPARAMS> = "GoogleLogin auth=";
+
+        <com.snowbee.core.Google.GoogleAPI: java.lang.String _API_URL> = "http://www.google.com/reader/api/0/";
+
+        return;
+    }
+}

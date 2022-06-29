@@ -1,0 +1,308 @@
+class com.google.ads.LocationTracker extends java.lang.Object
+{
+    static java.lang.String PROTO_TEMPLATE;
+    private android.content.Context mContext;
+
+    static void <clinit>()
+    {
+        <com.google.ads.LocationTracker: java.lang.String PROTO_TEMPLATE> = "desc < role: 6 producer: 24 historical_role: 1 historical_producer: 12 timestamp: %d latlng < latitude_e7: %d longitude_e7: %d> radius: %d>";
+
+        return;
+    }
+
+    void <init>(android.content.Context)
+    {
+        android.content.Context $r1;
+        com.google.ads.LocationTracker r0;
+
+        r0 := @this: com.google.ads.LocationTracker;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<com.google.ads.LocationTracker: android.content.Context mContext> = $r1;
+
+        return;
+    }
+
+    private java.util.List getLastKnownLocations()
+    {
+        android.content.Context $r2;
+        java.util.Iterator $r6;
+        com.google.ads.LocationTracker r0;
+        java.util.ArrayList r1;
+        java.util.List $r5;
+        int $i0;
+        java.lang.Object $r3;
+        java.lang.String r7;
+        android.location.Location $r8;
+        android.location.LocationManager r4;
+        boolean $z0;
+
+        r0 := @this: com.google.ads.LocationTracker;
+
+        $r2 = r0.<com.google.ads.LocationTracker: android.content.Context mContext>;
+
+        $r3 = virtualinvoke $r2.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("location");
+
+        r4 = (android.location.LocationManager) $r3;
+
+        $r5 = virtualinvoke r4.<android.location.LocationManager: java.util.List getProviders(boolean)>(0);
+
+        r1 = new java.util.ArrayList;
+
+        $i0 = interfaceinvoke $r5.<java.util.List: int size()>();
+
+        specialinvoke r1.<java.util.ArrayList: void <init>(int)>($i0);
+
+        $r6 = interfaceinvoke $r5.<java.util.List: java.util.Iterator iterator()>();
+
+     label1:
+        $z0 = interfaceinvoke $r6.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label2;
+
+        $r3 = interfaceinvoke $r6.<java.util.Iterator: java.lang.Object next()>();
+
+        r7 = (java.lang.String) $r3;
+
+        $r8 = virtualinvoke r4.<android.location.LocationManager: android.location.Location getLastKnownLocation(java.lang.String)>(r7);
+
+        if $r8 == null goto label1;
+
+        $z0 = virtualinvoke $r8.<android.location.Location: boolean hasAccuracy()>();
+
+        if $z0 == 0 goto label1;
+
+        interfaceinvoke r1.<java.util.List: boolean add(java.lang.Object)>($r8);
+
+        goto label1;
+
+     label2:
+        return r1;
+    }
+
+    java.lang.String encodeProto(java.lang.String)
+    {
+        java.lang.Throwable r3;
+        byte[] r2, $r6, $r7;
+        javax.crypto.spec.SecretKeySpec $r5;
+        com.google.ads.LocationTracker r0;
+        javax.crypto.Cipher $r4;
+        int $i0, $i1;
+        java.lang.String $r1;
+
+        r0 := @this: com.google.ads.LocationTracker;
+
+        $r1 := @parameter0: java.lang.String;
+
+     label1:
+        $r4 = staticinvoke <javax.crypto.Cipher: javax.crypto.Cipher getInstance(java.lang.String)>("AES/CBC/PKCS5Padding");
+
+     label2:
+        $r5 = new javax.crypto.spec.SecretKeySpec;
+
+        $r6 = newarray (byte)[16];
+
+        $r6[0] = 10;
+
+        $r6[1] = 55;
+
+        $r6[2] = -112;
+
+        $r6[3] = -47;
+
+        $r6[4] = -6;
+
+        $r6[5] = 7;
+
+        $r6[6] = 11;
+
+        $r6[7] = 75;
+
+        $r6[8] = -7;
+
+        $r6[9] = -121;
+
+        $r6[10] = 121;
+
+        $r6[11] = 69;
+
+        $r6[12] = 80;
+
+        $r6[13] = -61;
+
+        $r6[14] = 15;
+
+        $r6[15] = 5;
+
+     label3:
+        specialinvoke $r5.<javax.crypto.spec.SecretKeySpec: void <init>(byte[],java.lang.String)>($r6, "AES");
+
+        virtualinvoke $r4.<javax.crypto.Cipher: void init(int,java.security.Key)>(1, $r5);
+
+        $r6 = virtualinvoke $r4.<javax.crypto.Cipher: byte[] getIV()>();
+
+        r2 = virtualinvoke $r1.<java.lang.String: byte[] getBytes()>();
+
+        $r7 = virtualinvoke $r4.<javax.crypto.Cipher: byte[] doFinal(byte[])>(r2);
+
+     label4:
+        $i0 = lengthof $r6;
+
+        $i1 = lengthof $r7;
+
+        $i0 = $i0 + $i1;
+
+        r2 = newarray (byte)[$i0];
+
+        $i0 = lengthof $r6;
+
+     label5:
+        staticinvoke <java.lang.System: void arraycopy(java.lang.Object,int,java.lang.Object,int,int)>($r6, 0, r2, 0, $i0);
+
+     label6:
+        $i0 = lengthof $r6;
+
+        $i1 = lengthof $r7;
+
+     label7:
+        staticinvoke <java.lang.System: void arraycopy(java.lang.Object,int,java.lang.Object,int,int)>($r7, 0, r2, $i0, $i1);
+
+        $r1 = staticinvoke <com.google.ads.util.Base64: java.lang.String encodeToString(byte[],int)>(r2, 11);
+
+     label8:
+        return $r1;
+
+     label9:
+        r3 := @caughtexception;
+
+        return null;
+
+        catch java.security.GeneralSecurityException from label1 to label2 with label9;
+        catch java.security.GeneralSecurityException from label3 to label4 with label9;
+        catch java.security.GeneralSecurityException from label5 to label6 with label9;
+        catch java.security.GeneralSecurityException from label7 to label8 with label9;
+    }
+
+    java.lang.String getLocationParam()
+    {
+        com.google.ads.LocationTracker r0;
+        java.util.List $r2;
+        int i0, $i1;
+        java.lang.StringBuilder r1;
+        java.lang.Object $r3;
+        java.lang.String $r5;
+        android.location.Location $r4;
+
+        r0 := @this: com.google.ads.LocationTracker;
+
+        $r2 = specialinvoke r0.<com.google.ads.LocationTracker: java.util.List getLastKnownLocations()>();
+
+        r1 = new java.lang.StringBuilder;
+
+        specialinvoke r1.<java.lang.StringBuilder: void <init>()>();
+
+        i0 = 0;
+
+     label1:
+        $i1 = interfaceinvoke $r2.<java.util.List: int size()>();
+
+        if i0 >= $i1 goto label5;
+
+        $r3 = interfaceinvoke $r2.<java.util.List: java.lang.Object get(int)>(i0);
+
+        $r4 = (android.location.Location) $r3;
+
+        $r5 = virtualinvoke r0.<com.google.ads.LocationTracker: java.lang.String protoFromLocation(android.location.Location)>($r4);
+
+        $r5 = virtualinvoke r0.<com.google.ads.LocationTracker: java.lang.String encodeProto(java.lang.String)>($r5);
+
+        if $r5 == null goto label3;
+
+        if i0 != 0 goto label4;
+
+        virtualinvoke r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("e1+");
+
+     label2:
+        virtualinvoke r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+     label3:
+        i0 = i0 + 1;
+
+        goto label1;
+
+     label4:
+        virtualinvoke r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("+e1+");
+
+        goto label2;
+
+     label5:
+        $r5 = virtualinvoke r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r5;
+    }
+
+    java.lang.String protoFromLocation(android.location.Location)
+    {
+        java.lang.Object[] $r3;
+        com.google.ads.LocationTracker r0;
+        long $l0;
+        java.lang.Long $r4;
+        float $f0;
+        java.lang.String $r2;
+        android.location.Location $r1;
+        double $d0;
+
+        r0 := @this: com.google.ads.LocationTracker;
+
+        $r1 := @parameter0: android.location.Location;
+
+        $r2 = <com.google.ads.LocationTracker: java.lang.String PROTO_TEMPLATE>;
+
+        $r3 = newarray (java.lang.Object)[4];
+
+        $l0 = virtualinvoke $r1.<android.location.Location: long getTime()>();
+
+        $l0 = $l0 * 1000L;
+
+        $r4 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l0);
+
+        $r3[0] = $r4;
+
+        $d0 = virtualinvoke $r1.<android.location.Location: double getLatitude()>();
+
+        $d0 = $d0 * 1.0E7;
+
+        $l0 = (long) $d0;
+
+        $r4 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l0);
+
+        $r3[1] = $r4;
+
+        $d0 = virtualinvoke $r1.<android.location.Location: double getLongitude()>();
+
+        $d0 = $d0 * 1.0E7;
+
+        $l0 = (long) $d0;
+
+        $r4 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l0);
+
+        $r3[2] = $r4;
+
+        $f0 = virtualinvoke $r1.<android.location.Location: float getAccuracy()>();
+
+        $f0 = $f0 * 1000.0F;
+
+        $l0 = (long) $f0;
+
+        $r4 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l0);
+
+        $r3[3] = $r4;
+
+        $r2 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>($r2, $r3);
+
+        return $r2;
+    }
+}

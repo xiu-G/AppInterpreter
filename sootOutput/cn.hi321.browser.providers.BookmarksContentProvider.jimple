@@ -1,0 +1,460 @@
+public class cn.hi321.browser.providers.BookmarksContentProvider extends android.content.ContentProvider
+{
+    public static final java.lang.String AUTHORITY;
+    private static final int BOOKMARKS;
+    private static final int BOOKMARKS_BY_ID;
+    public static final java.lang.String BOOKMARKS_TABLE;
+    private static final java.lang.String BOOKMARKS_TABLE_CREATE;
+    public static final java.lang.String CONTENT_ITEM_TYPE;
+    public static final java.lang.String CONTENT_TYPE;
+    private static final java.lang.String DATABASE_NAME;
+    private static final int DATABASE_VERSION;
+    private static final android.content.UriMatcher sUriMatcher;
+    private android.content.Context mContext;
+    private android.database.sqlite.SQLiteDatabase mDb;
+    private cn.hi321.browser.providers.BookmarksContentProvider$DatabaseHelper mDbHelper;
+    public android.content.Intent ipcIntent;
+
+    static void <clinit>()
+    {
+        android.content.UriMatcher $r0, $r1;
+
+        <cn.hi321.browser.providers.BookmarksContentProvider: int DATABASE_VERSION> = 1;
+
+        <cn.hi321.browser.providers.BookmarksContentProvider: java.lang.String DATABASE_NAME> = "bookmarks.db";
+
+        <cn.hi321.browser.providers.BookmarksContentProvider: java.lang.String CONTENT_TYPE> = "vnd.android.cursor.dir/vnd.zirco.bookmarks";
+
+        <cn.hi321.browser.providers.BookmarksContentProvider: java.lang.String CONTENT_ITEM_TYPE> = "vnd.android.cursor.item/vnd.zirco.bookmarks";
+
+        <cn.hi321.browser.providers.BookmarksContentProvider: java.lang.String BOOKMARKS_TABLE_CREATE> = "CREATE TABLE bookmarks (_id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, url TEXT, visits INTEGER, date LONG, created LONG, bookmark INTEGER, favicon BLOB DEFAULT NULL);";
+
+        <cn.hi321.browser.providers.BookmarksContentProvider: java.lang.String BOOKMARKS_TABLE> = "bookmarks";
+
+        <cn.hi321.browser.providers.BookmarksContentProvider: int BOOKMARKS_BY_ID> = 2;
+
+        <cn.hi321.browser.providers.BookmarksContentProvider: int BOOKMARKS> = 1;
+
+        <cn.hi321.browser.providers.BookmarksContentProvider: java.lang.String AUTHORITY> = "org.zirco.providers.zircobookmarkscontentprovider";
+
+        $r1 = new android.content.UriMatcher;
+
+        specialinvoke $r1.<android.content.UriMatcher: void <init>(int)>(-1);
+
+        <cn.hi321.browser.providers.BookmarksContentProvider: android.content.UriMatcher sUriMatcher> = $r1;
+
+        $r0 = <cn.hi321.browser.providers.BookmarksContentProvider: android.content.UriMatcher sUriMatcher>;
+
+        virtualinvoke $r0.<android.content.UriMatcher: void addURI(java.lang.String,java.lang.String,int)>("org.zirco.providers.zircobookmarkscontentprovider", "bookmarks", 1);
+
+        $r0 = <cn.hi321.browser.providers.BookmarksContentProvider: android.content.UriMatcher sUriMatcher>;
+
+        virtualinvoke $r0.<android.content.UriMatcher: void addURI(java.lang.String,java.lang.String,int)>("org.zirco.providers.zircobookmarkscontentprovider", "bookmarks/#", 2);
+
+        return;
+    }
+
+    public void <init>()
+    {
+        cn.hi321.browser.providers.BookmarksContentProvider r0;
+
+        r0 := @this: cn.hi321.browser.providers.BookmarksContentProvider;
+
+        specialinvoke r0.<android.content.ContentProvider: void <init>()>();
+
+        return;
+    }
+
+    public int delete(android.net.Uri, java.lang.String, java.lang.String[])
+    {
+        android.content.Context $r8;
+        android.net.Uri $r1;
+        java.lang.String[] $r3;
+        java.lang.IllegalArgumentException $r5;
+        android.content.UriMatcher $r4;
+        android.database.sqlite.SQLiteDatabase $r7;
+        android.content.ContentResolver $r9;
+        cn.hi321.browser.providers.BookmarksContentProvider r0;
+        int $i0;
+        java.lang.StringBuilder $r6;
+        java.lang.String $r2;
+
+        r0 := @this: cn.hi321.browser.providers.BookmarksContentProvider;
+
+        $r1 := @parameter0: android.net.Uri;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: java.lang.String[];
+
+        $r4 = <cn.hi321.browser.providers.BookmarksContentProvider: android.content.UriMatcher sUriMatcher>;
+
+        $i0 = virtualinvoke $r4.<android.content.UriMatcher: int match(android.net.Uri)>($r1);
+
+        lookupswitch($i0)
+        {
+            case 1: goto label2;
+            default: goto label1;
+        };
+
+     label1:
+        $r5 = new java.lang.IllegalArgumentException;
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>(java.lang.String)>("Unknown URI ");
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r2 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r5.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r2);
+
+        throw $r5;
+
+     label2:
+        $r7 = r0.<cn.hi321.browser.providers.BookmarksContentProvider: android.database.sqlite.SQLiteDatabase mDb>;
+
+        $i0 = virtualinvoke $r7.<android.database.sqlite.SQLiteDatabase: int delete(java.lang.String,java.lang.String,java.lang.String[])>("bookmarks", $r2, $r3);
+
+        if $i0 <= 0 goto label3;
+
+        $r8 = r0.<cn.hi321.browser.providers.BookmarksContentProvider: android.content.Context mContext>;
+
+        $r9 = virtualinvoke $r8.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        virtualinvoke $r9.<android.content.ContentResolver: void notifyChange(android.net.Uri,android.database.ContentObserver)>($r1, null);
+
+     label3:
+        return $i0;
+    }
+
+    public java.lang.String getType(android.net.Uri)
+    {
+        cn.hi321.browser.providers.BookmarksContentProvider r0;
+        android.net.Uri $r1;
+        int $i0;
+        java.lang.StringBuilder $r4;
+        java.lang.String $r5;
+        java.lang.IllegalArgumentException $r3;
+        android.content.UriMatcher $r2;
+
+        r0 := @this: cn.hi321.browser.providers.BookmarksContentProvider;
+
+        $r1 := @parameter0: android.net.Uri;
+
+        $r2 = <cn.hi321.browser.providers.BookmarksContentProvider: android.content.UriMatcher sUriMatcher>;
+
+        $i0 = virtualinvoke $r2.<android.content.UriMatcher: int match(android.net.Uri)>($r1);
+
+        lookupswitch($i0)
+        {
+            case 1: goto label2;
+            case 2: goto label3;
+            default: goto label1;
+        };
+
+     label1:
+        $r3 = new java.lang.IllegalArgumentException;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>(java.lang.String)>("Unknown URI ");
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r3.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r5);
+
+        throw $r3;
+
+     label2:
+        return "vnd.android.cursor.dir/vnd.zirco.weave";
+
+     label3:
+        return "vnd.android.cursor.item/vnd.zirco.weave";
+    }
+
+    public android.net.Uri insert(android.net.Uri, android.content.ContentValues)
+    {
+        android.content.Context $r7;
+        android.net.Uri $r1;
+        long $l1;
+        android.database.SQLException $r11;
+        java.lang.IllegalArgumentException $r10;
+        android.content.UriMatcher $r3;
+        android.database.sqlite.SQLiteDatabase $r6;
+        byte $b2;
+        android.content.ContentResolver $r8;
+        cn.hi321.browser.providers.BookmarksContentProvider r0;
+        int $i0;
+        java.lang.StringBuilder $r4, $r9;
+        android.content.ContentValues $r2;
+        java.lang.String $r5;
+
+        r0 := @this: cn.hi321.browser.providers.BookmarksContentProvider;
+
+        $r1 := @parameter0: android.net.Uri;
+
+        $r2 := @parameter1: android.content.ContentValues;
+
+        $r3 = <cn.hi321.browser.providers.BookmarksContentProvider: android.content.UriMatcher sUriMatcher>;
+
+        $i0 = virtualinvoke $r3.<android.content.UriMatcher: int match(android.net.Uri)>($r1);
+
+        lookupswitch($i0)
+        {
+            case 1: goto label2;
+            default: goto label1;
+        };
+
+     label1:
+        $r10 = new java.lang.IllegalArgumentException;
+
+        $r9 = new java.lang.StringBuilder;
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>(java.lang.String)>("Unknown URI ");
+
+        $r4 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r10.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r5);
+
+        throw $r10;
+
+     label2:
+        $r6 = r0.<cn.hi321.browser.providers.BookmarksContentProvider: android.database.sqlite.SQLiteDatabase mDb>;
+
+        $l1 = virtualinvoke $r6.<android.database.sqlite.SQLiteDatabase: long insert(java.lang.String,java.lang.String,android.content.ContentValues)>("bookmarks", null, $r2);
+
+        $b2 = $l1 cmp 0L;
+
+        $i0 = (int) $b2;
+
+        if $i0 <= 0 goto label3;
+
+        $r1 = <cn.hi321.browser.providers.WeaveColumns: android.net.Uri CONTENT_URI>;
+
+        $r1 = staticinvoke <android.content.ContentUris: android.net.Uri withAppendedId(android.net.Uri,long)>($r1, $l1);
+
+        $r7 = r0.<cn.hi321.browser.providers.BookmarksContentProvider: android.content.Context mContext>;
+
+        $r8 = virtualinvoke $r7.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        virtualinvoke $r8.<android.content.ContentResolver: void notifyChange(android.net.Uri,android.database.ContentObserver)>($r1, null);
+
+        return $r1;
+
+     label3:
+        $r11 = new android.database.SQLException;
+
+        $r9 = new java.lang.StringBuilder;
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>(java.lang.String)>("Failed to insert row into ");
+
+        $r4 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r11.<android.database.SQLException: void <init>(java.lang.String)>($r5);
+
+        throw $r11;
+    }
+
+    public boolean onCreate()
+    {
+        android.content.Context $r1;
+        android.database.sqlite.SQLiteDatabase $r3;
+        cn.hi321.browser.providers.BookmarksContentProvider$DatabaseHelper $r2;
+        cn.hi321.browser.providers.BookmarksContentProvider r0;
+
+        r0 := @this: cn.hi321.browser.providers.BookmarksContentProvider;
+
+        $r1 = virtualinvoke r0.<cn.hi321.browser.providers.BookmarksContentProvider: android.content.Context getContext()>();
+
+        r0.<cn.hi321.browser.providers.BookmarksContentProvider: android.content.Context mContext> = $r1;
+
+        $r2 = new cn.hi321.browser.providers.BookmarksContentProvider$DatabaseHelper;
+
+        $r1 = r0.<cn.hi321.browser.providers.BookmarksContentProvider: android.content.Context mContext>;
+
+        specialinvoke $r2.<cn.hi321.browser.providers.BookmarksContentProvider$DatabaseHelper: void <init>(android.content.Context)>($r1);
+
+        r0.<cn.hi321.browser.providers.BookmarksContentProvider: cn.hi321.browser.providers.BookmarksContentProvider$DatabaseHelper mDbHelper> = $r2;
+
+        $r2 = r0.<cn.hi321.browser.providers.BookmarksContentProvider: cn.hi321.browser.providers.BookmarksContentProvider$DatabaseHelper mDbHelper>;
+
+        $r3 = virtualinvoke $r2.<cn.hi321.browser.providers.BookmarksContentProvider$DatabaseHelper: android.database.sqlite.SQLiteDatabase getWritableDatabase()>();
+
+        r0.<cn.hi321.browser.providers.BookmarksContentProvider: android.database.sqlite.SQLiteDatabase mDb> = $r3;
+
+        return 1;
+    }
+
+    public android.database.Cursor query(android.net.Uri, java.lang.String[], java.lang.String, java.lang.String[], java.lang.String)
+    {
+        android.content.Context $r12;
+        android.net.Uri $r1;
+        java.lang.String[] $r2, $r4;
+        android.content.UriMatcher $r7;
+        android.database.sqlite.SQLiteDatabase $r10;
+        android.content.ContentResolver $r13;
+        cn.hi321.browser.providers.BookmarksContentProvider r0;
+        int $i0;
+        java.lang.String $r3, $r5, $r16;
+        android.database.Cursor $r11;
+        android.database.sqlite.SQLiteQueryBuilder r6;
+        java.lang.IllegalArgumentException $r8;
+        java.util.List $r14;
+        java.lang.StringBuilder $r9;
+        java.lang.Object $r15;
+
+        r0 := @this: cn.hi321.browser.providers.BookmarksContentProvider;
+
+        $r1 := @parameter0: android.net.Uri;
+
+        $r2 := @parameter1: java.lang.String[];
+
+        $r3 := @parameter2: java.lang.String;
+
+        $r4 := @parameter3: java.lang.String[];
+
+        $r5 := @parameter4: java.lang.String;
+
+        r6 = new android.database.sqlite.SQLiteQueryBuilder;
+
+        specialinvoke r6.<android.database.sqlite.SQLiteQueryBuilder: void <init>()>();
+
+        $r7 = <cn.hi321.browser.providers.BookmarksContentProvider: android.content.UriMatcher sUriMatcher>;
+
+        $i0 = virtualinvoke $r7.<android.content.UriMatcher: int match(android.net.Uri)>($r1);
+
+        lookupswitch($i0)
+        {
+            case 1: goto label2;
+            case 2: goto label4;
+            default: goto label1;
+        };
+
+     label1:
+        $r8 = new java.lang.IllegalArgumentException;
+
+        $r9 = new java.lang.StringBuilder;
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>(java.lang.String)>("Unknown URI ");
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r3 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r8.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r3);
+
+        throw $r8;
+
+     label2:
+        virtualinvoke r6.<android.database.sqlite.SQLiteQueryBuilder: void setTables(java.lang.String)>("bookmarks");
+
+     label3:
+        $r10 = r0.<cn.hi321.browser.providers.BookmarksContentProvider: android.database.sqlite.SQLiteDatabase mDb>;
+
+        $r11 = virtualinvoke r6.<android.database.sqlite.SQLiteQueryBuilder: android.database.Cursor query(android.database.sqlite.SQLiteDatabase,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String,java.lang.String,java.lang.String)>($r10, $r2, $r3, $r4, null, null, $r5);
+
+        $r12 = virtualinvoke r0.<cn.hi321.browser.providers.BookmarksContentProvider: android.content.Context getContext()>();
+
+        $r13 = virtualinvoke $r12.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        interfaceinvoke $r11.<android.database.Cursor: void setNotificationUri(android.content.ContentResolver,android.net.Uri)>($r13, $r1);
+
+        return $r11;
+
+     label4:
+        virtualinvoke r6.<android.database.sqlite.SQLiteQueryBuilder: void setTables(java.lang.String)>("bookmarks");
+
+        $r9 = new java.lang.StringBuilder;
+
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>(java.lang.String)>("_id = ");
+
+        $r14 = virtualinvoke $r1.<android.net.Uri: java.util.List getPathSegments()>();
+
+        $r15 = interfaceinvoke $r14.<java.util.List: java.lang.Object get(int)>(1);
+
+        $r16 = (java.lang.String) $r15;
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r16);
+
+        $r16 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke r6.<android.database.sqlite.SQLiteQueryBuilder: void appendWhere(java.lang.CharSequence)>($r16);
+
+        goto label3;
+    }
+
+    public int update(android.net.Uri, android.content.ContentValues, java.lang.String, java.lang.String[])
+    {
+        android.content.Context $r9;
+        android.net.Uri $r1;
+        java.lang.String[] $r4;
+        java.lang.IllegalArgumentException $r6;
+        android.content.UriMatcher $r5;
+        android.database.sqlite.SQLiteDatabase $r8;
+        android.content.ContentResolver $r10;
+        cn.hi321.browser.providers.BookmarksContentProvider r0;
+        int $i0;
+        java.lang.StringBuilder $r7;
+        android.content.ContentValues $r2;
+        java.lang.String $r3;
+
+        r0 := @this: cn.hi321.browser.providers.BookmarksContentProvider;
+
+        $r1 := @parameter0: android.net.Uri;
+
+        $r2 := @parameter1: android.content.ContentValues;
+
+        $r3 := @parameter2: java.lang.String;
+
+        $r4 := @parameter3: java.lang.String[];
+
+        $r5 = <cn.hi321.browser.providers.BookmarksContentProvider: android.content.UriMatcher sUriMatcher>;
+
+        $i0 = virtualinvoke $r5.<android.content.UriMatcher: int match(android.net.Uri)>($r1);
+
+        lookupswitch($i0)
+        {
+            case 1: goto label2;
+            default: goto label1;
+        };
+
+     label1:
+        $r6 = new java.lang.IllegalArgumentException;
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>(java.lang.String)>("Unknown URI ");
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r1);
+
+        $r3 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r6.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r3);
+
+        throw $r6;
+
+     label2:
+        $r8 = r0.<cn.hi321.browser.providers.BookmarksContentProvider: android.database.sqlite.SQLiteDatabase mDb>;
+
+        $i0 = virtualinvoke $r8.<android.database.sqlite.SQLiteDatabase: int update(java.lang.String,android.content.ContentValues,java.lang.String,java.lang.String[])>("bookmarks", $r2, $r3, $r4);
+
+        if $i0 <= 0 goto label3;
+
+        $r9 = r0.<cn.hi321.browser.providers.BookmarksContentProvider: android.content.Context mContext>;
+
+        $r10 = virtualinvoke $r9.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        virtualinvoke $r10.<android.content.ContentResolver: void notifyChange(android.net.Uri,android.database.ContentObserver)>($r1, null);
+
+     label3:
+        return $i0;
+    }
+}

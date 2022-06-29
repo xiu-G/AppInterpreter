@@ -1,0 +1,92 @@
+final class se.runstar.provider.b extends android.database.sqlite.SQLiteOpenHelper
+{
+    private android.content.Context a;
+
+    void <init>(android.content.Context)
+    {
+        android.content.Context $r1;
+        se.runstar.provider.b r0;
+
+        r0 := @this: se.runstar.provider.b;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke r0.<android.database.sqlite.SQLiteOpenHelper: void <init>(android.content.Context,java.lang.String,android.database.sqlite.SQLiteDatabase$CursorFactory,int)>($r1, "workouts", null, 4);
+
+        r0.<se.runstar.provider.b: android.content.Context a> = $r1;
+
+        return;
+    }
+
+    public final void onCreate(android.database.sqlite.SQLiteDatabase)
+    {
+        android.database.sqlite.SQLiteDatabase $r1;
+        se.runstar.provider.b r0;
+
+        r0 := @this: se.runstar.provider.b;
+
+        $r1 := @parameter0: android.database.sqlite.SQLiteDatabase;
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("create table locations (_id integer primary key autoincrement, runningworkout_id integer not null, longitude real not null, latitude real not null, altitude real not null, speed real not null, accuracy real not null, time integer not null);");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("create table running_workouts (_id integer primary key autoincrement, date integer, mode integer, description text, distance integer, duration integer, pause_duration integer, average_speed real);");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("create table running_workouts_sync (local_id integer, remote_id integer);");
+
+        return;
+    }
+
+    public final void onUpgrade(android.database.sqlite.SQLiteDatabase, int, int)
+    {
+        android.content.SharedPreferences$Editor $r4;
+        android.database.sqlite.SQLiteDatabase $r1;
+        android.content.Context $r2;
+        android.content.SharedPreferences $r3;
+        se.runstar.provider.b r0;
+        int $i0, $i1;
+
+        r0 := @this: se.runstar.provider.b;
+
+        $r1 := @parameter0: android.database.sqlite.SQLiteDatabase;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        if $i0 != 1 goto label3;
+
+        $r2 = r0.<se.runstar.provider.b: android.content.Context a>;
+
+        $r3 = virtualinvoke $r2.<android.content.Context: android.content.SharedPreferences getSharedPreferences(java.lang.String,int)>("runstar", 0);
+
+        $r4 = interfaceinvoke $r3.<android.content.SharedPreferences: android.content.SharedPreferences$Editor edit()>();
+
+        interfaceinvoke $r4.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putBoolean(java.lang.String,boolean)>("storage_recalculate", 1);
+
+        interfaceinvoke $r4.<android.content.SharedPreferences$Editor: boolean commit()>();
+
+        $i0 = $i0 + 1;
+
+     label1:
+        if $i0 != 2 goto label2;
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("create table running_workouts_sync (local_id integer, remote_id integer);");
+
+        $i0 = $i0 + 1;
+
+     label2:
+        if $i0 != 3 goto label4;
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("alter table running_workouts add column mode integer;");
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("alter table running_workouts add column pause_duration integer;");
+
+        return;
+
+     label3:
+        goto label1;
+
+     label4:
+        return;
+    }
+}

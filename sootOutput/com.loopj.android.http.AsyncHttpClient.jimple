@@ -1,0 +1,1158 @@
+public class com.loopj.android.http.AsyncHttpClient extends java.lang.Object
+{
+    private static final int DEFAULT_MAX_CONNECTIONS;
+    private static final int DEFAULT_MAX_RETRIES;
+    private static final int DEFAULT_SOCKET_BUFFER_SIZE;
+    private static final int DEFAULT_SOCKET_TIMEOUT;
+    private static final java.lang.String ENCODING_GZIP;
+    private static final java.lang.String HEADER_ACCEPT_ENCODING;
+    private static final java.lang.String VERSION;
+    private static int maxConnections;
+    private static int socketTimeout;
+    private final java.util.Map clientHeaderMap;
+    private final org.apache.http.impl.client.DefaultHttpClient httpClient;
+    private final org.apache.http.protocol.HttpContext httpContext;
+    private final java.util.Map requestMap;
+    private java.util.concurrent.ThreadPoolExecutor threadPool;
+
+    static void <clinit>()
+    {
+        <com.loopj.android.http.AsyncHttpClient: java.lang.String VERSION> = "1.4.3";
+
+        <com.loopj.android.http.AsyncHttpClient: java.lang.String HEADER_ACCEPT_ENCODING> = "Accept-Encoding";
+
+        <com.loopj.android.http.AsyncHttpClient: java.lang.String ENCODING_GZIP> = "gzip";
+
+        <com.loopj.android.http.AsyncHttpClient: int DEFAULT_SOCKET_TIMEOUT> = 10000;
+
+        <com.loopj.android.http.AsyncHttpClient: int DEFAULT_SOCKET_BUFFER_SIZE> = 8192;
+
+        <com.loopj.android.http.AsyncHttpClient: int DEFAULT_MAX_RETRIES> = 5;
+
+        <com.loopj.android.http.AsyncHttpClient: int DEFAULT_MAX_CONNECTIONS> = 10;
+
+        <com.loopj.android.http.AsyncHttpClient: int maxConnections> = 10;
+
+        <com.loopj.android.http.AsyncHttpClient: int socketTimeout> = 10000;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        org.apache.http.conn.scheme.PlainSocketFactory $r6;
+        org.apache.http.impl.client.DefaultHttpClient $r10;
+        org.apache.http.params.BasicHttpParams r2;
+        java.util.concurrent.ThreadPoolExecutor $r15;
+        com.loopj.android.http.RetryHandler $r13;
+        com.loopj.android.http.AsyncHttpClient r0;
+        long $l1;
+        com.loopj.android.http.AsyncHttpClient$2 $r12;
+        java.util.HashMap $r17;
+        com.loopj.android.http.AsyncHttpClient$1 $r11;
+        org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager r1;
+        int $i0;
+        org.apache.http.conn.ssl.SSLSocketFactory $r7;
+        java.util.concurrent.ExecutorService $r14;
+        java.util.WeakHashMap $r16;
+        org.apache.http.conn.scheme.SchemeRegistry r3;
+        org.apache.http.conn.params.ConnPerRouteBean $r4;
+        org.apache.http.conn.scheme.Scheme $r5;
+        org.apache.http.protocol.SyncBasicHttpContext $r8;
+        org.apache.http.protocol.BasicHttpContext $r9;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r2 = new org.apache.http.params.BasicHttpParams;
+
+        specialinvoke r2.<org.apache.http.params.BasicHttpParams: void <init>()>();
+
+        $i0 = <com.loopj.android.http.AsyncHttpClient: int socketTimeout>;
+
+        $l1 = (long) $i0;
+
+        staticinvoke <org.apache.http.conn.params.ConnManagerParams: void setTimeout(org.apache.http.params.HttpParams,long)>(r2, $l1);
+
+        $r4 = new org.apache.http.conn.params.ConnPerRouteBean;
+
+        $i0 = <com.loopj.android.http.AsyncHttpClient: int maxConnections>;
+
+        specialinvoke $r4.<org.apache.http.conn.params.ConnPerRouteBean: void <init>(int)>($i0);
+
+        staticinvoke <org.apache.http.conn.params.ConnManagerParams: void setMaxConnectionsPerRoute(org.apache.http.params.HttpParams,org.apache.http.conn.params.ConnPerRoute)>(r2, $r4);
+
+        staticinvoke <org.apache.http.conn.params.ConnManagerParams: void setMaxTotalConnections(org.apache.http.params.HttpParams,int)>(r2, 10);
+
+        $i0 = <com.loopj.android.http.AsyncHttpClient: int socketTimeout>;
+
+        staticinvoke <org.apache.http.params.HttpConnectionParams: void setSoTimeout(org.apache.http.params.HttpParams,int)>(r2, $i0);
+
+        $i0 = <com.loopj.android.http.AsyncHttpClient: int socketTimeout>;
+
+        staticinvoke <org.apache.http.params.HttpConnectionParams: void setConnectionTimeout(org.apache.http.params.HttpParams,int)>(r2, $i0);
+
+        staticinvoke <org.apache.http.params.HttpConnectionParams: void setTcpNoDelay(org.apache.http.params.HttpParams,boolean)>(r2, 1);
+
+        staticinvoke <org.apache.http.params.HttpConnectionParams: void setSocketBufferSize(org.apache.http.params.HttpParams,int)>(r2, 8192);
+
+        r3 = new org.apache.http.conn.scheme.SchemeRegistry;
+
+        specialinvoke r3.<org.apache.http.conn.scheme.SchemeRegistry: void <init>()>();
+
+        $r5 = new org.apache.http.conn.scheme.Scheme;
+
+        $r6 = staticinvoke <org.apache.http.conn.scheme.PlainSocketFactory: org.apache.http.conn.scheme.PlainSocketFactory getSocketFactory()>();
+
+        specialinvoke $r5.<org.apache.http.conn.scheme.Scheme: void <init>(java.lang.String,org.apache.http.conn.scheme.SocketFactory,int)>("http", $r6, 80);
+
+        virtualinvoke r3.<org.apache.http.conn.scheme.SchemeRegistry: org.apache.http.conn.scheme.Scheme register(org.apache.http.conn.scheme.Scheme)>($r5);
+
+        $r5 = new org.apache.http.conn.scheme.Scheme;
+
+        $r7 = staticinvoke <org.apache.http.conn.ssl.SSLSocketFactory: org.apache.http.conn.ssl.SSLSocketFactory getSocketFactory()>();
+
+        specialinvoke $r5.<org.apache.http.conn.scheme.Scheme: void <init>(java.lang.String,org.apache.http.conn.scheme.SocketFactory,int)>("https", $r7, 443);
+
+        virtualinvoke r3.<org.apache.http.conn.scheme.SchemeRegistry: org.apache.http.conn.scheme.Scheme register(org.apache.http.conn.scheme.Scheme)>($r5);
+
+        r1 = new org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager;
+
+        specialinvoke r1.<org.apache.http.impl.conn.tsccm.ThreadSafeClientConnManager: void <init>(org.apache.http.params.HttpParams,org.apache.http.conn.scheme.SchemeRegistry)>(r2, r3);
+
+        $r8 = new org.apache.http.protocol.SyncBasicHttpContext;
+
+        $r9 = new org.apache.http.protocol.BasicHttpContext;
+
+        specialinvoke $r9.<org.apache.http.protocol.BasicHttpContext: void <init>()>();
+
+        specialinvoke $r8.<org.apache.http.protocol.SyncBasicHttpContext: void <init>(org.apache.http.protocol.HttpContext)>($r9);
+
+        r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.protocol.HttpContext httpContext> = $r8;
+
+        $r10 = new org.apache.http.impl.client.DefaultHttpClient;
+
+        specialinvoke $r10.<org.apache.http.impl.client.DefaultHttpClient: void <init>(org.apache.http.conn.ClientConnectionManager,org.apache.http.params.HttpParams)>(r1, r2);
+
+        r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.impl.client.DefaultHttpClient httpClient> = $r10;
+
+        $r10 = r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.impl.client.DefaultHttpClient httpClient>;
+
+        $r11 = new com.loopj.android.http.AsyncHttpClient$1;
+
+        specialinvoke $r11.<com.loopj.android.http.AsyncHttpClient$1: void <init>(com.loopj.android.http.AsyncHttpClient)>(r0);
+
+        virtualinvoke $r10.<org.apache.http.impl.client.DefaultHttpClient: void addRequestInterceptor(org.apache.http.HttpRequestInterceptor)>($r11);
+
+        $r10 = r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.impl.client.DefaultHttpClient httpClient>;
+
+        $r12 = new com.loopj.android.http.AsyncHttpClient$2;
+
+        specialinvoke $r12.<com.loopj.android.http.AsyncHttpClient$2: void <init>(com.loopj.android.http.AsyncHttpClient)>(r0);
+
+        virtualinvoke $r10.<org.apache.http.impl.client.DefaultHttpClient: void addResponseInterceptor(org.apache.http.HttpResponseInterceptor)>($r12);
+
+        $r10 = r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.impl.client.DefaultHttpClient httpClient>;
+
+        $r13 = new com.loopj.android.http.RetryHandler;
+
+        specialinvoke $r13.<com.loopj.android.http.RetryHandler: void <init>(int)>(5);
+
+        virtualinvoke $r10.<org.apache.http.impl.client.DefaultHttpClient: void setHttpRequestRetryHandler(org.apache.http.client.HttpRequestRetryHandler)>($r13);
+
+        $r14 = staticinvoke <java.util.concurrent.Executors: java.util.concurrent.ExecutorService newCachedThreadPool()>();
+
+        $r15 = (java.util.concurrent.ThreadPoolExecutor) $r14;
+
+        r0.<com.loopj.android.http.AsyncHttpClient: java.util.concurrent.ThreadPoolExecutor threadPool> = $r15;
+
+        $r16 = new java.util.WeakHashMap;
+
+        specialinvoke $r16.<java.util.WeakHashMap: void <init>()>();
+
+        r0.<com.loopj.android.http.AsyncHttpClient: java.util.Map requestMap> = $r16;
+
+        $r17 = new java.util.HashMap;
+
+        specialinvoke $r17.<java.util.HashMap: void <init>()>();
+
+        r0.<com.loopj.android.http.AsyncHttpClient: java.util.Map clientHeaderMap> = $r17;
+
+        return;
+    }
+
+    static java.util.Map access$0(com.loopj.android.http.AsyncHttpClient)
+    {
+        com.loopj.android.http.AsyncHttpClient $r0;
+        java.util.Map r1;
+
+        $r0 := @parameter0: com.loopj.android.http.AsyncHttpClient;
+
+        r1 = $r0.<com.loopj.android.http.AsyncHttpClient: java.util.Map clientHeaderMap>;
+
+        return r1;
+    }
+
+    private org.apache.http.client.methods.HttpEntityEnclosingRequestBase addEntityToRequestBase(org.apache.http.client.methods.HttpEntityEnclosingRequestBase, org.apache.http.HttpEntity)
+    {
+        com.loopj.android.http.AsyncHttpClient r0;
+        org.apache.http.HttpEntity $r2;
+        org.apache.http.client.methods.HttpEntityEnclosingRequestBase $r1;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        $r1 := @parameter0: org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
+
+        $r2 := @parameter1: org.apache.http.HttpEntity;
+
+        if $r2 == null goto label1;
+
+        virtualinvoke $r1.<org.apache.http.client.methods.HttpEntityEnclosingRequestBase: void setEntity(org.apache.http.HttpEntity)>($r2);
+
+     label1:
+        return $r1;
+    }
+
+    public static java.lang.String getUrlWithQueryString(java.lang.String, com.loopj.android.http.RequestParams)
+    {
+        com.loopj.android.http.RequestParams $r0;
+        int $i0;
+        java.lang.StringBuilder $r3, $r4;
+        java.lang.String $r1, $r2;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r0 := @parameter1: com.loopj.android.http.RequestParams;
+
+        if $r0 == null goto label2;
+
+        $r2 = virtualinvoke $r0.<com.loopj.android.http.RequestParams: java.lang.String getParamString()>();
+
+        $i0 = virtualinvoke $r1.<java.lang.String: int indexOf(java.lang.String)>("?");
+
+        if $i0 != -1 goto label1;
+
+        $r4 = new java.lang.StringBuilder;
+
+        $r1 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r1);
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>(java.lang.String)>($r1);
+
+        $r3 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("?");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r1;
+
+     label1:
+        $r4 = new java.lang.StringBuilder;
+
+        $r1 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r1);
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>(java.lang.String)>($r1);
+
+        $r3 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("&");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label2:
+        return $r1;
+    }
+
+    private org.apache.http.HttpEntity paramsToEntity(com.loopj.android.http.RequestParams)
+    {
+        com.loopj.android.http.AsyncHttpClient r0;
+        org.apache.http.HttpEntity $r2;
+        com.loopj.android.http.RequestParams $r1;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        $r1 := @parameter0: com.loopj.android.http.RequestParams;
+
+        if $r1 == null goto label1;
+
+        $r2 = virtualinvoke $r1.<com.loopj.android.http.RequestParams: org.apache.http.HttpEntity getEntity()>();
+
+        return $r2;
+
+     label1:
+        return null;
+    }
+
+    public void addHeader(java.lang.String, java.lang.String)
+    {
+        java.util.Map $r3;
+        com.loopj.android.http.AsyncHttpClient r0;
+        java.lang.String $r1, $r2;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 = r0.<com.loopj.android.http.AsyncHttpClient: java.util.Map clientHeaderMap>;
+
+        interfaceinvoke $r3.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r1, $r2);
+
+        return;
+    }
+
+    public void cancelRequests(android.content.Context, boolean)
+    {
+        android.content.Context $r1;
+        java.util.Iterator $r5;
+        com.loopj.android.http.AsyncHttpClient r0;
+        java.util.List r4;
+        java.util.concurrent.Future r7;
+        java.util.Map $r2;
+        java.lang.Object $r3;
+        java.lang.ref.WeakReference r6;
+        boolean $z0, $z1;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $z0 := @parameter1: boolean;
+
+        $r2 = r0.<com.loopj.android.http.AsyncHttpClient: java.util.Map requestMap>;
+
+        $r3 = interfaceinvoke $r2.<java.util.Map: java.lang.Object get(java.lang.Object)>($r1);
+
+        r4 = (java.util.List) $r3;
+
+        if r4 == null goto label2;
+
+        $r5 = interfaceinvoke r4.<java.util.List: java.util.Iterator iterator()>();
+
+     label1:
+        $z1 = interfaceinvoke $r5.<java.util.Iterator: boolean hasNext()>();
+
+        if $z1 != 0 goto label3;
+
+     label2:
+        $r2 = r0.<com.loopj.android.http.AsyncHttpClient: java.util.Map requestMap>;
+
+        interfaceinvoke $r2.<java.util.Map: java.lang.Object remove(java.lang.Object)>($r1);
+
+        return;
+
+     label3:
+        $r3 = interfaceinvoke $r5.<java.util.Iterator: java.lang.Object next()>();
+
+        r6 = (java.lang.ref.WeakReference) $r3;
+
+        $r3 = virtualinvoke r6.<java.lang.ref.WeakReference: java.lang.Object get()>();
+
+        r7 = (java.util.concurrent.Future) $r3;
+
+        if r7 == null goto label1;
+
+        interfaceinvoke r7.<java.util.concurrent.Future: boolean cancel(boolean)>($z0);
+
+        goto label1;
+    }
+
+    public void delete(android.content.Context, java.lang.String, com.loopj.android.http.AsyncHttpResponseHandler)
+    {
+        org.apache.http.impl.client.DefaultHttpClient $r4;
+        android.content.Context $r1;
+        org.apache.http.client.methods.HttpDelete r6;
+        org.apache.http.protocol.HttpContext $r5;
+        com.loopj.android.http.AsyncHttpClient r0;
+        java.lang.String $r2;
+        com.loopj.android.http.AsyncHttpResponseHandler $r3;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: com.loopj.android.http.AsyncHttpResponseHandler;
+
+        r6 = new org.apache.http.client.methods.HttpDelete;
+
+        specialinvoke r6.<org.apache.http.client.methods.HttpDelete: void <init>(java.lang.String)>($r2);
+
+        $r4 = r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.impl.client.DefaultHttpClient httpClient>;
+
+        $r5 = r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.protocol.HttpContext httpContext>;
+
+        virtualinvoke r0.<com.loopj.android.http.AsyncHttpClient: void sendRequest(org.apache.http.impl.client.DefaultHttpClient,org.apache.http.protocol.HttpContext,org.apache.http.client.methods.HttpUriRequest,java.lang.String,com.loopj.android.http.AsyncHttpResponseHandler,android.content.Context)>($r4, $r5, r6, null, $r3, $r1);
+
+        return;
+    }
+
+    public void delete(android.content.Context, java.lang.String, org.apache.http.Header[], com.loopj.android.http.AsyncHttpResponseHandler)
+    {
+        org.apache.http.Header[] $r3;
+        org.apache.http.impl.client.DefaultHttpClient $r5;
+        android.content.Context $r1;
+        com.loopj.android.http.AsyncHttpClient r0;
+        com.loopj.android.http.AsyncHttpResponseHandler $r4;
+        org.apache.http.client.methods.HttpDelete r7;
+        org.apache.http.protocol.HttpContext $r6;
+        java.lang.String $r2;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: org.apache.http.Header[];
+
+        $r4 := @parameter3: com.loopj.android.http.AsyncHttpResponseHandler;
+
+        r7 = new org.apache.http.client.methods.HttpDelete;
+
+        specialinvoke r7.<org.apache.http.client.methods.HttpDelete: void <init>(java.lang.String)>($r2);
+
+        if $r3 == null goto label1;
+
+        virtualinvoke r7.<org.apache.http.client.methods.HttpDelete: void setHeaders(org.apache.http.Header[])>($r3);
+
+     label1:
+        $r5 = r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.impl.client.DefaultHttpClient httpClient>;
+
+        $r6 = r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.protocol.HttpContext httpContext>;
+
+        virtualinvoke r0.<com.loopj.android.http.AsyncHttpClient: void sendRequest(org.apache.http.impl.client.DefaultHttpClient,org.apache.http.protocol.HttpContext,org.apache.http.client.methods.HttpUriRequest,java.lang.String,com.loopj.android.http.AsyncHttpResponseHandler,android.content.Context)>($r5, $r6, r7, null, $r4, $r1);
+
+        return;
+    }
+
+    public void delete(java.lang.String, com.loopj.android.http.AsyncHttpResponseHandler)
+    {
+        com.loopj.android.http.AsyncHttpClient r0;
+        java.lang.String $r1;
+        com.loopj.android.http.AsyncHttpResponseHandler $r2;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: com.loopj.android.http.AsyncHttpResponseHandler;
+
+        virtualinvoke r0.<com.loopj.android.http.AsyncHttpClient: void delete(android.content.Context,java.lang.String,com.loopj.android.http.AsyncHttpResponseHandler)>(null, $r1, $r2);
+
+        return;
+    }
+
+    public void get(android.content.Context, java.lang.String, com.loopj.android.http.AsyncHttpResponseHandler)
+    {
+        android.content.Context $r1;
+        com.loopj.android.http.AsyncHttpClient r0;
+        java.lang.String $r2;
+        com.loopj.android.http.AsyncHttpResponseHandler $r3;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: com.loopj.android.http.AsyncHttpResponseHandler;
+
+        virtualinvoke r0.<com.loopj.android.http.AsyncHttpClient: void get(android.content.Context,java.lang.String,com.loopj.android.http.RequestParams,com.loopj.android.http.AsyncHttpResponseHandler)>($r1, $r2, null, $r3);
+
+        return;
+    }
+
+    public void get(android.content.Context, java.lang.String, com.loopj.android.http.RequestParams, com.loopj.android.http.AsyncHttpResponseHandler)
+    {
+        org.apache.http.impl.client.DefaultHttpClient $r5;
+        android.content.Context $r1;
+        com.loopj.android.http.AsyncHttpClient r0;
+        com.loopj.android.http.AsyncHttpResponseHandler $r4;
+        org.apache.http.client.methods.HttpGet $r7;
+        com.loopj.android.http.RequestParams $r3;
+        org.apache.http.protocol.HttpContext $r6;
+        java.lang.String $r2;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: com.loopj.android.http.RequestParams;
+
+        $r4 := @parameter3: com.loopj.android.http.AsyncHttpResponseHandler;
+
+        $r5 = r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.impl.client.DefaultHttpClient httpClient>;
+
+        $r6 = r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.protocol.HttpContext httpContext>;
+
+        $r7 = new org.apache.http.client.methods.HttpGet;
+
+        $r2 = staticinvoke <com.loopj.android.http.AsyncHttpClient: java.lang.String getUrlWithQueryString(java.lang.String,com.loopj.android.http.RequestParams)>($r2, $r3);
+
+        specialinvoke $r7.<org.apache.http.client.methods.HttpGet: void <init>(java.lang.String)>($r2);
+
+        virtualinvoke r0.<com.loopj.android.http.AsyncHttpClient: void sendRequest(org.apache.http.impl.client.DefaultHttpClient,org.apache.http.protocol.HttpContext,org.apache.http.client.methods.HttpUriRequest,java.lang.String,com.loopj.android.http.AsyncHttpResponseHandler,android.content.Context)>($r5, $r6, $r7, null, $r4, null);
+
+        return;
+    }
+
+    public void get(android.content.Context, java.lang.String, org.apache.http.Header[], com.loopj.android.http.RequestParams, com.loopj.android.http.AsyncHttpResponseHandler)
+    {
+        org.apache.http.Header[] $r3;
+        org.apache.http.impl.client.DefaultHttpClient $r6;
+        android.content.Context $r1;
+        com.loopj.android.http.AsyncHttpClient r0;
+        com.loopj.android.http.AsyncHttpResponseHandler $r5;
+        org.apache.http.client.methods.HttpGet r8;
+        com.loopj.android.http.RequestParams $r4;
+        org.apache.http.protocol.HttpContext $r7;
+        java.lang.String $r2;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: org.apache.http.Header[];
+
+        $r4 := @parameter3: com.loopj.android.http.RequestParams;
+
+        $r5 := @parameter4: com.loopj.android.http.AsyncHttpResponseHandler;
+
+        r8 = new org.apache.http.client.methods.HttpGet;
+
+        $r2 = staticinvoke <com.loopj.android.http.AsyncHttpClient: java.lang.String getUrlWithQueryString(java.lang.String,com.loopj.android.http.RequestParams)>($r2, $r4);
+
+        specialinvoke r8.<org.apache.http.client.methods.HttpGet: void <init>(java.lang.String)>($r2);
+
+        if $r3 == null goto label1;
+
+        interfaceinvoke r8.<org.apache.http.client.methods.HttpUriRequest: void setHeaders(org.apache.http.Header[])>($r3);
+
+     label1:
+        $r6 = r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.impl.client.DefaultHttpClient httpClient>;
+
+        $r7 = r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.protocol.HttpContext httpContext>;
+
+        virtualinvoke r0.<com.loopj.android.http.AsyncHttpClient: void sendRequest(org.apache.http.impl.client.DefaultHttpClient,org.apache.http.protocol.HttpContext,org.apache.http.client.methods.HttpUriRequest,java.lang.String,com.loopj.android.http.AsyncHttpResponseHandler,android.content.Context)>($r6, $r7, r8, null, $r5, $r1);
+
+        return;
+    }
+
+    public void get(java.lang.String, com.loopj.android.http.AsyncHttpResponseHandler)
+    {
+        com.loopj.android.http.AsyncHttpClient r0;
+        java.lang.String $r1;
+        com.loopj.android.http.AsyncHttpResponseHandler $r2;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: com.loopj.android.http.AsyncHttpResponseHandler;
+
+        virtualinvoke r0.<com.loopj.android.http.AsyncHttpClient: void get(android.content.Context,java.lang.String,com.loopj.android.http.RequestParams,com.loopj.android.http.AsyncHttpResponseHandler)>(null, $r1, null, $r2);
+
+        return;
+    }
+
+    public void get(java.lang.String, com.loopj.android.http.RequestParams, com.loopj.android.http.AsyncHttpResponseHandler)
+    {
+        com.loopj.android.http.RequestParams $r2;
+        com.loopj.android.http.AsyncHttpClient r0;
+        java.lang.String $r1;
+        com.loopj.android.http.AsyncHttpResponseHandler $r3;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: com.loopj.android.http.RequestParams;
+
+        $r3 := @parameter2: com.loopj.android.http.AsyncHttpResponseHandler;
+
+        virtualinvoke r0.<com.loopj.android.http.AsyncHttpClient: void get(android.content.Context,java.lang.String,com.loopj.android.http.RequestParams,com.loopj.android.http.AsyncHttpResponseHandler)>(null, $r1, $r2, $r3);
+
+        return;
+    }
+
+    public org.apache.http.client.HttpClient getHttpClient()
+    {
+        com.loopj.android.http.AsyncHttpClient r0;
+        org.apache.http.impl.client.DefaultHttpClient r1;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        r1 = r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.impl.client.DefaultHttpClient httpClient>;
+
+        return r1;
+    }
+
+    public org.apache.http.protocol.HttpContext getHttpContext()
+    {
+        com.loopj.android.http.AsyncHttpClient r0;
+        org.apache.http.protocol.HttpContext r1;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        r1 = r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.protocol.HttpContext httpContext>;
+
+        return r1;
+    }
+
+    public void post(android.content.Context, java.lang.String, com.loopj.android.http.RequestParams, com.loopj.android.http.AsyncHttpResponseHandler)
+    {
+        android.content.Context $r1;
+        com.loopj.android.http.RequestParams $r3;
+        com.loopj.android.http.AsyncHttpClient r0;
+        org.apache.http.HttpEntity $r5;
+        java.lang.String $r2;
+        com.loopj.android.http.AsyncHttpResponseHandler $r4;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: com.loopj.android.http.RequestParams;
+
+        $r4 := @parameter3: com.loopj.android.http.AsyncHttpResponseHandler;
+
+        $r5 = specialinvoke r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.HttpEntity paramsToEntity(com.loopj.android.http.RequestParams)>($r3);
+
+        virtualinvoke r0.<com.loopj.android.http.AsyncHttpClient: void post(android.content.Context,java.lang.String,org.apache.http.HttpEntity,java.lang.String,com.loopj.android.http.AsyncHttpResponseHandler)>(null, $r2, $r5, null, $r4);
+
+        return;
+    }
+
+    public void post(android.content.Context, java.lang.String, org.apache.http.HttpEntity, java.lang.String, com.loopj.android.http.AsyncHttpResponseHandler)
+    {
+        org.apache.http.impl.client.DefaultHttpClient $r6;
+        android.content.Context $r1;
+        org.apache.http.client.methods.HttpPost $r9;
+        org.apache.http.client.methods.HttpEntityEnclosingRequestBase $r8;
+        com.loopj.android.http.AsyncHttpClient r0;
+        org.apache.http.HttpEntity $r3;
+        com.loopj.android.http.AsyncHttpResponseHandler $r5;
+        org.apache.http.protocol.HttpContext $r7;
+        java.lang.String $r2, $r4;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: org.apache.http.HttpEntity;
+
+        $r4 := @parameter3: java.lang.String;
+
+        $r5 := @parameter4: com.loopj.android.http.AsyncHttpResponseHandler;
+
+        $r6 = r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.impl.client.DefaultHttpClient httpClient>;
+
+        $r7 = r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.protocol.HttpContext httpContext>;
+
+        $r9 = new org.apache.http.client.methods.HttpPost;
+
+        specialinvoke $r9.<org.apache.http.client.methods.HttpPost: void <init>(java.lang.String)>($r2);
+
+        $r8 = specialinvoke r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.client.methods.HttpEntityEnclosingRequestBase addEntityToRequestBase(org.apache.http.client.methods.HttpEntityEnclosingRequestBase,org.apache.http.HttpEntity)>($r9, $r3);
+
+        virtualinvoke r0.<com.loopj.android.http.AsyncHttpClient: void sendRequest(org.apache.http.impl.client.DefaultHttpClient,org.apache.http.protocol.HttpContext,org.apache.http.client.methods.HttpUriRequest,java.lang.String,com.loopj.android.http.AsyncHttpResponseHandler,android.content.Context)>($r6, $r7, $r8, null, $r5, null);
+
+        return;
+    }
+
+    public void post(android.content.Context, java.lang.String, org.apache.http.Header[], com.loopj.android.http.RequestParams, java.lang.String, com.loopj.android.http.AsyncHttpResponseHandler)
+    {
+        org.apache.http.Header[] $r3;
+        org.apache.http.impl.client.DefaultHttpClient $r7;
+        android.content.Context $r1;
+        org.apache.http.client.methods.HttpPost r9;
+        com.loopj.android.http.AsyncHttpClient r0;
+        org.apache.http.HttpEntity $r10;
+        com.loopj.android.http.AsyncHttpResponseHandler $r6;
+        com.loopj.android.http.RequestParams $r4;
+        org.apache.http.protocol.HttpContext $r8;
+        java.lang.String $r2, $r5;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: org.apache.http.Header[];
+
+        $r4 := @parameter3: com.loopj.android.http.RequestParams;
+
+        $r5 := @parameter4: java.lang.String;
+
+        $r6 := @parameter5: com.loopj.android.http.AsyncHttpResponseHandler;
+
+        r9 = new org.apache.http.client.methods.HttpPost;
+
+        specialinvoke r9.<org.apache.http.client.methods.HttpPost: void <init>(java.lang.String)>($r2);
+
+        if $r4 == null goto label1;
+
+        $r10 = specialinvoke r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.HttpEntity paramsToEntity(com.loopj.android.http.RequestParams)>($r4);
+
+        virtualinvoke r9.<org.apache.http.client.methods.HttpEntityEnclosingRequestBase: void setEntity(org.apache.http.HttpEntity)>($r10);
+
+     label1:
+        if $r3 == null goto label2;
+
+        virtualinvoke r9.<org.apache.http.client.methods.HttpEntityEnclosingRequestBase: void setHeaders(org.apache.http.Header[])>($r3);
+
+     label2:
+        $r7 = r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.impl.client.DefaultHttpClient httpClient>;
+
+        $r8 = r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.protocol.HttpContext httpContext>;
+
+        virtualinvoke r0.<com.loopj.android.http.AsyncHttpClient: void sendRequest(org.apache.http.impl.client.DefaultHttpClient,org.apache.http.protocol.HttpContext,org.apache.http.client.methods.HttpUriRequest,java.lang.String,com.loopj.android.http.AsyncHttpResponseHandler,android.content.Context)>($r7, $r8, r9, $r5, $r6, $r1);
+
+        return;
+    }
+
+    public void post(android.content.Context, java.lang.String, org.apache.http.Header[], org.apache.http.HttpEntity, java.lang.String, com.loopj.android.http.AsyncHttpResponseHandler)
+    {
+        org.apache.http.Header[] $r3;
+        org.apache.http.impl.client.DefaultHttpClient $r7;
+        android.content.Context $r1;
+        org.apache.http.client.methods.HttpPost $r10;
+        org.apache.http.client.methods.HttpEntityEnclosingRequestBase $r9;
+        com.loopj.android.http.AsyncHttpClient r0;
+        org.apache.http.HttpEntity $r4;
+        com.loopj.android.http.AsyncHttpResponseHandler $r6;
+        org.apache.http.protocol.HttpContext $r8;
+        java.lang.String $r2, $r5;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: org.apache.http.Header[];
+
+        $r4 := @parameter3: org.apache.http.HttpEntity;
+
+        $r5 := @parameter4: java.lang.String;
+
+        $r6 := @parameter5: com.loopj.android.http.AsyncHttpResponseHandler;
+
+        $r10 = new org.apache.http.client.methods.HttpPost;
+
+        specialinvoke $r10.<org.apache.http.client.methods.HttpPost: void <init>(java.lang.String)>($r2);
+
+        $r9 = specialinvoke r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.client.methods.HttpEntityEnclosingRequestBase addEntityToRequestBase(org.apache.http.client.methods.HttpEntityEnclosingRequestBase,org.apache.http.HttpEntity)>($r10, $r4);
+
+        if $r3 == null goto label1;
+
+        virtualinvoke $r9.<org.apache.http.client.methods.HttpEntityEnclosingRequestBase: void setHeaders(org.apache.http.Header[])>($r3);
+
+     label1:
+        $r7 = r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.impl.client.DefaultHttpClient httpClient>;
+
+        $r8 = r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.protocol.HttpContext httpContext>;
+
+        virtualinvoke r0.<com.loopj.android.http.AsyncHttpClient: void sendRequest(org.apache.http.impl.client.DefaultHttpClient,org.apache.http.protocol.HttpContext,org.apache.http.client.methods.HttpUriRequest,java.lang.String,com.loopj.android.http.AsyncHttpResponseHandler,android.content.Context)>($r7, $r8, $r9, $r5, $r6, $r1);
+
+        return;
+    }
+
+    public void post(java.lang.String, com.loopj.android.http.AsyncHttpResponseHandler)
+    {
+        com.loopj.android.http.AsyncHttpClient r0;
+        java.lang.String $r1;
+        com.loopj.android.http.AsyncHttpResponseHandler $r2;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: com.loopj.android.http.AsyncHttpResponseHandler;
+
+        virtualinvoke r0.<com.loopj.android.http.AsyncHttpClient: void post(android.content.Context,java.lang.String,com.loopj.android.http.RequestParams,com.loopj.android.http.AsyncHttpResponseHandler)>(null, $r1, null, $r2);
+
+        return;
+    }
+
+    public void post(java.lang.String, com.loopj.android.http.RequestParams, com.loopj.android.http.AsyncHttpResponseHandler)
+    {
+        com.loopj.android.http.RequestParams $r2;
+        com.loopj.android.http.AsyncHttpClient r0;
+        java.lang.String $r1;
+        com.loopj.android.http.AsyncHttpResponseHandler $r3;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: com.loopj.android.http.RequestParams;
+
+        $r3 := @parameter2: com.loopj.android.http.AsyncHttpResponseHandler;
+
+        virtualinvoke r0.<com.loopj.android.http.AsyncHttpClient: void post(android.content.Context,java.lang.String,com.loopj.android.http.RequestParams,com.loopj.android.http.AsyncHttpResponseHandler)>(null, $r1, $r2, $r3);
+
+        return;
+    }
+
+    public void put(android.content.Context, java.lang.String, com.loopj.android.http.RequestParams, com.loopj.android.http.AsyncHttpResponseHandler)
+    {
+        android.content.Context $r1;
+        com.loopj.android.http.RequestParams $r3;
+        com.loopj.android.http.AsyncHttpClient r0;
+        org.apache.http.HttpEntity $r5;
+        java.lang.String $r2;
+        com.loopj.android.http.AsyncHttpResponseHandler $r4;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: com.loopj.android.http.RequestParams;
+
+        $r4 := @parameter3: com.loopj.android.http.AsyncHttpResponseHandler;
+
+        $r5 = specialinvoke r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.HttpEntity paramsToEntity(com.loopj.android.http.RequestParams)>($r3);
+
+        virtualinvoke r0.<com.loopj.android.http.AsyncHttpClient: void put(android.content.Context,java.lang.String,org.apache.http.HttpEntity,java.lang.String,com.loopj.android.http.AsyncHttpResponseHandler)>($r1, $r2, $r5, null, $r4);
+
+        return;
+    }
+
+    public void put(android.content.Context, java.lang.String, org.apache.http.HttpEntity, java.lang.String, com.loopj.android.http.AsyncHttpResponseHandler)
+    {
+        org.apache.http.impl.client.DefaultHttpClient $r6;
+        android.content.Context $r1;
+        org.apache.http.client.methods.HttpEntityEnclosingRequestBase $r8;
+        com.loopj.android.http.AsyncHttpClient r0;
+        org.apache.http.HttpEntity $r3;
+        com.loopj.android.http.AsyncHttpResponseHandler $r5;
+        org.apache.http.client.methods.HttpPut $r9;
+        org.apache.http.protocol.HttpContext $r7;
+        java.lang.String $r2, $r4;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: org.apache.http.HttpEntity;
+
+        $r4 := @parameter3: java.lang.String;
+
+        $r5 := @parameter4: com.loopj.android.http.AsyncHttpResponseHandler;
+
+        $r6 = r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.impl.client.DefaultHttpClient httpClient>;
+
+        $r7 = r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.protocol.HttpContext httpContext>;
+
+        $r9 = new org.apache.http.client.methods.HttpPut;
+
+        specialinvoke $r9.<org.apache.http.client.methods.HttpPut: void <init>(java.lang.String)>($r2);
+
+        $r8 = specialinvoke r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.client.methods.HttpEntityEnclosingRequestBase addEntityToRequestBase(org.apache.http.client.methods.HttpEntityEnclosingRequestBase,org.apache.http.HttpEntity)>($r9, $r3);
+
+        virtualinvoke r0.<com.loopj.android.http.AsyncHttpClient: void sendRequest(org.apache.http.impl.client.DefaultHttpClient,org.apache.http.protocol.HttpContext,org.apache.http.client.methods.HttpUriRequest,java.lang.String,com.loopj.android.http.AsyncHttpResponseHandler,android.content.Context)>($r6, $r7, $r8, $r4, $r5, $r1);
+
+        return;
+    }
+
+    public void put(android.content.Context, java.lang.String, org.apache.http.Header[], org.apache.http.HttpEntity, java.lang.String, com.loopj.android.http.AsyncHttpResponseHandler)
+    {
+        org.apache.http.Header[] $r3;
+        org.apache.http.impl.client.DefaultHttpClient $r7;
+        android.content.Context $r1;
+        org.apache.http.client.methods.HttpEntityEnclosingRequestBase $r9;
+        com.loopj.android.http.AsyncHttpClient r0;
+        org.apache.http.HttpEntity $r4;
+        com.loopj.android.http.AsyncHttpResponseHandler $r6;
+        org.apache.http.client.methods.HttpPut $r10;
+        org.apache.http.protocol.HttpContext $r8;
+        java.lang.String $r2, $r5;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: org.apache.http.Header[];
+
+        $r4 := @parameter3: org.apache.http.HttpEntity;
+
+        $r5 := @parameter4: java.lang.String;
+
+        $r6 := @parameter5: com.loopj.android.http.AsyncHttpResponseHandler;
+
+        $r10 = new org.apache.http.client.methods.HttpPut;
+
+        specialinvoke $r10.<org.apache.http.client.methods.HttpPut: void <init>(java.lang.String)>($r2);
+
+        $r9 = specialinvoke r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.client.methods.HttpEntityEnclosingRequestBase addEntityToRequestBase(org.apache.http.client.methods.HttpEntityEnclosingRequestBase,org.apache.http.HttpEntity)>($r10, $r4);
+
+        if $r3 == null goto label1;
+
+        virtualinvoke $r9.<org.apache.http.client.methods.HttpEntityEnclosingRequestBase: void setHeaders(org.apache.http.Header[])>($r3);
+
+     label1:
+        $r7 = r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.impl.client.DefaultHttpClient httpClient>;
+
+        $r8 = r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.protocol.HttpContext httpContext>;
+
+        virtualinvoke r0.<com.loopj.android.http.AsyncHttpClient: void sendRequest(org.apache.http.impl.client.DefaultHttpClient,org.apache.http.protocol.HttpContext,org.apache.http.client.methods.HttpUriRequest,java.lang.String,com.loopj.android.http.AsyncHttpResponseHandler,android.content.Context)>($r7, $r8, $r9, $r5, $r6, $r1);
+
+        return;
+    }
+
+    public void put(java.lang.String, com.loopj.android.http.AsyncHttpResponseHandler)
+    {
+        com.loopj.android.http.AsyncHttpClient r0;
+        java.lang.String $r1;
+        com.loopj.android.http.AsyncHttpResponseHandler $r2;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: com.loopj.android.http.AsyncHttpResponseHandler;
+
+        virtualinvoke r0.<com.loopj.android.http.AsyncHttpClient: void put(android.content.Context,java.lang.String,com.loopj.android.http.RequestParams,com.loopj.android.http.AsyncHttpResponseHandler)>(null, $r1, null, $r2);
+
+        return;
+    }
+
+    public void put(java.lang.String, com.loopj.android.http.RequestParams, com.loopj.android.http.AsyncHttpResponseHandler)
+    {
+        com.loopj.android.http.RequestParams $r2;
+        com.loopj.android.http.AsyncHttpClient r0;
+        java.lang.String $r1;
+        com.loopj.android.http.AsyncHttpResponseHandler $r3;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: com.loopj.android.http.RequestParams;
+
+        $r3 := @parameter2: com.loopj.android.http.AsyncHttpResponseHandler;
+
+        virtualinvoke r0.<com.loopj.android.http.AsyncHttpClient: void put(android.content.Context,java.lang.String,com.loopj.android.http.RequestParams,com.loopj.android.http.AsyncHttpResponseHandler)>(null, $r1, $r2, $r3);
+
+        return;
+    }
+
+    protected void sendRequest(org.apache.http.impl.client.DefaultHttpClient, org.apache.http.protocol.HttpContext, org.apache.http.client.methods.HttpUriRequest, java.lang.String, com.loopj.android.http.AsyncHttpResponseHandler, android.content.Context)
+    {
+        org.apache.http.impl.client.DefaultHttpClient $r1;
+        android.content.Context $r6;
+        java.util.concurrent.ThreadPoolExecutor $r7;
+        com.loopj.android.http.AsyncHttpClient r0;
+        org.apache.http.client.methods.HttpUriRequest $r3;
+        com.loopj.android.http.AsyncHttpResponseHandler $r5;
+        java.util.concurrent.Future $r8;
+        com.loopj.android.http.AsyncHttpRequest $r11;
+        org.apache.http.protocol.HttpContext $r2;
+        java.lang.String $r4;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        $r1 := @parameter0: org.apache.http.impl.client.DefaultHttpClient;
+
+        $r2 := @parameter1: org.apache.http.protocol.HttpContext;
+
+        $r3 := @parameter2: org.apache.http.client.methods.HttpUriRequest;
+
+        $r4 := @parameter3: java.lang.String;
+
+        $r5 := @parameter4: com.loopj.android.http.AsyncHttpResponseHandler;
+
+        $r6 := @parameter5: android.content.Context;
+
+        goto label1;
+
+     label1:
+        $r7 = r0.<com.loopj.android.http.AsyncHttpClient: java.util.concurrent.ThreadPoolExecutor threadPool>;
+
+        $r11 = new com.loopj.android.http.AsyncHttpRequest;
+
+        specialinvoke $r11.<com.loopj.android.http.AsyncHttpRequest: void <init>(org.apache.http.impl.client.AbstractHttpClient,org.apache.http.protocol.HttpContext,org.apache.http.client.methods.HttpUriRequest,com.loopj.android.http.AsyncHttpResponseHandler)>($r1, $r2, $r3, $r5);
+
+        $r8 = virtualinvoke $r7.<java.util.concurrent.ThreadPoolExecutor: java.util.concurrent.Future submit(java.lang.Runnable)>($r11);
+
+        goto label2;
+
+     label2:
+        return;
+    }
+
+    public void setBasicAuth(java.lang.String, java.lang.String)
+    {
+        org.apache.http.auth.AuthScope r3;
+        com.loopj.android.http.AsyncHttpClient r0;
+        java.lang.String $r1, $r2;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        r3 = <org.apache.http.auth.AuthScope: org.apache.http.auth.AuthScope ANY>;
+
+        virtualinvoke r0.<com.loopj.android.http.AsyncHttpClient: void setBasicAuth(java.lang.String,java.lang.String,org.apache.http.auth.AuthScope)>($r1, $r2, r3);
+
+        return;
+    }
+
+    public void setBasicAuth(java.lang.String, java.lang.String, org.apache.http.auth.AuthScope)
+    {
+        org.apache.http.auth.UsernamePasswordCredentials r4;
+        org.apache.http.impl.client.DefaultHttpClient $r6;
+        org.apache.http.auth.AuthScope $r3;
+        com.loopj.android.http.AsyncHttpClient r0;
+        java.lang.String $r1, $r2;
+        org.apache.http.client.CredentialsProvider $r5;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: org.apache.http.auth.AuthScope;
+
+        r4 = new org.apache.http.auth.UsernamePasswordCredentials;
+
+        specialinvoke r4.<org.apache.http.auth.UsernamePasswordCredentials: void <init>(java.lang.String,java.lang.String)>($r1, $r2);
+
+        $r6 = r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.impl.client.DefaultHttpClient httpClient>;
+
+        $r5 = virtualinvoke $r6.<org.apache.http.impl.client.DefaultHttpClient: org.apache.http.client.CredentialsProvider getCredentialsProvider()>();
+
+        interfaceinvoke $r5.<org.apache.http.client.CredentialsProvider: void setCredentials(org.apache.http.auth.AuthScope,org.apache.http.auth.Credentials)>($r3, r4);
+
+        return;
+    }
+
+    public void setCookieStore(org.apache.http.client.CookieStore)
+    {
+        com.loopj.android.http.AsyncHttpClient r0;
+        org.apache.http.client.CookieStore $r1;
+        org.apache.http.protocol.HttpContext $r2;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        $r1 := @parameter0: org.apache.http.client.CookieStore;
+
+        $r2 = r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.protocol.HttpContext httpContext>;
+
+        interfaceinvoke $r2.<org.apache.http.protocol.HttpContext: void setAttribute(java.lang.String,java.lang.Object)>("http.cookie-store", $r1);
+
+        return;
+    }
+
+    public void setSSLSocketFactory(org.apache.http.conn.ssl.SSLSocketFactory)
+    {
+        org.apache.http.impl.client.DefaultHttpClient $r3;
+        org.apache.http.conn.scheme.Scheme $r2;
+        org.apache.http.conn.scheme.SchemeRegistry $r5;
+        org.apache.http.conn.ClientConnectionManager $r4;
+        com.loopj.android.http.AsyncHttpClient r0;
+        org.apache.http.conn.ssl.SSLSocketFactory $r1;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        $r1 := @parameter0: org.apache.http.conn.ssl.SSLSocketFactory;
+
+        $r3 = r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.impl.client.DefaultHttpClient httpClient>;
+
+        $r4 = virtualinvoke $r3.<org.apache.http.impl.client.DefaultHttpClient: org.apache.http.conn.ClientConnectionManager getConnectionManager()>();
+
+        $r5 = interfaceinvoke $r4.<org.apache.http.conn.ClientConnectionManager: org.apache.http.conn.scheme.SchemeRegistry getSchemeRegistry()>();
+
+        $r2 = new org.apache.http.conn.scheme.Scheme;
+
+        specialinvoke $r2.<org.apache.http.conn.scheme.Scheme: void <init>(java.lang.String,org.apache.http.conn.scheme.SocketFactory,int)>("https", $r1, 443);
+
+        virtualinvoke $r5.<org.apache.http.conn.scheme.SchemeRegistry: org.apache.http.conn.scheme.Scheme register(org.apache.http.conn.scheme.Scheme)>($r2);
+
+        return;
+    }
+
+    public void setThreadPool(java.util.concurrent.ThreadPoolExecutor)
+    {
+        com.loopj.android.http.AsyncHttpClient r0;
+        java.util.concurrent.ThreadPoolExecutor $r1;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        $r1 := @parameter0: java.util.concurrent.ThreadPoolExecutor;
+
+        r0.<com.loopj.android.http.AsyncHttpClient: java.util.concurrent.ThreadPoolExecutor threadPool> = $r1;
+
+        return;
+    }
+
+    public void setTimeout(int)
+    {
+        org.apache.http.impl.client.DefaultHttpClient $r2;
+        org.apache.http.params.HttpParams $r1;
+        com.loopj.android.http.AsyncHttpClient r0;
+        int $i0;
+        long $l1;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        $i0 := @parameter0: int;
+
+        $r2 = r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.impl.client.DefaultHttpClient httpClient>;
+
+        $r1 = virtualinvoke $r2.<org.apache.http.impl.client.DefaultHttpClient: org.apache.http.params.HttpParams getParams()>();
+
+        $l1 = (long) 8000;
+
+        staticinvoke <org.apache.http.conn.params.ConnManagerParams: void setTimeout(org.apache.http.params.HttpParams,long)>($r1, $l1);
+
+        staticinvoke <org.apache.http.params.HttpConnectionParams: void setSoTimeout(org.apache.http.params.HttpParams,int)>($r1, 8000);
+
+        staticinvoke <org.apache.http.params.HttpConnectionParams: void setConnectionTimeout(org.apache.http.params.HttpParams,int)>($r1, 8000);
+
+        return;
+    }
+
+    public void setUserAgent(java.lang.String)
+    {
+        org.apache.http.impl.client.DefaultHttpClient $r3;
+        org.apache.http.params.HttpParams $r2;
+        com.loopj.android.http.AsyncHttpClient r0;
+        java.lang.String $r1;
+
+        r0 := @this: com.loopj.android.http.AsyncHttpClient;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r3 = r0.<com.loopj.android.http.AsyncHttpClient: org.apache.http.impl.client.DefaultHttpClient httpClient>;
+
+        $r2 = virtualinvoke $r3.<org.apache.http.impl.client.DefaultHttpClient: org.apache.http.params.HttpParams getParams()>();
+
+        staticinvoke <org.apache.http.params.HttpProtocolParams: void setUserAgent(org.apache.http.params.HttpParams,java.lang.String)>($r2, $r1);
+
+        return;
+    }
+}

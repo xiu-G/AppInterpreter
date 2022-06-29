@@ -1,0 +1,4612 @@
+class com.apostek.untangle.GameLayout extends android.view.SurfaceView implements android.view.SurfaceHolder$Callback
+{
+    public static final android.graphics.Bitmap$Config DEFAULT_BITMAP_CONFIG;
+    public static int hintModeDelay;
+    public static boolean lastXYSaved;
+    public static int solvedNodesCount;
+    private com.apostek.untangle.GameLayout$GameThread _thread;
+    int[] bgImages;
+    private android.graphics.Bitmap bitmapArrow1;
+    private android.graphics.Bitmap bitmapArrow2;
+    private android.graphics.Bitmap bitmapBonusOrb;
+    private android.graphics.Bitmap bitmapHome;
+    private android.graphics.Bitmap bitmapOrg;
+    private android.graphics.Bitmap bitmapPurple;
+    private int bonusAnimCounter;
+    int counter;
+    private com.apostek.untangle.Orb currentNode;
+    int drawOrbOnTouchCounter;
+    long gameHeight;
+    long gameWidth;
+    int hintCounter;
+    private boolean isConstructingBonusArcadeGame;
+    boolean isSolved;
+    long lastMovedTime;
+    int modValue;
+    int moveCounter;
+    int nodeHeight;
+    float nodeRadius;
+    int nodeWidth;
+    private java.util.ArrayList nodes;
+    int nodesCount;
+    private android.graphics.Bitmap orbRing;
+    android.graphics.Paint pBackground;
+    android.graphics.Paint pBonusRound;
+    long pInterconnectsAlphaBase;
+    long pInterconnectsAlphaCounter;
+    long pInterconnectsAlphaCurrent;
+    boolean pInterconnectsAlphaIncrementing;
+    long pInterconnectsAlphaSteps;
+    long pInterconnectsAlphaTerminal;
+    android.graphics.Paint pIntersect;
+    android.graphics.Paint pIntersectThick;
+    android.graphics.Paint pNotIntersect;
+    android.graphics.Paint pNotIntersectThick;
+    android.graphics.Paint pOrb;
+    long pOrbAlpha;
+    int randomImagePos;
+    long screenHeight;
+    long screenWidth;
+    int selected_imageposition;
+    int showDemoNodeX;
+    int showDemoNodeY;
+    private int textanim1counter;
+
+    static void <clinit>()
+    {
+        android.graphics.Bitmap$Config $r0;
+
+        <com.apostek.untangle.GameLayout: boolean lastXYSaved> = 0;
+
+        <com.apostek.untangle.GameLayout: int solvedNodesCount> = 0;
+
+        <com.apostek.untangle.GameLayout: int hintModeDelay> = 0;
+
+        $r0 = <android.graphics.Bitmap$Config: android.graphics.Bitmap$Config ARGB_8888>;
+
+        <com.apostek.untangle.GameLayout: android.graphics.Bitmap$Config DEFAULT_BITMAP_CONFIG> = $r0;
+
+        return;
+    }
+
+    public void <init>(android.content.Context, long, long, int)
+    {
+        android.content.Context $r1;
+        com.apostek.untangle.GameLayout$GameThread $r4, $r7;
+        long $l0, $l1;
+        java.lang.Exception $r5;
+        java.util.ArrayList $r6;
+        com.apostek.untangle.GameLayout r0;
+        byte $b3;
+        int[] $r2;
+        int $i2, $i4;
+        android.view.SurfaceHolder $r3;
+
+        r0 := @this: com.apostek.untangle.GameLayout;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $l0 := @parameter1: long;
+
+        $l1 := @parameter2: long;
+
+        $i2 := @parameter3: int;
+
+        specialinvoke r0.<android.view.SurfaceView: void <init>(android.content.Context)>($r1);
+
+        $r6 = new java.util.ArrayList;
+
+        specialinvoke $r6.<java.util.ArrayList: void <init>()>();
+
+        r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes> = $r6;
+
+        r0.<com.apostek.untangle.GameLayout: int nodeWidth> = 50;
+
+        r0.<com.apostek.untangle.GameLayout: int nodeHeight> = 50;
+
+        r0.<com.apostek.untangle.GameLayout: int nodesCount> = 3;
+
+        r0.<com.apostek.untangle.GameLayout: float nodeRadius> = 16.0F;
+
+        $r2 = newarray (int)[10];
+
+        $r2[0] = 2130837663;
+
+        $r2[1] = 2130837665;
+
+        $r2[2] = 2130837666;
+
+        $r2[3] = 2130837667;
+
+        $r2[4] = 2130837668;
+
+        $r2[5] = 2130837669;
+
+        $r2[6] = 2130837670;
+
+        $r2[7] = 2130837671;
+
+        $r2[8] = 2130837672;
+
+        $r2[9] = 2130837664;
+
+        r0.<com.apostek.untangle.GameLayout: int[] bgImages> = $r2;
+
+        r0.<com.apostek.untangle.GameLayout: boolean isSolved> = 0;
+
+        r0.<com.apostek.untangle.GameLayout: int modValue> = 6;
+
+        r0.<com.apostek.untangle.GameLayout: int randomImagePos> = 0;
+
+        r0.<com.apostek.untangle.GameLayout: boolean isConstructingBonusArcadeGame> = 0;
+
+        r0.<com.apostek.untangle.GameLayout: int selected_imageposition> = -1;
+
+        r0.<com.apostek.untangle.GameLayout: int moveCounter> = 0;
+
+        r0.<com.apostek.untangle.GameLayout: long pOrbAlpha> = 100L;
+
+        r0.<com.apostek.untangle.GameLayout: long pInterconnectsAlphaCurrent> = 0L;
+
+        r0.<com.apostek.untangle.GameLayout: long pInterconnectsAlphaBase> = 0L;
+
+        r0.<com.apostek.untangle.GameLayout: long pInterconnectsAlphaSteps> = 25L;
+
+        r0.<com.apostek.untangle.GameLayout: long pInterconnectsAlphaCounter> = 1L;
+
+        r0.<com.apostek.untangle.GameLayout: long pInterconnectsAlphaTerminal> = 250L;
+
+        r0.<com.apostek.untangle.GameLayout: boolean pInterconnectsAlphaIncrementing> = 1;
+
+        r0.<com.apostek.untangle.GameLayout: int counter> = 0;
+
+        r0.<com.apostek.untangle.GameLayout: int hintCounter> = 0;
+
+        r0.<com.apostek.untangle.GameLayout: int showDemoNodeX> = 0;
+
+        r0.<com.apostek.untangle.GameLayout: int showDemoNodeY> = 0;
+
+        r0.<com.apostek.untangle.GameLayout: int textanim1counter> = 0;
+
+        r0.<com.apostek.untangle.GameLayout: int bonusAnimCounter> = 0;
+
+        r0.<com.apostek.untangle.GameLayout: int drawOrbOnTouchCounter> = 0;
+
+     label01:
+        r0.<com.apostek.untangle.GameLayout: long screenWidth> = $l0;
+
+        r0.<com.apostek.untangle.GameLayout: long screenHeight> = $l1;
+
+        r0.<com.apostek.untangle.GameLayout: int modValue> = 6;
+
+        $l0 = r0.<com.apostek.untangle.GameLayout: long screenHeight>;
+
+     label02:
+        $b3 = $l0 cmp 540L;
+
+        $i4 = (int) $b3;
+
+        if $i4 <= 0 goto label08;
+
+     label03:
+        r0.<com.apostek.untangle.GameLayout: int modValue> = 4;
+
+     label04:
+        $r3 = virtualinvoke r0.<com.apostek.untangle.GameLayout: android.view.SurfaceHolder getHolder()>();
+
+        interfaceinvoke $r3.<android.view.SurfaceHolder: void addCallback(android.view.SurfaceHolder$Callback)>(r0);
+
+     label05:
+        $r7 = new com.apostek.untangle.GameLayout$GameThread;
+
+        $r4 = $r7;
+
+     label06:
+        $r3 = virtualinvoke r0.<com.apostek.untangle.GameLayout: android.view.SurfaceHolder getHolder()>();
+
+        specialinvoke $r7.<com.apostek.untangle.GameLayout$GameThread: void <init>(com.apostek.untangle.GameLayout,android.view.SurfaceHolder,com.apostek.untangle.GameLayout)>(r0, $r3, r0);
+
+        r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.GameLayout$GameThread _thread> = $r4;
+
+        virtualinvoke r0.<com.apostek.untangle.GameLayout: void setup(int)>($i2);
+
+        virtualinvoke r0.<com.apostek.untangle.GameLayout: void setFocusable(boolean)>(1);
+
+     label07:
+        return;
+
+     label08:
+        $l0 = r0.<com.apostek.untangle.GameLayout: long screenHeight>;
+
+     label09:
+        $b3 = $l0 cmp 500L;
+
+        $i4 = (int) $b3;
+
+        if $i4 < 0 goto label04;
+
+     label10:
+        $l0 = r0.<com.apostek.untangle.GameLayout: long screenHeight>;
+
+     label11:
+        $b3 = $l0 cmp 540L;
+
+        $i4 = (int) $b3;
+
+        if $i4 >= 0 goto label04;
+
+     label12:
+        r0.<com.apostek.untangle.GameLayout: int modValue> = 4;
+
+     label13:
+        goto label04;
+
+     label14:
+        $r5 := @caughtexception;
+
+        return;
+
+        catch java.lang.Exception from label01 to label02 with label14;
+        catch java.lang.Exception from label03 to label05 with label14;
+        catch java.lang.Exception from label06 to label07 with label14;
+        catch java.lang.Exception from label08 to label09 with label14;
+        catch java.lang.Exception from label10 to label11 with label14;
+        catch java.lang.Exception from label12 to label13 with label14;
+    }
+
+    static void access$0(com.apostek.untangle.GameLayout, android.graphics.Bitmap)
+    {
+        com.apostek.untangle.GameLayout $r0;
+        android.graphics.Bitmap $r1;
+
+        $r0 := @parameter0: com.apostek.untangle.GameLayout;
+
+        $r1 := @parameter1: android.graphics.Bitmap;
+
+        $r0.<com.apostek.untangle.GameLayout: android.graphics.Bitmap bitmapArrow1> = $r1;
+
+        return;
+    }
+
+    static void access$1(com.apostek.untangle.GameLayout, android.graphics.Bitmap)
+    {
+        com.apostek.untangle.GameLayout $r0;
+        android.graphics.Bitmap $r1;
+
+        $r0 := @parameter0: com.apostek.untangle.GameLayout;
+
+        $r1 := @parameter1: android.graphics.Bitmap;
+
+        $r0.<com.apostek.untangle.GameLayout: android.graphics.Bitmap bitmapArrow2> = $r1;
+
+        return;
+    }
+
+    static void access$2(com.apostek.untangle.GameLayout, android.graphics.Bitmap)
+    {
+        com.apostek.untangle.GameLayout $r0;
+        android.graphics.Bitmap $r1;
+
+        $r0 := @parameter0: com.apostek.untangle.GameLayout;
+
+        $r1 := @parameter1: android.graphics.Bitmap;
+
+        $r0.<com.apostek.untangle.GameLayout: android.graphics.Bitmap bitmapOrg> = $r1;
+
+        return;
+    }
+
+    static void access$3(com.apostek.untangle.GameLayout, android.graphics.Bitmap)
+    {
+        com.apostek.untangle.GameLayout $r0;
+        android.graphics.Bitmap $r1;
+
+        $r0 := @parameter0: com.apostek.untangle.GameLayout;
+
+        $r1 := @parameter1: android.graphics.Bitmap;
+
+        $r0.<com.apostek.untangle.GameLayout: android.graphics.Bitmap bitmapBonusOrb> = $r1;
+
+        return;
+    }
+
+    static void access$4(com.apostek.untangle.GameLayout, android.graphics.Bitmap)
+    {
+        com.apostek.untangle.GameLayout $r0;
+        android.graphics.Bitmap $r1;
+
+        $r0 := @parameter0: com.apostek.untangle.GameLayout;
+
+        $r1 := @parameter1: android.graphics.Bitmap;
+
+        $r0.<com.apostek.untangle.GameLayout: android.graphics.Bitmap orbRing> = $r1;
+
+        return;
+    }
+
+    static void access$5(com.apostek.untangle.GameLayout, android.graphics.Bitmap)
+    {
+        com.apostek.untangle.GameLayout $r0;
+        android.graphics.Bitmap $r1;
+
+        $r0 := @parameter0: com.apostek.untangle.GameLayout;
+
+        $r1 := @parameter1: android.graphics.Bitmap;
+
+        $r0.<com.apostek.untangle.GameLayout: android.graphics.Bitmap bitmapPurple> = $r1;
+
+        return;
+    }
+
+    static android.graphics.Bitmap access$6(com.apostek.untangle.GameLayout)
+    {
+        com.apostek.untangle.GameLayout $r0;
+        android.graphics.Bitmap r1;
+
+        $r0 := @parameter0: com.apostek.untangle.GameLayout;
+
+        r1 = $r0.<com.apostek.untangle.GameLayout: android.graphics.Bitmap bitmapOrg>;
+
+        return r1;
+    }
+
+    static java.util.ArrayList access$7(com.apostek.untangle.GameLayout)
+    {
+        com.apostek.untangle.GameLayout $r0;
+        java.util.ArrayList r1;
+
+        $r0 := @parameter0: com.apostek.untangle.GameLayout;
+
+        r1 = $r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        return r1;
+    }
+
+    static void access$8(com.apostek.untangle.GameLayout)
+    {
+        com.apostek.untangle.GameLayout $r0;
+
+        $r0 := @parameter0: com.apostek.untangle.GameLayout;
+
+        specialinvoke $r0.<com.apostek.untangle.GameLayout: void checkForSolve()>();
+
+        return;
+    }
+
+    private int checkForAnyIntersections()
+    {
+        com.apostek.untangle.Orb $r3;
+        java.lang.Integer $r6;
+        java.util.ArrayList $r1, $r5;
+        com.apostek.untangle.Orb$Coordinates $r4, $r7;
+        com.apostek.untangle.GameLayout r0;
+        int i0, i1, $i2, $i3;
+        java.lang.Object $r2;
+
+        r0 := @this: com.apostek.untangle.GameLayout;
+
+        i0 = 0;
+
+        i1 = 0;
+
+     label1:
+        $r1 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $i2 = virtualinvoke $r1.<java.util.ArrayList: int size()>();
+
+        if i1 < $i2 goto label2;
+
+        return i0;
+
+     label2:
+        $r1 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $r2 = virtualinvoke $r1.<java.util.ArrayList: java.lang.Object get(int)>(i1);
+
+        $r3 = (com.apostek.untangle.Orb) $r2;
+
+        $r4 = virtualinvoke $r3.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $r1 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $r2 = virtualinvoke $r1.<java.util.ArrayList: java.lang.Object get(int)>(i1);
+
+        $r3 = (com.apostek.untangle.Orb) $r2;
+
+        $r5 = virtualinvoke $r3.<com.apostek.untangle.Orb: java.util.ArrayList getConnectedNodes()>();
+
+        if $r5 == null goto label4;
+
+        $i2 = 0;
+
+     label3:
+        $i3 = virtualinvoke $r5.<java.util.ArrayList: int size()>();
+
+        if $i2 < $i3 goto label5;
+
+     label4:
+        i1 = i1 + 1;
+
+        goto label1;
+
+     label5:
+        $r1 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $r2 = virtualinvoke $r5.<java.util.ArrayList: java.lang.Object get(int)>($i2);
+
+        $r6 = (java.lang.Integer) $r2;
+
+        i0 = virtualinvoke $r6.<java.lang.Integer: int intValue()>();
+
+        $r2 = virtualinvoke $r1.<java.util.ArrayList: java.lang.Object get(int)>(i0);
+
+        $r3 = (com.apostek.untangle.Orb) $r2;
+
+        $r7 = virtualinvoke $r3.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $i3 = specialinvoke r0.<com.apostek.untangle.GameLayout: int checkForIntersection(com.apostek.untangle.Orb$Coordinates,com.apostek.untangle.Orb$Coordinates)>($r4, $r7);
+
+        i0 = $i3;
+
+        if $i3 == 0 goto label6;
+
+        return $i3;
+
+     label6:
+        $i2 = $i2 + 1;
+
+        goto label3;
+    }
+
+    private int checkForIntersection(com.apostek.untangle.Orb$Coordinates, com.apostek.untangle.Orb$Coordinates)
+    {
+        java.lang.Integer $r8;
+        java.util.ArrayList $r3, $r7;
+        byte $b11;
+        int i0, i1, $i2, $i3, $i4, $i5, $i6, $i7, $i8, $i9, $i10;
+        com.apostek.untangle.Orb $r5;
+        com.apostek.untangle.Orb$Coordinates $r1, $r2, $r6, $r9;
+        com.apostek.untangle.GameLayout r0;
+        float f0, f1, f2, f3, f4, $f5, $f6;
+        java.lang.Object $r4;
+
+        r0 := @this: com.apostek.untangle.GameLayout;
+
+        $r1 := @parameter0: com.apostek.untangle.Orb$Coordinates;
+
+        $r2 := @parameter1: com.apostek.untangle.Orb$Coordinates;
+
+        i0 = 0;
+
+        i1 = 0;
+
+     label01:
+        $r3 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $i2 = virtualinvoke $r3.<java.util.ArrayList: int size()>();
+
+        if i1 < $i2 goto label02;
+
+        return i0;
+
+     label02:
+        $r3 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $r4 = virtualinvoke $r3.<java.util.ArrayList: java.lang.Object get(int)>(i1);
+
+        $r5 = (com.apostek.untangle.Orb) $r4;
+
+        $r6 = virtualinvoke $r5.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $r3 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $r4 = virtualinvoke $r3.<java.util.ArrayList: java.lang.Object get(int)>(i1);
+
+        $r5 = (com.apostek.untangle.Orb) $r4;
+
+        $r3 = virtualinvoke $r5.<com.apostek.untangle.Orb: java.util.ArrayList getConnectedNodes()>();
+
+        if $r3 == null goto label04;
+
+        $i2 = 0;
+
+     label03:
+        $i3 = virtualinvoke $r3.<java.util.ArrayList: int size()>();
+
+        if $i2 < $i3 goto label05;
+
+     label04:
+        i1 = i1 + 1;
+
+        goto label01;
+
+     label05:
+        $r7 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $r4 = virtualinvoke $r3.<java.util.ArrayList: java.lang.Object get(int)>($i2);
+
+        $r8 = (java.lang.Integer) $r4;
+
+        $i3 = virtualinvoke $r8.<java.lang.Integer: int intValue()>();
+
+        $r4 = virtualinvoke $r7.<java.util.ArrayList: java.lang.Object get(int)>($i3);
+
+        $r5 = (com.apostek.untangle.Orb) $r4;
+
+        $r9 = virtualinvoke $r5.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $i3 = virtualinvoke $r1.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+        $i4 = virtualinvoke $r1.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+        $i4 = neg $i4;
+
+        $i5 = virtualinvoke $r2.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+        $i6 = virtualinvoke $r2.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+        $i7 = neg $i6;
+
+        $i6 = virtualinvoke $r6.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+        $i8 = virtualinvoke $r6.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+        $i8 = neg $i8;
+
+        $i9 = virtualinvoke $r9.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+        $i10 = virtualinvoke $r9.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+        $i10 = neg $i10;
+
+        if $i3 != $i5 goto label06;
+
+        if $i4 == $i7 goto label11;
+
+     label06:
+        if $i3 != $i6 goto label07;
+
+        if $i4 == $i8 goto label11;
+
+     label07:
+        if $i3 != $i9 goto label08;
+
+        if $i4 == $i10 goto label11;
+
+     label08:
+        if $i5 != $i6 goto label09;
+
+        if $i7 == $i8 goto label11;
+
+     label09:
+        if $i5 != $i9 goto label10;
+
+        if $i7 == $i10 goto label11;
+
+     label10:
+        if $i6 != $i9 goto label12;
+
+        if $i8 != $i10 goto label12;
+
+     label11:
+        $i2 = $i2 + 1;
+
+        goto label03;
+
+     label12:
+        $i5 = $i5 - $i3;
+
+        f2 = (float) $i5;
+
+        $i5 = $i7 - $i4;
+
+        f3 = (float) $i5;
+
+        $i5 = $i9 - $i6;
+
+        f0 = (float) $i5;
+
+        $i5 = $i10 - $i8;
+
+        f1 = (float) $i5;
+
+        f4 = f0 * f3;
+
+        $f5 = f1 * f2;
+
+        f4 = f4 - $f5;
+
+        $b11 = f4 cmpl 0.0F;
+
+        if $b11 == 0 goto label11;
+
+        $i5 = $i8 - $i4;
+
+        f4 = (float) $i5;
+
+        f4 = f4 * f2;
+
+        $i5 = $i3 - $i6;
+
+        $f5 = (float) $i5;
+
+        $f5 = $f5 * f3;
+
+        f4 = f4 + $f5;
+
+        $f5 = f0 * f3;
+
+        $f6 = f1 * f2;
+
+        $f5 = $f5 - $f6;
+
+        f4 = f4 / $f5;
+
+        $i4 = $i4 - $i8;
+
+        $f5 = (float) $i4;
+
+        $f5 = $f5 * f0;
+
+        $i3 = $i6 - $i3;
+
+        $f6 = (float) $i3;
+
+        $f6 = $f6 * f1;
+
+        $f5 = $f5 + $f6;
+
+        f1 = f1 * f2;
+
+        f0 = f0 * f3;
+
+        f0 = f1 - f0;
+
+        f0 = $f5 / f0;
+
+        $b11 = f4 cmpl 0.0F;
+
+        $i3 = (int) $b11;
+
+        if $i3 < 0 goto label11;
+
+        $b11 = f4 cmpg 1.0F;
+
+        $i3 = (int) $b11;
+
+        if $i3 > 0 goto label11;
+
+        $b11 = f0 cmpl 0.0F;
+
+        $i3 = (int) $b11;
+
+        if $i3 < 0 goto label11;
+
+        $b11 = f0 cmpg 1.0F;
+
+        $i3 = (int) $b11;
+
+        if $i3 > 0 goto label11;
+
+        i0 = i0 + 1;
+
+        goto label11;
+    }
+
+    private void checkForSolve()
+    {
+        com.apostek.untangle.Orb $r4;
+        java.lang.Integer $r7;
+        java.util.ArrayList $r1, $r6;
+        com.apostek.untangle.Orb$Coordinates $r5, $r8;
+        com.apostek.untangle.GameLayout r0;
+        int $i0, $i1, $i2;
+        java.lang.Boolean $r2;
+        java.lang.Object $r3;
+        boolean $z0;
+
+        r0 := @this: com.apostek.untangle.GameLayout;
+
+        $i0 = <com.apostek.untangle.Untangle: int mGameState>;
+
+        if $i0 == 5 goto label1;
+
+        $i0 = <com.apostek.untangle.Untangle: int mPlayerMoves>;
+
+        $i0 = $i0 + 1;
+
+        <com.apostek.untangle.Untangle: int mPlayerMoves> = $i0;
+
+        staticinvoke <com.apostek.untangle.Untangle: void updateMoves()>();
+
+     label1:
+        $r2 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(1);
+
+        $i0 = 0;
+
+     label2:
+        $r1 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $i1 = virtualinvoke $r1.<java.util.ArrayList: int size()>();
+
+        if $i0 < $i1 goto label3;
+
+        $z0 = virtualinvoke $r2.<java.lang.Boolean: boolean booleanValue()>();
+
+        r0.<com.apostek.untangle.GameLayout: boolean isSolved> = $z0;
+
+        $z0 = r0.<com.apostek.untangle.GameLayout: boolean isSolved>;
+
+        if $z0 == 0 goto label8;
+
+        $i0 = <com.apostek.untangle.Untangle: int mGameState>;
+
+        if $i0 == 5 goto label8;
+
+        virtualinvoke r0.<com.apostek.untangle.GameLayout: void showAlert()>();
+
+        return;
+
+     label3:
+        $r1 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $r3 = virtualinvoke $r1.<java.util.ArrayList: java.lang.Object get(int)>($i0);
+
+        $r4 = (com.apostek.untangle.Orb) $r3;
+
+        $r5 = virtualinvoke $r4.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $r1 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $r3 = virtualinvoke $r1.<java.util.ArrayList: java.lang.Object get(int)>($i0);
+
+        $r4 = (com.apostek.untangle.Orb) $r3;
+
+        $r6 = virtualinvoke $r4.<com.apostek.untangle.Orb: java.util.ArrayList getConnectedNodes()>();
+
+        if $r6 == null goto label5;
+
+        $i1 = 0;
+
+     label4:
+        $i2 = virtualinvoke $r6.<java.util.ArrayList: int size()>();
+
+        if $i1 < $i2 goto label6;
+
+     label5:
+        $i0 = $i0 + 1;
+
+        goto label2;
+
+     label6:
+        $r1 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $r3 = virtualinvoke $r6.<java.util.ArrayList: java.lang.Object get(int)>($i1);
+
+        $r7 = (java.lang.Integer) $r3;
+
+        $i2 = virtualinvoke $r7.<java.lang.Integer: int intValue()>();
+
+        $r3 = virtualinvoke $r1.<java.util.ArrayList: java.lang.Object get(int)>($i2);
+
+        $r4 = (com.apostek.untangle.Orb) $r3;
+
+        $r8 = virtualinvoke $r4.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $i2 = specialinvoke r0.<com.apostek.untangle.GameLayout: int checkForIntersection(com.apostek.untangle.Orb$Coordinates,com.apostek.untangle.Orb$Coordinates)>($r5, $r8);
+
+        if $i2 <= 0 goto label7;
+
+        $r2 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(0);
+
+     label7:
+        $i1 = $i1 + 1;
+
+        goto label4;
+
+     label8:
+        return;
+    }
+
+    private int checkForTotalIntersections()
+    {
+        com.apostek.untangle.Orb $r3;
+        java.lang.Integer $r6;
+        java.util.ArrayList $r1, $r5;
+        com.apostek.untangle.Orb$Coordinates $r4, $r7;
+        com.apostek.untangle.GameLayout r0;
+        int i0, i1, $i2, $i3;
+        java.lang.Object $r2;
+
+        r0 := @this: com.apostek.untangle.GameLayout;
+
+        i0 = 0;
+
+        i1 = 0;
+
+     label1:
+        $r1 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $i2 = virtualinvoke $r1.<java.util.ArrayList: int size()>();
+
+        if i1 < $i2 goto label2;
+
+        return i0;
+
+     label2:
+        $r1 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $r2 = virtualinvoke $r1.<java.util.ArrayList: java.lang.Object get(int)>(i1);
+
+        $r3 = (com.apostek.untangle.Orb) $r2;
+
+        $r4 = virtualinvoke $r3.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $r1 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $r2 = virtualinvoke $r1.<java.util.ArrayList: java.lang.Object get(int)>(i1);
+
+        $r3 = (com.apostek.untangle.Orb) $r2;
+
+        $r5 = virtualinvoke $r3.<com.apostek.untangle.Orb: java.util.ArrayList getConnectedNodes()>();
+
+        if $r5 == null goto label4;
+
+        $i2 = 0;
+
+     label3:
+        $i3 = virtualinvoke $r5.<java.util.ArrayList: int size()>();
+
+        if $i2 < $i3 goto label5;
+
+     label4:
+        i1 = i1 + 1;
+
+        goto label1;
+
+     label5:
+        $r1 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $r2 = virtualinvoke $r5.<java.util.ArrayList: java.lang.Object get(int)>($i2);
+
+        $r6 = (java.lang.Integer) $r2;
+
+        $i3 = virtualinvoke $r6.<java.lang.Integer: int intValue()>();
+
+        $r2 = virtualinvoke $r1.<java.util.ArrayList: java.lang.Object get(int)>($i3);
+
+        $r3 = (com.apostek.untangle.Orb) $r2;
+
+        $r7 = virtualinvoke $r3.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $i3 = specialinvoke r0.<com.apostek.untangle.GameLayout: int checkForIntersection(com.apostek.untangle.Orb$Coordinates,com.apostek.untangle.Orb$Coordinates)>($r4, $r7);
+
+        i0 = i0 + $i3;
+
+        $i2 = $i2 + 1;
+
+        goto label3;
+    }
+
+    private android.graphics.Bitmap decodeResource(int)
+    {
+        java.lang.Exception $r4;
+        com.apostek.untangle.GameLayout r0;
+        android.graphics.Bitmap $r3;
+        int $i0, i1, i2, i3, $i4;
+        android.graphics.BitmapFactory$Options r1;
+        android.content.res.Resources $r2;
+
+        r0 := @this: com.apostek.untangle.GameLayout;
+
+        $i0 := @parameter0: int;
+
+        r1 = new android.graphics.BitmapFactory$Options;
+
+     label1:
+        specialinvoke r1.<android.graphics.BitmapFactory$Options: void <init>()>();
+
+        r1.<android.graphics.BitmapFactory$Options: boolean inJustDecodeBounds> = 1;
+
+        $r2 = virtualinvoke r0.<com.apostek.untangle.GameLayout: android.content.res.Resources getResources()>();
+
+        staticinvoke <android.graphics.BitmapFactory: android.graphics.Bitmap decodeResource(android.content.res.Resources,int,android.graphics.BitmapFactory$Options)>($r2, $i0, r1);
+
+        i1 = r1.<android.graphics.BitmapFactory$Options: int outWidth>;
+
+        i2 = r1.<android.graphics.BitmapFactory$Options: int outHeight>;
+
+     label2:
+        i3 = 1;
+
+     label3:
+        $i4 = i1 / 2;
+
+        if $i4 < 320 goto label4;
+
+        $i4 = i2 / 2;
+
+        if $i4 >= 320 goto label7;
+
+     label4:
+        r1 = new android.graphics.BitmapFactory$Options;
+
+     label5:
+        specialinvoke r1.<android.graphics.BitmapFactory$Options: void <init>()>();
+
+        r1.<android.graphics.BitmapFactory$Options: int inSampleSize> = i3;
+
+        $r2 = virtualinvoke r0.<com.apostek.untangle.GameLayout: android.content.res.Resources getResources()>();
+
+        $r3 = staticinvoke <android.graphics.BitmapFactory: android.graphics.Bitmap decodeResource(android.content.res.Resources,int,android.graphics.BitmapFactory$Options)>($r2, $i0, r1);
+
+     label6:
+        return $r3;
+
+     label7:
+        i1 = i1 / 2;
+
+        i2 = i2 / 2;
+
+        i3 = i3 * 2;
+
+        goto label3;
+
+     label8:
+        $r4 := @caughtexception;
+
+        return null;
+
+        catch java.lang.Exception from label1 to label2 with label8;
+        catch java.lang.Exception from label5 to label6 with label8;
+    }
+
+    public void onDraw(android.graphics.Canvas)
+    {
+        long $l4, $l5;
+        java.lang.Integer $r12;
+        java.util.ArrayList $r4, $r11;
+        int $i0, $i1, $i2, $i3;
+        android.graphics.Canvas $r1;
+        boolean $z0;
+        java.util.Iterator $r5;
+        com.apostek.untangle.Orb $r7;
+        java.lang.Exception $r13, $r14;
+        com.apostek.untangle.Orb$Coordinates $r8, $r9, $r10;
+        com.apostek.untangle.GameLayout r0;
+        android.graphics.Bitmap $r2;
+        float $f0, $f1, $f2, $f3, $f4;
+        android.graphics.Paint $r3;
+        java.lang.Object $r6;
+
+        r0 := @this: com.apostek.untangle.GameLayout;
+
+        $r1 := @parameter0: android.graphics.Canvas;
+
+     label001:
+        virtualinvoke $r1.<android.graphics.Canvas: void drawColor(int)>(-16777216);
+
+     label002:
+        $i0 = <com.apostek.untangle.Untangle: int gameType>;
+
+        if $i0 == 3 goto label006;
+
+     label003:
+        $r2 = r0.<com.apostek.untangle.GameLayout: android.graphics.Bitmap bitmapHome>;
+
+     label004:
+        if $r2 == null goto label006;
+
+     label005:
+        $r2 = r0.<com.apostek.untangle.GameLayout: android.graphics.Bitmap bitmapHome>;
+
+        $r3 = r0.<com.apostek.untangle.GameLayout: android.graphics.Paint pBackground>;
+
+        virtualinvoke $r1.<android.graphics.Canvas: void drawBitmap(android.graphics.Bitmap,float,float,android.graphics.Paint)>($r2, 0.0F, 0.0F, $r3);
+
+     label006:
+        $i0 = <com.apostek.untangle.Untangle: int mGameState>;
+
+        if $i0 != 5 goto label008;
+
+     label007:
+        $r2 = r0.<com.apostek.untangle.GameLayout: android.graphics.Bitmap bitmapPurple>;
+
+        $r3 = r0.<com.apostek.untangle.GameLayout: android.graphics.Paint pBackground>;
+
+        virtualinvoke $r1.<android.graphics.Canvas: void drawBitmap(android.graphics.Bitmap,float,float,android.graphics.Paint)>($r2, 0.0F, 0.0F, $r3);
+
+     label008:
+        $i0 = 0;
+
+     label009:
+        $r4 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $i1 = virtualinvoke $r4.<java.util.ArrayList: int size()>();
+
+     label010:
+        if $i0 < $i1 goto label108;
+
+     label011:
+        $r4 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $r5 = virtualinvoke $r4.<java.util.ArrayList: java.util.Iterator iterator()>();
+
+     label012:
+        $z0 = interfaceinvoke $r5.<java.util.Iterator: boolean hasNext()>();
+
+     label013:
+        if $z0 != 0 goto label189;
+
+        $i0 = <com.apostek.untangle.Untangle: int gameType>;
+
+        if $i0 != 2 goto label079;
+
+        $i0 = <com.apostek.untangle.Untangle: int mPlayerLevel>;
+
+        if $i0 > 1 goto label079;
+
+     label014:
+        $r3 = r0.<com.apostek.untangle.GameLayout: android.graphics.Paint pOrb>;
+
+        $i0 = virtualinvoke $r3.<android.graphics.Paint: int getAlpha()>();
+
+        $r3 = r0.<com.apostek.untangle.GameLayout: android.graphics.Paint pNotIntersect>;
+
+        $i1 = virtualinvoke $r3.<android.graphics.Paint: int getAlpha()>();
+
+        $r3 = r0.<com.apostek.untangle.GameLayout: android.graphics.Paint pNotIntersectThick>;
+
+        $i2 = virtualinvoke $r3.<android.graphics.Paint: int getAlpha()>();
+
+        $r4 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $r6 = virtualinvoke $r4.<java.util.ArrayList: java.lang.Object get(int)>(0);
+
+        $r7 = (com.apostek.untangle.Orb) $r6;
+
+        virtualinvoke $r7.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $r4 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $r6 = virtualinvoke $r4.<java.util.ArrayList: java.lang.Object get(int)>(0);
+
+        $r7 = (com.apostek.untangle.Orb) $r6;
+
+        $r8 = virtualinvoke $r7.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $r4 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $r6 = virtualinvoke $r4.<java.util.ArrayList: java.lang.Object get(int)>(1);
+
+        $r7 = (com.apostek.untangle.Orb) $r6;
+
+        $r9 = virtualinvoke $r7.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $r4 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $r6 = virtualinvoke $r4.<java.util.ArrayList: java.lang.Object get(int)>(3);
+
+        $r7 = (com.apostek.untangle.Orb) $r6;
+
+        $r10 = virtualinvoke $r7.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $r3 = r0.<com.apostek.untangle.GameLayout: android.graphics.Paint pNotIntersect>;
+
+        virtualinvoke $r3.<android.graphics.Paint: void setAlpha(int)>(100);
+
+        $r3 = r0.<com.apostek.untangle.GameLayout: android.graphics.Paint pNotIntersectThick>;
+
+        virtualinvoke $r3.<android.graphics.Paint: void setAlpha(int)>(50);
+
+        $i3 = virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+     label015:
+        $f0 = (float) $i3;
+
+     label016:
+        $f1 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label017:
+        $f0 = $f1 + $f0;
+
+     label018:
+        $i3 = virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+     label019:
+        $f1 = (float) $i3;
+
+     label020:
+        $f2 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label021:
+        $f1 = $f2 + $f1;
+
+     label022:
+        $i3 = virtualinvoke $r9.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+     label023:
+        $f2 = (float) $i3;
+
+     label024:
+        $f3 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label025:
+        $f2 = $f3 + $f2;
+
+     label026:
+        $i3 = virtualinvoke $r9.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+     label027:
+        $f3 = (float) $i3;
+
+     label028:
+        $f4 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label029:
+        $f3 = $f4 + $f3;
+
+     label030:
+        $r3 = r0.<com.apostek.untangle.GameLayout: android.graphics.Paint pNotIntersectThick>;
+
+        virtualinvoke $r1.<android.graphics.Canvas: void drawLine(float,float,float,float,android.graphics.Paint)>($f0, $f1, $f2, $f3, $r3);
+
+        $i3 = virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+     label031:
+        $f0 = (float) $i3;
+
+     label032:
+        $f1 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label033:
+        $f0 = $f1 + $f0;
+
+     label034:
+        $i3 = virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+     label035:
+        $f1 = (float) $i3;
+
+     label036:
+        $f2 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label037:
+        $f1 = $f2 + $f1;
+
+     label038:
+        $i3 = virtualinvoke $r9.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+     label039:
+        $f2 = (float) $i3;
+
+     label040:
+        $f3 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label041:
+        $f2 = $f3 + $f2;
+
+     label042:
+        $i3 = virtualinvoke $r9.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+     label043:
+        $f3 = (float) $i3;
+
+     label044:
+        $f4 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label045:
+        $f3 = $f4 + $f3;
+
+     label046:
+        $r3 = r0.<com.apostek.untangle.GameLayout: android.graphics.Paint pNotIntersect>;
+
+        virtualinvoke $r1.<android.graphics.Canvas: void drawLine(float,float,float,float,android.graphics.Paint)>($f0, $f1, $f2, $f3, $r3);
+
+        $i3 = virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+     label047:
+        $f0 = (float) $i3;
+
+     label048:
+        $f1 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label049:
+        $f0 = $f1 + $f0;
+
+     label050:
+        $i3 = virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+     label051:
+        $f1 = (float) $i3;
+
+     label052:
+        $f2 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label053:
+        $f1 = $f2 + $f1;
+
+     label054:
+        $i3 = virtualinvoke $r10.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+     label055:
+        $f2 = (float) $i3;
+
+     label056:
+        $f3 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label057:
+        $f2 = $f3 + $f2;
+
+     label058:
+        $i3 = virtualinvoke $r10.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+     label059:
+        $f3 = (float) $i3;
+
+     label060:
+        $f4 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label061:
+        $f3 = $f4 + $f3;
+
+     label062:
+        $r3 = r0.<com.apostek.untangle.GameLayout: android.graphics.Paint pNotIntersectThick>;
+
+        virtualinvoke $r1.<android.graphics.Canvas: void drawLine(float,float,float,float,android.graphics.Paint)>($f0, $f1, $f2, $f3, $r3);
+
+        $i3 = virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+     label063:
+        $f0 = (float) $i3;
+
+     label064:
+        $f1 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label065:
+        $f0 = $f1 + $f0;
+
+     label066:
+        $i3 = virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+     label067:
+        $f1 = (float) $i3;
+
+     label068:
+        $f2 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label069:
+        $f1 = $f2 + $f1;
+
+     label070:
+        $i3 = virtualinvoke $r10.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+     label071:
+        $f2 = (float) $i3;
+
+     label072:
+        $f3 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label073:
+        $f2 = $f3 + $f2;
+
+     label074:
+        $i3 = virtualinvoke $r10.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+     label075:
+        $f3 = (float) $i3;
+
+     label076:
+        $f4 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label077:
+        $f3 = $f4 + $f3;
+
+     label078:
+        $r3 = r0.<com.apostek.untangle.GameLayout: android.graphics.Paint pNotIntersect>;
+
+        virtualinvoke $r1.<android.graphics.Canvas: void drawLine(float,float,float,float,android.graphics.Paint)>($f0, $f1, $f2, $f3, $r3);
+
+        $r3 = r0.<com.apostek.untangle.GameLayout: android.graphics.Paint pNotIntersect>;
+
+        virtualinvoke $r3.<android.graphics.Paint: void setAlpha(int)>($i1);
+
+        $r3 = r0.<com.apostek.untangle.GameLayout: android.graphics.Paint pNotIntersectThick>;
+
+        virtualinvoke $r3.<android.graphics.Paint: void setAlpha(int)>($i2);
+
+        $r3 = r0.<com.apostek.untangle.GameLayout: android.graphics.Paint pOrb>;
+
+        virtualinvoke $r3.<android.graphics.Paint: void setAlpha(int)>($i0);
+
+     label079:
+        $r7 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.Orb currentNode>;
+
+     label080:
+        if $r7 == null goto label099;
+
+     label081:
+        $r7 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.Orb currentNode>;
+
+        $z0 = virtualinvoke $r7.<com.apostek.untangle.Orb: boolean isChosenOne()>();
+
+     label082:
+        if $z0 == 0 goto label099;
+
+     label083:
+        $r7 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.Orb currentNode>;
+
+        $r8 = virtualinvoke $r7.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+     label084:
+        $i0 = <com.apostek.untangle.Untangle: int gameType>;
+
+        if $i0 == 3 goto label207;
+
+     label085:
+        $r2 = r0.<com.apostek.untangle.GameLayout: android.graphics.Bitmap bitmapOrg>;
+
+        $i0 = virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+     label086:
+        $f0 = (float) $i0;
+
+     label087:
+        $i0 = virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+     label088:
+        $f1 = (float) $i0;
+
+     label089:
+        $r3 = r0.<com.apostek.untangle.GameLayout: android.graphics.Paint pOrb>;
+
+        virtualinvoke $r1.<android.graphics.Canvas: void drawBitmap(android.graphics.Bitmap,float,float,android.graphics.Paint)>($r2, $f0, $f1, $r3);
+
+     label090:
+        $r2 = r0.<com.apostek.untangle.GameLayout: android.graphics.Bitmap orbRing>;
+
+        $i0 = virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+     label091:
+        $l4 = (long) $i0;
+
+     label092:
+        $l5 = r0.<com.apostek.untangle.GameLayout: long screenWidth>;
+
+     label093:
+        $l5 = $l5 * 9L;
+
+        $l5 = $l5 / 320L;
+
+        $l4 = $l4 - $l5;
+
+        $f0 = (float) $l4;
+
+     label094:
+        $i0 = virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+     label095:
+        $l4 = (long) $i0;
+
+     label096:
+        $l5 = r0.<com.apostek.untangle.GameLayout: long screenHeight>;
+
+     label097:
+        $l5 = $l5 * 9L;
+
+        $l5 = $l5 / 480L;
+
+        $l4 = $l4 - $l5;
+
+        $f1 = (float) $l4;
+
+     label098:
+        virtualinvoke $r1.<android.graphics.Canvas: void drawBitmap(android.graphics.Bitmap,float,float,android.graphics.Paint)>($r2, $f0, $f1, null);
+
+     label099:
+        $i0 = <com.apostek.untangle.Untangle: int gameType>;
+
+        if $i0 != 2 goto label216;
+
+        $i0 = <com.apostek.untangle.Untangle: int mPlayerLevel>;
+
+        if $i0 != 0 goto label216;
+
+     label100:
+        $r2 = r0.<com.apostek.untangle.GameLayout: android.graphics.Bitmap bitmapArrow1>;
+
+        $r4 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $r6 = virtualinvoke $r4.<java.util.ArrayList: java.lang.Object get(int)>(0);
+
+        $r7 = (com.apostek.untangle.Orb) $r6;
+
+        $r8 = virtualinvoke $r7.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $i0 = virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int get_originalx()>();
+
+     label101:
+        $f0 = (float) $i0;
+
+     label102:
+        $r4 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $r6 = virtualinvoke $r4.<java.util.ArrayList: java.lang.Object get(int)>(0);
+
+        $r7 = (com.apostek.untangle.Orb) $r6;
+
+        $r8 = virtualinvoke $r7.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $i0 = virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int get_originaly()>();
+
+     label103:
+        $l4 = (long) $i0;
+
+     label104:
+        $l5 = r0.<com.apostek.untangle.GameLayout: long screenHeight>;
+
+     label105:
+        $l5 = 20L * $l5;
+
+        $l5 = $l5 / 320L;
+
+        $l4 = $l4 + $l5;
+
+        $f1 = (float) $l4;
+
+     label106:
+        virtualinvoke $r1.<android.graphics.Canvas: void drawBitmap(android.graphics.Bitmap,float,float,android.graphics.Paint)>($r2, $f0, $f1, null);
+
+     label107:
+        return;
+
+     label108:
+        $r4 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $r6 = virtualinvoke $r4.<java.util.ArrayList: java.lang.Object get(int)>($i0);
+
+        $r7 = (com.apostek.untangle.Orb) $r6;
+
+        $r8 = virtualinvoke $r7.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $r4 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $r6 = virtualinvoke $r4.<java.util.ArrayList: java.lang.Object get(int)>($i0);
+
+        $r7 = (com.apostek.untangle.Orb) $r6;
+
+        $r4 = virtualinvoke $r7.<com.apostek.untangle.Orb: java.util.ArrayList getConnectedNodes()>();
+
+     label109:
+        if $r4 == null goto label112;
+
+        $i1 = 0;
+
+     label110:
+        $i2 = virtualinvoke $r4.<java.util.ArrayList: int size()>();
+
+     label111:
+        if $i1 < $i2 goto label113;
+
+     label112:
+        $i0 = $i0 + 1;
+
+        goto label009;
+
+     label113:
+        $r11 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $r6 = virtualinvoke $r4.<java.util.ArrayList: java.lang.Object get(int)>($i1);
+
+        $r12 = (java.lang.Integer) $r6;
+
+        $i2 = virtualinvoke $r12.<java.lang.Integer: int intValue()>();
+
+        $r6 = virtualinvoke $r11.<java.util.ArrayList: java.lang.Object get(int)>($i2);
+
+        $r7 = (com.apostek.untangle.Orb) $r6;
+
+        $r9 = virtualinvoke $r7.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $i2 = specialinvoke r0.<com.apostek.untangle.GameLayout: int checkForIntersection(com.apostek.untangle.Orb$Coordinates,com.apostek.untangle.Orb$Coordinates)>($r8, $r9);
+
+        virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+     label114:
+        virtualinvoke $r9.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+     label115:
+        virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+        virtualinvoke $r9.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+     label116:
+        $i3 = <com.apostek.untangle.Untangle: int gameType>;
+
+        if $i3 == 3 goto label117;
+
+        $i3 = <com.apostek.untangle.Untangle: int gameType>;
+
+        if $i3 != 0 goto label119;
+
+     label117:
+        $z0 = r0.<com.apostek.untangle.GameLayout: boolean isConstructingBonusArcadeGame>;
+
+     label118:
+        if $z0 != 0 goto label153;
+
+     label119:
+        if $i2 <= 0 goto label154;
+
+     label120:
+        $i2 = virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+     label121:
+        $f0 = (float) $i2;
+
+     label122:
+        $f1 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label123:
+        $f0 = $f1 + $f0;
+
+     label124:
+        $i2 = virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+     label125:
+        $f1 = (float) $i2;
+
+     label126:
+        $f2 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label127:
+        $f1 = $f2 + $f1;
+
+     label128:
+        $i2 = virtualinvoke $r9.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+     label129:
+        $f2 = (float) $i2;
+
+     label130:
+        $f3 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label131:
+        $f2 = $f3 + $f2;
+
+     label132:
+        $i2 = virtualinvoke $r9.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+     label133:
+        $f3 = (float) $i2;
+
+     label134:
+        $f4 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label135:
+        $f3 = $f4 + $f3;
+
+     label136:
+        $r3 = r0.<com.apostek.untangle.GameLayout: android.graphics.Paint pIntersectThick>;
+
+        virtualinvoke $r1.<android.graphics.Canvas: void drawLine(float,float,float,float,android.graphics.Paint)>($f0, $f1, $f2, $f3, $r3);
+
+        $i2 = virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+     label137:
+        $f0 = (float) $i2;
+
+     label138:
+        $f1 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label139:
+        $f0 = $f1 + $f0;
+
+     label140:
+        $i2 = virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+     label141:
+        $f1 = (float) $i2;
+
+     label142:
+        $f2 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label143:
+        $f1 = $f2 + $f1;
+
+     label144:
+        $i2 = virtualinvoke $r9.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+     label145:
+        $f2 = (float) $i2;
+
+     label146:
+        $f3 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label147:
+        $f2 = $f3 + $f2;
+
+     label148:
+        $i2 = virtualinvoke $r9.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+     label149:
+        $f3 = (float) $i2;
+
+     label150:
+        $f4 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label151:
+        $f3 = $f4 + $f3;
+
+     label152:
+        $r3 = r0.<com.apostek.untangle.GameLayout: android.graphics.Paint pIntersect>;
+
+        virtualinvoke $r1.<android.graphics.Canvas: void drawLine(float,float,float,float,android.graphics.Paint)>($f0, $f1, $f2, $f3, $r3);
+
+     label153:
+        $i1 = $i1 + 1;
+
+        goto label110;
+
+     label154:
+        $i2 = virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+     label155:
+        $f0 = (float) $i2;
+
+     label156:
+        $f1 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label157:
+        $f0 = $f1 + $f0;
+
+     label158:
+        $i2 = virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+     label159:
+        $f1 = (float) $i2;
+
+     label160:
+        $f2 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label161:
+        $f1 = $f2 + $f1;
+
+     label162:
+        $i2 = virtualinvoke $r9.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+     label163:
+        $f2 = (float) $i2;
+
+     label164:
+        $f3 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label165:
+        $f2 = $f3 + $f2;
+
+     label166:
+        $i2 = virtualinvoke $r9.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+     label167:
+        $f3 = (float) $i2;
+
+     label168:
+        $f4 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label169:
+        $f3 = $f4 + $f3;
+
+     label170:
+        $r3 = r0.<com.apostek.untangle.GameLayout: android.graphics.Paint pNotIntersectThick>;
+
+        virtualinvoke $r1.<android.graphics.Canvas: void drawLine(float,float,float,float,android.graphics.Paint)>($f0, $f1, $f2, $f3, $r3);
+
+        $i2 = virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+     label171:
+        $f0 = (float) $i2;
+
+     label172:
+        $f1 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label173:
+        $f0 = $f1 + $f0;
+
+     label174:
+        $i2 = virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+     label175:
+        $f1 = (float) $i2;
+
+     label176:
+        $f2 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label177:
+        $f1 = $f2 + $f1;
+
+     label178:
+        $i2 = virtualinvoke $r9.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+     label179:
+        $f2 = (float) $i2;
+
+     label180:
+        $f3 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label181:
+        $f2 = $f3 + $f2;
+
+     label182:
+        $i2 = virtualinvoke $r9.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+     label183:
+        $f3 = (float) $i2;
+
+     label184:
+        $f4 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label185:
+        $f3 = $f4 + $f3;
+
+     label186:
+        $r3 = r0.<com.apostek.untangle.GameLayout: android.graphics.Paint pNotIntersect>;
+
+        virtualinvoke $r1.<android.graphics.Canvas: void drawLine(float,float,float,float,android.graphics.Paint)>($f0, $f1, $f2, $f3, $r3);
+
+     label187:
+        goto label153;
+
+     label188:
+        $r13 := @caughtexception;
+
+        goto label011;
+
+     label189:
+        $r6 = interfaceinvoke $r5.<java.util.Iterator: java.lang.Object next()>();
+
+        $r7 = (com.apostek.untangle.Orb) $r6;
+
+        $r8 = virtualinvoke $r7.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+     label190:
+        $i0 = <com.apostek.untangle.Untangle: int gameType>;
+
+        if $i0 == 3 goto label198;
+
+     label191:
+        $r2 = r0.<com.apostek.untangle.GameLayout: android.graphics.Bitmap bitmapOrg>;
+
+        $i0 = virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+     label192:
+        $f0 = (float) $i0;
+
+     label193:
+        $i0 = virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+     label194:
+        $f1 = (float) $i0;
+
+     label195:
+        $r3 = r0.<com.apostek.untangle.GameLayout: android.graphics.Paint pOrb>;
+
+        virtualinvoke $r1.<android.graphics.Canvas: void drawBitmap(android.graphics.Bitmap,float,float,android.graphics.Paint)>($r2, $f0, $f1, $r3);
+
+     label196:
+        goto label012;
+
+     label197:
+        $r14 := @caughtexception;
+
+        return;
+
+     label198:
+        $i0 = <com.apostek.untangle.Untangle: int gameType>;
+
+        if $i0 == 3 goto label199;
+
+        $i0 = <com.apostek.untangle.Untangle: int gameType>;
+
+        if $i0 != 0 goto label201;
+
+     label199:
+        $z0 = r0.<com.apostek.untangle.GameLayout: boolean isConstructingBonusArcadeGame>;
+
+     label200:
+        if $z0 != 0 goto label012;
+
+     label201:
+        $r2 = r0.<com.apostek.untangle.GameLayout: android.graphics.Bitmap bitmapBonusOrb>;
+
+        $i0 = virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+     label202:
+        $f0 = (float) $i0;
+
+     label203:
+        $i0 = virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+     label204:
+        $f1 = (float) $i0;
+
+     label205:
+        $r3 = r0.<com.apostek.untangle.GameLayout: android.graphics.Paint pOrb>;
+
+        virtualinvoke $r1.<android.graphics.Canvas: void drawBitmap(android.graphics.Bitmap,float,float,android.graphics.Paint)>($r2, $f0, $f1, $r3);
+
+     label206:
+        goto label012;
+
+     label207:
+        $i0 = <com.apostek.untangle.Untangle: int gameType>;
+
+        if $i0 == 3 goto label208;
+
+        $i0 = <com.apostek.untangle.Untangle: int gameType>;
+
+        if $i0 != 0 goto label210;
+
+     label208:
+        $z0 = r0.<com.apostek.untangle.GameLayout: boolean isConstructingBonusArcadeGame>;
+
+     label209:
+        if $z0 != 0 goto label090;
+
+     label210:
+        $r2 = r0.<com.apostek.untangle.GameLayout: android.graphics.Bitmap bitmapBonusOrb>;
+
+        $i0 = virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+     label211:
+        $f0 = (float) $i0;
+
+     label212:
+        $i0 = virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+     label213:
+        $f1 = (float) $i0;
+
+     label214:
+        $r3 = r0.<com.apostek.untangle.GameLayout: android.graphics.Paint pOrb>;
+
+        virtualinvoke $r1.<android.graphics.Canvas: void drawBitmap(android.graphics.Bitmap,float,float,android.graphics.Paint)>($r2, $f0, $f1, $r3);
+
+     label215:
+        goto label090;
+
+     label216:
+        $i0 = <com.apostek.untangle.Untangle: int gameType>;
+
+        if $i0 != 2 goto label224;
+
+        $i0 = <com.apostek.untangle.Untangle: int mPlayerLevel>;
+
+        if $i0 != 1 goto label224;
+
+     label217:
+        $r2 = r0.<com.apostek.untangle.GameLayout: android.graphics.Bitmap bitmapArrow2>;
+
+        $r4 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $r6 = virtualinvoke $r4.<java.util.ArrayList: java.lang.Object get(int)>(0);
+
+        $r7 = (com.apostek.untangle.Orb) $r6;
+
+        $r8 = virtualinvoke $r7.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $i0 = virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int get_originalx()>();
+
+     label218:
+        $l4 = (long) $i0;
+
+     label219:
+        $l5 = r0.<com.apostek.untangle.GameLayout: long screenWidth>;
+
+     label220:
+        $l5 = 60L * $l5;
+
+        $l5 = $l5 / 320L;
+
+        $l4 = $l4 - $l5;
+
+        $f0 = (float) $l4;
+
+     label221:
+        $r4 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $r6 = virtualinvoke $r4.<java.util.ArrayList: java.lang.Object get(int)>(0);
+
+        $r7 = (com.apostek.untangle.Orb) $r6;
+
+        $r8 = virtualinvoke $r7.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $i0 = virtualinvoke $r8.<com.apostek.untangle.Orb$Coordinates: int get_originaly()>();
+
+     label222:
+        $f1 = (float) $i0;
+
+     label223:
+        virtualinvoke $r1.<android.graphics.Canvas: void drawBitmap(android.graphics.Bitmap,float,float,android.graphics.Paint)>($r2, $f0, $f1, null);
+
+     label224:
+        return;
+
+        catch java.lang.Exception from label001 to label002 with label188;
+        catch java.lang.Exception from label003 to label004 with label188;
+        catch java.lang.Exception from label005 to label006 with label188;
+        catch java.lang.Exception from label007 to label008 with label188;
+        catch java.lang.Exception from label009 to label010 with label188;
+        catch java.lang.Exception from label011 to label013 with label197;
+        catch java.lang.Exception from label014 to label015 with label197;
+        catch java.lang.Exception from label016 to label017 with label197;
+        catch java.lang.Exception from label018 to label019 with label197;
+        catch java.lang.Exception from label020 to label021 with label197;
+        catch java.lang.Exception from label022 to label023 with label197;
+        catch java.lang.Exception from label024 to label025 with label197;
+        catch java.lang.Exception from label026 to label027 with label197;
+        catch java.lang.Exception from label028 to label029 with label197;
+        catch java.lang.Exception from label030 to label031 with label197;
+        catch java.lang.Exception from label032 to label033 with label197;
+        catch java.lang.Exception from label034 to label035 with label197;
+        catch java.lang.Exception from label036 to label037 with label197;
+        catch java.lang.Exception from label038 to label039 with label197;
+        catch java.lang.Exception from label040 to label041 with label197;
+        catch java.lang.Exception from label042 to label043 with label197;
+        catch java.lang.Exception from label044 to label045 with label197;
+        catch java.lang.Exception from label046 to label047 with label197;
+        catch java.lang.Exception from label048 to label049 with label197;
+        catch java.lang.Exception from label050 to label051 with label197;
+        catch java.lang.Exception from label052 to label053 with label197;
+        catch java.lang.Exception from label054 to label055 with label197;
+        catch java.lang.Exception from label056 to label057 with label197;
+        catch java.lang.Exception from label058 to label059 with label197;
+        catch java.lang.Exception from label060 to label061 with label197;
+        catch java.lang.Exception from label062 to label063 with label197;
+        catch java.lang.Exception from label064 to label065 with label197;
+        catch java.lang.Exception from label066 to label067 with label197;
+        catch java.lang.Exception from label068 to label069 with label197;
+        catch java.lang.Exception from label070 to label071 with label197;
+        catch java.lang.Exception from label072 to label073 with label197;
+        catch java.lang.Exception from label074 to label075 with label197;
+        catch java.lang.Exception from label076 to label077 with label197;
+        catch java.lang.Exception from label078 to label080 with label197;
+        catch java.lang.Exception from label081 to label082 with label197;
+        catch java.lang.Exception from label083 to label084 with label197;
+        catch java.lang.Exception from label085 to label086 with label197;
+        catch java.lang.Exception from label087 to label088 with label197;
+        catch java.lang.Exception from label089 to label091 with label197;
+        catch java.lang.Exception from label092 to label093 with label197;
+        catch java.lang.Exception from label094 to label095 with label197;
+        catch java.lang.Exception from label096 to label097 with label197;
+        catch java.lang.Exception from label098 to label099 with label197;
+        catch java.lang.Exception from label100 to label101 with label197;
+        catch java.lang.Exception from label102 to label103 with label197;
+        catch java.lang.Exception from label104 to label105 with label197;
+        catch java.lang.Exception from label106 to label107 with label197;
+        catch java.lang.Exception from label108 to label109 with label188;
+        catch java.lang.Exception from label110 to label111 with label188;
+        catch java.lang.Exception from label113 to label114 with label188;
+        catch java.lang.Exception from label114 to label115 with label188;
+        catch java.lang.Exception from label115 to label116 with label188;
+        catch java.lang.Exception from label117 to label118 with label188;
+        catch java.lang.Exception from label120 to label121 with label188;
+        catch java.lang.Exception from label122 to label123 with label188;
+        catch java.lang.Exception from label124 to label125 with label188;
+        catch java.lang.Exception from label126 to label127 with label188;
+        catch java.lang.Exception from label128 to label129 with label188;
+        catch java.lang.Exception from label130 to label131 with label188;
+        catch java.lang.Exception from label132 to label133 with label188;
+        catch java.lang.Exception from label134 to label135 with label188;
+        catch java.lang.Exception from label136 to label137 with label188;
+        catch java.lang.Exception from label138 to label139 with label188;
+        catch java.lang.Exception from label140 to label141 with label188;
+        catch java.lang.Exception from label142 to label143 with label188;
+        catch java.lang.Exception from label144 to label145 with label188;
+        catch java.lang.Exception from label146 to label147 with label188;
+        catch java.lang.Exception from label148 to label149 with label188;
+        catch java.lang.Exception from label150 to label151 with label188;
+        catch java.lang.Exception from label152 to label153 with label188;
+        catch java.lang.Exception from label154 to label155 with label188;
+        catch java.lang.Exception from label156 to label157 with label188;
+        catch java.lang.Exception from label158 to label159 with label188;
+        catch java.lang.Exception from label160 to label161 with label188;
+        catch java.lang.Exception from label162 to label163 with label188;
+        catch java.lang.Exception from label164 to label165 with label188;
+        catch java.lang.Exception from label166 to label167 with label188;
+        catch java.lang.Exception from label168 to label169 with label188;
+        catch java.lang.Exception from label170 to label171 with label188;
+        catch java.lang.Exception from label172 to label173 with label188;
+        catch java.lang.Exception from label174 to label175 with label188;
+        catch java.lang.Exception from label176 to label177 with label188;
+        catch java.lang.Exception from label178 to label179 with label188;
+        catch java.lang.Exception from label180 to label181 with label188;
+        catch java.lang.Exception from label182 to label183 with label188;
+        catch java.lang.Exception from label184 to label185 with label188;
+        catch java.lang.Exception from label186 to label187 with label188;
+        catch java.lang.Exception from label189 to label190 with label197;
+        catch java.lang.Exception from label191 to label192 with label197;
+        catch java.lang.Exception from label193 to label194 with label197;
+        catch java.lang.Exception from label195 to label196 with label197;
+        catch java.lang.Exception from label199 to label200 with label197;
+        catch java.lang.Exception from label201 to label202 with label197;
+        catch java.lang.Exception from label203 to label204 with label197;
+        catch java.lang.Exception from label205 to label206 with label197;
+        catch java.lang.Exception from label208 to label209 with label197;
+        catch java.lang.Exception from label210 to label211 with label197;
+        catch java.lang.Exception from label212 to label213 with label197;
+        catch java.lang.Exception from label214 to label215 with label197;
+        catch java.lang.Exception from label217 to label218 with label197;
+        catch java.lang.Exception from label219 to label220 with label197;
+        catch java.lang.Exception from label221 to label222 with label197;
+        catch java.lang.Exception from label223 to label224 with label197;
+    }
+
+    public boolean onTouchEvent(android.view.MotionEvent)
+    {
+        long $l7, $l8;
+        java.util.ArrayList $r3;
+        byte $b6;
+        android.view.MotionEvent $r1;
+        int i0, i1, $i2, $i3, $i4, $i5;
+        boolean $z0, $z1;
+        com.apostek.untangle.Orb $r5;
+        java.lang.Exception r2;
+        com.apostek.untangle.Orb$Coordinates $r6;
+        com.apostek.untangle.GameLayout r0;
+        android.graphics.Bitmap $r7;
+        float $f0, $f1;
+        java.lang.Object $r4;
+
+        r0 := @this: com.apostek.untangle.GameLayout;
+
+        $r1 := @parameter0: android.view.MotionEvent;
+
+        i1 = <com.apostek.untangle.Untangle: int mGameState>;
+
+        if i1 != 2 goto label143;
+
+     label001:
+        $f0 = virtualinvoke $r1.<android.view.MotionEvent: float getX()>();
+
+     label002:
+        i0 = (int) $f0;
+
+     label003:
+        $f0 = virtualinvoke $r1.<android.view.MotionEvent: float getY()>();
+
+     label004:
+        i1 = (int) $f0;
+
+     label005:
+        $i2 = virtualinvoke $r1.<android.view.MotionEvent: int getAction()>();
+
+     label006:
+        if $i2 != 0 goto label022;
+
+     label007:
+        r0.<com.apostek.untangle.GameLayout: int moveCounter> = 0;
+
+     label008:
+        $i2 = 0;
+
+     label009:
+        $i3 = r0.<com.apostek.untangle.GameLayout: int nodesCount>;
+
+     label010:
+        if $i2 < $i3 goto label012;
+
+     label011:
+        return 1;
+
+     label012:
+        $r3 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $r4 = virtualinvoke $r3.<java.util.ArrayList: java.lang.Object get(int)>($i2);
+
+        $r5 = (com.apostek.untangle.Orb) $r4;
+
+        $r6 = virtualinvoke $r5.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $i3 = virtualinvoke $r6.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+        $r3 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $r4 = virtualinvoke $r3.<java.util.ArrayList: java.lang.Object get(int)>($i2);
+
+        $r5 = (com.apostek.untangle.Orb) $r4;
+
+        $r6 = virtualinvoke $r5.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $i4 = virtualinvoke $r6.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+     label013:
+        if i0 <= $i3 goto label021;
+
+     label014:
+        $i5 = r0.<com.apostek.untangle.GameLayout: int nodeWidth>;
+
+     label015:
+        $i5 = $i5 + $i3;
+
+        if i0 >= $i5 goto label021;
+
+        if i1 <= $i4 goto label021;
+
+     label016:
+        $i5 = r0.<com.apostek.untangle.GameLayout: int nodeHeight>;
+
+     label017:
+        $i5 = $i5 + $i4;
+
+        if i1 >= $i5 goto label021;
+
+     label018:
+        r0.<com.apostek.untangle.GameLayout: int selected_imageposition> = $i2;
+
+        $r3 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        i1 = r0.<com.apostek.untangle.GameLayout: int selected_imageposition>;
+
+        $r4 = virtualinvoke $r3.<java.util.ArrayList: java.lang.Object get(int)>(i1);
+
+        $r5 = (com.apostek.untangle.Orb) $r4;
+
+        r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.Orb currentNode> = $r5;
+
+        $r5 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.Orb currentNode>;
+
+        $r6 = virtualinvoke $r5.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        virtualinvoke $r6.<com.apostek.untangle.Orb$Coordinates: void setX(int)>($i3);
+
+        $r5 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.Orb currentNode>;
+
+        $r6 = virtualinvoke $r5.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        virtualinvoke $r6.<com.apostek.untangle.Orb$Coordinates: void setY(int)>($i4);
+
+        $r5 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.Orb currentNode>;
+
+        virtualinvoke $r5.<com.apostek.untangle.Orb: void setChosenOne(boolean)>(1);
+
+     label019:
+        goto label011;
+
+     label020:
+        r2 := @caughtexception;
+
+        virtualinvoke r2.<java.lang.Exception: void printStackTrace()>();
+
+        return 1;
+
+     label021:
+        $i2 = $i2 + 1;
+
+        goto label009;
+
+     label022:
+        $i2 = virtualinvoke $r1.<android.view.MotionEvent: int getAction()>();
+
+     label023:
+        if $i2 != 2 goto label078;
+
+     label024:
+        $r5 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.Orb currentNode>;
+
+     label025:
+        if $r5 == null goto label078;
+
+     label026:
+        $i2 = r0.<com.apostek.untangle.GameLayout: int moveCounter>;
+
+     label027:
+        $i2 = $i2 + 1;
+
+     label028:
+        r0.<com.apostek.untangle.GameLayout: int moveCounter> = $i2;
+
+        $r5 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.Orb currentNode>;
+
+        $z0 = virtualinvoke $r5.<com.apostek.untangle.Orb: boolean isChosenOne()>();
+
+     label029:
+        if $z0 == 0 goto label011;
+
+     label030:
+        $i2 = r0.<com.apostek.untangle.GameLayout: int moveCounter>;
+
+        $i3 = r0.<com.apostek.untangle.GameLayout: int modValue>;
+
+        $i2 = $i2 % $i3;
+
+     label031:
+        if $i2 != 0 goto label011;
+
+     label032:
+        r0.<com.apostek.untangle.GameLayout: int moveCounter> = 0;
+
+     label033:
+        $f0 = (float) i0;
+
+     label034:
+        $f1 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label035:
+        $b6 = $f0 cmpl $f1;
+
+        $i2 = (int) $b6;
+
+        if $i2 <= 0 goto label050;
+
+        $l7 = (long) i0;
+
+     label036:
+        $l8 = r0.<com.apostek.untangle.GameLayout: long gameWidth>;
+
+     label037:
+        $b6 = $l7 cmp $l8;
+
+        $i2 = (int) $b6;
+
+        if $i2 >= 0 goto label050;
+
+        $f0 = (float) i1;
+
+     label038:
+        $f1 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label039:
+        $b6 = $f0 cmpl $f1;
+
+        $i2 = (int) $b6;
+
+        if $i2 <= 0 goto label050;
+
+        $l7 = (long) i1;
+
+     label040:
+        $l8 = r0.<com.apostek.untangle.GameLayout: long gameHeight>;
+
+     label041:
+        $b6 = $l7 cmp $l8;
+
+        $i2 = (int) $b6;
+
+        if $i2 >= 0 goto label050;
+
+     label042:
+        $i2 = r0.<com.apostek.untangle.GameLayout: int selected_imageposition>;
+
+     label043:
+        $i3 = -1;
+
+        if $i2 == $i3 goto label050;
+
+     label044:
+        $r5 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.Orb currentNode>;
+
+        $r6 = virtualinvoke $r5.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $r7 = r0.<com.apostek.untangle.GameLayout: android.graphics.Bitmap bitmapOrg>;
+
+        $i2 = virtualinvoke $r7.<android.graphics.Bitmap: int getWidth()>();
+
+     label045:
+        $i2 = $i2 / 2;
+
+        i0 = i0 - $i2;
+
+     label046:
+        virtualinvoke $r6.<com.apostek.untangle.Orb$Coordinates: void setX(int)>(i0);
+
+        $r5 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.Orb currentNode>;
+
+        $r6 = virtualinvoke $r5.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $r7 = r0.<com.apostek.untangle.GameLayout: android.graphics.Bitmap bitmapOrg>;
+
+        i0 = virtualinvoke $r7.<android.graphics.Bitmap: int getHeight()>();
+
+     label047:
+        i0 = i0 / 2;
+
+        i1 = i1 - i0;
+
+     label048:
+        virtualinvoke $r6.<com.apostek.untangle.Orb$Coordinates: void setY(int)>(i1);
+
+        $r5 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.Orb currentNode>;
+
+        virtualinvoke $r5.<com.apostek.untangle.Orb: void setChosenOne(boolean)>(1);
+
+     label049:
+        goto label011;
+
+     label050:
+        $f0 = (float) i0;
+
+     label051:
+        $f1 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label052:
+        $b6 = $f0 cmpl $f1;
+
+        $i2 = (int) $b6;
+
+        if $i2 <= 0 goto label063;
+
+        $l7 = (long) i0;
+
+     label053:
+        $l8 = r0.<com.apostek.untangle.GameLayout: long gameWidth>;
+
+     label054:
+        $b6 = $l7 cmp $l8;
+
+        $i2 = (int) $b6;
+
+        if $i2 >= 0 goto label063;
+
+        $f0 = (float) i1;
+
+     label055:
+        $f1 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label056:
+        $b6 = $f0 cmpl $f1;
+
+        $i2 = (int) $b6;
+
+        if $i2 <= 0 goto label063;
+
+     label057:
+        $i2 = r0.<com.apostek.untangle.GameLayout: int selected_imageposition>;
+
+     label058:
+        $i3 = -1;
+
+        if $i2 == $i3 goto label063;
+
+     label059:
+        $r5 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.Orb currentNode>;
+
+        $r6 = virtualinvoke $r5.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $r7 = r0.<com.apostek.untangle.GameLayout: android.graphics.Bitmap bitmapOrg>;
+
+        i1 = virtualinvoke $r7.<android.graphics.Bitmap: int getWidth()>();
+
+     label060:
+        i1 = i1 / 2;
+
+        i1 = i0 - i1;
+
+     label061:
+        virtualinvoke $r6.<com.apostek.untangle.Orb$Coordinates: void setX(int)>(i1);
+
+        $r5 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.Orb currentNode>;
+
+        virtualinvoke $r5.<com.apostek.untangle.Orb: void setChosenOne(boolean)>(1);
+
+     label062:
+        goto label011;
+
+     label063:
+        $f0 = (float) i0;
+
+     label064:
+        $f1 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label065:
+        $f1 = $f1 - 20.0F;
+
+        $b6 = $f0 cmpl $f1;
+
+        $i2 = (int) $b6;
+
+        if $i2 <= 0 goto label011;
+
+        $l7 = (long) i0;
+
+     label066:
+        $l8 = r0.<com.apostek.untangle.GameLayout: long gameWidth>;
+
+     label067:
+        $l8 = $l8 + 20L;
+
+        $b6 = $l7 cmp $l8;
+
+        i0 = (int) $b6;
+
+        if i0 >= 0 goto label011;
+
+        $f0 = (float) i1;
+
+     label068:
+        $f1 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label069:
+        $b6 = $f0 cmpl $f1;
+
+        i0 = (int) $b6;
+
+        if i0 <= 0 goto label011;
+
+        $l7 = (long) i1;
+
+     label070:
+        $l8 = r0.<com.apostek.untangle.GameLayout: long gameHeight>;
+
+     label071:
+        $b6 = $l7 cmp $l8;
+
+        i0 = (int) $b6;
+
+        if i0 >= 0 goto label011;
+
+     label072:
+        i0 = r0.<com.apostek.untangle.GameLayout: int selected_imageposition>;
+
+     label073:
+        $i2 = -1;
+
+        if i0 == $i2 goto label011;
+
+     label074:
+        $r5 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.Orb currentNode>;
+
+        $r6 = virtualinvoke $r5.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $r7 = r0.<com.apostek.untangle.GameLayout: android.graphics.Bitmap bitmapOrg>;
+
+        i0 = virtualinvoke $r7.<android.graphics.Bitmap: int getHeight()>();
+
+     label075:
+        i0 = i0 / 2;
+
+        i1 = i1 - i0;
+
+     label076:
+        virtualinvoke $r6.<com.apostek.untangle.Orb$Coordinates: void setY(int)>(i1);
+
+        $r5 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.Orb currentNode>;
+
+        virtualinvoke $r5.<com.apostek.untangle.Orb: void setChosenOne(boolean)>(1);
+
+     label077:
+        goto label011;
+
+     label078:
+        $i2 = virtualinvoke $r1.<android.view.MotionEvent: int getAction()>();
+
+     label079:
+        if $i2 != 1 goto label011;
+
+     label080:
+        $r5 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.Orb currentNode>;
+
+     label081:
+        if $r5 == null goto label011;
+
+     label082:
+        $r5 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.Orb currentNode>;
+
+        $z0 = virtualinvoke $r5.<com.apostek.untangle.Orb: boolean isChosenOne()>();
+
+     label083:
+        if $z0 == 0 goto label011;
+
+        $f0 = (float) i0;
+
+     label084:
+        $f1 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label085:
+        $b6 = $f0 cmpl $f1;
+
+        $i2 = (int) $b6;
+
+        if $i2 <= 0 goto label102;
+
+        $l7 = (long) i0;
+
+     label086:
+        $l8 = r0.<com.apostek.untangle.GameLayout: long gameWidth>;
+
+     label087:
+        $b6 = $l7 cmp $l8;
+
+        $i2 = (int) $b6;
+
+        if $i2 >= 0 goto label102;
+
+        $f0 = (float) i1;
+
+     label088:
+        $f1 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label089:
+        $b6 = $f0 cmpl $f1;
+
+        $i2 = (int) $b6;
+
+        if $i2 <= 0 goto label102;
+
+        $l7 = (long) i1;
+
+     label090:
+        $l8 = r0.<com.apostek.untangle.GameLayout: long gameHeight>;
+
+     label091:
+        $b6 = $l7 cmp $l8;
+
+        $i2 = (int) $b6;
+
+        if $i2 >= 0 goto label102;
+
+     label092:
+        $i2 = r0.<com.apostek.untangle.GameLayout: int selected_imageposition>;
+
+     label093:
+        $i3 = -1;
+
+        if $i2 == $i3 goto label102;
+
+     label094:
+        $r5 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.Orb currentNode>;
+
+        $r6 = virtualinvoke $r5.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $r7 = r0.<com.apostek.untangle.GameLayout: android.graphics.Bitmap bitmapOrg>;
+
+        $i2 = virtualinvoke $r7.<android.graphics.Bitmap: int getWidth()>();
+
+     label095:
+        $i2 = $i2 / 2;
+
+        i0 = i0 - $i2;
+
+     label096:
+        virtualinvoke $r6.<com.apostek.untangle.Orb$Coordinates: void setX(int)>(i0);
+
+        $r5 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.Orb currentNode>;
+
+        $r6 = virtualinvoke $r5.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $r7 = r0.<com.apostek.untangle.GameLayout: android.graphics.Bitmap bitmapOrg>;
+
+        i0 = virtualinvoke $r7.<android.graphics.Bitmap: int getHeight()>();
+
+     label097:
+        i0 = i0 / 2;
+
+        i1 = i1 - i0;
+
+     label098:
+        virtualinvoke $r6.<com.apostek.untangle.Orb$Coordinates: void setY(int)>(i1);
+
+        $r5 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.Orb currentNode>;
+
+        virtualinvoke $r5.<com.apostek.untangle.Orb: void setChosenOne(boolean)>(0);
+
+     label099:
+        i1 = -1;
+
+     label100:
+        r0.<com.apostek.untangle.GameLayout: int selected_imageposition> = i1;
+
+        specialinvoke r0.<com.apostek.untangle.GameLayout: void checkForSolve()>();
+
+     label101:
+        goto label011;
+
+     label102:
+        $f0 = (float) i0;
+
+     label103:
+        $f1 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label104:
+        $b6 = $f0 cmpl $f1;
+
+        $i2 = (int) $b6;
+
+        if $i2 <= 0 goto label117;
+
+        $l7 = (long) i0;
+
+     label105:
+        $l8 = r0.<com.apostek.untangle.GameLayout: long gameWidth>;
+
+     label106:
+        $b6 = $l7 cmp $l8;
+
+        $i2 = (int) $b6;
+
+        if $i2 >= 0 goto label117;
+
+        $f0 = (float) i1;
+
+     label107:
+        $f1 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label108:
+        $b6 = $f0 cmpl $f1;
+
+        $i2 = (int) $b6;
+
+        if $i2 <= 0 goto label117;
+
+     label109:
+        $i2 = r0.<com.apostek.untangle.GameLayout: int selected_imageposition>;
+
+     label110:
+        $i3 = -1;
+
+        if $i2 == $i3 goto label117;
+
+     label111:
+        $r5 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.Orb currentNode>;
+
+        $r6 = virtualinvoke $r5.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $r7 = r0.<com.apostek.untangle.GameLayout: android.graphics.Bitmap bitmapOrg>;
+
+        i1 = virtualinvoke $r7.<android.graphics.Bitmap: int getWidth()>();
+
+     label112:
+        i1 = i1 / 2;
+
+        i1 = i0 - i1;
+
+     label113:
+        virtualinvoke $r6.<com.apostek.untangle.Orb$Coordinates: void setX(int)>(i1);
+
+        $r5 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.Orb currentNode>;
+
+        virtualinvoke $r5.<com.apostek.untangle.Orb: void setChosenOne(boolean)>(0);
+
+     label114:
+        i1 = -1;
+
+     label115:
+        r0.<com.apostek.untangle.GameLayout: int selected_imageposition> = i1;
+
+        specialinvoke r0.<com.apostek.untangle.GameLayout: void checkForSolve()>();
+
+     label116:
+        goto label011;
+
+     label117:
+        $f0 = (float) i0;
+
+     label118:
+        $f1 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label119:
+        $f1 = $f1 - 20.0F;
+
+        $b6 = $f0 cmpl $f1;
+
+        $i2 = (int) $b6;
+
+        if $i2 <= 0 goto label134;
+
+        $l7 = (long) i0;
+
+     label120:
+        $l8 = r0.<com.apostek.untangle.GameLayout: long gameWidth>;
+
+     label121:
+        $l8 = $l8 + 20L;
+
+        $b6 = $l7 cmp $l8;
+
+        i0 = (int) $b6;
+
+        if i0 >= 0 goto label134;
+
+        $f0 = (float) i1;
+
+     label122:
+        $f1 = r0.<com.apostek.untangle.GameLayout: float nodeRadius>;
+
+     label123:
+        $b6 = $f0 cmpl $f1;
+
+        i0 = (int) $b6;
+
+        if i0 <= 0 goto label134;
+
+        $l7 = (long) i1;
+
+     label124:
+        $l8 = r0.<com.apostek.untangle.GameLayout: long gameHeight>;
+
+     label125:
+        $b6 = $l7 cmp $l8;
+
+        i0 = (int) $b6;
+
+        if i0 >= 0 goto label134;
+
+     label126:
+        i0 = r0.<com.apostek.untangle.GameLayout: int selected_imageposition>;
+
+     label127:
+        $i2 = -1;
+
+        if i0 == $i2 goto label134;
+
+     label128:
+        $r5 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.Orb currentNode>;
+
+        $r6 = virtualinvoke $r5.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $r7 = r0.<com.apostek.untangle.GameLayout: android.graphics.Bitmap bitmapOrg>;
+
+        i0 = virtualinvoke $r7.<android.graphics.Bitmap: int getHeight()>();
+
+     label129:
+        i0 = i0 / 2;
+
+        i1 = i1 - i0;
+
+     label130:
+        virtualinvoke $r6.<com.apostek.untangle.Orb$Coordinates: void setY(int)>(i1);
+
+        $r5 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.Orb currentNode>;
+
+        virtualinvoke $r5.<com.apostek.untangle.Orb: void setChosenOne(boolean)>(0);
+
+     label131:
+        i1 = -1;
+
+     label132:
+        r0.<com.apostek.untangle.GameLayout: int selected_imageposition> = i1;
+
+        specialinvoke r0.<com.apostek.untangle.GameLayout: void checkForSolve()>();
+
+     label133:
+        goto label011;
+
+     label134:
+        $r5 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.Orb currentNode>;
+
+     label135:
+        if $r5 == null goto label142;
+
+        $z0 = 1;
+
+     label136:
+        $r5 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.Orb currentNode>;
+
+        $z1 = virtualinvoke $r5.<com.apostek.untangle.Orb: boolean isChosenOne()>();
+
+     label137:
+        $z0 = $z0 & $z1;
+
+        if $z0 == 0 goto label011;
+
+     label138:
+        $r5 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.Orb currentNode>;
+
+        virtualinvoke $r5.<com.apostek.untangle.Orb: void setChosenOne(boolean)>(0);
+
+     label139:
+        i1 = -1;
+
+     label140:
+        r0.<com.apostek.untangle.GameLayout: int selected_imageposition> = i1;
+
+        specialinvoke r0.<com.apostek.untangle.GameLayout: void checkForSolve()>();
+
+     label141:
+        goto label011;
+
+     label142:
+        $z0 = 0;
+
+        goto label136;
+
+     label143:
+        return 1;
+
+        catch java.lang.Exception from label001 to label002 with label020;
+        catch java.lang.Exception from label003 to label004 with label020;
+        catch java.lang.Exception from label005 to label006 with label020;
+        catch java.lang.Exception from label007 to label008 with label020;
+        catch java.lang.Exception from label009 to label010 with label020;
+        catch java.lang.Exception from label012 to label013 with label020;
+        catch java.lang.Exception from label014 to label015 with label020;
+        catch java.lang.Exception from label016 to label017 with label020;
+        catch java.lang.Exception from label018 to label019 with label020;
+        catch java.lang.Exception from label022 to label023 with label020;
+        catch java.lang.Exception from label024 to label025 with label020;
+        catch java.lang.Exception from label026 to label027 with label020;
+        catch java.lang.Exception from label028 to label029 with label020;
+        catch java.lang.Exception from label030 to label031 with label020;
+        catch java.lang.Exception from label032 to label033 with label020;
+        catch java.lang.Exception from label034 to label035 with label020;
+        catch java.lang.Exception from label036 to label037 with label020;
+        catch java.lang.Exception from label038 to label039 with label020;
+        catch java.lang.Exception from label040 to label041 with label020;
+        catch java.lang.Exception from label042 to label043 with label020;
+        catch java.lang.Exception from label044 to label045 with label020;
+        catch java.lang.Exception from label046 to label047 with label020;
+        catch java.lang.Exception from label048 to label049 with label020;
+        catch java.lang.Exception from label051 to label052 with label020;
+        catch java.lang.Exception from label053 to label054 with label020;
+        catch java.lang.Exception from label055 to label056 with label020;
+        catch java.lang.Exception from label057 to label058 with label020;
+        catch java.lang.Exception from label059 to label060 with label020;
+        catch java.lang.Exception from label061 to label062 with label020;
+        catch java.lang.Exception from label064 to label065 with label020;
+        catch java.lang.Exception from label066 to label067 with label020;
+        catch java.lang.Exception from label068 to label069 with label020;
+        catch java.lang.Exception from label070 to label071 with label020;
+        catch java.lang.Exception from label072 to label073 with label020;
+        catch java.lang.Exception from label074 to label075 with label020;
+        catch java.lang.Exception from label076 to label077 with label020;
+        catch java.lang.Exception from label078 to label079 with label020;
+        catch java.lang.Exception from label080 to label081 with label020;
+        catch java.lang.Exception from label082 to label083 with label020;
+        catch java.lang.Exception from label084 to label085 with label020;
+        catch java.lang.Exception from label086 to label087 with label020;
+        catch java.lang.Exception from label088 to label089 with label020;
+        catch java.lang.Exception from label090 to label091 with label020;
+        catch java.lang.Exception from label092 to label093 with label020;
+        catch java.lang.Exception from label094 to label095 with label020;
+        catch java.lang.Exception from label096 to label097 with label020;
+        catch java.lang.Exception from label098 to label099 with label020;
+        catch java.lang.Exception from label100 to label101 with label020;
+        catch java.lang.Exception from label103 to label104 with label020;
+        catch java.lang.Exception from label105 to label106 with label020;
+        catch java.lang.Exception from label107 to label108 with label020;
+        catch java.lang.Exception from label109 to label110 with label020;
+        catch java.lang.Exception from label111 to label112 with label020;
+        catch java.lang.Exception from label113 to label114 with label020;
+        catch java.lang.Exception from label115 to label116 with label020;
+        catch java.lang.Exception from label118 to label119 with label020;
+        catch java.lang.Exception from label120 to label121 with label020;
+        catch java.lang.Exception from label122 to label123 with label020;
+        catch java.lang.Exception from label124 to label125 with label020;
+        catch java.lang.Exception from label126 to label127 with label020;
+        catch java.lang.Exception from label128 to label129 with label020;
+        catch java.lang.Exception from label130 to label131 with label020;
+        catch java.lang.Exception from label132 to label133 with label020;
+        catch java.lang.Exception from label134 to label135 with label020;
+        catch java.lang.Exception from label136 to label137 with label020;
+        catch java.lang.Exception from label138 to label139 with label020;
+        catch java.lang.Exception from label140 to label141 with label020;
+    }
+
+    public void resetToOriginal()
+    {
+        com.apostek.untangle.Orb r3;
+        java.util.ArrayList $r1;
+        com.apostek.untangle.Orb$Coordinates $r4, $r5;
+        com.apostek.untangle.GameLayout r0;
+        int i0, $i1;
+        java.lang.Object $r2;
+
+        r0 := @this: com.apostek.untangle.GameLayout;
+
+        i0 = 0;
+
+     label1:
+        $r1 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $i1 = virtualinvoke $r1.<java.util.ArrayList: int size()>();
+
+        if i0 < $i1 goto label2;
+
+        return;
+
+     label2:
+        $r1 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $r2 = virtualinvoke $r1.<java.util.ArrayList: java.lang.Object get(int)>(i0);
+
+        r3 = (com.apostek.untangle.Orb) $r2;
+
+        $r4 = virtualinvoke r3.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $r5 = virtualinvoke r3.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $i1 = virtualinvoke $r5.<com.apostek.untangle.Orb$Coordinates: int get_originalx()>();
+
+        virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: void setX(int)>($i1);
+
+        $r4 = virtualinvoke r3.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $r5 = virtualinvoke r3.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $i1 = virtualinvoke $r5.<com.apostek.untangle.Orb$Coordinates: int get_originaly()>();
+
+        virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: void setY(int)>($i1);
+
+        i0 = i0 + 1;
+
+        goto label1;
+    }
+
+    public void setup(int)
+    {
+        int[][] $r9;
+        java.lang.Error $r17;
+        java.util.Random r1, $r18;
+        long $l4, $l6;
+        java.lang.Integer $r15;
+        java.util.ArrayList $r6, $r20;
+        int[] $r2;
+        int $i0, $i1, $i2, $i3, $i5;
+        java.lang.Boolean $r5;
+        boolean $z0;
+        com.apostek.untangle.Orb r12, $r19;
+        java.lang.Exception r7, r11;
+        com.apostek.untangle.Orb$Coordinates $r13, $r16;
+        com.apostek.untangle.GameLayout r0;
+        int[][][] $r8;
+        android.graphics.Bitmap $r4;
+        android.graphics.Paint $r10;
+        java.lang.Object $r14;
+        android.content.res.Resources $r3;
+
+        r0 := @this: com.apostek.untangle.GameLayout;
+
+        $i0 := @parameter0: int;
+
+        $i1 = <com.apostek.untangle.Untangle: int gameType>;
+
+        if $i1 != 1 goto label001;
+
+        $i1 = <com.apostek.untangle.Untangle: int gamesCount>;
+
+        $i1 = $i1 + 1;
+
+        <com.apostek.untangle.Untangle: int gamesCount> = $i1;
+
+     label001:
+        <com.apostek.untangle.Untangle: boolean hasUsedSolution> = 0;
+
+        <com.apostek.untangle.Untangle: int mPlayerMoves> = 0;
+
+        <com.apostek.untangle.GameLayout: int solvedNodesCount> = 0;
+
+     label002:
+        r0.<com.apostek.untangle.GameLayout: boolean isSolved> = 0;
+
+        r0.<com.apostek.untangle.GameLayout: long pOrbAlpha> = 100L;
+
+        r0.<com.apostek.untangle.GameLayout: long pInterconnectsAlphaCurrent> = 0L;
+
+        r0.<com.apostek.untangle.GameLayout: long pInterconnectsAlphaBase> = 0L;
+
+        r0.<com.apostek.untangle.GameLayout: long pInterconnectsAlphaSteps> = 25L;
+
+        r0.<com.apostek.untangle.GameLayout: long pInterconnectsAlphaCounter> = 1L;
+
+        r0.<com.apostek.untangle.GameLayout: long pInterconnectsAlphaTerminal> = 250L;
+
+     label003:
+        $i1 = <com.apostek.untangle.Untangle: int gameType>;
+
+        if $i1 == 0 goto label004;
+
+        $i1 = <com.apostek.untangle.Untangle: int gameType>;
+
+        if $i1 != 3 goto label050;
+
+     label004:
+        $r18 = new java.util.Random;
+
+        r1 = $r18;
+
+     label005:
+        specialinvoke $r18.<java.util.Random: void <init>()>();
+
+        $r2 = r0.<com.apostek.untangle.GameLayout: int[] bgImages>;
+
+        $i1 = lengthof $r2;
+
+        $i1 = virtualinvoke r1.<java.util.Random: int nextInt(int)>($i1);
+
+        r0.<com.apostek.untangle.GameLayout: int randomImagePos> = $i1;
+
+     label006:
+        if $i0 <= 15 goto label044;
+
+     label007:
+        r0.<com.apostek.untangle.GameLayout: int nodesCount> = 15;
+
+     label008:
+        $r3 = virtualinvoke r0.<com.apostek.untangle.GameLayout: android.content.res.Resources getResources()>();
+
+        $r2 = r0.<com.apostek.untangle.GameLayout: int[] bgImages>;
+
+        $i0 = r0.<com.apostek.untangle.GameLayout: int randomImagePos>;
+
+     label009:
+        $i0 = $r2[$i0];
+
+     label010:
+        $r4 = staticinvoke <android.graphics.BitmapFactory: android.graphics.Bitmap decodeResource(android.content.res.Resources,int)>($r3, $i0);
+
+        r0.<com.apostek.untangle.GameLayout: android.graphics.Bitmap bitmapHome> = $r4;
+
+     label011:
+        $r18 = new java.util.Random;
+
+        r1 = $r18;
+
+     label012:
+        specialinvoke $r18.<java.util.Random: void <init>()>();
+
+        $r5 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(0);
+
+     label013:
+        $i0 = <com.apostek.untangle.Untangle: int gameType>;
+
+        if $i0 == 0 goto label014;
+
+        $i0 = <com.apostek.untangle.Untangle: int gameType>;
+
+        if $i0 != 3 goto label113;
+
+     label014:
+        r0.<com.apostek.untangle.GameLayout: boolean isConstructingBonusArcadeGame> = 1;
+
+     label015:
+        $i0 = 0;
+
+     label016:
+        $r6 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        virtualinvoke $r6.<java.util.ArrayList: void clear()>();
+
+     label017:
+        $i1 = 0;
+
+     label018:
+        $i2 = r0.<com.apostek.untangle.GameLayout: int nodesCount>;
+
+     label019:
+        if $i1 < $i2 goto label065;
+
+        $i1 = 0;
+
+     label020:
+        $i2 = r0.<com.apostek.untangle.GameLayout: int nodesCount>;
+
+     label021:
+        if $i1 < $i2 goto label076;
+
+        $i1 = 0;
+
+     label022:
+        $i2 = r0.<com.apostek.untangle.GameLayout: int nodesCount>;
+
+     label023:
+        if $i1 < $i2 goto label091;
+
+     label024:
+        $i1 = specialinvoke r0.<com.apostek.untangle.GameLayout: int checkForTotalIntersections()>();
+
+     label025:
+        $i1 = $i1 / 8;
+
+        $r2 = <com.apostek.untangle.Global: int[] nodesArcadeIntersections>;
+
+     label026:
+        $i2 = r0.<com.apostek.untangle.GameLayout: int nodesCount>;
+
+        $i2 = $r2[$i2];
+
+     label027:
+        $i2 = $i2 / 50;
+
+        if $i2 <= 30 goto label028;
+
+        $i2 = 30;
+
+     label028:
+        $r2 = <com.apostek.untangle.Global: int[] nodesArcadeIntersections>;
+
+     label029:
+        $i3 = r0.<com.apostek.untangle.GameLayout: int nodesCount>;
+
+        $i3 = $r2[$i3];
+
+     label030:
+        if $i3 >= 10 goto label106;
+
+        $r2 = <com.apostek.untangle.Global: int[] nodesArcadeIntersections>;
+
+     label031:
+        $i2 = r0.<com.apostek.untangle.GameLayout: int nodesCount>;
+
+        $i2 = $r2[$i2];
+
+     label032:
+        if $i2 != 1 goto label101;
+
+        if $i1 != 1 goto label034;
+
+     label033:
+        $r5 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(1);
+
+     label034:
+        $i1 = $i0 + 1;
+
+        if $i0 != 3 goto label109;
+
+     label035:
+        $i0 = r0.<com.apostek.untangle.GameLayout: int nodesCount>;
+
+     label036:
+        if $i0 < 6 goto label109;
+
+     label037:
+        $r5 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(1);
+
+     label038:
+        $z0 = virtualinvoke $r5.<java.lang.Boolean: boolean booleanValue()>();
+
+     label039:
+        if $z0 == 0 goto label195;
+
+     label040:
+        r0.<com.apostek.untangle.GameLayout: boolean isConstructingBonusArcadeGame> = 0;
+
+     label041:
+        $i0 = 0;
+
+     label042:
+        $i1 = r0.<com.apostek.untangle.GameLayout: int nodesCount>;
+
+     label043:
+        if $i0 < $i1 goto label192;
+
+        <com.apostek.untangle.Untangle: int mGameState> = 2;
+
+        return;
+
+     label044:
+        if $i0 > 5 goto label048;
+
+     label045:
+        r0.<com.apostek.untangle.GameLayout: int nodesCount> = 6;
+
+     label046:
+        goto label008;
+
+     label047:
+        r7 := @caughtexception;
+
+        virtualinvoke r7.<java.lang.Exception: void printStackTrace()>();
+
+        return;
+
+     label048:
+        r0.<com.apostek.untangle.GameLayout: int nodesCount> = $i0;
+
+     label049:
+        goto label008;
+
+     label050:
+        $i0 = <com.apostek.untangle.Untangle: int gameType>;
+
+        if $i0 != 1 goto label057;
+
+        $r8 = <com.apostek.untangle.Global: int[][][] nodesChallenge>;
+
+        $i0 = <com.apostek.untangle.Untangle: int mPlayerLevel>;
+
+     label051:
+        $r9 = $r8[$i0];
+
+        $i0 = lengthof $r9;
+
+        r0.<com.apostek.untangle.GameLayout: int nodesCount> = $i0;
+
+     label052:
+        $i0 = <com.apostek.untangle.Untangle: int mPlayerLevel>;
+
+        $i0 = $i0 / 5;
+
+     label053:
+        r0.<com.apostek.untangle.GameLayout: int randomImagePos> = $i0;
+
+        $r10 = r0.<com.apostek.untangle.GameLayout: android.graphics.Paint pBackground>;
+
+     label054:
+        $r2 = <com.apostek.untangle.Global: int[] alphasChallenge>;
+
+        $i0 = <com.apostek.untangle.Untangle: int mPlayerLevel>;
+
+        $i0 = $i0 % 5;
+
+     label055:
+        $i0 = $r2[$i0];
+
+        virtualinvoke $r10.<android.graphics.Paint: void setAlpha(int)>($i0);
+
+     label056:
+        goto label008;
+
+     label057:
+        $i0 = <com.apostek.untangle.Untangle: int gameType>;
+
+        if $i0 != 2 goto label008;
+
+        $r18 = new java.util.Random;
+
+        r1 = $r18;
+
+     label058:
+        specialinvoke $r18.<java.util.Random: void <init>()>();
+
+     label059:
+        $r8 = <com.apostek.untangle.Global: int[][][] nodesDemo>;
+
+        $i0 = <com.apostek.untangle.Untangle: int mPlayerLevel>;
+
+     label060:
+        $r9 = $r8[$i0];
+
+        $i0 = lengthof $r9;
+
+        r0.<com.apostek.untangle.GameLayout: int nodesCount> = $i0;
+
+        $r2 = r0.<com.apostek.untangle.GameLayout: int[] bgImages>;
+
+        $i0 = lengthof $r2;
+
+        $i0 = virtualinvoke r1.<java.util.Random: int nextInt(int)>($i0);
+
+        r0.<com.apostek.untangle.GameLayout: int randomImagePos> = $i0;
+
+     label061:
+        goto label008;
+
+     label062:
+        r11 := @caughtexception;
+
+     label063:
+        staticinvoke <java.lang.System: void gc()>();
+
+        $r3 = virtualinvoke r0.<com.apostek.untangle.GameLayout: android.content.res.Resources getResources()>();
+
+        $r2 = r0.<com.apostek.untangle.GameLayout: int[] bgImages>;
+
+        $i0 = r0.<com.apostek.untangle.GameLayout: int randomImagePos>;
+
+        $i0 = $r2[$i0];
+
+        $r4 = staticinvoke <android.graphics.BitmapFactory: android.graphics.Bitmap decodeResource(android.content.res.Resources,int)>($r3, $i0);
+
+        r0.<com.apostek.untangle.GameLayout: android.graphics.Bitmap bitmapHome> = $r4;
+
+     label064:
+        goto label011;
+
+     label065:
+        $r19 = new com.apostek.untangle.Orb;
+
+        r12 = $r19;
+
+     label066:
+        specialinvoke $r19.<com.apostek.untangle.Orb: void <init>()>();
+
+        $l4 = r0.<com.apostek.untangle.GameLayout: long gameWidth>;
+
+     label067:
+        $i2 = (int) $l4;
+
+     label068:
+        $i3 = r0.<com.apostek.untangle.GameLayout: int nodeWidth>;
+
+     label069:
+        $i2 = $i2 - $i3;
+
+     label070:
+        $i2 = virtualinvoke r1.<java.util.Random: int nextInt(int)>($i2);
+
+        $l4 = r0.<com.apostek.untangle.GameLayout: long gameHeight>;
+
+     label071:
+        $i3 = (int) $l4;
+
+     label072:
+        $i5 = r0.<com.apostek.untangle.GameLayout: int nodeHeight>;
+
+     label073:
+        $i3 = $i3 - $i5;
+
+     label074:
+        $i3 = virtualinvoke r1.<java.util.Random: int nextInt(int)>($i3);
+
+        $r13 = virtualinvoke r12.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        virtualinvoke $r13.<com.apostek.untangle.Orb$Coordinates: void setX(int)>($i2);
+
+        $r13 = virtualinvoke r12.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        virtualinvoke $r13.<com.apostek.untangle.Orb$Coordinates: void setY(int)>($i3);
+
+        $r13 = virtualinvoke r12.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        virtualinvoke $r13.<com.apostek.untangle.Orb$Coordinates: void set_solvedx(int)>($i2);
+
+        $r13 = virtualinvoke r12.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        virtualinvoke $r13.<com.apostek.untangle.Orb$Coordinates: void set_solvedy(int)>($i3);
+
+        $r6 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        virtualinvoke $r6.<java.util.ArrayList: boolean add(java.lang.Object)>(r12);
+
+     label075:
+        $i1 = $i1 + 1;
+
+        goto label018;
+
+     label076:
+        $r6 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $r14 = virtualinvoke $r6.<java.util.ArrayList: java.lang.Object get(int)>($i1);
+
+        r12 = (com.apostek.untangle.Orb) $r14;
+
+     label077:
+        $r20 = new java.util.ArrayList;
+
+        $r6 = $r20;
+
+     label078:
+        specialinvoke $r20.<java.util.ArrayList: void <init>()>();
+
+     label079:
+        $i2 = $i1;
+
+     label080:
+        $i3 = r0.<com.apostek.untangle.GameLayout: int nodesCount>;
+
+     label081:
+        if $i2 < $i3 goto label084;
+
+     label082:
+        virtualinvoke r12.<com.apostek.untangle.Orb: void setConnectedNodes(java.util.ArrayList)>($r6);
+
+     label083:
+        $i1 = $i1 + 1;
+
+        goto label020;
+
+     label084:
+        if $i1 == $i2 goto label090;
+
+     label085:
+        $r15 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i2);
+
+        virtualinvoke $r6.<java.util.ArrayList: boolean add(java.lang.Object)>($r15);
+
+        virtualinvoke r12.<com.apostek.untangle.Orb: void setConnectedNodes(java.util.ArrayList)>($r6);
+
+        $i3 = specialinvoke r0.<com.apostek.untangle.GameLayout: int checkForAnyIntersections()>();
+
+     label086:
+        if $i3 == 0 goto label090;
+
+     label087:
+        $i3 = virtualinvoke $r6.<java.util.ArrayList: int size()>();
+
+     label088:
+        $i3 = $i3 + -1;
+
+     label089:
+        virtualinvoke $r6.<java.util.ArrayList: java.lang.Object remove(int)>($i3);
+
+     label090:
+        $i2 = $i2 + 1;
+
+        goto label080;
+
+     label091:
+        $r6 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $r14 = virtualinvoke $r6.<java.util.ArrayList: java.lang.Object get(int)>($i1);
+
+        r12 = (com.apostek.untangle.Orb) $r14;
+
+        $l4 = r0.<com.apostek.untangle.GameLayout: long gameWidth>;
+
+     label092:
+        $i2 = (int) $l4;
+
+     label093:
+        $i3 = r0.<com.apostek.untangle.GameLayout: int nodeWidth>;
+
+     label094:
+        $i2 = $i2 - $i3;
+
+     label095:
+        $i2 = virtualinvoke r1.<java.util.Random: int nextInt(int)>($i2);
+
+        $l4 = r0.<com.apostek.untangle.GameLayout: long gameHeight>;
+
+     label096:
+        $i3 = (int) $l4;
+
+     label097:
+        $i5 = r0.<com.apostek.untangle.GameLayout: int nodeHeight>;
+
+     label098:
+        $i3 = $i3 - $i5;
+
+     label099:
+        $i3 = virtualinvoke r1.<java.util.Random: int nextInt(int)>($i3);
+
+        $r13 = virtualinvoke r12.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        virtualinvoke $r13.<com.apostek.untangle.Orb$Coordinates: void setX(int)>($i2);
+
+        $r13 = virtualinvoke r12.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        virtualinvoke $r13.<com.apostek.untangle.Orb$Coordinates: void setY(int)>($i3);
+
+     label100:
+        $i1 = $i1 + 1;
+
+        goto label022;
+
+     label101:
+        $r2 = <com.apostek.untangle.Global: int[] nodesArcadeIntersections>;
+
+     label102:
+        $i2 = r0.<com.apostek.untangle.GameLayout: int nodesCount>;
+
+        $i2 = $r2[$i2];
+
+     label103:
+        $i2 = $i2 / 2;
+
+        if $i1 < $i2 goto label034;
+
+     label104:
+        $r5 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(1);
+
+     label105:
+        goto label034;
+
+     label106:
+        if $i1 < $i2 goto label034;
+
+     label107:
+        $r5 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(1);
+
+     label108:
+        goto label034;
+
+     label109:
+        $i0 = r0.<com.apostek.untangle.GameLayout: int nodesCount>;
+
+     label110:
+        if $i0 < 10 goto label038;
+
+     label111:
+        $r5 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(1);
+
+     label112:
+        goto label038;
+
+     label113:
+        $i0 = <com.apostek.untangle.Untangle: int gameType>;
+
+        if $i0 != 1 goto label157;
+
+     label114:
+        $r6 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        virtualinvoke $r6.<java.util.ArrayList: void clear()>();
+
+     label115:
+        $i0 = 0;
+
+     label116:
+        $i1 = r0.<com.apostek.untangle.GameLayout: int nodesCount>;
+
+     label117:
+        if $i0 < $i1 goto label120;
+
+     label118:
+        $r5 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(1);
+
+        $z0 = virtualinvoke $r5.<java.lang.Boolean: boolean booleanValue()>();
+
+     label119:
+        if $z0 == 0 goto label114;
+
+        goto label041;
+
+     label120:
+        $r19 = new com.apostek.untangle.Orb;
+
+        r12 = $r19;
+
+     label121:
+        specialinvoke $r19.<com.apostek.untangle.Orb: void <init>()>();
+
+     label122:
+        $r20 = new java.util.ArrayList;
+
+        $r6 = $r20;
+
+     label123:
+        specialinvoke $r20.<java.util.ArrayList: void <init>()>();
+
+     label124:
+        $i1 = 0;
+
+     label125:
+        $r8 = <com.apostek.untangle.Global: int[][][] nodesChallengeConnects>;
+
+        $i2 = <com.apostek.untangle.Untangle: int mPlayerLevel>;
+
+     label126:
+        $r9 = $r8[$i2];
+
+        $r2 = $r9[$i0];
+
+        $i2 = lengthof $r2;
+
+     label127:
+        if $i1 < $i2 goto label154;
+
+     label128:
+        virtualinvoke r12.<com.apostek.untangle.Orb: void setConnectedNodes(java.util.ArrayList)>($r6);
+
+        $r13 = virtualinvoke r12.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+     label129:
+        $r8 = <com.apostek.untangle.Global: int[][][] nodesChallenge>;
+
+        $i1 = <com.apostek.untangle.Untangle: int mPlayerLevel>;
+
+     label130:
+        $r9 = $r8[$i1];
+
+        $r2 = $r9[$i0];
+
+        $i1 = $r2[0];
+
+     label131:
+        $l4 = (long) $i1;
+
+     label132:
+        $l6 = r0.<com.apostek.untangle.GameLayout: long gameWidth>;
+
+     label133:
+        $l4 = $l4 * $l6;
+
+        $l4 = $l4 / 20L;
+
+        $i1 = (int) $l4;
+
+     label134:
+        virtualinvoke $r13.<com.apostek.untangle.Orb$Coordinates: void setX(int)>($i1);
+
+        $r13 = virtualinvoke r12.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+     label135:
+        $r8 = <com.apostek.untangle.Global: int[][][] nodesChallenge>;
+
+        $i1 = <com.apostek.untangle.Untangle: int mPlayerLevel>;
+
+     label136:
+        $r9 = $r8[$i1];
+
+        $r2 = $r9[$i0];
+
+        $i1 = $r2[1];
+
+     label137:
+        $l4 = (long) $i1;
+
+     label138:
+        $l6 = r0.<com.apostek.untangle.GameLayout: long gameHeight>;
+
+     label139:
+        $l4 = $l4 * $l6;
+
+        $l4 = $l4 / 20L;
+
+        $i1 = (int) $l4;
+
+     label140:
+        virtualinvoke $r13.<com.apostek.untangle.Orb$Coordinates: void setY(int)>($i1);
+
+        $r13 = virtualinvoke r12.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+     label141:
+        $r8 = <com.apostek.untangle.Global: int[][][] nodesSolvedChallenge>;
+
+        $i1 = <com.apostek.untangle.Untangle: int mPlayerLevel>;
+
+     label142:
+        $r9 = $r8[$i1];
+
+        $r2 = $r9[$i0];
+
+        $i1 = $r2[0];
+
+     label143:
+        $l4 = (long) $i1;
+
+     label144:
+        $l6 = r0.<com.apostek.untangle.GameLayout: long gameWidth>;
+
+     label145:
+        $l4 = $l4 * $l6;
+
+        $l4 = $l4 / 20L;
+
+        $i1 = (int) $l4;
+
+     label146:
+        virtualinvoke $r13.<com.apostek.untangle.Orb$Coordinates: void set_solvedx(int)>($i1);
+
+        $r13 = virtualinvoke r12.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+     label147:
+        $r8 = <com.apostek.untangle.Global: int[][][] nodesSolvedChallenge>;
+
+        $i1 = <com.apostek.untangle.Untangle: int mPlayerLevel>;
+
+     label148:
+        $r9 = $r8[$i1];
+
+        $r2 = $r9[$i0];
+
+        $i1 = $r2[1];
+
+     label149:
+        $l4 = (long) $i1;
+
+     label150:
+        $l6 = r0.<com.apostek.untangle.GameLayout: long gameHeight>;
+
+     label151:
+        $l4 = $l4 * $l6;
+
+        $l4 = $l4 / 20L;
+
+        $i1 = (int) $l4;
+
+     label152:
+        virtualinvoke $r13.<com.apostek.untangle.Orb$Coordinates: void set_solvedy(int)>($i1);
+
+        $r6 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        virtualinvoke $r6.<java.util.ArrayList: boolean add(java.lang.Object)>(r12);
+
+     label153:
+        $i0 = $i0 + 1;
+
+        goto label116;
+
+     label154:
+        $r8 = <com.apostek.untangle.Global: int[][][] nodesChallengeConnects>;
+
+        $i2 = <com.apostek.untangle.Untangle: int mPlayerLevel>;
+
+     label155:
+        $r9 = $r8[$i2];
+
+        $r2 = $r9[$i0];
+
+        $i2 = $r2[$i1];
+
+        $r15 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i2);
+
+        virtualinvoke $r6.<java.util.ArrayList: boolean add(java.lang.Object)>($r15);
+
+     label156:
+        $i1 = $i1 + 1;
+
+        goto label125;
+
+     label157:
+        $i0 = <com.apostek.untangle.Untangle: int gameType>;
+
+        if $i0 != 2 goto label041;
+
+     label158:
+        $r6 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        virtualinvoke $r6.<java.util.ArrayList: void clear()>();
+
+     label159:
+        $i0 = 0;
+
+     label160:
+        $i1 = r0.<com.apostek.untangle.GameLayout: int nodesCount>;
+
+     label161:
+        if $i0 < $i1 goto label164;
+
+     label162:
+        $r5 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(1);
+
+        $z0 = virtualinvoke $r5.<java.lang.Boolean: boolean booleanValue()>();
+
+     label163:
+        if $z0 == 0 goto label158;
+
+        goto label041;
+
+     label164:
+        $r19 = new com.apostek.untangle.Orb;
+
+        r12 = $r19;
+
+     label165:
+        specialinvoke $r19.<com.apostek.untangle.Orb: void <init>()>();
+
+     label166:
+        $r20 = new java.util.ArrayList;
+
+        $r6 = $r20;
+
+     label167:
+        specialinvoke $r20.<java.util.ArrayList: void <init>()>();
+
+     label168:
+        $i1 = 0;
+
+     label169:
+        $r8 = <com.apostek.untangle.Global: int[][][] nodesDemoConnects>;
+
+        $i2 = <com.apostek.untangle.Untangle: int mPlayerLevel>;
+
+     label170:
+        $r9 = $r8[$i2];
+
+        $r2 = $r9[$i0];
+
+        $i2 = lengthof $r2;
+
+     label171:
+        if $i1 < $i2 goto label189;
+
+     label172:
+        virtualinvoke r12.<com.apostek.untangle.Orb: void setConnectedNodes(java.util.ArrayList)>($r6);
+
+        $r13 = virtualinvoke r12.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+     label173:
+        $r8 = <com.apostek.untangle.Global: int[][][] nodesDemo>;
+
+        $i1 = <com.apostek.untangle.Untangle: int mPlayerLevel>;
+
+     label174:
+        $r9 = $r8[$i1];
+
+        $r2 = $r9[$i0];
+
+        $i1 = $r2[0];
+
+     label175:
+        $l4 = (long) $i1;
+
+     label176:
+        $l6 = r0.<com.apostek.untangle.GameLayout: long gameWidth>;
+
+     label177:
+        $l4 = $l4 * $l6;
+
+        $l4 = $l4 / 20L;
+
+        $i1 = (int) $l4;
+
+     label178:
+        virtualinvoke $r13.<com.apostek.untangle.Orb$Coordinates: void setX(int)>($i1);
+
+        $r13 = virtualinvoke r12.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+     label179:
+        $r8 = <com.apostek.untangle.Global: int[][][] nodesDemo>;
+
+        $i1 = <com.apostek.untangle.Untangle: int mPlayerLevel>;
+
+     label180:
+        $r9 = $r8[$i1];
+
+        $r2 = $r9[$i0];
+
+        $i1 = $r2[1];
+
+     label181:
+        $l4 = (long) $i1;
+
+     label182:
+        $l6 = r0.<com.apostek.untangle.GameLayout: long gameHeight>;
+
+     label183:
+        $l4 = $l4 * $l6;
+
+        $l4 = $l4 / 20L;
+
+        $i1 = (int) $l4;
+
+     label184:
+        virtualinvoke $r13.<com.apostek.untangle.Orb$Coordinates: void setY(int)>($i1);
+
+     label185:
+        if $i0 != 0 goto label187;
+
+     label186:
+        $r13 = virtualinvoke r12.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $i1 = virtualinvoke $r13.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+        r0.<com.apostek.untangle.GameLayout: int showDemoNodeX> = $i1;
+
+        $r13 = virtualinvoke r12.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $i1 = virtualinvoke $r13.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+        r0.<com.apostek.untangle.GameLayout: int showDemoNodeY> = $i1;
+
+     label187:
+        $r6 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        virtualinvoke $r6.<java.util.ArrayList: boolean add(java.lang.Object)>(r12);
+
+     label188:
+        $i0 = $i0 + 1;
+
+        goto label160;
+
+     label189:
+        $r8 = <com.apostek.untangle.Global: int[][][] nodesDemoConnects>;
+
+        $i2 = <com.apostek.untangle.Untangle: int mPlayerLevel>;
+
+     label190:
+        $r9 = $r8[$i2];
+
+        $r2 = $r9[$i0];
+
+        $i2 = $r2[$i1];
+
+        $r15 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i2);
+
+        virtualinvoke $r6.<java.util.ArrayList: boolean add(java.lang.Object)>($r15);
+
+     label191:
+        $i1 = $i1 + 1;
+
+        goto label169;
+
+     label192:
+        $r6 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $r14 = virtualinvoke $r6.<java.util.ArrayList: java.lang.Object get(int)>($i0);
+
+        r12 = (com.apostek.untangle.Orb) $r14;
+
+        $r13 = virtualinvoke r12.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $r16 = virtualinvoke r12.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $i1 = virtualinvoke $r16.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+        virtualinvoke $r13.<com.apostek.untangle.Orb$Coordinates: void set_originalx(int)>($i1);
+
+        $r13 = virtualinvoke r12.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $r16 = virtualinvoke r12.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+        $i1 = virtualinvoke $r16.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+        virtualinvoke $r13.<com.apostek.untangle.Orb$Coordinates: void set_originaly(int)>($i1);
+
+     label193:
+        $i0 = $i0 + 1;
+
+        goto label042;
+
+     label194:
+        $r17 := @caughtexception;
+
+        goto label011;
+
+     label195:
+        $i0 = $i1;
+
+        goto label016;
+
+        catch java.lang.Exception from label002 to label003 with label047;
+        catch java.lang.Exception from label005 to label006 with label047;
+        catch java.lang.Exception from label007 to label008 with label047;
+        catch java.lang.Exception from label008 to label011 with label062;
+        catch java.lang.Error from label008 to label009 with label194;
+        catch java.lang.Error from label010 to label011 with label194;
+        catch java.lang.Exception from label012 to label013 with label047;
+        catch java.lang.Exception from label014 to label015 with label047;
+        catch java.lang.Exception from label016 to label017 with label047;
+        catch java.lang.Exception from label018 to label019 with label047;
+        catch java.lang.Exception from label020 to label021 with label047;
+        catch java.lang.Exception from label022 to label023 with label047;
+        catch java.lang.Exception from label024 to label025 with label047;
+        catch java.lang.Exception from label026 to label027 with label047;
+        catch java.lang.Exception from label029 to label030 with label047;
+        catch java.lang.Exception from label031 to label032 with label047;
+        catch java.lang.Exception from label033 to label034 with label047;
+        catch java.lang.Exception from label035 to label036 with label047;
+        catch java.lang.Exception from label037 to label038 with label047;
+        catch java.lang.Exception from label038 to label039 with label047;
+        catch java.lang.Exception from label040 to label041 with label047;
+        catch java.lang.Exception from label042 to label043 with label047;
+        catch java.lang.Exception from label045 to label046 with label047;
+        catch java.lang.Exception from label048 to label049 with label047;
+        catch java.lang.Exception from label051 to label052 with label047;
+        catch java.lang.Exception from label053 to label054 with label047;
+        catch java.lang.Exception from label055 to label056 with label047;
+        catch java.lang.Exception from label058 to label059 with label047;
+        catch java.lang.Exception from label060 to label061 with label047;
+        catch java.lang.Exception from label063 to label064 with label047;
+        catch java.lang.Exception from label066 to label067 with label047;
+        catch java.lang.Exception from label068 to label069 with label047;
+        catch java.lang.Exception from label070 to label071 with label047;
+        catch java.lang.Exception from label072 to label073 with label047;
+        catch java.lang.Exception from label074 to label075 with label047;
+        catch java.lang.Exception from label076 to label077 with label047;
+        catch java.lang.Exception from label078 to label079 with label047;
+        catch java.lang.Exception from label080 to label081 with label047;
+        catch java.lang.Exception from label082 to label083 with label047;
+        catch java.lang.Exception from label085 to label086 with label047;
+        catch java.lang.Exception from label087 to label088 with label047;
+        catch java.lang.Exception from label089 to label090 with label047;
+        catch java.lang.Exception from label091 to label092 with label047;
+        catch java.lang.Exception from label093 to label094 with label047;
+        catch java.lang.Exception from label095 to label096 with label047;
+        catch java.lang.Exception from label097 to label098 with label047;
+        catch java.lang.Exception from label099 to label100 with label047;
+        catch java.lang.Exception from label102 to label103 with label047;
+        catch java.lang.Exception from label104 to label105 with label047;
+        catch java.lang.Exception from label107 to label108 with label047;
+        catch java.lang.Exception from label109 to label110 with label047;
+        catch java.lang.Exception from label111 to label112 with label047;
+        catch java.lang.Exception from label114 to label115 with label047;
+        catch java.lang.Exception from label116 to label117 with label047;
+        catch java.lang.Exception from label118 to label119 with label047;
+        catch java.lang.Exception from label121 to label122 with label047;
+        catch java.lang.Exception from label123 to label124 with label047;
+        catch java.lang.Exception from label126 to label127 with label047;
+        catch java.lang.Exception from label128 to label129 with label047;
+        catch java.lang.Exception from label130 to label131 with label047;
+        catch java.lang.Exception from label132 to label133 with label047;
+        catch java.lang.Exception from label134 to label135 with label047;
+        catch java.lang.Exception from label136 to label137 with label047;
+        catch java.lang.Exception from label138 to label139 with label047;
+        catch java.lang.Exception from label140 to label141 with label047;
+        catch java.lang.Exception from label142 to label143 with label047;
+        catch java.lang.Exception from label144 to label145 with label047;
+        catch java.lang.Exception from label146 to label147 with label047;
+        catch java.lang.Exception from label148 to label149 with label047;
+        catch java.lang.Exception from label150 to label151 with label047;
+        catch java.lang.Exception from label152 to label153 with label047;
+        catch java.lang.Exception from label155 to label156 with label047;
+        catch java.lang.Exception from label158 to label159 with label047;
+        catch java.lang.Exception from label160 to label161 with label047;
+        catch java.lang.Exception from label162 to label163 with label047;
+        catch java.lang.Exception from label165 to label166 with label047;
+        catch java.lang.Exception from label167 to label168 with label047;
+        catch java.lang.Exception from label170 to label171 with label047;
+        catch java.lang.Exception from label172 to label173 with label047;
+        catch java.lang.Exception from label174 to label175 with label047;
+        catch java.lang.Exception from label176 to label177 with label047;
+        catch java.lang.Exception from label178 to label179 with label047;
+        catch java.lang.Exception from label180 to label181 with label047;
+        catch java.lang.Exception from label182 to label183 with label047;
+        catch java.lang.Exception from label184 to label185 with label047;
+        catch java.lang.Exception from label186 to label188 with label047;
+        catch java.lang.Exception from label190 to label191 with label047;
+        catch java.lang.Exception from label192 to label193 with label047;
+    }
+
+    protected void showAlert()
+    {
+        com.apostek.untangle.GameLayout r0;
+
+        r0 := @this: com.apostek.untangle.GameLayout;
+
+        staticinvoke <com.apostek.untangle.Untangle: void startAnotherOrQuit()>();
+
+        return;
+    }
+
+    public void surfaceChanged(android.view.SurfaceHolder, int, int, int)
+    {
+        com.apostek.untangle.GameLayout r0;
+        int $i0, $i1, $i2;
+        android.view.SurfaceHolder $r1;
+
+        r0 := @this: com.apostek.untangle.GameLayout;
+
+        $r1 := @parameter0: android.view.SurfaceHolder;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $i2 := @parameter3: int;
+
+        return;
+    }
+
+    public void surfaceCreated(android.view.SurfaceHolder)
+    {
+        com.apostek.untangle.GameLayout$GameThread $r2;
+        com.apostek.untangle.GameLayout r0;
+        int $i0;
+        android.view.SurfaceHolder $r1;
+
+        r0 := @this: com.apostek.untangle.GameLayout;
+
+        $r1 := @parameter0: android.view.SurfaceHolder;
+
+        $r2 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.GameLayout$GameThread _thread>;
+
+        $i0 = $r2.<com.apostek.untangle.GameLayout$GameThread: int state>;
+
+        if $i0 != 9 goto label1;
+
+        $r2 = new com.apostek.untangle.GameLayout$GameThread;
+
+        $r1 = virtualinvoke r0.<com.apostek.untangle.GameLayout: android.view.SurfaceHolder getHolder()>();
+
+        specialinvoke $r2.<com.apostek.untangle.GameLayout$GameThread: void <init>(com.apostek.untangle.GameLayout,android.view.SurfaceHolder,com.apostek.untangle.GameLayout)>(r0, $r1, r0);
+
+        r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.GameLayout$GameThread _thread> = $r2;
+
+        $r2 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.GameLayout$GameThread _thread>;
+
+        virtualinvoke $r2.<com.apostek.untangle.GameLayout$GameThread: void setRunning(boolean)>(1);
+
+        $r2 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.GameLayout$GameThread _thread>;
+
+        virtualinvoke $r2.<com.apostek.untangle.GameLayout$GameThread: void start()>();
+
+        $r2 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.GameLayout$GameThread _thread>;
+
+        $r2.<com.apostek.untangle.GameLayout$GameThread: int state> = 8;
+
+        return;
+
+     label1:
+        $r2 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.GameLayout$GameThread _thread>;
+
+        virtualinvoke $r2.<com.apostek.untangle.GameLayout$GameThread: void setRunning(boolean)>(1);
+
+        $r2 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.GameLayout$GameThread _thread>;
+
+        virtualinvoke $r2.<com.apostek.untangle.GameLayout$GameThread: void start()>();
+
+        $r2 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.GameLayout$GameThread _thread>;
+
+        $r2.<com.apostek.untangle.GameLayout$GameThread: int state> = 8;
+
+        return;
+    }
+
+    public void surfaceDestroyed(android.view.SurfaceHolder)
+    {
+        java.lang.Throwable $r3;
+        com.apostek.untangle.GameLayout$GameThread $r2;
+        com.apostek.untangle.GameLayout r0;
+        android.view.SurfaceHolder $r1;
+        boolean z0;
+
+        r0 := @this: com.apostek.untangle.GameLayout;
+
+        $r1 := @parameter0: android.view.SurfaceHolder;
+
+        z0 = 1;
+
+        $r2 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.GameLayout$GameThread _thread>;
+
+        virtualinvoke $r2.<com.apostek.untangle.GameLayout$GameThread: void setRunning(boolean)>(0);
+
+        $r2 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.GameLayout$GameThread _thread>;
+
+        $r2.<com.apostek.untangle.GameLayout$GameThread: int state> = 9;
+
+     label1:
+        if z0 != 0 goto label2;
+
+        return;
+
+     label2:
+        $r2 = r0.<com.apostek.untangle.GameLayout: com.apostek.untangle.GameLayout$GameThread _thread>;
+
+     label3:
+        virtualinvoke $r2.<com.apostek.untangle.GameLayout$GameThread: void join()>();
+
+     label4:
+        z0 = 0;
+
+        goto label1;
+
+     label5:
+        $r3 := @caughtexception;
+
+        goto label1;
+
+        catch java.lang.InterruptedException from label3 to label4 with label5;
+    }
+
+    public void textanimation1(android.graphics.Canvas, java.lang.String, int)
+    {
+        android.graphics.Typeface $r4;
+        long $l2, $l3;
+        byte $b4;
+        int $i0, $i1, $i5, $i7;
+        android.graphics.Canvas $r1;
+        java.lang.String $r2, $r6;
+        char $c6;
+        com.apostek.untangle.GameLayout r0;
+        float $f0, $f1;
+        android.graphics.Paint $r3;
+        java.lang.StringBuilder $r5, $r7;
+
+        r0 := @this: com.apostek.untangle.GameLayout;
+
+        $r1 := @parameter0: android.graphics.Canvas;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $i0 := @parameter2: int;
+
+        $i1 = r0.<com.apostek.untangle.GameLayout: int textanim1counter>;
+
+        $l2 = (long) $i1;
+
+        $l3 = r0.<com.apostek.untangle.GameLayout: long gameHeight>;
+
+        $l3 = $l3 / 2L;
+
+        $b4 = $l2 cmp $l3;
+
+        $i1 = (int) $b4;
+
+        if $i1 >= 0 goto label1;
+
+        $i1 = r0.<com.apostek.untangle.GameLayout: int textanim1counter>;
+
+        $i1 = $i1 + 10;
+
+        r0.<com.apostek.untangle.GameLayout: int textanim1counter> = $i1;
+
+     label1:
+        $i1 = r0.<com.apostek.untangle.GameLayout: int textanim1counter>;
+
+        $l2 = (long) $i1;
+
+        $l3 = r0.<com.apostek.untangle.GameLayout: long gameHeight>;
+
+        $l3 = $l3 / 2L;
+
+        $b4 = $l2 cmp $l3;
+
+        $i1 = (int) $b4;
+
+        if $i1 < 0 goto label2;
+
+        $i1 = r0.<com.apostek.untangle.GameLayout: int textanim1counter>;
+
+        $l2 = (long) $i1;
+
+        $l3 = r0.<com.apostek.untangle.GameLayout: long gameHeight>;
+
+        $l3 = 3L * $l3;
+
+        $l3 = $l3 / 4L;
+
+        $b4 = $l2 cmp $l3;
+
+        $i1 = (int) $b4;
+
+        if $i1 >= 0 goto label2;
+
+        $i1 = r0.<com.apostek.untangle.GameLayout: int textanim1counter>;
+
+        $i5 = -1;
+
+        $i1 = $i1 + $i5;
+
+        r0.<com.apostek.untangle.GameLayout: int textanim1counter> = $i1;
+
+     label2:
+        $r3 = r0.<com.apostek.untangle.GameLayout: android.graphics.Paint pBonusRound>;
+
+        virtualinvoke $r3.<android.graphics.Paint: void setARGB(int,int,int,int)>(255, 84, 84, 84);
+
+        $r3 = r0.<com.apostek.untangle.GameLayout: android.graphics.Paint pBonusRound>;
+
+        $f0 = (float) $i0;
+
+        virtualinvoke $r3.<android.graphics.Paint: void setTextSize(float)>($f0);
+
+        $r3 = r0.<com.apostek.untangle.GameLayout: android.graphics.Paint pBonusRound>;
+
+        $r4 = <com.apostek.untangle.PlayGame: android.graphics.Typeface termFont>;
+
+        virtualinvoke $r3.<android.graphics.Paint: android.graphics.Typeface setTypeface(android.graphics.Typeface)>($r4);
+
+        $r3 = r0.<com.apostek.untangle.GameLayout: android.graphics.Paint pBonusRound>;
+
+        virtualinvoke $r3.<android.graphics.Paint: void setAntiAlias(boolean)>(1);
+
+        $i1 = 0;
+
+     label3:
+        $i5 = virtualinvoke $r2.<java.lang.String: int length()>();
+
+        $i7 = -1;
+
+        $i5 = $i5 + $i7;
+
+        if $i1 <= $i5 goto label4;
+
+        $i0 = r0.<com.apostek.untangle.GameLayout: int bonusAnimCounter>;
+
+        $i0 = $i0 + 1;
+
+        r0.<com.apostek.untangle.GameLayout: int bonusAnimCounter> = $i0;
+
+        return;
+
+     label4:
+        $i5 = $i1 % 2;
+
+        if $i5 != 0 goto label6;
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>()>();
+
+        $c6 = virtualinvoke $r2.<java.lang.String: char charAt(int)>($i1);
+
+        $r5 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>($c6);
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $l2 = r0.<com.apostek.untangle.GameLayout: long gameWidth>;
+
+        $l2 = $l2 / 2L;
+
+        $l2 = $l2 - 140L;
+
+        $i5 = $i0 * 3;
+
+        $i5 = $i5 / 4;
+
+        $i5 = $i5 * $i1;
+
+        $l3 = (long) $i5;
+
+        $l2 = $l2 + $l3;
+
+        $f0 = (float) $l2;
+
+        $i5 = r0.<com.apostek.untangle.GameLayout: int textanim1counter>;
+
+        $f1 = (float) $i5;
+
+        $r3 = r0.<com.apostek.untangle.GameLayout: android.graphics.Paint pBonusRound>;
+
+        virtualinvoke $r1.<android.graphics.Canvas: void drawText(java.lang.String,float,float,android.graphics.Paint)>($r6, $f0, $f1, $r3);
+
+     label5:
+        $i1 = $i1 + 1;
+
+        goto label3;
+
+     label6:
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>()>();
+
+        $c6 = virtualinvoke $r2.<java.lang.String: char charAt(int)>($i1);
+
+        $r5 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>($c6);
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $l2 = r0.<com.apostek.untangle.GameLayout: long gameWidth>;
+
+        $l2 = $l2 / 2L;
+
+        $l2 = $l2 - 140L;
+
+        $i5 = $i0 * 3;
+
+        $i5 = $i5 / 4;
+
+        $i5 = $i5 * $i1;
+
+        $l3 = (long) $i5;
+
+        $l2 = $l2 + $l3;
+
+        $f0 = (float) $l2;
+
+        $l2 = r0.<com.apostek.untangle.GameLayout: long gameHeight>;
+
+        $i5 = r0.<com.apostek.untangle.GameLayout: int textanim1counter>;
+
+        $l3 = (long) $i5;
+
+        $l2 = $l2 - $l3;
+
+        $f1 = (float) $l2;
+
+        $r3 = r0.<com.apostek.untangle.GameLayout: android.graphics.Paint pBonusRound>;
+
+        virtualinvoke $r1.<android.graphics.Canvas: void drawText(java.lang.String,float,float,android.graphics.Paint)>($r6, $f0, $f1, $r3);
+
+        goto label5;
+    }
+
+    public void updatePhysics()
+    {
+        com.apostek.untangle.Orb r3;
+        java.lang.Exception $r5;
+        java.util.ArrayList $r1;
+        com.apostek.untangle.Orb$Coordinates $r4;
+        com.apostek.untangle.GameLayout r0;
+        int $i0, $i1;
+        java.lang.Object $r2;
+        boolean $z0;
+
+        r0 := @this: com.apostek.untangle.GameLayout;
+
+        $r1 = r0.<com.apostek.untangle.GameLayout: java.util.ArrayList nodes>;
+
+        $i0 = <com.apostek.untangle.GameLayout: int solvedNodesCount>;
+
+        $r2 = virtualinvoke $r1.<java.util.ArrayList: java.lang.Object get(int)>($i0);
+
+        r3 = (com.apostek.untangle.Orb) $r2;
+
+        $r4 = virtualinvoke r3.<com.apostek.untangle.Orb: com.apostek.untangle.Orb$Coordinates getCoordinates()>();
+
+     label01:
+        $i0 = virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+        $i1 = virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: int get_solvedx()>();
+
+     label02:
+        if $i0 != $i1 goto label09;
+
+     label03:
+        $i0 = virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+        $i1 = virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: int get_solvedy()>();
+
+     label04:
+        if $i0 != $i1 goto label09;
+
+     label05:
+        $z0 = virtualinvoke r3.<com.apostek.untangle.Orb: boolean isHasReachedDestination()>();
+
+     label06:
+        if $z0 != 0 goto label09;
+
+     label07:
+        virtualinvoke r3.<com.apostek.untangle.Orb: void setHasReachedDestination(boolean)>(1);
+
+     label08:
+        $i0 = <com.apostek.untangle.GameLayout: int solvedNodesCount>;
+
+        $i0 = $i0 + 1;
+
+        <com.apostek.untangle.GameLayout: int solvedNodesCount> = $i0;
+
+        return;
+
+     label09:
+        $i0 = virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+        $i1 = virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: int get_solvedx()>();
+
+     label10:
+        if $i0 >= $i1 goto label29;
+
+     label11:
+        $i0 = virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+     label12:
+        $i0 = $i0 + 4;
+
+     label13:
+        $i1 = virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: int get_solvedx()>();
+
+     label14:
+        if $i0 <= $i1 goto label25;
+
+     label15:
+        $i0 = virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: int get_solvedx()>();
+
+        virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: void setX(int)>($i0);
+
+     label16:
+        $i0 = virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+        $i1 = virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: int get_solvedy()>();
+
+     label17:
+        if $i0 >= $i1 goto label45;
+
+     label18:
+        $i0 = virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+     label19:
+        $i0 = $i0 + 7;
+
+     label20:
+        $i1 = virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: int get_solvedy()>();
+
+     label21:
+        if $i0 <= $i1 goto label41;
+
+     label22:
+        $i0 = virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: int get_solvedy()>();
+
+        virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: void setY(int)>($i0);
+
+     label23:
+        return;
+
+     label24:
+        $r5 := @caughtexception;
+
+        return;
+
+     label25:
+        $i0 = virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+     label26:
+        $i0 = $i0 + 4;
+
+     label27:
+        virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: void setX(int)>($i0);
+
+     label28:
+        goto label16;
+
+     label29:
+        $i0 = virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+        $i1 = virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: int get_solvedx()>();
+
+     label30:
+        if $i0 <= $i1 goto label16;
+
+     label31:
+        $i0 = virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+     label32:
+        $i0 = $i0 + -4;
+
+     label33:
+        $i1 = virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: int get_solvedx()>();
+
+     label34:
+        if $i0 >= $i1 goto label37;
+
+     label35:
+        $i0 = virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: int get_solvedx()>();
+
+        virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: void setX(int)>($i0);
+
+     label36:
+        goto label16;
+
+     label37:
+        $i0 = virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: int getX()>();
+
+     label38:
+        $i0 = $i0 + -4;
+
+     label39:
+        virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: void setX(int)>($i0);
+
+     label40:
+        goto label16;
+
+     label41:
+        $i0 = virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+     label42:
+        $i0 = $i0 + 7;
+
+     label43:
+        virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: void setY(int)>($i0);
+
+     label44:
+        return;
+
+     label45:
+        $i0 = virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+        $i1 = virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: int get_solvedy()>();
+
+     label46:
+        if $i0 <= $i1 goto label56;
+
+     label47:
+        $i0 = virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+     label48:
+        $i0 = $i0 + -7;
+
+     label49:
+        $i1 = virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: int get_solvedy()>();
+
+     label50:
+        if $i0 >= $i1 goto label53;
+
+     label51:
+        $i0 = virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: int get_solvedy()>();
+
+        virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: void setY(int)>($i0);
+
+     label52:
+        return;
+
+     label53:
+        $i0 = virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: int getY()>();
+
+     label54:
+        $i0 = $i0 + -7;
+
+     label55:
+        virtualinvoke $r4.<com.apostek.untangle.Orb$Coordinates: void setY(int)>($i0);
+
+     label56:
+        return;
+
+        catch java.lang.Exception from label01 to label02 with label24;
+        catch java.lang.Exception from label03 to label04 with label24;
+        catch java.lang.Exception from label05 to label06 with label24;
+        catch java.lang.Exception from label07 to label08 with label24;
+        catch java.lang.Exception from label09 to label10 with label24;
+        catch java.lang.Exception from label11 to label12 with label24;
+        catch java.lang.Exception from label13 to label14 with label24;
+        catch java.lang.Exception from label15 to label17 with label24;
+        catch java.lang.Exception from label18 to label19 with label24;
+        catch java.lang.Exception from label20 to label21 with label24;
+        catch java.lang.Exception from label22 to label23 with label24;
+        catch java.lang.Exception from label25 to label26 with label24;
+        catch java.lang.Exception from label27 to label28 with label24;
+        catch java.lang.Exception from label29 to label30 with label24;
+        catch java.lang.Exception from label31 to label32 with label24;
+        catch java.lang.Exception from label33 to label34 with label24;
+        catch java.lang.Exception from label35 to label36 with label24;
+        catch java.lang.Exception from label37 to label38 with label24;
+        catch java.lang.Exception from label39 to label40 with label24;
+        catch java.lang.Exception from label41 to label42 with label24;
+        catch java.lang.Exception from label43 to label44 with label24;
+        catch java.lang.Exception from label45 to label46 with label24;
+        catch java.lang.Exception from label47 to label48 with label24;
+        catch java.lang.Exception from label49 to label50 with label24;
+        catch java.lang.Exception from label51 to label52 with label24;
+        catch java.lang.Exception from label53 to label54 with label24;
+        catch java.lang.Exception from label55 to label56 with label24;
+    }
+}

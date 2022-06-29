@@ -1,0 +1,2622 @@
+public class com.peercom.ishoottablet.FileListActivity extends android.app.Activity implements com.peercom.GlobalSetting
+{
+    public static final java.lang.String FILELINK;
+    public static final java.lang.String FILEMEDIATYPE;
+    public static final java.lang.String FILENAME;
+    public static final java.lang.String PLAYTIME;
+    public static final java.lang.String PLAY_DOWN;
+    public static final java.lang.String SHOOT;
+    public static android.app.Activity activity;
+    private static int talkFlag;
+    private final int DOWNMODE;
+    private final int LISTVIEW_ALL;
+    private final int LISTVIEW_FILE;
+    private final int LISTVIEW_STORY;
+    private com.peercom.ExceptionManager LOG_MGR;
+    private final int PLAYMODE;
+    private final int UPDATEUI_BUY;
+    private final int UPDATEUI_FAVORITE;
+    private final int UPDATEUI_PLAYED;
+    private final int UPDATEUI_RECEVIE;
+    private final int UPDATEUI_SELF;
+    private final int UPDATEUI_SENT;
+    private android.content.Context _Context;
+    private android.os.Handler addFileListHandler;
+    private android.os.Handler addGridViewListHandler;
+    private android.view.animation.Animation aniDown;
+    private android.view.animation.Animation aniHide;
+    private android.view.animation.Animation aniShow;
+    private android.view.animation.Animation aniUp;
+    public boolean bFavr;
+    public int currCount;
+    public int currCount2;
+    private int currentSelectListView;
+    private android.graphics.Bitmap defaultShootThumb2;
+    boolean downAuth;
+    java.lang.String downAuthMessage;
+    private android.widget.EditText editDetail;
+    android.widget.RelativeLayout emptyFavrLayout;
+    android.widget.RelativeLayout emptyPurchaseLayout;
+    android.widget.RelativeLayout emptyRecentLayout;
+    android.widget.RelativeLayout emptyRecvLayout;
+    android.widget.RelativeLayout emptySelfLayout;
+    android.widget.RelativeLayout emptySentLayout;
+    private android.widget.ImageView favoriteButton;
+    private com.peercom.ishoottablet.FileListActivity$fileArrayAdapter fileAdapter;
+    private android.widget.ListView fileListView;
+    public int hideItem2;
+    public int hideItem_File;
+    public int hideItem_Story;
+    private android.widget.ImageView hotMenuBtn;
+    private android.widget.ImageView imgBtnDownPlayMode;
+    private boolean loadFileList;
+    private boolean loadStoryList;
+    private com.peercom.DataManager mDataManager;
+    private com.peercom.DownloadFileManager mDownloadFileManager;
+    private android.os.Handler mMoveHandler;
+    private android.widget.ImageView mShootingGridViewExtendBtn;
+    private android.widget.GridView mShootingGridViewList;
+    private com.peercom.ishoottablet.FileListActivity$ShootingGridViewListAdapter mShootingGridViewListAdapter;
+    private int modeType;
+    public int networkFaultFlag;
+    private android.app.NotificationManager nm;
+    private java.lang.String oldShootType;
+    int pCount2;
+    java.lang.String playmodeString;
+    public int preCurrPage2;
+    private int prev_page;
+    private android.widget.ImageView purchaseButton;
+    android.content.BroadcastReceiver rcvIncomming;
+    private android.os.Handler reGetItemHandler;
+    private android.widget.ImageView recentButton;
+    private android.widget.ImageView recvButton;
+    public boolean refreshBarOn;
+    private android.os.Handler refreshGridViewListHandler;
+    java.lang.String sMyAvailableCapa;
+    java.lang.String sMyPoint;
+    java.lang.String sPayCode;
+    java.lang.String sPkChg;
+    java.lang.String sSellCode;
+    public int selectItem2;
+    public int selectItem_File;
+    public int selectItem_Story;
+    private android.widget.ImageView selfButton;
+    private android.widget.ImageView sentButton;
+    private android.widget.TextView shootFileSubTitle;
+    private android.widget.TextView shootTalkSubTitle;
+    private android.widget.ImageView shootingMenuBtn;
+    private android.widget.TextView textDetail;
+    private java.util.ArrayList thisFileList;
+    private kr.co.iShoot.ShootingInfo thisTarget;
+    private java.util.ArrayList thisTargetList;
+    public int totalCount;
+    public int totalCount_File;
+    public int totalCount_Story;
+    public int updatedCount2;
+    private boolean writeStory;
+    public android.content.Intent ipcIntent;
+    public android.content.Intent ipcResultIntent;
+
+    static void <clinit>()
+    {
+        <com.peercom.ishoottablet.FileListActivity: java.lang.String SHOOT> = "shoot";
+
+        <com.peercom.ishoottablet.FileListActivity: java.lang.String PLAY_DOWN> = "init";
+
+        <com.peercom.ishoottablet.FileListActivity: java.lang.String PLAYTIME> = "play_time";
+
+        <com.peercom.ishoottablet.FileListActivity: java.lang.String FILENAME> = "file_name";
+
+        <com.peercom.ishoottablet.FileListActivity: java.lang.String FILEMEDIATYPE> = "file_mediatype";
+
+        <com.peercom.ishoottablet.FileListActivity: java.lang.String FILELINK> = "file_link";
+
+        <com.peercom.ishoottablet.FileListActivity: int talkFlag> = 0;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        com.peercom.ishoottablet.FileListActivity r0;
+        com.peercom.ExceptionManager $r1;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        specialinvoke r0.<android.app.Activity: void <init>()>();
+
+        $r1 = new com.peercom.ExceptionManager;
+
+        specialinvoke $r1.<com.peercom.ExceptionManager: void <init>(java.lang.String)>("shootListActivity class");
+
+        r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.ExceptionManager LOG_MGR> = $r1;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int networkFaultFlag> = 0;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int LISTVIEW_STORY> = 0;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int LISTVIEW_FILE> = 1;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int LISTVIEW_ALL> = 2;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int PLAYMODE> = 0;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int DOWNMODE> = 1;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int modeType> = 0;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int UPDATEUI_RECEVIE> = 1;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int UPDATEUI_SENT> = 2;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int UPDATEUI_PLAYED> = 3;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int UPDATEUI_SELF> = 4;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int UPDATEUI_FAVORITE> = 5;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int UPDATEUI_BUY> = 6;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int currCount2> = 0;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int selectItem2> = -1;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int hideItem2> = 0;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int updatedCount2> = -1;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int pCount2> = 0;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int preCurrPage2> = 0;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int prev_page> = -1;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int totalCount> = 0;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int totalCount_Story> = 0;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int selectItem_Story> = -1;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int hideItem_Story> = 0;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int totalCount_File> = 0;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int selectItem_File> = -1;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int hideItem_File> = 0;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int currCount> = 0;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: kr.co.iShoot.ShootingInfo thisTarget> = null;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: boolean refreshBarOn> = 0;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: boolean bFavr> = 0;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: boolean writeStory> = 0;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: boolean loadFileList> = 1;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: boolean loadStoryList> = 1;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: java.lang.String playmodeString> = "initString";
+
+        return;
+    }
+
+    static void access$0(com.peercom.ishoottablet.FileListActivity, boolean)
+    {
+        com.peercom.ishoottablet.FileListActivity $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: com.peercom.ishoottablet.FileListActivity;
+
+        $z0 := @parameter1: boolean;
+
+        $r0.<com.peercom.ishoottablet.FileListActivity: boolean loadFileList> = $z0;
+
+        return;
+    }
+
+    static android.os.Handler access$1(com.peercom.ishoottablet.FileListActivity)
+    {
+        com.peercom.ishoottablet.FileListActivity $r0;
+        android.os.Handler r1;
+
+        $r0 := @parameter0: com.peercom.ishoottablet.FileListActivity;
+
+        r1 = $r0.<com.peercom.ishoottablet.FileListActivity: android.os.Handler addFileListHandler>;
+
+        return r1;
+    }
+
+    static android.widget.ImageView access$10(com.peercom.ishoottablet.FileListActivity)
+    {
+        android.widget.ImageView r1;
+        com.peercom.ishoottablet.FileListActivity $r0;
+
+        $r0 := @parameter0: com.peercom.ishoottablet.FileListActivity;
+
+        r1 = $r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView favoriteButton>;
+
+        return r1;
+    }
+
+    static android.widget.ImageView access$11(com.peercom.ishoottablet.FileListActivity)
+    {
+        android.widget.ImageView r1;
+        com.peercom.ishoottablet.FileListActivity $r0;
+
+        $r0 := @parameter0: com.peercom.ishoottablet.FileListActivity;
+
+        r1 = $r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView selfButton>;
+
+        return r1;
+    }
+
+    static android.widget.ImageView access$12(com.peercom.ishoottablet.FileListActivity)
+    {
+        android.widget.ImageView r1;
+        com.peercom.ishoottablet.FileListActivity $r0;
+
+        $r0 := @parameter0: com.peercom.ishoottablet.FileListActivity;
+
+        r1 = $r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView purchaseButton>;
+
+        return r1;
+    }
+
+    static android.os.Handler access$13(com.peercom.ishoottablet.FileListActivity)
+    {
+        com.peercom.ishoottablet.FileListActivity $r0;
+        android.os.Handler r1;
+
+        $r0 := @parameter0: com.peercom.ishoottablet.FileListActivity;
+
+        r1 = $r0.<com.peercom.ishoottablet.FileListActivity: android.os.Handler reGetItemHandler>;
+
+        return r1;
+    }
+
+    static android.os.Handler access$14(com.peercom.ishoottablet.FileListActivity)
+    {
+        com.peercom.ishoottablet.FileListActivity $r0;
+        android.os.Handler r1;
+
+        $r0 := @parameter0: com.peercom.ishoottablet.FileListActivity;
+
+        r1 = $r0.<com.peercom.ishoottablet.FileListActivity: android.os.Handler refreshGridViewListHandler>;
+
+        return r1;
+    }
+
+    static android.os.Handler access$15(com.peercom.ishoottablet.FileListActivity)
+    {
+        com.peercom.ishoottablet.FileListActivity $r0;
+        android.os.Handler r1;
+
+        $r0 := @parameter0: com.peercom.ishoottablet.FileListActivity;
+
+        r1 = $r0.<com.peercom.ishoottablet.FileListActivity: android.os.Handler addGridViewListHandler>;
+
+        return r1;
+    }
+
+    static com.peercom.ExceptionManager access$16(com.peercom.ishoottablet.FileListActivity)
+    {
+        com.peercom.ishoottablet.FileListActivity $r0;
+        com.peercom.ExceptionManager r1;
+
+        $r0 := @parameter0: com.peercom.ishoottablet.FileListActivity;
+
+        r1 = $r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.ExceptionManager LOG_MGR>;
+
+        return r1;
+    }
+
+    static void access$17(com.peercom.ishoottablet.FileListActivity, int)
+    {
+        int $i0;
+        com.peercom.ishoottablet.FileListActivity $r0;
+
+        $r0 := @parameter0: com.peercom.ishoottablet.FileListActivity;
+
+        $i0 := @parameter1: int;
+
+        $r0.<com.peercom.ishoottablet.FileListActivity: int prev_page> = $i0;
+
+        return;
+    }
+
+    static com.peercom.ishoottablet.FileListActivity$ShootingGridViewListAdapter access$18(com.peercom.ishoottablet.FileListActivity)
+    {
+        com.peercom.ishoottablet.FileListActivity$ShootingGridViewListAdapter r1;
+        com.peercom.ishoottablet.FileListActivity $r0;
+
+        $r0 := @parameter0: com.peercom.ishoottablet.FileListActivity;
+
+        r1 = $r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.ishoottablet.FileListActivity$ShootingGridViewListAdapter mShootingGridViewListAdapter>;
+
+        return r1;
+    }
+
+    static android.widget.ImageView access$19(com.peercom.ishoottablet.FileListActivity)
+    {
+        android.widget.ImageView r1;
+        com.peercom.ishoottablet.FileListActivity $r0;
+
+        $r0 := @parameter0: com.peercom.ishoottablet.FileListActivity;
+
+        r1 = $r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView mShootingGridViewExtendBtn>;
+
+        return r1;
+    }
+
+    static int access$2(com.peercom.ishoottablet.FileListActivity)
+    {
+        int i0;
+        com.peercom.ishoottablet.FileListActivity $r0;
+
+        $r0 := @parameter0: com.peercom.ishoottablet.FileListActivity;
+
+        i0 = $r0.<com.peercom.ishoottablet.FileListActivity: int modeType>;
+
+        return i0;
+    }
+
+    static android.widget.ImageView access$20(com.peercom.ishoottablet.FileListActivity)
+    {
+        android.widget.ImageView r1;
+        com.peercom.ishoottablet.FileListActivity $r0;
+
+        $r0 := @parameter0: com.peercom.ishoottablet.FileListActivity;
+
+        r1 = $r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView imgBtnDownPlayMode>;
+
+        return r1;
+    }
+
+    static void access$21(com.peercom.ishoottablet.FileListActivity, int)
+    {
+        int $i0;
+        com.peercom.ishoottablet.FileListActivity $r0;
+
+        $r0 := @parameter0: com.peercom.ishoottablet.FileListActivity;
+
+        $i0 := @parameter1: int;
+
+        specialinvoke $r0.<com.peercom.ishoottablet.FileListActivity: void setChangeMode(int)>($i0);
+
+        return;
+    }
+
+    static android.widget.TextView access$22(com.peercom.ishoottablet.FileListActivity)
+    {
+        android.widget.TextView r1;
+        com.peercom.ishoottablet.FileListActivity $r0;
+
+        $r0 := @parameter0: com.peercom.ishoottablet.FileListActivity;
+
+        r1 = $r0.<com.peercom.ishoottablet.FileListActivity: android.widget.TextView shootFileSubTitle>;
+
+        return r1;
+    }
+
+    static android.widget.TextView access$23(com.peercom.ishoottablet.FileListActivity)
+    {
+        android.widget.TextView r1;
+        com.peercom.ishoottablet.FileListActivity $r0;
+
+        $r0 := @parameter0: com.peercom.ishoottablet.FileListActivity;
+
+        r1 = $r0.<com.peercom.ishoottablet.FileListActivity: android.widget.TextView shootTalkSubTitle>;
+
+        return r1;
+    }
+
+    static boolean access$24(com.peercom.ishoottablet.FileListActivity)
+    {
+        com.peercom.ishoottablet.FileListActivity $r0;
+        boolean z0;
+
+        $r0 := @parameter0: com.peercom.ishoottablet.FileListActivity;
+
+        z0 = $r0.<com.peercom.ishoottablet.FileListActivity: boolean loadStoryList>;
+
+        return z0;
+    }
+
+    static boolean access$25(com.peercom.ishoottablet.FileListActivity)
+    {
+        com.peercom.ishoottablet.FileListActivity $r0;
+        boolean z0;
+
+        $r0 := @parameter0: com.peercom.ishoottablet.FileListActivity;
+
+        z0 = $r0.<com.peercom.ishoottablet.FileListActivity: boolean loadFileList>;
+
+        return z0;
+    }
+
+    static void access$26(com.peercom.ishoottablet.FileListActivity, int)
+    {
+        int $i0;
+        com.peercom.ishoottablet.FileListActivity $r0;
+
+        $r0 := @parameter0: com.peercom.ishoottablet.FileListActivity;
+
+        $i0 := @parameter1: int;
+
+        specialinvoke $r0.<com.peercom.ishoottablet.FileListActivity: void updateNaviUI(int)>($i0);
+
+        return;
+    }
+
+    static void access$3(com.peercom.ishoottablet.FileListActivity, com.peercom.DataManager)
+    {
+        com.peercom.DataManager $r1;
+        com.peercom.ishoottablet.FileListActivity $r0;
+
+        $r0 := @parameter0: com.peercom.ishoottablet.FileListActivity;
+
+        $r1 := @parameter1: com.peercom.DataManager;
+
+        $r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager> = $r1;
+
+        return;
+    }
+
+    static com.peercom.DataManager access$4(com.peercom.ishoottablet.FileListActivity)
+    {
+        com.peercom.DataManager r1;
+        com.peercom.ishoottablet.FileListActivity $r0;
+
+        $r0 := @parameter0: com.peercom.ishoottablet.FileListActivity;
+
+        r1 = $r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        return r1;
+    }
+
+    static com.peercom.ishoottablet.FileListActivity$fileArrayAdapter access$5(com.peercom.ishoottablet.FileListActivity)
+    {
+        com.peercom.ishoottablet.FileListActivity $r0;
+        com.peercom.ishoottablet.FileListActivity$fileArrayAdapter r1;
+
+        $r0 := @parameter0: com.peercom.ishoottablet.FileListActivity;
+
+        r1 = $r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.ishoottablet.FileListActivity$fileArrayAdapter fileAdapter>;
+
+        return r1;
+    }
+
+    static com.peercom.DownloadFileManager access$6(com.peercom.ishoottablet.FileListActivity)
+    {
+        com.peercom.DownloadFileManager r1;
+        com.peercom.ishoottablet.FileListActivity $r0;
+
+        $r0 := @parameter0: com.peercom.ishoottablet.FileListActivity;
+
+        r1 = $r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DownloadFileManager mDownloadFileManager>;
+
+        return r1;
+    }
+
+    static android.widget.ImageView access$7(com.peercom.ishoottablet.FileListActivity)
+    {
+        android.widget.ImageView r1;
+        com.peercom.ishoottablet.FileListActivity $r0;
+
+        $r0 := @parameter0: com.peercom.ishoottablet.FileListActivity;
+
+        r1 = $r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView recvButton>;
+
+        return r1;
+    }
+
+    static android.widget.ImageView access$8(com.peercom.ishoottablet.FileListActivity)
+    {
+        android.widget.ImageView r1;
+        com.peercom.ishoottablet.FileListActivity $r0;
+
+        $r0 := @parameter0: com.peercom.ishoottablet.FileListActivity;
+
+        r1 = $r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView sentButton>;
+
+        return r1;
+    }
+
+    static android.widget.ImageView access$9(com.peercom.ishoottablet.FileListActivity)
+    {
+        android.widget.ImageView r1;
+        com.peercom.ishoottablet.FileListActivity $r0;
+
+        $r0 := @parameter0: com.peercom.ishoottablet.FileListActivity;
+
+        r1 = $r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView recentButton>;
+
+        return r1;
+    }
+
+    private int getCount()
+    {
+        com.peercom.ishoottablet.FileListActivity r0;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        return 0;
+    }
+
+    private void resize()
+    {
+        android.widget.RelativeLayout$LayoutParams $r3;
+        android.view.View $r0;
+        android.widget.ListView r2;
+        com.peercom.ishoottablet.FileListActivity r1;
+
+        r1 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        $r0 = virtualinvoke r1.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165281);
+
+        r2 = (android.widget.ListView) $r0;
+
+        $r3 = new android.widget.RelativeLayout$LayoutParams;
+
+        specialinvoke $r3.<android.widget.RelativeLayout$LayoutParams: void <init>(int,int)>(-1, -1);
+
+        virtualinvoke r2.<android.widget.ListView: void setLayoutParams(android.view.ViewGroup$LayoutParams)>($r3);
+
+        return;
+    }
+
+    private void setChangeMode(int)
+    {
+        com.peercom.ishoottablet.FileListActivity$fileArrayAdapter $r1;
+        int $i0;
+        android.widget.ImageView $r2;
+        com.peercom.ishoottablet.FileListActivity r0;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        $i0 := @parameter0: int;
+
+        lookupswitch($i0)
+        {
+            case 0: goto label2;
+            case 1: goto label3;
+            default: goto label1;
+        };
+
+     label1:
+        r0.<com.peercom.ishoottablet.FileListActivity: int modeType> = $i0;
+
+        $r1 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.ishoottablet.FileListActivity$fileArrayAdapter fileAdapter>;
+
+        virtualinvoke $r1.<com.peercom.ishoottablet.FileListActivity$fileArrayAdapter: void notifyDataSetChanged()>();
+
+        return;
+
+     label2:
+        $r2 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView imgBtnDownPlayMode>;
+
+        virtualinvoke $r2.<android.widget.ImageView: void setImageResource(int)>(2130837547);
+
+        goto label1;
+
+     label3:
+        $r2 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView imgBtnDownPlayMode>;
+
+        virtualinvoke $r2.<android.widget.ImageView: void setImageResource(int)>(2130837581);
+
+        goto label1;
+    }
+
+    private void setMenuListener(com.peercom.ishoottablet.FileListActivity)
+    {
+        android.widget.ImageView $r3;
+        com.peercom.ishoottablet.FileListActivity r0, $r1;
+        com.peercom.ishoottablet.FileListActivity$15 $r7;
+        com.peercom.ishoottablet.FileListActivity$14 $r6;
+        com.peercom.ishoottablet.FileListActivity$17 $r9;
+        com.peercom.ishoottablet.FileListActivity$16 $r8;
+        android.view.View $r2;
+        com.peercom.ishoottablet.FileListActivity$13 $r5;
+        com.peercom.ishoottablet.FileListActivity$12 $r4;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        $r1 := @parameter0: com.peercom.ishoottablet.FileListActivity;
+
+        $r2 = virtualinvoke $r1.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165269);
+
+        $r3 = (android.widget.ImageView) $r2;
+
+        $r4 = new com.peercom.ishoottablet.FileListActivity$12;
+
+        specialinvoke $r4.<com.peercom.ishoottablet.FileListActivity$12: void <init>(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        virtualinvoke $r3.<android.widget.ImageView: void setOnClickListener(android.view.View$OnClickListener)>($r4);
+
+        $r2 = virtualinvoke $r1.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165270);
+
+        $r3 = (android.widget.ImageView) $r2;
+
+        $r5 = new com.peercom.ishoottablet.FileListActivity$13;
+
+        specialinvoke $r5.<com.peercom.ishoottablet.FileListActivity$13: void <init>(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        virtualinvoke $r3.<android.widget.ImageView: void setOnClickListener(android.view.View$OnClickListener)>($r5);
+
+        $r2 = virtualinvoke $r1.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165271);
+
+        $r3 = (android.widget.ImageView) $r2;
+
+        $r6 = new com.peercom.ishoottablet.FileListActivity$14;
+
+        specialinvoke $r6.<com.peercom.ishoottablet.FileListActivity$14: void <init>(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        virtualinvoke $r3.<android.widget.ImageView: void setOnClickListener(android.view.View$OnClickListener)>($r6);
+
+        $r2 = virtualinvoke $r1.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165272);
+
+        $r3 = (android.widget.ImageView) $r2;
+
+        $r7 = new com.peercom.ishoottablet.FileListActivity$15;
+
+        specialinvoke $r7.<com.peercom.ishoottablet.FileListActivity$15: void <init>(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        virtualinvoke $r3.<android.widget.ImageView: void setOnClickListener(android.view.View$OnClickListener)>($r7);
+
+        $r2 = virtualinvoke $r1.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165250);
+
+        $r3 = (android.widget.ImageView) $r2;
+
+        $r8 = new com.peercom.ishoottablet.FileListActivity$16;
+
+        specialinvoke $r8.<com.peercom.ishoottablet.FileListActivity$16: void <init>(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        virtualinvoke $r3.<android.widget.ImageView: void setOnClickListener(android.view.View$OnClickListener)>($r8);
+
+        $r2 = virtualinvoke $r1.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165249);
+
+        $r3 = (android.widget.ImageView) $r2;
+
+        $r9 = new com.peercom.ishoottablet.FileListActivity$17;
+
+        specialinvoke $r9.<com.peercom.ishoottablet.FileListActivity$17: void <init>(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        virtualinvoke $r3.<android.widget.ImageView: void setOnClickListener(android.view.View$OnClickListener)>($r9);
+
+        return;
+    }
+
+    private void setNaviListener()
+    {
+        android.widget.ImageView $r1;
+        com.peercom.ishoottablet.FileListActivity r0;
+        com.peercom.ishoottablet.FileListActivity$19 $r3;
+        com.peercom.ishoottablet.FileListActivity$18 $r2;
+        com.peercom.ishoottablet.FileListActivity$22 $r6;
+        com.peercom.ishoottablet.FileListActivity$21 $r5;
+        com.peercom.ishoottablet.FileListActivity$23 $r7;
+        com.peercom.ishoottablet.FileListActivity$20 $r4;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        $r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView recvButton>;
+
+        $r2 = new com.peercom.ishoottablet.FileListActivity$18;
+
+        specialinvoke $r2.<com.peercom.ishoottablet.FileListActivity$18: void <init>(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        virtualinvoke $r1.<android.widget.ImageView: void setOnClickListener(android.view.View$OnClickListener)>($r2);
+
+        $r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView sentButton>;
+
+        $r3 = new com.peercom.ishoottablet.FileListActivity$19;
+
+        specialinvoke $r3.<com.peercom.ishoottablet.FileListActivity$19: void <init>(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        virtualinvoke $r1.<android.widget.ImageView: void setOnClickListener(android.view.View$OnClickListener)>($r3);
+
+        $r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView recentButton>;
+
+        $r4 = new com.peercom.ishoottablet.FileListActivity$20;
+
+        specialinvoke $r4.<com.peercom.ishoottablet.FileListActivity$20: void <init>(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        virtualinvoke $r1.<android.widget.ImageView: void setOnClickListener(android.view.View$OnClickListener)>($r4);
+
+        $r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView favoriteButton>;
+
+        $r5 = new com.peercom.ishoottablet.FileListActivity$21;
+
+        specialinvoke $r5.<com.peercom.ishoottablet.FileListActivity$21: void <init>(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        virtualinvoke $r1.<android.widget.ImageView: void setOnClickListener(android.view.View$OnClickListener)>($r5);
+
+        $r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView selfButton>;
+
+        $r6 = new com.peercom.ishoottablet.FileListActivity$22;
+
+        specialinvoke $r6.<com.peercom.ishoottablet.FileListActivity$22: void <init>(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        virtualinvoke $r1.<android.widget.ImageView: void setOnClickListener(android.view.View$OnClickListener)>($r6);
+
+        $r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView purchaseButton>;
+
+        $r7 = new com.peercom.ishoottablet.FileListActivity$23;
+
+        specialinvoke $r7.<com.peercom.ishoottablet.FileListActivity$23: void <init>(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        virtualinvoke $r1.<android.widget.ImageView: void setOnClickListener(android.view.View$OnClickListener)>($r7);
+
+        return;
+    }
+
+    private void setNetworkChangeReceiver()
+    {
+        com.peercom.ishoottablet.FileListActivity$25 $r2;
+        android.content.IntentFilter $r1;
+        com.peercom.ishoottablet.FileListActivity r0;
+        android.content.BroadcastReceiver $r3;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        $r2 = new com.peercom.ishoottablet.FileListActivity$25;
+
+        specialinvoke $r2.<com.peercom.ishoottablet.FileListActivity$25: void <init>(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        r0.<com.peercom.ishoottablet.FileListActivity: android.content.BroadcastReceiver rcvIncomming> = $r2;
+
+        $r3 = r0.<com.peercom.ishoottablet.FileListActivity: android.content.BroadcastReceiver rcvIncomming>;
+
+        $r1 = new android.content.IntentFilter;
+
+        specialinvoke $r1.<android.content.IntentFilter: void <init>(java.lang.String)>("android.net.conn.CONNECTIVITY_CHANGE");
+
+        virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.content.Intent registerReceiver(android.content.BroadcastReceiver,android.content.IntentFilter)>($r3, $r1);
+
+        return;
+    }
+
+    private void updateNaviUI(int)
+    {
+        int $i0;
+        android.widget.ImageView r1;
+        com.peercom.ishoottablet.FileListActivity r0;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        $i0 := @parameter0: int;
+
+        lookupswitch($i0)
+        {
+            case 1: goto label2;
+            case 2: goto label3;
+            case 3: goto label4;
+            case 4: goto label5;
+            case 5: goto label6;
+            case 6: goto label7;
+            default: goto label1;
+        };
+
+     label1:
+        return;
+
+     label2:
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView recvButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837819);
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView sentButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837822);
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView recentButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837816);
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView selfButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837820);
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView favoriteButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837814);
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView purchaseButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837812);
+
+        return;
+
+     label3:
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView recvButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837818);
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView sentButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837823);
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView recentButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837816);
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView selfButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837820);
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView favoriteButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837814);
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView purchaseButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837812);
+
+        return;
+
+     label4:
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView recvButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837818);
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView sentButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837822);
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView recentButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837817);
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView selfButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837820);
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView favoriteButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837814);
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView purchaseButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837812);
+
+        return;
+
+     label5:
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView recvButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837818);
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView sentButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837822);
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView recentButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837816);
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView selfButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837821);
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView favoriteButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837814);
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView purchaseButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837812);
+
+        return;
+
+     label6:
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView recvButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837818);
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView sentButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837822);
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView recentButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837816);
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView selfButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837820);
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView favoriteButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837815);
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView purchaseButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837812);
+
+        return;
+
+     label7:
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView recvButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837818);
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView sentButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837822);
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView recentButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837816);
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView selfButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837820);
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView favoriteButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837814);
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView purchaseButton>;
+
+        virtualinvoke r1.<android.widget.ImageView: void setBackgroundResource(int)>(2130837813);
+
+        return;
+    }
+
+    public void clearShootingGridViewItems()
+    {
+        com.peercom.ishoottablet.FileListActivity$ShootingGridViewListAdapter $r1;
+        com.peercom.DataManager $r3;
+        android.widget.ImageView $r2;
+        android.widget.RelativeLayout $r5;
+        java.lang.String $r4;
+        com.peercom.ishoottablet.FileListActivity r0;
+        boolean $z0;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        $r1 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.ishoottablet.FileListActivity$ShootingGridViewListAdapter mShootingGridViewListAdapter>;
+
+        virtualinvoke $r1.<com.peercom.ishoottablet.FileListActivity$ShootingGridViewListAdapter: void clear()>();
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int currCount2> = 0;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int preCurrPage2> = 0;
+
+        virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: void setPCount0()>();
+
+        $r2 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView recvButton>;
+
+        virtualinvoke $r2.<android.widget.ImageView: void setEnabled(boolean)>(1);
+
+        $r2 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView sentButton>;
+
+        virtualinvoke $r2.<android.widget.ImageView: void setEnabled(boolean)>(1);
+
+        $r2 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView recentButton>;
+
+        virtualinvoke $r2.<android.widget.ImageView: void setEnabled(boolean)>(1);
+
+        $r2 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView favoriteButton>;
+
+        virtualinvoke $r2.<android.widget.ImageView: void setEnabled(boolean)>(1);
+
+        $r2 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView selfButton>;
+
+        virtualinvoke $r2.<android.widget.ImageView: void setEnabled(boolean)>(1);
+
+        $r2 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView purchaseButton>;
+
+        virtualinvoke $r2.<android.widget.ImageView: void setEnabled(boolean)>(1);
+
+        $r3 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        $r4 = virtualinvoke $r3.<com.peercom.DataManager: java.lang.String getShootingType()>();
+
+        $z0 = virtualinvoke $r4.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("LibraryType_Direction_RECEIVED");
+
+        if $z0 == 0 goto label2;
+
+        $r5 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.RelativeLayout emptyRecvLayout>;
+
+        virtualinvoke $r5.<android.widget.RelativeLayout: void setVisibility(int)>(4);
+
+     label1:
+        $r2 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView recvButton>;
+
+        virtualinvoke $r2.<android.widget.ImageView: void setEnabled(boolean)>(0);
+
+        $r2 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView sentButton>;
+
+        virtualinvoke $r2.<android.widget.ImageView: void setEnabled(boolean)>(0);
+
+        $r2 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView recentButton>;
+
+        virtualinvoke $r2.<android.widget.ImageView: void setEnabled(boolean)>(0);
+
+        $r2 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView favoriteButton>;
+
+        virtualinvoke $r2.<android.widget.ImageView: void setEnabled(boolean)>(0);
+
+        $r2 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView selfButton>;
+
+        virtualinvoke $r2.<android.widget.ImageView: void setEnabled(boolean)>(0);
+
+        $r2 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView purchaseButton>;
+
+        virtualinvoke $r2.<android.widget.ImageView: void setEnabled(boolean)>(0);
+
+        return;
+
+     label2:
+        $r3 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        $r4 = virtualinvoke $r3.<com.peercom.DataManager: java.lang.String getShootingType()>();
+
+        $z0 = virtualinvoke $r4.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("LibraryType_Direction_SEND");
+
+        if $z0 == 0 goto label3;
+
+        $r5 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.RelativeLayout emptySentLayout>;
+
+        virtualinvoke $r5.<android.widget.RelativeLayout: void setVisibility(int)>(4);
+
+        goto label1;
+
+     label3:
+        $r3 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        $r4 = virtualinvoke $r3.<com.peercom.DataManager: java.lang.String getShootingType()>();
+
+        $z0 = virtualinvoke $r4.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("LibraryType_LibraryType_RECENT_PLAY");
+
+        if $z0 == 0 goto label4;
+
+        $r5 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.RelativeLayout emptyRecentLayout>;
+
+        virtualinvoke $r5.<android.widget.RelativeLayout: void setVisibility(int)>(4);
+
+        goto label1;
+
+     label4:
+        $r3 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        $r4 = virtualinvoke $r3.<com.peercom.DataManager: java.lang.String getShootingType()>();
+
+        $z0 = virtualinvoke $r4.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("LibraryType_FavoriteList");
+
+        if $z0 == 0 goto label5;
+
+        $r5 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.RelativeLayout emptyFavrLayout>;
+
+        virtualinvoke $r5.<android.widget.RelativeLayout: void setVisibility(int)>(4);
+
+        goto label1;
+
+     label5:
+        $r3 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        $r4 = virtualinvoke $r3.<com.peercom.DataManager: java.lang.String getShootingType()>();
+
+        $z0 = virtualinvoke $r4.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("LibraryType_MyHome_Self");
+
+        if $z0 == 0 goto label6;
+
+        $r5 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.RelativeLayout emptySelfLayout>;
+
+        virtualinvoke $r5.<android.widget.RelativeLayout: void setVisibility(int)>(4);
+
+        goto label1;
+
+     label6:
+        $r3 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        $r4 = virtualinvoke $r3.<com.peercom.DataManager: java.lang.String getShootingType()>();
+
+        $z0 = virtualinvoke $r4.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("LibraryType_LibraryType_PAY");
+
+        if $z0 == 0 goto label1;
+
+        $r5 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.RelativeLayout emptyPurchaseLayout>;
+
+        virtualinvoke $r5.<android.widget.RelativeLayout: void setVisibility(int)>(4);
+
+        goto label1;
+    }
+
+    public void dialogMessage(java.lang.String)
+    {
+        android.app.AlertDialog$Builder r2;
+        java.lang.String $r1;
+        com.peercom.ishoottablet.FileListActivity r0;
+        com.peercom.ishoottablet.FileListActivity$31 $r4;
+        com.peercom.ishoottablet.FileListActivity$30 $r3;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r2 = new android.app.AlertDialog$Builder;
+
+        specialinvoke r2.<android.app.AlertDialog$Builder: void <init>(android.content.Context)>(r0);
+
+        virtualinvoke r2.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setTitle(int)>(2131099703);
+
+        virtualinvoke r2.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setIcon(int)>(2130837713);
+
+        virtualinvoke r2.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setMessage(java.lang.CharSequence)>("\uc288\ud305\ubaa9\ub85d \ud638\ucd9c\uc774 \uc9c0\uc5f0\ub418\uace0 \uc788\uc2b5\ub2c8\ub2e4. \uc7ac\uc2dc\ub3c4 \ud558\uc2dc\uaca0\uc2b5\ub2c8\uae4c?");
+
+        $r3 = new com.peercom.ishoottablet.FileListActivity$30;
+
+        specialinvoke $r3.<com.peercom.ishoottablet.FileListActivity$30: void <init>(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        virtualinvoke r2.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setPositiveButton(java.lang.CharSequence,android.content.DialogInterface$OnClickListener)>("\uc608", $r3);
+
+        $r4 = new com.peercom.ishoottablet.FileListActivity$31;
+
+        specialinvoke $r4.<com.peercom.ishoottablet.FileListActivity$31: void <init>(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        virtualinvoke r2.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setNegativeButton(java.lang.CharSequence,android.content.DialogInterface$OnClickListener)>("\uc544\ub2c8\uc694", $r4);
+
+        virtualinvoke r2.<android.app.AlertDialog$Builder: android.app.AlertDialog show()>();
+
+        return;
+    }
+
+    public void dialogStartPlay()
+    {
+        android.content.Context $r5;
+        android.content.Intent r2;
+        java.util.ArrayList $r7;
+        com.peercom.DataManager $r6;
+        kr.co.iShoot.ShootingFileInfo $r8;
+        android.os.Handler $r14;
+        int $i0, i1;
+        com.peercom.NetworkUserService $r4;
+        com.peercom.DownloadFileManager $r13;
+        java.lang.String $r9;
+        com.peercom.ishoottablet.FileListActivity r0;
+        java.lang.Exception $r12, $r16;
+        com.peercom.ishoottablet.FileListActivity$29 $r11;
+        android.os.Message $r15;
+        android.app.AlertDialog$Builder r1;
+        com.peercom.ishoottablet.FileListActivity$28 $r10;
+        java.lang.Object r3;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        $r4 = new com.peercom.NetworkUserService;
+
+     label01:
+        specialinvoke $r4.<com.peercom.NetworkUserService: void <init>()>();
+
+        $r5 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.content.Context getApplicationContext()>();
+
+        $r6 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        $r7 = virtualinvoke $r6.<com.peercom.DataManager: java.util.ArrayList getPlayList()>();
+
+        r3 = virtualinvoke $r7.<java.util.ArrayList: java.lang.Object get(int)>(0);
+
+        $r8 = (kr.co.iShoot.ShootingFileInfo) r3;
+
+        $r9 = virtualinvoke $r8.<kr.co.iShoot.ShootingFileInfo: java.lang.String getShootFileID()>();
+
+        $i0 = virtualinvoke $r4.<com.peercom.NetworkUserService: int getPlayTime(android.content.Context,java.lang.String)>($r5, $r9);
+
+     label02:
+        i1 = $i0;
+
+     label03:
+        $r6 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        virtualinvoke $r6.<com.peercom.DataManager: void setPlaySec(int)>($i0);
+
+     label04:
+        if i1 <= 10 goto label12;
+
+        r1 = new android.app.AlertDialog$Builder;
+
+     label05:
+        specialinvoke r1.<android.app.AlertDialog$Builder: void <init>(android.content.Context)>(r0);
+
+        virtualinvoke r1.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setTitle(int)>(2131099703);
+
+        virtualinvoke r1.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setIcon(int)>(2130837713);
+
+        virtualinvoke r1.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setMessage(java.lang.CharSequence)>("\uc774\uc5b4\ubcf4\uae30\ub97c \ud558\uc2dc\uaca0\uc2b5\ub2c8\uae4c?");
+
+     label06:
+        $r10 = new com.peercom.ishoottablet.FileListActivity$28;
+
+     label07:
+        specialinvoke $r10.<com.peercom.ishoottablet.FileListActivity$28: void <init>(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        virtualinvoke r1.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setPositiveButton(java.lang.CharSequence,android.content.DialogInterface$OnClickListener)>("\uc608", $r10);
+
+     label08:
+        $r11 = new com.peercom.ishoottablet.FileListActivity$29;
+
+     label09:
+        specialinvoke $r11.<com.peercom.ishoottablet.FileListActivity$29: void <init>(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        virtualinvoke r1.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setNegativeButton(java.lang.CharSequence,android.content.DialogInterface$OnClickListener)>("\uc544\ub2c8\uc694", $r11);
+
+        virtualinvoke r1.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setCancelable(boolean)>(0);
+
+        virtualinvoke r1.<android.app.AlertDialog$Builder: android.app.AlertDialog show()>();
+
+     label10:
+        return;
+
+     label11:
+        $r12 := @caughtexception;
+
+        i1 = 0;
+
+        $r6 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        virtualinvoke $r6.<com.peercom.DataManager: void setPlaySec(int)>(0);
+
+        goto label04;
+
+     label12:
+        r3 = new java.lang.Object;
+
+        specialinvoke r3.<java.lang.Object: void <init>()>();
+
+        $r13 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DownloadFileManager mDownloadFileManager>;
+
+        $r14 = $r13.<com.peercom.DownloadFileManager: android.os.Handler mSleepHandler>;
+
+        $r15 = virtualinvoke $r14.<android.os.Handler: android.os.Message obtainMessage()>();
+
+        $r15.<android.os.Message: java.lang.Object obj> = r3;
+
+        $r15.<android.os.Message: int arg1> = 1;
+
+        $r13 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DownloadFileManager mDownloadFileManager>;
+
+        $r14 = $r13.<com.peercom.DownloadFileManager: android.os.Handler mSleepHandler>;
+
+        virtualinvoke $r14.<android.os.Handler: boolean sendMessage(android.os.Message)>($r15);
+
+        r2 = new android.content.Intent;
+
+        $r5 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.content.Context getApplicationContext()>();
+
+        specialinvoke r2.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>($r5, class "Lcom/peercom/ishoottablet/PlayerActivity;");
+
+        virtualinvoke r2.<android.content.Intent: android.content.Intent addFlags(int)>(67108864);
+
+        $r6 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        virtualinvoke $r6.<com.peercom.DataManager: void setPlayStart(java.lang.String)>("N");
+
+        virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: void startActivity(android.content.Intent)>(r2);
+
+        return;
+
+     label13:
+        $r16 := @caughtexception;
+
+        return;
+
+        catch java.lang.Exception from label01 to label02 with label11;
+        catch java.lang.Exception from label03 to label04 with label11;
+        catch java.lang.Exception from label05 to label06 with label13;
+        catch java.lang.Exception from label07 to label08 with label13;
+        catch java.lang.Exception from label09 to label10 with label13;
+    }
+
+    public java.lang.String getDownAuthMessage2()
+    {
+        java.lang.String r1;
+        com.peercom.ishoottablet.FileListActivity r0;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: java.lang.String downAuthMessage>;
+
+        return r1;
+    }
+
+    public void getFileList(java.lang.String, int, int)
+    {
+        int $i0, $i1;
+        java.lang.String $r1;
+        com.peercom.ishoottablet.FileListActivity r0;
+        com.peercom.ishoottablet.FileListActivity$getFileListThread $r2;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $r2 = new com.peercom.ishoottablet.FileListActivity$getFileListThread;
+
+        specialinvoke $r2.<com.peercom.ishoottablet.FileListActivity$getFileListThread: void <init>(com.peercom.ishoottablet.FileListActivity,com.peercom.ishoottablet.FileListActivity,java.lang.String,int,int)>(r0, r0, $r1, 10, 1);
+
+        virtualinvoke $r2.<com.peercom.ishoottablet.FileListActivity$getFileListThread: void start()>();
+
+        return;
+    }
+
+    public void getFileListNonThread(java.lang.String, int, int)
+    {
+        android.content.Context $r6;
+        com.peercom.ExceptionManager$errFlag $r15;
+        com.peercom.ExceptionManager $r14;
+        com.peercom.DataManager $r11;
+        kr.co.iShoot.ShootingFileInfo r4;
+        int $i0, $i1;
+        com.peercom.NetworkUserService $r5;
+        java.lang.String $r1, $r8;
+        com.peercom.ishoottablet.FileListActivity$fileArrayAdapter $r10;
+        kr.co.iShoot.ShootingInfo r2;
+        com.peercom.ishoottablet.FileListActivity r0;
+        java.lang.Exception $r9, $r13;
+        org.ksoap2.serialization.SoapObject r3, $r12;
+        java.lang.Object $r7;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $r5 = new com.peercom.NetworkUserService;
+
+        specialinvoke $r5.<com.peercom.NetworkUserService: void <init>()>();
+
+        $r6 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.content.Context getApplicationContext()>();
+
+        $r7 = virtualinvoke $r5.<com.peercom.NetworkUserService: java.lang.Object getShootingMobile(android.content.Context,java.lang.String)>($r6, $r1);
+
+        r2 = new kr.co.iShoot.ShootingInfo;
+
+        r3 = new org.ksoap2.serialization.SoapObject;
+
+     label1:
+        $r1 = virtualinvoke $r7.<java.lang.Object: java.lang.String toString()>();
+
+        specialinvoke r3.<org.ksoap2.serialization.SoapObject: void <init>(java.lang.String)>($r1);
+
+        specialinvoke r2.<kr.co.iShoot.ShootingInfo: void <init>(org.ksoap2.serialization.SoapObject,java.lang.String)>(r3, "http://www.ishoot.co.kr/thumbnail/?id=");
+
+     label2:
+        $r7 = virtualinvoke r2.<kr.co.iShoot.ShootingInfo: java.lang.Object getShootingFileInfo()>();
+
+        $r1 = virtualinvoke $r7.<java.lang.Object: java.lang.String toString()>();
+
+        $r8 = virtualinvoke $r1.<java.lang.String: java.lang.String trim()>();
+
+        $i0 = virtualinvoke $r8.<java.lang.String: int length()>();
+
+        $r8 = "ShootingFileInfoList{};";
+
+        $r8 = virtualinvoke $r8.<java.lang.String: java.lang.String trim()>();
+
+        $i1 = virtualinvoke $r8.<java.lang.String: int length()>();
+
+        if $i0 > $i1 goto label4;
+
+        return;
+
+     label3:
+        $r9 := @caughtexception;
+
+        return;
+
+     label4:
+        r3 = new org.ksoap2.serialization.SoapObject;
+
+        specialinvoke r3.<org.ksoap2.serialization.SoapObject: void <init>(java.lang.String)>($r1);
+
+        $r10 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.ishoottablet.FileListActivity$fileArrayAdapter fileAdapter>;
+
+        virtualinvoke $r10.<com.peercom.ishoottablet.FileListActivity$fileArrayAdapter: void clear()>();
+
+        $r11 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        virtualinvoke $r11.<com.peercom.DataManager: void clearPlayList()>();
+
+        $i0 = 0;
+
+     label5:
+        $i1 = virtualinvoke r3.<org.ksoap2.serialization.SoapObject: int getPropertyCount()>();
+
+        if $i0 < $i1 goto label6;
+
+        $r10 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.ishoottablet.FileListActivity$fileArrayAdapter fileAdapter>;
+
+        virtualinvoke $r10.<com.peercom.ishoottablet.FileListActivity$fileArrayAdapter: void notifyDataSetChanged()>();
+
+        return;
+
+     label6:
+        r4 = new kr.co.iShoot.ShootingFileInfo;
+
+        $r12 = new org.ksoap2.serialization.SoapObject;
+
+     label7:
+        $r7 = virtualinvoke r3.<org.ksoap2.serialization.SoapObject: java.lang.Object getProperty(int)>($i0);
+
+        $r1 = virtualinvoke $r7.<java.lang.Object: java.lang.String toString()>();
+
+        specialinvoke $r12.<org.ksoap2.serialization.SoapObject: void <init>(java.lang.String)>($r1);
+
+        specialinvoke r4.<kr.co.iShoot.ShootingFileInfo: void <init>(org.ksoap2.serialization.SoapObject)>($r12);
+
+        $r10 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.ishoottablet.FileListActivity$fileArrayAdapter fileAdapter>;
+
+        virtualinvoke $r10.<com.peercom.ishoottablet.FileListActivity$fileArrayAdapter: void add(java.lang.Object)>(r4);
+
+        $r11 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        virtualinvoke $r11.<com.peercom.DataManager: void addPlayList(kr.co.iShoot.ShootingFileInfo)>(r4);
+
+     label8:
+        $i0 = $i0 + 1;
+
+        goto label5;
+
+     label9:
+        $r13 := @caughtexception;
+
+        $r14 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.ExceptionManager LOG_MGR>;
+
+        $r15 = <com.peercom.ExceptionManager$errFlag: com.peercom.ExceptionManager$errFlag e>;
+
+        virtualinvoke $r14.<com.peercom.ExceptionManager: void writeLog(com.peercom.ExceptionManager$errFlag,java.lang.Exception)>($r15, $r13);
+
+        goto label8;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+        catch java.lang.Exception from label7 to label8 with label9;
+    }
+
+    public java.lang.Boolean getIsDownloadAuth2()
+    {
+        java.lang.Boolean $r1;
+        com.peercom.ishoottablet.FileListActivity r0;
+        boolean $z0;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        $z0 = r0.<com.peercom.ishoottablet.FileListActivity: boolean downAuth>;
+
+        $r1 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>($z0);
+
+        return $r1;
+    }
+
+    public java.lang.String getMyAvailableCapa2()
+    {
+        java.lang.String r1;
+        com.peercom.ishoottablet.FileListActivity r0;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: java.lang.String sMyAvailableCapa>;
+
+        return r1;
+    }
+
+    public java.lang.String getMyPoint2()
+    {
+        java.lang.String r1;
+        com.peercom.ishoottablet.FileListActivity r0;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: java.lang.String sMyPoint>;
+
+        return r1;
+    }
+
+    public int getPCount()
+    {
+        int i0;
+        com.peercom.ishoottablet.FileListActivity r0;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        i0 = r0.<com.peercom.ishoottablet.FileListActivity: int pCount2>;
+
+        return i0;
+    }
+
+    public java.lang.String getPayCode2()
+    {
+        java.lang.String r1;
+        com.peercom.ishoottablet.FileListActivity r0;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: java.lang.String sPayCode>;
+
+        return r1;
+    }
+
+    public java.lang.String getPkChg2()
+    {
+        java.lang.String r1;
+        com.peercom.ishoottablet.FileListActivity r0;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: java.lang.String sPkChg>;
+
+        return r1;
+    }
+
+    public java.lang.String getSellCode2()
+    {
+        java.lang.String r1;
+        com.peercom.ishoottablet.FileListActivity r0;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        r1 = r0.<com.peercom.ishoottablet.FileListActivity: java.lang.String sSellCode>;
+
+        return r1;
+    }
+
+    public void getShootingGridViewItems(int, int)
+    {
+        com.peercom.ishoottablet.FileListActivity$ShootingGridViewListAdapter $r1;
+        int $i0, $i1, $i2;
+        com.peercom.ishoottablet.FileListActivity$GetGridViewItemsThread $r2;
+        com.peercom.ishoottablet.FileListActivity r0;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $i2 = r0.<com.peercom.ishoottablet.FileListActivity: int preCurrPage2>;
+
+        if $i2 != $i1 goto label1;
+
+        if $i1 != 1 goto label2;
+
+     label1:
+        $r2 = new com.peercom.ishoottablet.FileListActivity$GetGridViewItemsThread;
+
+        $r1 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.ishoottablet.FileListActivity$ShootingGridViewListAdapter mShootingGridViewListAdapter>;
+
+        specialinvoke $r2.<com.peercom.ishoottablet.FileListActivity$GetGridViewItemsThread: void <init>(com.peercom.ishoottablet.FileListActivity,com.peercom.ishoottablet.FileListActivity$ShootingGridViewListAdapter,int,int,java.lang.String)>(r0, $r1, 6, $i1, "http://www.ishoot.co.kr/thumbnail/?id=");
+
+        virtualinvoke $r2.<com.peercom.ishoottablet.FileListActivity$GetGridViewItemsThread: void start()>();
+
+     label2:
+        r0.<com.peercom.ishoottablet.FileListActivity: int preCurrPage2> = $i1;
+
+        return;
+    }
+
+    protected void onCreate(android.os.Bundle)
+    {
+        com.peercom.ishoottablet.FileListActivity$3 $r12;
+        com.peercom.ishoottablet.FileListActivity$4 $r13;
+        com.peercom.ishoottablet.FileListActivity$1 $r10;
+        android.os.Bundle $r1;
+        android.widget.GridView $r8;
+        com.peercom.ishoottablet.FileListActivity$2 $r11;
+        android.widget.ImageView $r7;
+        android.view.WindowManager $r27;
+        java.lang.NullPointerException $r33;
+        com.peercom.DataManager $r23;
+        com.peercom.ishoottablet.FileListActivity$11 $r20;
+        android.view.View $r5;
+        com.peercom.ishoottablet.FileListActivity$10 $r19;
+        android.view.Display $r28;
+        com.peercom.ishoottablet.FileListActivity$9 $r18;
+        com.peercom.ishoottablet.FileListActivity$7 $r16;
+        com.peercom.ishoottablet.FileListActivity$8 $r17;
+        com.peercom.ishoottablet.FileListActivity$5 $r14;
+        com.peercom.ishoottablet.FileListActivity$6 $r15;
+        boolean $z0;
+        com.peercom.ishoottablet.FileListActivity r0;
+        android.util.DisplayMetrics r2;
+        android.widget.TextView $r9;
+        com.peercom.ishoottablet.FileListActivity$ShootingGridViewListAdapter $r32;
+        android.widget.RelativeLayout $r6;
+        java.lang.StringBuilder $r25;
+        android.widget.ListView $r31;
+        android.content.Intent $r21;
+        java.util.ArrayList $r30;
+        int i0;
+        com.peercom.DownloadFileManager $r24;
+        java.lang.String $r22;
+        com.peercom.ishoottablet.FileListActivity$fileArrayAdapter $r29;
+        kr.co.iShoot.ShootingInfo $r26;
+        android.graphics.Bitmap $r4;
+        android.content.res.Resources $r3;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke r0.<android.app.Activity: void onCreate(android.os.Bundle)>($r1);
+
+        virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: boolean requestWindowFeature(int)>(1);
+
+        specialinvoke r0.<com.peercom.ishoottablet.FileListActivity: void setNetworkChangeReceiver()>();
+
+        virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: void setContentView(int)>(2130903052);
+
+        $r3 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.content.res.Resources getResources()>();
+
+        $r4 = staticinvoke <android.graphics.BitmapFactory: android.graphics.Bitmap decodeResource(android.content.res.Resources,int)>($r3, 2130838038);
+
+        $r4 = staticinvoke <android.graphics.Bitmap: android.graphics.Bitmap createScaledBitmap(android.graphics.Bitmap,int,int,boolean)>($r4, 223, 125, 1);
+
+        r0.<com.peercom.ishoottablet.FileListActivity: android.graphics.Bitmap defaultShootThumb2> = $r4;
+
+        $r5 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165294);
+
+        $r6 = (android.widget.RelativeLayout) $r5;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: android.widget.RelativeLayout emptyRecvLayout> = $r6;
+
+        $r5 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165295);
+
+        $r6 = (android.widget.RelativeLayout) $r5;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: android.widget.RelativeLayout emptySentLayout> = $r6;
+
+        $r5 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165297);
+
+        $r6 = (android.widget.RelativeLayout) $r5;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: android.widget.RelativeLayout emptyRecentLayout> = $r6;
+
+        $r5 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165296);
+
+        $r6 = (android.widget.RelativeLayout) $r5;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: android.widget.RelativeLayout emptyFavrLayout> = $r6;
+
+        $r5 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165298);
+
+        $r6 = (android.widget.RelativeLayout) $r5;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: android.widget.RelativeLayout emptySelfLayout> = $r6;
+
+        $r5 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165299);
+
+        $r6 = (android.widget.RelativeLayout) $r5;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: android.widget.RelativeLayout emptyPurchaseLayout> = $r6;
+
+        $r5 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165287);
+
+        $r7 = (android.widget.ImageView) $r5;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView recvButton> = $r7;
+
+        $r5 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165288);
+
+        $r7 = (android.widget.ImageView) $r5;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView sentButton> = $r7;
+
+        $r5 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165289);
+
+        $r7 = (android.widget.ImageView) $r5;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView recentButton> = $r7;
+
+        $r5 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165291);
+
+        $r7 = (android.widget.ImageView) $r5;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView favoriteButton> = $r7;
+
+        $r5 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165290);
+
+        $r7 = (android.widget.ImageView) $r5;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView selfButton> = $r7;
+
+        $r5 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165292);
+
+        $r7 = (android.widget.ImageView) $r5;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView purchaseButton> = $r7;
+
+        $r5 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165293);
+
+        $r8 = (android.widget.GridView) $r5;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: android.widget.GridView mShootingGridViewList> = $r8;
+
+        $r5 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165285);
+
+        $r7 = (android.widget.ImageView) $r5;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView mShootingGridViewExtendBtn> = $r7;
+
+        $r5 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165280);
+
+        $r7 = (android.widget.ImageView) $r5;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView imgBtnDownPlayMode> = $r7;
+
+        $r5 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165279);
+
+        $r9 = (android.widget.TextView) $r5;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: android.widget.TextView shootFileSubTitle> = $r9;
+
+        $r5 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165283);
+
+        $r9 = (android.widget.TextView) $r5;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: android.widget.TextView shootTalkSubTitle> = $r9;
+
+        $r5 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165185);
+
+        $r9 = (android.widget.TextView) $r5;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: android.widget.TextView textDetail> = $r9;
+
+        $r5 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165269);
+
+        $r7 = (android.widget.ImageView) $r5;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView hotMenuBtn> = $r7;
+
+        $r5 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165270);
+
+        $r7 = (android.widget.ImageView) $r5;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView shootingMenuBtn> = $r7;
+
+        $r5 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165277);
+
+        $r7 = (android.widget.ImageView) $r5;
+
+        $r10 = new com.peercom.ishoottablet.FileListActivity$1;
+
+        specialinvoke $r10.<com.peercom.ishoottablet.FileListActivity$1: void <init>(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        virtualinvoke $r7.<android.widget.ImageView: void setOnTouchListener(android.view.View$OnTouchListener)>($r10);
+
+        $r5 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165277);
+
+        $r7 = (android.widget.ImageView) $r5;
+
+        $r11 = new com.peercom.ishoottablet.FileListActivity$2;
+
+        specialinvoke $r11.<com.peercom.ishoottablet.FileListActivity$2: void <init>(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        virtualinvoke $r7.<android.widget.ImageView: void setOnClickListener(android.view.View$OnClickListener)>($r11);
+
+        $r5 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165278);
+
+        $r7 = (android.widget.ImageView) $r5;
+
+        $r12 = new com.peercom.ishoottablet.FileListActivity$3;
+
+        specialinvoke $r12.<com.peercom.ishoottablet.FileListActivity$3: void <init>(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        virtualinvoke $r7.<android.widget.ImageView: void setOnClickListener(android.view.View$OnClickListener)>($r12);
+
+        $r5 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165282);
+
+        $r7 = (android.widget.ImageView) $r5;
+
+        $r13 = new com.peercom.ishoottablet.FileListActivity$4;
+
+        specialinvoke $r13.<com.peercom.ishoottablet.FileListActivity$4: void <init>(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        virtualinvoke $r7.<android.widget.ImageView: void setOnClickListener(android.view.View$OnClickListener)>($r13);
+
+        $r8 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.GridView mShootingGridViewList>;
+
+        $r14 = new com.peercom.ishoottablet.FileListActivity$5;
+
+        specialinvoke $r14.<com.peercom.ishoottablet.FileListActivity$5: void <init>(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        virtualinvoke $r8.<android.widget.GridView: void setOnScrollListener(android.widget.AbsListView$OnScrollListener)>($r14);
+
+        $r8 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.GridView mShootingGridViewList>;
+
+        $r15 = new com.peercom.ishoottablet.FileListActivity$6;
+
+        specialinvoke $r15.<com.peercom.ishoottablet.FileListActivity$6: void <init>(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        virtualinvoke $r8.<android.widget.GridView: void setOnItemClickListener(android.widget.AdapterView$OnItemClickListener)>($r15);
+
+        $r7 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView mShootingGridViewExtendBtn>;
+
+        $r16 = new com.peercom.ishoottablet.FileListActivity$7;
+
+        specialinvoke $r16.<com.peercom.ishoottablet.FileListActivity$7: void <init>(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        virtualinvoke $r7.<android.widget.ImageView: void setOnClickListener(android.view.View$OnClickListener)>($r16);
+
+        $r17 = new com.peercom.ishoottablet.FileListActivity$8;
+
+        specialinvoke $r17.<com.peercom.ishoottablet.FileListActivity$8: void <init>(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        r0.<com.peercom.ishoottablet.FileListActivity: android.os.Handler refreshGridViewListHandler> = $r17;
+
+        $r18 = new com.peercom.ishoottablet.FileListActivity$9;
+
+        specialinvoke $r18.<com.peercom.ishoottablet.FileListActivity$9: void <init>(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        r0.<com.peercom.ishoottablet.FileListActivity: android.os.Handler addGridViewListHandler> = $r18;
+
+        $r19 = new com.peercom.ishoottablet.FileListActivity$10;
+
+        specialinvoke $r19.<com.peercom.ishoottablet.FileListActivity$10: void <init>(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        r0.<com.peercom.ishoottablet.FileListActivity: android.os.Handler reGetItemHandler> = $r19;
+
+        $r20 = new com.peercom.ishoottablet.FileListActivity$11;
+
+        specialinvoke $r20.<com.peercom.ishoottablet.FileListActivity$11: void <init>(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        r0.<com.peercom.ishoottablet.FileListActivity: android.os.Handler addFileListHandler> = $r20;
+
+        <com.peercom.ishoottablet.FileListActivity: android.app.Activity activity> = r0;
+
+     label01:
+        $r21 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.content.Intent getIntent()>();
+
+     label02:
+        $r22 = "playmode";
+
+     label03:
+        $r22 = virtualinvoke $r22.<java.lang.String: java.lang.String toString()>();
+
+        $z0 = virtualinvoke $r22.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("playmode");
+
+     label04:
+        if $z0 == 0 goto label08;
+
+     label05:
+        $r1 = virtualinvoke $r21.<android.content.Intent: android.os.Bundle getExtras()>();
+
+     label06:
+        $r22 = "playmode";
+
+     label07:
+        $r22 = virtualinvoke $r22.<java.lang.String: java.lang.String toString()>();
+
+        $r22 = virtualinvoke $r1.<android.os.Bundle: java.lang.String getString(java.lang.String)>($r22);
+
+        r0.<com.peercom.ishoottablet.FileListActivity: java.lang.String playmodeString> = $r22;
+
+     label08:
+        $r23 = staticinvoke <com.peercom.DataManager: com.peercom.DataManager getInstance()>();
+
+        r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager> = $r23;
+
+        $r24 = staticinvoke <com.peercom.DownloadFileManager: com.peercom.DownloadFileManager getInstance()>();
+
+        r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DownloadFileManager mDownloadFileManager> = $r24;
+
+        $r23 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        i0 = virtualinvoke $r23.<com.peercom.DataManager: int getPrevIntents()>();
+
+        if i0 != 9 goto label13;
+
+        $r7 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView hotMenuBtn>;
+
+        virtualinvoke $r7.<android.widget.ImageView: void setBackgroundResource(int)>(2130837805);
+
+     label09:
+        $r23 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        $r22 = virtualinvoke $r23.<com.peercom.DataManager: java.lang.String getShootingType()>();
+
+        r0.<com.peercom.ishoottablet.FileListActivity: java.lang.String oldShootType> = $r22;
+
+        $r23 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        $r22 = virtualinvoke $r23.<com.peercom.DataManager: java.lang.String getShootingType()>();
+
+        $z0 = virtualinvoke $r22.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("");
+
+        if $z0 == 0 goto label15;
+
+        $r23 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        virtualinvoke $r23.<com.peercom.DataManager: void setShootingType(java.lang.String)>("LibraryType_Direction_RECEIVED");
+
+        $r23 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        virtualinvoke $r23.<com.peercom.DataManager: void setPrevSubMenu(int)>(101);
+
+        specialinvoke r0.<com.peercom.ishoottablet.FileListActivity: void updateNaviUI(int)>(1);
+
+     label10:
+        specialinvoke r0.<com.peercom.ishoottablet.FileListActivity: void resize()>();
+
+        specialinvoke r0.<com.peercom.ishoottablet.FileListActivity: void setMenuListener(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        specialinvoke r0.<com.peercom.ishoottablet.FileListActivity: void setNaviListener()>();
+
+        $r7 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView recvButton>;
+
+        virtualinvoke $r7.<android.widget.ImageView: void setEnabled(boolean)>(0);
+
+        $r7 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView sentButton>;
+
+        virtualinvoke $r7.<android.widget.ImageView: void setEnabled(boolean)>(0);
+
+        $r7 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView recentButton>;
+
+        virtualinvoke $r7.<android.widget.ImageView: void setEnabled(boolean)>(0);
+
+        $r7 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView favoriteButton>;
+
+        virtualinvoke $r7.<android.widget.ImageView: void setEnabled(boolean)>(0);
+
+        $r7 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView selfButton>;
+
+        virtualinvoke $r7.<android.widget.ImageView: void setEnabled(boolean)>(0);
+
+        $r7 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView purchaseButton>;
+
+        virtualinvoke $r7.<android.widget.ImageView: void setEnabled(boolean)>(0);
+
+        $r7 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView mShootingGridViewExtendBtn>;
+
+        virtualinvoke $r7.<android.widget.ImageView: void setEnabled(boolean)>(0);
+
+        $r7 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView imgBtnDownPlayMode>;
+
+        virtualinvoke $r7.<android.widget.ImageView: void setEnabled(boolean)>(1);
+
+        $r22 = r0.<com.peercom.ishoottablet.FileListActivity: java.lang.String playmodeString>;
+
+        $z0 = virtualinvoke $r22.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("down");
+
+        if $z0 == 0 goto label22;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int modeType> = 1;
+
+        $r7 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView imgBtnDownPlayMode>;
+
+        virtualinvoke $r7.<android.widget.ImageView: void setImageResource(int)>(2130837581);
+
+     label11:
+        $r9 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.TextView textDetail>;
+
+        $r25 = new java.lang.StringBuilder;
+
+        specialinvoke $r25.<java.lang.StringBuilder: void <init>()>();
+
+        $r23 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        $r26 = virtualinvoke $r23.<com.peercom.DataManager: kr.co.iShoot.ShootingInfo getTargetShooting()>();
+
+        $r22 = virtualinvoke $r26.<kr.co.iShoot.ShootingInfo: java.lang.String getSubject()>();
+
+        $r25 = virtualinvoke $r25.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r22);
+
+        $r22 = virtualinvoke $r25.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r9.<android.widget.TextView: void setText(java.lang.CharSequence)>($r22);
+
+        r2 = new android.util.DisplayMetrics;
+
+        specialinvoke r2.<android.util.DisplayMetrics: void <init>()>();
+
+        $r27 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.view.WindowManager getWindowManager()>();
+
+        $r28 = interfaceinvoke $r27.<android.view.WindowManager: android.view.Display getDefaultDisplay()>();
+
+        virtualinvoke $r28.<android.view.Display: void getMetrics(android.util.DisplayMetrics)>(r2);
+
+        i0 = r2.<android.util.DisplayMetrics: int widthPixels>;
+
+        i0 = r2.<android.util.DisplayMetrics: int heightPixels>;
+
+        $r29 = new com.peercom.ishoottablet.FileListActivity$fileArrayAdapter;
+
+        $r30 = new java.util.ArrayList;
+
+        specialinvoke $r30.<java.util.ArrayList: void <init>()>();
+
+        specialinvoke $r29.<com.peercom.ishoottablet.FileListActivity$fileArrayAdapter: void <init>(com.peercom.ishoottablet.FileListActivity,android.content.Context,int,java.util.ArrayList)>(r0, r0, 2130903051, $r30);
+
+        r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.ishoottablet.FileListActivity$fileArrayAdapter fileAdapter> = $r29;
+
+        $r5 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: android.view.View findViewById(int)>(2131165281);
+
+        $r31 = (android.widget.ListView) $r5;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ListView fileListView> = $r31;
+
+        $r31 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ListView fileListView>;
+
+        $r29 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.ishoottablet.FileListActivity$fileArrayAdapter fileAdapter>;
+
+        virtualinvoke $r31.<android.widget.ListView: void setAdapter(android.widget.ListAdapter)>($r29);
+
+        $r23 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        $r26 = virtualinvoke $r23.<com.peercom.DataManager: kr.co.iShoot.ShootingInfo getTargetShooting()>();
+
+        $r22 = virtualinvoke $r26.<kr.co.iShoot.ShootingInfo: java.lang.String getUID()>();
+
+        virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: void getFileList(java.lang.String,int,int)>($r22, 10, 1);
+
+        $r32 = new com.peercom.ishoottablet.FileListActivity$ShootingGridViewListAdapter;
+
+        $r30 = new java.util.ArrayList;
+
+        specialinvoke $r30.<java.util.ArrayList: void <init>()>();
+
+        specialinvoke $r32.<com.peercom.ishoottablet.FileListActivity$ShootingGridViewListAdapter: void <init>(com.peercom.ishoottablet.FileListActivity,android.content.Context,int,java.util.ArrayList)>(r0, r0, 2130903092, $r30);
+
+        r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.ishoottablet.FileListActivity$ShootingGridViewListAdapter mShootingGridViewListAdapter> = $r32;
+
+        $r8 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.GridView mShootingGridViewList>;
+
+        $r32 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.ishoottablet.FileListActivity$ShootingGridViewListAdapter mShootingGridViewListAdapter>;
+
+        virtualinvoke $r8.<android.widget.GridView: void setAdapter(android.widget.ListAdapter)>($r32);
+
+        $r32 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.ishoottablet.FileListActivity$ShootingGridViewListAdapter mShootingGridViewListAdapter>;
+
+        virtualinvoke $r32.<com.peercom.ishoottablet.FileListActivity$ShootingGridViewListAdapter: void clear()>();
+
+        virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: void getShootingGridViewItems(int,int)>(6, 1);
+
+        return;
+
+     label12:
+        $r33 := @caughtexception;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: java.lang.String playmodeString> = "play";
+
+        goto label08;
+
+     label13:
+        $r23 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        i0 = virtualinvoke $r23.<com.peercom.DataManager: int getPrevIntents()>();
+
+        if i0 != 1 goto label14;
+
+        $r7 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView shootingMenuBtn>;
+
+        virtualinvoke $r7.<android.widget.ImageView: void setBackgroundResource(int)>(2130837811);
+
+        goto label09;
+
+     label14:
+        $r7 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView shootingMenuBtn>;
+
+        virtualinvoke $r7.<android.widget.ImageView: void setBackgroundResource(int)>(2130837811);
+
+        goto label09;
+
+     label15:
+        $r23 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        $r22 = virtualinvoke $r23.<com.peercom.DataManager: java.lang.String getShootingType()>();
+
+        $z0 = virtualinvoke $r22.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("LibraryType_Direction_RECEIVED");
+
+        if $z0 == 0 goto label16;
+
+        $r23 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        virtualinvoke $r23.<com.peercom.DataManager: void setShootingType(java.lang.String)>("LibraryType_Direction_RECEIVED");
+
+        $r23 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        virtualinvoke $r23.<com.peercom.DataManager: void setPrevSubMenu(int)>(101);
+
+        specialinvoke r0.<com.peercom.ishoottablet.FileListActivity: void updateNaviUI(int)>(1);
+
+        goto label10;
+
+     label16:
+        $r23 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        $r22 = virtualinvoke $r23.<com.peercom.DataManager: java.lang.String getShootingType()>();
+
+        $z0 = virtualinvoke $r22.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("LibraryType_Direction_SEND");
+
+        if $z0 == 0 goto label17;
+
+        $r23 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        virtualinvoke $r23.<com.peercom.DataManager: void setShootingType(java.lang.String)>("LibraryType_Direction_SEND");
+
+        $r23 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        virtualinvoke $r23.<com.peercom.DataManager: void setPrevSubMenu(int)>(102);
+
+        specialinvoke r0.<com.peercom.ishoottablet.FileListActivity: void updateNaviUI(int)>(2);
+
+        goto label10;
+
+     label17:
+        $r23 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        $r22 = virtualinvoke $r23.<com.peercom.DataManager: java.lang.String getShootingType()>();
+
+        $z0 = virtualinvoke $r22.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("LibraryType_LibraryType_RECENT_PLAY");
+
+        if $z0 == 0 goto label18;
+
+        $r23 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        virtualinvoke $r23.<com.peercom.DataManager: void setShootingType(java.lang.String)>("LibraryType_LibraryType_RECENT_PLAY");
+
+        $r23 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        virtualinvoke $r23.<com.peercom.DataManager: void setPrevSubMenu(int)>(103);
+
+        specialinvoke r0.<com.peercom.ishoottablet.FileListActivity: void updateNaviUI(int)>(3);
+
+        goto label10;
+
+     label18:
+        $r23 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        $r22 = virtualinvoke $r23.<com.peercom.DataManager: java.lang.String getShootingType()>();
+
+        $z0 = virtualinvoke $r22.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("LibraryType_FavoriteList");
+
+        if $z0 == 0 goto label19;
+
+        $r23 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        virtualinvoke $r23.<com.peercom.DataManager: void setShootingType(java.lang.String)>("LibraryType_FavoriteList");
+
+        $r23 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        virtualinvoke $r23.<com.peercom.DataManager: void setPrevSubMenu(int)>(104);
+
+        specialinvoke r0.<com.peercom.ishoottablet.FileListActivity: void updateNaviUI(int)>(5);
+
+        goto label10;
+
+     label19:
+        $r23 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        $r22 = virtualinvoke $r23.<com.peercom.DataManager: java.lang.String getShootingType()>();
+
+        $z0 = virtualinvoke $r22.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("LibraryType_MyHome_Self");
+
+        if $z0 == 0 goto label20;
+
+        $r23 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        virtualinvoke $r23.<com.peercom.DataManager: void setShootingType(java.lang.String)>("LibraryType_MyHome_Self");
+
+        $r23 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        virtualinvoke $r23.<com.peercom.DataManager: void setPrevSubMenu(int)>(106);
+
+        specialinvoke r0.<com.peercom.ishoottablet.FileListActivity: void updateNaviUI(int)>(4);
+
+        goto label10;
+
+     label20:
+        $r23 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        $r22 = virtualinvoke $r23.<com.peercom.DataManager: java.lang.String getShootingType()>();
+
+        $z0 = virtualinvoke $r22.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("LibraryType_LibraryType_PAY");
+
+        if $z0 == 0 goto label21;
+
+        $r23 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        virtualinvoke $r23.<com.peercom.DataManager: void setShootingType(java.lang.String)>("LibraryType_LibraryType_PAY");
+
+        $r23 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        virtualinvoke $r23.<com.peercom.DataManager: void setPrevSubMenu(int)>(105);
+
+        specialinvoke r0.<com.peercom.ishoottablet.FileListActivity: void updateNaviUI(int)>(6);
+
+        goto label10;
+
+     label21:
+        $r23 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        virtualinvoke $r23.<com.peercom.DataManager: void setShootingType(java.lang.String)>("LibraryType_Direction_RECEIVED");
+
+        $r23 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        virtualinvoke $r23.<com.peercom.DataManager: void setPrevSubMenu(int)>(101);
+
+        specialinvoke r0.<com.peercom.ishoottablet.FileListActivity: void updateNaviUI(int)>(1);
+
+        goto label10;
+
+     label22:
+        r0.<com.peercom.ishoottablet.FileListActivity: int modeType> = 0;
+
+        $r7 = r0.<com.peercom.ishoottablet.FileListActivity: android.widget.ImageView imgBtnDownPlayMode>;
+
+        virtualinvoke $r7.<android.widget.ImageView: void setImageResource(int)>(2130837547);
+
+        goto label11;
+
+        catch java.lang.NullPointerException from label01 to label02 with label12;
+        catch java.lang.NullPointerException from label03 to label04 with label12;
+        catch java.lang.NullPointerException from label05 to label06 with label12;
+        catch java.lang.NullPointerException from label07 to label08 with label12;
+    }
+
+    protected void onDestroy()
+    {
+        com.peercom.DataManager $r2;
+        java.lang.String $r1;
+        com.peercom.ishoottablet.FileListActivity r0;
+        android.content.BroadcastReceiver $r3;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        $r2 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        $r1 = r0.<com.peercom.ishoottablet.FileListActivity: java.lang.String oldShootType>;
+
+        virtualinvoke $r2.<com.peercom.DataManager: void setShootingType(java.lang.String)>($r1);
+
+        $r3 = r0.<com.peercom.ishoottablet.FileListActivity: android.content.BroadcastReceiver rcvIncomming>;
+
+        virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: void unregisterReceiver(android.content.BroadcastReceiver)>($r3);
+
+        staticinvoke <java.lang.System: void gc()>();
+
+        specialinvoke r0.<android.app.Activity: void onDestroy()>();
+
+        return;
+    }
+
+    protected void onResume()
+    {
+        android.net.ConnectivityManager r3;
+        android.app.ActivityManager r6;
+        android.net.NetworkInfo $r4;
+        com.peercom.ishoottablet.FileListActivity r0;
+        java.lang.Exception $r11;
+        com.peercom.DataManager $r8;
+        com.peercom.ishoottablet.FileListActivity$26 $r9;
+        android.app.AlertDialog$Builder r1;
+        android.widget.Toast $r5;
+        com.peercom.ishoottablet.FileListActivity$27 $r10;
+        int $i0;
+        java.lang.Object $r2;
+        java.lang.String $r7;
+        boolean $z0;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        specialinvoke r0.<android.app.Activity: void onResume()>();
+
+        $r2 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: java.lang.Object getSystemService(java.lang.String)>("connectivity");
+
+        r3 = (android.net.ConnectivityManager) $r2;
+
+        $r4 = virtualinvoke r3.<android.net.ConnectivityManager: android.net.NetworkInfo getActiveNetworkInfo()>();
+
+        $i0 = r0.<com.peercom.ishoottablet.FileListActivity: int networkFaultFlag>;
+
+        if $i0 != 2 goto label01;
+
+        if $r4 != null goto label01;
+
+        $r5 = staticinvoke <android.widget.Toast: android.widget.Toast makeText(android.content.Context,java.lang.CharSequence,int)>(r0, "The network has not been set. Exiting..", 0);
+
+        virtualinvoke $r5.<android.widget.Toast: void show()>();
+
+        staticinvoke <com.peercom.DataManager: void destory()>();
+
+        virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: void finish()>();
+
+        $r2 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: java.lang.Object getSystemService(java.lang.String)>("activity");
+
+        r6 = (android.app.ActivityManager) $r2;
+
+        $r7 = virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: java.lang.String getPackageName()>();
+
+        virtualinvoke r6.<android.app.ActivityManager: void restartPackage(java.lang.String)>($r7);
+
+     label01:
+        $r8 = r0.<com.peercom.ishoottablet.FileListActivity: com.peercom.DataManager mDataManager>;
+
+        $z0 = virtualinvoke $r8.<com.peercom.DataManager: boolean getExitFlag()>();
+
+        if $z0 == 0 goto label02;
+
+        virtualinvoke r0.<com.peercom.ishoottablet.FileListActivity: void finish()>();
+
+     label02:
+        if $r4 != null goto label11;
+
+     label03:
+        $r5 = staticinvoke <android.widget.Toast: android.widget.Toast makeText(android.content.Context,int,int)>(r0, 2131099702, 0);
+
+        virtualinvoke $r5.<android.widget.Toast: void show()>();
+
+     label04:
+        r1 = new android.app.AlertDialog$Builder;
+
+     label05:
+        specialinvoke r1.<android.app.AlertDialog$Builder: void <init>(android.content.Context)>(r0);
+
+        virtualinvoke r1.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setTitle(int)>(2131099703);
+
+        virtualinvoke r1.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setIcon(int)>(2130837713);
+
+        virtualinvoke r1.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setMessage(int)>(2131099707);
+
+     label06:
+        $r9 = new com.peercom.ishoottablet.FileListActivity$26;
+
+     label07:
+        specialinvoke $r9.<com.peercom.ishoottablet.FileListActivity$26: void <init>(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        virtualinvoke r1.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setPositiveButton(java.lang.CharSequence,android.content.DialogInterface$OnClickListener)>("\uc608", $r9);
+
+     label08:
+        $r10 = new com.peercom.ishoottablet.FileListActivity$27;
+
+     label09:
+        specialinvoke $r10.<com.peercom.ishoottablet.FileListActivity$27: void <init>(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        virtualinvoke r1.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setNegativeButton(java.lang.CharSequence,android.content.DialogInterface$OnClickListener)>("\uc544\ub2c8\uc694", $r10);
+
+        virtualinvoke r1.<android.app.AlertDialog$Builder: android.app.AlertDialog show()>();
+
+     label10:
+        return;
+
+     label11:
+        r0.<com.peercom.ishoottablet.FileListActivity: int networkFaultFlag> = 0;
+
+     label12:
+        return;
+
+     label13:
+        $r11 := @caughtexception;
+
+        return;
+
+        catch java.lang.Exception from label03 to label04 with label13;
+        catch java.lang.Exception from label05 to label06 with label13;
+        catch java.lang.Exception from label07 to label08 with label13;
+        catch java.lang.Exception from label09 to label10 with label13;
+        catch java.lang.Exception from label11 to label12 with label13;
+    }
+
+    public void setDownAuthMessage2(java.lang.String)
+    {
+        java.lang.String $r1;
+        com.peercom.ishoottablet.FileListActivity r0;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: java.lang.String downAuthMessage> = $r1;
+
+        return;
+    }
+
+    public void setIsDownloadAuth2(java.lang.String)
+    {
+        java.lang.String $r1;
+        com.peercom.ishoottablet.FileListActivity r0;
+        boolean $z0;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("true");
+
+        if $z0 == 0 goto label1;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: boolean downAuth> = 1;
+
+        return;
+
+     label1:
+        r0.<com.peercom.ishoottablet.FileListActivity: boolean downAuth> = 0;
+
+        return;
+    }
+
+    public void setMyAvailableCapa2(java.lang.String)
+    {
+        java.lang.String $r1;
+        com.peercom.ishoottablet.FileListActivity r0;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: java.lang.String sMyAvailableCapa> = $r1;
+
+        return;
+    }
+
+    public void setMyPoint2(java.lang.String)
+    {
+        java.lang.String $r1;
+        com.peercom.ishoottablet.FileListActivity r0;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: java.lang.String sMyPoint> = $r1;
+
+        return;
+    }
+
+    public void setPCount(int)
+    {
+        int $i0, $i1;
+        com.peercom.ishoottablet.FileListActivity r0;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        $i0 := @parameter0: int;
+
+        $i1 = r0.<com.peercom.ishoottablet.FileListActivity: int pCount2>;
+
+        $i0 = $i1 + $i0;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int pCount2> = $i0;
+
+        return;
+    }
+
+    public void setPCount0()
+    {
+        com.peercom.ishoottablet.FileListActivity r0;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: int pCount2> = 0;
+
+        return;
+    }
+
+    public void setPayCode2(java.lang.String)
+    {
+        java.lang.String $r1;
+        com.peercom.ishoottablet.FileListActivity r0;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: java.lang.String sPayCode> = $r1;
+
+        return;
+    }
+
+    public void setPkChg2(java.lang.String)
+    {
+        java.lang.String $r1;
+        com.peercom.ishoottablet.FileListActivity r0;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: java.lang.String sPkChg> = $r1;
+
+        return;
+    }
+
+    public void setSellCode2(java.lang.String)
+    {
+        java.lang.String $r1;
+        com.peercom.ishoottablet.FileListActivity r0;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r0.<com.peercom.ishoottablet.FileListActivity: java.lang.String sSellCode> = $r1;
+
+        return;
+    }
+
+    public void showDialogForNotUse(java.lang.String)
+    {
+        android.app.AlertDialog$Builder r2;
+        com.peercom.ishoottablet.FileListActivity$24 $r3;
+        java.lang.String $r1;
+        com.peercom.ishoottablet.FileListActivity r0;
+
+        r0 := @this: com.peercom.ishoottablet.FileListActivity;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r2 = new android.app.AlertDialog$Builder;
+
+        specialinvoke r2.<android.app.AlertDialog$Builder: void <init>(android.content.Context)>(r0);
+
+        virtualinvoke r2.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setTitle(java.lang.CharSequence)>($r1);
+
+        virtualinvoke r2.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setIcon(int)>(2130837713);
+
+        virtualinvoke r2.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setMessage(java.lang.CharSequence)>("\ubcf8 \uc288\ud305\uc740 \ubaa8\ubc14\uc77c\uc5d0\uc11c\n\uc774\uc6a9\uc774 \ubd88\uac00\ud55c \uc288\ud305\uc785\ub2c8\ub2e4.\nPC\uc5d0\uc11c \uad6c\ub9e4\ud558\uc2e0 \ub4a4\n\uc774\uc6a9\ud574 \uc8fc\uc138\uc694.\n");
+
+        $r3 = new com.peercom.ishoottablet.FileListActivity$24;
+
+        specialinvoke $r3.<com.peercom.ishoottablet.FileListActivity$24: void <init>(com.peercom.ishoottablet.FileListActivity)>(r0);
+
+        virtualinvoke r2.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setPositiveButton(java.lang.CharSequence,android.content.DialogInterface$OnClickListener)>("\ud655\uc778", $r3);
+
+        virtualinvoke r2.<android.app.AlertDialog$Builder: android.app.AlertDialog show()>();
+
+        return;
+    }
+
+    public android.content.Intent getIntent()
+    {
+        android.content.Intent $r0;
+        com.peercom.ishoottablet.FileListActivity this;
+
+        this := @this: com.peercom.ishoottablet.FileListActivity;
+
+        $r0 = this.<com.peercom.ishoottablet.FileListActivity: android.content.Intent ipcIntent>;
+
+        return $r0;
+    }
+
+    public void setIntent(android.content.Intent)
+    {
+        android.content.Intent parameter0;
+        com.peercom.ishoottablet.FileListActivity this;
+
+        this := @this: com.peercom.ishoottablet.FileListActivity;
+
+        parameter0 := @parameter0: android.content.Intent;
+
+        this.<com.peercom.ishoottablet.FileListActivity: android.content.Intent ipcIntent> = parameter0;
+
+        return;
+    }
+
+    public void setResult(int, android.content.Intent)
+    {
+        int parameter0;
+        android.content.Intent parameter1;
+        com.peercom.ishoottablet.FileListActivity this;
+
+        this := @this: com.peercom.ishoottablet.FileListActivity;
+
+        parameter0 := @parameter0: int;
+
+        parameter1 := @parameter1: android.content.Intent;
+
+        this.<com.peercom.ishoottablet.FileListActivity: android.content.Intent ipcResultIntent> = parameter1;
+
+        return;
+    }
+}

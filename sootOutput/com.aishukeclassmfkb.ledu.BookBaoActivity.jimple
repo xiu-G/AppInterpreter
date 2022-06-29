@@ -1,0 +1,715 @@
+public class com.aishukeclassmfkb.ledu.BookBaoActivity extends com.aishukeclassmfkb.ledu.IndexGroupActivity
+{
+    public final int Const_BookBao_Buy;
+    public final int Const_BookBao_InitUI;
+    private android.os.Handler baoHandler;
+    private java.lang.Integer baoid;
+    private android.widget.ImageView baoimg;
+    private com.aishukeclassmfkb.entity.BookBaoInfo baoinfo;
+    private android.widget.TextView baointro;
+    private android.widget.ListView booklist;
+    private android.widget.Button buybao1;
+    private android.widget.Button buybao2;
+    private android.content.Context ctx;
+    private android.widget.TextView newprice;
+    private android.widget.TextView oldprice;
+    private android.app.ProgressDialog progressDialog;
+    private android.widget.ScrollView scroll;
+    private android.widget.TextView toptitle;
+    public android.content.Intent ipcIntent;
+    public android.content.Intent ipcResultIntent;
+
+    public void <init>()
+    {
+        com.aishukeclassmfkb.ledu.BookBaoActivity$1 $r2;
+        com.aishukeclassmfkb.ledu.BookBaoActivity r0;
+        java.lang.Integer $r1;
+
+        r0 := @this: com.aishukeclassmfkb.ledu.BookBaoActivity;
+
+        specialinvoke r0.<com.aishukeclassmfkb.ledu.IndexGroupActivity: void <init>()>();
+
+        r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: com.aishukeclassmfkb.entity.BookBaoInfo baoinfo> = null;
+
+        $r1 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(0);
+
+        r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: java.lang.Integer baoid> = $r1;
+
+        r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.app.ProgressDialog progressDialog> = null;
+
+        r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.widget.ScrollView scroll> = null;
+
+        r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: int Const_BookBao_Buy> = 100001;
+
+        r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: int Const_BookBao_InitUI> = 100002;
+
+        $r2 = new com.aishukeclassmfkb.ledu.BookBaoActivity$1;
+
+        specialinvoke $r2.<com.aishukeclassmfkb.ledu.BookBaoActivity$1: void <init>(com.aishukeclassmfkb.ledu.BookBaoActivity)>(r0);
+
+        r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.os.Handler baoHandler> = $r2;
+
+        return;
+    }
+
+    private void DoneUserBuyBao(com.aishukeclassmfkb.entity.BaoBuyInfo)
+    {
+        android.content.Context $r2;
+        android.content.Intent $r4;
+        java.lang.String $r3;
+        com.aishukeclassmfkb.entity.BaoBuyInfo $r1;
+        com.aishukeclassmfkb.ledu.BookBaoActivity r0;
+        android.app.Activity $r5;
+        boolean $z0;
+
+        r0 := @this: com.aishukeclassmfkb.ledu.BookBaoActivity;
+
+        $r1 := @parameter0: com.aishukeclassmfkb.entity.BaoBuyInfo;
+
+        if $r1 != null goto label1;
+
+        $r2 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.content.Context ctx>;
+
+        staticinvoke <com.aishukeclassmfkb.util.LeDuUtil: void ShowAST(android.content.Context,java.lang.String,java.lang.Class)>($r2, "\u4e66\u5305\u8d2d\u4e70\u5931\u8d25\uff0c\u8bf7\u7a0d\u540e\u518d\u8bd5", class "Lcom/aishukeclassmfkb/ledu/BookBaoActivity;");
+
+        return;
+
+     label1:
+        $r3 = virtualinvoke $r1.<com.aishukeclassmfkb.entity.BaoBuyInfo: java.lang.String getBaoBuyResult()>();
+
+        $z0 = virtualinvoke $r3.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("needmoney");
+
+        if $z0 == 0 goto label2;
+
+        $r2 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.content.Context ctx>;
+
+        <com.aishukeclassmfkb.ledu.LeduShareValue: android.content.Context userPayContext> = $r2;
+
+        $r4 = new android.content.Intent;
+
+        $r2 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.content.Context ctx>;
+
+        specialinvoke $r4.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>($r2, class "Lcom/aishukeclassmfkb/ledu/dialog/UserQuickPayDialogActivity;");
+
+        $r2 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.content.Context ctx>;
+
+        $r5 = (android.app.Activity) $r2;
+
+        virtualinvoke $r5.<android.app.Activity: void startActivityForResult(android.content.Intent,int)>($r4, 100003);
+
+        return;
+
+     label2:
+        $r2 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.content.Context ctx>;
+
+        $r3 = virtualinvoke $r1.<com.aishukeclassmfkb.entity.BaoBuyInfo: java.lang.String getBuyMessage()>();
+
+        staticinvoke <com.aishukeclassmfkb.util.LeDuUtil: void ShowAST(android.content.Context,java.lang.String,java.lang.Class)>($r2, $r3, class "Lcom/aishukeclassmfkb/ledu/BookBaoActivity;");
+
+        return;
+    }
+
+    private void InitData()
+    {
+        com.aishukeclassmfkb.netimg.NetworkState $r2;
+        android.content.Context $r3;
+        java.lang.Object[] $r6;
+        com.aishukeclassmfkb.ledu.BookBaoActivity$6 $r1;
+        android.app.ProgressDialog $r4;
+        com.aishukeclassmfkb.ledu.BookBaoActivity$7 $r5;
+        com.aishukeclassmfkb.ledu.BookBaoActivity r0;
+        boolean $z0;
+
+        r0 := @this: com.aishukeclassmfkb.ledu.BookBaoActivity;
+
+        $r2 = new com.aishukeclassmfkb.netimg.NetworkState;
+
+        specialinvoke $r2.<com.aishukeclassmfkb.netimg.NetworkState: void <init>()>();
+
+        $r3 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.content.Context ctx>;
+
+        $z0 = virtualinvoke $r2.<com.aishukeclassmfkb.netimg.NetworkState: boolean isNetworkAvailable(android.content.Context)>($r3);
+
+        if $z0 != 0 goto label1;
+
+        $r3 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.content.Context ctx>;
+
+        staticinvoke <com.aishukeclassmfkb.util.LeDuUtil: void ShowAST(android.content.Context,java.lang.String,java.lang.Class)>($r3, "\u7f51\u7edc\u8fde\u63a5\u5931\u8d25\uff0c\u65e0\u6cd5\u83b7\u53d6\u4e66\u5305\u4fe1\u606f\uff0c\u8bf7\u7a0d\u540e\u518d\u8bd5", class "Lcom/aishukeclassmfkb/ledu/BookBaoActivity;");
+
+        return;
+
+     label1:
+        $r3 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.content.Context ctx>;
+
+        $r1 = new com.aishukeclassmfkb.ledu.BookBaoActivity$6;
+
+        specialinvoke $r1.<com.aishukeclassmfkb.ledu.BookBaoActivity$6: void <init>(com.aishukeclassmfkb.ledu.BookBaoActivity)>(r0);
+
+        $r4 = staticinvoke <android.app.ProgressDialog: android.app.ProgressDialog show(android.content.Context,java.lang.CharSequence,java.lang.CharSequence,boolean,boolean,android.content.DialogInterface$OnCancelListener)>($r3, null, "\u6b63\u5728\u83b7\u53d6\u6570\u636e...", 1, 1, $r1);
+
+        r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.app.ProgressDialog progressDialog> = $r4;
+
+        $r5 = new com.aishukeclassmfkb.ledu.BookBaoActivity$7;
+
+        specialinvoke $r5.<com.aishukeclassmfkb.ledu.BookBaoActivity$7: void <init>(com.aishukeclassmfkb.ledu.BookBaoActivity)>(r0);
+
+        $r6 = newarray (java.lang.Object)[0];
+
+        virtualinvoke $r5.<com.aishukeclassmfkb.ledu.BookBaoActivity$7: android.os.AsyncTask execute(java.lang.Object[])>($r6);
+
+        return;
+    }
+
+    private void InitDataUI()
+    {
+        android.content.Context $r8;
+        android.text.Spanned $r4;
+        android.widget.ImageView $r9;
+        java.lang.Integer $r14, $r15, $r16;
+        com.aishukeclassmfkb.netimg.ImageLoaderBean $r7;
+        java.lang.String $r3;
+        com.aishukeclassmfkb.entity.BookBaoInfo $r1;
+        java.util.List $r11;
+        android.widget.TextView $r2;
+        android.widget.ScrollView $r13;
+        android.text.TextPaint $r6;
+        com.aishukeclassmfkb.adpter.BookInfoAdapter $r10;
+        java.lang.StringBuilder $r5;
+        android.widget.ListView $r12;
+        com.aishukeclassmfkb.ledu.BookBaoActivity r0;
+
+        r0 := @this: com.aishukeclassmfkb.ledu.BookBaoActivity;
+
+        $r1 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: com.aishukeclassmfkb.entity.BookBaoInfo baoinfo>;
+
+        if $r1 != null goto label1;
+
+        return;
+
+     label1:
+        $r2 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.widget.TextView toptitle>;
+
+        $r1 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: com.aishukeclassmfkb.entity.BookBaoInfo baoinfo>;
+
+        $r3 = virtualinvoke $r1.<com.aishukeclassmfkb.entity.BookBaoInfo: java.lang.String getBaoName()>();
+
+        virtualinvoke $r2.<android.widget.TextView: void setText(java.lang.CharSequence)>($r3);
+
+        $r2 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.widget.TextView baointro>;
+
+        $r1 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: com.aishukeclassmfkb.entity.BookBaoInfo baoinfo>;
+
+        $r3 = virtualinvoke $r1.<com.aishukeclassmfkb.entity.BookBaoInfo: java.lang.String getBaoIntro()>();
+
+        $r4 = staticinvoke <android.text.Html: android.text.Spanned fromHtml(java.lang.String)>($r3);
+
+        virtualinvoke $r2.<android.widget.TextView: void setText(java.lang.CharSequence)>($r4);
+
+        $r2 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.widget.TextView oldprice>;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\u539f\u4ef7\uff1a");
+
+        $r1 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: com.aishukeclassmfkb.entity.BookBaoInfo baoinfo>;
+
+        $r3 = virtualinvoke $r1.<com.aishukeclassmfkb.entity.BookBaoInfo: java.lang.String getOldPrice()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\u4e50\u8bfb\u5e01");
+
+        $r3 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r2.<android.widget.TextView: void setText(java.lang.CharSequence)>($r3);
+
+        $r2 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.widget.TextView oldprice>;
+
+        $r6 = virtualinvoke $r2.<android.widget.TextView: android.text.TextPaint getPaint()>();
+
+        virtualinvoke $r6.<android.text.TextPaint: void setFlags(int)>(16);
+
+        $r2 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.widget.TextView newprice>;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\u4e66\u5305\u4f18\u60e0\u4ef7\uff1a\u4ec5");
+
+        $r1 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: com.aishukeclassmfkb.entity.BookBaoInfo baoinfo>;
+
+        $r3 = virtualinvoke $r1.<com.aishukeclassmfkb.entity.BookBaoInfo: java.lang.String getNewPrice()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\u4e50\u8bfb\u5e01");
+
+        $r3 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r2.<android.widget.TextView: void setText(java.lang.CharSequence)>($r3);
+
+        $r7 = new com.aishukeclassmfkb.netimg.ImageLoaderBean;
+
+        $r8 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.content.Context ctx>;
+
+        specialinvoke $r7.<com.aishukeclassmfkb.netimg.ImageLoaderBean: void <init>(android.content.Context,boolean)>($r8, 1);
+
+        $r1 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: com.aishukeclassmfkb.entity.BookBaoInfo baoinfo>;
+
+        $r3 = virtualinvoke $r1.<com.aishukeclassmfkb.entity.BookBaoInfo: java.lang.String getBaoImg()>();
+
+        $r9 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.widget.ImageView baoimg>;
+
+        virtualinvoke $r7.<com.aishukeclassmfkb.netimg.ImageLoaderBean: void DisplayImage(java.lang.String,android.widget.ImageView,java.lang.String)>($r3, $r9, "");
+
+        $r10 = new com.aishukeclassmfkb.adpter.BookInfoAdapter;
+
+        $r8 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.content.Context ctx>;
+
+        $r1 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: com.aishukeclassmfkb.entity.BookBaoInfo baoinfo>;
+
+        $r11 = virtualinvoke $r1.<com.aishukeclassmfkb.entity.BookBaoInfo: java.util.List getBookList()>();
+
+        specialinvoke $r10.<com.aishukeclassmfkb.adpter.BookInfoAdapter: void <init>(android.content.Context,java.util.List,android.os.Handler)>($r8, $r11, null);
+
+        $r12 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.widget.ListView booklist>;
+
+        virtualinvoke $r12.<android.widget.ListView: void setAdapter(android.widget.ListAdapter)>($r10);
+
+        $r13 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.widget.ScrollView scroll>;
+
+        virtualinvoke $r13.<android.widget.ScrollView: void smoothScrollTo(int,int)>(0, 0);
+
+        $r8 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.content.Context ctx>;
+
+        $r12 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.widget.ListView booklist>;
+
+        $r14 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(127);
+
+        $r15 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(0);
+
+        $r16 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(0);
+
+        staticinvoke <com.aishukeclassmfkb.util.LeDuUtil: void setListViewHeightBasedOnChildren(android.content.Context,android.widget.ListView,java.lang.Integer,java.lang.Integer,java.lang.Integer)>($r8, $r12, $r14, $r15, $r16);
+
+        return;
+    }
+
+    private void InitListener()
+    {
+        com.aishukeclassmfkb.ledu.BookBaoActivity$5 $r3;
+        com.aishukeclassmfkb.ledu.BookBaoActivity$4 $r2;
+        android.widget.Button $r1;
+        com.aishukeclassmfkb.ledu.BookBaoActivity r0;
+
+        r0 := @this: com.aishukeclassmfkb.ledu.BookBaoActivity;
+
+        $r1 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.widget.Button buybao1>;
+
+        $r2 = new com.aishukeclassmfkb.ledu.BookBaoActivity$4;
+
+        specialinvoke $r2.<com.aishukeclassmfkb.ledu.BookBaoActivity$4: void <init>(com.aishukeclassmfkb.ledu.BookBaoActivity)>(r0);
+
+        virtualinvoke $r1.<android.widget.Button: void setOnClickListener(android.view.View$OnClickListener)>($r2);
+
+        $r1 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.widget.Button buybao2>;
+
+        $r3 = new com.aishukeclassmfkb.ledu.BookBaoActivity$5;
+
+        specialinvoke $r3.<com.aishukeclassmfkb.ledu.BookBaoActivity$5: void <init>(com.aishukeclassmfkb.ledu.BookBaoActivity)>(r0);
+
+        virtualinvoke $r1.<android.widget.Button: void setOnClickListener(android.view.View$OnClickListener)>($r3);
+
+        return;
+    }
+
+    private void InitUI()
+    {
+        android.widget.TextView $r2;
+        android.widget.ScrollView $r6;
+        android.widget.ImageView $r3;
+        android.view.View $r1;
+        android.widget.Button $r4;
+        android.widget.ListView $r5;
+        com.aishukeclassmfkb.ledu.BookBaoActivity r0;
+
+        r0 := @this: com.aishukeclassmfkb.ledu.BookBaoActivity;
+
+        $r1 = virtualinvoke r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.view.View findViewById(int)>(2131361798);
+
+        $r2 = (android.widget.TextView) $r1;
+
+        r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.widget.TextView toptitle> = $r2;
+
+        $r1 = virtualinvoke r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.view.View findViewById(int)>(2131361804);
+
+        $r2 = (android.widget.TextView) $r1;
+
+        r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.widget.TextView baointro> = $r2;
+
+        $r1 = virtualinvoke r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.view.View findViewById(int)>(2131361805);
+
+        $r2 = (android.widget.TextView) $r1;
+
+        r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.widget.TextView oldprice> = $r2;
+
+        $r1 = virtualinvoke r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.view.View findViewById(int)>(2131361806);
+
+        $r2 = (android.widget.TextView) $r1;
+
+        r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.widget.TextView newprice> = $r2;
+
+        $r1 = virtualinvoke r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.view.View findViewById(int)>(2131361803);
+
+        $r3 = (android.widget.ImageView) $r1;
+
+        r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.widget.ImageView baoimg> = $r3;
+
+        $r1 = virtualinvoke r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.view.View findViewById(int)>(2131361807);
+
+        $r4 = (android.widget.Button) $r1;
+
+        r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.widget.Button buybao1> = $r4;
+
+        $r1 = virtualinvoke r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.view.View findViewById(int)>(2131361809);
+
+        $r4 = (android.widget.Button) $r1;
+
+        r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.widget.Button buybao2> = $r4;
+
+        $r1 = virtualinvoke r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.view.View findViewById(int)>(2131361808);
+
+        $r5 = (android.widget.ListView) $r1;
+
+        r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.widget.ListView booklist> = $r5;
+
+        $r1 = virtualinvoke r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.view.View findViewById(int)>(2131361799);
+
+        $r6 = (android.widget.ScrollView) $r1;
+
+        r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.widget.ScrollView scroll> = $r6;
+
+        return;
+    }
+
+    private void OnUserBuyBao()
+    {
+        com.aishukeclassmfkb.ledu.BookBaoActivity$2 $r1;
+        com.aishukeclassmfkb.netimg.NetworkState $r2;
+        android.content.Context $r3;
+        java.lang.Object[] $r10;
+        com.aishukeclassmfkb.db.LeDuSharepreference $r5;
+        com.aishukeclassmfkb.ledu.BookBaoActivity$3 $r9;
+        com.aishukeclassmfkb.entity.UserLogin $r6;
+        android.app.ProgressDialog $r8;
+        android.content.Intent $r7;
+        com.aishukeclassmfkb.entity.BookBaoInfo $r4;
+        int $i0;
+        com.aishukeclassmfkb.ledu.BookBaoActivity r0;
+        boolean $z0;
+
+        r0 := @this: com.aishukeclassmfkb.ledu.BookBaoActivity;
+
+        $r2 = new com.aishukeclassmfkb.netimg.NetworkState;
+
+        specialinvoke $r2.<com.aishukeclassmfkb.netimg.NetworkState: void <init>()>();
+
+        $r3 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.content.Context ctx>;
+
+        $z0 = virtualinvoke $r2.<com.aishukeclassmfkb.netimg.NetworkState: boolean isNetworkAvailable(android.content.Context)>($r3);
+
+        if $z0 != 0 goto label1;
+
+        $r3 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.content.Context ctx>;
+
+        staticinvoke <com.aishukeclassmfkb.util.LeDuUtil: void ShowAST(android.content.Context,java.lang.String,java.lang.Class)>($r3, "\u7f51\u7edc\u8fde\u63a5\u5931\u8d25\uff0c\u65e0\u6cd5\u63d0\u4ea4\u8ba2\u9605\u4e66\u5305\u4fe1\u606f\uff0c\u8bf7\u7a0d\u540e\u518d\u8bd5", class "Lcom/aishukeclassmfkb/ledu/BookBaoActivity;");
+
+        return;
+
+     label1:
+        $r4 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: com.aishukeclassmfkb.entity.BookBaoInfo baoinfo>;
+
+        if $r4 != null goto label2;
+
+        $r3 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.content.Context ctx>;
+
+        staticinvoke <com.aishukeclassmfkb.util.LeDuUtil: void ShowAST(android.content.Context,java.lang.String,java.lang.Class)>($r3, "\u4e66\u5305\u4fe1\u606f\u9519\u8bef\uff0c\u65e0\u6cd5\u63d0\u4ea4\u8ba2\u9605\u4e66\u5305\u4fe1\u606f\uff0c\u8bf7\u7a0d\u540e\u518d\u8bd5", class "Lcom/aishukeclassmfkb/ledu/BookBaoActivity;");
+
+        return;
+
+     label2:
+        $r3 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.content.Context ctx>;
+
+        $r5 = staticinvoke <com.aishukeclassmfkb.db.LeDuSharepreference: com.aishukeclassmfkb.db.LeDuSharepreference getInstance(android.content.Context)>($r3);
+
+        $r6 = virtualinvoke $r5.<com.aishukeclassmfkb.db.LeDuSharepreference: com.aishukeclassmfkb.entity.UserLogin getUser()>();
+
+        if $r6 == null goto label3;
+
+        $r3 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.content.Context ctx>;
+
+        $r5 = staticinvoke <com.aishukeclassmfkb.db.LeDuSharepreference: com.aishukeclassmfkb.db.LeDuSharepreference getInstance(android.content.Context)>($r3);
+
+        $i0 = virtualinvoke $r5.<com.aishukeclassmfkb.db.LeDuSharepreference: int GetUserID()>();
+
+        if $i0 > 0 goto label4;
+
+     label3:
+        $r7 = new android.content.Intent;
+
+        $r3 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.content.Context ctx>;
+
+        specialinvoke $r7.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>($r3, class "Lcom/aishukeclassmfkb/ledu/UserLoginAcitivty;");
+
+        virtualinvoke $r7.<android.content.Intent: android.content.Intent putExtra(java.lang.String,boolean)>("UserLoginAciton", 1);
+
+        virtualinvoke r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: void startActivity(android.content.Intent)>($r7);
+
+        return;
+
+     label4:
+        $r3 = r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.content.Context ctx>;
+
+        $r1 = new com.aishukeclassmfkb.ledu.BookBaoActivity$2;
+
+        specialinvoke $r1.<com.aishukeclassmfkb.ledu.BookBaoActivity$2: void <init>(com.aishukeclassmfkb.ledu.BookBaoActivity)>(r0);
+
+        $r8 = staticinvoke <android.app.ProgressDialog: android.app.ProgressDialog show(android.content.Context,java.lang.CharSequence,java.lang.CharSequence,boolean,boolean,android.content.DialogInterface$OnCancelListener)>($r3, null, "\u6b63\u5728\u83b7\u53d6\u6570\u636e...", 1, 1, $r1);
+
+        r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.app.ProgressDialog progressDialog> = $r8;
+
+        $r9 = new com.aishukeclassmfkb.ledu.BookBaoActivity$3;
+
+        specialinvoke $r9.<com.aishukeclassmfkb.ledu.BookBaoActivity$3: void <init>(com.aishukeclassmfkb.ledu.BookBaoActivity)>(r0);
+
+        $r10 = newarray (java.lang.Object)[0];
+
+        virtualinvoke $r9.<com.aishukeclassmfkb.ledu.BookBaoActivity$3: android.os.AsyncTask execute(java.lang.Object[])>($r10);
+
+        return;
+    }
+
+    static void access$000(com.aishukeclassmfkb.ledu.BookBaoActivity, com.aishukeclassmfkb.entity.BaoBuyInfo)
+    {
+        com.aishukeclassmfkb.entity.BaoBuyInfo $r1;
+        com.aishukeclassmfkb.ledu.BookBaoActivity $r0;
+
+        $r0 := @parameter0: com.aishukeclassmfkb.ledu.BookBaoActivity;
+
+        $r1 := @parameter1: com.aishukeclassmfkb.entity.BaoBuyInfo;
+
+        specialinvoke $r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: void DoneUserBuyBao(com.aishukeclassmfkb.entity.BaoBuyInfo)>($r1);
+
+        return;
+    }
+
+    static void access$100(com.aishukeclassmfkb.ledu.BookBaoActivity)
+    {
+        com.aishukeclassmfkb.ledu.BookBaoActivity $r0;
+
+        $r0 := @parameter0: com.aishukeclassmfkb.ledu.BookBaoActivity;
+
+        specialinvoke $r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: void InitDataUI()>();
+
+        return;
+    }
+
+    static android.app.ProgressDialog access$200(com.aishukeclassmfkb.ledu.BookBaoActivity)
+    {
+        android.app.ProgressDialog r1;
+        com.aishukeclassmfkb.ledu.BookBaoActivity $r0;
+
+        $r0 := @parameter0: com.aishukeclassmfkb.ledu.BookBaoActivity;
+
+        r1 = $r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.app.ProgressDialog progressDialog>;
+
+        return r1;
+    }
+
+    static android.os.Handler access$300(com.aishukeclassmfkb.ledu.BookBaoActivity)
+    {
+        com.aishukeclassmfkb.ledu.BookBaoActivity $r0;
+        android.os.Handler r1;
+
+        $r0 := @parameter0: com.aishukeclassmfkb.ledu.BookBaoActivity;
+
+        r1 = $r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.os.Handler baoHandler>;
+
+        return r1;
+    }
+
+    static android.content.Context access$400(com.aishukeclassmfkb.ledu.BookBaoActivity)
+    {
+        android.content.Context r1;
+        com.aishukeclassmfkb.ledu.BookBaoActivity $r0;
+
+        $r0 := @parameter0: com.aishukeclassmfkb.ledu.BookBaoActivity;
+
+        r1 = $r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.content.Context ctx>;
+
+        return r1;
+    }
+
+    static java.lang.Integer access$500(com.aishukeclassmfkb.ledu.BookBaoActivity)
+    {
+        com.aishukeclassmfkb.ledu.BookBaoActivity $r0;
+        java.lang.Integer r1;
+
+        $r0 := @parameter0: com.aishukeclassmfkb.ledu.BookBaoActivity;
+
+        r1 = $r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: java.lang.Integer baoid>;
+
+        return r1;
+    }
+
+    static void access$600(com.aishukeclassmfkb.ledu.BookBaoActivity)
+    {
+        com.aishukeclassmfkb.ledu.BookBaoActivity $r0;
+
+        $r0 := @parameter0: com.aishukeclassmfkb.ledu.BookBaoActivity;
+
+        specialinvoke $r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: void OnUserBuyBao()>();
+
+        return;
+    }
+
+    static com.aishukeclassmfkb.entity.BookBaoInfo access$702(com.aishukeclassmfkb.ledu.BookBaoActivity, com.aishukeclassmfkb.entity.BookBaoInfo)
+    {
+        com.aishukeclassmfkb.entity.BookBaoInfo $r1;
+        com.aishukeclassmfkb.ledu.BookBaoActivity $r0;
+
+        $r0 := @parameter0: com.aishukeclassmfkb.ledu.BookBaoActivity;
+
+        $r1 := @parameter1: com.aishukeclassmfkb.entity.BookBaoInfo;
+
+        $r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: com.aishukeclassmfkb.entity.BookBaoInfo baoinfo> = $r1;
+
+        return $r1;
+    }
+
+    public void backAction(android.view.View)
+    {
+        android.view.View $r1;
+        com.aishukeclassmfkb.ledu.BookBaoActivity r0;
+
+        r0 := @this: com.aishukeclassmfkb.ledu.BookBaoActivity;
+
+        $r1 := @parameter0: android.view.View;
+
+        virtualinvoke r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: void finish()>();
+
+        return;
+    }
+
+    public void onCreate(android.os.Bundle)
+    {
+        android.os.Bundle $r1;
+        android.content.Intent $r4;
+        java.lang.Integer $r6;
+        java.util.List $r2;
+        int $i0;
+        java.lang.String $r5;
+        com.aishukeclassmfkb.ledu.BookBaoActivity r0;
+        android.app.Activity $r3;
+        boolean $z0;
+
+        r0 := @this: com.aishukeclassmfkb.ledu.BookBaoActivity;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke r0.<com.aishukeclassmfkb.ledu.IndexGroupActivity: void onCreate(android.os.Bundle)>($r1);
+
+        virtualinvoke r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: void setContentView(int)>(2130903044);
+
+        $r2 = <com.aishukeclassmfkb.util.Constant: java.util.List activitys>;
+
+        interfaceinvoke $r2.<java.util.List: boolean add(java.lang.Object)>(r0);
+
+        staticinvoke <com.umeng.analytics.MobclickAgent: void onError(android.content.Context)>(r0);
+
+        $r3 = virtualinvoke r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.app.Activity getParent()>();
+
+        if $r3 == null goto label3;
+
+        $r3 = virtualinvoke r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.app.Activity getParent()>();
+
+        r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.content.Context ctx> = $r3;
+
+     label1:
+        $r4 = virtualinvoke r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.content.Intent getIntent()>();
+
+        $z0 = virtualinvoke $r4.<android.content.Intent: boolean hasExtra(java.lang.String)>("baoid");
+
+        if $z0 == 0 goto label2;
+
+        $r4 = virtualinvoke r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.content.Intent getIntent()>();
+
+        $r5 = virtualinvoke $r4.<android.content.Intent: java.lang.String getStringExtra(java.lang.String)>("baoid");
+
+        $i0 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String)>($r5);
+
+        $r6 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: java.lang.Integer baoid> = $r6;
+
+     label2:
+        specialinvoke r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: void InitUI()>();
+
+        specialinvoke r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: void InitData()>();
+
+        specialinvoke r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: void InitListener()>();
+
+        return;
+
+     label3:
+        r0.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.content.Context ctx> = r0;
+
+        goto label1;
+    }
+
+    public android.content.Intent getIntent()
+    {
+        android.content.Intent $r0;
+        com.aishukeclassmfkb.ledu.BookBaoActivity this;
+
+        this := @this: com.aishukeclassmfkb.ledu.BookBaoActivity;
+
+        $r0 = this.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.content.Intent ipcIntent>;
+
+        return $r0;
+    }
+
+    public void setIntent(android.content.Intent)
+    {
+        android.content.Intent parameter0;
+        com.aishukeclassmfkb.ledu.BookBaoActivity this;
+
+        this := @this: com.aishukeclassmfkb.ledu.BookBaoActivity;
+
+        parameter0 := @parameter0: android.content.Intent;
+
+        this.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.content.Intent ipcIntent> = parameter0;
+
+        return;
+    }
+
+    public void setResult(int, android.content.Intent)
+    {
+        int parameter0;
+        android.content.Intent parameter1;
+        com.aishukeclassmfkb.ledu.BookBaoActivity this;
+
+        this := @this: com.aishukeclassmfkb.ledu.BookBaoActivity;
+
+        parameter0 := @parameter0: int;
+
+        parameter1 := @parameter1: android.content.Intent;
+
+        this.<com.aishukeclassmfkb.ledu.BookBaoActivity: android.content.Intent ipcResultIntent> = parameter1;
+
+        return;
+    }
+}

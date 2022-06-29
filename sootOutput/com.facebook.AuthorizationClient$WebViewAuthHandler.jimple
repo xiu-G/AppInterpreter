@@ -1,0 +1,357 @@
+class com.facebook.AuthorizationClient$WebViewAuthHandler extends com.facebook.AuthorizationClient$AuthHandler
+{
+    private static final long serialVersionUID;
+    private java.lang.String applicationId;
+    private java.lang.String e2e;
+    private transient com.facebook.widget.WebDialog loginDialog;
+    final com.facebook.AuthorizationClient this$0;
+
+    void <init>(com.facebook.AuthorizationClient)
+    {
+        com.facebook.AuthorizationClient $r1;
+        com.facebook.AuthorizationClient$WebViewAuthHandler r0;
+
+        r0 := @this: com.facebook.AuthorizationClient$WebViewAuthHandler;
+
+        $r1 := @parameter0: com.facebook.AuthorizationClient;
+
+        r0.<com.facebook.AuthorizationClient$WebViewAuthHandler: com.facebook.AuthorizationClient this$0> = $r1;
+
+        specialinvoke r0.<com.facebook.AuthorizationClient$AuthHandler: void <init>(com.facebook.AuthorizationClient)>($r1);
+
+        return;
+    }
+
+    private java.lang.String loadCookieToken()
+    {
+        com.facebook.AuthorizationClient$StartActivityDelegate $r2;
+        com.facebook.AuthorizationClient $r1;
+        android.content.SharedPreferences $r4;
+        java.lang.String $r5;
+        android.app.Activity $r3;
+        com.facebook.AuthorizationClient$WebViewAuthHandler r0;
+
+        r0 := @this: com.facebook.AuthorizationClient$WebViewAuthHandler;
+
+        $r1 = r0.<com.facebook.AuthorizationClient$WebViewAuthHandler: com.facebook.AuthorizationClient this$0>;
+
+        $r2 = virtualinvoke $r1.<com.facebook.AuthorizationClient: com.facebook.AuthorizationClient$StartActivityDelegate getStartActivityDelegate()>();
+
+        $r3 = interfaceinvoke $r2.<com.facebook.AuthorizationClient$StartActivityDelegate: android.app.Activity getActivityContext()>();
+
+        $r4 = virtualinvoke $r3.<android.content.Context: android.content.SharedPreferences getSharedPreferences(java.lang.String,int)>("com.facebook.AuthorizationClient.WebViewAuthHandler.TOKEN_STORE_KEY", 0);
+
+        $r5 = interfaceinvoke $r4.<android.content.SharedPreferences: java.lang.String getString(java.lang.String,java.lang.String)>("TOKEN", "");
+
+        return $r5;
+    }
+
+    private void saveCookieToken(java.lang.String)
+    {
+        android.content.SharedPreferences$Editor $r6;
+        com.facebook.AuthorizationClient $r2;
+        com.facebook.AuthorizationClient$StartActivityDelegate $r3;
+        android.content.SharedPreferences $r5;
+        java.lang.String $r1;
+        android.app.Activity $r4;
+        com.facebook.AuthorizationClient$WebViewAuthHandler r0;
+        boolean $z0;
+
+        r0 := @this: com.facebook.AuthorizationClient$WebViewAuthHandler;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = r0.<com.facebook.AuthorizationClient$WebViewAuthHandler: com.facebook.AuthorizationClient this$0>;
+
+        $r3 = virtualinvoke $r2.<com.facebook.AuthorizationClient: com.facebook.AuthorizationClient$StartActivityDelegate getStartActivityDelegate()>();
+
+        $r4 = interfaceinvoke $r3.<com.facebook.AuthorizationClient$StartActivityDelegate: android.app.Activity getActivityContext()>();
+
+        $r5 = virtualinvoke $r4.<android.content.Context: android.content.SharedPreferences getSharedPreferences(java.lang.String,int)>("com.facebook.AuthorizationClient.WebViewAuthHandler.TOKEN_STORE_KEY", 0);
+
+        $r6 = interfaceinvoke $r5.<android.content.SharedPreferences: android.content.SharedPreferences$Editor edit()>();
+
+        interfaceinvoke $r6.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putString(java.lang.String,java.lang.String)>("TOKEN", $r1);
+
+        $z0 = interfaceinvoke $r6.<android.content.SharedPreferences$Editor: boolean commit()>();
+
+        if $z0 != 0 goto label1;
+
+        staticinvoke <com.facebook.internal.Utility: void logd(java.lang.String,java.lang.String)>("Facebook-AuthorizationClient", "Could not update saved web view auth handler token.");
+
+     label1:
+        return;
+    }
+
+    void cancel()
+    {
+        com.facebook.widget.WebDialog $r1;
+        com.facebook.AuthorizationClient$WebViewAuthHandler r0;
+
+        r0 := @this: com.facebook.AuthorizationClient$WebViewAuthHandler;
+
+        $r1 = r0.<com.facebook.AuthorizationClient$WebViewAuthHandler: com.facebook.widget.WebDialog loginDialog>;
+
+        if $r1 == null goto label1;
+
+        $r1 = r0.<com.facebook.AuthorizationClient$WebViewAuthHandler: com.facebook.widget.WebDialog loginDialog>;
+
+        virtualinvoke $r1.<com.facebook.widget.WebDialog: void dismiss()>();
+
+        r0.<com.facebook.AuthorizationClient$WebViewAuthHandler: com.facebook.widget.WebDialog loginDialog> = null;
+
+     label1:
+        return;
+    }
+
+    java.lang.String getNameForLogging()
+    {
+        com.facebook.AuthorizationClient$WebViewAuthHandler r0;
+
+        r0 := @this: com.facebook.AuthorizationClient$WebViewAuthHandler;
+
+        return "web_view";
+    }
+
+    boolean needsInternetPermission()
+    {
+        com.facebook.AuthorizationClient$WebViewAuthHandler r0;
+
+        r0 := @this: com.facebook.AuthorizationClient$WebViewAuthHandler;
+
+        return 1;
+    }
+
+    boolean needsRestart()
+    {
+        com.facebook.AuthorizationClient$WebViewAuthHandler r0;
+
+        r0 := @this: com.facebook.AuthorizationClient$WebViewAuthHandler;
+
+        return 1;
+    }
+
+    void onWebDialogComplete(com.facebook.AuthorizationClient$AuthorizationRequest, android.os.Bundle, com.facebook.FacebookException)
+    {
+        com.facebook.FacebookRequestError $r14;
+        android.os.Bundle $r2;
+        com.facebook.AuthorizationClient $r8;
+        java.lang.Object[] $r15;
+        com.facebook.FacebookServiceException $r13;
+        com.facebook.FacebookException $r3;
+        java.lang.Integer $r16;
+        com.facebook.AuthorizationClient$AuthorizationRequest $r1;
+        com.facebook.AuthorizationClient$Result $r9;
+        int $i0;
+        java.lang.String $r4, $r12;
+        com.facebook.AuthorizationClient$WebViewAuthHandler r0;
+        boolean $z0;
+
+        r0 := @this: com.facebook.AuthorizationClient$WebViewAuthHandler;
+
+        $r1 := @parameter0: com.facebook.AuthorizationClient$AuthorizationRequest;
+
+        $r2 := @parameter1: android.os.Bundle;
+
+        $r3 := @parameter2: com.facebook.FacebookException;
+
+        goto label3;
+
+     label1:
+        $r4 = r0.<com.facebook.AuthorizationClient$WebViewAuthHandler: java.lang.String e2e>;
+
+        $z0 = staticinvoke <com.facebook.internal.Utility: boolean isNullOrEmpty(java.lang.String)>($r4);
+
+        if $z0 != 0 goto label2;
+
+        $r8 = r0.<com.facebook.AuthorizationClient$WebViewAuthHandler: com.facebook.AuthorizationClient this$0>;
+
+        $r4 = r0.<com.facebook.AuthorizationClient$WebViewAuthHandler: java.lang.String applicationId>;
+
+        $r12 = r0.<com.facebook.AuthorizationClient$WebViewAuthHandler: java.lang.String e2e>;
+
+        staticinvoke <com.facebook.AuthorizationClient: void access$1(com.facebook.AuthorizationClient,java.lang.String,java.lang.String)>($r8, $r4, $r12);
+
+     label2:
+        $r8 = r0.<com.facebook.AuthorizationClient$WebViewAuthHandler: com.facebook.AuthorizationClient this$0>;
+
+        virtualinvoke $r8.<com.facebook.AuthorizationClient: void completeAndValidate(com.facebook.AuthorizationClient$Result)>($r9);
+
+        return;
+
+     label3:
+        $z0 = $r3 instanceof com.facebook.FacebookOperationCanceledException;
+
+        if $z0 == 0 goto label4;
+
+        $r8 = r0.<com.facebook.AuthorizationClient$WebViewAuthHandler: com.facebook.AuthorizationClient this$0>;
+
+        $r1 = $r8.<com.facebook.AuthorizationClient: com.facebook.AuthorizationClient$AuthorizationRequest pendingRequest>;
+
+        $r9 = staticinvoke <com.facebook.AuthorizationClient$Result: com.facebook.AuthorizationClient$Result createCancelResult(com.facebook.AuthorizationClient$AuthorizationRequest,java.lang.String)>($r1, "User canceled log in.");
+
+        goto label1;
+
+     label4:
+        r0.<com.facebook.AuthorizationClient$WebViewAuthHandler: java.lang.String e2e> = null;
+
+        $z0 = $r3 instanceof com.facebook.FacebookServiceException;
+
+        if $z0 == 0 goto label6;
+
+        $r13 = (com.facebook.FacebookServiceException) $r3;
+
+        $r14 = virtualinvoke $r13.<com.facebook.FacebookServiceException: com.facebook.FacebookRequestError getRequestError()>();
+
+        $r15 = newarray (java.lang.Object)[1];
+
+        $i0 = virtualinvoke $r14.<com.facebook.FacebookRequestError: int getErrorCode()>();
+
+        $r16 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        $r15[0] = $r16;
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("%d", $r15);
+
+        $r12 = virtualinvoke $r14.<com.facebook.FacebookRequestError: java.lang.String toString()>();
+
+     label5:
+        $r8 = r0.<com.facebook.AuthorizationClient$WebViewAuthHandler: com.facebook.AuthorizationClient this$0>;
+
+        $r1 = $r8.<com.facebook.AuthorizationClient: com.facebook.AuthorizationClient$AuthorizationRequest pendingRequest>;
+
+        $r9 = staticinvoke <com.facebook.AuthorizationClient$Result: com.facebook.AuthorizationClient$Result createErrorResult(com.facebook.AuthorizationClient$AuthorizationRequest,java.lang.String,java.lang.String,java.lang.String)>($r1, null, $r12, $r4);
+
+        goto label1;
+
+     label6:
+        $r12 = virtualinvoke $r3.<com.facebook.FacebookException: java.lang.String getMessage()>();
+
+        $r4 = null;
+
+        goto label5;
+    }
+
+    boolean tryAuthorize(com.facebook.AuthorizationClient$AuthorizationRequest)
+    {
+        android.content.Context $r14;
+        android.os.Bundle $r3;
+        com.facebook.AuthorizationClient $r8;
+        com.facebook.AuthorizationClient$AuthorizationRequest $r1;
+        com.facebook.AuthorizationClient$StartActivityDelegate $r9;
+        com.facebook.AuthorizationClient$AuthDialogBuilder $r7;
+        com.facebook.widget.WebDialog$BuilderBase $r11;
+        java.lang.String $r2, $r5;
+        boolean $z0;
+        com.facebook.widget.WebDialog$Builder $r12;
+        com.facebook.widget.WebDialog $r13;
+        com.facebook.AuthorizationClient$WebViewAuthHandler$1 $r6;
+        java.util.List $r4;
+        android.app.Activity $r10;
+        com.facebook.AuthorizationClient$WebViewAuthHandler r0;
+
+        r0 := @this: com.facebook.AuthorizationClient$WebViewAuthHandler;
+
+        $r1 := @parameter0: com.facebook.AuthorizationClient$AuthorizationRequest;
+
+        $r2 = virtualinvoke $r1.<com.facebook.AuthorizationClient$AuthorizationRequest: java.lang.String getApplicationId()>();
+
+        r0.<com.facebook.AuthorizationClient$WebViewAuthHandler: java.lang.String applicationId> = $r2;
+
+        $r3 = new android.os.Bundle;
+
+        specialinvoke $r3.<android.os.Bundle: void <init>()>();
+
+        $r4 = virtualinvoke $r1.<com.facebook.AuthorizationClient$AuthorizationRequest: java.util.List getPermissions()>();
+
+        $z0 = staticinvoke <com.facebook.internal.Utility: boolean isNullOrEmpty(java.util.Collection)>($r4);
+
+        if $z0 != 0 goto label1;
+
+        $r4 = virtualinvoke $r1.<com.facebook.AuthorizationClient$AuthorizationRequest: java.util.List getPermissions()>();
+
+        $r2 = staticinvoke <android.text.TextUtils: java.lang.String join(java.lang.CharSequence,java.lang.Iterable)>(",", $r4);
+
+        virtualinvoke $r3.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("scope", $r2);
+
+        virtualinvoke r0.<com.facebook.AuthorizationClient$WebViewAuthHandler: void addLoggingExtra(java.lang.String,java.lang.String)>("scope", $r2);
+
+     label1:
+        $r2 = virtualinvoke $r1.<com.facebook.AuthorizationClient$AuthorizationRequest: java.lang.String getPreviousAccessToken()>();
+
+        $z0 = staticinvoke <com.facebook.internal.Utility: boolean isNullOrEmpty(java.lang.String)>($r2);
+
+        if $z0 != 0 goto label3;
+
+        $r5 = specialinvoke r0.<com.facebook.AuthorizationClient$WebViewAuthHandler: java.lang.String loadCookieToken()>();
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>($r5);
+
+        if $z0 == 0 goto label3;
+
+        virtualinvoke $r3.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("access_token", $r2);
+
+        virtualinvoke r0.<com.facebook.AuthorizationClient$WebViewAuthHandler: void addLoggingExtra(java.lang.String,java.lang.String)>("access_token", "1");
+
+     label2:
+        $r6 = new com.facebook.AuthorizationClient$WebViewAuthHandler$1;
+
+        specialinvoke $r6.<com.facebook.AuthorizationClient$WebViewAuthHandler$1: void <init>(com.facebook.AuthorizationClient$WebViewAuthHandler,com.facebook.AuthorizationClient$AuthorizationRequest)>(r0, $r1);
+
+        $r2 = staticinvoke <com.facebook.AuthorizationClient: java.lang.String access$0()>();
+
+        r0.<com.facebook.AuthorizationClient$WebViewAuthHandler: java.lang.String e2e> = $r2;
+
+        $r2 = r0.<com.facebook.AuthorizationClient$WebViewAuthHandler: java.lang.String e2e>;
+
+        virtualinvoke r0.<com.facebook.AuthorizationClient$WebViewAuthHandler: void addLoggingExtra(java.lang.String,java.lang.String)>("e2e", $r2);
+
+        $r7 = new com.facebook.AuthorizationClient$AuthDialogBuilder;
+
+        $r8 = r0.<com.facebook.AuthorizationClient$WebViewAuthHandler: com.facebook.AuthorizationClient this$0>;
+
+        $r9 = virtualinvoke $r8.<com.facebook.AuthorizationClient: com.facebook.AuthorizationClient$StartActivityDelegate getStartActivityDelegate()>();
+
+        $r10 = interfaceinvoke $r9.<com.facebook.AuthorizationClient$StartActivityDelegate: android.app.Activity getActivityContext()>();
+
+        $r2 = r0.<com.facebook.AuthorizationClient$WebViewAuthHandler: java.lang.String applicationId>;
+
+        specialinvoke $r7.<com.facebook.AuthorizationClient$AuthDialogBuilder: void <init>(android.content.Context,java.lang.String,android.os.Bundle)>($r10, $r2, $r3);
+
+        $r2 = r0.<com.facebook.AuthorizationClient$WebViewAuthHandler: java.lang.String e2e>;
+
+        $r7 = virtualinvoke $r7.<com.facebook.AuthorizationClient$AuthDialogBuilder: com.facebook.AuthorizationClient$AuthDialogBuilder setE2E(java.lang.String)>($r2);
+
+        $r11 = virtualinvoke $r7.<com.facebook.AuthorizationClient$AuthDialogBuilder: com.facebook.widget.WebDialog$BuilderBase setOnCompleteListener(com.facebook.widget.WebDialog$OnCompleteListener)>($r6);
+
+        $r12 = (com.facebook.widget.WebDialog$Builder) $r11;
+
+        $r13 = virtualinvoke $r12.<com.facebook.widget.WebDialog$Builder: com.facebook.widget.WebDialog build()>();
+
+        r0.<com.facebook.AuthorizationClient$WebViewAuthHandler: com.facebook.widget.WebDialog loginDialog> = $r13;
+
+        $r13 = r0.<com.facebook.AuthorizationClient$WebViewAuthHandler: com.facebook.widget.WebDialog loginDialog>;
+
+        virtualinvoke $r13.<com.facebook.widget.WebDialog: void show()>();
+
+        return 1;
+
+     label3:
+        $r8 = r0.<com.facebook.AuthorizationClient$WebViewAuthHandler: com.facebook.AuthorizationClient this$0>;
+
+        $r14 = $r8.<com.facebook.AuthorizationClient: android.content.Context context>;
+
+        staticinvoke <com.facebook.internal.Utility: void clearFacebookCookies(android.content.Context)>($r14);
+
+        virtualinvoke r0.<com.facebook.AuthorizationClient$WebViewAuthHandler: void addLoggingExtra(java.lang.String,java.lang.String)>("access_token", "0");
+
+        goto label2;
+    }
+
+    public static void <clinit>()
+    {
+        <com.facebook.AuthorizationClient$WebViewAuthHandler: long serialVersionUID> = 1L;
+
+        return;
+    }
+}

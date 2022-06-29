@@ -1,0 +1,417 @@
+class com.facebook.internal.UrlRedirectCache extends java.lang.Object
+{
+    private static final java.lang.String REDIRECT_CONTENT_TAG;
+    static final java.lang.String TAG;
+    private static volatile com.facebook.internal.FileLruCache urlRedirectCache;
+
+    static void <clinit>()
+    {
+        java.lang.Class $r0;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r1;
+
+        $r0 = class "Lcom/facebook/internal/UrlRedirectCache;";
+
+        $r1 = virtualinvoke $r0.<java.lang.Class: java.lang.String getSimpleName()>();
+
+        <com.facebook.internal.UrlRedirectCache: java.lang.String TAG> = $r1;
+
+        $r2 = new java.lang.StringBuilder;
+
+        $r1 = <com.facebook.internal.UrlRedirectCache: java.lang.String TAG>;
+
+        $r1 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r1);
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>($r1);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("_Redirect");
+
+        $r1 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        <com.facebook.internal.UrlRedirectCache: java.lang.String REDIRECT_CONTENT_TAG> = $r1;
+
+        return;
+    }
+
+    void <init>()
+    {
+        com.facebook.internal.UrlRedirectCache r0;
+
+        r0 := @this: com.facebook.internal.UrlRedirectCache;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    static void cacheUriRedirect(android.content.Context, java.net.URI, java.net.URI)
+    {
+        java.io.OutputStream $r4, $r7;
+        java.lang.Throwable $r9, $r10, $r11;
+        android.content.Context $r0;
+        com.facebook.internal.FileLruCache $r5;
+        byte[] $r8;
+        java.net.URI $r1, $r2;
+        java.lang.String $r3, $r6;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.net.URI;
+
+        $r2 := @parameter2: java.net.URI;
+
+        if $r1 == null goto label12;
+
+        if $r2 != null goto label01;
+
+        return;
+
+     label01:
+        $r4 = null;
+
+     label02:
+        $r5 = staticinvoke <com.facebook.internal.UrlRedirectCache: com.facebook.internal.FileLruCache getCache(android.content.Context)>($r0);
+
+        $r6 = virtualinvoke $r1.<java.net.URI: java.lang.String toString()>();
+
+     label03:
+        $r3 = <com.facebook.internal.UrlRedirectCache: java.lang.String REDIRECT_CONTENT_TAG>;
+
+     label04:
+        $r7 = virtualinvoke $r5.<com.facebook.internal.FileLruCache: java.io.OutputStream openPutStream(java.lang.String,java.lang.String)>($r6, $r3);
+
+     label05:
+        $r4 = $r7;
+
+     label06:
+        $r3 = virtualinvoke $r2.<java.net.URI: java.lang.String toString()>();
+
+        $r8 = virtualinvoke $r3.<java.lang.String: byte[] getBytes()>();
+
+        virtualinvoke $r7.<java.io.OutputStream: void write(byte[])>($r8);
+
+     label07:
+        staticinvoke <com.facebook.internal.Utility: void closeQuietly(java.io.Closeable)>($r7);
+
+        return;
+
+     label08:
+        $r9 := @caughtexception;
+
+        staticinvoke <com.facebook.internal.Utility: void closeQuietly(java.io.Closeable)>($r4);
+
+        return;
+
+     label09:
+        $r10 := @caughtexception;
+
+        $r4 = null;
+
+        $r9 = $r10;
+
+     label10:
+        staticinvoke <com.facebook.internal.Utility: void closeQuietly(java.io.Closeable)>($r4);
+
+        throw $r9;
+
+     label11:
+        $r11 := @caughtexception;
+
+        $r4 = $r7;
+
+        $r9 = $r11;
+
+        goto label10;
+
+     label12:
+        return;
+
+        catch java.io.IOException from label02 to label03 with label08;
+        catch java.io.IOException from label04 to label05 with label08;
+        catch java.lang.Throwable from label02 to label05 with label09;
+        catch java.io.IOException from label06 to label07 with label08;
+        catch java.lang.Throwable from label06 to label07 with label11;
+    }
+
+    static void clearCache(android.content.Context)
+    {
+        java.lang.Throwable $r5;
+        android.content.Context $r0;
+        com.facebook.internal.FileLruCache $r4;
+        java.io.IOException $r8;
+        com.facebook.LoggingBehavior $r1;
+        java.lang.StringBuilder $r3, $r7;
+        java.lang.String $r2, $r6;
+
+        $r0 := @parameter0: android.content.Context;
+
+     label1:
+        $r4 = staticinvoke <com.facebook.internal.UrlRedirectCache: com.facebook.internal.FileLruCache getCache(android.content.Context)>($r0);
+
+        virtualinvoke $r4.<com.facebook.internal.FileLruCache: void clearCache()>();
+
+     label2:
+        return;
+
+     label3:
+        $r5 := @caughtexception;
+
+        $r1 = <com.facebook.LoggingBehavior: com.facebook.LoggingBehavior CACHE>;
+
+        $r2 = <com.facebook.internal.UrlRedirectCache: java.lang.String TAG>;
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>(java.lang.String)>("clearCache failed ");
+
+        $r8 = (java.io.IOException) $r5;
+
+        $r6 = virtualinvoke $r8.<java.io.IOException: java.lang.String getMessage()>();
+
+        $r3 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r6 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.facebook.internal.Logger: void log(com.facebook.LoggingBehavior,int,java.lang.String,java.lang.String)>($r1, 5, $r2, $r6);
+
+        return;
+
+        catch java.io.IOException from label1 to label2 with label3;
+    }
+
+    static com.facebook.internal.FileLruCache getCache(android.content.Context)
+    {
+        java.lang.Throwable $r4;
+        android.content.Context $r0;
+        com.facebook.internal.FileLruCache $r3;
+        java.lang.String $r1;
+        com.facebook.internal.FileLruCache$Limits $r2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        entermonitor class "Lcom/facebook/internal/UrlRedirectCache;";
+
+     label1:
+        $r3 = <com.facebook.internal.UrlRedirectCache: com.facebook.internal.FileLruCache urlRedirectCache>;
+
+        if $r3 != null goto label2;
+
+        $r3 = new com.facebook.internal.FileLruCache;
+
+        $r0 = virtualinvoke $r0.<android.content.Context: android.content.Context getApplicationContext()>();
+
+        $r1 = <com.facebook.internal.UrlRedirectCache: java.lang.String TAG>;
+
+        $r2 = new com.facebook.internal.FileLruCache$Limits;
+
+        specialinvoke $r2.<com.facebook.internal.FileLruCache$Limits: void <init>()>();
+
+        specialinvoke $r3.<com.facebook.internal.FileLruCache: void <init>(android.content.Context,java.lang.String,com.facebook.internal.FileLruCache$Limits)>($r0, $r1, $r2);
+
+        <com.facebook.internal.UrlRedirectCache: com.facebook.internal.FileLruCache urlRedirectCache> = $r3;
+
+     label2:
+        $r3 = <com.facebook.internal.UrlRedirectCache: com.facebook.internal.FileLruCache urlRedirectCache>;
+
+     label3:
+        exitmonitor class "Lcom/facebook/internal/UrlRedirectCache;";
+
+        return $r3;
+
+     label4:
+        $r4 := @caughtexception;
+
+        exitmonitor class "Lcom/facebook/internal/UrlRedirectCache;";
+
+        throw $r4;
+
+        catch java.lang.Throwable from label1 to label3 with label4;
+    }
+
+    static java.net.URI getRedirectedUri(android.content.Context, java.net.URI)
+    {
+        java.lang.Throwable $r10, $r11, $r12, $r13, $r14, $r15, $r16, $r17;
+        android.content.Context $r0;
+        com.facebook.internal.FileLruCache $r3;
+        int $i0;
+        java.net.URI $r1;
+        java.lang.String $r2, $r5;
+        boolean $z0;
+        java.io.InputStreamReader $r4, $r7;
+        char[] $r8;
+        java.lang.StringBuilder $r9;
+        java.io.InputStream $r6;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.net.URI;
+
+        if $r1 != null goto label01;
+
+        return null;
+
+     label01:
+        $r2 = virtualinvoke $r1.<java.net.URI: java.lang.String toString()>();
+
+     label02:
+        $r3 = staticinvoke <com.facebook.internal.UrlRedirectCache: com.facebook.internal.FileLruCache getCache(android.content.Context)>($r0);
+
+     label03:
+        $z0 = 0;
+
+        $r4 = null;
+
+     label04:
+        $r5 = <com.facebook.internal.UrlRedirectCache: java.lang.String REDIRECT_CONTENT_TAG>;
+
+     label05:
+        $r6 = virtualinvoke $r3.<com.facebook.internal.FileLruCache: java.io.InputStream get(java.lang.String,java.lang.String)>($r2, $r5);
+
+     label06:
+        if $r6 != null goto label10;
+
+        if $z0 == 0 goto label23;
+
+     label07:
+        $r1 = new java.net.URI;
+
+     label08:
+        specialinvoke $r1.<java.net.URI: void <init>(java.lang.String)>($r2);
+
+     label09:
+        staticinvoke <com.facebook.internal.Utility: void closeQuietly(java.io.Closeable)>($r4);
+
+        return $r1;
+
+     label10:
+        $r7 = new java.io.InputStreamReader;
+
+     label11:
+        specialinvoke $r7.<java.io.InputStreamReader: void <init>(java.io.InputStream)>($r6);
+
+     label12:
+        $r8 = newarray (char)[128];
+
+     label13:
+        $r9 = new java.lang.StringBuilder;
+
+     label14:
+        specialinvoke $r9.<java.lang.StringBuilder: void <init>()>();
+
+     label15:
+        $i0 = lengthof $r8;
+
+     label16:
+        $i0 = virtualinvoke $r7.<java.io.InputStreamReader: int read(char[],int,int)>($r8, 0, $i0);
+
+     label17:
+        if $i0 > 0 goto label20;
+
+     label18:
+        staticinvoke <com.facebook.internal.Utility: void closeQuietly(java.io.Closeable)>($r7);
+
+        $r2 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label19:
+        $r4 = $r7;
+
+        $z0 = 1;
+
+        goto label04;
+
+     label20:
+        virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(char[],int,int)>($r8, 0, $i0);
+
+     label21:
+        goto label15;
+
+     label22:
+        $r10 := @caughtexception;
+
+        $r4 = $r7;
+
+     label23:
+        staticinvoke <com.facebook.internal.Utility: void closeQuietly(java.io.Closeable)>($r4);
+
+        return null;
+
+     label24:
+        $r11 := @caughtexception;
+
+        $r7 = null;
+
+     label25:
+        staticinvoke <com.facebook.internal.Utility: void closeQuietly(java.io.Closeable)>($r7);
+
+        throw $r11;
+
+     label26:
+        $r11 := @caughtexception;
+
+        goto label25;
+
+     label27:
+        $r12 := @caughtexception;
+
+        $r7 = $r4;
+
+        $r11 = $r12;
+
+        goto label25;
+
+     label28:
+        $r13 := @caughtexception;
+
+        $r4 = null;
+
+        goto label23;
+
+     label29:
+        $r14 := @caughtexception;
+
+        $r4 = $r7;
+
+        goto label23;
+
+     label30:
+        $r15 := @caughtexception;
+
+        goto label23;
+
+     label31:
+        $r16 := @caughtexception;
+
+        $r4 = null;
+
+        goto label23;
+
+     label32:
+        $r17 := @caughtexception;
+
+        goto label23;
+
+        catch java.net.URISyntaxException from label02 to label03 with label31;
+        catch java.io.IOException from label02 to label03 with label28;
+        catch java.lang.Throwable from label02 to label03 with label24;
+        catch java.net.URISyntaxException from label05 to label06 with label32;
+        catch java.net.URISyntaxException from label08 to label09 with label32;
+        catch java.io.IOException from label05 to label06 with label30;
+        catch java.io.IOException from label08 to label09 with label30;
+        catch java.lang.Throwable from label04 to label06 with label27;
+        catch java.lang.Throwable from label07 to label09 with label27;
+        catch java.net.URISyntaxException from label11 to label12 with label32;
+        catch java.io.IOException from label11 to label12 with label30;
+        catch java.lang.Throwable from label10 to label12 with label27;
+        catch java.net.URISyntaxException from label14 to label15 with label22;
+        catch java.net.URISyntaxException from label16 to label17 with label22;
+        catch java.net.URISyntaxException from label18 to label19 with label22;
+        catch java.net.URISyntaxException from label20 to label21 with label22;
+        catch java.io.IOException from label14 to label15 with label29;
+        catch java.io.IOException from label16 to label17 with label29;
+        catch java.io.IOException from label18 to label19 with label29;
+        catch java.io.IOException from label20 to label21 with label29;
+        catch java.lang.Throwable from label13 to label17 with label26;
+        catch java.lang.Throwable from label18 to label19 with label26;
+        catch java.lang.Throwable from label20 to label21 with label26;
+    }
+}

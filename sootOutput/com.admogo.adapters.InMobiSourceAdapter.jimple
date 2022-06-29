@@ -1,0 +1,1205 @@
+public class com.admogo.adapters.InMobiSourceAdapter extends com.admogo.adapters.AdMogoAdapter
+{
+    private static final int AD_TYPE_BANNER;
+    private static final int AD_TYPE_TEXT;
+    private static com.admogo.obj.InmobiAD inmobiAD;
+    private static android.webkit.WebView webView;
+
+    public void <init>(com.admogo.AdMogoLayout, com.admogo.obj.Ration)
+    {
+        com.admogo.AdMogoLayout $r1;
+        android.content.Context $r6;
+        com.admogo.obj.Ration $r2;
+        java.lang.Object $r4;
+        com.admogo.adapters.InMobiSourceAdapter r0;
+        android.webkit.WebView $r3;
+        java.lang.ref.WeakReference $r5;
+
+        r0 := @this: com.admogo.adapters.InMobiSourceAdapter;
+
+        $r1 := @parameter0: com.admogo.AdMogoLayout;
+
+        $r2 := @parameter1: com.admogo.obj.Ration;
+
+        specialinvoke r0.<com.admogo.adapters.AdMogoAdapter: void <init>(com.admogo.AdMogoLayout,com.admogo.obj.Ration)>($r1, $r2);
+
+        $r3 = new android.webkit.WebView;
+
+        $r5 = $r1.<com.admogo.AdMogoLayout: java.lang.ref.WeakReference activityReference>;
+
+        $r4 = virtualinvoke $r5.<java.lang.ref.WeakReference: java.lang.Object get()>();
+
+        $r6 = (android.content.Context) $r4;
+
+        specialinvoke $r3.<android.webkit.WebView: void <init>(android.content.Context)>($r6);
+
+        <com.admogo.adapters.InMobiSourceAdapter: android.webkit.WebView webView> = $r3;
+
+        return;
+    }
+
+    static com.admogo.obj.InmobiAD access$0(com.admogo.AdMogoLayout, java.lang.String)
+    {
+        com.admogo.AdMogoLayout $r0;
+        java.lang.String $r1;
+        com.admogo.obj.InmobiAD $r2;
+
+        $r0 := @parameter0: com.admogo.AdMogoLayout;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 = staticinvoke <com.admogo.adapters.InMobiSourceAdapter: com.admogo.obj.InmobiAD getInmobiAD(com.admogo.AdMogoLayout,java.lang.String)>($r0, $r1);
+
+        return $r2;
+    }
+
+    static void access$1(com.admogo.obj.InmobiAD)
+    {
+        com.admogo.obj.InmobiAD $r0;
+
+        $r0 := @parameter0: com.admogo.obj.InmobiAD;
+
+        <com.admogo.adapters.InMobiSourceAdapter: com.admogo.obj.InmobiAD inmobiAD> = $r0;
+
+        return;
+    }
+
+    static com.admogo.obj.InmobiAD access$2()
+    {
+        com.admogo.obj.InmobiAD r0;
+
+        r0 = <com.admogo.adapters.InMobiSourceAdapter: com.admogo.obj.InmobiAD inmobiAD>;
+
+        return r0;
+    }
+
+    private static java.lang.String encodeInfo(java.lang.String)
+    {
+        java.lang.Throwable r0;
+        java.lang.String $r1, $r2;
+
+        $r2 := @parameter0: java.lang.String;
+
+     label1:
+        $r1 = staticinvoke <java.net.URLEncoder: java.lang.String encode(java.lang.String,java.lang.String)>($r2, "utf-8");
+
+     label2:
+        return $r1;
+
+     label3:
+        r0 := @caughtexception;
+
+        return $r2;
+
+        catch java.io.UnsupportedEncodingException from label1 to label2 with label3;
+    }
+
+    private static android.graphics.drawable.Drawable fetchImage(java.lang.String)
+    {
+        java.net.URL r2;
+        java.lang.Object $r3;
+        java.lang.String $r0;
+        android.graphics.drawable.Drawable $r5;
+        java.lang.Exception r1;
+        java.io.InputStream r4;
+
+        $r0 := @parameter0: java.lang.String;
+
+        r2 = new java.net.URL;
+
+     label1:
+        specialinvoke r2.<java.net.URL: void <init>(java.lang.String)>($r0);
+
+        $r3 = virtualinvoke r2.<java.net.URL: java.lang.Object getContent()>();
+
+        r4 = (java.io.InputStream) $r3;
+
+        $r5 = staticinvoke <android.graphics.drawable.Drawable: android.graphics.drawable.Drawable createFromStream(java.io.InputStream,java.lang.String)>(r4, "src");
+
+        virtualinvoke r4.<java.io.InputStream: void close()>();
+
+     label2:
+        return $r5;
+
+     label3:
+        r1 := @caughtexception;
+
+        $r0 = <com.admogo.util.AdMogoUtil: java.lang.String ADMOGO>;
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String,java.lang.Throwable)>($r0, "Unable to fetchImage(): ", r1);
+
+        return null;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+    }
+
+    private static com.admogo.obj.InmobiAD getInmobiAD(com.admogo.AdMogoLayout, java.lang.String)
+    {
+        org.apache.http.impl.client.DefaultHttpClient r3;
+        org.apache.http.client.methods.HttpPost r4;
+        android.content.Context $r10;
+        java.lang.Object[] $r15;
+        org.apache.http.StatusLine $r19;
+        int $i0;
+        java.lang.String $r1, $r7, $r11, $r12, $r13, $r14;
+        java.lang.ref.WeakReference $r8;
+        com.admogo.AdMogoManager $r6;
+        boolean $z0;
+        org.apache.http.HttpEntity $r20;
+        org.apache.http.entity.StringEntity $r17;
+        com.admogo.obj.InmobiAD r5, $r21;
+        java.lang.Exception r2;
+        com.admogo.AdMogoLayout $r0;
+        org.apache.http.HttpResponse $r18;
+        java.lang.Object $r9;
+        java.lang.StringBuilder $r16;
+
+        $r0 := @parameter0: com.admogo.AdMogoLayout;
+
+        $r1 := @parameter1: java.lang.String;
+
+        r5 = null;
+
+        $r6 = $r0.<com.admogo.AdMogoLayout: com.admogo.AdMogoManager adMogoManager>;
+
+        $r7 = virtualinvoke $r6.<com.admogo.AdMogoManager: java.lang.String getIpAddress()>();
+
+        $r7 = staticinvoke <com.admogo.adapters.InMobiSourceAdapter: java.lang.String encodeInfo(java.lang.String)>($r7);
+
+        $r8 = $r0.<com.admogo.AdMogoLayout: java.lang.ref.WeakReference activityReference>;
+
+        $r9 = virtualinvoke $r8.<java.lang.ref.WeakReference: java.lang.Object get()>();
+
+        $r10 = (android.content.Context) $r9;
+
+        $r11 = staticinvoke <com.admogo.adapters.InMobiSourceAdapter: java.lang.String getUA(android.content.Context)>($r10);
+
+        $r6 = $r0.<com.admogo.AdMogoLayout: com.admogo.AdMogoManager adMogoManager>;
+
+        $r12 = $r6.<com.admogo.AdMogoManager: java.lang.String deviceIDHash>;
+
+        $r12 = staticinvoke <com.admogo.adapters.InMobiSourceAdapter: java.lang.String encodeInfo(java.lang.String)>($r12);
+
+        $r13 = virtualinvoke $r0.<com.admogo.AdMogoLayout: java.lang.String getCountryCode()>();
+
+        $z0 = virtualinvoke $r13.<java.lang.String: boolean equals(java.lang.Object)>("cn");
+
+        if $z0 == 0 goto label12;
+
+        $r13 = "zh_CN";
+
+     label01:
+        $r8 = $r0.<com.admogo.AdMogoLayout: java.lang.ref.WeakReference activityReference>;
+
+        $r9 = virtualinvoke $r8.<java.lang.ref.WeakReference: java.lang.Object get()>();
+
+        $r10 = (android.content.Context) $r9;
+
+        $r14 = staticinvoke <com.admogo.GetUserInfo: java.lang.String getNetworkType(android.content.Context)>($r10);
+
+        $z0 = virtualinvoke $r14.<java.lang.String: boolean equals(java.lang.Object)>("2");
+
+        if $z0 == 0 goto label13;
+
+        $r14 = "wifi";
+
+     label02:
+        $r14 = staticinvoke <com.admogo.adapters.InMobiSourceAdapter: java.lang.String encodeInfo(java.lang.String)>($r14);
+
+        $r15 = newarray (java.lang.Object)[9];
+
+        $r15[0] = $r1;
+
+        $r15[1] = $r7;
+
+        $r15[2] = $r11;
+
+        $r15[3] = $r12;
+
+        $r15[4] = $r13;
+
+        $r15[5] = $r14;
+
+        $r15[6] = "pr-SPEC-ATATA-20090521";
+
+        $r15[7] = "adsmogo";
+
+        $r15[8] = "xml";
+
+        $r1 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("mk-siteid=%s&mk-carrier=%s&h-user-agent=%s&u-id=%s&d-localization=%s&d-netType=%s&mk-version=%s&ref-tag=%s&format=%s", $r15);
+
+        $r7 = <com.admogo.util.AdMogoUtil: java.lang.String ADMOGO>;
+
+        $r16 = new java.lang.StringBuilder;
+
+        specialinvoke $r16.<java.lang.StringBuilder: void <init>(java.lang.String)>("INMOBI params:");
+
+        $r16 = virtualinvoke $r16.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r11 = virtualinvoke $r16.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>($r7, $r11);
+
+        r3 = new org.apache.http.impl.client.DefaultHttpClient;
+
+     label03:
+        specialinvoke r3.<org.apache.http.impl.client.DefaultHttpClient: void <init>()>();
+
+     label04:
+        r4 = new org.apache.http.client.methods.HttpPost;
+
+     label05:
+        specialinvoke r4.<org.apache.http.client.methods.HttpPost: void <init>(java.lang.String)>("http://w.inmobi.com/showad.asm");
+
+        virtualinvoke r4.<org.apache.http.client.methods.HttpPost: void addHeader(java.lang.String,java.lang.String)>("X-Mkhoj-SiteID", "4028cba631d63df10131e1d3818b00cc");
+
+        virtualinvoke r4.<org.apache.http.client.methods.HttpPost: void addHeader(java.lang.String,java.lang.String)>("Content-Type", "application/x-www-form-urlencoded ");
+
+     label06:
+        $r17 = new org.apache.http.entity.StringEntity;
+
+     label07:
+        specialinvoke $r17.<org.apache.http.entity.StringEntity: void <init>(java.lang.String)>($r1);
+
+        virtualinvoke r4.<org.apache.http.client.methods.HttpPost: void setEntity(org.apache.http.HttpEntity)>($r17);
+
+        $r18 = interfaceinvoke r3.<org.apache.http.client.HttpClient: org.apache.http.HttpResponse execute(org.apache.http.client.methods.HttpUriRequest)>(r4);
+
+        $r19 = interfaceinvoke $r18.<org.apache.http.HttpResponse: org.apache.http.StatusLine getStatusLine()>();
+
+        $i0 = interfaceinvoke $r19.<org.apache.http.StatusLine: int getStatusCode()>();
+
+     label08:
+        if $i0 != 200 goto label14;
+
+     label09:
+        $r20 = interfaceinvoke $r18.<org.apache.http.HttpResponse: org.apache.http.HttpEntity getEntity()>();
+
+        $r1 = staticinvoke <org.apache.http.util.EntityUtils: java.lang.String toString(org.apache.http.HttpEntity)>($r20);
+
+        $r21 = staticinvoke <com.admogo.adapters.InMobiSourceAdapter: com.admogo.obj.InmobiAD getInmobiADByXML(java.lang.String)>($r1);
+
+     label10:
+        r5 = $r21;
+
+     label11:
+        return r5;
+
+     label12:
+        $r13 = "en_US";
+
+        goto label01;
+
+     label13:
+        $r14 = "mobile";
+
+        goto label02;
+
+     label14:
+        return null;
+
+     label15:
+        r2 := @caughtexception;
+
+        $r1 = <com.admogo.util.AdMogoUtil: java.lang.String ADMOGO>;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>($r1, "Caught IOException in InmobiSoure", r2);
+
+        goto label11;
+
+        catch java.lang.Exception from label03 to label04 with label15;
+        catch java.lang.Exception from label05 to label06 with label15;
+        catch java.lang.Exception from label07 to label08 with label15;
+        catch java.lang.Exception from label09 to label10 with label15;
+    }
+
+    private static com.admogo.obj.InmobiAD getInmobiADByXML(java.lang.String)
+    {
+        android.graphics.drawable.Drawable $r13;
+        org.w3c.dom.Document $r7;
+        org.w3c.dom.Node $r12;
+        int $i0, $i1;
+        java.lang.String $r0, $r9;
+        boolean $z0;
+        org.xml.sax.InputSource $r5;
+        org.w3c.dom.NodeList $r11;
+        com.admogo.obj.InmobiAD r1, r2;
+        java.lang.Exception r14;
+        org.w3c.dom.Element $r8;
+        java.io.StringReader $r6;
+        javax.xml.parsers.DocumentBuilder $r4;
+        java.lang.StringBuilder $r10;
+        javax.xml.parsers.DocumentBuilderFactory $r3;
+
+        $r0 := @parameter0: java.lang.String;
+
+        r2 = null;
+
+        $r3 = staticinvoke <javax.xml.parsers.DocumentBuilderFactory: javax.xml.parsers.DocumentBuilderFactory newInstance()>();
+
+     label01:
+        $r4 = virtualinvoke $r3.<javax.xml.parsers.DocumentBuilderFactory: javax.xml.parsers.DocumentBuilder newDocumentBuilder()>();
+
+     label02:
+        $r5 = new org.xml.sax.InputSource;
+
+        $r6 = new java.io.StringReader;
+
+     label03:
+        specialinvoke $r6.<java.io.StringReader: void <init>(java.lang.String)>($r0);
+
+        specialinvoke $r5.<org.xml.sax.InputSource: void <init>(java.io.Reader)>($r6);
+
+        $r7 = virtualinvoke $r4.<javax.xml.parsers.DocumentBuilder: org.w3c.dom.Document parse(org.xml.sax.InputSource)>($r5);
+
+     label04:
+        if $r7 != null goto label07;
+
+        $r0 = <com.admogo.util.AdMogoUtil: java.lang.String ADMOGO>;
+
+     label05:
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>($r0, "inmobi xml is null");
+
+     label06:
+        return null;
+
+     label07:
+        $r8 = interfaceinvoke $r7.<org.w3c.dom.Document: org.w3c.dom.Element getDocumentElement()>();
+
+     label08:
+        if $r8 != null goto label11;
+
+        $r9 = <com.admogo.util.AdMogoUtil: java.lang.String ADMOGO>;
+
+        $r10 = new java.lang.StringBuilder;
+
+     label09:
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>(java.lang.String)>("inmobi xml not have ad root info-->");
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r0);
+
+        $r0 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>($r9, $r0);
+
+     label10:
+        return null;
+
+     label11:
+        $r11 = interfaceinvoke $r8.<org.w3c.dom.Element: org.w3c.dom.NodeList getElementsByTagName(java.lang.String)>("Ad");
+
+     label12:
+        if $r11 == null goto label15;
+
+     label13:
+        $i0 = interfaceinvoke $r11.<org.w3c.dom.NodeList: int getLength()>();
+
+     label14:
+        if $i0 >= 1 goto label18;
+
+     label15:
+        $r9 = <com.admogo.util.AdMogoUtil: java.lang.String ADMOGO>;
+
+        $r10 = new java.lang.StringBuilder;
+
+     label16:
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>(java.lang.String)>("inmobi xml content exception info-->");
+
+        $r10 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r0);
+
+        $r0 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>($r9, $r0);
+
+     label17:
+        return null;
+
+     label18:
+        $i0 = interfaceinvoke $r11.<org.w3c.dom.NodeList: int getLength()>();
+
+     label19:
+        if $i0 <= 0 goto label29;
+
+        r1 = new com.admogo.obj.InmobiAD;
+
+     label20:
+        specialinvoke r1.<com.admogo.obj.InmobiAD: void <init>()>();
+
+     label21:
+        $r12 = interfaceinvoke $r11.<org.w3c.dom.NodeList: org.w3c.dom.Node item(int)>(0);
+
+        $r8 = (org.w3c.dom.Element) $r12;
+
+        $r11 = interfaceinvoke $r8.<org.w3c.dom.Element: org.w3c.dom.NodeList getChildNodes()>();
+
+        $r0 = interfaceinvoke $r8.<org.w3c.dom.Element: java.lang.String getAttribute(java.lang.String)>("type");
+
+        $z0 = virtualinvoke $r0.<java.lang.String: boolean equals(java.lang.Object)>("banner");
+
+     label22:
+        if $z0 == 0 goto label44;
+
+     label23:
+        virtualinvoke r1.<com.admogo.obj.InmobiAD: void setAdsType(int)>(1);
+
+     label24:
+        $i0 = 0;
+
+     label25:
+        $i1 = interfaceinvoke $r11.<org.w3c.dom.NodeList: int getLength()>();
+
+     label26:
+        if $i0 < $i1 goto label30;
+
+     label27:
+        $r0 = virtualinvoke r1.<com.admogo.obj.InmobiAD: java.lang.String getImgUrl()>();
+
+        $r13 = staticinvoke <com.admogo.adapters.InMobiSourceAdapter: android.graphics.drawable.Drawable fetchImage(java.lang.String)>($r0);
+
+        virtualinvoke r1.<com.admogo.obj.InmobiAD: void setAdImg(android.graphics.drawable.Drawable)>($r13);
+
+     label28:
+        r2 = r1;
+
+     label29:
+        return r2;
+
+     label30:
+        $r12 = interfaceinvoke $r11.<org.w3c.dom.NodeList: org.w3c.dom.Node item(int)>($i0);
+
+        $r8 = (org.w3c.dom.Element) $r12;
+
+        $r0 = interfaceinvoke $r8.<org.w3c.dom.Element: java.lang.String getNodeName()>();
+
+        $z0 = virtualinvoke $r0.<java.lang.String: boolean equals(java.lang.Object)>("ImageURL");
+
+     label31:
+        if $z0 == 0 goto label34;
+
+     label32:
+        $r12 = interfaceinvoke $r8.<org.w3c.dom.Element: org.w3c.dom.Node getFirstChild()>();
+
+        $r0 = interfaceinvoke $r12.<org.w3c.dom.Node: java.lang.String getNodeValue()>();
+
+        virtualinvoke r1.<com.admogo.obj.InmobiAD: void setImgUrl(java.lang.String)>($r0);
+
+     label33:
+        $i0 = $i0 + 1;
+
+        goto label25;
+
+     label34:
+        $r0 = interfaceinvoke $r8.<org.w3c.dom.Element: java.lang.String getNodeName()>();
+
+        $z0 = virtualinvoke $r0.<java.lang.String: boolean equals(java.lang.Object)>("Placement");
+
+     label35:
+        if $z0 == 0 goto label40;
+
+     label36:
+        $r12 = interfaceinvoke $r8.<org.w3c.dom.Element: org.w3c.dom.Node getFirstChild()>();
+
+        $r0 = interfaceinvoke $r12.<org.w3c.dom.Node: java.lang.String getNodeValue()>();
+
+        virtualinvoke r1.<com.admogo.obj.InmobiAD: void setPlacement(java.lang.String)>($r0);
+
+     label37:
+        goto label33;
+
+     label38:
+        r14 := @caughtexception;
+
+        r2 = r1;
+
+     label39:
+        virtualinvoke r14.<java.lang.Exception: void printStackTrace()>();
+
+        goto label29;
+
+     label40:
+        $r0 = interfaceinvoke $r8.<org.w3c.dom.Element: java.lang.String getNodeName()>();
+
+        $z0 = virtualinvoke $r0.<java.lang.String: boolean equals(java.lang.Object)>("AdURL");
+
+     label41:
+        if $z0 == 0 goto label33;
+
+     label42:
+        $r12 = interfaceinvoke $r8.<org.w3c.dom.Element: org.w3c.dom.Node getFirstChild()>();
+
+        $r0 = interfaceinvoke $r12.<org.w3c.dom.Node: java.lang.String getNodeValue()>();
+
+        virtualinvoke r1.<com.admogo.obj.InmobiAD: void setAdUrl(java.lang.String)>($r0);
+
+     label43:
+        goto label33;
+
+     label44:
+        virtualinvoke r1.<com.admogo.obj.InmobiAD: void setAdsType(int)>(2);
+
+     label45:
+        $i0 = 0;
+
+     label46:
+        $i1 = interfaceinvoke $r11.<org.w3c.dom.NodeList: int getLength()>();
+
+     label47:
+        if $i0 < $i1 goto label48;
+
+        r2 = r1;
+
+        goto label29;
+
+     label48:
+        $r12 = interfaceinvoke $r11.<org.w3c.dom.NodeList: org.w3c.dom.Node item(int)>($i0);
+
+        $r8 = (org.w3c.dom.Element) $r12;
+
+        $r0 = interfaceinvoke $r8.<org.w3c.dom.Element: java.lang.String getNodeName()>();
+
+        $z0 = virtualinvoke $r0.<java.lang.String: boolean equals(java.lang.Object)>("LinkText");
+
+     label49:
+        if $z0 == 0 goto label52;
+
+     label50:
+        $r12 = interfaceinvoke $r8.<org.w3c.dom.Element: org.w3c.dom.Node getFirstChild()>();
+
+        $r0 = interfaceinvoke $r12.<org.w3c.dom.Node: java.lang.String getNodeValue()>();
+
+        virtualinvoke r1.<com.admogo.obj.InmobiAD: void setLinkText(java.lang.String)>($r0);
+
+     label51:
+        $i0 = $i0 + 1;
+
+        goto label46;
+
+     label52:
+        $r0 = interfaceinvoke $r8.<org.w3c.dom.Element: java.lang.String getNodeName()>();
+
+        $z0 = virtualinvoke $r0.<java.lang.String: boolean equals(java.lang.Object)>("Placement");
+
+     label53:
+        if $z0 == 0 goto label56;
+
+     label54:
+        $r12 = interfaceinvoke $r8.<org.w3c.dom.Element: org.w3c.dom.Node getFirstChild()>();
+
+        $r0 = interfaceinvoke $r12.<org.w3c.dom.Node: java.lang.String getNodeValue()>();
+
+        virtualinvoke r1.<com.admogo.obj.InmobiAD: void setPlacement(java.lang.String)>($r0);
+
+     label55:
+        goto label51;
+
+     label56:
+        $r0 = interfaceinvoke $r8.<org.w3c.dom.Element: java.lang.String getNodeName()>();
+
+        $z0 = virtualinvoke $r0.<java.lang.String: boolean equals(java.lang.Object)>("AdURL");
+
+     label57:
+        if $z0 == 0 goto label51;
+
+     label58:
+        $r12 = interfaceinvoke $r8.<org.w3c.dom.Element: org.w3c.dom.Node getFirstChild()>();
+
+        $r0 = interfaceinvoke $r12.<org.w3c.dom.Node: java.lang.String getNodeValue()>();
+
+        virtualinvoke r1.<com.admogo.obj.InmobiAD: void setAdUrl(java.lang.String)>($r0);
+
+     label59:
+        goto label51;
+
+     label60:
+        r14 := @caughtexception;
+
+        goto label39;
+
+        catch java.lang.Exception from label01 to label02 with label60;
+        catch java.lang.Exception from label03 to label04 with label60;
+        catch java.lang.Exception from label05 to label06 with label60;
+        catch java.lang.Exception from label07 to label08 with label60;
+        catch java.lang.Exception from label09 to label10 with label60;
+        catch java.lang.Exception from label11 to label12 with label60;
+        catch java.lang.Exception from label13 to label14 with label60;
+        catch java.lang.Exception from label16 to label17 with label60;
+        catch java.lang.Exception from label18 to label19 with label60;
+        catch java.lang.Exception from label20 to label21 with label60;
+        catch java.lang.Exception from label21 to label22 with label38;
+        catch java.lang.Exception from label23 to label24 with label38;
+        catch java.lang.Exception from label25 to label26 with label38;
+        catch java.lang.Exception from label27 to label28 with label38;
+        catch java.lang.Exception from label30 to label31 with label38;
+        catch java.lang.Exception from label32 to label33 with label38;
+        catch java.lang.Exception from label34 to label35 with label38;
+        catch java.lang.Exception from label36 to label37 with label38;
+        catch java.lang.Exception from label40 to label41 with label38;
+        catch java.lang.Exception from label42 to label43 with label38;
+        catch java.lang.Exception from label44 to label45 with label38;
+        catch java.lang.Exception from label46 to label47 with label38;
+        catch java.lang.Exception from label48 to label49 with label38;
+        catch java.lang.Exception from label50 to label51 with label38;
+        catch java.lang.Exception from label52 to label53 with label38;
+        catch java.lang.Exception from label54 to label55 with label38;
+        catch java.lang.Exception from label56 to label57 with label38;
+        catch java.lang.Exception from label58 to label59 with label38;
+    }
+
+    private static java.lang.String getUA(android.content.Context)
+    {
+        android.content.Context $r0;
+        android.webkit.WebSettings $r2;
+        java.lang.String $r3;
+        android.webkit.WebView $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        if $r0 != null goto label1;
+
+        return "";
+
+     label1:
+        $r1 = <com.admogo.adapters.InMobiSourceAdapter: android.webkit.WebView webView>;
+
+        $r2 = virtualinvoke $r1.<android.webkit.WebView: android.webkit.WebSettings getSettings()>();
+
+        $r3 = virtualinvoke $r2.<android.webkit.WebSettings: java.lang.String getUserAgentString()>();
+
+        $r3 = staticinvoke <com.admogo.adapters.InMobiSourceAdapter: java.lang.String encodeInfo(java.lang.String)>($r3);
+
+        return $r3;
+    }
+
+    public void click()
+    {
+        android.content.Context r8;
+        android.os.Bundle r1;
+        android.net.Uri $r10;
+        android.content.Intent r9;
+        com.admogo.obj.InmobiAD $r6;
+        java.lang.Exception r2;
+        com.admogo.AdMogoLayout r5;
+        java.lang.Object $r4;
+        java.lang.String $r7;
+        com.admogo.adapters.InMobiSourceAdapter r0;
+        java.lang.ref.WeakReference $r3;
+
+        r0 := @this: com.admogo.adapters.InMobiSourceAdapter;
+
+        $r3 = r0.<com.admogo.adapters.InMobiSourceAdapter: java.lang.ref.WeakReference adMogoLayoutReference>;
+
+        $r4 = virtualinvoke $r3.<java.lang.ref.WeakReference: java.lang.Object get()>();
+
+        r5 = (com.admogo.AdMogoLayout) $r4;
+
+        if r5 == null goto label1;
+
+        $r6 = <com.admogo.adapters.InMobiSourceAdapter: com.admogo.obj.InmobiAD inmobiAD>;
+
+        if $r6 == null goto label1;
+
+        $r6 = <com.admogo.adapters.InMobiSourceAdapter: com.admogo.obj.InmobiAD inmobiAD>;
+
+        $r7 = virtualinvoke $r6.<com.admogo.obj.InmobiAD: java.lang.String getAdUrl()>();
+
+        if $r7 != null goto label2;
+
+     label1:
+        $r7 = <com.admogo.util.AdMogoUtil: java.lang.String ADMOGO>;
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>($r7, "inmobi click error adMogoLayout or inmobiAD or AdUrl is null");
+
+        return;
+
+     label2:
+        $r3 = r5.<com.admogo.AdMogoLayout: java.lang.ref.WeakReference activityReference>;
+
+        $r4 = virtualinvoke $r3.<java.lang.ref.WeakReference: java.lang.Object get()>();
+
+        r8 = (android.content.Context) $r4;
+
+        virtualinvoke r5.<com.admogo.AdMogoLayout: void countClick()>();
+
+        r9 = new android.content.Intent;
+
+     label3:
+        specialinvoke r9.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>(r8, class "Lcom/admogo/AdMogoWebView;");
+
+     label4:
+        r1 = new android.os.Bundle;
+
+     label5:
+        specialinvoke r1.<android.os.Bundle: void <init>()>();
+
+     label6:
+        $r6 = <com.admogo.adapters.InMobiSourceAdapter: com.admogo.obj.InmobiAD inmobiAD>;
+
+     label7:
+        $r7 = virtualinvoke $r6.<com.admogo.obj.InmobiAD: java.lang.String getAdUrl()>();
+
+        virtualinvoke r1.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("link", $r7);
+
+        virtualinvoke r9.<android.content.Intent: android.content.Intent putExtras(android.os.Bundle)>(r1);
+
+        virtualinvoke r8.<android.content.Context: void startActivity(android.content.Intent)>(r9);
+
+     label8:
+        return;
+
+     label9:
+        r2 := @caughtexception;
+
+        r9 = new android.content.Intent;
+
+        specialinvoke r9.<android.content.Intent: void <init>()>();
+
+        virtualinvoke r9.<android.content.Intent: android.content.Intent setAction(java.lang.String)>("android.intent.action.VIEW");
+
+        $r6 = <com.admogo.adapters.InMobiSourceAdapter: com.admogo.obj.InmobiAD inmobiAD>;
+
+        $r7 = virtualinvoke $r6.<com.admogo.obj.InmobiAD: java.lang.String getAdUrl()>();
+
+        $r10 = staticinvoke <android.net.Uri: android.net.Uri parse(java.lang.String)>($r7);
+
+        virtualinvoke r9.<android.content.Intent: android.content.Intent setData(android.net.Uri)>($r10);
+
+        virtualinvoke r8.<android.content.Context: void startActivity(android.content.Intent)>(r9);
+
+        return;
+
+        catch java.lang.Exception from label3 to label4 with label9;
+        catch java.lang.Exception from label5 to label6 with label9;
+        catch java.lang.Exception from label7 to label8 with label9;
+    }
+
+    public void displayInmobiAD()
+    {
+        android.widget.ImageView r4, $r23;
+        com.admogo.AdMogoLayout$ViewAdRunnable $r26;
+        android.graphics.drawable.Drawable $r14;
+        android.widget.RelativeLayout$LayoutParams r2, $r24;
+        int[] $r19;
+        android.os.Handler $r16;
+        com.admogo.AdMogoManager $r12;
+        android.graphics.drawable.BitmapDrawable $r29;
+        com.admogo.obj.InmobiAD $r11;
+        java.lang.Exception r5;
+        android.widget.TextView r6, $r30;
+        android.widget.RelativeLayout r1, $r25;
+        com.admogo.adapters.InMobiSourceAdapter r0;
+        android.graphics.Typeface $r22;
+        android.graphics.drawable.GradientDrawable r3, $r28;
+        int $i0, $i1, $i2, $i3;
+        com.admogo.obj.Extra $r17;
+        java.lang.String $r13;
+        java.lang.ref.WeakReference $r7;
+        android.widget.FrameLayout$LayoutParams $r27;
+        double $d0, $d1, $d2, $d3, $d4;
+        android.widget.ImageView$ScaleType $r15;
+        com.admogo.AdMogoLayout r9;
+        android.graphics.drawable.GradientDrawable$Orientation $r18;
+        java.lang.Object $r8;
+        java.lang.Class $r20;
+        android.app.Activity r10;
+        java.io.InputStream $r21;
+
+        r0 := @this: com.admogo.adapters.InMobiSourceAdapter;
+
+        $r7 = r0.<com.admogo.adapters.InMobiSourceAdapter: java.lang.ref.WeakReference adMogoLayoutReference>;
+
+        $r8 = virtualinvoke $r7.<java.lang.ref.WeakReference: java.lang.Object get()>();
+
+        r9 = (com.admogo.AdMogoLayout) $r8;
+
+        if r9 != null goto label01;
+
+        return;
+
+     label01:
+        $r7 = r9.<com.admogo.AdMogoLayout: java.lang.ref.WeakReference activityReference>;
+
+        $r8 = virtualinvoke $r7.<java.lang.ref.WeakReference: java.lang.Object get()>();
+
+        r10 = (android.app.Activity) $r8;
+
+        if r10 == null goto label12;
+
+        $d0 = staticinvoke <com.admogo.util.AdMogoUtil: double getDensity(android.app.Activity)>(r10);
+
+        $i0 = staticinvoke <com.admogo.util.AdMogoUtil: int convertToScreenPixels(int,double)>(320, $d0);
+
+        $d1 = (double) $i0;
+
+        $i0 = staticinvoke <com.admogo.util.AdMogoUtil: int convertToScreenPixels(int,double)>(50, $d0);
+
+        $d2 = (double) $i0;
+
+        $i0 = staticinvoke <com.admogo.util.AdMogoUtil: int convertToScreenPixels(int,double)>(42, $d0);
+
+        $d3 = (double) $i0;
+
+        $i0 = staticinvoke <com.admogo.util.AdMogoUtil: int convertToScreenPixels(int,double)>(20, $d0);
+
+        $d4 = (double) $i0;
+
+        $i0 = staticinvoke <com.admogo.util.AdMogoUtil: int convertToScreenPixels(int,double)>(4, $d0);
+
+        $d0 = (double) $i0;
+
+        $r11 = <com.admogo.adapters.InMobiSourceAdapter: com.admogo.obj.InmobiAD inmobiAD>;
+
+        $i0 = virtualinvoke $r11.<com.admogo.obj.InmobiAD: int getAdsType()>();
+
+        lookupswitch($i0)
+        {
+            case 1: goto label03;
+            case 2: goto label05;
+            default: goto label02;
+        };
+
+     label02:
+        $r12 = r9.<com.admogo.AdMogoLayout: com.admogo.AdMogoManager adMogoManager>;
+
+        virtualinvoke $r12.<com.admogo.AdMogoManager: void resetRollover()>();
+
+        virtualinvoke r9.<com.admogo.AdMogoLayout: void rotateThreadedDelayed()>();
+
+        return;
+
+     label03:
+        $r13 = <com.admogo.util.AdMogoUtil: java.lang.String ADMOGO>;
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>($r13, "InmobiAD type: banner");
+
+        $r11 = <com.admogo.adapters.InMobiSourceAdapter: com.admogo.obj.InmobiAD inmobiAD>;
+
+        $r14 = virtualinvoke $r11.<com.admogo.obj.InmobiAD: android.graphics.drawable.Drawable getAdImg()>();
+
+        if $r14 != null goto label04;
+
+        virtualinvoke r9.<com.admogo.AdMogoLayout: void rollover()>();
+
+        return;
+
+     label04:
+        $r23 = new android.widget.ImageView;
+
+        r4 = $r23;
+
+        specialinvoke $r23.<android.widget.ImageView: void <init>(android.content.Context)>(r10);
+
+        $r11 = <com.admogo.adapters.InMobiSourceAdapter: com.admogo.obj.InmobiAD inmobiAD>;
+
+        $r14 = virtualinvoke $r11.<com.admogo.obj.InmobiAD: android.graphics.drawable.Drawable getAdImg()>();
+
+        virtualinvoke r4.<android.widget.ImageView: void setImageDrawable(android.graphics.drawable.Drawable)>($r14);
+
+        $r15 = <android.widget.ImageView$ScaleType: android.widget.ImageView$ScaleType CENTER_CROP>;
+
+        virtualinvoke r4.<android.widget.ImageView: void setScaleType(android.widget.ImageView$ScaleType)>($r15);
+
+        $r24 = new android.widget.RelativeLayout$LayoutParams;
+
+        r2 = $r24;
+
+        $i0 = (int) $d1;
+
+        $i1 = (int) $d2;
+
+        specialinvoke $r24.<android.widget.RelativeLayout$LayoutParams: void <init>(int,int)>($i0, $i1);
+
+        virtualinvoke r2.<android.widget.RelativeLayout$LayoutParams: void addRule(int,int)>(13, -1);
+
+        $r25 = new android.widget.RelativeLayout;
+
+        r1 = $r25;
+
+        specialinvoke $r25.<android.widget.RelativeLayout: void <init>(android.content.Context)>(r10);
+
+        virtualinvoke r1.<android.widget.RelativeLayout: void addView(android.view.View,android.view.ViewGroup$LayoutParams)>(r4, r2);
+
+        $r16 = r9.<com.admogo.AdMogoLayout: android.os.Handler handler>;
+
+        $r26 = new com.admogo.AdMogoLayout$ViewAdRunnable;
+
+        specialinvoke $r26.<com.admogo.AdMogoLayout$ViewAdRunnable: void <init>(com.admogo.AdMogoLayout,android.view.ViewGroup,int,int,int)>(r9, r1, 18, -2, -2);
+
+        virtualinvoke $r16.<android.os.Handler: boolean post(java.lang.Runnable)>($r26);
+
+        goto label02;
+
+     label05:
+        $r13 = <com.admogo.util.AdMogoUtil: java.lang.String ADMOGO>;
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>($r13, "InmobiAD type: text");
+
+        $r25 = new android.widget.RelativeLayout;
+
+        r1 = $r25;
+
+        specialinvoke $r25.<android.widget.RelativeLayout: void <init>(android.content.Context)>(r10);
+
+        $r11 = <com.admogo.adapters.InMobiSourceAdapter: com.admogo.obj.InmobiAD inmobiAD>;
+
+        $r13 = virtualinvoke $r11.<com.admogo.obj.InmobiAD: java.lang.String getLinkText()>();
+
+        if $r13 != null goto label06;
+
+        virtualinvoke r9.<com.admogo.AdMogoLayout: void rollover()>();
+
+        return;
+
+     label06:
+        $r27 = new android.widget.FrameLayout$LayoutParams;
+
+        $i0 = (int) $d2;
+
+        specialinvoke $r27.<android.widget.FrameLayout$LayoutParams: void <init>(int,int)>(-1, $i0);
+
+        virtualinvoke r1.<android.widget.RelativeLayout: void setLayoutParams(android.view.ViewGroup$LayoutParams)>($r27);
+
+        $r23 = new android.widget.ImageView;
+
+        r4 = $r23;
+
+        specialinvoke $r23.<android.widget.ImageView: void <init>(android.content.Context)>(r10);
+
+        $r17 = r9.<com.admogo.AdMogoLayout: com.admogo.obj.Extra extra>;
+
+        $i0 = $r17.<com.admogo.obj.Extra: int bgRed>;
+
+        $r17 = r9.<com.admogo.AdMogoLayout: com.admogo.obj.Extra extra>;
+
+        $i1 = $r17.<com.admogo.obj.Extra: int bgGreen>;
+
+        $r17 = r9.<com.admogo.AdMogoLayout: com.admogo.obj.Extra extra>;
+
+        $i2 = $r17.<com.admogo.obj.Extra: int bgBlue>;
+
+        $i0 = staticinvoke <android.graphics.Color: int rgb(int,int,int)>($i0, $i1, $i2);
+
+        $r28 = new android.graphics.drawable.GradientDrawable;
+
+        r3 = $r28;
+
+        $r18 = <android.graphics.drawable.GradientDrawable$Orientation: android.graphics.drawable.GradientDrawable$Orientation TOP_BOTTOM>;
+
+        $r19 = newarray (int)[2];
+
+        $i1 = staticinvoke <android.graphics.Color: int argb(int,int,int,int)>(100, 255, 255, 255);
+
+        $r19[0] = $i1;
+
+        $i1 = staticinvoke <android.graphics.Color: int argb(int,int,int,int)>(0, 255, 255, 255);
+
+        $r19[1] = $i1;
+
+        specialinvoke $r28.<android.graphics.drawable.GradientDrawable: void <init>(android.graphics.drawable.GradientDrawable$Orientation,int[])>($r18, $r19);
+
+        virtualinvoke r4.<android.widget.ImageView: void setBackgroundDrawable(android.graphics.drawable.Drawable)>(r3);
+
+        $r24 = new android.widget.RelativeLayout$LayoutParams;
+
+        $i1 = (int) $d4;
+
+        specialinvoke $r24.<android.widget.RelativeLayout$LayoutParams: void <init>(int,int)>(-1, $i1);
+
+        virtualinvoke r4.<android.widget.ImageView: void setBackgroundDrawable(android.graphics.drawable.Drawable)>(r3);
+
+        virtualinvoke r1.<android.widget.RelativeLayout: void addView(android.view.View,android.view.ViewGroup$LayoutParams)>(r4, $r24);
+
+        virtualinvoke r1.<android.widget.RelativeLayout: void setBackgroundColor(int)>($i0);
+
+        $r23 = new android.widget.ImageView;
+
+        r4 = $r23;
+
+        specialinvoke $r23.<android.widget.ImageView: void <init>(android.content.Context)>(r10);
+
+        $r29 = new android.graphics.drawable.BitmapDrawable;
+
+        $r20 = virtualinvoke r0.<java.lang.Object: java.lang.Class getClass()>();
+
+        $r21 = virtualinvoke $r20.<java.lang.Class: java.io.InputStream getResourceAsStream(java.lang.String)>("/com/admogo/assets/webview_bar_back.png");
+
+        specialinvoke $r29.<android.graphics.drawable.BitmapDrawable: void <init>(java.io.InputStream)>($r21);
+
+        virtualinvoke r4.<android.widget.ImageView: void setImageDrawable(android.graphics.drawable.Drawable)>($r29);
+
+        virtualinvoke r4.<android.widget.ImageView: void setId(int)>(10);
+
+        $r24 = new android.widget.RelativeLayout$LayoutParams;
+
+        r2 = $r24;
+
+        $i0 = (int) $d3;
+
+        $i1 = (int) $d3;
+
+        specialinvoke $r24.<android.widget.RelativeLayout$LayoutParams: void <init>(int,int)>($i0, $i1);
+
+        $i0 = (int) $d0;
+
+        $i1 = (int) $d0;
+
+        $i2 = (int) $d0;
+
+        $i3 = (int) $d0;
+
+        virtualinvoke r2.<android.widget.RelativeLayout$LayoutParams: void setMargins(int,int,int,int)>($i0, $i1, $i2, $i3);
+
+        virtualinvoke r1.<android.widget.RelativeLayout: void addView(android.view.View,android.view.ViewGroup$LayoutParams)>(r4, r2);
+
+        $r30 = new android.widget.TextView;
+
+        r6 = $r30;
+
+        specialinvoke $r30.<android.widget.TextView: void <init>(android.content.Context)>(r10);
+
+        $r11 = <com.admogo.adapters.InMobiSourceAdapter: com.admogo.obj.InmobiAD inmobiAD>;
+
+     label07:
+        $r13 = virtualinvoke $r11.<com.admogo.obj.InmobiAD: java.lang.String getLinkText()>();
+
+     label08:
+        if $r13 != null goto label10;
+
+     label09:
+        virtualinvoke r9.<com.admogo.AdMogoLayout: void rotateThreadedNow()>();
+
+     label10:
+        $r11 = <com.admogo.adapters.InMobiSourceAdapter: com.admogo.obj.InmobiAD inmobiAD>;
+
+        $r13 = virtualinvoke $r11.<com.admogo.obj.InmobiAD: java.lang.String getLinkText()>();
+
+        virtualinvoke r6.<android.widget.TextView: void setText(java.lang.CharSequence)>($r13);
+
+        $r22 = <android.graphics.Typeface: android.graphics.Typeface DEFAULT_BOLD>;
+
+        virtualinvoke r6.<android.widget.TextView: void setTypeface(android.graphics.Typeface,int)>($r22, 1);
+
+        $r17 = r9.<com.admogo.AdMogoLayout: com.admogo.obj.Extra extra>;
+
+        $i0 = $r17.<com.admogo.obj.Extra: int fgRed>;
+
+        $r17 = r9.<com.admogo.AdMogoLayout: com.admogo.obj.Extra extra>;
+
+        $i1 = $r17.<com.admogo.obj.Extra: int fgGreen>;
+
+        $r17 = r9.<com.admogo.AdMogoLayout: com.admogo.obj.Extra extra>;
+
+        $i2 = $r17.<com.admogo.obj.Extra: int fgBlue>;
+
+        $i0 = staticinvoke <android.graphics.Color: int rgb(int,int,int)>($i0, $i1, $i2);
+
+        virtualinvoke r6.<android.widget.TextView: void setTextColor(int)>($i0);
+
+        virtualinvoke r6.<android.widget.TextView: void setMaxLines(int)>(2);
+
+        virtualinvoke r6.<android.widget.TextView: void setTextSize(float)>(16.0F);
+
+        $r24 = new android.widget.RelativeLayout$LayoutParams;
+
+        r2 = $r24;
+
+        $i0 = (int) $d2;
+
+        specialinvoke $r24.<android.widget.RelativeLayout$LayoutParams: void <init>(int,int)>(-1, $i0);
+
+        $i0 = virtualinvoke r4.<android.widget.ImageView: int getId()>();
+
+        virtualinvoke r2.<android.widget.RelativeLayout$LayoutParams: void addRule(int,int)>(1, $i0);
+
+        virtualinvoke r2.<android.widget.RelativeLayout$LayoutParams: void addRule(int)>(10);
+
+        virtualinvoke r2.<android.widget.RelativeLayout$LayoutParams: void addRule(int)>(15);
+
+        virtualinvoke r2.<android.widget.RelativeLayout$LayoutParams: void addRule(int,int)>(13, -1);
+
+        virtualinvoke r6.<android.widget.TextView: void setGravity(int)>(16);
+
+        virtualinvoke r1.<android.widget.RelativeLayout: void addView(android.view.View,android.view.ViewGroup$LayoutParams)>(r6, r2);
+
+        $r16 = r9.<com.admogo.AdMogoLayout: android.os.Handler handler>;
+
+        $r26 = new com.admogo.AdMogoLayout$ViewAdRunnable;
+
+        specialinvoke $r26.<com.admogo.AdMogoLayout$ViewAdRunnable: void <init>(com.admogo.AdMogoLayout,android.view.ViewGroup,int,int,int)>(r9, r1, 18, -2, -2);
+
+        virtualinvoke $r16.<android.os.Handler: boolean post(java.lang.Runnable)>($r26);
+
+        goto label02;
+
+     label11:
+        r5 := @caughtexception;
+
+        $r11 = <com.admogo.adapters.InMobiSourceAdapter: com.admogo.obj.InmobiAD inmobiAD>;
+
+        virtualinvoke $r11.<com.admogo.obj.InmobiAD: void setLinkText(java.lang.String)>("Haven\'t description!");
+
+        goto label10;
+
+     label12:
+        return;
+
+        catch java.lang.Exception from label07 to label08 with label11;
+        catch java.lang.Exception from label09 to label10 with label11;
+    }
+
+    public void finish()
+    {
+        com.admogo.adapters.InMobiSourceAdapter r0;
+
+        r0 := @this: com.admogo.adapters.InMobiSourceAdapter;
+
+        return;
+    }
+
+    public void handle()
+    {
+        com.admogo.adapters.InMobiSourceAdapter$FetchInmobiADRunnable $r1;
+        java.util.concurrent.TimeUnit $r2;
+        com.admogo.AdMogoLayout r5;
+        com.admogo.obj.Ration $r7;
+        java.util.concurrent.ScheduledExecutorService $r6;
+        java.lang.Object $r3;
+        com.admogo.adapters.InMobiSourceAdapter r0;
+        java.lang.ref.WeakReference $r4;
+
+        r0 := @this: com.admogo.adapters.InMobiSourceAdapter;
+
+        $r4 = r0.<com.admogo.adapters.InMobiSourceAdapter: java.lang.ref.WeakReference adMogoLayoutReference>;
+
+        $r3 = virtualinvoke $r4.<java.lang.ref.WeakReference: java.lang.Object get()>();
+
+        r5 = (com.admogo.AdMogoLayout) $r3;
+
+        if r5 != null goto label1;
+
+        return;
+
+     label1:
+        $r6 = r5.<com.admogo.AdMogoLayout: java.util.concurrent.ScheduledExecutorService scheduler>;
+
+        $r1 = new com.admogo.adapters.InMobiSourceAdapter$FetchInmobiADRunnable;
+
+        $r7 = r0.<com.admogo.adapters.InMobiSourceAdapter: com.admogo.obj.Ration ration>;
+
+        specialinvoke $r1.<com.admogo.adapters.InMobiSourceAdapter$FetchInmobiADRunnable: void <init>(com.admogo.obj.Ration,com.admogo.adapters.InMobiSourceAdapter)>($r7, r0);
+
+        $r2 = <java.util.concurrent.TimeUnit: java.util.concurrent.TimeUnit SECONDS>;
+
+        interfaceinvoke $r6.<java.util.concurrent.ScheduledExecutorService: java.util.concurrent.ScheduledFuture schedule(java.lang.Runnable,long,java.util.concurrent.TimeUnit)>($r1, 0L, $r2);
+
+        return;
+    }
+
+    public static void <clinit>()
+    {
+        <com.admogo.adapters.InMobiSourceAdapter: int AD_TYPE_TEXT> = 2;
+
+        <com.admogo.adapters.InMobiSourceAdapter: int AD_TYPE_BANNER> = 1;
+
+        return;
+    }
+}

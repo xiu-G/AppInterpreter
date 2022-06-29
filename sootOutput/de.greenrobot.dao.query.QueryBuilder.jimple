@@ -1,0 +1,1163 @@
+public class de.greenrobot.dao.query.QueryBuilder extends java.lang.Object
+{
+    public static boolean LOG_SQL;
+    public static boolean LOG_VALUES;
+    private final de.greenrobot.dao.AbstractDao dao;
+    private java.lang.StringBuilder joinBuilder;
+    private java.lang.Integer limit;
+    private java.lang.Integer offset;
+    private java.lang.StringBuilder orderBuilder;
+    private final java.lang.String tablePrefix;
+    private final java.util.List values;
+    private final java.util.List whereConditions;
+
+    protected void <init>(de.greenrobot.dao.AbstractDao)
+    {
+        de.greenrobot.dao.AbstractDao $r1;
+        de.greenrobot.dao.query.QueryBuilder r0;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $r1 := @parameter0: de.greenrobot.dao.AbstractDao;
+
+        specialinvoke r0.<de.greenrobot.dao.query.QueryBuilder: void <init>(de.greenrobot.dao.AbstractDao,java.lang.String)>($r1, "T");
+
+        return;
+    }
+
+    protected void <init>(de.greenrobot.dao.AbstractDao, java.lang.String)
+    {
+        de.greenrobot.dao.AbstractDao $r1;
+        de.greenrobot.dao.query.QueryBuilder r0;
+        java.lang.String $r2;
+        java.util.ArrayList $r3;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $r1 := @parameter0: de.greenrobot.dao.AbstractDao;
+
+        $r2 := @parameter1: java.lang.String;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<de.greenrobot.dao.query.QueryBuilder: de.greenrobot.dao.AbstractDao dao> = $r1;
+
+        r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.String tablePrefix> = "T";
+
+        $r3 = new java.util.ArrayList;
+
+        specialinvoke $r3.<java.util.ArrayList: void <init>()>();
+
+        r0.<de.greenrobot.dao.query.QueryBuilder: java.util.List values> = $r3;
+
+        $r3 = new java.util.ArrayList;
+
+        specialinvoke $r3.<java.util.ArrayList: void <init>()>();
+
+        r0.<de.greenrobot.dao.query.QueryBuilder: java.util.List whereConditions> = $r3;
+
+        return;
+    }
+
+    private void appendWhereClause(java.lang.StringBuilder, java.lang.String)
+    {
+        java.util.ListIterator $r4;
+        de.greenrobot.dao.query.WhereCondition $r6;
+        java.util.List $r3;
+        de.greenrobot.dao.query.QueryBuilder r0;
+        java.lang.StringBuilder $r1;
+        java.lang.Object $r5;
+        java.lang.String $r2;
+        boolean $z0;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $r1 := @parameter0: java.lang.StringBuilder;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 = r0.<de.greenrobot.dao.query.QueryBuilder: java.util.List values>;
+
+        interfaceinvoke $r3.<java.util.List: void clear()>();
+
+        $r3 = r0.<de.greenrobot.dao.query.QueryBuilder: java.util.List whereConditions>;
+
+        $z0 = interfaceinvoke $r3.<java.util.List: boolean isEmpty()>();
+
+        if $z0 != 0 goto label3;
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" WHERE ");
+
+        $r3 = r0.<de.greenrobot.dao.query.QueryBuilder: java.util.List whereConditions>;
+
+        $r4 = interfaceinvoke $r3.<java.util.List: java.util.ListIterator listIterator()>();
+
+     label1:
+        $z0 = interfaceinvoke $r4.<java.util.ListIterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label3;
+
+        $z0 = interfaceinvoke $r4.<java.util.ListIterator: boolean hasPrevious()>();
+
+        if $z0 == 0 goto label2;
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" AND ");
+
+     label2:
+        $r5 = interfaceinvoke $r4.<java.util.ListIterator: java.lang.Object next()>();
+
+        $r6 = (de.greenrobot.dao.query.WhereCondition) $r5;
+
+        interfaceinvoke $r6.<de.greenrobot.dao.query.WhereCondition: void appendTo(java.lang.StringBuilder,java.lang.String)>($r1, $r2);
+
+        $r3 = r0.<de.greenrobot.dao.query.QueryBuilder: java.util.List values>;
+
+        interfaceinvoke $r6.<de.greenrobot.dao.query.WhereCondition: void appendValuesTo(java.util.List)>($r3);
+
+        goto label1;
+
+     label3:
+        return;
+    }
+
+    private void checkOrderBuilder()
+    {
+        int $i0;
+        java.lang.StringBuilder $r1;
+        de.greenrobot.dao.query.QueryBuilder r0;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $r1 = r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.StringBuilder orderBuilder>;
+
+        if $r1 != null goto label1;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.StringBuilder orderBuilder> = $r1;
+
+        return;
+
+     label1:
+        $r1 = r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.StringBuilder orderBuilder>;
+
+        $i0 = virtualinvoke $r1.<java.lang.StringBuilder: int length()>();
+
+        if $i0 <= 0 goto label2;
+
+        $r1 = r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.StringBuilder orderBuilder>;
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(",");
+
+     label2:
+        return;
+    }
+
+    public static de.greenrobot.dao.query.QueryBuilder internalCreate(de.greenrobot.dao.AbstractDao)
+    {
+        de.greenrobot.dao.AbstractDao $r0;
+        de.greenrobot.dao.query.QueryBuilder $r1;
+
+        $r0 := @parameter0: de.greenrobot.dao.AbstractDao;
+
+        $r1 = new de.greenrobot.dao.query.QueryBuilder;
+
+        specialinvoke $r1.<de.greenrobot.dao.query.QueryBuilder: void <init>(de.greenrobot.dao.AbstractDao)>($r0);
+
+        return $r1;
+    }
+
+    private transient void orderAscOrDesc(java.lang.String, de.greenrobot.dao.Property[])
+    {
+        de.greenrobot.dao.Property[] $r2;
+        de.greenrobot.dao.Property $r3;
+        de.greenrobot.dao.query.QueryBuilder r0;
+        int $i0, $i1;
+        java.lang.StringBuilder $r4;
+        java.lang.Class $r5, $r6;
+        java.lang.String $r1;
+        boolean $z0;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: de.greenrobot.dao.Property[];
+
+        $i0 = lengthof $r2;
+
+        $i1 = 0;
+
+     label1:
+        if $i1 >= $i0 goto label3;
+
+        $r3 = $r2[$i1];
+
+        specialinvoke r0.<de.greenrobot.dao.query.QueryBuilder: void checkOrderBuilder()>();
+
+        $r4 = r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.StringBuilder orderBuilder>;
+
+        virtualinvoke r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.StringBuilder append(java.lang.StringBuilder,de.greenrobot.dao.Property)>($r4, $r3);
+
+        $r5 = class "Ljava/lang/String;";
+
+        $r6 = $r3.<de.greenrobot.dao.Property: java.lang.Class type>;
+
+        $z0 = virtualinvoke $r5.<java.lang.Object: boolean equals(java.lang.Object)>($r6);
+
+        if $z0 == 0 goto label2;
+
+        $r4 = r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.StringBuilder orderBuilder>;
+
+        virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" COLLATE LOCALIZED");
+
+     label2:
+        $r4 = r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.StringBuilder orderBuilder>;
+
+        virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $i1 = $i1 + 1;
+
+        goto label1;
+
+     label3:
+        return;
+    }
+
+    protected void addCondition(java.lang.StringBuilder, java.util.List, de.greenrobot.dao.query.WhereCondition)
+    {
+        java.util.List $r2;
+        de.greenrobot.dao.query.WhereCondition $r3;
+        de.greenrobot.dao.query.QueryBuilder r0;
+        java.lang.StringBuilder $r1;
+        java.lang.String $r4;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $r1 := @parameter0: java.lang.StringBuilder;
+
+        $r2 := @parameter1: java.util.List;
+
+        $r3 := @parameter2: de.greenrobot.dao.query.WhereCondition;
+
+        virtualinvoke r0.<de.greenrobot.dao.query.QueryBuilder: void checkCondition(de.greenrobot.dao.query.WhereCondition)>($r3);
+
+        $r4 = r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.String tablePrefix>;
+
+        interfaceinvoke $r3.<de.greenrobot.dao.query.WhereCondition: void appendTo(java.lang.StringBuilder,java.lang.String)>($r1, $r4);
+
+        interfaceinvoke $r3.<de.greenrobot.dao.query.WhereCondition: void appendValuesTo(java.util.List)>($r2);
+
+        return;
+    }
+
+    public transient de.greenrobot.dao.query.WhereCondition and(de.greenrobot.dao.query.WhereCondition, de.greenrobot.dao.query.WhereCondition, de.greenrobot.dao.query.WhereCondition[])
+    {
+        de.greenrobot.dao.query.WhereCondition[] $r3;
+        de.greenrobot.dao.query.WhereCondition $r1, $r2;
+        de.greenrobot.dao.query.QueryBuilder r0;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $r1 := @parameter0: de.greenrobot.dao.query.WhereCondition;
+
+        $r2 := @parameter1: de.greenrobot.dao.query.WhereCondition;
+
+        $r3 := @parameter2: de.greenrobot.dao.query.WhereCondition[];
+
+        $r1 = virtualinvoke r0.<de.greenrobot.dao.query.QueryBuilder: de.greenrobot.dao.query.WhereCondition combineWhereConditions(java.lang.String,de.greenrobot.dao.query.WhereCondition,de.greenrobot.dao.query.WhereCondition,de.greenrobot.dao.query.WhereCondition[])>(" AND ", $r1, $r2, $r3);
+
+        return $r1;
+    }
+
+    protected java.lang.StringBuilder append(java.lang.StringBuilder, de.greenrobot.dao.Property)
+    {
+        de.greenrobot.dao.Property $r2;
+        de.greenrobot.dao.query.QueryBuilder r0;
+        java.lang.StringBuilder $r1, $r4;
+        java.lang.String $r3;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $r1 := @parameter0: java.lang.StringBuilder;
+
+        $r2 := @parameter1: de.greenrobot.dao.Property;
+
+        virtualinvoke r0.<de.greenrobot.dao.query.QueryBuilder: void checkProperty(de.greenrobot.dao.Property)>($r2);
+
+        $r3 = r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.String tablePrefix>;
+
+        $r4 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(46);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(39);
+
+        $r3 = $r2.<de.greenrobot.dao.Property: java.lang.String columnName>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(39);
+
+        return $r1;
+    }
+
+    public de.greenrobot.dao.query.Query build()
+    {
+        java.lang.IllegalStateException $r13;
+        java.lang.Object[] $r11;
+        de.greenrobot.dao.query.Query $r12;
+        java.lang.String[] $r10;
+        java.lang.Integer $r7;
+        de.greenrobot.dao.internal.TableStatements $r3;
+        de.greenrobot.dao.AbstractDao $r2;
+        de.greenrobot.dao.query.QueryBuilder r0;
+        int $i0, $i1, $i2;
+        java.lang.String $r4, $r9;
+        boolean $z0;
+        java.util.List $r8;
+        java.lang.StringBuilder $r1, $r5, $r6;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $i0 = -1;
+
+        $r1 = r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.StringBuilder joinBuilder>;
+
+        if $r1 == null goto label01;
+
+        $r1 = r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.StringBuilder joinBuilder>;
+
+        $i1 = virtualinvoke $r1.<java.lang.StringBuilder: int length()>();
+
+        if $i1 != 0 goto label05;
+
+     label01:
+        $r2 = r0.<de.greenrobot.dao.query.QueryBuilder: de.greenrobot.dao.AbstractDao dao>;
+
+        $r3 = staticinvoke <de.greenrobot.dao.InternalQueryDaoAccess: de.greenrobot.dao.internal.TableStatements getStatements(de.greenrobot.dao.AbstractDao)>($r2);
+
+        $r4 = virtualinvoke $r3.<de.greenrobot.dao.internal.TableStatements: java.lang.String getSelectAll()>();
+
+     label02:
+        $r5 = new java.lang.StringBuilder;
+
+        $r1 = $r5;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r4 = r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.String tablePrefix>;
+
+        specialinvoke r0.<de.greenrobot.dao.query.QueryBuilder: void appendWhereClause(java.lang.StringBuilder,java.lang.String)>($r1, $r4);
+
+        $r5 = r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.StringBuilder orderBuilder>;
+
+        if $r5 == null goto label03;
+
+        $r5 = r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.StringBuilder orderBuilder>;
+
+        $i1 = virtualinvoke $r5.<java.lang.StringBuilder: int length()>();
+
+        if $i1 <= 0 goto label03;
+
+        $r5 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" ORDER BY ");
+
+        $r6 = r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.StringBuilder orderBuilder>;
+
+        virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.CharSequence)>($r6);
+
+     label03:
+        $r7 = r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.Integer limit>;
+
+        if $r7 == null goto label10;
+
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" LIMIT ?");
+
+        $r8 = r0.<de.greenrobot.dao.query.QueryBuilder: java.util.List values>;
+
+        $r7 = r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.Integer limit>;
+
+        interfaceinvoke $r8.<java.util.List: boolean add(java.lang.Object)>($r7);
+
+        $r8 = r0.<de.greenrobot.dao.query.QueryBuilder: java.util.List values>;
+
+        $i1 = interfaceinvoke $r8.<java.util.List: int size()>();
+
+        $i2 = -1;
+
+        $i1 = $i1 + $i2;
+
+     label04:
+        $r7 = r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.Integer offset>;
+
+        if $r7 == null goto label07;
+
+        $r7 = r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.Integer limit>;
+
+        if $r7 != null goto label06;
+
+        $r13 = new java.lang.IllegalStateException;
+
+        specialinvoke $r13.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Offset cannot be set without limit");
+
+        throw $r13;
+
+     label05:
+        $r2 = r0.<de.greenrobot.dao.query.QueryBuilder: de.greenrobot.dao.AbstractDao dao>;
+
+        $r4 = virtualinvoke $r2.<de.greenrobot.dao.AbstractDao: java.lang.String getTablename()>();
+
+        $r9 = r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.String tablePrefix>;
+
+        $r2 = r0.<de.greenrobot.dao.query.QueryBuilder: de.greenrobot.dao.AbstractDao dao>;
+
+        $r10 = virtualinvoke $r2.<de.greenrobot.dao.AbstractDao: java.lang.String[] getAllColumns()>();
+
+        $r4 = staticinvoke <de.greenrobot.dao.internal.SqlUtils: java.lang.String createSqlSelect(java.lang.String,java.lang.String,java.lang.String[])>($r4, $r9, $r10);
+
+        goto label02;
+
+     label06:
+        virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" OFFSET ?");
+
+        $r8 = r0.<de.greenrobot.dao.query.QueryBuilder: java.util.List values>;
+
+        $r7 = r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.Integer offset>;
+
+        interfaceinvoke $r8.<java.util.List: boolean add(java.lang.Object)>($r7);
+
+        $r8 = r0.<de.greenrobot.dao.query.QueryBuilder: java.util.List values>;
+
+        $i0 = interfaceinvoke $r8.<java.util.List: int size()>();
+
+        $i2 = -1;
+
+        $i0 = $i0 + $i2;
+
+     label07:
+        $r4 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $z0 = <de.greenrobot.dao.query.QueryBuilder: boolean LOG_SQL>;
+
+        if $z0 == 0 goto label08;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>(java.lang.String)>("Built SQL for query: ");
+
+        $r1 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r9 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <de.greenrobot.dao.DaoLog: int d(java.lang.String)>($r9);
+
+     label08:
+        $z0 = <de.greenrobot.dao.query.QueryBuilder: boolean LOG_VALUES>;
+
+        if $z0 == 0 goto label09;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>(java.lang.String)>("Values for query: ");
+
+        $r8 = r0.<de.greenrobot.dao.query.QueryBuilder: java.util.List values>;
+
+        $r1 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r8);
+
+        $r9 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <de.greenrobot.dao.DaoLog: int d(java.lang.String)>($r9);
+
+     label09:
+        $r2 = r0.<de.greenrobot.dao.query.QueryBuilder: de.greenrobot.dao.AbstractDao dao>;
+
+        $r8 = r0.<de.greenrobot.dao.query.QueryBuilder: java.util.List values>;
+
+        $r11 = interfaceinvoke $r8.<java.util.List: java.lang.Object[] toArray()>();
+
+        $r12 = staticinvoke <de.greenrobot.dao.query.Query: de.greenrobot.dao.query.Query create(de.greenrobot.dao.AbstractDao,java.lang.String,java.lang.Object[],int,int)>($r2, $r4, $r11, $i1, $i0);
+
+        return $r12;
+
+     label10:
+        $i1 = -1;
+
+        goto label04;
+    }
+
+    public de.greenrobot.dao.query.CountQuery buildCount()
+    {
+        java.lang.Object[] $r6;
+        de.greenrobot.dao.query.CountQuery $r7;
+        java.util.List $r5;
+        de.greenrobot.dao.AbstractDao $r1;
+        de.greenrobot.dao.query.QueryBuilder r0;
+        java.lang.StringBuilder $r4;
+        java.lang.String $r2, $r3;
+        boolean $z0;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $r1 = r0.<de.greenrobot.dao.query.QueryBuilder: de.greenrobot.dao.AbstractDao dao>;
+
+        $r2 = virtualinvoke $r1.<de.greenrobot.dao.AbstractDao: java.lang.String getTablename()>();
+
+        $r3 = r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.String tablePrefix>;
+
+        $r2 = staticinvoke <de.greenrobot.dao.internal.SqlUtils: java.lang.String createSqlSelectCountStar(java.lang.String,java.lang.String)>($r2, $r3);
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>(java.lang.String)>($r2);
+
+        $r2 = r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.String tablePrefix>;
+
+        specialinvoke r0.<de.greenrobot.dao.query.QueryBuilder: void appendWhereClause(java.lang.StringBuilder,java.lang.String)>($r4, $r2);
+
+        $r2 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $z0 = <de.greenrobot.dao.query.QueryBuilder: boolean LOG_SQL>;
+
+        if $z0 == 0 goto label1;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>(java.lang.String)>("Built SQL for count query: ");
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r3 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <de.greenrobot.dao.DaoLog: int d(java.lang.String)>($r3);
+
+     label1:
+        $z0 = <de.greenrobot.dao.query.QueryBuilder: boolean LOG_VALUES>;
+
+        if $z0 == 0 goto label2;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>(java.lang.String)>("Values for count query: ");
+
+        $r5 = r0.<de.greenrobot.dao.query.QueryBuilder: java.util.List values>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r5);
+
+        $r3 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <de.greenrobot.dao.DaoLog: int d(java.lang.String)>($r3);
+
+     label2:
+        $r1 = r0.<de.greenrobot.dao.query.QueryBuilder: de.greenrobot.dao.AbstractDao dao>;
+
+        $r5 = r0.<de.greenrobot.dao.query.QueryBuilder: java.util.List values>;
+
+        $r6 = interfaceinvoke $r5.<java.util.List: java.lang.Object[] toArray()>();
+
+        $r7 = staticinvoke <de.greenrobot.dao.query.CountQuery: de.greenrobot.dao.query.CountQuery create(de.greenrobot.dao.AbstractDao,java.lang.String,java.lang.Object[])>($r1, $r2, $r6);
+
+        return $r7;
+    }
+
+    public de.greenrobot.dao.query.DeleteQuery buildDelete()
+    {
+        java.lang.Object[] $r7;
+        de.greenrobot.dao.query.DeleteQuery $r8;
+        java.util.List $r6;
+        de.greenrobot.dao.AbstractDao $r1;
+        de.greenrobot.dao.query.QueryBuilder r0;
+        java.lang.StringBuilder $r4;
+        java.lang.String $r2, $r3, $r5;
+        boolean $z0;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $r1 = r0.<de.greenrobot.dao.query.QueryBuilder: de.greenrobot.dao.AbstractDao dao>;
+
+        $r2 = virtualinvoke $r1.<de.greenrobot.dao.AbstractDao: java.lang.String getTablename()>();
+
+        $r3 = staticinvoke <de.greenrobot.dao.internal.SqlUtils: java.lang.String createSqlDelete(java.lang.String,java.lang.String[])>($r2, null);
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>(java.lang.String)>($r3);
+
+        $r3 = r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.String tablePrefix>;
+
+        specialinvoke r0.<de.greenrobot.dao.query.QueryBuilder: void appendWhereClause(java.lang.StringBuilder,java.lang.String)>($r4, $r3);
+
+        $r3 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r5 = r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.String tablePrefix>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(".\'");
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(".\'");
+
+        $r2 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r2 = virtualinvoke $r3.<java.lang.String: java.lang.String replace(java.lang.CharSequence,java.lang.CharSequence)>($r5, $r2);
+
+        $z0 = <de.greenrobot.dao.query.QueryBuilder: boolean LOG_SQL>;
+
+        if $z0 == 0 goto label1;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>(java.lang.String)>("Built SQL for delete query: ");
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r3 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <de.greenrobot.dao.DaoLog: int d(java.lang.String)>($r3);
+
+     label1:
+        $z0 = <de.greenrobot.dao.query.QueryBuilder: boolean LOG_VALUES>;
+
+        if $z0 == 0 goto label2;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>(java.lang.String)>("Values for delete query: ");
+
+        $r6 = r0.<de.greenrobot.dao.query.QueryBuilder: java.util.List values>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r6);
+
+        $r3 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <de.greenrobot.dao.DaoLog: int d(java.lang.String)>($r3);
+
+     label2:
+        $r1 = r0.<de.greenrobot.dao.query.QueryBuilder: de.greenrobot.dao.AbstractDao dao>;
+
+        $r6 = r0.<de.greenrobot.dao.query.QueryBuilder: java.util.List values>;
+
+        $r7 = interfaceinvoke $r6.<java.util.List: java.lang.Object[] toArray()>();
+
+        $r8 = staticinvoke <de.greenrobot.dao.query.DeleteQuery: de.greenrobot.dao.query.DeleteQuery create(de.greenrobot.dao.AbstractDao,java.lang.String,java.lang.Object[])>($r1, $r2, $r7);
+
+        return $r8;
+    }
+
+    protected void checkCondition(de.greenrobot.dao.query.WhereCondition)
+    {
+        de.greenrobot.dao.query.WhereCondition$PropertyCondition $r2;
+        de.greenrobot.dao.Property $r3;
+        de.greenrobot.dao.query.WhereCondition $r1;
+        de.greenrobot.dao.query.QueryBuilder r0;
+        boolean $z0;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $r1 := @parameter0: de.greenrobot.dao.query.WhereCondition;
+
+        $z0 = $r1 instanceof de.greenrobot.dao.query.WhereCondition$PropertyCondition;
+
+        if $z0 == 0 goto label1;
+
+        $r2 = (de.greenrobot.dao.query.WhereCondition$PropertyCondition) $r1;
+
+        $r3 = $r2.<de.greenrobot.dao.query.WhereCondition$PropertyCondition: de.greenrobot.dao.Property property>;
+
+        virtualinvoke r0.<de.greenrobot.dao.query.QueryBuilder: void checkProperty(de.greenrobot.dao.Property)>($r3);
+
+     label1:
+        return;
+    }
+
+    protected void checkProperty(de.greenrobot.dao.Property)
+    {
+        de.greenrobot.dao.Property[] $r4;
+        de.greenrobot.dao.DaoException $r5;
+        de.greenrobot.dao.Property $r1, $r2;
+        de.greenrobot.dao.AbstractDao $r3;
+        de.greenrobot.dao.query.QueryBuilder r0;
+        int $i0, $i1;
+        java.lang.StringBuilder $r6;
+        java.lang.String $r7;
+        boolean $z0;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $r1 := @parameter0: de.greenrobot.dao.Property;
+
+        $z0 = 0;
+
+        $r3 = r0.<de.greenrobot.dao.query.QueryBuilder: de.greenrobot.dao.AbstractDao dao>;
+
+        if $r3 == null goto label4;
+
+        $r3 = r0.<de.greenrobot.dao.query.QueryBuilder: de.greenrobot.dao.AbstractDao dao>;
+
+        $r4 = virtualinvoke $r3.<de.greenrobot.dao.AbstractDao: de.greenrobot.dao.Property[] getProperties()>();
+
+        $i0 = lengthof $r4;
+
+        $i1 = 0;
+
+     label1:
+        if $i1 >= $i0 goto label2;
+
+        $r2 = $r4[$i1];
+
+        if $r1 != $r2 goto label3;
+
+        $z0 = 1;
+
+     label2:
+        if $z0 != 0 goto label4;
+
+        $r5 = new de.greenrobot.dao.DaoException;
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>(java.lang.String)>("Property \'");
+
+        $r7 = $r1.<de.greenrobot.dao.Property: java.lang.String name>;
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\' is not part of ");
+
+        $r3 = r0.<de.greenrobot.dao.query.QueryBuilder: de.greenrobot.dao.AbstractDao dao>;
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r3);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r5.<de.greenrobot.dao.DaoException: void <init>(java.lang.String)>($r7);
+
+        throw $r5;
+
+     label3:
+        $i1 = $i1 + 1;
+
+        goto label1;
+
+     label4:
+        return;
+    }
+
+    protected transient de.greenrobot.dao.query.WhereCondition combineWhereConditions(java.lang.String, de.greenrobot.dao.query.WhereCondition, de.greenrobot.dao.query.WhereCondition, de.greenrobot.dao.query.WhereCondition[])
+    {
+        java.lang.Object[] $r8;
+        de.greenrobot.dao.query.WhereCondition $r2, $r3;
+        java.util.ArrayList $r6;
+        de.greenrobot.dao.query.WhereCondition[] $r4;
+        de.greenrobot.dao.query.QueryBuilder r0;
+        int $i0, $i1;
+        java.lang.StringBuilder $r5;
+        java.lang.String $r1;
+        de.greenrobot.dao.query.WhereCondition$StringCondition $r7;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: de.greenrobot.dao.query.WhereCondition;
+
+        $r3 := @parameter2: de.greenrobot.dao.query.WhereCondition;
+
+        $r4 := @parameter3: de.greenrobot.dao.query.WhereCondition[];
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>(java.lang.String)>("(");
+
+        $r6 = new java.util.ArrayList;
+
+        specialinvoke $r6.<java.util.ArrayList: void <init>()>();
+
+        virtualinvoke r0.<de.greenrobot.dao.query.QueryBuilder: void addCondition(java.lang.StringBuilder,java.util.List,de.greenrobot.dao.query.WhereCondition)>($r5, $r6, $r2);
+
+        virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        virtualinvoke r0.<de.greenrobot.dao.query.QueryBuilder: void addCondition(java.lang.StringBuilder,java.util.List,de.greenrobot.dao.query.WhereCondition)>($r5, $r6, $r3);
+
+        $i0 = lengthof $r4;
+
+        $i1 = 0;
+
+     label1:
+        if $i1 >= $i0 goto label2;
+
+        $r2 = $r4[$i1];
+
+        virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        virtualinvoke r0.<de.greenrobot.dao.query.QueryBuilder: void addCondition(java.lang.StringBuilder,java.util.List,de.greenrobot.dao.query.WhereCondition)>($r5, $r6, $r2);
+
+        $i1 = $i1 + 1;
+
+        goto label1;
+
+     label2:
+        virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(41);
+
+        $r7 = new de.greenrobot.dao.query.WhereCondition$StringCondition;
+
+        $r1 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r8 = interfaceinvoke $r6.<java.util.List: java.lang.Object[] toArray()>();
+
+        specialinvoke $r7.<de.greenrobot.dao.query.WhereCondition$StringCondition: void <init>(java.lang.String,java.lang.Object[])>($r1, $r8);
+
+        return $r7;
+    }
+
+    public long count()
+    {
+        long $l0;
+        de.greenrobot.dao.query.QueryBuilder r0;
+        de.greenrobot.dao.query.CountQuery $r1;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $r1 = virtualinvoke r0.<de.greenrobot.dao.query.QueryBuilder: de.greenrobot.dao.query.CountQuery buildCount()>();
+
+        $l0 = virtualinvoke $r1.<de.greenrobot.dao.query.CountQuery: long count()>();
+
+        return $l0;
+    }
+
+    public de.greenrobot.dao.query.QueryBuilder join(java.lang.Class, de.greenrobot.dao.Property)
+    {
+        java.lang.UnsupportedOperationException $r3;
+        de.greenrobot.dao.Property $r2;
+        de.greenrobot.dao.query.QueryBuilder r0;
+        java.lang.Class $r1;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $r1 := @parameter0: java.lang.Class;
+
+        $r2 := @parameter1: de.greenrobot.dao.Property;
+
+        $r3 = new java.lang.UnsupportedOperationException;
+
+        specialinvoke $r3.<java.lang.UnsupportedOperationException: void <init>()>();
+
+        throw $r3;
+    }
+
+    public de.greenrobot.dao.query.QueryBuilder joinToMany(java.lang.Class, de.greenrobot.dao.Property)
+    {
+        java.lang.UnsupportedOperationException $r3;
+        de.greenrobot.dao.Property $r2;
+        de.greenrobot.dao.query.QueryBuilder r0;
+        java.lang.Class $r1;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $r1 := @parameter0: java.lang.Class;
+
+        $r2 := @parameter1: de.greenrobot.dao.Property;
+
+        $r3 = new java.lang.UnsupportedOperationException;
+
+        specialinvoke $r3.<java.lang.UnsupportedOperationException: void <init>()>();
+
+        throw $r3;
+    }
+
+    public de.greenrobot.dao.query.QueryBuilder limit(int)
+    {
+        int $i0;
+        java.lang.Integer $r1;
+        de.greenrobot.dao.query.QueryBuilder r0;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $i0 := @parameter0: int;
+
+        $r1 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.Integer limit> = $r1;
+
+        return r0;
+    }
+
+    public java.util.List list()
+    {
+        java.util.List $r2;
+        de.greenrobot.dao.query.Query $r1;
+        de.greenrobot.dao.query.QueryBuilder r0;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $r1 = virtualinvoke r0.<de.greenrobot.dao.query.QueryBuilder: de.greenrobot.dao.query.Query build()>();
+
+        $r2 = virtualinvoke $r1.<de.greenrobot.dao.query.Query: java.util.List list()>();
+
+        return $r2;
+    }
+
+    public de.greenrobot.dao.query.CloseableListIterator listIterator()
+    {
+        de.greenrobot.dao.query.CloseableListIterator $r2;
+        de.greenrobot.dao.query.Query $r1;
+        de.greenrobot.dao.query.QueryBuilder r0;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $r1 = virtualinvoke r0.<de.greenrobot.dao.query.QueryBuilder: de.greenrobot.dao.query.Query build()>();
+
+        $r2 = virtualinvoke $r1.<de.greenrobot.dao.query.Query: de.greenrobot.dao.query.CloseableListIterator listIterator()>();
+
+        return $r2;
+    }
+
+    public de.greenrobot.dao.query.LazyList listLazy()
+    {
+        de.greenrobot.dao.query.LazyList $r2;
+        de.greenrobot.dao.query.Query $r1;
+        de.greenrobot.dao.query.QueryBuilder r0;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $r1 = virtualinvoke r0.<de.greenrobot.dao.query.QueryBuilder: de.greenrobot.dao.query.Query build()>();
+
+        $r2 = virtualinvoke $r1.<de.greenrobot.dao.query.Query: de.greenrobot.dao.query.LazyList listLazy()>();
+
+        return $r2;
+    }
+
+    public de.greenrobot.dao.query.LazyList listLazyUncached()
+    {
+        de.greenrobot.dao.query.LazyList $r2;
+        de.greenrobot.dao.query.Query $r1;
+        de.greenrobot.dao.query.QueryBuilder r0;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $r1 = virtualinvoke r0.<de.greenrobot.dao.query.QueryBuilder: de.greenrobot.dao.query.Query build()>();
+
+        $r2 = virtualinvoke $r1.<de.greenrobot.dao.query.Query: de.greenrobot.dao.query.LazyList listLazyUncached()>();
+
+        return $r2;
+    }
+
+    public de.greenrobot.dao.query.QueryBuilder offset(int)
+    {
+        int $i0;
+        java.lang.Integer $r1;
+        de.greenrobot.dao.query.QueryBuilder r0;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $i0 := @parameter0: int;
+
+        $r1 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.Integer offset> = $r1;
+
+        return r0;
+    }
+
+    public transient de.greenrobot.dao.query.WhereCondition or(de.greenrobot.dao.query.WhereCondition, de.greenrobot.dao.query.WhereCondition, de.greenrobot.dao.query.WhereCondition[])
+    {
+        de.greenrobot.dao.query.WhereCondition[] $r3;
+        de.greenrobot.dao.query.WhereCondition $r1, $r2;
+        de.greenrobot.dao.query.QueryBuilder r0;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $r1 := @parameter0: de.greenrobot.dao.query.WhereCondition;
+
+        $r2 := @parameter1: de.greenrobot.dao.query.WhereCondition;
+
+        $r3 := @parameter2: de.greenrobot.dao.query.WhereCondition[];
+
+        $r1 = virtualinvoke r0.<de.greenrobot.dao.query.QueryBuilder: de.greenrobot.dao.query.WhereCondition combineWhereConditions(java.lang.String,de.greenrobot.dao.query.WhereCondition,de.greenrobot.dao.query.WhereCondition,de.greenrobot.dao.query.WhereCondition[])>(" OR ", $r1, $r2, $r3);
+
+        return $r1;
+    }
+
+    public transient de.greenrobot.dao.query.QueryBuilder orderAsc(de.greenrobot.dao.Property[])
+    {
+        de.greenrobot.dao.Property[] $r1;
+        de.greenrobot.dao.query.QueryBuilder r0;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $r1 := @parameter0: de.greenrobot.dao.Property[];
+
+        specialinvoke r0.<de.greenrobot.dao.query.QueryBuilder: void orderAscOrDesc(java.lang.String,de.greenrobot.dao.Property[])>(" ASC", $r1);
+
+        return r0;
+    }
+
+    public de.greenrobot.dao.query.QueryBuilder orderCustom(de.greenrobot.dao.Property, java.lang.String)
+    {
+        de.greenrobot.dao.Property $r1;
+        de.greenrobot.dao.query.QueryBuilder r0;
+        java.lang.StringBuilder $r3;
+        java.lang.String $r2;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $r1 := @parameter0: de.greenrobot.dao.Property;
+
+        $r2 := @parameter1: java.lang.String;
+
+        specialinvoke r0.<de.greenrobot.dao.query.QueryBuilder: void checkOrderBuilder()>();
+
+        $r3 = r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.StringBuilder orderBuilder>;
+
+        $r3 = virtualinvoke r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.StringBuilder append(java.lang.StringBuilder,de.greenrobot.dao.Property)>($r3, $r1);
+
+        virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(32);
+
+        $r3 = r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.StringBuilder orderBuilder>;
+
+        virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        return r0;
+    }
+
+    public transient de.greenrobot.dao.query.QueryBuilder orderDesc(de.greenrobot.dao.Property[])
+    {
+        de.greenrobot.dao.Property[] $r1;
+        de.greenrobot.dao.query.QueryBuilder r0;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $r1 := @parameter0: de.greenrobot.dao.Property[];
+
+        specialinvoke r0.<de.greenrobot.dao.query.QueryBuilder: void orderAscOrDesc(java.lang.String,de.greenrobot.dao.Property[])>(" DESC", $r1);
+
+        return r0;
+    }
+
+    public de.greenrobot.dao.query.QueryBuilder orderRaw(java.lang.String)
+    {
+        java.lang.StringBuilder $r2;
+        java.lang.String $r1;
+        de.greenrobot.dao.query.QueryBuilder r0;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $r1 := @parameter0: java.lang.String;
+
+        specialinvoke r0.<de.greenrobot.dao.query.QueryBuilder: void checkOrderBuilder()>();
+
+        $r2 = r0.<de.greenrobot.dao.query.QueryBuilder: java.lang.StringBuilder orderBuilder>;
+
+        virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        return r0;
+    }
+
+    public java.lang.Object unique()
+    {
+        java.lang.Object $r2;
+        de.greenrobot.dao.query.Query $r1;
+        de.greenrobot.dao.query.QueryBuilder r0;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $r1 = virtualinvoke r0.<de.greenrobot.dao.query.QueryBuilder: de.greenrobot.dao.query.Query build()>();
+
+        $r2 = virtualinvoke $r1.<de.greenrobot.dao.query.Query: java.lang.Object unique()>();
+
+        return $r2;
+    }
+
+    public java.lang.Object uniqueOrThrow()
+    {
+        java.lang.Object $r2;
+        de.greenrobot.dao.query.Query $r1;
+        de.greenrobot.dao.query.QueryBuilder r0;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $r1 = virtualinvoke r0.<de.greenrobot.dao.query.QueryBuilder: de.greenrobot.dao.query.Query build()>();
+
+        $r2 = virtualinvoke $r1.<de.greenrobot.dao.query.Query: java.lang.Object uniqueOrThrow()>();
+
+        return $r2;
+    }
+
+    public transient de.greenrobot.dao.query.QueryBuilder where(de.greenrobot.dao.query.WhereCondition, de.greenrobot.dao.query.WhereCondition[])
+    {
+        java.util.List $r3;
+        de.greenrobot.dao.query.WhereCondition[] $r2;
+        de.greenrobot.dao.query.WhereCondition $r1;
+        de.greenrobot.dao.query.QueryBuilder r0;
+        int $i0, $i1;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $r1 := @parameter0: de.greenrobot.dao.query.WhereCondition;
+
+        $r2 := @parameter1: de.greenrobot.dao.query.WhereCondition[];
+
+        $r3 = r0.<de.greenrobot.dao.query.QueryBuilder: java.util.List whereConditions>;
+
+        interfaceinvoke $r3.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $i0 = lengthof $r2;
+
+        $i1 = 0;
+
+     label1:
+        if $i1 >= $i0 goto label2;
+
+        $r1 = $r2[$i1];
+
+        virtualinvoke r0.<de.greenrobot.dao.query.QueryBuilder: void checkCondition(de.greenrobot.dao.query.WhereCondition)>($r1);
+
+        $r3 = r0.<de.greenrobot.dao.query.QueryBuilder: java.util.List whereConditions>;
+
+        interfaceinvoke $r3.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        $i1 = $i1 + 1;
+
+        goto label1;
+
+     label2:
+        return r0;
+    }
+
+    public transient de.greenrobot.dao.query.QueryBuilder whereOr(de.greenrobot.dao.query.WhereCondition, de.greenrobot.dao.query.WhereCondition, de.greenrobot.dao.query.WhereCondition[])
+    {
+        java.util.List $r4;
+        de.greenrobot.dao.query.WhereCondition[] $r3;
+        de.greenrobot.dao.query.WhereCondition $r1, $r2;
+        de.greenrobot.dao.query.QueryBuilder r0;
+
+        r0 := @this: de.greenrobot.dao.query.QueryBuilder;
+
+        $r1 := @parameter0: de.greenrobot.dao.query.WhereCondition;
+
+        $r2 := @parameter1: de.greenrobot.dao.query.WhereCondition;
+
+        $r3 := @parameter2: de.greenrobot.dao.query.WhereCondition[];
+
+        $r4 = r0.<de.greenrobot.dao.query.QueryBuilder: java.util.List whereConditions>;
+
+        $r1 = virtualinvoke r0.<de.greenrobot.dao.query.QueryBuilder: de.greenrobot.dao.query.WhereCondition or(de.greenrobot.dao.query.WhereCondition,de.greenrobot.dao.query.WhereCondition,de.greenrobot.dao.query.WhereCondition[])>($r1, $r2, $r3);
+
+        interfaceinvoke $r4.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        return r0;
+    }
+}

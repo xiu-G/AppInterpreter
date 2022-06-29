@@ -1,0 +1,429 @@
+public class com.sktelecom.tad.sdk.view.BannerBarTextView extends android.widget.TextView implements com.sktelecom.tad.sdk.view.BannerView
+{
+    private volatile boolean isSentMessage;
+    boolean isWindowFocused;
+    private int mDuration;
+    long mElapsedTime;
+    long mLastTime;
+    private android.os.Message mOnEndMessage;
+    int viewVisibility;
+    int windowVisiblity;
+
+    public void <init>(android.content.Context, com.sktelecom.tad.sdk.event.AdTouchEvent, int, android.os.Message, android.text.Spanned)
+    {
+        android.content.Context $r1;
+        android.text.Spanned $r4;
+        android.os.Message $r3;
+        int $i0;
+        com.sktelecom.tad.sdk.event.AdTouchEvent $r2;
+        com.sktelecom.tad.sdk.view.BannerTextViewOnClickListener $r5;
+        com.sktelecom.tad.sdk.view.BannerBarTextView r0;
+
+        r0 := @this: com.sktelecom.tad.sdk.view.BannerBarTextView;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: com.sktelecom.tad.sdk.event.AdTouchEvent;
+
+        $i0 := @parameter2: int;
+
+        $r3 := @parameter3: android.os.Message;
+
+        $r4 := @parameter4: android.text.Spanned;
+
+        specialinvoke r0.<android.widget.TextView: void <init>(android.content.Context)>($r1);
+
+        r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: long mLastTime> = 0L;
+
+        r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: long mElapsedTime> = 0L;
+
+        specialinvoke r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: void initView()>();
+
+        if $r3 == null goto label1;
+
+        r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: android.os.Message mOnEndMessage> = $r3;
+
+     label1:
+        $i0 = $i0 * 1000;
+
+        r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: int mDuration> = $i0;
+
+        $r5 = new com.sktelecom.tad.sdk.view.BannerTextViewOnClickListener;
+
+        specialinvoke $r5.<com.sktelecom.tad.sdk.view.BannerTextViewOnClickListener: void <init>(com.sktelecom.tad.sdk.event.AdTouchEvent)>($r2);
+
+        virtualinvoke r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: void setOnClickListener(android.view.View$OnClickListener)>($r5);
+
+        specialinvoke r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: void resetLastTime()>();
+
+        return;
+    }
+
+    private android.os.Message copyMessage(android.os.Message)
+    {
+        android.os.Message $r1, $r2;
+        android.os.Handler $r3;
+        com.sktelecom.tad.sdk.view.BannerBarTextView r0;
+
+        r0 := @this: com.sktelecom.tad.sdk.view.BannerBarTextView;
+
+        $r1 := @parameter0: android.os.Message;
+
+        $r2 = staticinvoke <android.os.Message: android.os.Message obtain(android.os.Message)>($r1);
+
+        $r3 = virtualinvoke $r1.<android.os.Message: android.os.Handler getTarget()>();
+
+        virtualinvoke $r2.<android.os.Message: void setTarget(android.os.Handler)>($r3);
+
+        $r2.<android.os.Message: java.lang.Object obj> = r0;
+
+        return $r2;
+    }
+
+    private void handleSendingMessageByVisibility()
+    {
+        int $i0;
+        com.sktelecom.tad.sdk.view.BannerBarTextView r0;
+
+        r0 := @this: com.sktelecom.tad.sdk.view.BannerBarTextView;
+
+        $i0 = r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: int viewVisibility>;
+
+        if $i0 != 0 goto label1;
+
+        $i0 = r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: int windowVisiblity>;
+
+        if $i0 != 0 goto label1;
+
+        specialinvoke r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: void onShowing()>();
+
+        return;
+
+     label1:
+        specialinvoke r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: void hidden()>();
+
+        return;
+    }
+
+    private void hidden()
+    {
+        long $l0, $l1, $l2;
+        com.sktelecom.tad.sdk.view.BannerBarTextView r0;
+        android.os.Message $r1;
+        byte $b4;
+        android.os.Handler $r2;
+        int $i3;
+        boolean $z0;
+
+        r0 := @this: com.sktelecom.tad.sdk.view.BannerBarTextView;
+
+        $r1 = r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: android.os.Message mOnEndMessage>;
+
+        if $r1 == null goto label1;
+
+        $r1 = r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: android.os.Message mOnEndMessage>;
+
+        $r2 = virtualinvoke $r1.<android.os.Message: android.os.Handler getTarget()>();
+
+        if $r2 == null goto label1;
+
+        $z0 = r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: boolean isSentMessage>;
+
+        if $z0 == 0 goto label1;
+
+        r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: boolean isSentMessage> = 0;
+
+        $l0 = r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: long mElapsedTime>;
+
+        $l1 = staticinvoke <java.lang.System: long nanoTime()>();
+
+        $l1 = $l1 / 1000000L;
+
+        $l2 = r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: long mLastTime>;
+
+        $l1 = $l1 - $l2;
+
+        $l0 = $l0 + $l1;
+
+        r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: long mElapsedTime> = $l0;
+
+        $l0 = r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: long mElapsedTime>;
+
+        $i3 = r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: int mDuration>;
+
+        $l1 = (long) $i3;
+
+        $b4 = $l0 cmp $l1;
+
+        $i3 = (int) $b4;
+
+        if $i3 >= 0 goto label1;
+
+        $r1 = r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: android.os.Message mOnEndMessage>;
+
+        $i3 = $r1.<android.os.Message: int what>;
+
+        virtualinvoke $r2.<android.os.Handler: void removeMessages(int,java.lang.Object)>($i3, r0);
+
+     label1:
+        return;
+    }
+
+    private void initView()
+    {
+        com.sktelecom.tad.sdk.view.BannerBarTextView r0;
+
+        r0 := @this: com.sktelecom.tad.sdk.view.BannerBarTextView;
+
+        virtualinvoke r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: void setPadding(int,int,int,int)>(0, 0, 0, 0);
+
+        return;
+    }
+
+    private void invisible()
+    {
+        android.os.Message $r2;
+        com.sktelecom.tad.sdk.view.BannerBarTextView r0;
+        android.os.Handler $r1;
+
+        r0 := @this: com.sktelecom.tad.sdk.view.BannerBarTextView;
+
+        $r2 = r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: android.os.Message mOnEndMessage>;
+
+        if $r2 == null goto label1;
+
+        $r2 = r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: android.os.Message mOnEndMessage>;
+
+        $r1 = virtualinvoke $r2.<android.os.Message: android.os.Handler getTarget()>();
+
+        if $r1 == null goto label1;
+
+        virtualinvoke $r1.<android.os.Handler: boolean sendEmptyMessage(int)>(4);
+
+     label1:
+        return;
+    }
+
+    private void onShowing()
+    {
+        long $l0, $l2;
+        com.sktelecom.tad.sdk.view.BannerBarTextView r0;
+        android.os.Message $r1;
+        byte $b3;
+        android.os.Handler $r2;
+        int $i1;
+        boolean $z0;
+
+        r0 := @this: com.sktelecom.tad.sdk.view.BannerBarTextView;
+
+        $r1 = r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: android.os.Message mOnEndMessage>;
+
+        if $r1 == null goto label1;
+
+        $r1 = r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: android.os.Message mOnEndMessage>;
+
+        $r2 = virtualinvoke $r1.<android.os.Message: android.os.Handler getTarget()>();
+
+        if $r2 == null goto label1;
+
+        $z0 = r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: boolean isSentMessage>;
+
+        if $z0 != 0 goto label1;
+
+        $l0 = r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: long mElapsedTime>;
+
+        $i1 = r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: int mDuration>;
+
+        $l2 = (long) $i1;
+
+        $b3 = $l0 cmp $l2;
+
+        $i1 = (int) $b3;
+
+        if $i1 >= 0 goto label1;
+
+        $i1 = virtualinvoke r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: int getVisibility()>();
+
+        if $i1 != 0 goto label1;
+
+        r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: boolean isSentMessage> = 1;
+
+        $r1 = r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: android.os.Message mOnEndMessage>;
+
+        $r1 = specialinvoke r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: android.os.Message copyMessage(android.os.Message)>($r1);
+
+        specialinvoke r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: void resetLastTime()>();
+
+        $i1 = r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: int mDuration>;
+
+        $l0 = (long) $i1;
+
+        $l2 = r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: long mElapsedTime>;
+
+        $l0 = $l0 - $l2;
+
+        virtualinvoke $r2.<android.os.Handler: boolean sendMessageDelayed(android.os.Message,long)>($r1, $l0);
+
+     label1:
+        return;
+    }
+
+    private void resetLastTime()
+    {
+        long $l0;
+        com.sktelecom.tad.sdk.view.BannerBarTextView r0;
+
+        r0 := @this: com.sktelecom.tad.sdk.view.BannerBarTextView;
+
+        $l0 = staticinvoke <java.lang.System: long nanoTime()>();
+
+        $l0 = $l0 / 1000000L;
+
+        r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: long mLastTime> = $l0;
+
+        return;
+    }
+
+    private void visible()
+    {
+        android.os.Message $r2;
+        com.sktelecom.tad.sdk.view.BannerBarTextView r0;
+        android.os.Handler $r1;
+
+        r0 := @this: com.sktelecom.tad.sdk.view.BannerBarTextView;
+
+        $r2 = r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: android.os.Message mOnEndMessage>;
+
+        if $r2 == null goto label1;
+
+        $r2 = r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: android.os.Message mOnEndMessage>;
+
+        $r1 = virtualinvoke $r2.<android.os.Message: android.os.Handler getTarget()>();
+
+        if $r1 == null goto label1;
+
+        virtualinvoke $r1.<android.os.Handler: boolean sendEmptyMessage(int)>(3);
+
+     label1:
+        return;
+    }
+
+    public com.sktelecom.tad.sdk.bean.AdBean$BannerType getType()
+    {
+        com.sktelecom.tad.sdk.bean.AdBean$BannerType r1;
+        com.sktelecom.tad.sdk.view.BannerBarTextView r0;
+
+        r0 := @this: com.sktelecom.tad.sdk.view.BannerBarTextView;
+
+        r1 = <com.sktelecom.tad.sdk.bean.AdBean$BannerType: com.sktelecom.tad.sdk.bean.AdBean$BannerType Remote>;
+
+        return r1;
+    }
+
+    public void onDetachedFromWindow()
+    {
+        com.sktelecom.tad.sdk.view.BannerBarTextView r0;
+
+        r0 := @this: com.sktelecom.tad.sdk.view.BannerBarTextView;
+
+        specialinvoke r0.<android.widget.TextView: void onDetachedFromWindow()>();
+
+        return;
+    }
+
+    protected void onVisibilityChanged(android.view.View, int)
+    {
+        int $i0;
+        android.view.View $r1;
+        com.sktelecom.tad.sdk.view.BannerBarTextView r0;
+
+        r0 := @this: com.sktelecom.tad.sdk.view.BannerBarTextView;
+
+        $r1 := @parameter0: android.view.View;
+
+        $i0 := @parameter1: int;
+
+        r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: int viewVisibility> = $i0;
+
+        specialinvoke r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: void handleSendingMessageByVisibility()>();
+
+        return;
+    }
+
+    public void onWindowFocusChanged(boolean)
+    {
+        com.sktelecom.tad.sdk.view.BannerBarTextView r0;
+        boolean $z0;
+
+        r0 := @this: com.sktelecom.tad.sdk.view.BannerBarTextView;
+
+        $z0 := @parameter0: boolean;
+
+        if $z0 == 0 goto label2;
+
+        specialinvoke r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: void visible()>();
+
+        specialinvoke r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: void onShowing()>();
+
+     label1:
+        specialinvoke r0.<android.widget.TextView: void onWindowFocusChanged(boolean)>($z0);
+
+        return;
+
+     label2:
+        specialinvoke r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: void invisible()>();
+
+        specialinvoke r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: void hidden()>();
+
+        goto label1;
+    }
+
+    protected void onWindowVisibilityChanged(int)
+    {
+        int $i0;
+        com.sktelecom.tad.sdk.view.BannerBarTextView r0;
+
+        r0 := @this: com.sktelecom.tad.sdk.view.BannerBarTextView;
+
+        $i0 := @parameter0: int;
+
+        r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: int windowVisiblity> = $i0;
+
+        specialinvoke r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: void handleSendingMessageByVisibility()>();
+
+        specialinvoke r0.<android.widget.TextView: void onWindowVisibilityChanged(int)>($i0);
+
+        return;
+    }
+
+    public void refreshTimer()
+    {
+        com.sktelecom.tad.sdk.view.BannerBarTextView r0;
+
+        r0 := @this: com.sktelecom.tad.sdk.view.BannerBarTextView;
+
+        r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: long mElapsedTime> = 0L;
+
+        r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: boolean isSentMessage> = 0;
+
+        specialinvoke r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: void onShowing()>();
+
+        return;
+    }
+
+    public void setVisibility(int)
+    {
+        int $i0;
+        com.sktelecom.tad.sdk.view.BannerBarTextView r0;
+
+        r0 := @this: com.sktelecom.tad.sdk.view.BannerBarTextView;
+
+        $i0 := @parameter0: int;
+
+        specialinvoke r0.<android.widget.TextView: void setVisibility(int)>($i0);
+
+        virtualinvoke r0.<com.sktelecom.tad.sdk.view.BannerBarTextView: void onVisibilityChanged(android.view.View,int)>(r0, $i0);
+
+        return;
+    }
+}

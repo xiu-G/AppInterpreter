@@ -1,0 +1,305 @@
+public class com.yang.longrubblishclear.util.ShakeDetector extends java.lang.Object implements android.hardware.SensorEventListener
+{
+    static final int SHAKE_INTERVAL;
+    static final int UPDATE_INTERVAL;
+    android.content.Context mContext;
+    long mLastShakeTime;
+    long mLastUpdateTime;
+    float mLastX;
+    float mLastY;
+    float mLastZ;
+    java.util.ArrayList mListeners;
+    android.hardware.SensorManager mSensorManager;
+    public int shakeThreshold;
+
+    public void <init>(android.content.Context)
+    {
+        com.yang.longrubblishclear.util.ShakeDetector r0;
+        android.content.Context $r1;
+        android.hardware.SensorManager $r3;
+        java.lang.Object $r2;
+        java.util.ArrayList $r4;
+
+        r0 := @this: com.yang.longrubblishclear.util.ShakeDetector;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<com.yang.longrubblishclear.util.ShakeDetector: int shakeThreshold> = 1000;
+
+        r0.<com.yang.longrubblishclear.util.ShakeDetector: android.content.Context mContext> = $r1;
+
+        $r2 = virtualinvoke $r1.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("sensor");
+
+        $r3 = (android.hardware.SensorManager) $r2;
+
+        r0.<com.yang.longrubblishclear.util.ShakeDetector: android.hardware.SensorManager mSensorManager> = $r3;
+
+        $r4 = new java.util.ArrayList;
+
+        specialinvoke $r4.<java.util.ArrayList: void <init>()>();
+
+        r0.<com.yang.longrubblishclear.util.ShakeDetector: java.util.ArrayList mListeners> = $r4;
+
+        return;
+    }
+
+    private void notifyListeners()
+    {
+        com.yang.longrubblishclear.util.ShakeDetector r0;
+        java.util.Iterator $r2;
+        com.yang.longrubblishclear.util.ShakeDetector$OnShakeListener r4;
+        java.lang.Object $r3;
+        java.util.ArrayList $r1;
+        boolean $z0;
+
+        r0 := @this: com.yang.longrubblishclear.util.ShakeDetector;
+
+        $r1 = r0.<com.yang.longrubblishclear.util.ShakeDetector: java.util.ArrayList mListeners>;
+
+        $r2 = virtualinvoke $r1.<java.util.ArrayList: java.util.Iterator iterator()>();
+
+     label1:
+        $z0 = interfaceinvoke $r2.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 != 0 goto label2;
+
+        return;
+
+     label2:
+        $r3 = interfaceinvoke $r2.<java.util.Iterator: java.lang.Object next()>();
+
+        r4 = (com.yang.longrubblishclear.util.ShakeDetector$OnShakeListener) $r3;
+
+        interfaceinvoke r4.<com.yang.longrubblishclear.util.ShakeDetector$OnShakeListener: void onShake()>();
+
+        goto label1;
+    }
+
+    public void onAccuracyChanged(android.hardware.Sensor, int)
+    {
+        int $i0;
+        com.yang.longrubblishclear.util.ShakeDetector r0;
+        android.hardware.Sensor $r1;
+
+        r0 := @this: com.yang.longrubblishclear.util.ShakeDetector;
+
+        $r1 := @parameter0: android.hardware.Sensor;
+
+        $i0 := @parameter1: int;
+
+        return;
+    }
+
+    public void onSensorChanged(android.hardware.SensorEvent)
+    {
+        com.yang.longrubblishclear.util.ShakeDetector r0;
+        long l0, $l1;
+        float[] $r2;
+        android.hardware.SensorEvent $r1;
+        byte $b2;
+        int $i3;
+        float f0, f1, f2, f3, f4, f5;
+
+        r0 := @this: com.yang.longrubblishclear.util.ShakeDetector;
+
+        $r1 := @parameter0: android.hardware.SensorEvent;
+
+        $l1 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        l0 = r0.<com.yang.longrubblishclear.util.ShakeDetector: long mLastUpdateTime>;
+
+        l0 = $l1 - l0;
+
+        $b2 = l0 cmp 100L;
+
+        $i3 = (int) $b2;
+
+        if $i3 >= 0 goto label1;
+
+        return;
+
+     label1:
+        r0.<com.yang.longrubblishclear.util.ShakeDetector: long mLastUpdateTime> = $l1;
+
+        $r2 = $r1.<android.hardware.SensorEvent: float[] values>;
+
+        f3 = $r2[0];
+
+        $r2 = $r1.<android.hardware.SensorEvent: float[] values>;
+
+        f4 = $r2[1];
+
+        $r2 = $r1.<android.hardware.SensorEvent: float[] values>;
+
+        f5 = $r2[2];
+
+        f0 = r0.<com.yang.longrubblishclear.util.ShakeDetector: float mLastX>;
+
+        f1 = f3 - f0;
+
+        f0 = r0.<com.yang.longrubblishclear.util.ShakeDetector: float mLastY>;
+
+        f2 = f4 - f0;
+
+        f0 = r0.<com.yang.longrubblishclear.util.ShakeDetector: float mLastZ>;
+
+        f0 = f5 - f0;
+
+        r0.<com.yang.longrubblishclear.util.ShakeDetector: float mLastX> = f3;
+
+        r0.<com.yang.longrubblishclear.util.ShakeDetector: float mLastY> = f4;
+
+        r0.<com.yang.longrubblishclear.util.ShakeDetector: float mLastZ> = f5;
+
+        f3 = f1 * f1;
+
+        f4 = f2 * f2;
+
+        f3 = f3 + f4;
+
+        f0 = f0 * f0;
+
+        f0 = f3 + f0;
+
+        f0 = staticinvoke <android.util.FloatMath: float sqrt(float)>(f0);
+
+        f3 = (float) l0;
+
+        f0 = f0 / f3;
+
+        f0 = f0 * 10000.0F;
+
+        l0 = r0.<com.yang.longrubblishclear.util.ShakeDetector: long mLastShakeTime>;
+
+        l0 = $l1 - l0;
+
+        $i3 = r0.<com.yang.longrubblishclear.util.ShakeDetector: int shakeThreshold>;
+
+        f3 = (float) $i3;
+
+        $b2 = f0 cmpl f3;
+
+        $i3 = (int) $b2;
+
+        if $i3 <= 0 goto label2;
+
+        $b2 = l0 cmp 2000L;
+
+        $i3 = (int) $b2;
+
+        if $i3 <= 0 goto label2;
+
+        r0.<com.yang.longrubblishclear.util.ShakeDetector: long mLastShakeTime> = $l1;
+
+        specialinvoke r0.<com.yang.longrubblishclear.util.ShakeDetector: void notifyListeners()>();
+
+     label2:
+        return;
+    }
+
+    public void registerOnShakeListener(com.yang.longrubblishclear.util.ShakeDetector$OnShakeListener)
+    {
+        com.yang.longrubblishclear.util.ShakeDetector r0;
+        com.yang.longrubblishclear.util.ShakeDetector$OnShakeListener $r1;
+        boolean $z0;
+        java.util.ArrayList $r2;
+
+        r0 := @this: com.yang.longrubblishclear.util.ShakeDetector;
+
+        $r1 := @parameter0: com.yang.longrubblishclear.util.ShakeDetector$OnShakeListener;
+
+        $r2 = r0.<com.yang.longrubblishclear.util.ShakeDetector: java.util.ArrayList mListeners>;
+
+        $z0 = virtualinvoke $r2.<java.util.ArrayList: boolean contains(java.lang.Object)>($r1);
+
+        if $z0 == 0 goto label1;
+
+        return;
+
+     label1:
+        $r2 = r0.<com.yang.longrubblishclear.util.ShakeDetector: java.util.ArrayList mListeners>;
+
+        virtualinvoke $r2.<java.util.ArrayList: boolean add(java.lang.Object)>($r1);
+
+        return;
+    }
+
+    public void start()
+    {
+        com.yang.longrubblishclear.util.ShakeDetector r0;
+        android.hardware.SensorManager $r1;
+        android.hardware.Sensor $r2;
+        boolean $z0;
+
+        r0 := @this: com.yang.longrubblishclear.util.ShakeDetector;
+
+        $r1 = r0.<com.yang.longrubblishclear.util.ShakeDetector: android.hardware.SensorManager mSensorManager>;
+
+        if $r1 != null goto label1;
+
+        return;
+
+     label1:
+        $r1 = r0.<com.yang.longrubblishclear.util.ShakeDetector: android.hardware.SensorManager mSensorManager>;
+
+        $r2 = virtualinvoke $r1.<android.hardware.SensorManager: android.hardware.Sensor getDefaultSensor(int)>(1);
+
+        if $r2 == null goto label2;
+
+        $r1 = r0.<com.yang.longrubblishclear.util.ShakeDetector: android.hardware.SensorManager mSensorManager>;
+
+        $z0 = virtualinvoke $r1.<android.hardware.SensorManager: boolean registerListener(android.hardware.SensorEventListener,android.hardware.Sensor,int)>(r0, $r2, 1);
+
+        if $z0 != 0 goto label2;
+
+     label2:
+        return;
+    }
+
+    public void stop()
+    {
+        com.yang.longrubblishclear.util.ShakeDetector r0;
+        android.hardware.SensorManager $r1;
+
+        r0 := @this: com.yang.longrubblishclear.util.ShakeDetector;
+
+        $r1 = r0.<com.yang.longrubblishclear.util.ShakeDetector: android.hardware.SensorManager mSensorManager>;
+
+        if $r1 == null goto label1;
+
+        $r1 = r0.<com.yang.longrubblishclear.util.ShakeDetector: android.hardware.SensorManager mSensorManager>;
+
+        virtualinvoke $r1.<android.hardware.SensorManager: void unregisterListener(android.hardware.SensorEventListener)>(r0);
+
+     label1:
+        return;
+    }
+
+    public void unregisterOnShakeListener(com.yang.longrubblishclear.util.ShakeDetector$OnShakeListener)
+    {
+        com.yang.longrubblishclear.util.ShakeDetector$OnShakeListener $r1;
+        com.yang.longrubblishclear.util.ShakeDetector r0;
+        java.util.ArrayList $r2;
+
+        r0 := @this: com.yang.longrubblishclear.util.ShakeDetector;
+
+        $r1 := @parameter0: com.yang.longrubblishclear.util.ShakeDetector$OnShakeListener;
+
+        $r2 = r0.<com.yang.longrubblishclear.util.ShakeDetector: java.util.ArrayList mListeners>;
+
+        virtualinvoke $r2.<java.util.ArrayList: boolean remove(java.lang.Object)>($r1);
+
+        return;
+    }
+
+    public static void <clinit>()
+    {
+        <com.yang.longrubblishclear.util.ShakeDetector: int UPDATE_INTERVAL> = 100;
+
+        <com.yang.longrubblishclear.util.ShakeDetector: int SHAKE_INTERVAL> = 2000;
+
+        return;
+    }
+}

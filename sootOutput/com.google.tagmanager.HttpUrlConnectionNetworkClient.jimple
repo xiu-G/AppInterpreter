@@ -1,0 +1,212 @@
+class com.google.tagmanager.HttpUrlConnectionNetworkClient extends java.lang.Object implements com.google.tagmanager.NetworkClient
+{
+    private java.net.HttpURLConnection mConnection;
+
+    void <init>()
+    {
+        com.google.tagmanager.HttpUrlConnectionNetworkClient r0;
+
+        r0 := @this: com.google.tagmanager.HttpUrlConnectionNetworkClient;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    private void closeURLConnection(java.net.HttpURLConnection)
+    {
+        java.net.HttpURLConnection $r1;
+        com.google.tagmanager.HttpUrlConnectionNetworkClient r0;
+
+        r0 := @this: com.google.tagmanager.HttpUrlConnectionNetworkClient;
+
+        $r1 := @parameter0: java.net.HttpURLConnection;
+
+        if $r1 == null goto label1;
+
+        virtualinvoke $r1.<java.net.HttpURLConnection: void disconnect()>();
+
+     label1:
+        return;
+    }
+
+    private java.io.InputStream handleServerResponse(java.net.HttpURLConnection)
+    {
+        java.net.HttpURLConnection $r1;
+        java.io.IOException $r6;
+        java.io.FileNotFoundException $r5;
+        com.google.tagmanager.HttpUrlConnectionNetworkClient r0;
+        int $i0;
+        java.lang.StringBuilder $r3;
+        java.lang.String $r4;
+        java.io.InputStream $r2;
+
+        r0 := @this: com.google.tagmanager.HttpUrlConnectionNetworkClient;
+
+        $r1 := @parameter0: java.net.HttpURLConnection;
+
+        $i0 = virtualinvoke $r1.<java.net.HttpURLConnection: int getResponseCode()>();
+
+        if $i0 != 200 goto label1;
+
+        $r2 = virtualinvoke $r1.<java.net.HttpURLConnection: java.io.InputStream getInputStream()>();
+
+        return $r2;
+
+     label1:
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>("Bad response: ");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        if $i0 != 404 goto label2;
+
+        $r5 = new java.io.FileNotFoundException;
+
+        specialinvoke $r5.<java.io.FileNotFoundException: void <init>(java.lang.String)>($r4);
+
+        throw $r5;
+
+     label2:
+        $r6 = new java.io.IOException;
+
+        specialinvoke $r6.<java.io.IOException: void <init>(java.lang.String)>($r4);
+
+        throw $r6;
+    }
+
+    public void close()
+    {
+        java.net.HttpURLConnection $r1;
+        com.google.tagmanager.HttpUrlConnectionNetworkClient r0;
+
+        r0 := @this: com.google.tagmanager.HttpUrlConnectionNetworkClient;
+
+        $r1 = r0.<com.google.tagmanager.HttpUrlConnectionNetworkClient: java.net.HttpURLConnection mConnection>;
+
+        specialinvoke r0.<com.google.tagmanager.HttpUrlConnectionNetworkClient: void closeURLConnection(java.net.HttpURLConnection)>($r1);
+
+        return;
+    }
+
+    public java.io.InputStream getInputStream(java.lang.String)
+    {
+        java.net.HttpURLConnection $r2;
+        java.lang.String $r1;
+        com.google.tagmanager.HttpUrlConnectionNetworkClient r0;
+        java.io.InputStream $r3;
+
+        r0 := @this: com.google.tagmanager.HttpUrlConnectionNetworkClient;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = virtualinvoke r0.<com.google.tagmanager.HttpUrlConnectionNetworkClient: java.net.HttpURLConnection getUrlConnection(java.lang.String)>($r1);
+
+        r0.<com.google.tagmanager.HttpUrlConnectionNetworkClient: java.net.HttpURLConnection mConnection> = $r2;
+
+        $r2 = r0.<com.google.tagmanager.HttpUrlConnectionNetworkClient: java.net.HttpURLConnection mConnection>;
+
+        $r3 = specialinvoke r0.<com.google.tagmanager.HttpUrlConnectionNetworkClient: java.io.InputStream handleServerResponse(java.net.HttpURLConnection)>($r2);
+
+        return $r3;
+    }
+
+    java.net.HttpURLConnection getUrlConnection(java.lang.String)
+    {
+        java.net.HttpURLConnection $r4;
+        java.net.URLConnection $r2;
+        java.net.URL $r3;
+        java.lang.String $r1;
+        com.google.tagmanager.HttpUrlConnectionNetworkClient r0;
+
+        r0 := @this: com.google.tagmanager.HttpUrlConnectionNetworkClient;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r3 = new java.net.URL;
+
+        specialinvoke $r3.<java.net.URL: void <init>(java.lang.String)>($r1);
+
+        $r2 = virtualinvoke $r3.<java.net.URL: java.net.URLConnection openConnection()>();
+
+        $r4 = (java.net.HttpURLConnection) $r2;
+
+        virtualinvoke $r4.<java.net.HttpURLConnection: void setReadTimeout(int)>(20000);
+
+        virtualinvoke $r4.<java.net.HttpURLConnection: void setConnectTimeout(int)>(20000);
+
+        return $r4;
+    }
+
+    public void sendPostRequest(java.lang.String, byte[])
+    {
+        java.net.HttpURLConnection $r3;
+        java.io.OutputStream $r4;
+        java.lang.Throwable $r5, $r6;
+        byte[] $r2;
+        com.google.tagmanager.HttpUrlConnectionNetworkClient r0;
+        int $i0;
+        java.lang.String $r1;
+
+        r0 := @this: com.google.tagmanager.HttpUrlConnectionNetworkClient;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: byte[];
+
+        $r3 = virtualinvoke r0.<com.google.tagmanager.HttpUrlConnectionNetworkClient: java.net.HttpURLConnection getUrlConnection(java.lang.String)>($r1);
+
+     label1:
+        $i0 = lengthof $r2;
+
+        $r1 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i0);
+
+        virtualinvoke $r3.<java.net.HttpURLConnection: void setRequestProperty(java.lang.String,java.lang.String)>("Content-Length", $r1);
+
+        virtualinvoke $r3.<java.net.HttpURLConnection: void setRequestMethod(java.lang.String)>("POST");
+
+        virtualinvoke $r3.<java.net.HttpURLConnection: void setDoOutput(boolean)>(1);
+
+        virtualinvoke $r3.<java.net.HttpURLConnection: void connect()>();
+
+        $r4 = virtualinvoke $r3.<java.net.HttpURLConnection: java.io.OutputStream getOutputStream()>();
+
+     label2:
+        virtualinvoke $r4.<java.io.OutputStream: void write(byte[])>($r2);
+
+        virtualinvoke $r4.<java.io.OutputStream: void flush()>();
+
+     label3:
+        virtualinvoke $r4.<java.io.OutputStream: void close()>();
+
+        specialinvoke r0.<com.google.tagmanager.HttpUrlConnectionNetworkClient: java.io.InputStream handleServerResponse(java.net.HttpURLConnection)>($r3);
+
+     label4:
+        specialinvoke r0.<com.google.tagmanager.HttpUrlConnectionNetworkClient: void closeURLConnection(java.net.HttpURLConnection)>($r3);
+
+        return;
+
+     label5:
+        $r5 := @caughtexception;
+
+     label6:
+        virtualinvoke $r4.<java.io.OutputStream: void close()>();
+
+        throw $r5;
+
+     label7:
+        $r6 := @caughtexception;
+
+        specialinvoke r0.<com.google.tagmanager.HttpUrlConnectionNetworkClient: void closeURLConnection(java.net.HttpURLConnection)>($r3);
+
+        throw $r6;
+
+        catch java.lang.Throwable from label1 to label2 with label7;
+        catch java.lang.Throwable from label2 to label3 with label5;
+        catch java.lang.Throwable from label3 to label4 with label7;
+        catch java.lang.Throwable from label6 to label7 with label7;
+    }
+}

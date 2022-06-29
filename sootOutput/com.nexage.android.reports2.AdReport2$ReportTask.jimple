@@ -1,0 +1,382 @@
+class com.nexage.android.reports2.AdReport2$ReportTask extends java.util.TimerTask
+{
+    private final java.lang.String m_Report;
+
+    void <init>(java.lang.String)
+    {
+        java.lang.String $r1;
+        com.nexage.android.reports2.AdReport2$ReportTask r0;
+
+        r0 := @this: com.nexage.android.reports2.AdReport2$ReportTask;
+
+        $r1 := @parameter0: java.lang.String;
+
+        specialinvoke r0.<java.util.TimerTask: void <init>()>();
+
+        r0.<com.nexage.android.reports2.AdReport2$ReportTask: java.lang.String m_Report> = $r1;
+
+        return;
+    }
+
+    public void run()
+    {
+        java.net.HttpURLConnection r5, $r11;
+        java.lang.Throwable $r14, $r15, $r16;
+        byte[] $r13;
+        java.net.URL r2, $r23;
+        java.net.URLConnection $r10;
+        int i0, $i1;
+        java.lang.String $r4, $r9;
+        java.io.OutputStream r6, $r12;
+        com.nexage.android.reports2.AdReport2 $r3;
+        java.lang.Exception r1, $r17, $r18, $r19, $r20, $r21, $r22;
+        java.lang.StringBuilder $r7, $r8;
+        com.nexage.android.reports2.AdReport2$ReportTask r0;
+
+        r0 := @this: com.nexage.android.reports2.AdReport2$ReportTask;
+
+        entermonitor class "Lcom/nexage/android/reports2/AdReport2;";
+
+     label01:
+        staticinvoke <com.nexage.android.reports2.AdReport2: com.nexage.android.reports2.AdReport2$ReportTask access$002(com.nexage.android.reports2.AdReport2$ReportTask)>(null);
+
+        exitmonitor class "Lcom/nexage/android/reports2/AdReport2;";
+
+     label02:
+        $r3 = <com.nexage.android.reports2.AdReport2: com.nexage.android.reports2.AdReport2 s_Report_copy>;
+
+        entermonitor $r3;
+
+     label03:
+        $r4 = staticinvoke <com.nexage.android.reports2.AdReport2: java.lang.String access$100()>();
+
+        r5 = null;
+
+        r6 = null;
+
+        i0 = -1;
+
+        $r7 = staticinvoke <com.nexage.android.rules.RuleMgr: java.lang.StringBuilder getNexageRequestParams()>();
+
+        $r8 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("&data");
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("=");
+
+        $r9 = r0.<com.nexage.android.reports2.AdReport2$ReportTask: java.lang.String m_Report>;
+
+        virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r9);
+
+        virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("&vr=2");
+
+     label04:
+        $r23 = new java.net.URL;
+
+        r2 = $r23;
+
+     label05:
+        specialinvoke $r23.<java.net.URL: void <init>(java.lang.String)>($r4);
+
+        staticinvoke <java.net.HttpURLConnection: void setFollowRedirects(boolean)>(1);
+
+        $r10 = virtualinvoke r2.<java.net.URL: java.net.URLConnection openConnection()>();
+
+        $r11 = (java.net.HttpURLConnection) $r10;
+
+     label06:
+        r5 = $r11;
+
+     label07:
+        virtualinvoke $r11.<java.net.HttpURLConnection: void setConnectTimeout(int)>(30000);
+
+        virtualinvoke $r11.<java.net.HttpURLConnection: void setReadTimeout(int)>(30000);
+
+        virtualinvoke $r11.<java.net.HttpURLConnection: void setDoOutput(boolean)>(1);
+
+        virtualinvoke $r11.<java.net.HttpURLConnection: void setRequestProperty(java.lang.String,java.lang.String)>("Connection", "close");
+
+        virtualinvoke $r11.<java.net.HttpURLConnection: void setRequestMethod(java.lang.String)>("POST");
+
+     label08:
+        $r4 = <com.nexage.android.NexageContext: java.lang.String s_UserAgent>;
+
+        if $r4 == null goto label12;
+
+        $r4 = <com.nexage.android.NexageContext: java.lang.String s_UserAgent>;
+
+     label09:
+        $i1 = virtualinvoke $r4.<java.lang.String: int length()>();
+
+     label10:
+        if $i1 <= 0 goto label12;
+
+        $r4 = <com.nexage.android.NexageContext: java.lang.String s_UserAgent>;
+
+     label11:
+        virtualinvoke $r11.<java.net.HttpURLConnection: void setRequestProperty(java.lang.String,java.lang.String)>("User-Agent", $r4);
+
+     label12:
+        staticinvoke <com.nexage.android.rules.RuleMgr: void setCookies(java.net.HttpURLConnection)>($r11);
+
+        $r12 = virtualinvoke $r11.<java.net.HttpURLConnection: java.io.OutputStream getOutputStream()>();
+
+     label13:
+        r6 = $r12;
+
+     label14:
+        $r4 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r13 = virtualinvoke $r4.<java.lang.String: byte[] getBytes(java.lang.String)>("UTF-8");
+
+        virtualinvoke $r12.<java.io.OutputStream: void write(byte[])>($r13);
+
+        staticinvoke <com.nexage.android.rules.RuleMgr: void saveCookies(java.net.HttpURLConnection,java.lang.String)>($r11, "REPORT");
+
+        $r4 = r0.<com.nexage.android.reports2.AdReport2$ReportTask: java.lang.String m_Report>;
+
+        staticinvoke <com.nexage.android.NexageLog: void vv(java.lang.String,java.lang.String)>("REPORT", $r4);
+
+        $i1 = virtualinvoke $r11.<java.net.HttpURLConnection: int getResponseCode()>();
+
+     label15:
+        i0 = $i1;
+
+        $r8 = new java.lang.StringBuilder;
+
+        $r7 = $r8;
+
+     label16:
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>()>();
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Report upload status = ");
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1);
+
+        $r4 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.nexage.android.NexageLog: void i(java.lang.String,java.lang.String)>("REPORT", $r4);
+
+     label17:
+        if $i1 == 200 goto label18;
+
+        if $i1 != 201 goto label29;
+
+     label18:
+        staticinvoke <com.nexage.android.reports2.AdReport2: void access$200()>();
+
+     label19:
+        if $r12 == null goto label21;
+
+     label20:
+        virtualinvoke $r12.<java.io.OutputStream: void close()>();
+
+     label21:
+        if $r11 == null goto label23;
+
+     label22:
+        virtualinvoke $r11.<java.net.HttpURLConnection: void disconnect()>();
+
+     label23:
+        staticinvoke <com.nexage.android.reports2.AdReport2: boolean access$402(boolean)>(0);
+
+     label24:
+        exitmonitor $r3;
+
+     label25:
+        return;
+
+     label26:
+        $r14 := @caughtexception;
+
+     label27:
+        exitmonitor class "Lcom/nexage/android/reports2/AdReport2;";
+
+     label28:
+        throw $r14;
+
+     label29:
+        staticinvoke <com.nexage.android.reports2.AdReport2: void access$300()>();
+
+        staticinvoke <com.nexage.android.NexageLog: void i(java.lang.String,java.lang.String)>("REPORT", "Report submission failed, rollback");
+
+        goto label19;
+
+     label30:
+        $r15 := @caughtexception;
+
+        exitmonitor $r3;
+
+     label31:
+        throw $r15;
+
+     label32:
+        r1 := @caughtexception;
+
+     label33:
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>()>();
+
+        $r7 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Report upload exception: ");
+
+        $r4 = virtualinvoke r1.<java.lang.Exception: java.lang.String getMessage()>();
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(":");
+
+        $r4 = virtualinvoke r1.<java.lang.Exception: java.lang.String toString()>();
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.nexage.android.NexageLog: void i(java.lang.String,java.lang.String)>("REPORT", $r4);
+
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>()>();
+
+        $r7 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Report upload exception: ");
+
+        $r4 = virtualinvoke r1.<java.lang.Exception: java.lang.String getMessage()>();
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(":");
+
+        $r4 = virtualinvoke r1.<java.lang.Exception: java.lang.String toString()>();
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.nexage.android.NexageLog: void w(java.lang.String,java.lang.String,java.lang.Throwable)>("REPORT", $r4, r1);
+
+     label34:
+        if i0 == 200 goto label35;
+
+        if i0 != 201 goto label41;
+
+     label35:
+        staticinvoke <com.nexage.android.reports2.AdReport2: void access$200()>();
+
+     label36:
+        if r6 == null goto label38;
+
+     label37:
+        virtualinvoke r6.<java.io.OutputStream: void close()>();
+
+     label38:
+        if r5 == null goto label40;
+
+     label39:
+        virtualinvoke r5.<java.net.HttpURLConnection: void disconnect()>();
+
+     label40:
+        staticinvoke <com.nexage.android.reports2.AdReport2: boolean access$402(boolean)>(0);
+
+        goto label24;
+
+     label41:
+        staticinvoke <com.nexage.android.reports2.AdReport2: void access$300()>();
+
+        staticinvoke <com.nexage.android.NexageLog: void i(java.lang.String,java.lang.String)>("REPORT", "Report submission failed, rollback");
+
+        goto label36;
+
+     label42:
+        $r16 := @caughtexception;
+
+        if i0 == 200 goto label43;
+
+        if i0 != 201 goto label49;
+
+     label43:
+        staticinvoke <com.nexage.android.reports2.AdReport2: void access$200()>();
+
+     label44:
+        if r6 == null goto label46;
+
+     label45:
+        virtualinvoke r6.<java.io.OutputStream: void close()>();
+
+     label46:
+        if r5 == null goto label48;
+
+     label47:
+        virtualinvoke r5.<java.net.HttpURLConnection: void disconnect()>();
+
+     label48:
+        staticinvoke <com.nexage.android.reports2.AdReport2: boolean access$402(boolean)>(0);
+
+        throw $r16;
+
+     label49:
+        staticinvoke <com.nexage.android.reports2.AdReport2: void access$300()>();
+
+        staticinvoke <com.nexage.android.NexageLog: void i(java.lang.String,java.lang.String)>("REPORT", "Report submission failed, rollback");
+
+     label50:
+        goto label44;
+
+     label51:
+        $r17 := @caughtexception;
+
+        goto label21;
+
+     label52:
+        $r18 := @caughtexception;
+
+        goto label23;
+
+     label53:
+        $r19 := @caughtexception;
+
+        goto label38;
+
+     label54:
+        $r20 := @caughtexception;
+
+        goto label40;
+
+     label55:
+        $r21 := @caughtexception;
+
+        goto label46;
+
+     label56:
+        $r22 := @caughtexception;
+
+        goto label48;
+
+        catch java.lang.Throwable from label01 to label02 with label26;
+        catch java.lang.Throwable from label03 to label04 with label30;
+        catch java.lang.Exception from label05 to label06 with label32;
+        catch java.lang.Exception from label07 to label08 with label32;
+        catch java.lang.Exception from label09 to label10 with label32;
+        catch java.lang.Exception from label11 to label13 with label32;
+        catch java.lang.Exception from label14 to label15 with label32;
+        catch java.lang.Exception from label16 to label17 with label32;
+        catch java.lang.Throwable from label04 to label17 with label42;
+        catch java.lang.Throwable from label18 to label19 with label30;
+        catch java.lang.Exception from label20 to label21 with label51;
+        catch java.lang.Throwable from label20 to label21 with label30;
+        catch java.lang.Exception from label22 to label23 with label52;
+        catch java.lang.Throwable from label22 to label23 with label30;
+        catch java.lang.Throwable from label23 to label25 with label30;
+        catch java.lang.Throwable from label27 to label28 with label26;
+        catch java.lang.Throwable from label29 to label31 with label30;
+        catch java.lang.Throwable from label33 to label34 with label42;
+        catch java.lang.Throwable from label35 to label36 with label30;
+        catch java.lang.Exception from label37 to label38 with label53;
+        catch java.lang.Throwable from label37 to label38 with label30;
+        catch java.lang.Exception from label39 to label40 with label54;
+        catch java.lang.Throwable from label39 to label40 with label30;
+        catch java.lang.Throwable from label40 to label44 with label30;
+        catch java.lang.Exception from label45 to label46 with label55;
+        catch java.lang.Throwable from label45 to label46 with label30;
+        catch java.lang.Exception from label47 to label48 with label56;
+        catch java.lang.Throwable from label47 to label48 with label30;
+        catch java.lang.Throwable from label48 to label50 with label30;
+    }
+}

@@ -1,0 +1,572 @@
+final class com.alipay.android.app.util.FileFetch extends java.lang.Object implements java.lang.Runnable
+{
+    private com.alipay.android.app.util.FileDownloader downloader;
+    private long fileEnd;
+    private long fileStart;
+    private java.lang.String fileUrl;
+    private java.lang.String savePath;
+    private boolean stop;
+
+    public void <init>(java.lang.String, java.lang.String, com.alipay.android.app.util.FileDownloader)
+    {
+        com.alipay.android.app.util.FileDownloader $r3;
+        com.alipay.android.app.util.FileFetch r0;
+        java.lang.String $r1, $r2;
+
+        r0 := @this: com.alipay.android.app.util.FileFetch;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: com.alipay.android.app.util.FileDownloader;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<com.alipay.android.app.util.FileFetch: boolean stop> = 0;
+
+        r0.<com.alipay.android.app.util.FileFetch: java.lang.String fileUrl> = $r1;
+
+        r0.<com.alipay.android.app.util.FileFetch: java.lang.String savePath> = $r2;
+
+        r0.<com.alipay.android.app.util.FileFetch: com.alipay.android.app.util.FileDownloader downloader> = $r3;
+
+        return;
+    }
+
+    static java.lang.String access$0(com.alipay.android.app.util.FileFetch)
+    {
+        com.alipay.android.app.util.FileFetch $r0;
+        java.lang.String r1;
+
+        $r0 := @parameter0: com.alipay.android.app.util.FileFetch;
+
+        r1 = $r0.<com.alipay.android.app.util.FileFetch: java.lang.String savePath>;
+
+        return r1;
+    }
+
+    public final long getFileEnd()
+    {
+        com.alipay.android.app.util.FileFetch r0;
+        long l0;
+
+        r0 := @this: com.alipay.android.app.util.FileFetch;
+
+        l0 = r0.<com.alipay.android.app.util.FileFetch: long fileEnd>;
+
+        return l0;
+    }
+
+    public final long getFileStart()
+    {
+        com.alipay.android.app.util.FileFetch r0;
+        long l0;
+
+        r0 := @this: com.alipay.android.app.util.FileFetch;
+
+        l0 = r0.<com.alipay.android.app.util.FileFetch: long fileStart>;
+
+        return l0;
+    }
+
+    public final boolean isStop()
+    {
+        com.alipay.android.app.util.FileFetch r0;
+        boolean z0;
+
+        r0 := @this: com.alipay.android.app.util.FileFetch;
+
+        z0 = r0.<com.alipay.android.app.util.FileFetch: boolean stop>;
+
+        return z0;
+    }
+
+    public void run()
+    {
+        org.apache.http.impl.client.DefaultHttpClient r3, $r27;
+        byte[] r1;
+        com.alipay.android.app.util.FileDownloader $r5;
+        org.apache.http.StatusLine $r10;
+        byte $b1;
+        com.alipay.android.app.util.FileFetch$FileAccess r2, $r25;
+        boolean $z0, $z1;
+        org.apache.http.HttpEntity $r12;
+        java.lang.Exception $r11, $r15, $r16, $r18, $r20, r21, $r22, $r24;
+        org.apache.http.client.methods.HttpGet r4, $r26;
+        java.lang.StringBuilder $r8, $r28;
+        java.lang.Throwable r14, r17, r19, $r23;
+        com.alipay.android.app.util.FileFetch r0;
+        long $l0, $l2;
+        int i3, $i4, $i5;
+        java.lang.String $r7;
+        java.io.IOException $r29;
+        org.apache.http.HttpResponse $r9;
+        java.io.InputStream r6, $r13;
+
+        r0 := @this: com.alipay.android.app.util.FileFetch;
+
+        $r5 = r0.<com.alipay.android.app.util.FileFetch: com.alipay.android.app.util.FileDownloader downloader>;
+
+        $z0 = virtualinvoke $r5.<com.alipay.android.app.util.FileDownloader: boolean showProgress()>();
+
+        if $z0 == 0 goto label02;
+
+        $l0 = r0.<com.alipay.android.app.util.FileFetch: long fileEnd>;
+
+        $b1 = $l0 cmp 0L;
+
+        i3 = (int) $b1;
+
+        if i3 <= 0 goto label01;
+
+        $l0 = r0.<com.alipay.android.app.util.FileFetch: long fileStart>;
+
+        $l2 = r0.<com.alipay.android.app.util.FileFetch: long fileEnd>;
+
+        $b1 = $l0 cmp $l2;
+
+        i3 = (int) $b1;
+
+        if i3 < 0 goto label02;
+
+     label01:
+        r0.<com.alipay.android.app.util.FileFetch: boolean stop> = 1;
+
+        return;
+
+     label02:
+        $r25 = new com.alipay.android.app.util.FileFetch$FileAccess;
+
+        r2 = $r25;
+
+        specialinvoke $r25.<com.alipay.android.app.util.FileFetch$FileAccess: void <init>(com.alipay.android.app.util.FileFetch)>(r0);
+
+     label03:
+        $z0 = r0.<com.alipay.android.app.util.FileFetch: boolean stop>;
+
+        if $z0 == 0 goto label05;
+
+     label04:
+        virtualinvoke r2.<com.alipay.android.app.util.FileFetch$FileAccess: void close()>();
+
+        return;
+
+     label05:
+        r6 = null;
+
+        i3 = 0;
+
+     label06:
+        $r26 = new org.apache.http.client.methods.HttpGet;
+
+     label07:
+        r4 = $r26;
+
+     label08:
+        $r7 = r0.<com.alipay.android.app.util.FileFetch: java.lang.String fileUrl>;
+
+     label09:
+        specialinvoke $r26.<org.apache.http.client.methods.HttpGet: void <init>(java.lang.String)>($r7);
+
+     label10:
+        $r27 = new org.apache.http.impl.client.DefaultHttpClient;
+
+     label11:
+        r3 = $r27;
+
+     label12:
+        specialinvoke $r27.<org.apache.http.impl.client.DefaultHttpClient: void <init>()>();
+
+     label13:
+        $r5 = r0.<com.alipay.android.app.util.FileFetch: com.alipay.android.app.util.FileDownloader downloader>;
+
+     label14:
+        $z0 = virtualinvoke $r5.<com.alipay.android.app.util.FileDownloader: boolean showProgress()>();
+
+     label15:
+        if $z0 == 0 goto label23;
+
+     label16:
+        $r28 = new java.lang.StringBuilder;
+
+     label17:
+        $r8 = $r28;
+
+     label18:
+        specialinvoke $r28.<java.lang.StringBuilder: void <init>(java.lang.String)>("bytes=");
+
+     label19:
+        $l0 = r0.<com.alipay.android.app.util.FileFetch: long fileStart>;
+
+     label20:
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("-");
+
+     label21:
+        $l0 = r0.<com.alipay.android.app.util.FileFetch: long fileEnd>;
+
+     label22:
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+        $r7 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke r4.<org.apache.http.client.methods.HttpGet: void addHeader(java.lang.String,java.lang.String)>("Range", $r7);
+
+     label23:
+        $r9 = interfaceinvoke r3.<org.apache.http.client.HttpClient: org.apache.http.HttpResponse execute(org.apache.http.client.methods.HttpUriRequest)>(r4);
+
+        $r10 = interfaceinvoke $r9.<org.apache.http.HttpResponse: org.apache.http.StatusLine getStatusLine()>();
+
+        $i4 = interfaceinvoke $r10.<org.apache.http.StatusLine: int getStatusCode()>();
+
+     label24:
+        i3 = $i4;
+
+        lookupswitch($i4)
+        {
+            case 200: goto label31;
+            case 201: goto label31;
+            case 202: goto label31;
+            case 203: goto label31;
+            case 204: goto label31;
+            case 205: goto label31;
+            case 206: goto label31;
+            case 207: goto label31;
+            default: goto label25;
+        };
+
+     label25:
+        r0.<com.alipay.android.app.util.FileFetch: boolean stop> = 1;
+
+     label26:
+        $z0 = r0.<com.alipay.android.app.util.FileFetch: boolean stop>;
+
+     label27:
+        if $z0 == 0 goto label37;
+
+        if r6 == null goto label04;
+
+     label28:
+        virtualinvoke r6.<java.io.InputStream: void close()>();
+
+     label29:
+        goto label04;
+
+     label30:
+        $r11 := @caughtexception;
+
+        goto label04;
+
+     label31:
+        $r12 = interfaceinvoke $r9.<org.apache.http.HttpResponse: org.apache.http.HttpEntity getEntity()>();
+
+        $r13 = interfaceinvoke $r12.<org.apache.http.HttpEntity: java.io.InputStream getContent()>();
+
+     label32:
+        r6 = $r13;
+
+        goto label26;
+
+     label33:
+        r14 := @caughtexception;
+
+     label34:
+        $r29 = (java.io.IOException) r14;
+
+     label35:
+        virtualinvoke $r29.<java.io.IOException: void printStackTrace()>();
+
+     label36:
+        r0.<com.alipay.android.app.util.FileFetch: boolean stop> = 1;
+
+     label37:
+        if r6 != null goto label41;
+
+        if r6 == null goto label03;
+
+     label38:
+        virtualinvoke r6.<java.io.InputStream: void close()>();
+
+     label39:
+        goto label03;
+
+     label40:
+        $r15 := @caughtexception;
+
+        goto label03;
+
+     label41:
+        r1 = newarray (byte)[1024];
+
+     label42:
+        $i4 = lengthof r1;
+
+     label43:
+        $i4 = virtualinvoke r6.<java.io.InputStream: int read(byte[],int,int)>(r1, 0, $i4);
+
+     label44:
+        if $i4 == -1 goto label50;
+
+     label45:
+        $l0 = r0.<com.alipay.android.app.util.FileFetch: long fileStart>;
+
+     label46:
+        $i5 = virtualinvoke r2.<com.alipay.android.app.util.FileFetch$FileAccess: int write(byte[],int,int)>(r1, 0, $i4);
+
+     label47:
+        $l2 = (long) $i5;
+
+        $l0 = $l0 + $l2;
+
+     label48:
+        r0.<com.alipay.android.app.util.FileFetch: long fileStart> = $l0;
+
+        $r5 = r0.<com.alipay.android.app.util.FileFetch: com.alipay.android.app.util.FileDownloader downloader>;
+
+     label49:
+        virtualinvoke $r5.<com.alipay.android.app.util.FileDownloader: void writeTempFile()>();
+
+     label50:
+        $r5 = r0.<com.alipay.android.app.util.FileFetch: com.alipay.android.app.util.FileDownloader downloader>;
+
+     label51:
+        $z0 = virtualinvoke $r5.<com.alipay.android.app.util.FileDownloader: boolean showProgress()>();
+
+     label52:
+        if $z0 == 0 goto label64;
+
+     label53:
+        $l0 = r0.<com.alipay.android.app.util.FileFetch: long fileStart>;
+
+        $l2 = r0.<com.alipay.android.app.util.FileFetch: long fileEnd>;
+
+     label54:
+        $b1 = $l0 cmp $l2;
+
+        $i5 = (int) $b1;
+
+        if $i5 >= 0 goto label63;
+
+        $z0 = 1;
+
+     label55:
+        $z1 = r0.<com.alipay.android.app.util.FileFetch: boolean stop>;
+
+     label56:
+        if $z1 != 0 goto label65;
+
+        if $z0 == 0 goto label65;
+
+        $z0 = 1;
+
+     label57:
+        if $i4 <= -1 goto label58;
+
+        if $z0 != 0 goto label42;
+
+     label58:
+        r0.<com.alipay.android.app.util.FileFetch: boolean stop> = 1;
+
+     label59:
+        if r6 == null goto label03;
+
+     label60:
+        virtualinvoke r6.<java.io.InputStream: void close()>();
+
+     label61:
+        goto label03;
+
+     label62:
+        $r16 := @caughtexception;
+
+        goto label03;
+
+     label63:
+        $z0 = 0;
+
+        goto label55;
+
+     label64:
+        $z0 = 1;
+
+        goto label55;
+
+     label65:
+        $z0 = 0;
+
+        goto label57;
+
+     label66:
+        r17 := @caughtexception;
+
+        if i3 != 0 goto label68;
+
+     label67:
+        r0.<com.alipay.android.app.util.FileFetch: boolean stop> = 1;
+
+     label68:
+        if r6 == null goto label03;
+
+     label69:
+        virtualinvoke r6.<java.io.InputStream: void close()>();
+
+     label70:
+        goto label03;
+
+     label71:
+        $r18 := @caughtexception;
+
+        goto label03;
+
+     label72:
+        r19 := @caughtexception;
+
+     label73:
+        r0.<com.alipay.android.app.util.FileFetch: boolean stop> = 1;
+
+     label74:
+        if r6 == null goto label03;
+
+     label75:
+        virtualinvoke r6.<java.io.InputStream: void close()>();
+
+     label76:
+        goto label03;
+
+     label77:
+        $r20 := @caughtexception;
+
+        goto label03;
+
+     label78:
+        r21 := @caughtexception;
+
+     label79:
+        r0.<com.alipay.android.app.util.FileFetch: boolean stop> = 1;
+
+     label80:
+        if r6 == null goto label03;
+
+     label81:
+        virtualinvoke r6.<java.io.InputStream: void close()>();
+
+     label82:
+        goto label03;
+
+     label83:
+        $r22 := @caughtexception;
+
+        goto label03;
+
+     label84:
+        $r23 := @caughtexception;
+
+        if r6 == null goto label86;
+
+     label85:
+        virtualinvoke r6.<java.io.InputStream: void close()>();
+
+     label86:
+        throw $r23;
+
+     label87:
+        $r24 := @caughtexception;
+
+        goto label86;
+
+        catch java.io.IOException from label09 to label10 with label33;
+        catch java.io.IOException from label12 to label13 with label33;
+        catch java.io.IOException from label14 to label15 with label33;
+        catch java.io.IOException from label18 to label19 with label33;
+        catch java.io.IOException from label20 to label21 with label33;
+        catch java.io.IOException from label22 to label24 with label33;
+        catch java.lang.Exception from label08 to label10 with label78;
+        catch java.lang.Exception from label12 to label15 with label78;
+        catch java.lang.Exception from label18 to label24 with label78;
+        catch java.lang.Exception from label25 to label27 with label78;
+        catch java.lang.Throwable from label06 to label07 with label84;
+        catch java.lang.Throwable from label08 to label11 with label84;
+        catch java.lang.Throwable from label12 to label15 with label84;
+        catch java.lang.Throwable from label16 to label17 with label84;
+        catch java.lang.Throwable from label18 to label24 with label84;
+        catch java.lang.Throwable from label25 to label27 with label84;
+        catch java.lang.Exception from label28 to label29 with label30;
+        catch java.io.IOException from label31 to label32 with label33;
+        catch java.lang.Exception from label31 to label32 with label78;
+        catch java.lang.Throwable from label31 to label32 with label84;
+        catch java.net.SocketTimeoutException from label35 to label36 with label66;
+        catch java.io.IOException from label35 to label36 with label72;
+        catch java.lang.Exception from label34 to label37 with label78;
+        catch java.lang.Throwable from label34 to label37 with label84;
+        catch java.lang.Exception from label38 to label39 with label40;
+        catch java.net.SocketTimeoutException from label43 to label44 with label66;
+        catch java.net.SocketTimeoutException from label46 to label47 with label66;
+        catch java.net.SocketTimeoutException from label49 to label50 with label66;
+        catch java.net.SocketTimeoutException from label51 to label52 with label66;
+        catch java.io.IOException from label43 to label44 with label72;
+        catch java.io.IOException from label46 to label47 with label72;
+        catch java.io.IOException from label49 to label50 with label72;
+        catch java.io.IOException from label51 to label52 with label72;
+        catch java.lang.Exception from label42 to label44 with label78;
+        catch java.lang.Exception from label45 to label47 with label78;
+        catch java.lang.Exception from label48 to label52 with label78;
+        catch java.lang.Exception from label53 to label54 with label78;
+        catch java.lang.Exception from label55 to label56 with label78;
+        catch java.lang.Exception from label58 to label59 with label78;
+        catch java.lang.Throwable from label43 to label44 with label84;
+        catch java.lang.Throwable from label45 to label47 with label84;
+        catch java.lang.Throwable from label48 to label52 with label84;
+        catch java.lang.Throwable from label53 to label54 with label84;
+        catch java.lang.Throwable from label55 to label56 with label84;
+        catch java.lang.Throwable from label58 to label59 with label84;
+        catch java.lang.Exception from label60 to label61 with label62;
+        catch java.lang.Throwable from label67 to label68 with label84;
+        catch java.lang.Exception from label69 to label70 with label71;
+        catch java.lang.Throwable from label73 to label74 with label84;
+        catch java.lang.Exception from label75 to label76 with label77;
+        catch java.lang.Throwable from label79 to label80 with label84;
+        catch java.lang.Exception from label81 to label82 with label83;
+        catch java.lang.Exception from label85 to label86 with label87;
+    }
+
+    public final void setFileEnd(long)
+    {
+        com.alipay.android.app.util.FileFetch r0;
+        long $l0;
+
+        r0 := @this: com.alipay.android.app.util.FileFetch;
+
+        $l0 := @parameter0: long;
+
+        r0.<com.alipay.android.app.util.FileFetch: long fileEnd> = $l0;
+
+        return;
+    }
+
+    public final void setFileStart(long)
+    {
+        com.alipay.android.app.util.FileFetch r0;
+        long $l0;
+
+        r0 := @this: com.alipay.android.app.util.FileFetch;
+
+        $l0 := @parameter0: long;
+
+        r0.<com.alipay.android.app.util.FileFetch: long fileStart> = $l0;
+
+        return;
+    }
+
+    public final void stop()
+    {
+        com.alipay.android.app.util.FileFetch r0;
+
+        r0 := @this: com.alipay.android.app.util.FileFetch;
+
+        r0.<com.alipay.android.app.util.FileFetch: boolean stop> = 1;
+
+        return;
+    }
+}

@@ -1,0 +1,1229 @@
+class twitter4j.HttpClientImpl extends twitter4j.HttpClientBase implements java.io.Serializable, twitter4j.HttpResponseCode
+{
+    private static final java.util.Map instanceMap;
+    private static final twitter4j.Logger logger;
+    private static final long serialVersionUID;
+
+    static void <clinit>()
+    {
+        java.util.HashMap $r5;
+        java.lang.reflect.Field $r2;
+        java.lang.Exception $r6;
+        twitter4j.Logger $r0;
+        int $i0;
+        java.lang.Class $r1;
+        java.lang.Object $r3;
+        java.lang.String $r4;
+
+        <twitter4j.HttpClientImpl: long serialVersionUID> = -403500272719330534L;
+
+        $r0 = staticinvoke <twitter4j.Logger: twitter4j.Logger getLogger(java.lang.Class)>(class "Ltwitter4j/HttpClientImpl;");
+
+        <twitter4j.HttpClientImpl: twitter4j.Logger logger> = $r0;
+
+     label1:
+        $r1 = staticinvoke <java.lang.Class: java.lang.Class forName(java.lang.String)>("android.os.Build$VERSION");
+
+        $r2 = virtualinvoke $r1.<java.lang.Class: java.lang.reflect.Field getField(java.lang.String)>("SDK");
+
+        $r3 = virtualinvoke $r2.<java.lang.reflect.Field: java.lang.Object get(java.lang.Object)>(null);
+
+        $r4 = (java.lang.String) $r3;
+
+        $i0 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String)>($r4);
+
+     label2:
+        if $i0 >= 8 goto label4;
+
+     label3:
+        staticinvoke <java.lang.System: java.lang.String setProperty(java.lang.String,java.lang.String)>("http.keepAlive", "false");
+
+     label4:
+        $r5 = new java.util.HashMap;
+
+        specialinvoke $r5.<java.util.HashMap: void <init>(int)>(1);
+
+        <twitter4j.HttpClientImpl: java.util.Map instanceMap> = $r5;
+
+        return;
+
+     label5:
+        $r6 := @caughtexception;
+
+        goto label4;
+
+        return;
+
+        catch java.lang.Exception from label1 to label2 with label5;
+        catch java.lang.Exception from label3 to label4 with label5;
+    }
+
+    public void <init>()
+    {
+        twitter4j.conf.Configuration $r1;
+        twitter4j.HttpClientConfiguration $r2;
+        twitter4j.HttpClientImpl r0;
+
+        r0 := @this: twitter4j.HttpClientImpl;
+
+        $r1 = staticinvoke <twitter4j.conf.ConfigurationContext: twitter4j.conf.Configuration getInstance()>();
+
+        $r2 = interfaceinvoke $r1.<twitter4j.conf.Configuration: twitter4j.HttpClientConfiguration getHttpClientConfiguration()>();
+
+        specialinvoke r0.<twitter4j.HttpClientBase: void <init>(twitter4j.HttpClientConfiguration)>($r2);
+
+        return;
+    }
+
+    public void <init>(twitter4j.HttpClientConfiguration)
+    {
+        twitter4j.HttpClientConfiguration $r1;
+        twitter4j.HttpClientImpl r0;
+
+        r0 := @this: twitter4j.HttpClientImpl;
+
+        $r1 := @parameter0: twitter4j.HttpClientConfiguration;
+
+        specialinvoke r0.<twitter4j.HttpClientBase: void <init>(twitter4j.HttpClientConfiguration)>($r1);
+
+        return;
+    }
+
+    public static twitter4j.HttpClient getInstance(twitter4j.HttpClientConfiguration)
+    {
+        twitter4j.HttpClient $r3;
+        java.util.Map $r1;
+        twitter4j.HttpClientConfiguration $r0;
+        java.lang.Object $r2;
+        twitter4j.HttpClientImpl $r4;
+
+        $r0 := @parameter0: twitter4j.HttpClientConfiguration;
+
+        $r1 = <twitter4j.HttpClientImpl: java.util.Map instanceMap>;
+
+        $r2 = interfaceinvoke $r1.<java.util.Map: java.lang.Object get(java.lang.Object)>($r0);
+
+        $r3 = (twitter4j.HttpClient) $r2;
+
+        if $r3 != null goto label1;
+
+        $r4 = new twitter4j.HttpClientImpl;
+
+        specialinvoke $r4.<twitter4j.HttpClientImpl: void <init>(twitter4j.HttpClientConfiguration)>($r0);
+
+        $r1 = <twitter4j.HttpClientImpl: java.util.Map instanceMap>;
+
+        interfaceinvoke $r1.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r0, $r4);
+
+        return $r4;
+
+     label1:
+        return $r3;
+    }
+
+    private void setHeaders(twitter4j.HttpRequest, java.net.HttpURLConnection)
+    {
+        java.net.HttpURLConnection $r2;
+        twitter4j.auth.Authorization $r8;
+        twitter4j.HttpRequest $r1;
+        twitter4j.RequestMethod $r5;
+        java.util.Iterator $r11;
+        java.util.Set $r10;
+        twitter4j.HttpClientImpl r0;
+        twitter4j.Logger $r3;
+        java.util.Map $r9;
+        java.lang.StringBuilder $r4;
+        java.lang.Object $r12;
+        java.lang.String $r6, $r7;
+        boolean $z0;
+
+        r0 := @this: twitter4j.HttpClientImpl;
+
+        $r1 := @parameter0: twitter4j.HttpRequest;
+
+        $r2 := @parameter1: java.net.HttpURLConnection;
+
+        $r3 = <twitter4j.HttpClientImpl: twitter4j.Logger logger>;
+
+        $z0 = virtualinvoke $r3.<twitter4j.Logger: boolean isDebugEnabled()>();
+
+        if $z0 == 0 goto label1;
+
+        $r3 = <twitter4j.HttpClientImpl: twitter4j.Logger logger>;
+
+        virtualinvoke $r3.<twitter4j.Logger: void debug(java.lang.String)>("Request: ");
+
+        $r3 = <twitter4j.HttpClientImpl: twitter4j.Logger logger>;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r5 = virtualinvoke $r1.<twitter4j.HttpRequest: twitter4j.RequestMethod getMethod()>();
+
+        $r6 = virtualinvoke $r5.<twitter4j.RequestMethod: java.lang.String name()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" ");
+
+        $r6 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r7 = virtualinvoke $r1.<twitter4j.HttpRequest: java.lang.String getURL()>();
+
+        virtualinvoke $r3.<twitter4j.Logger: void debug(java.lang.String,java.lang.String)>($r6, $r7);
+
+     label1:
+        $r8 = virtualinvoke $r1.<twitter4j.HttpRequest: twitter4j.auth.Authorization getAuthorization()>();
+
+        if $r8 == null goto label3;
+
+        $r8 = virtualinvoke $r1.<twitter4j.HttpRequest: twitter4j.auth.Authorization getAuthorization()>();
+
+        $r6 = interfaceinvoke $r8.<twitter4j.auth.Authorization: java.lang.String getAuthorizationHeader(twitter4j.HttpRequest)>($r1);
+
+        if $r6 == null goto label3;
+
+        $r3 = <twitter4j.HttpClientImpl: twitter4j.Logger logger>;
+
+        $z0 = virtualinvoke $r3.<twitter4j.Logger: boolean isDebugEnabled()>();
+
+        if $z0 == 0 goto label2;
+
+        $r3 = <twitter4j.HttpClientImpl: twitter4j.Logger logger>;
+
+        $r7 = virtualinvoke $r6.<java.lang.String: java.lang.String replaceAll(java.lang.String,java.lang.String)>(".", "*");
+
+        virtualinvoke $r3.<twitter4j.Logger: void debug(java.lang.String,java.lang.String)>("Authorization: ", $r7);
+
+     label2:
+        virtualinvoke $r2.<java.net.HttpURLConnection: void addRequestProperty(java.lang.String,java.lang.String)>("Authorization", $r6);
+
+     label3:
+        $r9 = virtualinvoke $r1.<twitter4j.HttpRequest: java.util.Map getRequestHeaders()>();
+
+        if $r9 == null goto label5;
+
+        $r9 = virtualinvoke $r1.<twitter4j.HttpRequest: java.util.Map getRequestHeaders()>();
+
+        $r10 = interfaceinvoke $r9.<java.util.Map: java.util.Set keySet()>();
+
+        $r11 = interfaceinvoke $r10.<java.util.Set: java.util.Iterator iterator()>();
+
+     label4:
+        $z0 = interfaceinvoke $r11.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 == 0 goto label5;
+
+        $r12 = interfaceinvoke $r11.<java.util.Iterator: java.lang.Object next()>();
+
+        $r6 = (java.lang.String) $r12;
+
+        $r9 = virtualinvoke $r1.<twitter4j.HttpRequest: java.util.Map getRequestHeaders()>();
+
+        $r12 = interfaceinvoke $r9.<java.util.Map: java.lang.Object get(java.lang.Object)>($r6);
+
+        $r7 = (java.lang.String) $r12;
+
+        virtualinvoke $r2.<java.net.HttpURLConnection: void addRequestProperty(java.lang.String,java.lang.String)>($r6, $r7);
+
+        $r3 = <twitter4j.HttpClientImpl: twitter4j.Logger logger>;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(": ");
+
+        $r9 = virtualinvoke $r1.<twitter4j.HttpRequest: java.util.Map getRequestHeaders()>();
+
+        $r12 = interfaceinvoke $r9.<java.util.Map: java.lang.Object get(java.lang.Object)>($r6);
+
+        $r6 = (java.lang.String) $r12;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r6 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r3.<twitter4j.Logger: void debug(java.lang.String)>($r6);
+
+        goto label4;
+
+     label5:
+        return;
+    }
+
+    public twitter4j.HttpResponse get(java.lang.String)
+    {
+        twitter4j.HttpResponse $r3;
+        twitter4j.RequestMethod $r2;
+        twitter4j.HttpRequest $r4;
+        twitter4j.HttpClientImpl r0;
+        java.lang.String $r1;
+
+        r0 := @this: twitter4j.HttpClientImpl;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r4 = new twitter4j.HttpRequest;
+
+        $r2 = <twitter4j.RequestMethod: twitter4j.RequestMethod GET>;
+
+        specialinvoke $r4.<twitter4j.HttpRequest: void <init>(twitter4j.RequestMethod,java.lang.String,twitter4j.HttpParameter[],twitter4j.auth.Authorization,java.util.Map)>($r2, $r1, null, null, null);
+
+        $r3 = virtualinvoke r0.<twitter4j.HttpClientImpl: twitter4j.HttpResponse request(twitter4j.HttpRequest)>($r4);
+
+        return $r3;
+    }
+
+    java.net.HttpURLConnection getConnection(java.lang.String)
+    {
+        java.net.HttpURLConnection $r12;
+        java.net.URL $r10;
+        twitter4j.HttpClientConfiguration $r2;
+        twitter4j.HttpClientImpl r0;
+        twitter4j.HttpClientImpl$1 $r6;
+        java.net.InetSocketAddress $r9;
+        twitter4j.Logger $r4;
+        java.net.Proxy$Type $r8;
+        java.net.Proxy $r7;
+        java.net.URLConnection $r11;
+        int $i0;
+        java.lang.StringBuilder $r5;
+        java.lang.String $r1, $r3;
+        boolean $z0;
+
+        r0 := @this: twitter4j.HttpClientImpl;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $z0 = virtualinvoke r0.<twitter4j.HttpClientImpl: boolean isProxyConfigured()>();
+
+        if $z0 == 0 goto label7;
+
+        $r2 = r0.<twitter4j.HttpClientImpl: twitter4j.HttpClientConfiguration CONF>;
+
+        $r3 = interfaceinvoke $r2.<twitter4j.HttpClientConfiguration: java.lang.String getHttpProxyUser()>();
+
+        if $r3 == null goto label2;
+
+        $r2 = r0.<twitter4j.HttpClientImpl: twitter4j.HttpClientConfiguration CONF>;
+
+        $r3 = interfaceinvoke $r2.<twitter4j.HttpClientConfiguration: java.lang.String getHttpProxyUser()>();
+
+        $z0 = virtualinvoke $r3.<java.lang.String: boolean equals(java.lang.Object)>("");
+
+        if $z0 != 0 goto label2;
+
+        $r4 = <twitter4j.HttpClientImpl: twitter4j.Logger logger>;
+
+        $z0 = virtualinvoke $r4.<twitter4j.Logger: boolean isDebugEnabled()>();
+
+        if $z0 == 0 goto label1;
+
+        $r4 = <twitter4j.HttpClientImpl: twitter4j.Logger logger>;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>(java.lang.String)>("Proxy AuthUser: ");
+
+        $r2 = r0.<twitter4j.HttpClientImpl: twitter4j.HttpClientConfiguration CONF>;
+
+        $r3 = interfaceinvoke $r2.<twitter4j.HttpClientConfiguration: java.lang.String getHttpProxyUser()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r4.<twitter4j.Logger: void debug(java.lang.String)>($r3);
+
+        $r4 = <twitter4j.HttpClientImpl: twitter4j.Logger logger>;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>(java.lang.String)>("Proxy AuthPassword: ");
+
+        $r2 = r0.<twitter4j.HttpClientImpl: twitter4j.HttpClientConfiguration CONF>;
+
+        $r3 = interfaceinvoke $r2.<twitter4j.HttpClientConfiguration: java.lang.String getHttpProxyPassword()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.String: java.lang.String replaceAll(java.lang.String,java.lang.String)>(".", "*");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r4.<twitter4j.Logger: void debug(java.lang.String)>($r3);
+
+     label1:
+        $r6 = new twitter4j.HttpClientImpl$1;
+
+        specialinvoke $r6.<twitter4j.HttpClientImpl$1: void <init>(twitter4j.HttpClientImpl)>(r0);
+
+        staticinvoke <java.net.Authenticator: void setDefault(java.net.Authenticator)>($r6);
+
+     label2:
+        $r7 = new java.net.Proxy;
+
+        $r8 = <java.net.Proxy$Type: java.net.Proxy$Type HTTP>;
+
+        $r2 = r0.<twitter4j.HttpClientImpl: twitter4j.HttpClientConfiguration CONF>;
+
+        $r3 = interfaceinvoke $r2.<twitter4j.HttpClientConfiguration: java.lang.String getHttpProxyHost()>();
+
+        $r2 = r0.<twitter4j.HttpClientImpl: twitter4j.HttpClientConfiguration CONF>;
+
+        $i0 = interfaceinvoke $r2.<twitter4j.HttpClientConfiguration: int getHttpProxyPort()>();
+
+        $r9 = staticinvoke <java.net.InetSocketAddress: java.net.InetSocketAddress createUnresolved(java.lang.String,int)>($r3, $i0);
+
+        specialinvoke $r7.<java.net.Proxy: void <init>(java.net.Proxy$Type,java.net.SocketAddress)>($r8, $r9);
+
+        $r4 = <twitter4j.HttpClientImpl: twitter4j.Logger logger>;
+
+        $z0 = virtualinvoke $r4.<twitter4j.Logger: boolean isDebugEnabled()>();
+
+        if $z0 == 0 goto label3;
+
+        $r4 = <twitter4j.HttpClientImpl: twitter4j.Logger logger>;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>(java.lang.String)>("Opening proxied connection(");
+
+        $r2 = r0.<twitter4j.HttpClientImpl: twitter4j.HttpClientConfiguration CONF>;
+
+        $r3 = interfaceinvoke $r2.<twitter4j.HttpClientConfiguration: java.lang.String getHttpProxyHost()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(":");
+
+        $r2 = r0.<twitter4j.HttpClientImpl: twitter4j.HttpClientConfiguration CONF>;
+
+        $i0 = interfaceinvoke $r2.<twitter4j.HttpClientConfiguration: int getHttpProxyPort()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(")");
+
+        $r3 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r4.<twitter4j.Logger: void debug(java.lang.String)>($r3);
+
+     label3:
+        $r10 = new java.net.URL;
+
+        specialinvoke $r10.<java.net.URL: void <init>(java.lang.String)>($r1);
+
+        $r11 = virtualinvoke $r10.<java.net.URL: java.net.URLConnection openConnection(java.net.Proxy)>($r7);
+
+        $r12 = (java.net.HttpURLConnection) $r11;
+
+     label4:
+        $r2 = r0.<twitter4j.HttpClientImpl: twitter4j.HttpClientConfiguration CONF>;
+
+        $i0 = interfaceinvoke $r2.<twitter4j.HttpClientConfiguration: int getHttpConnectionTimeout()>();
+
+        if $i0 <= 0 goto label5;
+
+        $r2 = r0.<twitter4j.HttpClientImpl: twitter4j.HttpClientConfiguration CONF>;
+
+        $i0 = interfaceinvoke $r2.<twitter4j.HttpClientConfiguration: int getHttpConnectionTimeout()>();
+
+        virtualinvoke $r12.<java.net.HttpURLConnection: void setConnectTimeout(int)>($i0);
+
+     label5:
+        $r2 = r0.<twitter4j.HttpClientImpl: twitter4j.HttpClientConfiguration CONF>;
+
+        $i0 = interfaceinvoke $r2.<twitter4j.HttpClientConfiguration: int getHttpReadTimeout()>();
+
+        if $i0 <= 0 goto label6;
+
+        $r2 = r0.<twitter4j.HttpClientImpl: twitter4j.HttpClientConfiguration CONF>;
+
+        $i0 = interfaceinvoke $r2.<twitter4j.HttpClientConfiguration: int getHttpReadTimeout()>();
+
+        virtualinvoke $r12.<java.net.HttpURLConnection: void setReadTimeout(int)>($i0);
+
+     label6:
+        virtualinvoke $r12.<java.net.HttpURLConnection: void setInstanceFollowRedirects(boolean)>(0);
+
+        return $r12;
+
+     label7:
+        $r10 = new java.net.URL;
+
+        specialinvoke $r10.<java.net.URL: void <init>(java.lang.String)>($r1);
+
+        $r11 = virtualinvoke $r10.<java.net.URL: java.net.URLConnection openConnection()>();
+
+        $r12 = (java.net.HttpURLConnection) $r11;
+
+        goto label4;
+    }
+
+    public twitter4j.HttpResponse handleRequest(twitter4j.HttpRequest)
+    {
+        java.net.HttpURLConnection $r5;
+        byte[] $r19;
+        java.io.BufferedInputStream $r16, $r39;
+        twitter4j.Logger $r24;
+        java.io.DataOutputStream $r13, $r38;
+        java.util.Map $r26;
+        boolean $z0;
+        twitter4j.HttpClientConfiguration $r2;
+        java.util.Set $r27;
+        java.lang.Exception $r31, $r32, $r33;
+        java.util.List $r29;
+        java.lang.StringBuilder $r9, $r37;
+        java.lang.Throwable $r20, $r21, $r22, $r34, $r35, $r36;
+        twitter4j.RequestMethod $r6, $r7;
+        twitter4j.HttpResponseImpl $r3, $r25, $r42;
+        long $l3;
+        int $i0, $i1, $i2, $i4, $i5, $i6;
+        twitter4j.TwitterException $r23, $r40;
+        java.lang.String $r4, $r10;
+        java.io.OutputStream $r11, $r12;
+        twitter4j.HttpParameter $r14;
+        twitter4j.HttpRequest $r1;
+        java.util.Iterator $r28, $r30;
+        java.io.IOException $r43;
+        twitter4j.HttpClientImpl r0;
+        java.io.FileInputStream $r41;
+        java.io.File $r15;
+        twitter4j.HttpParameter[] $r8;
+        java.lang.Object $r18;
+        java.io.InputStream $r17;
+
+        r0 := @this: twitter4j.HttpClientImpl;
+
+        $r1 := @parameter0: twitter4j.HttpRequest;
+
+        $r2 = r0.<twitter4j.HttpClientImpl: twitter4j.HttpClientConfiguration CONF>;
+
+        $i0 = interfaceinvoke $r2.<twitter4j.HttpClientConfiguration: int getHttpRetryCount()>();
+
+        $i0 = $i0 + 1;
+
+        $r3 = null;
+
+        $i1 = 0;
+
+     label001:
+        if $i1 >= $i0 goto label116;
+
+        $i2 = -1;
+
+     label002:
+        $r4 = virtualinvoke $r1.<twitter4j.HttpRequest: java.lang.String getURL()>();
+
+        $r5 = virtualinvoke r0.<twitter4j.HttpClientImpl: java.net.HttpURLConnection getConnection(java.lang.String)>($r4);
+
+        virtualinvoke $r5.<java.net.HttpURLConnection: void setDoInput(boolean)>(1);
+
+        specialinvoke r0.<twitter4j.HttpClientImpl: void setHeaders(twitter4j.HttpRequest,java.net.HttpURLConnection)>($r1, $r5);
+
+        $r6 = virtualinvoke $r1.<twitter4j.HttpRequest: twitter4j.RequestMethod getMethod()>();
+
+        $r4 = virtualinvoke $r6.<twitter4j.RequestMethod: java.lang.String name()>();
+
+        virtualinvoke $r5.<java.net.HttpURLConnection: void setRequestMethod(java.lang.String)>($r4);
+
+        $r6 = virtualinvoke $r1.<twitter4j.HttpRequest: twitter4j.RequestMethod getMethod()>();
+
+        $r7 = <twitter4j.RequestMethod: twitter4j.RequestMethod POST>;
+
+     label003:
+        if $r6 != $r7 goto label115;
+
+     label004:
+        $r8 = virtualinvoke $r1.<twitter4j.HttpRequest: twitter4j.HttpParameter[] getParameters()>();
+
+        $z0 = staticinvoke <twitter4j.HttpParameter: boolean containsFile(twitter4j.HttpParameter[])>($r8);
+
+     label005:
+        if $z0 == 0 goto label079;
+
+     label006:
+        $r37 = new java.lang.StringBuilder;
+
+     label007:
+        $r9 = $r37;
+
+     label008:
+        specialinvoke $r37.<java.lang.StringBuilder: void <init>(java.lang.String)>("----Twitter4J-upload");
+
+        $l3 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l3);
+
+        $r4 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r37 = new java.lang.StringBuilder;
+
+     label009:
+        $r9 = $r37;
+
+     label010:
+        specialinvoke $r37.<java.lang.StringBuilder: void <init>(java.lang.String)>("multipart/form-data; boundary=");
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r10 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r5.<java.net.HttpURLConnection: void setRequestProperty(java.lang.String,java.lang.String)>("Content-Type", $r10);
+
+        $r37 = new java.lang.StringBuilder;
+
+     label011:
+        $r9 = $r37;
+
+     label012:
+        specialinvoke $r37.<java.lang.StringBuilder: void <init>(java.lang.String)>("--");
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r5.<java.net.HttpURLConnection: void setDoOutput(boolean)>(1);
+
+        $r11 = virtualinvoke $r5.<java.net.HttpURLConnection: java.io.OutputStream getOutputStream()>();
+
+     label013:
+        $r12 = $r11;
+
+     label014:
+        $r38 = new java.io.DataOutputStream;
+
+     label015:
+        $r13 = $r38;
+
+     label016:
+        specialinvoke $r38.<java.io.DataOutputStream: void <init>(java.io.OutputStream)>($r11);
+
+        $r8 = virtualinvoke $r1.<twitter4j.HttpRequest: twitter4j.HttpParameter[] getParameters()>();
+
+        $i4 = lengthof $r8;
+
+     label017:
+        $i5 = 0;
+
+     label018:
+        if $i5 >= $i4 goto label055;
+
+     label019:
+        $r14 = $r8[$i5];
+
+        $z0 = virtualinvoke $r14.<twitter4j.HttpParameter: boolean isFile()>();
+
+     label020:
+        if $z0 == 0 goto label049;
+
+     label021:
+        $r37 = new java.lang.StringBuilder;
+
+     label022:
+        $r9 = $r37;
+
+     label023:
+        specialinvoke $r37.<java.lang.StringBuilder: void <init>()>();
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\r\n");
+
+        $r10 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke r0.<twitter4j.HttpClientImpl: void write(java.io.DataOutputStream,java.lang.String)>($r13, $r10);
+
+        $r37 = new java.lang.StringBuilder;
+
+     label024:
+        $r9 = $r37;
+
+     label025:
+        specialinvoke $r37.<java.lang.StringBuilder: void <init>(java.lang.String)>("Content-Disposition: form-data; name=\"");
+
+        $r10 = virtualinvoke $r14.<twitter4j.HttpParameter: java.lang.String getName()>();
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r10);
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\"; filename=\"");
+
+        $r15 = virtualinvoke $r14.<twitter4j.HttpParameter: java.io.File getFile()>();
+
+        $r10 = virtualinvoke $r15.<java.io.File: java.lang.String getName()>();
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r10);
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\"\r\n");
+
+        $r10 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke r0.<twitter4j.HttpClientImpl: void write(java.io.DataOutputStream,java.lang.String)>($r13, $r10);
+
+        $r37 = new java.lang.StringBuilder;
+
+     label026:
+        $r9 = $r37;
+
+     label027:
+        specialinvoke $r37.<java.lang.StringBuilder: void <init>(java.lang.String)>("Content-Type: ");
+
+        $r10 = virtualinvoke $r14.<twitter4j.HttpParameter: java.lang.String getContentType()>();
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r10);
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\r\n\r\n");
+
+        $r10 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke r0.<twitter4j.HttpClientImpl: void write(java.io.DataOutputStream,java.lang.String)>($r13, $r10);
+
+        $r39 = new java.io.BufferedInputStream;
+
+     label028:
+        $r16 = $r39;
+
+     label029:
+        $z0 = virtualinvoke $r14.<twitter4j.HttpParameter: boolean hasFileBody()>();
+
+     label030:
+        if $z0 == 0 goto label043;
+
+     label031:
+        $r17 = virtualinvoke $r14.<twitter4j.HttpParameter: java.io.InputStream getFileBody()>();
+
+     label032:
+        $r18 = $r17;
+
+     label033:
+        $r17 = (java.io.InputStream) $r18;
+
+        specialinvoke $r39.<java.io.BufferedInputStream: void <init>(java.io.InputStream)>($r17);
+
+     label034:
+        $r19 = newarray (byte)[1024];
+
+     label035:
+        $i6 = virtualinvoke $r16.<java.io.BufferedInputStream: int read(byte[])>($r19);
+
+     label036:
+        if $i6 == -1 goto label047;
+
+     label037:
+        virtualinvoke $r13.<java.io.DataOutputStream: void write(byte[],int,int)>($r19, 0, $i6);
+
+     label038:
+        goto label035;
+
+     label039:
+        $r20 := @caughtexception;
+
+        $r21 = $r20;
+
+        $i2 = -1;
+
+     label040:
+        virtualinvoke $r12.<java.io.OutputStream: void close()>();
+
+     label041:
+        throw $r21;
+
+     label042:
+        $r22 := @caughtexception;
+
+        $r2 = r0.<twitter4j.HttpClientImpl: twitter4j.HttpClientConfiguration CONF>;
+
+        $i4 = interfaceinvoke $r2.<twitter4j.HttpClientConfiguration: int getHttpRetryCount()>();
+
+        if $i1 != $i4 goto label097;
+
+        $r40 = new twitter4j.TwitterException;
+
+        $r43 = (java.io.IOException) $r22;
+
+        $r4 = virtualinvoke $r43.<java.io.IOException: java.lang.String getMessage()>();
+
+        $r31 = (java.lang.Exception) $r22;
+
+        specialinvoke $r40.<twitter4j.TwitterException: void <init>(java.lang.String,java.lang.Exception,int)>($r4, $r31, $i2);
+
+        throw $r40;
+
+     label043:
+        $r41 = new java.io.FileInputStream;
+
+     label044:
+        $r18 = $r41;
+
+     label045:
+        $r15 = virtualinvoke $r14.<twitter4j.HttpParameter: java.io.File getFile()>();
+
+        specialinvoke $r41.<java.io.FileInputStream: void <init>(java.io.File)>($r15);
+
+     label046:
+        goto label033;
+
+     label047:
+        virtualinvoke r0.<twitter4j.HttpClientImpl: void write(java.io.DataOutputStream,java.lang.String)>($r13, "\r\n");
+
+        virtualinvoke $r16.<java.io.BufferedInputStream: void close()>();
+
+     label048:
+        $i5 = $i5 + 1;
+
+        goto label018;
+
+     label049:
+        $r37 = new java.lang.StringBuilder;
+
+     label050:
+        $r9 = $r37;
+
+     label051:
+        specialinvoke $r37.<java.lang.StringBuilder: void <init>()>();
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\r\n");
+
+        $r10 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke r0.<twitter4j.HttpClientImpl: void write(java.io.DataOutputStream,java.lang.String)>($r13, $r10);
+
+        $r37 = new java.lang.StringBuilder;
+
+     label052:
+        $r9 = $r37;
+
+     label053:
+        specialinvoke $r37.<java.lang.StringBuilder: void <init>(java.lang.String)>("Content-Disposition: form-data; name=\"");
+
+        $r10 = virtualinvoke $r14.<twitter4j.HttpParameter: java.lang.String getName()>();
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r10);
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\"\r\n");
+
+        $r10 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke r0.<twitter4j.HttpClientImpl: void write(java.io.DataOutputStream,java.lang.String)>($r13, $r10);
+
+        virtualinvoke r0.<twitter4j.HttpClientImpl: void write(java.io.DataOutputStream,java.lang.String)>($r13, "Content-Type: text/plain; charset=UTF-8\r\n\r\n");
+
+        $r24 = <twitter4j.HttpClientImpl: twitter4j.Logger logger>;
+
+        $r10 = virtualinvoke $r14.<twitter4j.HttpParameter: java.lang.String getValue()>();
+
+        virtualinvoke $r24.<twitter4j.Logger: void debug(java.lang.String)>($r10);
+
+        $r10 = virtualinvoke $r14.<twitter4j.HttpParameter: java.lang.String getValue()>();
+
+        $r19 = virtualinvoke $r10.<java.lang.String: byte[] getBytes(java.lang.String)>("UTF-8");
+
+        virtualinvoke $r13.<java.io.DataOutputStream: void write(byte[])>($r19);
+
+        virtualinvoke r0.<twitter4j.HttpClientImpl: void write(java.io.DataOutputStream,java.lang.String)>($r13, "\r\n");
+
+     label054:
+        goto label048;
+
+     label055:
+        $r37 = new java.lang.StringBuilder;
+
+     label056:
+        $r9 = $r37;
+
+     label057:
+        specialinvoke $r37.<java.lang.StringBuilder: void <init>()>();
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("--\r\n");
+
+        $r4 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke r0.<twitter4j.HttpClientImpl: void write(java.io.DataOutputStream,java.lang.String)>($r13, $r4);
+
+        virtualinvoke r0.<twitter4j.HttpClientImpl: void write(java.io.DataOutputStream,java.lang.String)>($r13, "\r\n");
+
+     label058:
+        virtualinvoke $r12.<java.io.OutputStream: void flush()>();
+
+        virtualinvoke $r12.<java.io.OutputStream: void close()>();
+
+     label059:
+        $r42 = new twitter4j.HttpResponseImpl;
+
+     label060:
+        $r25 = $r42;
+
+     label061:
+        $r2 = r0.<twitter4j.HttpClientImpl: twitter4j.HttpClientConfiguration CONF>;
+
+        specialinvoke $r42.<twitter4j.HttpResponseImpl: void <init>(java.net.HttpURLConnection,twitter4j.HttpClientConfiguration)>($r5, $r2);
+
+     label062:
+        $i4 = virtualinvoke $r5.<java.net.HttpURLConnection: int getResponseCode()>();
+
+     label063:
+        $i2 = $i4;
+
+     label064:
+        $r24 = <twitter4j.HttpClientImpl: twitter4j.Logger logger>;
+
+        $z0 = virtualinvoke $r24.<twitter4j.Logger: boolean isDebugEnabled()>();
+
+     label065:
+        if $z0 == 0 goto label085;
+
+     label066:
+        $r24 = <twitter4j.HttpClientImpl: twitter4j.Logger logger>;
+
+        virtualinvoke $r24.<twitter4j.Logger: void debug(java.lang.String)>("Response: ");
+
+        $r26 = virtualinvoke $r5.<java.net.HttpURLConnection: java.util.Map getHeaderFields()>();
+
+        $r27 = interfaceinvoke $r26.<java.util.Map: java.util.Set keySet()>();
+
+        $r28 = interfaceinvoke $r27.<java.util.Set: java.util.Iterator iterator()>();
+
+     label067:
+        $z0 = interfaceinvoke $r28.<java.util.Iterator: boolean hasNext()>();
+
+     label068:
+        if $z0 == 0 goto label085;
+
+     label069:
+        $r18 = interfaceinvoke $r28.<java.util.Iterator: java.lang.Object next()>();
+
+        $r4 = (java.lang.String) $r18;
+
+        $r18 = interfaceinvoke $r26.<java.util.Map: java.lang.Object get(java.lang.Object)>($r4);
+
+        $r29 = (java.util.List) $r18;
+
+        $r30 = interfaceinvoke $r29.<java.util.List: java.util.Iterator iterator()>();
+
+     label070:
+        $z0 = interfaceinvoke $r30.<java.util.Iterator: boolean hasNext()>();
+
+     label071:
+        if $z0 == 0 goto label067;
+
+     label072:
+        $r18 = interfaceinvoke $r30.<java.util.Iterator: java.lang.Object next()>();
+
+        $r10 = (java.lang.String) $r18;
+
+     label073:
+        if $r4 == null goto label083;
+
+     label074:
+        $r24 = <twitter4j.HttpClientImpl: twitter4j.Logger logger>;
+
+        $r37 = new java.lang.StringBuilder;
+
+     label075:
+        $r9 = $r37;
+
+     label076:
+        specialinvoke $r37.<java.lang.StringBuilder: void <init>()>();
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(": ");
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r10);
+
+        $r10 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r24.<twitter4j.Logger: void debug(java.lang.String)>($r10);
+
+     label077:
+        goto label070;
+
+     label078:
+        $r21 := @caughtexception;
+
+        $r3 = $r25;
+
+        goto label040;
+
+     label079:
+        virtualinvoke $r5.<java.net.HttpURLConnection: void setRequestProperty(java.lang.String,java.lang.String)>("Content-Type", "application/x-www-form-urlencoded");
+
+        $r8 = virtualinvoke $r1.<twitter4j.HttpRequest: twitter4j.HttpParameter[] getParameters()>();
+
+        $r4 = staticinvoke <twitter4j.HttpParameter: java.lang.String encodeParameters(twitter4j.HttpParameter[])>($r8);
+
+        $r24 = <twitter4j.HttpClientImpl: twitter4j.Logger logger>;
+
+        virtualinvoke $r24.<twitter4j.Logger: void debug(java.lang.String,java.lang.String)>("Post Params: ", $r4);
+
+        $r19 = virtualinvoke $r4.<java.lang.String: byte[] getBytes(java.lang.String)>("UTF-8");
+
+        $i4 = lengthof $r19;
+
+        $r4 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i4);
+
+        virtualinvoke $r5.<java.net.HttpURLConnection: void setRequestProperty(java.lang.String,java.lang.String)>("Content-Length", $r4);
+
+        virtualinvoke $r5.<java.net.HttpURLConnection: void setDoOutput(boolean)>(1);
+
+        $r11 = virtualinvoke $r5.<java.net.HttpURLConnection: java.io.OutputStream getOutputStream()>();
+
+     label080:
+        $r12 = $r11;
+
+     label081:
+        virtualinvoke $r11.<java.io.OutputStream: void write(byte[])>($r19);
+
+     label082:
+        goto label058;
+
+     label083:
+        $r24 = <twitter4j.HttpClientImpl: twitter4j.Logger logger>;
+
+        virtualinvoke $r24.<twitter4j.Logger: void debug(java.lang.String)>($r10);
+
+     label084:
+        goto label070;
+
+     label085:
+        if $i4 < 200 goto label086;
+
+        if $i4 == 302 goto label092;
+
+        if 300 > $i4 goto label092;
+
+     label086:
+        if $i4 == 420 goto label089;
+
+        if $i4 == 400 goto label089;
+
+        if $i4 < 500 goto label089;
+
+     label087:
+        $r2 = r0.<twitter4j.HttpClientImpl: twitter4j.HttpClientConfiguration CONF>;
+
+        $i4 = interfaceinvoke $r2.<twitter4j.HttpClientConfiguration: int getHttpRetryCount()>();
+
+     label088:
+        if $i1 != $i4 goto label095;
+
+     label089:
+        $r40 = new twitter4j.TwitterException;
+
+     label090:
+        $r23 = $r40;
+
+     label091:
+        $r4 = virtualinvoke $r25.<twitter4j.HttpResponse: java.lang.String asString()>();
+
+        specialinvoke $r40.<twitter4j.TwitterException: void <init>(java.lang.String,twitter4j.HttpResponse)>($r4, $r25);
+
+        throw $r23;
+
+     label092:
+        virtualinvoke $r12.<java.io.OutputStream: void close()>();
+
+     label093:
+        return $r25;
+
+     label094:
+        $r31 := @caughtexception;
+
+        return $r25;
+
+     label095:
+        virtualinvoke $r12.<java.io.OutputStream: void close()>();
+
+     label096:
+        $r3 = $r25;
+
+     label097:
+        $r24 = <twitter4j.HttpClientImpl: twitter4j.Logger logger>;
+
+     label098:
+        $z0 = virtualinvoke $r24.<twitter4j.Logger: boolean isDebugEnabled()>();
+
+     label099:
+        if $z0 == 0 goto label101;
+
+        if $r3 == null goto label101;
+
+     label100:
+        virtualinvoke $r3.<twitter4j.HttpResponse: java.lang.String asString()>();
+
+     label101:
+        $r24 = <twitter4j.HttpClientImpl: twitter4j.Logger logger>;
+
+        $r37 = new java.lang.StringBuilder;
+
+        $r9 = $r37;
+
+     label102:
+        specialinvoke $r37.<java.lang.StringBuilder: void <init>(java.lang.String)>("Sleeping ");
+
+     label103:
+        $r2 = r0.<twitter4j.HttpClientImpl: twitter4j.HttpClientConfiguration CONF>;
+
+     label104:
+        $i2 = interfaceinvoke $r2.<twitter4j.HttpClientConfiguration: int getHttpRetryIntervalSeconds()>();
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i2);
+
+        $r9 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" seconds until the next retry.");
+
+        $r4 = virtualinvoke $r9.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r24.<twitter4j.Logger: void debug(java.lang.String)>($r4);
+
+     label105:
+        $r2 = r0.<twitter4j.HttpClientImpl: twitter4j.HttpClientConfiguration CONF>;
+
+     label106:
+        $i2 = interfaceinvoke $r2.<twitter4j.HttpClientConfiguration: int getHttpRetryIntervalSeconds()>();
+
+     label107:
+        $i2 = $i2 * 1000;
+
+        $l3 = (long) $i2;
+
+     label108:
+        staticinvoke <java.lang.Thread: void sleep(long)>($l3);
+
+     label109:
+        $i1 = $i1 + 1;
+
+        goto label001;
+
+     label110:
+        $r32 := @caughtexception;
+
+        $r3 = $r25;
+
+        goto label097;
+
+     label111:
+        $r33 := @caughtexception;
+
+        goto label041;
+
+     label112:
+        $r34 := @caughtexception;
+
+        goto label109;
+
+     label113:
+        $r35 := @caughtexception;
+
+        $r21 = $r35;
+
+        $r12 = null;
+
+        $i2 = -1;
+
+        goto label040;
+
+     label114:
+        $r36 := @caughtexception;
+
+        $i2 = -1;
+
+        $r21 = $r36;
+
+        goto label040;
+
+     label115:
+        $r12 = null;
+
+        goto label059;
+
+     label116:
+        return $r3;
+
+        catch java.lang.Throwable from label002 to label003 with label113;
+        catch java.lang.Throwable from label004 to label005 with label113;
+        catch java.lang.Throwable from label006 to label007 with label113;
+        catch java.lang.Throwable from label008 to label009 with label113;
+        catch java.lang.Throwable from label010 to label011 with label113;
+        catch java.lang.Throwable from label012 to label013 with label113;
+        catch java.lang.Throwable from label014 to label015 with label039;
+        catch java.lang.Throwable from label016 to label017 with label039;
+        catch java.lang.Throwable from label019 to label020 with label039;
+        catch java.lang.Throwable from label021 to label022 with label039;
+        catch java.lang.Throwable from label023 to label024 with label039;
+        catch java.lang.Throwable from label025 to label026 with label039;
+        catch java.lang.Throwable from label027 to label028 with label039;
+        catch java.lang.Throwable from label029 to label030 with label039;
+        catch java.lang.Throwable from label031 to label032 with label039;
+        catch java.lang.Throwable from label033 to label034 with label039;
+        catch java.lang.Throwable from label035 to label036 with label039;
+        catch java.lang.Throwable from label037 to label038 with label039;
+        catch java.lang.Exception from label040 to label041 with label111;
+        catch java.io.IOException from label041 to label042 with label042;
+        catch java.lang.Throwable from label043 to label044 with label039;
+        catch java.lang.Throwable from label045 to label046 with label039;
+        catch java.lang.Throwable from label047 to label048 with label039;
+        catch java.lang.Throwable from label049 to label050 with label039;
+        catch java.lang.Throwable from label051 to label052 with label039;
+        catch java.lang.Throwable from label053 to label054 with label039;
+        catch java.lang.Throwable from label055 to label056 with label039;
+        catch java.lang.Throwable from label057 to label059 with label039;
+        catch java.lang.Throwable from label059 to label060 with label114;
+        catch java.lang.Throwable from label061 to label062 with label114;
+        catch java.lang.Throwable from label062 to label063 with label078;
+        catch java.lang.Throwable from label064 to label065 with label078;
+        catch java.lang.Throwable from label066 to label068 with label078;
+        catch java.lang.Throwable from label069 to label071 with label078;
+        catch java.lang.Throwable from label072 to label073 with label078;
+        catch java.lang.Throwable from label074 to label075 with label078;
+        catch java.lang.Throwable from label076 to label077 with label078;
+        catch java.lang.Throwable from label079 to label080 with label113;
+        catch java.lang.Throwable from label081 to label082 with label039;
+        catch java.lang.Throwable from label083 to label084 with label078;
+        catch java.lang.Throwable from label087 to label088 with label078;
+        catch java.lang.Throwable from label089 to label090 with label078;
+        catch java.lang.Throwable from label091 to label092 with label078;
+        catch java.lang.Exception from label092 to label093 with label094;
+        catch java.lang.Exception from label095 to label096 with label110;
+        catch java.lang.InterruptedException from label098 to label099 with label112;
+        catch java.lang.InterruptedException from label100 to label101 with label112;
+        catch java.lang.InterruptedException from label102 to label103 with label112;
+        catch java.lang.InterruptedException from label104 to label105 with label112;
+        catch java.lang.InterruptedException from label106 to label107 with label112;
+        catch java.lang.InterruptedException from label108 to label109 with label112;
+    }
+
+    public twitter4j.HttpResponse post(java.lang.String, twitter4j.HttpParameter[])
+    {
+        twitter4j.HttpResponse $r4;
+        twitter4j.RequestMethod $r3;
+        twitter4j.HttpRequest $r5;
+        twitter4j.HttpParameter[] $r2;
+        twitter4j.HttpClientImpl r0;
+        java.lang.String $r1;
+
+        r0 := @this: twitter4j.HttpClientImpl;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: twitter4j.HttpParameter[];
+
+        $r5 = new twitter4j.HttpRequest;
+
+        $r3 = <twitter4j.RequestMethod: twitter4j.RequestMethod POST>;
+
+        specialinvoke $r5.<twitter4j.HttpRequest: void <init>(twitter4j.RequestMethod,java.lang.String,twitter4j.HttpParameter[],twitter4j.auth.Authorization,java.util.Map)>($r3, $r1, $r2, null, null);
+
+        $r4 = virtualinvoke r0.<twitter4j.HttpClientImpl: twitter4j.HttpResponse request(twitter4j.HttpRequest)>($r5);
+
+        return $r4;
+    }
+}

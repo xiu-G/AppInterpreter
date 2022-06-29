@@ -1,0 +1,980 @@
+public class cn.hi321.browser.download.DownloadActivity extends android.app.Activity implements cn.hi321.browser.download.DownloadObserver
+{
+    private static final int ACTIVITYSIZES;
+    private static final java.lang.String LOCALSTART;
+    private static final java.lang.String TAG;
+    public static cn.hi321.browser.download.ContainSizeManager mSizeManager;
+    private cn.hi321.browser.download.DownloadManager downloadManager;
+    private android.widget.Button edit_button;
+    private android.widget.ImageView left_button;
+    private cn.hi321.browser.download.DownloadManager mDownloadManager;
+    private android.os.Handler mHandler;
+    private android.widget.ListView mListView;
+    private java.lang.Runnable mUpdateTimeTask;
+    private android.widget.ViewFlipper mViewFlipper;
+    private android.widget.Button set_button;
+    private android.view.View sizeView;
+    private android.widget.TextView start_main;
+    private android.widget.TextView title;
+    private android.widget.RelativeLayout titlebar;
+    public android.content.Intent ipcIntent;
+    public android.content.Intent ipcResultIntent;
+
+    public void <init>()
+    {
+        cn.hi321.browser.download.DownloadActivity$1 $r1;
+        cn.hi321.browser.download.DownloadActivity r0;
+
+        r0 := @this: cn.hi321.browser.download.DownloadActivity;
+
+        specialinvoke r0.<android.app.Activity: void <init>()>();
+
+        $r1 = new cn.hi321.browser.download.DownloadActivity$1;
+
+        specialinvoke $r1.<cn.hi321.browser.download.DownloadActivity$1: void <init>(cn.hi321.browser.download.DownloadActivity)>(r0);
+
+        r0.<cn.hi321.browser.download.DownloadActivity: java.lang.Runnable mUpdateTimeTask> = $r1;
+
+        return;
+    }
+
+    private void InitCompentView()
+    {
+        android.widget.ImageView $r7;
+        android.widget.TextView $r4;
+        android.view.View $r1;
+        android.widget.Button $r5;
+        android.widget.RelativeLayout $r6;
+        android.widget.ListView $r2;
+        cn.hi321.browser.download.DownloadActivity r0;
+        android.widget.ViewFlipper $r3;
+
+        r0 := @this: cn.hi321.browser.download.DownloadActivity;
+
+        $r1 = virtualinvoke r0.<cn.hi321.browser.download.DownloadActivity: android.view.View findViewById(int)>(2131296341);
+
+        $r2 = (android.widget.ListView) $r1;
+
+        r0.<cn.hi321.browser.download.DownloadActivity: android.widget.ListView mListView> = $r2;
+
+        $r1 = virtualinvoke r0.<cn.hi321.browser.download.DownloadActivity: android.view.View findViewById(int)>(2131296340);
+
+        $r3 = (android.widget.ViewFlipper) $r1;
+
+        r0.<cn.hi321.browser.download.DownloadActivity: android.widget.ViewFlipper mViewFlipper> = $r3;
+
+        $r1 = virtualinvoke r0.<cn.hi321.browser.download.DownloadActivity: android.view.View findViewById(int)>(2131296338);
+
+        r0.<cn.hi321.browser.download.DownloadActivity: android.view.View sizeView> = $r1;
+
+        $r1 = virtualinvoke r0.<cn.hi321.browser.download.DownloadActivity: android.view.View findViewById(int)>(2131296343);
+
+        $r4 = (android.widget.TextView) $r1;
+
+        r0.<cn.hi321.browser.download.DownloadActivity: android.widget.TextView start_main> = $r4;
+
+        $r1 = virtualinvoke r0.<cn.hi321.browser.download.DownloadActivity: android.view.View findViewById(int)>(2131296337);
+
+        $r5 = (android.widget.Button) $r1;
+
+        r0.<cn.hi321.browser.download.DownloadActivity: android.widget.Button edit_button> = $r5;
+
+        $r1 = virtualinvoke r0.<cn.hi321.browser.download.DownloadActivity: android.view.View findViewById(int)>(2131296336);
+
+        $r5 = (android.widget.Button) $r1;
+
+        r0.<cn.hi321.browser.download.DownloadActivity: android.widget.Button set_button> = $r5;
+
+        $r1 = virtualinvoke r0.<cn.hi321.browser.download.DownloadActivity: android.view.View findViewById(int)>(2131296334);
+
+        $r4 = (android.widget.TextView) $r1;
+
+        r0.<cn.hi321.browser.download.DownloadActivity: android.widget.TextView title> = $r4;
+
+        $r1 = virtualinvoke r0.<cn.hi321.browser.download.DownloadActivity: android.view.View findViewById(int)>(2131296331);
+
+        $r6 = (android.widget.RelativeLayout) $r1;
+
+        r0.<cn.hi321.browser.download.DownloadActivity: android.widget.RelativeLayout titlebar> = $r6;
+
+        $r1 = virtualinvoke r0.<cn.hi321.browser.download.DownloadActivity: android.view.View findViewById(int)>(2131296341);
+
+        $r2 = (android.widget.ListView) $r1;
+
+        r0.<cn.hi321.browser.download.DownloadActivity: android.widget.ListView mListView> = $r2;
+
+        $r1 = virtualinvoke r0.<cn.hi321.browser.download.DownloadActivity: android.view.View findViewById(int)>(2131296333);
+
+        $r7 = (android.widget.ImageView) $r1;
+
+        r0.<cn.hi321.browser.download.DownloadActivity: android.widget.ImageView left_button> = $r7;
+
+        return;
+    }
+
+    static void access$0(cn.hi321.browser.download.DownloadActivity)
+    {
+        cn.hi321.browser.download.DownloadActivity $r0;
+
+        $r0 := @parameter0: cn.hi321.browser.download.DownloadActivity;
+
+        specialinvoke $r0.<cn.hi321.browser.download.DownloadActivity: void updateListView()>();
+
+        return;
+    }
+
+    private cn.hi321.browser.download.DownloadJob getJob(int)
+    {
+        android.widget.ListAdapter $r2;
+        int $i0;
+        cn.hi321.browser.download.DownloadJob $r4;
+        java.lang.Object $r3;
+        android.widget.ListView $r1;
+        cn.hi321.browser.download.DownloadActivity r0;
+
+        r0 := @this: cn.hi321.browser.download.DownloadActivity;
+
+        $i0 := @parameter0: int;
+
+        $r1 = r0.<cn.hi321.browser.download.DownloadActivity: android.widget.ListView mListView>;
+
+        $r2 = virtualinvoke $r1.<android.widget.ListView: android.widget.ListAdapter getAdapter()>();
+
+        $r3 = interfaceinvoke $r2.<android.widget.ListAdapter: java.lang.Object getItem(int)>($i0);
+
+        $r4 = (cn.hi321.browser.download.DownloadJob) $r3;
+
+        return $r4;
+    }
+
+    private void initDownloadTitle()
+    {
+        int $i0;
+        android.widget.TextView $r1;
+        cn.hi321.browser.download.DownloadActivity r0;
+
+        r0 := @this: cn.hi321.browser.download.DownloadActivity;
+
+        $i0 = staticinvoke <cn.hi321.browser.utils.DeviceInfoUtil: int getWidthPixels(android.content.Context)>(r0);
+
+        if $i0 > 480 goto label1;
+
+        if $i0 <= 320 goto label1;
+
+        $r1 = r0.<cn.hi321.browser.download.DownloadActivity: android.widget.TextView title>;
+
+        virtualinvoke $r1.<android.widget.TextView: void setTextSize(float)>(20.0F);
+
+        specialinvoke r0.<cn.hi321.browser.download.DownloadActivity: void setTitleBarHeight(int)>(80);
+
+        return;
+
+     label1:
+        if $i0 > 320 goto label2;
+
+        if $i0 <= 0 goto label2;
+
+        $r1 = r0.<cn.hi321.browser.download.DownloadActivity: android.widget.TextView title>;
+
+        virtualinvoke $r1.<android.widget.TextView: void setTextSize(float)>(18.0F);
+
+        specialinvoke r0.<cn.hi321.browser.download.DownloadActivity: void setTitleBarHeight(int)>(54);
+
+        return;
+
+     label2:
+        if $i0 > 720 goto label3;
+
+        if $i0 <= 480 goto label3;
+
+        $r1 = r0.<cn.hi321.browser.download.DownloadActivity: android.widget.TextView title>;
+
+        virtualinvoke $r1.<android.widget.TextView: void setTextSize(float)>(20.0F);
+
+        specialinvoke r0.<cn.hi321.browser.download.DownloadActivity: void setTitleBarHeight(int)>(120);
+
+        specialinvoke r0.<cn.hi321.browser.download.DownloadActivity: void setLeftButtonMargin(int)>(17);
+
+        specialinvoke r0.<cn.hi321.browser.download.DownloadActivity: void setRightButtonMargin(int,int)>(20, 16);
+
+        return;
+
+     label3:
+        if $i0 > 800 goto label4;
+
+        if $i0 <= 720 goto label4;
+
+        $r1 = r0.<cn.hi321.browser.download.DownloadActivity: android.widget.TextView title>;
+
+        virtualinvoke $r1.<android.widget.TextView: void setTextSize(float)>(25.0F);
+
+        specialinvoke r0.<cn.hi321.browser.download.DownloadActivity: void setTitleBarHeight(int)>(136);
+
+        specialinvoke r0.<cn.hi321.browser.download.DownloadActivity: void setLeftButtonMargin(int)>(17);
+
+        specialinvoke r0.<cn.hi321.browser.download.DownloadActivity: void setRightButtonMargin(int,int)>(20, 18);
+
+        return;
+
+     label4:
+        $r1 = r0.<cn.hi321.browser.download.DownloadActivity: android.widget.TextView title>;
+
+        virtualinvoke $r1.<android.widget.TextView: void setTextSize(float)>(25.0F);
+
+        specialinvoke r0.<cn.hi321.browser.download.DownloadActivity: void setTitleBarHeight(int)>(136);
+
+        specialinvoke r0.<cn.hi321.browser.download.DownloadActivity: void setRightButtonMargin(int,int)>(20, 14);
+
+        return;
+    }
+
+    private void playNow(int)
+    {
+        cn.hi321.browser.download.DownloadManager $r7;
+        long $l1;
+        android.widget.Toast $r9;
+        int $i0;
+        cn.hi321.browser.download.DownloadJob $r2;
+        cn.hi321.browser.download.DownloadEntity $r4;
+        java.lang.StringBuilder $r3;
+        java.lang.String $r5, $r6, $r8;
+        cn.hi321.browser.download.DownloadActivity r0;
+        cn.hi321.browser.model.DownloadInfo r1;
+        double d0;
+
+        r0 := @this: cn.hi321.browser.download.DownloadActivity;
+
+        $i0 := @parameter0: int;
+
+        $r2 = specialinvoke r0.<cn.hi321.browser.download.DownloadActivity: cn.hi321.browser.download.DownloadJob getJob(int)>($i0);
+
+        $i0 = virtualinvoke $r2.<cn.hi321.browser.download.DownloadJob: int getProgress()>();
+
+        if $i0 < 10 goto label1;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>("file://");
+
+        $r4 = virtualinvoke $r2.<cn.hi321.browser.download.DownloadJob: cn.hi321.browser.download.DownloadEntity getEntity()>();
+
+        $r5 = virtualinvoke $r4.<cn.hi321.browser.download.DownloadEntity: java.lang.String getSrcPath()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        r1 = new cn.hi321.browser.model.DownloadInfo;
+
+        specialinvoke r1.<cn.hi321.browser.model.DownloadInfo: void <init>()>();
+
+        $r4 = virtualinvoke $r2.<cn.hi321.browser.download.DownloadJob: cn.hi321.browser.download.DownloadEntity getEntity()>();
+
+        $r6 = virtualinvoke $r4.<cn.hi321.browser.download.DownloadEntity: java.lang.String getId()>();
+
+        virtualinvoke r1.<cn.hi321.browser.model.DownloadInfo: void setMid(java.lang.String)>($r6);
+
+        $r6 = virtualinvoke $r4.<cn.hi321.browser.download.DownloadEntity: java.lang.String getMimetype()>();
+
+        virtualinvoke r1.<cn.hi321.browser.model.DownloadInfo: void setmType(java.lang.String)>($r6);
+
+        $r6 = virtualinvoke $r4.<cn.hi321.browser.download.DownloadEntity: java.lang.String getName()>();
+
+        virtualinvoke r1.<cn.hi321.browser.model.DownloadInfo: void setMediaName(java.lang.String)>($r6);
+
+        $r6 = virtualinvoke $r4.<cn.hi321.browser.download.DownloadEntity: java.lang.String getName()>();
+
+        virtualinvoke r1.<cn.hi321.browser.model.DownloadInfo: void setTaskName(java.lang.String)>($r6);
+
+        $r6 = virtualinvoke $r4.<cn.hi321.browser.download.DownloadEntity: java.lang.String getId()>();
+
+        virtualinvoke r1.<cn.hi321.browser.model.DownloadInfo: void setHashId(java.lang.String)>($r6);
+
+        $i0 = virtualinvoke $r2.<cn.hi321.browser.download.DownloadJob: int getProgress()>();
+
+        d0 = (double) $i0;
+
+        d0 = d0 / 100.0;
+
+        $r7 = r0.<cn.hi321.browser.download.DownloadActivity: cn.hi321.browser.download.DownloadManager downloadManager>;
+
+        $r6 = virtualinvoke $r4.<cn.hi321.browser.download.DownloadEntity: java.lang.String getName()>();
+
+        $r3 = new java.lang.StringBuilder;
+
+        $l1 = virtualinvoke $r2.<cn.hi321.browser.download.DownloadJob: long getmTotalSize()>();
+
+        $r8 = staticinvoke <java.lang.String: java.lang.String valueOf(long)>($l1);
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>($r8);
+
+        $r8 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r7.<cn.hi321.browser.download.DownloadManager: boolean playVideo(android.content.Context,java.lang.String,java.lang.String,java.lang.String,double,cn.hi321.browser.model.DownloadInfo)>(r0, $r5, $r6, $r8, d0, r1);
+
+        return;
+
+     label1:
+        $r9 = staticinvoke <android.widget.Toast: android.widget.Toast makeText(android.content.Context,int,int)>(r0, 2131100086, 0);
+
+        virtualinvoke $r9.<android.widget.Toast: void show()>();
+
+        return;
+    }
+
+    private void setLeftButtonMargin(int)
+    {
+        android.view.ViewGroup$LayoutParams $r1;
+        int $i0;
+        android.widget.ImageView $r2;
+        android.widget.LinearLayout$LayoutParams r3;
+        cn.hi321.browser.download.DownloadActivity r0;
+
+        r0 := @this: cn.hi321.browser.download.DownloadActivity;
+
+        $i0 := @parameter0: int;
+
+        $r2 = r0.<cn.hi321.browser.download.DownloadActivity: android.widget.ImageView left_button>;
+
+        $r1 = virtualinvoke $r2.<android.widget.ImageView: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        r3 = (android.widget.LinearLayout$LayoutParams) $r1;
+
+        r3.<android.widget.LinearLayout$LayoutParams: int leftMargin> = $i0;
+
+        $r2 = r0.<cn.hi321.browser.download.DownloadActivity: android.widget.ImageView left_button>;
+
+        virtualinvoke $r2.<android.widget.ImageView: void setLayoutParams(android.view.ViewGroup$LayoutParams)>(r3);
+
+        return;
+    }
+
+    private void setOnClickCompentView()
+    {
+        android.widget.ImageView $r6;
+        cn.hi321.browser.download.DownloadActivity$3 $r4;
+        cn.hi321.browser.download.DownloadActivity$4 $r5;
+        cn.hi321.browser.download.DownloadActivity$2 $r2;
+        android.widget.TextView $r8;
+        android.widget.Button $r3;
+        android.widget.ListView $r1;
+        cn.hi321.browser.download.DownloadActivity r0;
+        cn.hi321.browser.download.DownloadActivity$5 $r7;
+        cn.hi321.browser.download.DownloadActivity$6 $r9;
+
+        r0 := @this: cn.hi321.browser.download.DownloadActivity;
+
+        $r1 = r0.<cn.hi321.browser.download.DownloadActivity: android.widget.ListView mListView>;
+
+        $r2 = new cn.hi321.browser.download.DownloadActivity$2;
+
+        specialinvoke $r2.<cn.hi321.browser.download.DownloadActivity$2: void <init>(cn.hi321.browser.download.DownloadActivity)>(r0);
+
+        virtualinvoke $r1.<android.widget.ListView: void setOnItemClickListener(android.widget.AdapterView$OnItemClickListener)>($r2);
+
+        $r3 = r0.<cn.hi321.browser.download.DownloadActivity: android.widget.Button edit_button>;
+
+        $r4 = new cn.hi321.browser.download.DownloadActivity$3;
+
+        specialinvoke $r4.<cn.hi321.browser.download.DownloadActivity$3: void <init>(cn.hi321.browser.download.DownloadActivity)>(r0);
+
+        virtualinvoke $r3.<android.widget.Button: void setOnClickListener(android.view.View$OnClickListener)>($r4);
+
+        $r3 = r0.<cn.hi321.browser.download.DownloadActivity: android.widget.Button set_button>;
+
+        $r5 = new cn.hi321.browser.download.DownloadActivity$4;
+
+        specialinvoke $r5.<cn.hi321.browser.download.DownloadActivity$4: void <init>(cn.hi321.browser.download.DownloadActivity)>(r0);
+
+        virtualinvoke $r3.<android.widget.Button: void setOnClickListener(android.view.View$OnClickListener)>($r5);
+
+        $r6 = r0.<cn.hi321.browser.download.DownloadActivity: android.widget.ImageView left_button>;
+
+        $r7 = new cn.hi321.browser.download.DownloadActivity$5;
+
+        specialinvoke $r7.<cn.hi321.browser.download.DownloadActivity$5: void <init>(cn.hi321.browser.download.DownloadActivity)>(r0);
+
+        virtualinvoke $r6.<android.widget.ImageView: void setOnClickListener(android.view.View$OnClickListener)>($r7);
+
+        $r8 = r0.<cn.hi321.browser.download.DownloadActivity: android.widget.TextView start_main>;
+
+        $r9 = new cn.hi321.browser.download.DownloadActivity$6;
+
+        specialinvoke $r9.<cn.hi321.browser.download.DownloadActivity$6: void <init>(cn.hi321.browser.download.DownloadActivity)>(r0);
+
+        virtualinvoke $r8.<android.widget.TextView: void setOnClickListener(android.view.View$OnClickListener)>($r9);
+
+        return;
+    }
+
+    private void setRightButtonMargin(int, int)
+    {
+        android.view.ViewGroup$LayoutParams $r1;
+        int $i0, $i1;
+        float $f0;
+        android.widget.Button $r2;
+        android.widget.LinearLayout$LayoutParams r3;
+        cn.hi321.browser.download.DownloadActivity r0;
+
+        r0 := @this: cn.hi321.browser.download.DownloadActivity;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $r2 = r0.<cn.hi321.browser.download.DownloadActivity: android.widget.Button edit_button>;
+
+        $r1 = virtualinvoke $r2.<android.widget.Button: android.view.ViewGroup$LayoutParams getLayoutParams()>();
+
+        r3 = (android.widget.LinearLayout$LayoutParams) $r1;
+
+        r3.<android.widget.LinearLayout$LayoutParams: int rightMargin> = $i0;
+
+        $r2 = r0.<cn.hi321.browser.download.DownloadActivity: android.widget.Button edit_button>;
+
+        virtualinvoke $r2.<android.widget.Button: void setLayoutParams(android.view.ViewGroup$LayoutParams)>(r3);
+
+        $r2 = r0.<cn.hi321.browser.download.DownloadActivity: android.widget.Button edit_button>;
+
+        $f0 = (float) $i1;
+
+        virtualinvoke $r2.<android.widget.Button: void setTextSize(float)>($f0);
+
+        return;
+    }
+
+    private void setTitleBarHeight(int)
+    {
+        int $i0, $i1;
+        android.widget.RelativeLayout $r1;
+        android.widget.LinearLayout$LayoutParams $r2;
+        cn.hi321.browser.download.DownloadActivity r0;
+
+        r0 := @this: cn.hi321.browser.download.DownloadActivity;
+
+        $i0 := @parameter0: int;
+
+        $r1 = r0.<cn.hi321.browser.download.DownloadActivity: android.widget.RelativeLayout titlebar>;
+
+        if $r1 == null goto label1;
+
+        $r2 = new android.widget.LinearLayout$LayoutParams;
+
+        $i1 = -1;
+
+        specialinvoke $r2.<android.widget.LinearLayout$LayoutParams: void <init>(int,int)>($i1, $i0);
+
+        $r1 = r0.<cn.hi321.browser.download.DownloadActivity: android.widget.RelativeLayout titlebar>;
+
+        virtualinvoke $r1.<android.widget.RelativeLayout: void setLayoutParams(android.view.ViewGroup$LayoutParams)>($r2);
+
+     label1:
+        return;
+    }
+
+    private void setupListView()
+    {
+        int $i0;
+        android.view.View $r3;
+        android.widget.ListView $r1;
+        cn.hi321.browser.download.DownloadActivity r0;
+        android.widget.ViewFlipper $r2;
+
+        r0 := @this: cn.hi321.browser.download.DownloadActivity;
+
+        $r1 = r0.<cn.hi321.browser.download.DownloadActivity: android.widget.ListView mListView>;
+
+        $i0 = virtualinvoke $r1.<android.widget.ListView: int getCount()>();
+
+        if $i0 <= 0 goto label1;
+
+        $r2 = r0.<cn.hi321.browser.download.DownloadActivity: android.widget.ViewFlipper mViewFlipper>;
+
+        virtualinvoke $r2.<android.widget.ViewFlipper: void setDisplayedChild(int)>(0);
+
+        return;
+
+     label1:
+        $r3 = r0.<cn.hi321.browser.download.DownloadActivity: android.view.View sizeView>;
+
+        virtualinvoke $r3.<android.view.View: void setVisibility(int)>(8);
+
+        $r2 = r0.<cn.hi321.browser.download.DownloadActivity: android.widget.ViewFlipper mViewFlipper>;
+
+        virtualinvoke $r2.<android.widget.ViewFlipper: void setDisplayedChild(int)>(1);
+
+        return;
+    }
+
+    private void updateListView()
+    {
+        long $l2;
+        cn.hi321.browser.BrowserApp $r4;
+        java.util.ArrayList $r3;
+        cn.hi321.browser.download.DownloadJobAdapter r8;
+        byte $b3;
+        int $i0, $i1;
+        cn.hi321.browser.download.DownloadJob r10;
+        cn.hi321.browser.download.DownloadEntity $r11;
+        android.widget.Button $r13;
+        java.lang.String $r12;
+        cn.hi321.browser.download.DownloadActivity r0;
+        boolean $z0;
+        cn.hi321.browser.download.DownloadManager $r2;
+        java.util.Iterator $r5;
+        java.lang.CharSequence $r14;
+        java.io.File r1;
+        android.widget.ListAdapter $r7;
+        java.lang.Object $r9;
+        android.widget.ListView $r6;
+
+        r0 := @this: cn.hi321.browser.download.DownloadActivity;
+
+        $r2 = r0.<cn.hi321.browser.download.DownloadActivity: cn.hi321.browser.download.DownloadManager mDownloadManager>;
+
+        $r3 = virtualinvoke $r2.<cn.hi321.browser.download.DownloadManager: java.util.ArrayList getAllDownloads()>();
+
+        $r4 = staticinvoke <cn.hi321.browser.BrowserApp: cn.hi321.browser.BrowserApp getInstance()>();
+
+        $z0 = virtualinvoke $r4.<cn.hi321.browser.BrowserApp: boolean isDownlaodReStart()>();
+
+        if $z0 == 0 goto label2;
+
+        $r5 = virtualinvoke $r3.<java.util.ArrayList: java.util.Iterator iterator()>();
+
+     label1:
+        $z0 = interfaceinvoke $r5.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 != 0 goto label3;
+
+     label2:
+        $r6 = r0.<cn.hi321.browser.download.DownloadActivity: android.widget.ListView mListView>;
+
+        $r7 = virtualinvoke $r6.<android.widget.ListView: android.widget.ListAdapter getAdapter()>();
+
+        r8 = (cn.hi321.browser.download.DownloadJobAdapter) $r7;
+
+        if r8 == null goto label6;
+
+        if $r3 == null goto label6;
+
+        $i0 = virtualinvoke $r3.<java.util.ArrayList: int size()>();
+
+        $i1 = virtualinvoke r8.<cn.hi321.browser.download.DownloadJobAdapter: int getCount()>();
+
+        if $i0 != $i1 goto label6;
+
+        virtualinvoke r8.<cn.hi321.browser.download.DownloadJobAdapter: void notifyDataSetChanged()>();
+
+        return;
+
+     label3:
+        $r9 = interfaceinvoke $r5.<java.util.Iterator: java.lang.Object next()>();
+
+        r10 = (cn.hi321.browser.download.DownloadJob) $r9;
+
+        $r11 = virtualinvoke r10.<cn.hi321.browser.download.DownloadJob: cn.hi321.browser.download.DownloadEntity getEntity()>();
+
+        $r12 = staticinvoke <cn.hi321.browser.download.DownloadHelper: java.lang.String getDownloadPath()>();
+
+        $r12 = staticinvoke <cn.hi321.browser.download.DownloadHelper: java.lang.String getAbsolutePath(cn.hi321.browser.download.DownloadEntity,java.lang.String)>($r11, $r12);
+
+        r1 = new java.io.File;
+
+        specialinvoke r1.<java.io.File: void <init>(java.lang.String)>($r12);
+
+        $z0 = virtualinvoke r1.<java.io.File: boolean exists()>();
+
+        if $z0 == 0 goto label5;
+
+        $l2 = virtualinvoke r10.<cn.hi321.browser.download.DownloadJob: long getDownloadedSize()>();
+
+        $b3 = $l2 cmp 0L;
+
+        if $b3 != 0 goto label4;
+
+        $r11 = virtualinvoke r10.<cn.hi321.browser.download.DownloadJob: cn.hi321.browser.download.DownloadEntity getEntity()>();
+
+        $l2 = staticinvoke <cn.hi321.browser.download.DownloadHelper: long getDownloadedFileSize(cn.hi321.browser.download.DownloadEntity)>($r11);
+
+        r10.<cn.hi321.browser.download.DownloadJob: long mDownloadedSize> = $l2;
+
+        $i0 = virtualinvoke r10.<cn.hi321.browser.download.DownloadJob: int initProgress()>();
+
+        virtualinvoke r10.<cn.hi321.browser.download.DownloadJob: void setProgress(int)>($i0);
+
+     label4:
+        $r4 = staticinvoke <cn.hi321.browser.BrowserApp: cn.hi321.browser.BrowserApp getInstance()>();
+
+        virtualinvoke $r4.<cn.hi321.browser.BrowserApp: void setDownloadReStart(boolean)>(0);
+
+        goto label1;
+
+     label5:
+        staticinvoke <cn.hi321.browser.utils.LogUtil: void i(java.lang.String,java.lang.String)>("DownloadActivity", "file not exist in updateListView");
+
+        goto label1;
+
+     label6:
+        r8 = new cn.hi321.browser.download.DownloadJobAdapter;
+
+        specialinvoke r8.<cn.hi321.browser.download.DownloadJobAdapter: void <init>(android.app.Activity)>(r0);
+
+        virtualinvoke r8.<cn.hi321.browser.download.DownloadJobAdapter: void setList(java.util.ArrayList)>($r3);
+
+        $r6 = r0.<cn.hi321.browser.download.DownloadActivity: android.widget.ListView mListView>;
+
+        virtualinvoke $r6.<android.widget.ListView: void setAdapter(android.widget.ListAdapter)>(r8);
+
+        specialinvoke r0.<cn.hi321.browser.download.DownloadActivity: void setupListView()>();
+
+        $r13 = r0.<cn.hi321.browser.download.DownloadActivity: android.widget.Button edit_button>;
+
+        $r14 = virtualinvoke $r13.<android.widget.Button: java.lang.CharSequence getText()>();
+
+        $r12 = virtualinvoke r0.<cn.hi321.browser.download.DownloadActivity: java.lang.String getString(int)>(2131100085);
+
+        $z0 = virtualinvoke $r14.<java.lang.Object: boolean equals(java.lang.Object)>($r12);
+
+        if $z0 == 0 goto label7;
+
+        virtualinvoke r8.<cn.hi321.browser.download.DownloadJobAdapter: void setDeleteState(boolean)>(1);
+
+     label7:
+        return;
+    }
+
+    public void DownloadListView(int)
+    {
+        int $i0;
+        cn.hi321.browser.download.DownloadActivity r0;
+
+        r0 := @this: cn.hi321.browser.download.DownloadActivity;
+
+        $i0 := @parameter0: int;
+
+        specialinvoke r0.<cn.hi321.browser.download.DownloadActivity: void playNow(int)>($i0);
+
+        return;
+    }
+
+    public void initView()
+    {
+        cn.hi321.browser.download.DownloadActivity r0;
+
+        r0 := @this: cn.hi321.browser.download.DownloadActivity;
+
+        specialinvoke r0.<cn.hi321.browser.download.DownloadActivity: void InitCompentView()>();
+
+        specialinvoke r0.<cn.hi321.browser.download.DownloadActivity: void setOnClickCompentView()>();
+
+        return;
+    }
+
+    public void onBackButton()
+    {
+        cn.hi321.browser.download.DownloadActivity r0;
+        cn.hi321.browser.BrowserApp $r1;
+        boolean $z0;
+
+        r0 := @this: cn.hi321.browser.download.DownloadActivity;
+
+        $r1 = staticinvoke <cn.hi321.browser.BrowserApp: cn.hi321.browser.BrowserApp getInstance()>();
+
+        $z0 = virtualinvoke $r1.<cn.hi321.browser.BrowserApp: boolean ismIsAppExit()>();
+
+        if $z0 == 0 goto label1;
+
+        $r1 = staticinvoke <cn.hi321.browser.BrowserApp: cn.hi321.browser.BrowserApp getInstance()>();
+
+        virtualinvoke $r1.<cn.hi321.browser.BrowserApp: void setFSingalActivityToBg(boolean)>(1);
+
+     label1:
+        virtualinvoke r0.<cn.hi321.browser.download.DownloadActivity: void onBackPressed()>();
+
+        virtualinvoke r0.<cn.hi321.browser.download.DownloadActivity: void overridePendingTransition(int,int)>(2130968590, 2130968591);
+
+        return;
+    }
+
+    public void onCreate(android.os.Bundle)
+    {
+        android.os.Bundle $r1;
+        cn.hi321.browser.download.DownloadManager $r3;
+        cn.hi321.browser.download.ContainSizeManager $r4;
+        android.os.Handler $r5;
+        cn.hi321.browser.download.DownloadActivity r0;
+        cn.hi321.browser.BrowserApp $r2;
+
+        r0 := @this: cn.hi321.browser.download.DownloadActivity;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        virtualinvoke r0.<cn.hi321.browser.download.DownloadActivity: boolean requestWindowFeature(int)>(1);
+
+        specialinvoke r0.<android.app.Activity: void onCreate(android.os.Bundle)>($r1);
+
+        virtualinvoke r0.<cn.hi321.browser.download.DownloadActivity: void setContentView(int)>(2130903052);
+
+        virtualinvoke r0.<cn.hi321.browser.download.DownloadActivity: void initView()>();
+
+        $r2 = staticinvoke <cn.hi321.browser.BrowserApp: cn.hi321.browser.BrowserApp getInstance()>();
+
+        $r3 = virtualinvoke $r2.<cn.hi321.browser.BrowserApp: cn.hi321.browser.download.DownloadManager getDownloadManager()>();
+
+        r0.<cn.hi321.browser.download.DownloadActivity: cn.hi321.browser.download.DownloadManager mDownloadManager> = $r3;
+
+        $r2 = staticinvoke <cn.hi321.browser.BrowserApp: cn.hi321.browser.BrowserApp getInstance()>();
+
+        $r3 = virtualinvoke $r2.<cn.hi321.browser.BrowserApp: cn.hi321.browser.download.DownloadManager getDownloadManager()>();
+
+        r0.<cn.hi321.browser.download.DownloadActivity: cn.hi321.browser.download.DownloadManager downloadManager> = $r3;
+
+        $r4 = new cn.hi321.browser.download.ContainSizeManager;
+
+        specialinvoke $r4.<cn.hi321.browser.download.ContainSizeManager: void <init>(android.app.Activity)>(r0);
+
+        <cn.hi321.browser.download.DownloadActivity: cn.hi321.browser.download.ContainSizeManager mSizeManager> = $r4;
+
+        $r5 = new android.os.Handler;
+
+        specialinvoke $r5.<android.os.Handler: void <init>()>();
+
+        r0.<cn.hi321.browser.download.DownloadActivity: android.os.Handler mHandler> = $r5;
+
+        $r4 = <cn.hi321.browser.download.DownloadActivity: cn.hi321.browser.download.ContainSizeManager mSizeManager>;
+
+        virtualinvoke $r4.<cn.hi321.browser.download.ContainSizeManager: void ansynHandlerSdcardSize()>();
+
+        return;
+    }
+
+    protected void onDestroy()
+    {
+        cn.hi321.browser.download.DownloadActivity r0;
+
+        r0 := @this: cn.hi321.browser.download.DownloadActivity;
+
+        specialinvoke r0.<android.app.Activity: void onDestroy()>();
+
+        return;
+    }
+
+    public void onDownloadChanged(cn.hi321.browser.download.DownloadManager)
+    {
+        cn.hi321.browser.download.DownloadManager $r1;
+        android.os.Handler $r2;
+        cn.hi321.browser.download.DownloadActivity r0;
+        java.lang.Runnable $r3;
+
+        r0 := @this: cn.hi321.browser.download.DownloadActivity;
+
+        $r1 := @parameter0: cn.hi321.browser.download.DownloadManager;
+
+        $r2 = r0.<cn.hi321.browser.download.DownloadActivity: android.os.Handler mHandler>;
+
+        $r3 = r0.<cn.hi321.browser.download.DownloadActivity: java.lang.Runnable mUpdateTimeTask>;
+
+        virtualinvoke $r2.<android.os.Handler: boolean post(java.lang.Runnable)>($r3);
+
+        return;
+    }
+
+    public void onEditButton()
+    {
+        cn.hi321.browser.download.DownloadJobAdapter r3;
+        android.widget.ListAdapter $r2;
+        android.widget.Button $r4;
+        android.widget.ListView $r1;
+        cn.hi321.browser.download.DownloadActivity r0;
+        boolean $z0;
+
+        r0 := @this: cn.hi321.browser.download.DownloadActivity;
+
+        $r1 = r0.<cn.hi321.browser.download.DownloadActivity: android.widget.ListView mListView>;
+
+        $r2 = virtualinvoke $r1.<android.widget.ListView: android.widget.ListAdapter getAdapter()>();
+
+        r3 = (cn.hi321.browser.download.DownloadJobAdapter) $r2;
+
+        $z0 = virtualinvoke r3.<cn.hi321.browser.download.DownloadJobAdapter: boolean isDeleteState()>();
+
+        if $z0 == 0 goto label2;
+
+        virtualinvoke r3.<cn.hi321.browser.download.DownloadJobAdapter: void setDeleteState(boolean)>(0);
+
+        $r4 = r0.<cn.hi321.browser.download.DownloadActivity: android.widget.Button edit_button>;
+
+        virtualinvoke $r4.<android.widget.Button: void setText(int)>(2131100081);
+
+     label1:
+        virtualinvoke r3.<cn.hi321.browser.download.DownloadJobAdapter: void notifyDataSetChanged()>();
+
+        return;
+
+     label2:
+        virtualinvoke r3.<cn.hi321.browser.download.DownloadJobAdapter: void setDeleteState(boolean)>(1);
+
+        $r4 = r0.<cn.hi321.browser.download.DownloadActivity: android.widget.Button edit_button>;
+
+        virtualinvoke $r4.<android.widget.Button: void setText(int)>(2131100085);
+
+        goto label1;
+    }
+
+    public boolean onKeyDown(int, android.view.KeyEvent)
+    {
+        android.view.KeyEvent $r1;
+        int $i0, $i1;
+        cn.hi321.browser.download.DownloadActivity r0;
+        cn.hi321.browser.BrowserApp $r2;
+        boolean $z0;
+
+        r0 := @this: cn.hi321.browser.download.DownloadActivity;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: android.view.KeyEvent;
+
+        if $i0 != 4 goto label2;
+
+        $i1 = virtualinvoke $r1.<android.view.KeyEvent: int getRepeatCount()>();
+
+        if $i1 != 0 goto label2;
+
+        $r2 = staticinvoke <cn.hi321.browser.BrowserApp: cn.hi321.browser.BrowserApp getInstance()>();
+
+        $z0 = virtualinvoke $r2.<cn.hi321.browser.BrowserApp: boolean ismIsAppExit()>();
+
+        if $z0 == 0 goto label1;
+
+        $r2 = staticinvoke <cn.hi321.browser.BrowserApp: cn.hi321.browser.BrowserApp getInstance()>();
+
+        virtualinvoke $r2.<cn.hi321.browser.BrowserApp: void setFSingalActivityToBg(boolean)>(1);
+
+     label1:
+        virtualinvoke r0.<cn.hi321.browser.download.DownloadActivity: void onBackPressed()>();
+
+        virtualinvoke r0.<cn.hi321.browser.download.DownloadActivity: void overridePendingTransition(int,int)>(2130968590, 2130968591);
+
+     label2:
+        $z0 = specialinvoke r0.<android.app.Activity: boolean onKeyDown(int,android.view.KeyEvent)>($i0, $r1);
+
+        return $z0;
+    }
+
+    protected void onPause()
+    {
+        cn.hi321.browser.download.DownloadManager $r3;
+        android.os.Handler $r2;
+        cn.hi321.browser.download.DownloadActivity r0;
+        java.lang.Runnable $r1;
+
+        r0 := @this: cn.hi321.browser.download.DownloadActivity;
+
+        $r2 = r0.<cn.hi321.browser.download.DownloadActivity: android.os.Handler mHandler>;
+
+        $r1 = r0.<cn.hi321.browser.download.DownloadActivity: java.lang.Runnable mUpdateTimeTask>;
+
+        virtualinvoke $r2.<android.os.Handler: void removeCallbacks(java.lang.Runnable)>($r1);
+
+        $r3 = r0.<cn.hi321.browser.download.DownloadActivity: cn.hi321.browser.download.DownloadManager mDownloadManager>;
+
+        virtualinvoke $r3.<cn.hi321.browser.download.DownloadManager: void deregisterDownloadObserver(cn.hi321.browser.download.DownloadObserver)>(r0);
+
+        staticinvoke <cn.hi321.browser.utils.ToastUtil: void cancelToast()>();
+
+        specialinvoke r0.<android.app.Activity: void onPause()>();
+
+        staticinvoke <com.umeng.analytics.MobclickAgent: void onPause(android.content.Context)>(r0);
+
+        return;
+    }
+
+    protected void onResume()
+    {
+        cn.hi321.browser.download.DownloadManager $r1;
+        cn.hi321.browser.download.DownloadActivity r0;
+
+        r0 := @this: cn.hi321.browser.download.DownloadActivity;
+
+        $r1 = r0.<cn.hi321.browser.download.DownloadActivity: cn.hi321.browser.download.DownloadManager mDownloadManager>;
+
+        virtualinvoke $r1.<cn.hi321.browser.download.DownloadManager: void registerDownloadObserver(cn.hi321.browser.download.DownloadObserver)>(r0);
+
+        $r1 = r0.<cn.hi321.browser.download.DownloadActivity: cn.hi321.browser.download.DownloadManager mDownloadManager>;
+
+        virtualinvoke $r1.<cn.hi321.browser.download.DownloadManager: void notifyObservers()>();
+
+        specialinvoke r0.<android.app.Activity: void onResume()>();
+
+        staticinvoke <com.umeng.analytics.MobclickAgent: void onResume(android.content.Context)>(r0);
+
+        return;
+    }
+
+    protected void onStop()
+    {
+        cn.hi321.browser.download.DownloadActivity r0;
+
+        r0 := @this: cn.hi321.browser.download.DownloadActivity;
+
+        specialinvoke r0.<android.app.Activity: void onStop()>();
+
+        return;
+    }
+
+    public android.content.Intent getIntent()
+    {
+        android.content.Intent $r0;
+        cn.hi321.browser.download.DownloadActivity this;
+
+        this := @this: cn.hi321.browser.download.DownloadActivity;
+
+        $r0 = this.<cn.hi321.browser.download.DownloadActivity: android.content.Intent ipcIntent>;
+
+        return $r0;
+    }
+
+    public void setIntent(android.content.Intent)
+    {
+        android.content.Intent parameter0;
+        cn.hi321.browser.download.DownloadActivity this;
+
+        this := @this: cn.hi321.browser.download.DownloadActivity;
+
+        parameter0 := @parameter0: android.content.Intent;
+
+        this.<cn.hi321.browser.download.DownloadActivity: android.content.Intent ipcIntent> = parameter0;
+
+        return;
+    }
+
+    public void setResult(int, android.content.Intent)
+    {
+        int parameter0;
+        android.content.Intent parameter1;
+        cn.hi321.browser.download.DownloadActivity this;
+
+        this := @this: cn.hi321.browser.download.DownloadActivity;
+
+        parameter0 := @parameter0: int;
+
+        parameter1 := @parameter1: android.content.Intent;
+
+        this.<cn.hi321.browser.download.DownloadActivity: android.content.Intent ipcResultIntent> = parameter1;
+
+        return;
+    }
+
+    public static void <clinit>()
+    {
+        <cn.hi321.browser.download.DownloadActivity: java.lang.String TAG> = "DownloadActivity";
+
+        <cn.hi321.browser.download.DownloadActivity: java.lang.String LOCALSTART> = "4";
+
+        <cn.hi321.browser.download.DownloadActivity: int ACTIVITYSIZES> = 1;
+
+        return;
+    }
+}

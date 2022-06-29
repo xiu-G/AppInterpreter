@@ -1,0 +1,505 @@
+public class com.facebook.ads.internal.AdAnalogData extends java.lang.Object
+{
+    private static android.hardware.Sensor accelerometer;
+    private static volatile float[] accelerometerValues;
+    private static java.util.Map analogInfo;
+    private static android.hardware.Sensor gyroscope;
+    private static volatile float[] gyroscopeValues;
+    private static java.lang.String[] sensorDimensions;
+    private static android.hardware.SensorManager sensorManager;
+
+    static void <clinit>()
+    {
+        java.util.concurrent.ConcurrentHashMap $r0;
+        java.lang.String[] $r1;
+
+        <com.facebook.ads.internal.AdAnalogData: android.hardware.SensorManager sensorManager> = null;
+
+        <com.facebook.ads.internal.AdAnalogData: android.hardware.Sensor accelerometer> = null;
+
+        <com.facebook.ads.internal.AdAnalogData: android.hardware.Sensor gyroscope> = null;
+
+        $r0 = new java.util.concurrent.ConcurrentHashMap;
+
+        specialinvoke $r0.<java.util.concurrent.ConcurrentHashMap: void <init>()>();
+
+        <com.facebook.ads.internal.AdAnalogData: java.util.Map analogInfo> = $r0;
+
+        $r1 = newarray (java.lang.String)[3];
+
+        $r1[0] = "x";
+
+        $r1[1] = "y";
+
+        $r1[2] = "z";
+
+        <com.facebook.ads.internal.AdAnalogData: java.lang.String[] sensorDimensions> = $r1;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        com.facebook.ads.internal.AdAnalogData r0;
+
+        r0 := @this: com.facebook.ads.internal.AdAnalogData;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    static android.hardware.Sensor access$100()
+    {
+        android.hardware.Sensor r0;
+
+        r0 = <com.facebook.ads.internal.AdAnalogData: android.hardware.Sensor accelerometer>;
+
+        return r0;
+    }
+
+    static float[] access$202(float[])
+    {
+        float[] $r0;
+
+        $r0 := @parameter0: float[];
+
+        <com.facebook.ads.internal.AdAnalogData: float[] accelerometerValues> = $r0;
+
+        return $r0;
+    }
+
+    static android.hardware.Sensor access$300()
+    {
+        android.hardware.Sensor r0;
+
+        r0 = <com.facebook.ads.internal.AdAnalogData: android.hardware.Sensor gyroscope>;
+
+        return r0;
+    }
+
+    static float[] access$402(float[])
+    {
+        float[] $r0;
+
+        $r0 := @parameter0: float[];
+
+        <com.facebook.ads.internal.AdAnalogData: float[] gyroscopeValues> = $r0;
+
+        return $r0;
+    }
+
+    public static java.util.Map getAnalogInfo()
+    {
+        java.util.HashMap $r0;
+        java.util.Map $r1;
+
+        $r0 = new java.util.HashMap;
+
+        specialinvoke $r0.<java.util.HashMap: void <init>()>();
+
+        $r1 = <com.facebook.ads.internal.AdAnalogData: java.util.Map analogInfo>;
+
+        interfaceinvoke $r0.<java.util.Map: void putAll(java.util.Map)>($r1);
+
+        staticinvoke <com.facebook.ads.internal.AdAnalogData: void putSensorData(java.util.Map)>($r0);
+
+        return $r0;
+    }
+
+    private static void putBatteryData(android.content.Context)
+    {
+        android.content.Context $r0;
+        java.lang.Float $r3;
+        android.content.IntentFilter $r5;
+        android.content.Intent $r1;
+        java.lang.Integer $r4;
+        byte $b3;
+        java.util.Map $r2;
+        int $i0, $i1, $i2;
+        float $f0, $f1;
+        boolean $z0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r5 = new android.content.IntentFilter;
+
+        specialinvoke $r5.<android.content.IntentFilter: void <init>(java.lang.String)>("android.intent.action.BATTERY_CHANGED");
+
+        $r1 = virtualinvoke $r0.<android.content.Context: android.content.Intent registerReceiver(android.content.BroadcastReceiver,android.content.IntentFilter)>(null, $r5);
+
+        if $r1 != null goto label1;
+
+        return;
+
+     label1:
+        $i0 = virtualinvoke $r1.<android.content.Intent: int getIntExtra(java.lang.String,int)>("level", -1);
+
+        $i1 = virtualinvoke $r1.<android.content.Intent: int getIntExtra(java.lang.String,int)>("scale", -1);
+
+        $i2 = virtualinvoke $r1.<android.content.Intent: int getIntExtra(java.lang.String,int)>("status", -1);
+
+        if $i2 == 2 goto label2;
+
+        if $i2 != 5 goto label6;
+
+     label2:
+        $z0 = 1;
+
+     label3:
+        $f0 = 0.0F;
+
+        if $i1 <= 0 goto label4;
+
+        $f0 = (float) $i0;
+
+        $f1 = (float) $i1;
+
+        $f0 = $f0 / $f1;
+
+        $f0 = $f0 * 100.0F;
+
+     label4:
+        $r2 = <com.facebook.ads.internal.AdAnalogData: java.util.Map analogInfo>;
+
+        $r3 = staticinvoke <java.lang.Float: java.lang.Float valueOf(float)>($f0);
+
+        interfaceinvoke $r2.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("battery", $r3);
+
+        $r2 = <com.facebook.ads.internal.AdAnalogData: java.util.Map analogInfo>;
+
+        if $z0 == 0 goto label7;
+
+        $b3 = 1;
+
+     label5:
+        $r4 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($b3);
+
+        interfaceinvoke $r2.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("charging", $r4);
+
+        return;
+
+     label6:
+        $z0 = 0;
+
+        goto label3;
+
+     label7:
+        $b3 = 0;
+
+        goto label5;
+    }
+
+    private static void putDiskInfo(android.content.Context)
+    {
+        android.content.Context $r0;
+        long $l0, $l2;
+        java.io.File $r3;
+        android.os.StatFs $r1;
+        java.lang.Long $r5;
+        java.util.Map $r2;
+        int $i1;
+        java.lang.String $r4;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r3 = staticinvoke <android.os.Environment: java.io.File getDataDirectory()>();
+
+        $r1 = new android.os.StatFs;
+
+        $r4 = virtualinvoke $r3.<java.io.File: java.lang.String getPath()>();
+
+        specialinvoke $r1.<android.os.StatFs: void <init>(java.lang.String)>($r4);
+
+        $i1 = virtualinvoke $r1.<android.os.StatFs: int getBlockSize()>();
+
+        $l0 = (long) $i1;
+
+        $i1 = virtualinvoke $r1.<android.os.StatFs: int getAvailableBlocks()>();
+
+        $l2 = (long) $i1;
+
+        $r2 = <com.facebook.ads.internal.AdAnalogData: java.util.Map analogInfo>;
+
+        $l0 = $l2 * $l0;
+
+        $r5 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l0);
+
+        interfaceinvoke $r2.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("free_space", $r5);
+
+        return;
+    }
+
+    private static void putMemoryInfo(android.content.Context)
+    {
+        android.content.Context $r0;
+        android.app.ActivityManager $r3;
+        java.util.Map $r4;
+        long $l0;
+        java.lang.Object $r2;
+        java.lang.String $r5;
+        android.app.ActivityManager$MemoryInfo $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = new android.app.ActivityManager$MemoryInfo;
+
+        specialinvoke $r1.<android.app.ActivityManager$MemoryInfo: void <init>()>();
+
+        $r2 = virtualinvoke $r0.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("activity");
+
+        $r3 = (android.app.ActivityManager) $r2;
+
+        virtualinvoke $r3.<android.app.ActivityManager: void getMemoryInfo(android.app.ActivityManager$MemoryInfo)>($r1);
+
+        $r4 = <com.facebook.ads.internal.AdAnalogData: java.util.Map analogInfo>;
+
+        $l0 = $r1.<android.app.ActivityManager$MemoryInfo: long availMem>;
+
+        $r5 = staticinvoke <java.lang.String: java.lang.String valueOf(long)>($l0);
+
+        interfaceinvoke $r4.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>("available_memory", $r5);
+
+        return;
+    }
+
+    private static void putSensorData(java.util.Map)
+    {
+        java.lang.Float $r6;
+        float[] $r1, $r2;
+        java.lang.String[] $r3;
+        java.util.Map $r0;
+        int $i0, $i1, $i2;
+        float $f0;
+        java.lang.StringBuilder $r4;
+        java.lang.String $r5;
+
+        $r0 := @parameter0: java.util.Map;
+
+        $i0 = 0;
+
+        $r2 = <com.facebook.ads.internal.AdAnalogData: float[] accelerometerValues>;
+
+        $r1 = <com.facebook.ads.internal.AdAnalogData: float[] gyroscopeValues>;
+
+        if $r2 == null goto label2;
+
+        $r3 = <com.facebook.ads.internal.AdAnalogData: java.lang.String[] sensorDimensions>;
+
+        $i1 = lengthof $r3;
+
+        $i2 = lengthof $r2;
+
+        $i1 = staticinvoke <java.lang.Math: int min(int,int)>($i1, $i2);
+
+        $i2 = 0;
+
+     label1:
+        if $i2 >= $i1 goto label2;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>(java.lang.String)>("accelerometer_");
+
+        $r3 = <com.facebook.ads.internal.AdAnalogData: java.lang.String[] sensorDimensions>;
+
+        $r5 = $r3[$i2];
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $f0 = $r2[$i2];
+
+        $r6 = staticinvoke <java.lang.Float: java.lang.Float valueOf(float)>($f0);
+
+        interfaceinvoke $r0.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r5, $r6);
+
+        $i2 = $i2 + 1;
+
+        goto label1;
+
+     label2:
+        if $r1 == null goto label4;
+
+        $r3 = <com.facebook.ads.internal.AdAnalogData: java.lang.String[] sensorDimensions>;
+
+        $i1 = lengthof $r3;
+
+        $i2 = lengthof $r1;
+
+        $i1 = staticinvoke <java.lang.Math: int min(int,int)>($i1, $i2);
+
+     label3:
+        if $i0 >= $i1 goto label4;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>(java.lang.String)>("rotation_");
+
+        $r3 = <com.facebook.ads.internal.AdAnalogData: java.lang.String[] sensorDimensions>;
+
+        $r5 = $r3[$i0];
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $f0 = $r1[$i0];
+
+        $r6 = staticinvoke <java.lang.Float: java.lang.Float valueOf(float)>($f0);
+
+        interfaceinvoke $r0.<java.util.Map: java.lang.Object put(java.lang.Object,java.lang.Object)>($r5, $r6);
+
+        $i0 = $i0 + 1;
+
+        goto label3;
+
+     label4:
+        return;
+    }
+
+    public static void startUpdate(android.content.Context)
+    {
+        java.lang.Throwable $r5;
+        android.content.Context $r0;
+        android.hardware.SensorManager $r1;
+        java.lang.Object $r2;
+        com.facebook.ads.internal.AdAnalogData$AdSensorEventListener $r4;
+        android.hardware.Sensor $r3;
+
+        $r0 := @parameter0: android.content.Context;
+
+        entermonitor class "Lcom/facebook/ads/internal/AdAnalogData;";
+
+     label1:
+        staticinvoke <com.facebook.ads.internal.AdAnalogData: void putMemoryInfo(android.content.Context)>($r0);
+
+        staticinvoke <com.facebook.ads.internal.AdAnalogData: void putDiskInfo(android.content.Context)>($r0);
+
+        staticinvoke <com.facebook.ads.internal.AdAnalogData: void putBatteryData(android.content.Context)>($r0);
+
+        $r1 = <com.facebook.ads.internal.AdAnalogData: android.hardware.SensorManager sensorManager>;
+
+        if $r1 != null goto label4;
+
+        $r2 = virtualinvoke $r0.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("sensor");
+
+        $r1 = (android.hardware.SensorManager) $r2;
+
+        <com.facebook.ads.internal.AdAnalogData: android.hardware.SensorManager sensorManager> = $r1;
+
+     label2:
+        if $r1 != null goto label4;
+
+     label3:
+        exitmonitor class "Lcom/facebook/ads/internal/AdAnalogData;";
+
+        return;
+
+     label4:
+        $r3 = <com.facebook.ads.internal.AdAnalogData: android.hardware.Sensor accelerometer>;
+
+        if $r3 != null goto label5;
+
+        $r1 = <com.facebook.ads.internal.AdAnalogData: android.hardware.SensorManager sensorManager>;
+
+        $r3 = virtualinvoke $r1.<android.hardware.SensorManager: android.hardware.Sensor getDefaultSensor(int)>(1);
+
+        <com.facebook.ads.internal.AdAnalogData: android.hardware.Sensor accelerometer> = $r3;
+
+     label5:
+        $r3 = <com.facebook.ads.internal.AdAnalogData: android.hardware.Sensor gyroscope>;
+
+        if $r3 != null goto label6;
+
+        $r1 = <com.facebook.ads.internal.AdAnalogData: android.hardware.SensorManager sensorManager>;
+
+        $r3 = virtualinvoke $r1.<android.hardware.SensorManager: android.hardware.Sensor getDefaultSensor(int)>(4);
+
+        <com.facebook.ads.internal.AdAnalogData: android.hardware.Sensor gyroscope> = $r3;
+
+     label6:
+        $r3 = <com.facebook.ads.internal.AdAnalogData: android.hardware.Sensor accelerometer>;
+
+        if $r3 == null goto label7;
+
+        $r1 = <com.facebook.ads.internal.AdAnalogData: android.hardware.SensorManager sensorManager>;
+
+        $r4 = new com.facebook.ads.internal.AdAnalogData$AdSensorEventListener;
+
+        specialinvoke $r4.<com.facebook.ads.internal.AdAnalogData$AdSensorEventListener: void <init>(com.facebook.ads.internal.AdAnalogData$1)>(null);
+
+        $r3 = <com.facebook.ads.internal.AdAnalogData: android.hardware.Sensor accelerometer>;
+
+        virtualinvoke $r1.<android.hardware.SensorManager: boolean registerListener(android.hardware.SensorEventListener,android.hardware.Sensor,int)>($r4, $r3, 3);
+
+     label7:
+        $r3 = <com.facebook.ads.internal.AdAnalogData: android.hardware.Sensor gyroscope>;
+
+        if $r3 == null goto label3;
+
+        $r1 = <com.facebook.ads.internal.AdAnalogData: android.hardware.SensorManager sensorManager>;
+
+        $r4 = new com.facebook.ads.internal.AdAnalogData$AdSensorEventListener;
+
+        specialinvoke $r4.<com.facebook.ads.internal.AdAnalogData$AdSensorEventListener: void <init>(com.facebook.ads.internal.AdAnalogData$1)>(null);
+
+        $r3 = <com.facebook.ads.internal.AdAnalogData: android.hardware.Sensor gyroscope>;
+
+        virtualinvoke $r1.<android.hardware.SensorManager: boolean registerListener(android.hardware.SensorEventListener,android.hardware.Sensor,int)>($r4, $r3, 3);
+
+     label8:
+        goto label3;
+
+     label9:
+        $r5 := @caughtexception;
+
+        exitmonitor class "Lcom/facebook/ads/internal/AdAnalogData;";
+
+        throw $r5;
+
+        catch java.lang.Throwable from label1 to label2 with label9;
+        catch java.lang.Throwable from label4 to label8 with label9;
+    }
+
+    public static void stopUpdate(com.facebook.ads.internal.AdAnalogData$AdSensorEventListener)
+    {
+        java.lang.Throwable $r2;
+        com.facebook.ads.internal.AdAnalogData$AdSensorEventListener $r0;
+        android.hardware.SensorManager $r1;
+
+        $r0 := @parameter0: com.facebook.ads.internal.AdAnalogData$AdSensorEventListener;
+
+        entermonitor class "Lcom/facebook/ads/internal/AdAnalogData;";
+
+     label1:
+        $r1 = <com.facebook.ads.internal.AdAnalogData: android.hardware.SensorManager sensorManager>;
+
+     label2:
+        if $r1 != null goto label4;
+
+     label3:
+        exitmonitor class "Lcom/facebook/ads/internal/AdAnalogData;";
+
+        return;
+
+     label4:
+        $r1 = <com.facebook.ads.internal.AdAnalogData: android.hardware.SensorManager sensorManager>;
+
+        virtualinvoke $r1.<android.hardware.SensorManager: void unregisterListener(android.hardware.SensorEventListener)>($r0);
+
+     label5:
+        goto label3;
+
+     label6:
+        $r2 := @caughtexception;
+
+        exitmonitor class "Lcom/facebook/ads/internal/AdAnalogData;";
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label6;
+        catch java.lang.Throwable from label4 to label5 with label6;
+    }
+}

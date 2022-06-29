@@ -1,0 +1,286 @@
+public final class cn.hi321.browser.controllers.Controller extends java.lang.Object
+{
+    private java.util.List mAdBlockWhiteList;
+    private java.util.List mDownloadList;
+    private java.util.List mMobileViewUrlList;
+    private android.content.SharedPreferences mPreferences;
+    private java.util.List mWebViewList;
+
+    private void <init>()
+    {
+        cn.hi321.browser.controllers.Controller r0;
+        java.util.ArrayList $r1;
+
+        r0 := @this: cn.hi321.browser.controllers.Controller;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<cn.hi321.browser.controllers.Controller: java.util.List mAdBlockWhiteList> = null;
+
+        r0.<cn.hi321.browser.controllers.Controller: java.util.List mMobileViewUrlList> = null;
+
+        $r1 = new java.util.ArrayList;
+
+        specialinvoke $r1.<java.util.ArrayList: void <init>()>();
+
+        r0.<cn.hi321.browser.controllers.Controller: java.util.List mDownloadList> = $r1;
+
+        return;
+    }
+
+    void <init>(cn.hi321.browser.controllers.Controller)
+    {
+        cn.hi321.browser.controllers.Controller r0, $r1;
+
+        r0 := @this: cn.hi321.browser.controllers.Controller;
+
+        $r1 := @parameter0: cn.hi321.browser.controllers.Controller;
+
+        specialinvoke r0.<cn.hi321.browser.controllers.Controller: void <init>()>();
+
+        return;
+    }
+
+    public static cn.hi321.browser.controllers.Controller getInstance()
+    {
+        cn.hi321.browser.controllers.Controller $r0;
+
+        $r0 = staticinvoke <cn.hi321.browser.controllers.Controller$ControllerHolder: cn.hi321.browser.controllers.Controller access$0()>();
+
+        return $r0;
+    }
+
+    public void addToDownload(cn.hi321.browser.model.items.DownloadItem)
+    {
+        cn.hi321.browser.controllers.Controller r0;
+        java.util.List $r2;
+        cn.hi321.browser.model.items.DownloadItem $r1;
+
+        r0 := @this: cn.hi321.browser.controllers.Controller;
+
+        $r1 := @parameter0: cn.hi321.browser.model.items.DownloadItem;
+
+        $r2 = r0.<cn.hi321.browser.controllers.Controller: java.util.List mDownloadList>;
+
+        interfaceinvoke $r2.<java.util.List: boolean add(java.lang.Object)>($r1);
+
+        return;
+    }
+
+    public void clearCompletedDownloads()
+    {
+        java.lang.Throwable $r6;
+        cn.hi321.browser.controllers.Controller r0;
+        java.util.Iterator $r3;
+        cn.hi321.browser.model.items.DownloadItem r5;
+        java.util.ArrayList r1;
+        java.util.List $r2;
+        java.lang.Object $r4;
+        boolean $z0;
+
+        r0 := @this: cn.hi321.browser.controllers.Controller;
+
+        entermonitor r0;
+
+     label1:
+        r1 = new java.util.ArrayList;
+
+        specialinvoke r1.<java.util.ArrayList: void <init>()>();
+
+        $r2 = r0.<cn.hi321.browser.controllers.Controller: java.util.List mDownloadList>;
+
+        $r3 = interfaceinvoke $r2.<java.util.List: java.util.Iterator iterator()>();
+
+     label2:
+        $z0 = interfaceinvoke $r3.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 != 0 goto label4;
+
+        $r2 = r0.<cn.hi321.browser.controllers.Controller: java.util.List mDownloadList>;
+
+        interfaceinvoke $r2.<java.util.List: void clear()>();
+
+        r0.<cn.hi321.browser.controllers.Controller: java.util.List mDownloadList> = r1;
+
+     label3:
+        exitmonitor r0;
+
+        return;
+
+     label4:
+        $r4 = interfaceinvoke $r3.<java.util.Iterator: java.lang.Object next()>();
+
+        r5 = (cn.hi321.browser.model.items.DownloadItem) $r4;
+
+        $z0 = virtualinvoke r5.<cn.hi321.browser.model.items.DownloadItem: boolean isFinished()>();
+
+        if $z0 != 0 goto label2;
+
+        interfaceinvoke r1.<java.util.List: boolean add(java.lang.Object)>(r5);
+
+     label5:
+        goto label2;
+
+     label6:
+        $r6 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r6;
+
+        catch java.lang.Throwable from label1 to label3 with label6;
+        catch java.lang.Throwable from label4 to label5 with label6;
+    }
+
+    public java.util.List getAdBlockWhiteList(android.content.Context)
+    {
+        android.content.Context $r1;
+        cn.hi321.browser.controllers.Controller r0;
+        java.util.List $r3;
+        cn.hi321.browser.model.DbAdapter r2;
+
+        r0 := @this: cn.hi321.browser.controllers.Controller;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r3 = r0.<cn.hi321.browser.controllers.Controller: java.util.List mAdBlockWhiteList>;
+
+        if $r3 != null goto label1;
+
+        r2 = new cn.hi321.browser.model.DbAdapter;
+
+        specialinvoke r2.<cn.hi321.browser.model.DbAdapter: void <init>(android.content.Context)>($r1);
+
+        virtualinvoke r2.<cn.hi321.browser.model.DbAdapter: cn.hi321.browser.model.DbAdapter open()>();
+
+        $r3 = virtualinvoke r2.<cn.hi321.browser.model.DbAdapter: java.util.List getWhiteList()>();
+
+        r0.<cn.hi321.browser.controllers.Controller: java.util.List mAdBlockWhiteList> = $r3;
+
+        virtualinvoke r2.<cn.hi321.browser.model.DbAdapter: void close()>();
+
+     label1:
+        $r3 = r0.<cn.hi321.browser.controllers.Controller: java.util.List mAdBlockWhiteList>;
+
+        return $r3;
+    }
+
+    public java.util.List getDownloadList()
+    {
+        cn.hi321.browser.controllers.Controller r0;
+        java.util.List r1;
+
+        r0 := @this: cn.hi321.browser.controllers.Controller;
+
+        r1 = r0.<cn.hi321.browser.controllers.Controller: java.util.List mDownloadList>;
+
+        return r1;
+    }
+
+    public java.util.List getMobileViewUrlList(android.content.Context)
+    {
+        android.content.Context $r1;
+        cn.hi321.browser.controllers.Controller r0;
+        java.util.List $r3;
+        cn.hi321.browser.model.DbAdapter r2;
+
+        r0 := @this: cn.hi321.browser.controllers.Controller;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r3 = r0.<cn.hi321.browser.controllers.Controller: java.util.List mMobileViewUrlList>;
+
+        if $r3 != null goto label1;
+
+        r2 = new cn.hi321.browser.model.DbAdapter;
+
+        specialinvoke r2.<cn.hi321.browser.model.DbAdapter: void <init>(android.content.Context)>($r1);
+
+        virtualinvoke r2.<cn.hi321.browser.model.DbAdapter: cn.hi321.browser.model.DbAdapter open()>();
+
+        $r3 = virtualinvoke r2.<cn.hi321.browser.model.DbAdapter: java.util.List getMobileViewUrlList()>();
+
+        r0.<cn.hi321.browser.controllers.Controller: java.util.List mMobileViewUrlList> = $r3;
+
+        virtualinvoke r2.<cn.hi321.browser.model.DbAdapter: void close()>();
+
+     label1:
+        $r3 = r0.<cn.hi321.browser.controllers.Controller: java.util.List mMobileViewUrlList>;
+
+        return $r3;
+    }
+
+    public android.content.SharedPreferences getPreferences()
+    {
+        cn.hi321.browser.controllers.Controller r0;
+        android.content.SharedPreferences r1;
+
+        r0 := @this: cn.hi321.browser.controllers.Controller;
+
+        r1 = r0.<cn.hi321.browser.controllers.Controller: android.content.SharedPreferences mPreferences>;
+
+        return r1;
+    }
+
+    public java.util.List getWebViewList()
+    {
+        cn.hi321.browser.controllers.Controller r0;
+        java.util.List r1;
+
+        r0 := @this: cn.hi321.browser.controllers.Controller;
+
+        r1 = r0.<cn.hi321.browser.controllers.Controller: java.util.List mWebViewList>;
+
+        return r1;
+    }
+
+    public void resetAdBlockWhiteList()
+    {
+        cn.hi321.browser.controllers.Controller r0;
+
+        r0 := @this: cn.hi321.browser.controllers.Controller;
+
+        r0.<cn.hi321.browser.controllers.Controller: java.util.List mAdBlockWhiteList> = null;
+
+        return;
+    }
+
+    public void resetMobileViewUrlList()
+    {
+        cn.hi321.browser.controllers.Controller r0;
+
+        r0 := @this: cn.hi321.browser.controllers.Controller;
+
+        r0.<cn.hi321.browser.controllers.Controller: java.util.List mMobileViewUrlList> = null;
+
+        return;
+    }
+
+    public void setPreferences(android.content.SharedPreferences)
+    {
+        cn.hi321.browser.controllers.Controller r0;
+        android.content.SharedPreferences $r1;
+
+        r0 := @this: cn.hi321.browser.controllers.Controller;
+
+        $r1 := @parameter0: android.content.SharedPreferences;
+
+        r0.<cn.hi321.browser.controllers.Controller: android.content.SharedPreferences mPreferences> = $r1;
+
+        return;
+    }
+
+    public void setWebViewList(java.util.List)
+    {
+        cn.hi321.browser.controllers.Controller r0;
+        java.util.List r1;
+
+        r0 := @this: cn.hi321.browser.controllers.Controller;
+
+        r1 := @parameter0: java.util.List;
+
+        r0.<cn.hi321.browser.controllers.Controller: java.util.List mWebViewList> = r1;
+
+        return;
+    }
+}

@@ -1,0 +1,2453 @@
+public class com.nexage.android.NexageAdView extends com.nexage.android.NexageBaseAdView
+{
+    private static final int c_DefaultHeightDip;
+    private static final int c_DefaultWidthDip;
+    private static int s_DefaultHeight;
+    private static int s_DefaultWidth;
+    private boolean block;
+    private com.nexage.android.NexageExpandableListener expandableListener;
+    private long lastNudgeTimestamp;
+    private com.nexage.android.NexageListener listener;
+    private final android.content.BroadcastReceiver mScreenReceiver;
+    private boolean mScreenVisible;
+    private android.content.Context m_Activity;
+    private java.lang.String m_Alignment;
+    private java.lang.String m_AnimationType;
+    private java.lang.Integer m_BGColor;
+    private java.lang.Integer m_BGRes;
+    private android.view.View$OnClickListener m_ClickListener;
+    private volatile com.nexage.android.Ad m_CurrentAd;
+    private java.util.TimerTask m_DetachTask;
+    private boolean m_Detached;
+    private com.nexage.android.NexageAdFetcher m_Fetcher;
+    private int m_Height;
+    volatile int m_MM4RM_Expanded;
+    private final com.nexage.android.NexageContext m_NexageContext;
+    private volatile com.nexage.android.Ad m_PendingAd;
+    java.lang.String m_Position;
+    private int m_PrefetchAttempt;
+    private volatile boolean m_ReadyToFetch;
+    private volatile com.nexage.android.NexageAdView$RefreshTask m_RefreshTask;
+    private boolean m_SDKAdVisible;
+    private android.view.View m_Switcher;
+    private java.lang.Integer m_TextColor;
+    private int m_Width;
+    private int refreshInterval;
+
+    static void <clinit>()
+    {
+        <com.nexage.android.NexageAdView: int c_DefaultWidthDip> = 320;
+
+        <com.nexage.android.NexageAdView: int c_DefaultHeightDip> = 50;
+
+        <com.nexage.android.NexageAdView: int s_DefaultWidth> = 0;
+
+        <com.nexage.android.NexageAdView: int s_DefaultHeight> = 0;
+
+        return;
+    }
+
+    public void <init>(android.content.Context, android.util.AttributeSet)
+    {
+        android.content.Context $r1;
+        android.util.AttributeSet $r2;
+        com.nexage.android.NexageAdView r0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.util.AttributeSet;
+
+        specialinvoke r0.<com.nexage.android.NexageAdView: void <init>(android.content.Context,android.util.AttributeSet,int)>($r1, $r2, 0);
+
+        return;
+    }
+
+    public void <init>(android.content.Context, android.util.AttributeSet, int)
+    {
+        android.content.Context $r1;
+        java.lang.IllegalArgumentException $r5;
+        com.nexage.android.NexageAdView r0;
+        com.nexage.android.NexageAdView$MyReceiver $r3;
+        com.nexage.android.NexageAdView$AdViewContext $r4;
+        android.util.AttributeSet $r2;
+        int $i0;
+        boolean $z0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.util.AttributeSet;
+
+        $i0 := @parameter2: int;
+
+        specialinvoke r0.<com.nexage.android.NexageBaseAdView: void <init>(android.content.Context,android.util.AttributeSet,int)>($r1, $r2, $i0);
+
+        r0.<com.nexage.android.NexageAdView: int refreshInterval> = 30000;
+
+        r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher> = null;
+
+        r0.<com.nexage.android.NexageAdView: java.lang.String m_AnimationType> = "fade_in_out";
+
+        r0.<com.nexage.android.NexageAdView: java.lang.Integer m_BGColor> = null;
+
+        r0.<com.nexage.android.NexageAdView: java.lang.Integer m_TextColor> = null;
+
+        r0.<com.nexage.android.NexageAdView: boolean mScreenVisible> = 1;
+
+        r0.<com.nexage.android.NexageAdView: int m_MM4RM_Expanded> = 0;
+
+        r0.<com.nexage.android.NexageAdView: java.lang.Integer m_BGRes> = null;
+
+        r0.<com.nexage.android.NexageAdView: java.lang.String m_Alignment> = "center";
+
+        r0.<com.nexage.android.NexageAdView: boolean m_ReadyToFetch> = 1;
+
+        r0.<com.nexage.android.NexageAdView: int m_PrefetchAttempt> = 2;
+
+        r0.<com.nexage.android.NexageAdView: com.nexage.android.NexageAdView$RefreshTask m_RefreshTask> = null;
+
+        r0.<com.nexage.android.NexageAdView: boolean block> = 0;
+
+        $r3 = new com.nexage.android.NexageAdView$MyReceiver;
+
+        specialinvoke $r3.<com.nexage.android.NexageAdView$MyReceiver: void <init>(com.nexage.android.NexageAdView,com.nexage.android.NexageAdView$1)>(r0, null);
+
+        r0.<com.nexage.android.NexageAdView: android.content.BroadcastReceiver mScreenReceiver> = $r3;
+
+        r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_CurrentAd> = null;
+
+        r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_PendingAd> = null;
+
+        r0.<com.nexage.android.NexageAdView: boolean m_Detached> = 0;
+
+        r0.<com.nexage.android.NexageAdView: boolean m_SDKAdVisible> = 1;
+
+        $r4 = new com.nexage.android.NexageAdView$AdViewContext;
+
+        specialinvoke $r4.<com.nexage.android.NexageAdView$AdViewContext: void <init>(com.nexage.android.NexageAdView,com.nexage.android.NexageAdView$1)>(r0, null);
+
+        r0.<com.nexage.android.NexageAdView: com.nexage.android.NexageContext m_NexageContext> = $r4;
+
+        if $r2 == null goto label1;
+
+        $i0 = interfaceinvoke $r2.<android.util.AttributeSet: int getAttributeCount()>();
+
+        if $i0 != 0 goto label2;
+
+     label1:
+        $z0 = virtualinvoke r0.<com.nexage.android.NexageAdView: boolean isInEditMode()>();
+
+        if $z0 != 0 goto label2;
+
+        $r5 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r5.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("NexageAdView: AttributeSet cannot be empty");
+
+        throw $r5;
+
+     label2:
+        specialinvoke r0.<com.nexage.android.NexageAdView: void init(android.content.Context,android.util.AttributeSet)>($r1, $r2);
+
+        return;
+    }
+
+    public void <init>(java.lang.String, android.content.Context)
+    {
+        android.content.Context $r2;
+        com.nexage.android.NexageAdView$AdViewContext $r4;
+        int $i0;
+        java.lang.String $r1;
+        java.lang.IllegalArgumentException $r5;
+        com.nexage.android.NexageAdView r0;
+        com.nexage.android.NexageAdView$MyReceiver $r3;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: android.content.Context;
+
+        specialinvoke r0.<com.nexage.android.NexageBaseAdView: void <init>(android.content.Context,android.util.AttributeSet,int)>($r2, null, 0);
+
+        r0.<com.nexage.android.NexageAdView: int refreshInterval> = 30000;
+
+        r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher> = null;
+
+        r0.<com.nexage.android.NexageAdView: java.lang.String m_AnimationType> = "fade_in_out";
+
+        r0.<com.nexage.android.NexageAdView: java.lang.Integer m_BGColor> = null;
+
+        r0.<com.nexage.android.NexageAdView: java.lang.Integer m_TextColor> = null;
+
+        r0.<com.nexage.android.NexageAdView: boolean mScreenVisible> = 1;
+
+        r0.<com.nexage.android.NexageAdView: int m_MM4RM_Expanded> = 0;
+
+        r0.<com.nexage.android.NexageAdView: java.lang.Integer m_BGRes> = null;
+
+        r0.<com.nexage.android.NexageAdView: java.lang.String m_Alignment> = "center";
+
+        r0.<com.nexage.android.NexageAdView: boolean m_ReadyToFetch> = 1;
+
+        r0.<com.nexage.android.NexageAdView: int m_PrefetchAttempt> = 2;
+
+        r0.<com.nexage.android.NexageAdView: com.nexage.android.NexageAdView$RefreshTask m_RefreshTask> = null;
+
+        r0.<com.nexage.android.NexageAdView: boolean block> = 0;
+
+        $r3 = new com.nexage.android.NexageAdView$MyReceiver;
+
+        specialinvoke $r3.<com.nexage.android.NexageAdView$MyReceiver: void <init>(com.nexage.android.NexageAdView,com.nexage.android.NexageAdView$1)>(r0, null);
+
+        r0.<com.nexage.android.NexageAdView: android.content.BroadcastReceiver mScreenReceiver> = $r3;
+
+        r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_CurrentAd> = null;
+
+        r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_PendingAd> = null;
+
+        r0.<com.nexage.android.NexageAdView: boolean m_Detached> = 0;
+
+        r0.<com.nexage.android.NexageAdView: boolean m_SDKAdVisible> = 1;
+
+        $r4 = new com.nexage.android.NexageAdView$AdViewContext;
+
+        specialinvoke $r4.<com.nexage.android.NexageAdView$AdViewContext: void <init>(com.nexage.android.NexageAdView,com.nexage.android.NexageAdView$1)>(r0, null);
+
+        r0.<com.nexage.android.NexageAdView: com.nexage.android.NexageContext m_NexageContext> = $r4;
+
+        $i0 = virtualinvoke $r1.<java.lang.String: int length()>();
+
+        if $i0 != 0 goto label1;
+
+        $r5 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r5.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("NexageAdView: position cannot be empty");
+
+        throw $r5;
+
+     label1:
+        r0.<com.nexage.android.NexageAdView: java.lang.String m_Position> = "footer";
+
+        specialinvoke r0.<com.nexage.android.NexageAdView: void init(android.content.Context,android.util.AttributeSet)>($r2, null);
+
+        return;
+    }
+
+    private void SDKAdVisible(boolean)
+    {
+        com.nexage.android.NexageAdView r0;
+        boolean $z0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        $z0 := @parameter0: boolean;
+
+        r0.<com.nexage.android.NexageAdView: boolean m_SDKAdVisible> = $z0;
+
+        if $z0 == 0 goto label1;
+
+        specialinvoke r0.<com.nexage.android.NexageAdView: void checkSetRefreshTimer(boolean)>(1);
+
+     label1:
+        return;
+    }
+
+    static boolean access$100(com.nexage.android.NexageAdView)
+    {
+        com.nexage.android.NexageAdView $r0;
+        boolean z0;
+
+        $r0 := @parameter0: com.nexage.android.NexageAdView;
+
+        z0 = $r0.<com.nexage.android.NexageAdView: boolean m_ReadyToFetch>;
+
+        return z0;
+    }
+
+    static com.nexage.android.Ad access$1000(com.nexage.android.NexageAdView)
+    {
+        com.nexage.android.Ad r1;
+        com.nexage.android.NexageAdView $r0;
+
+        $r0 := @parameter0: com.nexage.android.NexageAdView;
+
+        r1 = $r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_CurrentAd>;
+
+        return r1;
+    }
+
+    static com.nexage.android.Ad access$1002(com.nexage.android.NexageAdView, com.nexage.android.Ad)
+    {
+        com.nexage.android.Ad $r1;
+        com.nexage.android.NexageAdView $r0;
+
+        $r0 := @parameter0: com.nexage.android.NexageAdView;
+
+        $r1 := @parameter1: com.nexage.android.Ad;
+
+        $r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_CurrentAd> = null;
+
+        return null;
+    }
+
+    static boolean access$102(com.nexage.android.NexageAdView, boolean)
+    {
+        com.nexage.android.NexageAdView $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: com.nexage.android.NexageAdView;
+
+        $z0 := @parameter1: boolean;
+
+        $r0.<com.nexage.android.NexageAdView: boolean m_ReadyToFetch> = $z0;
+
+        return $z0;
+    }
+
+    static android.content.Context access$1100(com.nexage.android.NexageAdView)
+    {
+        android.content.Context r1;
+        com.nexage.android.NexageAdView $r0;
+
+        $r0 := @parameter0: com.nexage.android.NexageAdView;
+
+        r1 = $r0.<com.nexage.android.NexageAdView: android.content.Context m_Activity>;
+
+        return r1;
+    }
+
+    static void access$1200(com.nexage.android.NexageAdView, com.nexage.android.Ad)
+    {
+        com.nexage.android.Ad $r1;
+        com.nexage.android.NexageAdView $r0;
+
+        $r0 := @parameter0: com.nexage.android.NexageAdView;
+
+        $r1 := @parameter1: com.nexage.android.Ad;
+
+        specialinvoke $r0.<com.nexage.android.NexageAdView: void displayAd(com.nexage.android.Ad)>($r1);
+
+        return;
+    }
+
+    static com.nexage.android.NexageListener access$1300(com.nexage.android.NexageAdView)
+    {
+        com.nexage.android.NexageListener r1;
+        com.nexage.android.NexageAdView $r0;
+
+        $r0 := @parameter0: com.nexage.android.NexageAdView;
+
+        r1 = $r0.<com.nexage.android.NexageAdView: com.nexage.android.NexageListener listener>;
+
+        return r1;
+    }
+
+    static boolean access$1500(com.nexage.android.NexageAdView)
+    {
+        com.nexage.android.NexageAdView $r0;
+        boolean z0;
+
+        $r0 := @parameter0: com.nexage.android.NexageAdView;
+
+        z0 = $r0.<com.nexage.android.NexageAdView: boolean m_Detached>;
+
+        return z0;
+    }
+
+    static com.nexage.android.Ad access$1602(com.nexage.android.NexageAdView, com.nexage.android.Ad)
+    {
+        com.nexage.android.Ad $r1;
+        com.nexage.android.NexageAdView $r0;
+
+        $r0 := @parameter0: com.nexage.android.NexageAdView;
+
+        $r1 := @parameter1: com.nexage.android.Ad;
+
+        $r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_PendingAd> = $r1;
+
+        return $r1;
+    }
+
+    static void access$1700(com.nexage.android.NexageAdView)
+    {
+        com.nexage.android.NexageAdView $r0;
+
+        $r0 := @parameter0: com.nexage.android.NexageAdView;
+
+        specialinvoke $r0.<com.nexage.android.NexageAdView: void switchView()>();
+
+        return;
+    }
+
+    static void access$1800(com.nexage.android.NexageAdView, boolean)
+    {
+        com.nexage.android.NexageAdView $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: com.nexage.android.NexageAdView;
+
+        $z0 := @parameter1: boolean;
+
+        specialinvoke $r0.<com.nexage.android.NexageAdView: void SDKAdVisible(boolean)>($z0);
+
+        return;
+    }
+
+    static com.nexage.android.NexageAdView$RefreshTask access$202(com.nexage.android.NexageAdView, com.nexage.android.NexageAdView$RefreshTask)
+    {
+        com.nexage.android.NexageAdView$RefreshTask $r1;
+        com.nexage.android.NexageAdView $r0;
+
+        $r0 := @parameter0: com.nexage.android.NexageAdView;
+
+        $r1 := @parameter1: com.nexage.android.NexageAdView$RefreshTask;
+
+        $r0.<com.nexage.android.NexageAdView: com.nexage.android.NexageAdView$RefreshTask m_RefreshTask> = null;
+
+        return null;
+    }
+
+    static boolean access$300(com.nexage.android.NexageAdView)
+    {
+        com.nexage.android.NexageAdView $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: com.nexage.android.NexageAdView;
+
+        $z0 = specialinvoke $r0.<com.nexage.android.NexageAdView: boolean visible()>();
+
+        return $z0;
+    }
+
+    static int access$400(com.nexage.android.NexageAdView)
+    {
+        int i0;
+        com.nexage.android.NexageAdView $r0;
+
+        $r0 := @parameter0: com.nexage.android.NexageAdView;
+
+        i0 = $r0.<com.nexage.android.NexageAdView: int m_PrefetchAttempt>;
+
+        return i0;
+    }
+
+    static int access$402(com.nexage.android.NexageAdView, int)
+    {
+        int $i0;
+        com.nexage.android.NexageAdView $r0;
+
+        $r0 := @parameter0: com.nexage.android.NexageAdView;
+
+        $i0 := @parameter1: int;
+
+        $r0.<com.nexage.android.NexageAdView: int m_PrefetchAttempt> = 0;
+
+        return 0;
+    }
+
+    static int access$410(com.nexage.android.NexageAdView)
+    {
+        int $i0, $i1;
+        com.nexage.android.NexageAdView $r0;
+
+        $r0 := @parameter0: com.nexage.android.NexageAdView;
+
+        $i0 = $r0.<com.nexage.android.NexageAdView: int m_PrefetchAttempt>;
+
+        $i1 = $i0 + -1;
+
+        $r0.<com.nexage.android.NexageAdView: int m_PrefetchAttempt> = $i1;
+
+        return $i0;
+    }
+
+    static boolean access$602(com.nexage.android.NexageAdView, boolean)
+    {
+        com.nexage.android.NexageAdView $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: com.nexage.android.NexageAdView;
+
+        $z0 := @parameter1: boolean;
+
+        $r0.<com.nexage.android.NexageAdView: boolean mScreenVisible> = $z0;
+
+        return $z0;
+    }
+
+    static void access$700(com.nexage.android.NexageAdView, boolean)
+    {
+        com.nexage.android.NexageAdView $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: com.nexage.android.NexageAdView;
+
+        $z0 := @parameter1: boolean;
+
+        specialinvoke $r0.<com.nexage.android.NexageAdView: void checkSetRefreshTimer(boolean)>(0);
+
+        return;
+    }
+
+    static java.util.TimerTask access$800(com.nexage.android.NexageAdView)
+    {
+        java.util.TimerTask r1;
+        com.nexage.android.NexageAdView $r0;
+
+        $r0 := @parameter0: com.nexage.android.NexageAdView;
+
+        r1 = $r0.<com.nexage.android.NexageAdView: java.util.TimerTask m_DetachTask>;
+
+        return r1;
+    }
+
+    static java.util.TimerTask access$802(com.nexage.android.NexageAdView, java.util.TimerTask)
+    {
+        java.util.TimerTask $r1;
+        com.nexage.android.NexageAdView $r0;
+
+        $r0 := @parameter0: com.nexage.android.NexageAdView;
+
+        $r1 := @parameter1: java.util.TimerTask;
+
+        $r0.<com.nexage.android.NexageAdView: java.util.TimerTask m_DetachTask> = null;
+
+        return null;
+    }
+
+    static android.view.View access$900(com.nexage.android.NexageAdView)
+    {
+        android.view.View r1;
+        com.nexage.android.NexageAdView $r0;
+
+        $r0 := @parameter0: com.nexage.android.NexageAdView;
+
+        r1 = $r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher>;
+
+        return r1;
+    }
+
+    public static void addCustomAttribute(java.lang.String, java.lang.String)
+    {
+        java.lang.String $r0, $r1;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: java.lang.String;
+
+        staticinvoke <com.nexage.android.NexageAdManager: void addCustomAttribute(java.lang.String,java.lang.String)>($r0, $r1);
+
+        return;
+    }
+
+    private void checkSetRefreshTimer(boolean)
+    {
+        java.lang.Throwable $r4;
+        java.util.Timer $r3;
+        long $l1;
+        com.nexage.android.NexageAdView r0;
+        com.nexage.android.NexageAdView$RefreshTask $r2;
+        int $i0;
+        com.nexage.android.Ad $r1;
+        boolean $z0, $z1;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        $z0 := @parameter0: boolean;
+
+        $z1 = specialinvoke r0.<com.nexage.android.NexageAdView: boolean visible()>();
+
+        if $z1 != 0 goto label1;
+
+        if $z0 == 0 goto label2;
+
+        return;
+
+     label1:
+        if $z0 == 0 goto label2;
+
+        virtualinvoke r0.<com.nexage.android.NexageAdView: void nudgeAdFetcher()>();
+
+     label2:
+        $r1 = r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_CurrentAd>;
+
+        if $r1 != null goto label3;
+
+        if $z0 != 0 goto label9;
+
+     label3:
+        entermonitor r0;
+
+     label4:
+        $i0 = r0.<com.nexage.android.NexageAdView: int refreshInterval>;
+
+        if $i0 <= 0 goto label5;
+
+        $r2 = r0.<com.nexage.android.NexageAdView: com.nexage.android.NexageAdView$RefreshTask m_RefreshTask>;
+
+        if $r2 != null goto label5;
+
+        $r2 = new com.nexage.android.NexageAdView$RefreshTask;
+
+        specialinvoke $r2.<com.nexage.android.NexageAdView$RefreshTask: void <init>(com.nexage.android.NexageAdView,com.nexage.android.NexageAdView$1)>(r0, null);
+
+        r0.<com.nexage.android.NexageAdView: com.nexage.android.NexageAdView$RefreshTask m_RefreshTask> = $r2;
+
+        $r3 = <com.nexage.android.NonBlockingTimerTask: java.util.Timer s_SDKTimer>;
+
+        $r2 = r0.<com.nexage.android.NexageAdView: com.nexage.android.NexageAdView$RefreshTask m_RefreshTask>;
+
+        $i0 = r0.<com.nexage.android.NexageAdView: int refreshInterval>;
+
+        $l1 = (long) $i0;
+
+        virtualinvoke $r3.<java.util.Timer: void schedule(java.util.TimerTask,long)>($r2, $l1);
+
+     label5:
+        exitmonitor r0;
+
+     label6:
+        return;
+
+     label7:
+        $r4 := @caughtexception;
+
+        exitmonitor r0;
+
+     label8:
+        throw $r4;
+
+     label9:
+        return;
+
+        catch java.lang.Throwable from label4 to label6 with label7;
+        catch java.lang.Throwable from label7 to label8 with label7;
+    }
+
+    private void displayAd(com.nexage.android.Ad)
+    {
+        java.lang.Throwable $r10;
+        java.lang.Integer $r4, $r5;
+        com.nexage.android.NexageAdView r0;
+        com.nexage.android.NexageAdView$AdViewContext $r9;
+        int $i0, $i1;
+        android.view.View $r6;
+        com.nexage.android.Ad $r1, $r3;
+        java.lang.String $r2;
+        com.nexage.android.NexageAdSwitcher $r7;
+        com.nexage.android.NexageContext $r8;
+        boolean $z0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        $r1 := @parameter0: com.nexage.android.Ad;
+
+        entermonitor r0;
+
+     label1:
+        r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_PendingAd> = null;
+
+        $r3 = r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_CurrentAd>;
+
+        if $r3 == null goto label2;
+
+        $r3 = r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_CurrentAd>;
+
+        if $r3 == $r1 goto label2;
+
+        $r3 = r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_CurrentAd>;
+
+        virtualinvoke $r3.<com.nexage.android.Ad: void readyToReport()>();
+
+     label2:
+        $z0 = r0.<com.nexage.android.NexageAdView: boolean m_Detached>;
+
+        if $z0 == 0 goto label4;
+
+        r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_CurrentAd> = null;
+
+        exitmonitor r0;
+
+     label3:
+        return;
+
+     label4:
+        r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_CurrentAd> = $r1;
+
+        exitmonitor r0;
+
+     label5:
+        $r1 = r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_CurrentAd>;
+
+        $i0 = r0.<com.nexage.android.NexageAdView: int m_Width>;
+
+        $i1 = r0.<com.nexage.android.NexageAdView: int m_Height>;
+
+        virtualinvoke $r1.<com.nexage.android.Ad: void setSize(int,int)>($i0, $i1);
+
+        $r1 = r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_CurrentAd>;
+
+        $r4 = r0.<com.nexage.android.NexageAdView: java.lang.Integer m_BGColor>;
+
+        $r5 = r0.<com.nexage.android.NexageAdView: java.lang.Integer m_TextColor>;
+
+        $r2 = r0.<com.nexage.android.NexageAdView: java.lang.String m_Alignment>;
+
+        virtualinvoke $r1.<com.nexage.android.Ad: void setAttributes(java.lang.Integer,java.lang.Integer,java.lang.String)>($r4, $r5, $r2);
+
+        $r1 = r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_CurrentAd>;
+
+        virtualinvoke $r1.<com.nexage.android.Ad: void setAdView(com.nexage.android.NexageBaseAdView)>(r0);
+
+        $r1 = r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_CurrentAd>;
+
+        $r6 = r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher>;
+
+        $r7 = (com.nexage.android.NexageAdSwitcher) $r6;
+
+        virtualinvoke $r1.<com.nexage.android.Ad: void setSwitcher(com.nexage.android.NexageAdSwitcher)>($r7);
+
+        $r8 = r0.<com.nexage.android.NexageAdView: com.nexage.android.NexageContext m_NexageContext>;
+
+        $r9 = (com.nexage.android.NexageAdView$AdViewContext) $r8;
+
+        $z0 = virtualinvoke $r9.<com.nexage.android.NexageAdView$AdViewContext: boolean mm4rmNotLocked()>();
+
+        if $z0 == 0 goto label9;
+
+        specialinvoke r0.<com.nexage.android.NexageAdView: void switchView()>();
+
+        return;
+
+     label6:
+        $r10 := @caughtexception;
+
+     label7:
+        exitmonitor r0;
+
+     label8:
+        throw $r10;
+
+     label9:
+        return;
+
+        catch java.lang.Throwable from label1 to label3 with label6;
+        catch java.lang.Throwable from label4 to label5 with label6;
+        catch java.lang.Throwable from label7 to label8 with label6;
+    }
+
+    public static java.lang.String getApplicationName()
+    {
+        java.lang.String $r0;
+
+        $r0 = staticinvoke <com.nexage.android.NexageAdManager: java.lang.String getApplicationName()>();
+
+        return $r0;
+    }
+
+    public static java.lang.String getApplicationVersion()
+    {
+        java.lang.String $r0;
+
+        $r0 = staticinvoke <com.nexage.android.NexageAdManager: java.lang.String getApplicationVersion()>();
+
+        return $r0;
+    }
+
+    public static java.lang.String getCn()
+    {
+        java.lang.String $r0;
+
+        $r0 = staticinvoke <com.nexage.android.NexageAdManager: java.lang.String getCn()>();
+
+        return $r0;
+    }
+
+    public static java.lang.String getDcn()
+    {
+        java.lang.String $r0;
+
+        $r0 = staticinvoke <com.nexage.android.NexageAdManager: java.lang.String getDCN()>();
+
+        return $r0;
+    }
+
+    public static java.util.Hashtable getExtraParameter()
+    {
+        java.util.Hashtable $r0;
+
+        $r0 = staticinvoke <com.nexage.android.NexageAdManager: java.util.Hashtable getExtraParameters()>();
+
+        return $r0;
+    }
+
+    private void init(android.content.Context, android.util.AttributeSet)
+    {
+        android.content.Context $r1;
+        com.nexage.android.AnimatedSwitcher $r3;
+        com.nexage.android.NexageAdView r0;
+        android.util.AttributeSet $r2;
+        int $i0, $i1;
+        float $f0;
+        android.view.View $r4;
+        com.nexage.android.PlainSwitcher $r6;
+        java.lang.String $r5;
+        boolean $z0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: android.util.AttributeSet;
+
+        r0.<com.nexage.android.NexageAdView: android.content.Context m_Activity> = $r1;
+
+        $z0 = virtualinvoke r0.<com.nexage.android.NexageAdView: boolean isInEditMode()>();
+
+        if $z0 != 0 goto label4;
+
+        staticinvoke <com.nexage.android.NexageAdManager: void init(android.content.Context)>($r1);
+
+        $r3 = new com.nexage.android.AnimatedSwitcher;
+
+        specialinvoke $r3.<com.nexage.android.AnimatedSwitcher: void <init>(android.content.Context)>($r1);
+
+        r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher> = $r3;
+
+     label1:
+        $i0 = <com.nexage.android.NexageAdView: int s_DefaultWidth>;
+
+        if $i0 != 0 goto label2;
+
+        $f0 = <com.nexage.android.NexageContext: float s_Dip2Px>;
+
+        $f0 = 320.0F * $f0;
+
+        $i0 = (int) $f0;
+
+        <com.nexage.android.NexageAdView: int s_DefaultWidth> = $i0;
+
+        $f0 = <com.nexage.android.NexageContext: float s_Dip2Px>;
+
+        $f0 = 50.0F * $f0;
+
+        $i0 = (int) $f0;
+
+        <com.nexage.android.NexageAdView: int s_DefaultHeight> = $i0;
+
+     label2:
+        $i0 = <com.nexage.android.NexageAdView: int s_DefaultWidth>;
+
+        r0.<com.nexage.android.NexageAdView: int m_Width> = $i0;
+
+        $i0 = <com.nexage.android.NexageAdView: int s_DefaultHeight>;
+
+        r0.<com.nexage.android.NexageAdView: int m_Height> = $i0;
+
+        $r4 = r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher>;
+
+        virtualinvoke r0.<com.nexage.android.NexageAdView: void addView(android.view.View)>($r4);
+
+        virtualinvoke r0.<com.nexage.android.NexageAdView: void setClickable(boolean)>(1);
+
+        virtualinvoke r0.<com.nexage.android.NexageAdView: void setLongClickable(boolean)>(1);
+
+        virtualinvoke r0.<com.nexage.android.NexageAdView: void setFocusable(boolean)>(1);
+
+        virtualinvoke r0.<com.nexage.android.NexageAdView: void setPadding(int,int,int,int)>(0, 0, 0, 0);
+
+        virtualinvoke r0.<com.nexage.android.NexageAdView: void setDescendantFocusability(int)>(262144);
+
+        goto label3;
+
+     label3:
+        $r4 = r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher>;
+
+        $i0 = r0.<com.nexage.android.NexageAdView: int m_Width>;
+
+        $i1 = r0.<com.nexage.android.NexageAdView: int m_Height>;
+
+        virtualinvoke $r4.<android.view.View: void layout(int,int,int,int)>(0, 0, $i0, $i1);
+
+        $r5 = r0.<com.nexage.android.NexageAdView: java.lang.String m_Position>;
+
+        virtualinvoke r0.<com.nexage.android.NexageAdView: void setPosition(java.lang.String)>($r5);
+
+        return;
+
+     label4:
+        $r6 = new com.nexage.android.PlainSwitcher;
+
+        $r1 = r0.<com.nexage.android.NexageAdView: android.content.Context m_Activity>;
+
+        specialinvoke $r6.<com.nexage.android.PlainSwitcher: void <init>(android.content.Context)>($r1);
+
+        r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher> = $r6;
+
+        goto label1;
+    }
+
+    private void parseAttribute(android.util.AttributeSet)
+    {
+        android.content.Context $r4;
+        java.lang.Integer $r8;
+        com.nexage.android.NexageAdView r0;
+        android.util.AttributeSet $r1;
+        int $i0, $i2;
+        android.view.View $r9;
+        android.widget.LinearLayout$LayoutParams r2, $r13;
+        java.lang.String $r5, $r6, r7;
+        boolean $z0;
+        char $c1;
+        java.lang.Exception $r10, $r11;
+        java.lang.StringBuilder $r3, $r12;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        $r1 := @parameter0: android.util.AttributeSet;
+
+        $r12 = new java.lang.StringBuilder;
+
+        specialinvoke $r12.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = virtualinvoke $r12.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("http://schemas.android.com/apk/res/");
+
+        $r4 = r0.<com.nexage.android.NexageAdView: android.content.Context m_Activity>;
+
+        $r5 = virtualinvoke $r4.<android.content.Context: java.lang.String getPackageName()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r6 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $i0 = interfaceinvoke $r1.<android.util.AttributeSet: int getAttributeIntValue(java.lang.String,java.lang.String,int)>($r6, "refreshInterval", 30000);
+
+        virtualinvoke r0.<com.nexage.android.NexageAdView: void setRefreshInterval(int)>($i0);
+
+        $r5 = interfaceinvoke $r1.<android.util.AttributeSet: java.lang.String getAttributeValue(java.lang.String,java.lang.String)>($r6, "cn");
+
+        if $r5 == null goto label01;
+
+        $i0 = virtualinvoke $r5.<java.lang.String: int length()>();
+
+        if $i0 <= 0 goto label01;
+
+        staticinvoke <com.nexage.android.NexageAdManager: void setCn(java.lang.String)>($r5);
+
+        staticinvoke <com.nexage.android.NexageLog: void w(java.lang.String)>("cn attribute in NexageAdView is deprecated.");
+
+        staticinvoke <com.nexage.android.NexageLog: void w(java.lang.String)>("Please use setCn() method of NexageAdManager.");
+
+     label01:
+        $r5 = interfaceinvoke $r1.<android.util.AttributeSet: java.lang.String getAttributeValue(java.lang.String,java.lang.String)>($r6, "position");
+
+        r7 = $r5;
+
+        $z0 = interfaceinvoke $r1.<android.util.AttributeSet: boolean getAttributeBooleanValue(java.lang.String,java.lang.String,boolean)>($r6, "testmode", 0);
+
+        if $z0 == 0 goto label02;
+
+        staticinvoke <com.nexage.android.NexageAdManager: void setTestMode(boolean)>($z0);
+
+        staticinvoke <com.nexage.android.NexageLog: void w(java.lang.String)>("testmode attribute in NexageAdView is deprecated.");
+
+        staticinvoke <com.nexage.android.NexageLog: void w(java.lang.String)>("Please use <meta-data android:value=\"true\" android:name=\"NEXAGE_TEST_MODE\" />.");
+
+     label02:
+        $r6 = interfaceinvoke $r1.<android.util.AttributeSet: java.lang.String getAttributeValue(java.lang.String,java.lang.String)>($r6, "animation");
+
+        $z0 = virtualinvoke r0.<com.nexage.android.NexageAdView: boolean isInEditMode()>();
+
+        if $z0 != 0 goto label15;
+
+        virtualinvoke r0.<com.nexage.android.NexageAdView: void setAnimationType(java.lang.String)>($r6);
+
+     label03:
+        $r6 = interfaceinvoke $r1.<android.util.AttributeSet: java.lang.String getAttributeValue(java.lang.String,java.lang.String)>("http://schemas.android.com/apk/res/android", "textColor");
+
+        if $r6 == null goto label07;
+
+        $r8 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(16777215);
+
+        r0.<com.nexage.android.NexageAdView: java.lang.Integer m_TextColor> = $r8;
+
+     label04:
+        $c1 = virtualinvoke $r6.<java.lang.String: char charAt(int)>(0);
+
+     label05:
+        $i0 = (int) $c1;
+
+        if $i0 != 35 goto label16;
+
+     label06:
+        $r6 = virtualinvoke $r6.<java.lang.String: java.lang.String toUpperCase()>();
+
+        $i0 = staticinvoke <com.nexage.android.OrmmaAd: int hexToInt(java.lang.String)>($r6);
+
+        $r8 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        r0.<com.nexage.android.NexageAdView: java.lang.Integer m_TextColor> = $r8;
+
+     label07:
+        $r6 = interfaceinvoke $r1.<android.util.AttributeSet: java.lang.String getAttributeValue(java.lang.String,java.lang.String)>("http://schemas.android.com/apk/res/android", "background");
+
+        if $r6 == null goto label11;
+
+     label08:
+        $c1 = virtualinvoke $r6.<java.lang.String: char charAt(int)>(0);
+
+     label09:
+        $i0 = (int) $c1;
+
+        if $i0 != 35 goto label19;
+
+     label10:
+        $r8 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(-16777216);
+
+        r0.<com.nexage.android.NexageAdView: java.lang.Integer m_BGColor> = $r8;
+
+        $r6 = virtualinvoke $r6.<java.lang.String: java.lang.String toUpperCase()>();
+
+        $i0 = staticinvoke <com.nexage.android.OrmmaAd: int hexToInt(java.lang.String)>($r6);
+
+        $r8 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        r0.<com.nexage.android.NexageAdView: java.lang.Integer m_BGColor> = $r8;
+
+        $r9 = r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher>;
+
+        $r8 = r0.<com.nexage.android.NexageAdView: java.lang.Integer m_BGColor>;
+
+        $i0 = virtualinvoke $r8.<java.lang.Integer: int intValue()>();
+
+        virtualinvoke $r9.<android.view.View: void setBackgroundColor(int)>($i0);
+
+     label11:
+        if $r5 != null goto label12;
+
+        r7 = "default";
+
+     label12:
+        r0.<com.nexage.android.NexageAdView: java.lang.String m_Position> = r7;
+
+        $r13 = new android.widget.LinearLayout$LayoutParams;
+
+        r2 = $r13;
+
+        $r4 = r0.<com.nexage.android.NexageAdView: android.content.Context m_Activity>;
+
+        specialinvoke $r13.<android.widget.LinearLayout$LayoutParams: void <init>(android.content.Context,android.util.AttributeSet)>($r4, null);
+
+        $i0 = r2.<android.widget.LinearLayout$LayoutParams: int width>;
+
+        if $i0 <= 1 goto label13;
+
+        $i0 = r2.<android.widget.LinearLayout$LayoutParams: int width>;
+
+        r0.<com.nexage.android.NexageAdView: int m_Width> = $i0;
+
+     label13:
+        $i0 = r2.<android.widget.LinearLayout$LayoutParams: int height>;
+
+        if $i0 <= 1 goto label14;
+
+        $i0 = r2.<android.widget.LinearLayout$LayoutParams: int height>;
+
+        r0.<com.nexage.android.NexageAdView: int m_Height> = $i0;
+
+     label14:
+        specialinvoke r0.<com.nexage.android.NexageBaseAdView: void setLayoutParams(android.view.ViewGroup$LayoutParams)>(r2);
+
+        $r9 = r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher>;
+
+        $i0 = r0.<com.nexage.android.NexageAdView: int m_Width>;
+
+        $i2 = r0.<com.nexage.android.NexageAdView: int m_Height>;
+
+        virtualinvoke $r9.<android.view.View: void layout(int,int,int,int)>(0, 0, $i0, $i2);
+
+        $i0 = r2.<android.widget.LinearLayout$LayoutParams: int gravity>;
+
+        virtualinvoke r0.<com.nexage.android.NexageAdView: void setGravity(int)>($i0);
+
+        return;
+
+     label15:
+        r0.<com.nexage.android.NexageAdView: java.lang.String m_AnimationType> = $r6;
+
+        goto label03;
+
+     label16:
+        $r6 = virtualinvoke $r6.<java.lang.String: java.lang.String substring(int)>(1);
+
+        $i0 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String)>($r6);
+
+        $r8 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        r0.<com.nexage.android.NexageAdView: java.lang.Integer m_TextColor> = $r8;
+
+     label17:
+        goto label07;
+
+     label18:
+        $r10 := @caughtexception;
+
+        goto label07;
+
+     label19:
+        $r8 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(0);
+
+        r0.<com.nexage.android.NexageAdView: java.lang.Integer m_BGRes> = $r8;
+
+        $r6 = virtualinvoke $r6.<java.lang.String: java.lang.String substring(int)>(1);
+
+        $i0 = staticinvoke <java.lang.Integer: int parseInt(java.lang.String)>($r6);
+
+        $r8 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        r0.<com.nexage.android.NexageAdView: java.lang.Integer m_BGRes> = $r8;
+
+        $r8 = r0.<com.nexage.android.NexageAdView: java.lang.Integer m_BGRes>;
+
+        $i0 = virtualinvoke $r8.<java.lang.Integer: int intValue()>();
+
+     label20:
+        if $i0 == 0 goto label11;
+
+     label21:
+        $r9 = r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher>;
+
+        $r8 = r0.<com.nexage.android.NexageAdView: java.lang.Integer m_BGRes>;
+
+        $i0 = virtualinvoke $r8.<java.lang.Integer: int intValue()>();
+
+        virtualinvoke $r9.<android.view.View: void setBackgroundResource(int)>($i0);
+
+     label22:
+        goto label11;
+
+     label23:
+        $r11 := @caughtexception;
+
+        goto label11;
+
+        catch java.lang.Exception from label04 to label05 with label18;
+        catch java.lang.Exception from label06 to label07 with label18;
+        catch java.lang.Exception from label08 to label09 with label23;
+        catch java.lang.Exception from label10 to label11 with label23;
+        catch java.lang.Exception from label16 to label17 with label18;
+        catch java.lang.Exception from label19 to label20 with label23;
+        catch java.lang.Exception from label21 to label22 with label23;
+    }
+
+    public static void setApplicationName(java.lang.String)
+    {
+        java.lang.String $r0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        staticinvoke <com.nexage.android.NexageAdManager: void setApplicationName(java.lang.String)>($r0);
+
+        return;
+    }
+
+    public static void setApplicationVersion(java.lang.String)
+    {
+        java.lang.String $r0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        staticinvoke <com.nexage.android.NexageAdManager: void setApplicationVersion(java.lang.String)>($r0);
+
+        return;
+    }
+
+    public static void setCn(java.lang.String)
+    {
+        java.lang.String $r0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        staticinvoke <com.nexage.android.NexageAdManager: void setCn(java.lang.String)>($r0);
+
+        return;
+    }
+
+    public static void setDcn(java.lang.String)
+    {
+        java.lang.String $r0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        staticinvoke <com.nexage.android.NexageAdManager: void setDCN(java.lang.String)>($r0);
+
+        return;
+    }
+
+    private void switchView()
+    {
+        android.content.Context $r3;
+        android.view.View$OnClickListener $r6;
+        java.lang.Integer $r8;
+        com.nexage.android.NexageAdView r0;
+        int $i0;
+        android.view.View $r7, $r10;
+        com.nexage.android.Ad $r1;
+        java.lang.String $r2;
+        com.nexage.android.NexageListener $r11;
+        com.nexage.android.NexageAdView$2 $r12;
+        java.lang.Exception $r13, $r14;
+        com.nexage.android.AdLayout $r5;
+        com.nexage.android.NexageAdSwitcher $r9;
+        android.app.Activity $r4;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        $r1 = r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_CurrentAd>;
+
+        if $r1 != null goto label01;
+
+        $r2 = r0.<com.nexage.android.NexageAdView: java.lang.String m_Position>;
+
+        staticinvoke <com.nexage.android.NexageLog: void w(java.lang.String,java.lang.String)>($r2, "switchView: currentAd is null");
+
+        return;
+
+     label01:
+        $r1 = r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_CurrentAd>;
+
+        $r3 = r0.<com.nexage.android.NexageAdView: android.content.Context m_Activity>;
+
+        $r4 = (android.app.Activity) $r3;
+
+        $r5 = virtualinvoke $r1.<com.nexage.android.Ad: com.nexage.android.AdLayout getLayout(android.app.Activity)>($r4);
+
+        if $r5 == null goto label14;
+
+        $r6 = r0.<com.nexage.android.NexageAdView: android.view.View$OnClickListener m_ClickListener>;
+
+        if $r6 == null goto label02;
+
+        $r6 = r0.<com.nexage.android.NexageAdView: android.view.View$OnClickListener m_ClickListener>;
+
+        virtualinvoke $r5.<com.nexage.android.AdLayout: void setOnClickListener(android.view.View$OnClickListener,com.nexage.android.NexageAdView)>($r6, r0);
+
+     label02:
+        $r7 = virtualinvoke $r5.<com.nexage.android.AdLayout: android.view.View getView()>();
+
+        $i0 = virtualinvoke r0.<com.nexage.android.NexageAdView: int getVisibility()>();
+
+        virtualinvoke $r7.<android.view.View: void setVisibility(int)>($i0);
+
+        $r8 = r0.<com.nexage.android.NexageAdView: java.lang.Integer m_BGRes>;
+
+        if $r8 == null goto label03;
+
+        $r8 = r0.<com.nexage.android.NexageAdView: java.lang.Integer m_BGRes>;
+
+        $i0 = virtualinvoke $r8.<java.lang.Integer: int intValue()>();
+
+        virtualinvoke $r7.<android.view.View: void setBackgroundResource(int)>($i0);
+
+     label03:
+        $r8 = r0.<com.nexage.android.NexageAdView: java.lang.Integer m_BGColor>;
+
+        if $r8 == null goto label04;
+
+        $r8 = r0.<com.nexage.android.NexageAdView: java.lang.Integer m_BGColor>;
+
+        $i0 = virtualinvoke $r8.<java.lang.Integer: int intValue()>();
+
+        virtualinvoke $r7.<android.view.View: void setBackgroundColor(int)>($i0);
+
+     label04:
+        $r1 = r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_CurrentAd>;
+
+        $r9 = virtualinvoke $r1.<com.nexage.android.Ad: com.nexage.android.NexageAdSwitcher getSwitcher()>();
+
+     label05:
+        if $r9 != null goto label07;
+
+     label06:
+        $r10 = r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher>;
+
+        $r9 = (com.nexage.android.NexageAdSwitcher) $r10;
+
+        interfaceinvoke $r9.<com.nexage.android.NexageAdSwitcher: void addAdView(android.view.View)>($r7);
+
+     label07:
+        if $r7 != null goto label10;
+
+     label08:
+        specialinvoke r0.<com.nexage.android.NexageAdView: void checkSetRefreshTimer(boolean)>(1);
+
+     label09:
+        $r11 = r0.<com.nexage.android.NexageAdView: com.nexage.android.NexageListener listener>;
+
+        if $r11 == null goto label14;
+
+        $r12 = new com.nexage.android.NexageAdView$2;
+
+        specialinvoke $r12.<com.nexage.android.NexageAdView$2: void <init>(com.nexage.android.NexageAdView)>(r0);
+
+        virtualinvoke r0.<com.nexage.android.NexageAdView: boolean post(java.lang.Runnable)>($r12);
+
+        return;
+
+     label10:
+        specialinvoke r0.<com.nexage.android.NexageAdView: void checkSetRefreshTimer(boolean)>(0);
+
+     label11:
+        goto label09;
+
+     label12:
+        $r13 := @caughtexception;
+
+        goto label09;
+
+     label13:
+        $r14 := @caughtexception;
+
+        goto label07;
+
+     label14:
+        return;
+
+        catch java.lang.Exception from label04 to label05 with label13;
+        catch java.lang.Exception from label06 to label07 with label13;
+        catch java.lang.Exception from label08 to label09 with label12;
+        catch java.lang.Exception from label10 to label11 with label12;
+    }
+
+    private boolean visible()
+    {
+        int $i0;
+        com.nexage.android.NexageAdView r0;
+        boolean $z0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        $z0 = r0.<com.nexage.android.NexageAdView: boolean mScreenVisible>;
+
+        if $z0 == 0 goto label1;
+
+        $z0 = virtualinvoke r0.<com.nexage.android.NexageAdView: boolean isShown()>();
+
+        if $z0 == 0 goto label1;
+
+        $i0 = virtualinvoke r0.<com.nexage.android.NexageAdView: int getVisibility()>();
+
+        if $i0 != 0 goto label1;
+
+        $z0 = r0.<com.nexage.android.NexageAdView: boolean m_Detached>;
+
+        if $z0 != 0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public void displayRichMedia()
+    {
+        org.ormma.view.OrmmaView $r4;
+        android.view.View $r1;
+        com.nexage.android.NexageAdSwitcher $r2;
+        com.nexage.android.OrmmaAdLayout r3;
+        com.nexage.android.NexageAdView r0;
+        boolean $z0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        $r1 = r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher>;
+
+        $z0 = $r1 instanceof com.nexage.android.NexageAdSwitcher;
+
+        if $z0 == 0 goto label1;
+
+        $r1 = r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher>;
+
+        $r2 = (com.nexage.android.NexageAdSwitcher) $r1;
+
+        $r1 = interfaceinvoke $r2.<com.nexage.android.NexageAdSwitcher: android.view.View getCurrentView()>();
+
+        if $r1 == null goto label1;
+
+        $z0 = $r1 instanceof com.nexage.android.OrmmaAdLayout;
+
+        if $z0 == 0 goto label1;
+
+        r3 = (com.nexage.android.OrmmaAdLayout) $r1;
+
+        $r4 = virtualinvoke r3.<com.nexage.android.OrmmaAdLayout: org.ormma.view.OrmmaView getOrmmaView()>();
+
+        if $r4 == null goto label1;
+
+        virtualinvoke $r4.<org.ormma.view.OrmmaView: void changeViewable(boolean)>(1);
+
+     label1:
+        return;
+    }
+
+    public int getAdHeight()
+    {
+        int i0;
+        com.nexage.android.NexageAdView r0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        i0 = r0.<com.nexage.android.NexageAdView: int m_Height>;
+
+        return i0;
+    }
+
+    public int getAdWidth()
+    {
+        int i0;
+        com.nexage.android.NexageAdView r0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        i0 = r0.<com.nexage.android.NexageAdView: int m_Width>;
+
+        return i0;
+    }
+
+    public java.lang.String getAnimationType()
+    {
+        java.lang.String r1;
+        com.nexage.android.NexageAdView r0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        r1 = r0.<com.nexage.android.NexageAdView: java.lang.String m_AnimationType>;
+
+        return r1;
+    }
+
+    public int getBackgroundColor()
+    {
+        int $i0;
+        java.lang.Integer $r1;
+        com.nexage.android.NexageAdView r0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        $r1 = r0.<com.nexage.android.NexageAdView: java.lang.Integer m_BGColor>;
+
+        if $r1 != null goto label1;
+
+        return -16777216;
+
+     label1:
+        $r1 = r0.<com.nexage.android.NexageAdView: java.lang.Integer m_BGColor>;
+
+        $i0 = virtualinvoke $r1.<java.lang.Integer: int intValue()>();
+
+        return $i0;
+    }
+
+    public com.nexage.android.NexageExpandableListener getExpandableListener()
+    {
+        com.nexage.android.NexageExpandableListener r1;
+        com.nexage.android.NexageAdView r0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        r1 = r0.<com.nexage.android.NexageAdView: com.nexage.android.NexageExpandableListener expandableListener>;
+
+        return r1;
+    }
+
+    public com.nexage.android.NexageListener getListener()
+    {
+        com.nexage.android.NexageListener r1;
+        com.nexage.android.NexageAdView r0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        r1 = r0.<com.nexage.android.NexageAdView: com.nexage.android.NexageListener listener>;
+
+        return r1;
+    }
+
+    com.nexage.android.NexageContext getNexageContext()
+    {
+        com.nexage.android.NexageContext r1;
+        com.nexage.android.NexageAdView r0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        r1 = r0.<com.nexage.android.NexageAdView: com.nexage.android.NexageContext m_NexageContext>;
+
+        return r1;
+    }
+
+    public java.lang.String getPosition()
+    {
+        java.lang.String r1;
+        com.nexage.android.NexageAdView r0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        r1 = r0.<com.nexage.android.NexageAdView: java.lang.String m_Position>;
+
+        return r1;
+    }
+
+    public int getRefreshInterval()
+    {
+        int i0;
+        com.nexage.android.NexageAdView r0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        i0 = r0.<com.nexage.android.NexageAdView: int refreshInterval>;
+
+        return i0;
+    }
+
+    public int getTextColor()
+    {
+        int $i0;
+        java.lang.Integer $r1;
+        com.nexage.android.NexageAdView r0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        $r1 = r0.<com.nexage.android.NexageAdView: java.lang.Integer m_TextColor>;
+
+        if $r1 != null goto label1;
+
+        return 16777215;
+
+     label1:
+        $r1 = r0.<com.nexage.android.NexageAdView: java.lang.Integer m_TextColor>;
+
+        $i0 = virtualinvoke $r1.<java.lang.Integer: int intValue()>();
+
+        return $i0;
+    }
+
+    void nudgeAdFetcher()
+    {
+        byte $b2;
+        com.nexage.android.NexageAdFetcher $r1;
+        int $i3;
+        long $l0, $l1;
+        com.nexage.android.NexageAdView r0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        $l0 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        $l1 = r0.<com.nexage.android.NexageAdView: long lastNudgeTimestamp>;
+
+        $l0 = $l0 - $l1;
+
+        $b2 = $l0 cmp 2000L;
+
+        $i3 = (int) $b2;
+
+        if $i3 <= 0 goto label1;
+
+        $r1 = r0.<com.nexage.android.NexageAdView: com.nexage.android.NexageAdFetcher m_Fetcher>;
+
+        virtualinvoke $r1.<com.nexage.android.NexageAdFetcher: void wake()>();
+
+        $l0 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        r0.<com.nexage.android.NexageAdView: long lastNudgeTimestamp> = $l0;
+
+        return;
+
+     label1:
+        staticinvoke <com.nexage.android.NexageLog: void i(java.lang.String)>("Nudge ignored, last nudge happened less than 2s ago");
+
+        return;
+    }
+
+    protected void onAttachedToWindow()
+    {
+        java.lang.Throwable $r9;
+        android.content.Context $r2;
+        com.nexage.android.NexageAdFetcher $r4;
+        android.content.IntentFilter r1;
+        android.content.BroadcastReceiver $r3;
+        com.nexage.android.NexageAdView r0;
+        com.nexage.android.NexageAdView$ShowAD $r8;
+        com.nexage.android.Ad $r7;
+        java.util.TimerTask $r6;
+        com.nexage.android.NexageContext $r5;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        specialinvoke r0.<com.nexage.android.NexageBaseAdView: void onAttachedToWindow()>();
+
+        r0.<com.nexage.android.NexageAdView: boolean m_Detached> = 0;
+
+        r1 = new android.content.IntentFilter;
+
+        specialinvoke r1.<android.content.IntentFilter: void <init>(java.lang.String)>("android.intent.action.USER_PRESENT");
+
+        virtualinvoke r1.<android.content.IntentFilter: void addAction(java.lang.String)>("android.intent.action.SCREEN_OFF");
+
+        $r2 = virtualinvoke r0.<com.nexage.android.NexageAdView: android.content.Context getContext()>();
+
+        $r3 = r0.<com.nexage.android.NexageAdView: android.content.BroadcastReceiver mScreenReceiver>;
+
+        virtualinvoke $r2.<android.content.Context: android.content.Intent registerReceiver(android.content.BroadcastReceiver,android.content.IntentFilter)>($r3, r1);
+
+        $r4 = r0.<com.nexage.android.NexageAdView: com.nexage.android.NexageAdFetcher m_Fetcher>;
+
+        $r5 = r0.<com.nexage.android.NexageAdView: com.nexage.android.NexageContext m_NexageContext>;
+
+        virtualinvoke $r4.<com.nexage.android.NexageAdFetcher: boolean add(com.nexage.android.NexageContext)>($r5);
+
+        entermonitor r0;
+
+     label1:
+        $r6 = r0.<com.nexage.android.NexageAdView: java.util.TimerTask m_DetachTask>;
+
+        if $r6 == null goto label2;
+
+        $r6 = r0.<com.nexage.android.NexageAdView: java.util.TimerTask m_DetachTask>;
+
+        virtualinvoke $r6.<java.util.TimerTask: boolean cancel()>();
+
+        r0.<com.nexage.android.NexageAdView: java.util.TimerTask m_DetachTask> = null;
+
+     label2:
+        $r7 = r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_PendingAd>;
+
+        if $r7 == null goto label3;
+
+        $r8 = new com.nexage.android.NexageAdView$ShowAD;
+
+        $r7 = r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_PendingAd>;
+
+        specialinvoke $r8.<com.nexage.android.NexageAdView$ShowAD: void <init>(com.nexage.android.NexageAdView,com.nexage.android.Ad)>(r0, $r7);
+
+        virtualinvoke r0.<com.nexage.android.NexageAdView: boolean post(java.lang.Runnable)>($r8);
+
+     label3:
+        exitmonitor r0;
+
+     label4:
+        return;
+
+     label5:
+        $r9 := @caughtexception;
+
+        exitmonitor r0;
+
+     label6:
+        throw $r9;
+
+        catch java.lang.Throwable from label1 to label4 with label5;
+        catch java.lang.Throwable from label5 to label6 with label5;
+    }
+
+    protected void onDetachedFromWindow()
+    {
+        java.lang.Throwable $r10;
+        android.content.Context $r2;
+        com.nexage.android.NexageAdFetcher $r8;
+        java.util.Timer $r6;
+        android.content.BroadcastReceiver $r3;
+        java.lang.Exception r1, $r11;
+        com.nexage.android.NexageAdView$1 $r5;
+        com.nexage.android.NexageAdView r0;
+        com.nexage.android.Ad $r4;
+        java.util.TimerTask $r7;
+        com.nexage.android.NexageContext $r9;
+        boolean $z0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        <com.nexage.android.NexageAdManager: boolean GlobalEnableAdServing> = 1;
+
+        virtualinvoke r0.<com.nexage.android.NexageAdView: void setVisibility(int)>(8);
+
+     label01:
+        specialinvoke r0.<com.nexage.android.NexageBaseAdView: void onDetachedFromWindow()>();
+
+     label02:
+        $r2 = virtualinvoke r0.<com.nexage.android.NexageAdView: android.content.Context getContext()>();
+
+        $r3 = r0.<com.nexage.android.NexageAdView: android.content.BroadcastReceiver mScreenReceiver>;
+
+        virtualinvoke $r2.<android.content.Context: void unregisterReceiver(android.content.BroadcastReceiver)>($r3);
+
+     label03:
+        entermonitor r0;
+
+     label04:
+        r0.<com.nexage.android.NexageAdView: boolean m_Detached> = 1;
+
+        $r4 = r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_CurrentAd>;
+
+        if $r4 == null goto label05;
+
+        $r4 = r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_CurrentAd>;
+
+        $z0 = $r4.<com.nexage.android.Ad: boolean m_AdViewed>;
+
+        if $z0 == 0 goto label05;
+
+        $r4 = r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_CurrentAd>;
+
+        virtualinvoke $r4.<com.nexage.android.Ad: void readyToReport()>();
+
+     label05:
+        $r5 = new com.nexage.android.NexageAdView$1;
+
+        specialinvoke $r5.<com.nexage.android.NexageAdView$1: void <init>(com.nexage.android.NexageAdView)>(r0);
+
+        r0.<com.nexage.android.NexageAdView: java.util.TimerTask m_DetachTask> = $r5;
+
+        $r6 = <com.nexage.android.NonBlockingTimerTask: java.util.Timer s_SDKTimer>;
+
+        $r7 = r0.<com.nexage.android.NexageAdView: java.util.TimerTask m_DetachTask>;
+
+        virtualinvoke $r6.<java.util.Timer: void schedule(java.util.TimerTask,long)>($r7, 10000L);
+
+        exitmonitor r0;
+
+     label06:
+        $r8 = r0.<com.nexage.android.NexageAdView: com.nexage.android.NexageAdFetcher m_Fetcher>;
+
+        $r9 = r0.<com.nexage.android.NexageAdView: com.nexage.android.NexageContext m_NexageContext>;
+
+        virtualinvoke $r8.<com.nexage.android.NexageAdFetcher: void remove(com.nexage.android.NexageContext)>($r9);
+
+        staticinvoke <com.nexage.android.NexageActivity: void unlock()>();
+
+        return;
+
+     label07:
+        r1 := @caughtexception;
+
+        staticinvoke <com.nexage.android.NexageLog: void i(java.lang.String)>("onDetachedFromWindow exception caught");
+
+        goto label02;
+
+     label08:
+        $r10 := @caughtexception;
+
+     label09:
+        exitmonitor r0;
+
+     label10:
+        throw $r10;
+
+     label11:
+        $r11 := @caughtexception;
+
+        goto label03;
+
+        catch java.lang.Exception from label01 to label02 with label07;
+        catch java.lang.Exception from label02 to label03 with label11;
+        catch java.lang.Throwable from label04 to label06 with label08;
+        catch java.lang.Throwable from label09 to label10 with label08;
+    }
+
+    public void onDisplay()
+    {
+        com.nexage.android.Ad $r1;
+        java.lang.String $r2;
+        com.nexage.android.NexageAdView r0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        $r1 = r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_CurrentAd>;
+
+        virtualinvoke $r1.<com.nexage.android.Ad: com.nexage.android.reports2.AdDisplay addDisplayToReport()>();
+
+        $r2 = r0.<com.nexage.android.NexageAdView: java.lang.String m_Position>;
+
+        staticinvoke <com.nexage.android.NexageLog: void i(java.lang.String,java.lang.String)>($r2, "AD Displayed");
+
+        $r1 = r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_CurrentAd>;
+
+        $r1.<com.nexage.android.Ad: boolean m_AdViewed> = 1;
+
+        return;
+    }
+
+    protected void onMeasure(int, int)
+    {
+        int $i0, $i1;
+        com.nexage.android.NexageAdView r0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $i0 = r0.<com.nexage.android.NexageAdView: int m_Width>;
+
+        $i1 = r0.<com.nexage.android.NexageAdView: int m_Height>;
+
+        specialinvoke r0.<com.nexage.android.NexageBaseAdView: void onMeasure(int,int)>($i0, $i1);
+
+        $i0 = r0.<com.nexage.android.NexageAdView: int m_Width>;
+
+        $i1 = r0.<com.nexage.android.NexageAdView: int m_Height>;
+
+        virtualinvoke r0.<com.nexage.android.NexageAdView: void setMeasuredDimension(int,int)>($i0, $i1);
+
+        return;
+    }
+
+    public void onWindowFocusChanged(boolean)
+    {
+        com.nexage.android.NexageAdView r0;
+        boolean $z0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        $z0 := @parameter0: boolean;
+
+        specialinvoke r0.<com.nexage.android.NexageBaseAdView: void onWindowFocusChanged(boolean)>($z0);
+
+        specialinvoke r0.<com.nexage.android.NexageAdView: void SDKAdVisible(boolean)>($z0);
+
+        return;
+    }
+
+    protected void onWindowVisibilityChanged(int)
+    {
+        int $i0;
+        com.nexage.android.NexageAdView r0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        $i0 := @parameter0: int;
+
+        specialinvoke r0.<com.nexage.android.NexageBaseAdView: void onWindowVisibilityChanged(int)>($i0);
+
+        if $i0 != 0 goto label1;
+
+        specialinvoke r0.<com.nexage.android.NexageAdView: void checkSetRefreshTimer(boolean)>(1);
+
+     label1:
+        return;
+    }
+
+    boolean readyToReport()
+    {
+        com.nexage.android.Ad $r1;
+        com.nexage.android.NexageAdView r0;
+        boolean $z0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        $z0 = r0.<com.nexage.android.NexageAdView: boolean m_Detached>;
+
+        if $z0 == 0 goto label1;
+
+        $r1 = r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_CurrentAd>;
+
+        if $r1 == null goto label1;
+
+        $r1 = r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_CurrentAd>;
+
+        $z0 = $r1.<com.nexage.android.Ad: boolean m_AdViewed>;
+
+        if $z0 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    public void rollover()
+    {
+        java.lang.Throwable $r3;
+        com.nexage.android.NexageAdView$RefreshTask $r2;
+        com.nexage.android.Ad $r1;
+        com.nexage.android.NexageAdView r0;
+        boolean $z0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        entermonitor r0;
+
+     label01:
+        $r1 = r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_CurrentAd>;
+
+        if $r1 == null goto label02;
+
+        $r1 = r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_CurrentAd>;
+
+        $z0 = $r1.<com.nexage.android.Ad: boolean m_AdViewed>;
+
+        if $z0 == 0 goto label03;
+
+     label02:
+        $r1 = r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_PendingAd>;
+
+        if $r1 == null goto label05;
+
+     label03:
+        exitmonitor r0;
+
+     label04:
+        return;
+
+     label05:
+        r0.<com.nexage.android.NexageAdView: boolean m_ReadyToFetch> = 1;
+
+        $r2 = r0.<com.nexage.android.NexageAdView: com.nexage.android.NexageAdView$RefreshTask m_RefreshTask>;
+
+        if $r2 == null goto label06;
+
+        $r2 = r0.<com.nexage.android.NexageAdView: com.nexage.android.NexageAdView$RefreshTask m_RefreshTask>;
+
+        virtualinvoke $r2.<com.nexage.android.NexageAdView$RefreshTask: boolean cancel()>();
+
+        r0.<com.nexage.android.NexageAdView: com.nexage.android.NexageAdView$RefreshTask m_RefreshTask> = null;
+
+     label06:
+        exitmonitor r0;
+
+     label07:
+        virtualinvoke r0.<com.nexage.android.NexageAdView: void nudgeAdFetcher()>();
+
+        r0.<com.nexage.android.NexageAdView: int m_PrefetchAttempt> = 2;
+
+        return;
+
+     label08:
+        $r3 := @caughtexception;
+
+     label09:
+        exitmonitor r0;
+
+     label10:
+        throw $r3;
+
+        catch java.lang.Throwable from label01 to label04 with label08;
+        catch java.lang.Throwable from label05 to label07 with label08;
+        catch java.lang.Throwable from label09 to label10 with label08;
+    }
+
+    public void setAnimationType(java.lang.String)
+    {
+        android.content.Context $r5;
+        com.nexage.android.AnimatedSwitcher $r8;
+        java.lang.Integer $r7;
+        com.nexage.android.NexageAdView r0;
+        int $i0, $i1;
+        android.view.View $r2, $r6;
+        com.nexage.android.PlainSwitcher $r4;
+        java.lang.String $r1;
+        com.nexage.android.NexageAdSwitcher $r3;
+        boolean $z0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        $r1 := @parameter0: java.lang.String;
+
+        if $r1 == null goto label01;
+
+        $i0 = virtualinvoke $r1.<java.lang.String: int length()>();
+
+        if $i0 >= 2 goto label02;
+
+     label01:
+        r0.<com.nexage.android.NexageAdView: java.lang.String m_AnimationType> = null;
+
+        $r2 = r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher>;
+
+        $r3 = (com.nexage.android.NexageAdSwitcher) $r2;
+
+        $z0 = interfaceinvoke $r3.<com.nexage.android.NexageAdSwitcher: boolean animated()>();
+
+        if $z0 != 0 goto label04;
+
+        return;
+
+     label02:
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("fade_in_out");
+
+        if $z0 != 0 goto label03;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("slide_in_out");
+
+        if $z0 != 0 goto label03;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("left_in_right_out");
+
+        if $z0 != 0 goto label03;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equalsIgnoreCase(java.lang.String)>("right_in_left_out");
+
+        if $z0 != 0 goto label03;
+
+        $r1 = "fade_in_out";
+
+     label03:
+        r0.<com.nexage.android.NexageAdView: java.lang.String m_AnimationType> = $r1;
+
+        $r2 = r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher>;
+
+        $r3 = (com.nexage.android.NexageAdSwitcher) $r2;
+
+        $z0 = interfaceinvoke $r3.<com.nexage.android.NexageAdSwitcher: boolean animated()>();
+
+        if $z0 == 0 goto label04;
+
+        $r2 = r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher>;
+
+        $r3 = (com.nexage.android.NexageAdSwitcher) $r2;
+
+        $r1 = r0.<com.nexage.android.NexageAdView: java.lang.String m_AnimationType>;
+
+        interfaceinvoke $r3.<com.nexage.android.NexageAdSwitcher: void setAnimationType(java.lang.String)>($r1);
+
+        return;
+
+     label04:
+        $r2 = r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher>;
+
+        virtualinvoke r0.<com.nexage.android.NexageAdView: void removeView(android.view.View)>($r2);
+
+        $r2 = r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher>;
+
+        $r3 = (com.nexage.android.NexageAdSwitcher) $r2;
+
+        $r2 = interfaceinvoke $r3.<com.nexage.android.NexageAdSwitcher: android.view.View removeAdView()>();
+
+        $r1 = r0.<com.nexage.android.NexageAdView: java.lang.String m_AnimationType>;
+
+        if $r1 == null goto label05;
+
+        $z0 = virtualinvoke r0.<com.nexage.android.NexageAdView: boolean isInEditMode()>();
+
+        if $z0 == 0 goto label10;
+
+     label05:
+        $r4 = new com.nexage.android.PlainSwitcher;
+
+        $r5 = r0.<com.nexage.android.NexageAdView: android.content.Context m_Activity>;
+
+        specialinvoke $r4.<com.nexage.android.PlainSwitcher: void <init>(android.content.Context)>($r5);
+
+        r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher> = $r4;
+
+     label06:
+        if $r2 == null goto label07;
+
+        $r6 = r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher>;
+
+        $r3 = (com.nexage.android.NexageAdSwitcher) $r6;
+
+        interfaceinvoke $r3.<com.nexage.android.NexageAdSwitcher: void addAdView(android.view.View)>($r2);
+
+     label07:
+        $r2 = r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher>;
+
+        virtualinvoke r0.<com.nexage.android.NexageAdView: void addView(android.view.View)>($r2);
+
+        $r2 = r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher>;
+
+        $i1 = r0.<com.nexage.android.NexageAdView: int m_Width>;
+
+        $i0 = r0.<com.nexage.android.NexageAdView: int m_Height>;
+
+        virtualinvoke $r2.<android.view.View: void layout(int,int,int,int)>(0, 0, $i1, $i0);
+
+        $r7 = r0.<com.nexage.android.NexageAdView: java.lang.Integer m_BGColor>;
+
+        if $r7 == null goto label08;
+
+        $r2 = r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher>;
+
+        $r7 = r0.<com.nexage.android.NexageAdView: java.lang.Integer m_BGColor>;
+
+        $i0 = virtualinvoke $r7.<java.lang.Integer: int intValue()>();
+
+        virtualinvoke $r2.<android.view.View: void setBackgroundColor(int)>($i0);
+
+     label08:
+        $r7 = r0.<com.nexage.android.NexageAdView: java.lang.Integer m_BGRes>;
+
+        if $r7 == null goto label09;
+
+        $r7 = r0.<com.nexage.android.NexageAdView: java.lang.Integer m_BGRes>;
+
+        $i0 = virtualinvoke $r7.<java.lang.Integer: int intValue()>();
+
+        if $i0 == 0 goto label09;
+
+        $r2 = r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher>;
+
+        $r7 = r0.<com.nexage.android.NexageAdView: java.lang.Integer m_BGRes>;
+
+        $i0 = virtualinvoke $r7.<java.lang.Integer: int intValue()>();
+
+        virtualinvoke $r2.<android.view.View: void setBackgroundResource(int)>($i0);
+
+     label09:
+        $r2 = r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher>;
+
+        $i0 = specialinvoke r0.<com.nexage.android.NexageBaseAdView: int getVisibility()>();
+
+        virtualinvoke $r2.<android.view.View: void setVisibility(int)>($i0);
+
+        return;
+
+     label10:
+        $r8 = new com.nexage.android.AnimatedSwitcher;
+
+        $r5 = r0.<com.nexage.android.NexageAdView: android.content.Context m_Activity>;
+
+        specialinvoke $r8.<com.nexage.android.AnimatedSwitcher: void <init>(android.content.Context)>($r5);
+
+        r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher> = $r8;
+
+        $r6 = r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher>;
+
+        $r3 = (com.nexage.android.NexageAdSwitcher) $r6;
+
+        $r1 = r0.<com.nexage.android.NexageAdView: java.lang.String m_AnimationType>;
+
+        interfaceinvoke $r3.<com.nexage.android.NexageAdSwitcher: void setAnimationType(java.lang.String)>($r1);
+
+        goto label06;
+    }
+
+    public void setBackgroundColor(int)
+    {
+        int $i0;
+        android.view.View $r2;
+        java.lang.Integer $r1;
+        com.nexage.android.NexageAdView r0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        $i0 := @parameter0: int;
+
+        specialinvoke r0.<com.nexage.android.NexageBaseAdView: void setBackgroundColor(int)>($i0);
+
+        $r1 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        r0.<com.nexage.android.NexageAdView: java.lang.Integer m_BGColor> = $r1;
+
+        $r2 = r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher>;
+
+        virtualinvoke $r2.<android.view.View: void setBackgroundColor(int)>($i0);
+
+        return;
+    }
+
+    public void setBackgroundResource(int)
+    {
+        int $i0;
+        android.view.View $r2;
+        java.lang.Integer $r1;
+        com.nexage.android.NexageAdView r0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        $i0 := @parameter0: int;
+
+        specialinvoke r0.<com.nexage.android.NexageBaseAdView: void setBackgroundResource(int)>($i0);
+
+        $r1 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        r0.<com.nexage.android.NexageAdView: java.lang.Integer m_BGRes> = $r1;
+
+        $r2 = r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher>;
+
+        virtualinvoke $r2.<android.view.View: void setBackgroundResource(int)>($i0);
+
+        return;
+    }
+
+    public void setExpandableListener(com.nexage.android.NexageExpandableListener)
+    {
+        com.nexage.android.NexageExpandableListener $r1;
+        com.nexage.android.NexageAdView r0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        $r1 := @parameter0: com.nexage.android.NexageExpandableListener;
+
+        r0.<com.nexage.android.NexageAdView: com.nexage.android.NexageExpandableListener expandableListener> = $r1;
+
+        return;
+    }
+
+    public void setGravity(int)
+    {
+        int $i0;
+        com.nexage.android.NexageAdView r0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        $i0 := @parameter0: int;
+
+        specialinvoke r0.<com.nexage.android.NexageBaseAdView: void setGravity(int)>($i0);
+
+        if $i0 != 3 goto label1;
+
+        r0.<com.nexage.android.NexageAdView: java.lang.String m_Alignment> = "left";
+
+        return;
+
+     label1:
+        if $i0 != 5 goto label2;
+
+        r0.<com.nexage.android.NexageAdView: java.lang.String m_Alignment> = "right";
+
+        return;
+
+     label2:
+        if $i0 != 1 goto label3;
+
+        r0.<com.nexage.android.NexageAdView: java.lang.String m_Alignment> = "center";
+
+     label3:
+        return;
+    }
+
+    public void setLayoutParams(android.view.ViewGroup$LayoutParams)
+    {
+        android.view.ViewGroup$LayoutParams $r1;
+        int $i0, $i1;
+        android.view.View $r3;
+        android.widget.LinearLayout$LayoutParams r2;
+        com.nexage.android.NexageAdView r0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        $r1 := @parameter0: android.view.ViewGroup$LayoutParams;
+
+        $i0 = $r1.<android.view.ViewGroup$LayoutParams: int width>;
+
+        if $i0 <= 1 goto label1;
+
+        $i0 = $r1.<android.view.ViewGroup$LayoutParams: int width>;
+
+        r0.<com.nexage.android.NexageAdView: int m_Width> = $i0;
+
+     label1:
+        $i0 = $r1.<android.view.ViewGroup$LayoutParams: int height>;
+
+        if $i0 <= 1 goto label2;
+
+        $i0 = $r1.<android.view.ViewGroup$LayoutParams: int height>;
+
+        r0.<com.nexage.android.NexageAdView: int m_Height> = $i0;
+
+     label2:
+        specialinvoke r0.<com.nexage.android.NexageBaseAdView: void setLayoutParams(android.view.ViewGroup$LayoutParams)>($r1);
+
+        $r3 = r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher>;
+
+        if $r3 == null goto label3;
+
+        $r3 = r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher>;
+
+        $i1 = r0.<com.nexage.android.NexageAdView: int m_Width>;
+
+        $i0 = r0.<com.nexage.android.NexageAdView: int m_Height>;
+
+        virtualinvoke $r3.<android.view.View: void layout(int,int,int,int)>(0, 0, $i1, $i0);
+
+     label3:
+        r2 = new android.widget.LinearLayout$LayoutParams;
+
+        specialinvoke r2.<android.widget.LinearLayout$LayoutParams: void <init>(android.view.ViewGroup$LayoutParams)>($r1);
+
+        $i0 = r2.<android.widget.LinearLayout$LayoutParams: int gravity>;
+
+        virtualinvoke r0.<com.nexage.android.NexageAdView: void setGravity(int)>($i0);
+
+        return;
+    }
+
+    public void setListener(com.nexage.android.NexageListener)
+    {
+        com.nexage.android.NexageListener $r1;
+        com.nexage.android.NexageAdView r0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        $r1 := @parameter0: com.nexage.android.NexageListener;
+
+        r0.<com.nexage.android.NexageAdView: com.nexage.android.NexageListener listener> = $r1;
+
+        return;
+    }
+
+    public void setOnClickListener(android.view.View$OnClickListener)
+    {
+        android.view.View$OnClickListener $r1;
+        com.nexage.android.NexageAdView r0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        $r1 := @parameter0: android.view.View$OnClickListener;
+
+        virtualinvoke r0.<com.nexage.android.NexageAdView: void setClickable(boolean)>(1);
+
+        r0.<com.nexage.android.NexageAdView: android.view.View$OnClickListener m_ClickListener> = $r1;
+
+        return;
+    }
+
+    public void setPosition(java.lang.String)
+    {
+        com.nexage.android.NexageAdFetcher $r3;
+        java.lang.String $r1, $r4;
+        com.nexage.android.NexageContext $r2;
+        com.nexage.android.NexageAdView r0;
+        boolean $z0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r3 = r0.<com.nexage.android.NexageAdView: com.nexage.android.NexageAdFetcher m_Fetcher>;
+
+        if $r3 == null goto label1;
+
+        $r4 = r0.<com.nexage.android.NexageAdView: java.lang.String m_Position>;
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>($r4);
+
+        if $z0 != 0 goto label3;
+
+     label1:
+        $r3 = r0.<com.nexage.android.NexageAdView: com.nexage.android.NexageAdFetcher m_Fetcher>;
+
+        if $r3 == null goto label2;
+
+        $r3 = r0.<com.nexage.android.NexageAdView: com.nexage.android.NexageAdFetcher m_Fetcher>;
+
+        $r2 = r0.<com.nexage.android.NexageAdView: com.nexage.android.NexageContext m_NexageContext>;
+
+        virtualinvoke $r3.<com.nexage.android.NexageAdFetcher: void remove(com.nexage.android.NexageContext)>($r2);
+
+     label2:
+        $r3 = staticinvoke <com.nexage.android.NexageAdFetcher: com.nexage.android.NexageAdFetcher getFetcher(java.lang.String)>($r1);
+
+        r0.<com.nexage.android.NexageAdView: com.nexage.android.NexageAdFetcher m_Fetcher> = $r3;
+
+        r0.<com.nexage.android.NexageAdView: java.lang.String m_Position> = $r1;
+
+     label3:
+        return;
+    }
+
+    public void setRefreshInterval(int)
+    {
+        int $i0;
+        com.nexage.android.NexageAdView r0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        $i0 := @parameter0: int;
+
+        if $i0 == 0 goto label1;
+
+        if $i0 >= 10000 goto label1;
+
+        $i0 = 10000;
+
+     label1:
+        r0.<com.nexage.android.NexageAdView: int refreshInterval> = $i0;
+
+        return;
+    }
+
+    public void setTextColor(int)
+    {
+        int $i0;
+        java.lang.Integer $r1;
+        com.nexage.android.NexageAdView r0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        $i0 := @parameter0: int;
+
+        $r1 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        r0.<com.nexage.android.NexageAdView: java.lang.Integer m_TextColor> = $r1;
+
+        return;
+    }
+
+    public void setVisibility(int)
+    {
+        int $i0, $i1;
+        android.view.View $r2;
+        com.nexage.android.Ad $r1;
+        com.nexage.android.NexageAdView r0;
+        boolean $z0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        $i0 := @parameter0: int;
+
+        $i1 = specialinvoke r0.<com.nexage.android.NexageBaseAdView: int getVisibility()>();
+
+        if $i1 == $i0 goto label3;
+
+        specialinvoke r0.<com.nexage.android.NexageBaseAdView: void setVisibility(int)>($i0);
+
+        if $i0 != 0 goto label1;
+
+        $r1 = r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_CurrentAd>;
+
+        if $r1 == null goto label2;
+
+        $r1 = r0.<com.nexage.android.NexageAdView: com.nexage.android.Ad m_CurrentAd>;
+
+        $z0 = $r1.<com.nexage.android.Ad: boolean m_AdViewed>;
+
+        if $z0 != 0 goto label1;
+
+        specialinvoke r0.<com.nexage.android.NexageAdView: void checkSetRefreshTimer(boolean)>(1);
+
+     label1:
+        $r2 = r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher>;
+
+        if $r2 == null goto label3;
+
+        $r2 = r0.<com.nexage.android.NexageAdView: android.view.View m_Switcher>;
+
+        virtualinvoke $r2.<android.view.View: void setVisibility(int)>($i0);
+
+        return;
+
+     label2:
+        virtualinvoke r0.<com.nexage.android.NexageAdView: void rollover()>();
+
+        goto label1;
+
+     label3:
+        return;
+    }
+
+    public void start()
+    {
+        com.nexage.android.NexageAdView r0;
+
+        r0 := @this: com.nexage.android.NexageAdView;
+
+        virtualinvoke r0.<com.nexage.android.NexageAdView: void rollover()>();
+
+        return;
+    }
+}

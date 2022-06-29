@@ -1,0 +1,811 @@
+public class com.shwy.bestjoy.groupsms.ContactManager extends java.lang.Object
+{
+    private static android.net.Uri CONTACT_URI;
+    private static java.lang.String CUSTOM_RING;
+    private static java.lang.String[] DATA_PROJECTION;
+    private static android.net.Uri GROUP;
+    private static final java.lang.String GROUP_WHERE;
+    private static final java.lang.String MEMBERSHIP_MODIFY;
+    private static java.lang.String[] PROJECTION;
+    private static final java.lang.String RAW_CONTACTS_ID;
+    private static final java.lang.String RAW_MEMBERSHIP_WHERE;
+    private static final java.lang.String TAG;
+    private static final java.lang.String UPDATE_DATA;
+    private static java.lang.String WHERE;
+    private static android.net.Uri data_uri;
+    private android.content.ContentResolver cr;
+    private android.content.Context mContext;
+    private java.lang.String mRingPath;
+    private java.lang.String[] selectionArgs;
+    private android.content.ContentValues values;
+
+    static void <clinit>()
+    {
+        android.net.Uri $r0;
+        java.lang.String[] $r1;
+
+        <com.shwy.bestjoy.groupsms.ContactManager: java.lang.String UPDATE_DATA> = "_id=?";
+
+        <com.shwy.bestjoy.groupsms.ContactManager: java.lang.String TAG> = "ContactManager";
+
+        <com.shwy.bestjoy.groupsms.ContactManager: java.lang.String RAW_MEMBERSHIP_WHERE> = "mimetype=\'vnd.android.cursor.item/group_membership\' and raw_contact_id=? and data1=?";
+
+        <com.shwy.bestjoy.groupsms.ContactManager: java.lang.String RAW_CONTACTS_ID> = "_id=?";
+
+        <com.shwy.bestjoy.groupsms.ContactManager: java.lang.String MEMBERSHIP_MODIFY> = "raw_contact_id=? and mimetype=\'vnd.android.cursor.item/group_membership\' and data1=?";
+
+        <com.shwy.bestjoy.groupsms.ContactManager: java.lang.String GROUP_WHERE> = "_id=?";
+
+        $r0 = <android.provider.ContactsContract$Data: android.net.Uri CONTENT_URI>;
+
+        <com.shwy.bestjoy.groupsms.ContactManager: android.net.Uri data_uri> = $r0;
+
+        $r0 = <android.provider.ContactsContract$Contacts: android.net.Uri CONTENT_URI>;
+
+        <com.shwy.bestjoy.groupsms.ContactManager: android.net.Uri CONTACT_URI> = $r0;
+
+        $r0 = <android.provider.ContactsContract$Groups: android.net.Uri CONTENT_URI>;
+
+        <com.shwy.bestjoy.groupsms.ContactManager: android.net.Uri GROUP> = $r0;
+
+        $r1 = newarray (java.lang.String)[2];
+
+        $r1[0] = "_id";
+
+        $r1[1] = "custom_ringtone";
+
+        <com.shwy.bestjoy.groupsms.ContactManager: java.lang.String[] PROJECTION> = $r1;
+
+        $r1 = newarray (java.lang.String)[1];
+
+        $r1[0] = "_id";
+
+        <com.shwy.bestjoy.groupsms.ContactManager: java.lang.String[] DATA_PROJECTION> = $r1;
+
+        <com.shwy.bestjoy.groupsms.ContactManager: java.lang.String CUSTOM_RING> = "custom_ringtone";
+
+        <com.shwy.bestjoy.groupsms.ContactManager: java.lang.String WHERE> = "_id=?";
+
+        return;
+    }
+
+    public void <init>(android.content.Context)
+    {
+        android.content.Context $r1;
+        com.shwy.bestjoy.groupsms.ContactManager r0;
+        android.content.ContentResolver $r2;
+        java.lang.String[] $r3;
+        android.content.ContentValues $r4;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.ContactManager;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        $r3 = newarray (java.lang.String)[1];
+
+        r0.<com.shwy.bestjoy.groupsms.ContactManager: java.lang.String[] selectionArgs> = $r3;
+
+        r0.<com.shwy.bestjoy.groupsms.ContactManager: android.content.Context mContext> = $r1;
+
+        $r1 = r0.<com.shwy.bestjoy.groupsms.ContactManager: android.content.Context mContext>;
+
+        $r2 = virtualinvoke $r1.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        r0.<com.shwy.bestjoy.groupsms.ContactManager: android.content.ContentResolver cr> = $r2;
+
+        $r4 = new android.content.ContentValues;
+
+        specialinvoke $r4.<android.content.ContentValues: void <init>()>();
+
+        r0.<com.shwy.bestjoy.groupsms.ContactManager: android.content.ContentValues values> = $r4;
+
+        return;
+    }
+
+    private void showMessage(int)
+    {
+        android.content.Context $r2;
+        com.shwy.bestjoy.groupsms.ContactManager r0;
+        android.widget.Toast $r1;
+        int $i0;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.ContactManager;
+
+        $i0 := @parameter0: int;
+
+        $r2 = r0.<com.shwy.bestjoy.groupsms.ContactManager: android.content.Context mContext>;
+
+        $r1 = staticinvoke <android.widget.Toast: android.widget.Toast makeText(android.content.Context,int,int)>($r2, 2131165263, 0);
+
+        virtualinvoke $r1.<android.widget.Toast: void show()>();
+
+        return;
+    }
+
+    public void cancelMembership(long)
+    {
+        com.shwy.bestjoy.groupsms.ContactManager r0;
+        android.content.ContentResolver $r3;
+        android.net.Uri $r4;
+        long $l0;
+        java.lang.StringBuilder $r1;
+        java.lang.String[] $r5;
+        java.lang.String $r2;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.ContactManager;
+
+        $l0 := @parameter0: long;
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("ContactManager", "cancelMembership");
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>(java.lang.String)>("groupId:");
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("ContactManager", $r2);
+
+        $r3 = r0.<com.shwy.bestjoy.groupsms.ContactManager: android.content.ContentResolver cr>;
+
+        $r4 = <com.shwy.bestjoy.groupsms.ContactManager: android.net.Uri GROUP>;
+
+        $r5 = newarray (java.lang.String)[1];
+
+        $r2 = staticinvoke <java.lang.String: java.lang.String valueOf(long)>($l0);
+
+        $r5[0] = $r2;
+
+        virtualinvoke $r3.<android.content.ContentResolver: int delete(android.net.Uri,java.lang.String,java.lang.String[])>($r4, "_id=?", $r5);
+
+        specialinvoke r0.<com.shwy.bestjoy.groupsms.ContactManager: void showMessage(int)>(2131165263);
+
+        return;
+    }
+
+    public void changeMemberShip(long, long)
+    {
+        com.shwy.bestjoy.groupsms.ContactManager r0;
+        android.net.Uri $r2;
+        long $l0, $l1;
+        java.lang.String[] $r3, $r4;
+        android.content.ContentResolver $r1;
+        java.lang.Long $r9;
+        int $i2;
+        java.lang.StringBuilder $r7;
+        java.lang.String $r5;
+        android.content.ContentValues $r8;
+        android.database.Cursor $r6;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.ContactManager;
+
+        $l0 := @parameter0: long;
+
+        $l1 := @parameter1: long;
+
+        $r1 = r0.<com.shwy.bestjoy.groupsms.ContactManager: android.content.ContentResolver cr>;
+
+        $r2 = <com.shwy.bestjoy.groupsms.ContactManager: android.net.Uri data_uri>;
+
+        $r3 = <com.shwy.bestjoy.groupsms.ContactManager: java.lang.String[] DATA_PROJECTION>;
+
+        $r4 = newarray (java.lang.String)[2];
+
+        $r5 = staticinvoke <java.lang.String: java.lang.String valueOf(long)>($l0);
+
+        $r4[0] = $r5;
+
+        $r5 = staticinvoke <java.lang.String: java.lang.String valueOf(long)>($l1);
+
+        $r4[1] = $r5;
+
+        $r6 = virtualinvoke $r1.<android.content.ContentResolver: android.database.Cursor query(android.net.Uri,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String)>($r2, $r3, "raw_contact_id=? and mimetype=\'vnd.android.cursor.item/group_membership\' and data1=?", $r4, null);
+
+        $i2 = interfaceinvoke $r6.<android.database.Cursor: int getCount()>();
+
+        if $i2 <= 0 goto label1;
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>(java.lang.String)>("in group exsit raw ");
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+        $r5 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("ContactManager", $r5);
+
+        return;
+
+     label1:
+        interfaceinvoke $r6.<android.database.Cursor: void close()>();
+
+        $r8 = r0.<com.shwy.bestjoy.groupsms.ContactManager: android.content.ContentValues values>;
+
+        virtualinvoke $r8.<android.content.ContentValues: void clear()>();
+
+        $r8 = r0.<com.shwy.bestjoy.groupsms.ContactManager: android.content.ContentValues values>;
+
+        $r9 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l1);
+
+        virtualinvoke $r8.<android.content.ContentValues: void put(java.lang.String,java.lang.Long)>("data1", $r9);
+
+        $r8 = r0.<com.shwy.bestjoy.groupsms.ContactManager: android.content.ContentValues values>;
+
+        virtualinvoke $r8.<android.content.ContentValues: void put(java.lang.String,java.lang.String)>("mimetype", "vnd.android.cursor.item/group_membership");
+
+        $r8 = r0.<com.shwy.bestjoy.groupsms.ContactManager: android.content.ContentValues values>;
+
+        $r9 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l0);
+
+        virtualinvoke $r8.<android.content.ContentValues: void put(java.lang.String,java.lang.Long)>("raw_contact_id", $r9);
+
+        $r1 = r0.<com.shwy.bestjoy.groupsms.ContactManager: android.content.ContentResolver cr>;
+
+        $r2 = <android.provider.ContactsContract$Data: android.net.Uri CONTENT_URI>;
+
+        $r8 = r0.<com.shwy.bestjoy.groupsms.ContactManager: android.content.ContentValues values>;
+
+        virtualinvoke $r1.<android.content.ContentResolver: android.net.Uri insert(android.net.Uri,android.content.ContentValues)>($r2, $r8);
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>(java.lang.String)>("change group ");
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+        $r5 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("ContactManager", $r5);
+
+        return;
+    }
+
+    public boolean changeMemberShip(long, long, long, long)
+    {
+        com.shwy.bestjoy.groupsms.ContactManager r0;
+        android.net.Uri $r5;
+        long $l0, $l1, $l2, $l3;
+        java.lang.String[] $r6, $r7;
+        android.content.ContentResolver $r4;
+        java.lang.Long $r9;
+        int $i4;
+        java.lang.StringBuilder $r2;
+        android.content.ContentValues $r1;
+        java.lang.String $r3;
+        android.database.Cursor $r8;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.ContactManager;
+
+        $l0 := @parameter0: long;
+
+        $l1 := @parameter1: long;
+
+        $l2 := @parameter2: long;
+
+        $l3 := @parameter3: long;
+
+        $r1 = r0.<com.shwy.bestjoy.groupsms.ContactManager: android.content.ContentValues values>;
+
+        virtualinvoke $r1.<android.content.ContentValues: void clear()>();
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("oldGroupId ");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l2);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("ContactManager", $r3);
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("newGroupId ");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l3);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("ContactManager", $r3);
+
+        $r4 = r0.<com.shwy.bestjoy.groupsms.ContactManager: android.content.ContentResolver cr>;
+
+        $r5 = <com.shwy.bestjoy.groupsms.ContactManager: android.net.Uri data_uri>;
+
+        $r6 = <com.shwy.bestjoy.groupsms.ContactManager: java.lang.String[] DATA_PROJECTION>;
+
+        $r7 = newarray (java.lang.String)[2];
+
+        $r3 = staticinvoke <java.lang.String: java.lang.String valueOf(long)>($l0);
+
+        $r7[0] = $r3;
+
+        $r3 = staticinvoke <java.lang.String: java.lang.String valueOf(long)>($l3);
+
+        $r7[1] = $r3;
+
+        $r8 = virtualinvoke $r4.<android.content.ContentResolver: android.database.Cursor query(android.net.Uri,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String)>($r5, $r6, "raw_contact_id=? and mimetype=\'vnd.android.cursor.item/group_membership\' and data1=?", $r7, null);
+
+        $i4 = interfaceinvoke $r8.<android.database.Cursor: int getCount()>();
+
+        if $i4 <= 0 goto label1;
+
+        $i4 = virtualinvoke r0.<com.shwy.bestjoy.groupsms.ContactManager: int clearRawMembership(long,long)>($l0, $l2);
+
+        if $i4 > 0 goto label2;
+
+        return 0;
+
+     label1:
+        $r1 = r0.<com.shwy.bestjoy.groupsms.ContactManager: android.content.ContentValues values>;
+
+        $r9 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l3);
+
+        virtualinvoke $r1.<android.content.ContentValues: void put(java.lang.String,java.lang.Long)>("data1", $r9);
+
+        $r1 = r0.<com.shwy.bestjoy.groupsms.ContactManager: android.content.ContentValues values>;
+
+        virtualinvoke $r1.<android.content.ContentValues: void put(java.lang.String,java.lang.String)>("mimetype", "vnd.android.cursor.item/group_membership");
+
+        $r1 = r0.<com.shwy.bestjoy.groupsms.ContactManager: android.content.ContentValues values>;
+
+        $r9 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l0);
+
+        virtualinvoke $r1.<android.content.ContentValues: void put(java.lang.String,java.lang.Long)>("raw_contact_id", $r9);
+
+        $r4 = r0.<com.shwy.bestjoy.groupsms.ContactManager: android.content.ContentResolver cr>;
+
+        $r5 = <android.provider.ContactsContract$Data: android.net.Uri CONTENT_URI>;
+
+        $r1 = r0.<com.shwy.bestjoy.groupsms.ContactManager: android.content.ContentValues values>;
+
+        $r5 = virtualinvoke $r4.<android.content.ContentResolver: android.net.Uri insert(android.net.Uri,android.content.ContentValues)>($r5, $r1);
+
+        if $r5 == null goto label3;
+
+        virtualinvoke r0.<com.shwy.bestjoy.groupsms.ContactManager: int clearRawMembership(long,long)>($l0, $l2);
+
+     label2:
+        interfaceinvoke $r8.<android.database.Cursor: void close()>();
+
+        return 1;
+
+     label3:
+        return 0;
+    }
+
+    public int clearRawMembership(long, long)
+    {
+        com.shwy.bestjoy.groupsms.ContactManager r0;
+        android.net.Uri $r4;
+        long $l0, $l1;
+        java.lang.String[] $r5;
+        android.content.ContentResolver $r3;
+        int $i2;
+        java.lang.StringBuilder $r1;
+        java.lang.String $r2;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.ContactManager;
+
+        $l0 := @parameter0: long;
+
+        $l1 := @parameter1: long;
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("ContactManager", "clearRawMembership");
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>(java.lang.String)>("groupId:");
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l1);
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("ContactManager", $r2);
+
+        $r3 = r0.<com.shwy.bestjoy.groupsms.ContactManager: android.content.ContentResolver cr>;
+
+        $r4 = <android.provider.ContactsContract$Data: android.net.Uri CONTENT_URI>;
+
+        $r5 = newarray (java.lang.String)[2];
+
+        $r2 = staticinvoke <java.lang.String: java.lang.String valueOf(long)>($l0);
+
+        $r5[0] = $r2;
+
+        $r2 = staticinvoke <java.lang.String: java.lang.String valueOf(long)>($l1);
+
+        $r5[1] = $r2;
+
+        $i2 = virtualinvoke $r3.<android.content.ContentResolver: int delete(android.net.Uri,java.lang.String,java.lang.String[])>($r4, "mimetype=\'vnd.android.cursor.item/group_membership\' and raw_contact_id=? and data1=?", $r5);
+
+        return $i2;
+    }
+
+    public long createContactEntry(java.lang.String, java.lang.String, java.lang.String, long)
+    {
+        android.content.ContentProviderOperation $r12;
+        java.lang.Throwable $r18, $r21;
+        android.content.Context $r6;
+        android.net.Uri r5;
+        long $l0;
+        android.os.RemoteException $r24;
+        java.lang.Integer $r13;
+        java.util.ArrayList r4, $r22;
+        android.accounts.Account[] $r8;
+        java.lang.Long $r14;
+        android.content.ContentResolver $r15;
+        android.widget.Toast $r19;
+        java.lang.String $r1, $r2, $r3, $r11;
+        android.content.ContentProviderOperation$Builder $r9;
+        android.accounts.AccountManager $r7;
+        android.content.ContentProviderResult $r17;
+        com.shwy.bestjoy.groupsms.ContactManager r0;
+        android.accounts.Account $r10;
+        android.content.OperationApplicationException $r25;
+        android.content.ContentProviderResult[] $r16;
+        java.lang.StringBuilder $r20, $r23;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.ContactManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: java.lang.String;
+
+        $l0 := @parameter3: long;
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("ContactManager", "createContactEntry");
+
+        $r6 = r0.<com.shwy.bestjoy.groupsms.ContactManager: android.content.Context mContext>;
+
+        $r7 = staticinvoke <android.accounts.AccountManager: android.accounts.AccountManager get(android.content.Context)>($r6);
+
+        $r8 = virtualinvoke $r7.<android.accounts.AccountManager: android.accounts.Account[] getAccounts()>();
+
+        $r22 = new java.util.ArrayList;
+
+        r4 = $r22;
+
+        specialinvoke $r22.<java.util.ArrayList: void <init>()>();
+
+        if $r3 == null goto label6;
+
+        r5 = <android.provider.ContactsContract$RawContacts: android.net.Uri CONTENT_URI>;
+
+        $r9 = staticinvoke <android.content.ContentProviderOperation: android.content.ContentProviderOperation$Builder newInsert(android.net.Uri)>(r5);
+
+        $r10 = $r8[0];
+
+        $r11 = $r10.<android.accounts.Account: java.lang.String type>;
+
+        $r9 = virtualinvoke $r9.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValue(java.lang.String,java.lang.Object)>("account_type", $r11);
+
+        $r10 = $r8[0];
+
+        $r11 = $r10.<android.accounts.Account: java.lang.String name>;
+
+        $r9 = virtualinvoke $r9.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValue(java.lang.String,java.lang.Object)>("account_name", $r11);
+
+        $r9 = virtualinvoke $r9.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValue(java.lang.String,java.lang.Object)>("custom_ringtone", $r3);
+
+        $r12 = virtualinvoke $r9.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation build()>();
+
+        virtualinvoke r4.<java.util.ArrayList: boolean add(java.lang.Object)>($r12);
+
+     label1:
+        r5 = <android.provider.ContactsContract$Data: android.net.Uri CONTENT_URI>;
+
+        $r9 = staticinvoke <android.content.ContentProviderOperation: android.content.ContentProviderOperation$Builder newInsert(android.net.Uri)>(r5);
+
+        $r9 = virtualinvoke $r9.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValueBackReference(java.lang.String,int)>("raw_contact_id", 0);
+
+        $r9 = virtualinvoke $r9.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValue(java.lang.String,java.lang.Object)>("mimetype", "vnd.android.cursor.item/name");
+
+        $r9 = virtualinvoke $r9.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValue(java.lang.String,java.lang.Object)>("data1", $r1);
+
+        $r12 = virtualinvoke $r9.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation build()>();
+
+        virtualinvoke r4.<java.util.ArrayList: boolean add(java.lang.Object)>($r12);
+
+        r5 = <android.provider.ContactsContract$Data: android.net.Uri CONTENT_URI>;
+
+        $r9 = staticinvoke <android.content.ContentProviderOperation: android.content.ContentProviderOperation$Builder newInsert(android.net.Uri)>(r5);
+
+        $r9 = virtualinvoke $r9.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValueBackReference(java.lang.String,int)>("raw_contact_id", 0);
+
+        $r9 = virtualinvoke $r9.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValue(java.lang.String,java.lang.Object)>("mimetype", "vnd.android.cursor.item/phone_v2");
+
+        $r9 = virtualinvoke $r9.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValue(java.lang.String,java.lang.Object)>("data1", $r2);
+
+        $r13 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(2);
+
+        $r9 = virtualinvoke $r9.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValue(java.lang.String,java.lang.Object)>("data2", $r13);
+
+        $r12 = virtualinvoke $r9.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation build()>();
+
+        virtualinvoke r4.<java.util.ArrayList: boolean add(java.lang.Object)>($r12);
+
+        r5 = <android.provider.ContactsContract$Data: android.net.Uri CONTENT_URI>;
+
+        $r9 = staticinvoke <android.content.ContentProviderOperation: android.content.ContentProviderOperation$Builder newInsert(android.net.Uri)>(r5);
+
+        $r9 = virtualinvoke $r9.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValueBackReference(java.lang.String,int)>("raw_contact_id", 0);
+
+        $r9 = virtualinvoke $r9.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValue(java.lang.String,java.lang.Object)>("mimetype", "vnd.android.cursor.item/group_membership");
+
+        $r14 = staticinvoke <java.lang.Long: java.lang.Long valueOf(long)>($l0);
+
+        $r9 = virtualinvoke $r9.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValue(java.lang.String,java.lang.Object)>("data1", $r14);
+
+        $r12 = virtualinvoke $r9.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation build()>();
+
+        virtualinvoke r4.<java.util.ArrayList: boolean add(java.lang.Object)>($r12);
+
+        $r6 = r0.<com.shwy.bestjoy.groupsms.ContactManager: android.content.Context mContext>;
+
+     label2:
+        $r15 = virtualinvoke $r6.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        $r16 = virtualinvoke $r15.<android.content.ContentResolver: android.content.ContentProviderResult[] applyBatch(java.lang.String,java.util.ArrayList)>("com.android.contacts", r4);
+
+     label3:
+        $r17 = $r16[0];
+
+        r5 = $r17.<android.content.ContentProviderResult: android.net.Uri uri>;
+
+     label4:
+        $l0 = staticinvoke <android.content.ContentUris: long parseId(android.net.Uri)>(r5);
+
+     label5:
+        return $l0;
+
+     label6:
+        r5 = <android.provider.ContactsContract$RawContacts: android.net.Uri CONTENT_URI>;
+
+        $r9 = staticinvoke <android.content.ContentProviderOperation: android.content.ContentProviderOperation$Builder newInsert(android.net.Uri)>(r5);
+
+        $r10 = $r8[0];
+
+        $r11 = $r10.<android.accounts.Account: java.lang.String type>;
+
+        $r9 = virtualinvoke $r9.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValue(java.lang.String,java.lang.Object)>("account_type", $r11);
+
+        $r10 = $r8[0];
+
+        $r11 = $r10.<android.accounts.Account: java.lang.String name>;
+
+        $r9 = virtualinvoke $r9.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValue(java.lang.String,java.lang.Object)>("account_name", $r11);
+
+        $r9 = virtualinvoke $r9.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation$Builder withValue(java.lang.String,java.lang.Object)>("custom_ringtone", $r3);
+
+        $r12 = virtualinvoke $r9.<android.content.ContentProviderOperation$Builder: android.content.ContentProviderOperation build()>();
+
+        virtualinvoke r4.<java.util.ArrayList: boolean add(java.lang.Object)>($r12);
+
+        goto label1;
+
+     label7:
+        $r18 := @caughtexception;
+
+        $r24 = (android.os.RemoteException) $r18;
+
+        virtualinvoke $r24.<android.os.RemoteException: void printStackTrace()>();
+
+        $r6 = r0.<com.shwy.bestjoy.groupsms.ContactManager: android.content.Context mContext>;
+
+        $r19 = staticinvoke <android.widget.Toast: android.widget.Toast makeText(android.content.Context,int,int)>($r6, 2131165238, 0);
+
+        virtualinvoke $r19.<android.widget.Toast: void show()>();
+
+        $r23 = new java.lang.StringBuilder;
+
+        specialinvoke $r23.<java.lang.StringBuilder: void <init>(java.lang.String)>("Exceptoin encoutered while inserting contact: ");
+
+        $r20 = virtualinvoke $r23.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r18);
+
+        $r1 = virtualinvoke $r20.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("ContactManager", $r1);
+
+     label8:
+        return -1L;
+
+     label9:
+        $r21 := @caughtexception;
+
+        $r6 = r0.<com.shwy.bestjoy.groupsms.ContactManager: android.content.Context mContext>;
+
+        $r19 = staticinvoke <android.widget.Toast: android.widget.Toast makeText(android.content.Context,int,int)>($r6, 2131165238, 0);
+
+        virtualinvoke $r19.<android.widget.Toast: void show()>();
+
+        $r25 = (android.content.OperationApplicationException) $r21;
+
+        virtualinvoke $r25.<android.content.OperationApplicationException: void printStackTrace()>();
+
+        $r23 = new java.lang.StringBuilder;
+
+        specialinvoke $r23.<java.lang.StringBuilder: void <init>(java.lang.String)>("Exceptoin encoutered while inserting contact: ");
+
+        $r20 = virtualinvoke $r23.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r21);
+
+        $r1 = virtualinvoke $r20.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("ContactManager", $r1);
+
+        goto label8;
+
+        catch android.os.RemoteException from label2 to label3 with label7;
+        catch android.os.RemoteException from label4 to label5 with label7;
+        catch android.content.OperationApplicationException from label2 to label3 with label9;
+        catch android.content.OperationApplicationException from label4 to label5 with label9;
+    }
+
+    public int deleteRawContact(long)
+    {
+        com.shwy.bestjoy.groupsms.ContactManager r0;
+        android.content.ContentResolver $r2;
+        android.net.Uri $r1;
+        int $i1;
+        long $l0;
+        java.lang.String[] $r3;
+        java.lang.String $r4;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.ContactManager;
+
+        $l0 := @parameter0: long;
+
+        $r2 = r0.<com.shwy.bestjoy.groupsms.ContactManager: android.content.ContentResolver cr>;
+
+        $r1 = <android.provider.ContactsContract$RawContacts: android.net.Uri CONTENT_URI>;
+
+        $r3 = newarray (java.lang.String)[1];
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(long)>($l0);
+
+        $r3[0] = $r4;
+
+        $i1 = virtualinvoke $r2.<android.content.ContentResolver: int delete(android.net.Uri,java.lang.String,java.lang.String[])>($r1, "_id=?", $r3);
+
+        return $i1;
+    }
+
+    public void setCustomRing(long)
+    {
+        com.shwy.bestjoy.groupsms.ContactManager r0;
+        android.net.Uri $r1;
+        long $l0;
+        java.lang.String[] $r4;
+        android.content.ContentResolver $r7;
+        int $i1;
+        java.lang.StringBuilder $r5;
+        android.content.ContentValues $r2;
+        java.lang.String $r3, $r6;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.ContactManager;
+
+        $l0 := @parameter0: long;
+
+        $r2 = r0.<com.shwy.bestjoy.groupsms.ContactManager: android.content.ContentValues values>;
+
+        virtualinvoke $r2.<android.content.ContentValues: void clear()>();
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>(java.lang.String)>("uri ");
+
+        $r1 = <com.shwy.bestjoy.groupsms.ContactManager: android.net.Uri CONTACT_URI>;
+
+        $r1 = staticinvoke <android.content.ContentUris: android.net.Uri withAppendedId(android.net.Uri,long)>($r1, $l0);
+
+        $r3 = virtualinvoke $r1.<android.net.Uri: java.lang.String toString()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("ContactManager", $r3);
+
+        $r2 = r0.<com.shwy.bestjoy.groupsms.ContactManager: android.content.ContentValues values>;
+
+        $r3 = <com.shwy.bestjoy.groupsms.ContactManager: java.lang.String CUSTOM_RING>;
+
+        $r6 = r0.<com.shwy.bestjoy.groupsms.ContactManager: java.lang.String mRingPath>;
+
+        virtualinvoke $r2.<android.content.ContentValues: void put(java.lang.String,java.lang.String)>($r3, $r6);
+
+        $r4 = r0.<com.shwy.bestjoy.groupsms.ContactManager: java.lang.String[] selectionArgs>;
+
+        $r3 = staticinvoke <java.lang.String: java.lang.String valueOf(long)>($l0);
+
+        $r4[0] = $r3;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>(java.lang.String)>("setCustomRing ");
+
+        $r7 = r0.<com.shwy.bestjoy.groupsms.ContactManager: android.content.ContentResolver cr>;
+
+        $r1 = <com.shwy.bestjoy.groupsms.ContactManager: android.net.Uri CONTACT_URI>;
+
+        $r2 = r0.<com.shwy.bestjoy.groupsms.ContactManager: android.content.ContentValues values>;
+
+        $r3 = <com.shwy.bestjoy.groupsms.ContactManager: java.lang.String WHERE>;
+
+        $r4 = r0.<com.shwy.bestjoy.groupsms.ContactManager: java.lang.String[] selectionArgs>;
+
+        $i1 = virtualinvoke $r7.<android.content.ContentResolver: int update(android.net.Uri,android.content.ContentValues,java.lang.String,java.lang.String[])>($r1, $r2, $r3, $r4);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1);
+
+        $r3 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("ContactManager", $r3);
+
+        return;
+    }
+
+    public void setRingUriString(java.lang.String)
+    {
+        com.shwy.bestjoy.groupsms.ContactManager r0;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r1, $r3;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.ContactManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("setRingPath ");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int v(java.lang.String,java.lang.String)>("ContactManager", $r3);
+
+        r0.<com.shwy.bestjoy.groupsms.ContactManager: java.lang.String mRingPath> = $r1;
+
+        return;
+    }
+
+    public int updateMemberData(android.content.ContentValues, long)
+    {
+        com.shwy.bestjoy.groupsms.ContactManager r0;
+        android.net.Uri $r2;
+        long $l0;
+        java.lang.String[] $r4;
+        android.content.ContentResolver $r3;
+        int $i1;
+        android.content.ContentValues $r1;
+        java.lang.String $r5;
+
+        r0 := @this: com.shwy.bestjoy.groupsms.ContactManager;
+
+        $r1 := @parameter0: android.content.ContentValues;
+
+        $l0 := @parameter1: long;
+
+        $r3 = r0.<com.shwy.bestjoy.groupsms.ContactManager: android.content.ContentResolver cr>;
+
+        $r2 = <com.shwy.bestjoy.groupsms.ContactManager: android.net.Uri data_uri>;
+
+        $r4 = newarray (java.lang.String)[1];
+
+        $r5 = staticinvoke <java.lang.String: java.lang.String valueOf(long)>($l0);
+
+        $r4[0] = $r5;
+
+        $i1 = virtualinvoke $r3.<android.content.ContentResolver: int update(android.net.Uri,android.content.ContentValues,java.lang.String,java.lang.String[])>($r2, $r1, "_id=?", $r4);
+
+        return $i1;
+    }
+}

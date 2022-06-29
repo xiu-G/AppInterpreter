@@ -1,0 +1,467 @@
+public class proguard.optimize.peephole.GotoCommonCodeReplacer extends proguard.classfile.util.SimplifiedVisitor implements proguard.classfile.attribute.visitor.AttributeVisitor, proguard.classfile.instruction.visitor.InstructionVisitor
+{
+    private static final boolean DEBUG;
+    private final proguard.optimize.peephole.BranchTargetFinder branchTargetFinder;
+    private final proguard.classfile.editor.CodeAttributeEditor codeAttributeEditor;
+    private final proguard.classfile.instruction.visitor.InstructionVisitor extraInstructionVisitor;
+
+    public void <init>(proguard.classfile.instruction.visitor.InstructionVisitor)
+    {
+        proguard.optimize.peephole.GotoCommonCodeReplacer r0;
+        proguard.classfile.editor.CodeAttributeEditor $r3;
+        proguard.classfile.instruction.visitor.InstructionVisitor $r1;
+        proguard.optimize.peephole.BranchTargetFinder $r2;
+
+        r0 := @this: proguard.optimize.peephole.GotoCommonCodeReplacer;
+
+        $r1 := @parameter0: proguard.classfile.instruction.visitor.InstructionVisitor;
+
+        specialinvoke r0.<proguard.classfile.util.SimplifiedVisitor: void <init>()>();
+
+        $r2 = new proguard.optimize.peephole.BranchTargetFinder;
+
+        specialinvoke $r2.<proguard.optimize.peephole.BranchTargetFinder: void <init>()>();
+
+        r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: proguard.optimize.peephole.BranchTargetFinder branchTargetFinder> = $r2;
+
+        $r3 = new proguard.classfile.editor.CodeAttributeEditor;
+
+        specialinvoke $r3.<proguard.classfile.editor.CodeAttributeEditor: void <init>()>();
+
+        r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: proguard.classfile.editor.CodeAttributeEditor codeAttributeEditor> = $r3;
+
+        r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: proguard.classfile.instruction.visitor.InstructionVisitor extraInstructionVisitor> = $r1;
+
+        return;
+    }
+
+    private int commonByteCodeCount(proguard.classfile.attribute.CodeAttribute, int, int)
+    {
+        byte[] $r2;
+        proguard.optimize.peephole.BranchTargetFinder $r3;
+        byte $b6, $b7;
+        int $i0, $i1, $i2, $i3, $i4, $i5, $i8, $i9;
+        boolean $z0, $z1;
+        proguard.optimize.peephole.GotoCommonCodeReplacer r0;
+        proguard.classfile.attribute.CodeAttribute $r1;
+
+        r0 := @this: proguard.optimize.peephole.GotoCommonCodeReplacer;
+
+        $r1 := @parameter0: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $r2 = $r1.<proguard.classfile.attribute.CodeAttribute: byte[] code>;
+
+        $i2 = 0;
+
+        $i3 = 1;
+
+     label1:
+        if $i3 > $i0 goto label7;
+
+        if $i3 > $i1 goto label7;
+
+        $i4 = $i1 - $i3;
+
+        if $i4 == $i0 goto label7;
+
+        $i4 = $i0 - $i3;
+
+        $i5 = $i1 - $i3;
+
+        $b6 = $r2[$i4];
+
+        $b7 = $r2[$i5];
+
+        $i8 = (int) $b6;
+
+        $i9 = (int) $b7;
+
+        if $i8 == $i9 goto label2;
+
+        return $i2;
+
+     label2:
+        $r3 = r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: proguard.optimize.peephole.BranchTargetFinder branchTargetFinder>;
+
+        $z0 = virtualinvoke $r3.<proguard.optimize.peephole.BranchTargetFinder: boolean isInstruction(int)>($i4);
+
+        $r3 = r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: proguard.optimize.peephole.BranchTargetFinder branchTargetFinder>;
+
+        $z1 = virtualinvoke $r3.<proguard.optimize.peephole.BranchTargetFinder: boolean isInstruction(int)>($i5);
+
+        $z0 = $z0 ^ $z1;
+
+        if $z0 == 0 goto label3;
+
+        return $i2;
+
+     label3:
+        $r3 = r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: proguard.optimize.peephole.BranchTargetFinder branchTargetFinder>;
+
+        $z0 = virtualinvoke $r3.<proguard.optimize.peephole.BranchTargetFinder: boolean isInstruction(int)>($i4);
+
+        if $z0 == 0 goto label6;
+
+        $r3 = r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: proguard.optimize.peephole.BranchTargetFinder branchTargetFinder>;
+
+        $z0 = virtualinvoke $r3.<proguard.optimize.peephole.BranchTargetFinder: boolean isInstruction(int)>($i5);
+
+        if $z0 == 0 goto label6;
+
+        $r3 = r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: proguard.optimize.peephole.BranchTargetFinder branchTargetFinder>;
+
+        $z0 = virtualinvoke $r3.<proguard.optimize.peephole.BranchTargetFinder: boolean isBranchOrigin(int)>($i4);
+
+        if $z0 != 0 goto label7;
+
+        $r3 = r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: proguard.optimize.peephole.BranchTargetFinder branchTargetFinder>;
+
+        $z0 = virtualinvoke $r3.<proguard.optimize.peephole.BranchTargetFinder: boolean isBranchTarget(int)>($i4);
+
+        if $z0 != 0 goto label7;
+
+        $r3 = r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: proguard.optimize.peephole.BranchTargetFinder branchTargetFinder>;
+
+        $z0 = virtualinvoke $r3.<proguard.optimize.peephole.BranchTargetFinder: boolean isExceptionStart(int)>($i4);
+
+        if $z0 != 0 goto label7;
+
+        $r3 = r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: proguard.optimize.peephole.BranchTargetFinder branchTargetFinder>;
+
+        $z0 = virtualinvoke $r3.<proguard.optimize.peephole.BranchTargetFinder: boolean isExceptionEnd(int)>($i4);
+
+        if $z0 != 0 goto label7;
+
+        $r3 = r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: proguard.optimize.peephole.BranchTargetFinder branchTargetFinder>;
+
+        $z0 = virtualinvoke $r3.<proguard.optimize.peephole.BranchTargetFinder: boolean isInitializer(int)>($i4);
+
+        if $z0 != 0 goto label7;
+
+        $r3 = r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: proguard.optimize.peephole.BranchTargetFinder branchTargetFinder>;
+
+        $z0 = virtualinvoke $r3.<proguard.optimize.peephole.BranchTargetFinder: boolean isExceptionStart(int)>($i5);
+
+        if $z0 != 0 goto label7;
+
+        $r3 = r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: proguard.optimize.peephole.BranchTargetFinder branchTargetFinder>;
+
+        $z0 = virtualinvoke $r3.<proguard.optimize.peephole.BranchTargetFinder: boolean isExceptionEnd(int)>($i5);
+
+        if $z0 != 0 goto label7;
+
+        $b6 = $r2[$i4];
+
+        $z0 = specialinvoke r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: boolean isPop(byte)>($b6);
+
+        if $z0 == 0 goto label4;
+
+        return $i2;
+
+     label4:
+        $r3 = r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: proguard.optimize.peephole.BranchTargetFinder branchTargetFinder>;
+
+        $z0 = virtualinvoke $r3.<proguard.optimize.peephole.BranchTargetFinder: boolean isBranchTarget(int)>($i5);
+
+        if $z0 == 0 goto label5;
+
+        $i2 = $i3;
+
+     label5:
+        $r3 = r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: proguard.optimize.peephole.BranchTargetFinder branchTargetFinder>;
+
+        $z0 = virtualinvoke $r3.<proguard.optimize.peephole.BranchTargetFinder: boolean isBranchTarget(int)>($i4);
+
+        if $z0 == 0 goto label6;
+
+        return $i2;
+
+     label6:
+        $i3 = $i3 + 1;
+
+        goto label1;
+
+     label7:
+        return $i2;
+    }
+
+    private boolean exceptionBoundary(proguard.classfile.attribute.CodeAttribute, int, int)
+    {
+        proguard.classfile.attribute.CodeAttribute $r1;
+        proguard.optimize.peephole.GotoCommonCodeReplacer r0;
+        int $i0, $i1, $i2;
+        proguard.optimize.peephole.BranchTargetFinder $r2;
+        boolean $z0;
+
+        r0 := @this: proguard.optimize.peephole.GotoCommonCodeReplacer;
+
+        $r1 := @parameter0: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        if $i1 >= $i0 goto label5;
+
+        $i2 = $i0;
+
+        $i0 = $i1;
+
+     label1:
+        if $i0 > $i2 goto label4;
+
+        $r2 = r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: proguard.optimize.peephole.BranchTargetFinder branchTargetFinder>;
+
+        $z0 = virtualinvoke $r2.<proguard.optimize.peephole.BranchTargetFinder: boolean isExceptionStart(int)>($i0);
+
+        if $z0 != 0 goto label2;
+
+        $r2 = r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: proguard.optimize.peephole.BranchTargetFinder branchTargetFinder>;
+
+        $z0 = virtualinvoke $r2.<proguard.optimize.peephole.BranchTargetFinder: boolean isExceptionEnd(int)>($i0);
+
+        if $z0 == 0 goto label3;
+
+     label2:
+        return 1;
+
+     label3:
+        $i0 = $i0 + 1;
+
+        goto label1;
+
+     label4:
+        return 0;
+
+     label5:
+        $i2 = $i1;
+
+        goto label1;
+    }
+
+    private boolean isPop(byte)
+    {
+        int $i1;
+        byte $b0;
+        proguard.optimize.peephole.GotoCommonCodeReplacer r0;
+
+        r0 := @this: proguard.optimize.peephole.GotoCommonCodeReplacer;
+
+        $b0 := @parameter0: byte;
+
+        $i1 = (int) $b0;
+
+        if $i1 == 87 goto label1;
+
+        $i1 = (int) $b0;
+
+        if $i1 == 88 goto label1;
+
+        $i1 = (int) $b0;
+
+        if $i1 != -66 goto label2;
+
+     label1:
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    public void visitAnyAttribute(proguard.classfile.Clazz, proguard.classfile.attribute.Attribute)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.optimize.peephole.GotoCommonCodeReplacer r0;
+        proguard.classfile.attribute.Attribute $r2;
+
+        r0 := @this: proguard.optimize.peephole.GotoCommonCodeReplacer;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.attribute.Attribute;
+
+        return;
+    }
+
+    public void visitAnyInstruction(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.instruction.Instruction)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.instruction.Instruction $r4;
+        proguard.optimize.peephole.GotoCommonCodeReplacer r0;
+        int $i0;
+        proguard.classfile.Method $r2;
+
+        r0 := @this: proguard.optimize.peephole.GotoCommonCodeReplacer;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.instruction.Instruction;
+
+        return;
+    }
+
+    public void visitBranchInstruction(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute, int, proguard.classfile.instruction.BranchInstruction)
+    {
+        proguard.optimize.peephole.BranchTargetFinder $r5;
+        byte $b2;
+        proguard.classfile.Clazz $r1;
+        int $i0, $i1, $i3, $i4, $i5;
+        boolean $z0;
+        proguard.optimize.peephole.GotoCommonCodeReplacer r0;
+        proguard.classfile.editor.CodeAttributeEditor $r6;
+        proguard.classfile.instruction.BranchInstruction $r4, $r8;
+        proguard.classfile.instruction.visitor.InstructionVisitor $r7;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.classfile.Method $r2;
+
+        r0 := @this: proguard.optimize.peephole.GotoCommonCodeReplacer;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: proguard.classfile.instruction.BranchInstruction;
+
+        $b2 = $r4.<proguard.classfile.instruction.BranchInstruction: byte opcode>;
+
+        $i3 = (int) $b2;
+
+        if $i3 == -89 goto label1;
+
+        $i3 = (int) $b2;
+
+        if $i3 != -56 goto label6;
+
+     label1:
+        $r5 = r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: proguard.optimize.peephole.BranchTargetFinder branchTargetFinder>;
+
+        $z0 = virtualinvoke $r5.<proguard.optimize.peephole.BranchTargetFinder: boolean isBranchTarget(int)>($i0);
+
+        if $z0 != 0 goto label6;
+
+        $i3 = $r4.<proguard.classfile.instruction.BranchInstruction: int branchOffset>;
+
+        $i1 = $i0 + $i3;
+
+        $i4 = specialinvoke r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: int commonByteCodeCount(proguard.classfile.attribute.CodeAttribute,int,int)>($r3, $i0, $i1);
+
+        if $i4 <= 0 goto label6;
+
+        $z0 = specialinvoke r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: boolean exceptionBoundary(proguard.classfile.attribute.CodeAttribute,int,int)>($r3, $i0, $i1);
+
+        if $z0 != 0 goto label6;
+
+        $i5 = 0;
+
+     label2:
+        if $i5 > $i4 goto label4;
+
+        $i1 = $i0 - $i5;
+
+        $r5 = r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: proguard.optimize.peephole.BranchTargetFinder branchTargetFinder>;
+
+        $z0 = virtualinvoke $r5.<proguard.optimize.peephole.BranchTargetFinder: boolean isInstruction(int)>($i1);
+
+        if $z0 == 0 goto label3;
+
+        $r6 = r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: proguard.classfile.editor.CodeAttributeEditor codeAttributeEditor>;
+
+        virtualinvoke $r6.<proguard.classfile.editor.CodeAttributeEditor: void replaceInstruction(int,proguard.classfile.instruction.Instruction)>($i1, null);
+
+        $r6 = r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: proguard.classfile.editor.CodeAttributeEditor codeAttributeEditor>;
+
+        virtualinvoke $r6.<proguard.classfile.editor.CodeAttributeEditor: void insertBeforeInstruction(int,proguard.classfile.instruction.Instruction)>($i1, null);
+
+        $r6 = r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: proguard.classfile.editor.CodeAttributeEditor codeAttributeEditor>;
+
+        virtualinvoke $r6.<proguard.classfile.editor.CodeAttributeEditor: void insertAfterInstruction(int,proguard.classfile.instruction.Instruction)>($i1, null);
+
+        $r6 = r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: proguard.classfile.editor.CodeAttributeEditor codeAttributeEditor>;
+
+        virtualinvoke $r6.<proguard.classfile.editor.CodeAttributeEditor: void deleteInstruction(int)>($i1);
+
+     label3:
+        $i5 = $i5 + 1;
+
+        goto label2;
+
+     label4:
+        $i3 = $i3 - $i4;
+
+        $i4 = virtualinvoke $r4.<proguard.classfile.instruction.BranchInstruction: int length(int)>($i0);
+
+        if $i3 == $i4 goto label5;
+
+        $r8 = new proguard.classfile.instruction.BranchInstruction;
+
+        specialinvoke $r8.<proguard.classfile.instruction.BranchInstruction: void <init>(byte,int)>($b2, $i3);
+
+        $r6 = r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: proguard.classfile.editor.CodeAttributeEditor codeAttributeEditor>;
+
+        virtualinvoke $r6.<proguard.classfile.editor.CodeAttributeEditor: void replaceInstruction(int,proguard.classfile.instruction.Instruction)>($i0, $r8);
+
+     label5:
+        $r7 = r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: proguard.classfile.instruction.visitor.InstructionVisitor extraInstructionVisitor>;
+
+        if $r7 == null goto label6;
+
+        $r7 = r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: proguard.classfile.instruction.visitor.InstructionVisitor extraInstructionVisitor>;
+
+        interfaceinvoke $r7.<proguard.classfile.instruction.visitor.InstructionVisitor: void visitBranchInstruction(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute,int,proguard.classfile.instruction.BranchInstruction)>($r1, $r2, $r3, $i0, $r4);
+
+     label6:
+        return;
+    }
+
+    public void visitCodeAttribute(proguard.classfile.Clazz, proguard.classfile.Method, proguard.classfile.attribute.CodeAttribute)
+    {
+        proguard.classfile.Clazz $r1;
+        proguard.classfile.attribute.CodeAttribute $r3;
+        proguard.optimize.peephole.GotoCommonCodeReplacer r0;
+        int $i0;
+        proguard.classfile.editor.CodeAttributeEditor $r5;
+        proguard.classfile.Method $r2;
+        proguard.optimize.peephole.BranchTargetFinder $r4;
+
+        r0 := @this: proguard.optimize.peephole.GotoCommonCodeReplacer;
+
+        $r1 := @parameter0: proguard.classfile.Clazz;
+
+        $r2 := @parameter1: proguard.classfile.Method;
+
+        $r3 := @parameter2: proguard.classfile.attribute.CodeAttribute;
+
+        $r4 = r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: proguard.optimize.peephole.BranchTargetFinder branchTargetFinder>;
+
+        virtualinvoke $r4.<proguard.optimize.peephole.BranchTargetFinder: void visitCodeAttribute(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute)>($r1, $r2, $r3);
+
+        $r5 = r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: proguard.classfile.editor.CodeAttributeEditor codeAttributeEditor>;
+
+        $i0 = $r3.<proguard.classfile.attribute.CodeAttribute: int u4codeLength>;
+
+        virtualinvoke $r5.<proguard.classfile.editor.CodeAttributeEditor: void reset(int)>($i0);
+
+        virtualinvoke $r3.<proguard.classfile.attribute.CodeAttribute: void instructionsAccept(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.instruction.visitor.InstructionVisitor)>($r1, $r2, r0);
+
+        $r5 = r0.<proguard.optimize.peephole.GotoCommonCodeReplacer: proguard.classfile.editor.CodeAttributeEditor codeAttributeEditor>;
+
+        virtualinvoke $r5.<proguard.classfile.editor.CodeAttributeEditor: void visitCodeAttribute(proguard.classfile.Clazz,proguard.classfile.Method,proguard.classfile.attribute.CodeAttribute)>($r1, $r2, $r3);
+
+        return;
+    }
+}

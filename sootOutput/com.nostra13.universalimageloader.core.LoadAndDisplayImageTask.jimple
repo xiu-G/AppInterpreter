@@ -1,0 +1,1753 @@
+final class com.nostra13.universalimageloader.core.LoadAndDisplayImageTask extends java.lang.Object implements com.nostra13.universalimageloader.utils.IoUtils$CopyListener, java.lang.Runnable
+{
+    private static final java.lang.String ERROR_POST_PROCESSOR_NULL;
+    private static final java.lang.String ERROR_PRE_PROCESSOR_NULL;
+    private static final java.lang.String ERROR_PROCESSOR_FOR_DISK_CACHE_NULL;
+    private static final java.lang.String LOG_CACHE_IMAGE_IN_MEMORY;
+    private static final java.lang.String LOG_CACHE_IMAGE_ON_DISK;
+    private static final java.lang.String LOG_DELAY_BEFORE_LOADING;
+    private static final java.lang.String LOG_GET_IMAGE_FROM_MEMORY_CACHE_AFTER_WAITING;
+    private static final java.lang.String LOG_LOAD_IMAGE_FROM_DISK_CACHE;
+    private static final java.lang.String LOG_LOAD_IMAGE_FROM_NETWORK;
+    private static final java.lang.String LOG_POSTPROCESS_IMAGE;
+    private static final java.lang.String LOG_PREPROCESS_IMAGE;
+    private static final java.lang.String LOG_PROCESS_IMAGE_BEFORE_CACHE_ON_DISK;
+    private static final java.lang.String LOG_RESIZE_CACHED_IMAGE_FILE;
+    private static final java.lang.String LOG_RESUME_AFTER_PAUSE;
+    private static final java.lang.String LOG_START_DISPLAY_IMAGE_TASK;
+    private static final java.lang.String LOG_TASK_CANCELLED_IMAGEAWARE_COLLECTED;
+    private static final java.lang.String LOG_TASK_CANCELLED_IMAGEAWARE_REUSED;
+    private static final java.lang.String LOG_TASK_INTERRUPTED;
+    private static final java.lang.String LOG_WAITING_FOR_IMAGE_LOADED;
+    private static final java.lang.String LOG_WAITING_FOR_RESUME;
+    private final com.nostra13.universalimageloader.core.ImageLoaderConfiguration configuration;
+    private final com.nostra13.universalimageloader.core.decode.ImageDecoder decoder;
+    private final com.nostra13.universalimageloader.core.download.ImageDownloader downloader;
+    private final com.nostra13.universalimageloader.core.ImageLoaderEngine engine;
+    private final android.os.Handler handler;
+    final com.nostra13.universalimageloader.core.imageaware.ImageAware imageAware;
+    private final com.nostra13.universalimageloader.core.ImageLoadingInfo imageLoadingInfo;
+    final com.nostra13.universalimageloader.core.listener.ImageLoadingListener listener;
+    private com.nostra13.universalimageloader.core.assist.LoadedFrom loadedFrom;
+    private final java.lang.String memoryCacheKey;
+    private final com.nostra13.universalimageloader.core.download.ImageDownloader networkDeniedDownloader;
+    final com.nostra13.universalimageloader.core.DisplayImageOptions options;
+    final com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener progressListener;
+    private final com.nostra13.universalimageloader.core.download.ImageDownloader slowNetworkDownloader;
+    private final boolean syncLoading;
+    private final com.nostra13.universalimageloader.core.assist.ImageSize targetSize;
+    final java.lang.String uri;
+
+    public void <init>(com.nostra13.universalimageloader.core.ImageLoaderEngine, com.nostra13.universalimageloader.core.ImageLoadingInfo, android.os.Handler)
+    {
+        com.nostra13.universalimageloader.core.decode.ImageDecoder $r7;
+        com.nostra13.universalimageloader.core.imageaware.ImageAware $r9;
+        com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener $r13;
+        com.nostra13.universalimageloader.core.ImageLoaderConfiguration $r5;
+        com.nostra13.universalimageloader.core.assist.ImageSize $r10;
+        com.nostra13.universalimageloader.core.listener.ImageLoadingListener $r12;
+        com.nostra13.universalimageloader.core.DisplayImageOptions $r11;
+        com.nostra13.universalimageloader.core.download.ImageDownloader $r6;
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask r0;
+        com.nostra13.universalimageloader.core.ImageLoaderEngine $r1;
+        com.nostra13.universalimageloader.core.assist.LoadedFrom $r4;
+        android.os.Handler $r3;
+        java.lang.String $r8;
+        com.nostra13.universalimageloader.core.ImageLoadingInfo $r2;
+        boolean $z0;
+
+        r0 := @this: com.nostra13.universalimageloader.core.LoadAndDisplayImageTask;
+
+        $r1 := @parameter0: com.nostra13.universalimageloader.core.ImageLoaderEngine;
+
+        $r2 := @parameter1: com.nostra13.universalimageloader.core.ImageLoadingInfo;
+
+        $r3 := @parameter2: android.os.Handler;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        $r4 = <com.nostra13.universalimageloader.core.assist.LoadedFrom: com.nostra13.universalimageloader.core.assist.LoadedFrom NETWORK>;
+
+        r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.assist.LoadedFrom loadedFrom> = $r4;
+
+        r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoaderEngine engine> = $r1;
+
+        r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoadingInfo imageLoadingInfo> = $r2;
+
+        r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: android.os.Handler handler> = $r3;
+
+        $r5 = $r1.<com.nostra13.universalimageloader.core.ImageLoaderEngine: com.nostra13.universalimageloader.core.ImageLoaderConfiguration configuration>;
+
+        r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoaderConfiguration configuration> = $r5;
+
+        $r5 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoaderConfiguration configuration>;
+
+        $r6 = $r5.<com.nostra13.universalimageloader.core.ImageLoaderConfiguration: com.nostra13.universalimageloader.core.download.ImageDownloader downloader>;
+
+        r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.download.ImageDownloader downloader> = $r6;
+
+        $r5 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoaderConfiguration configuration>;
+
+        $r6 = $r5.<com.nostra13.universalimageloader.core.ImageLoaderConfiguration: com.nostra13.universalimageloader.core.download.ImageDownloader networkDeniedDownloader>;
+
+        r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.download.ImageDownloader networkDeniedDownloader> = $r6;
+
+        $r5 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoaderConfiguration configuration>;
+
+        $r6 = $r5.<com.nostra13.universalimageloader.core.ImageLoaderConfiguration: com.nostra13.universalimageloader.core.download.ImageDownloader slowNetworkDownloader>;
+
+        r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.download.ImageDownloader slowNetworkDownloader> = $r6;
+
+        $r5 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoaderConfiguration configuration>;
+
+        $r7 = $r5.<com.nostra13.universalimageloader.core.ImageLoaderConfiguration: com.nostra13.universalimageloader.core.decode.ImageDecoder decoder>;
+
+        r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.decode.ImageDecoder decoder> = $r7;
+
+        $r8 = $r2.<com.nostra13.universalimageloader.core.ImageLoadingInfo: java.lang.String uri>;
+
+        r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String uri> = $r8;
+
+        $r8 = $r2.<com.nostra13.universalimageloader.core.ImageLoadingInfo: java.lang.String memoryCacheKey>;
+
+        r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String memoryCacheKey> = $r8;
+
+        $r9 = $r2.<com.nostra13.universalimageloader.core.ImageLoadingInfo: com.nostra13.universalimageloader.core.imageaware.ImageAware imageAware>;
+
+        r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.imageaware.ImageAware imageAware> = $r9;
+
+        $r10 = $r2.<com.nostra13.universalimageloader.core.ImageLoadingInfo: com.nostra13.universalimageloader.core.assist.ImageSize targetSize>;
+
+        r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.assist.ImageSize targetSize> = $r10;
+
+        $r11 = $r2.<com.nostra13.universalimageloader.core.ImageLoadingInfo: com.nostra13.universalimageloader.core.DisplayImageOptions options>;
+
+        r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.DisplayImageOptions options> = $r11;
+
+        $r12 = $r2.<com.nostra13.universalimageloader.core.ImageLoadingInfo: com.nostra13.universalimageloader.core.listener.ImageLoadingListener listener>;
+
+        r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.listener.ImageLoadingListener listener> = $r12;
+
+        $r13 = $r2.<com.nostra13.universalimageloader.core.ImageLoadingInfo: com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener progressListener>;
+
+        r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener progressListener> = $r13;
+
+        $r11 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.DisplayImageOptions options>;
+
+        $z0 = virtualinvoke $r11.<com.nostra13.universalimageloader.core.DisplayImageOptions: boolean isSyncLoading()>();
+
+        r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: boolean syncLoading> = $z0;
+
+        return;
+    }
+
+    static com.nostra13.universalimageloader.core.ImageLoaderConfiguration access$000(com.nostra13.universalimageloader.core.LoadAndDisplayImageTask)
+    {
+        com.nostra13.universalimageloader.core.ImageLoaderConfiguration r1;
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask $r0;
+
+        $r0 := @parameter0: com.nostra13.universalimageloader.core.LoadAndDisplayImageTask;
+
+        r1 = $r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoaderConfiguration configuration>;
+
+        return r1;
+    }
+
+    private void checkTaskInterrupted()
+    {
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask r0;
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException $r1;
+        boolean $z0;
+
+        r0 := @this: com.nostra13.universalimageloader.core.LoadAndDisplayImageTask;
+
+        $z0 = specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: boolean isTaskInterrupted()>();
+
+        if $z0 == 0 goto label1;
+
+        $r1 = new com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException;
+
+        specialinvoke $r1.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException: void <init>(com.nostra13.universalimageloader.core.LoadAndDisplayImageTask)>(r0);
+
+        throw $r1;
+
+     label1:
+        return;
+    }
+
+    private void checkTaskNotActual()
+    {
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask r0;
+
+        r0 := @this: com.nostra13.universalimageloader.core.LoadAndDisplayImageTask;
+
+        specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: void checkViewCollected()>();
+
+        specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: void checkViewReused()>();
+
+        return;
+    }
+
+    private void checkViewCollected()
+    {
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask r0;
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException $r1;
+        boolean $z0;
+
+        r0 := @this: com.nostra13.universalimageloader.core.LoadAndDisplayImageTask;
+
+        $z0 = specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: boolean isViewCollected()>();
+
+        if $z0 == 0 goto label1;
+
+        $r1 = new com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException;
+
+        specialinvoke $r1.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException: void <init>(com.nostra13.universalimageloader.core.LoadAndDisplayImageTask)>(r0);
+
+        throw $r1;
+
+     label1:
+        return;
+    }
+
+    private void checkViewReused()
+    {
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask r0;
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException $r1;
+        boolean $z0;
+
+        r0 := @this: com.nostra13.universalimageloader.core.LoadAndDisplayImageTask;
+
+        $z0 = specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: boolean isViewReused()>();
+
+        if $z0 == 0 goto label1;
+
+        $r1 = new com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException;
+
+        specialinvoke $r1.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException: void <init>(com.nostra13.universalimageloader.core.LoadAndDisplayImageTask)>(r0);
+
+        throw $r1;
+
+     label1:
+        return;
+    }
+
+    private android.graphics.Bitmap decodeImage(java.lang.String)
+    {
+        com.nostra13.universalimageloader.core.decode.ImageDecoder $r10;
+        com.nostra13.universalimageloader.core.imageaware.ImageAware $r5;
+        com.nostra13.universalimageloader.core.assist.ImageSize $r3;
+        com.nostra13.universalimageloader.core.DisplayImageOptions $r4;
+        com.nostra13.universalimageloader.core.download.ImageDownloader $r9;
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask r0;
+        com.nostra13.universalimageloader.core.assist.ViewScaleType $r6;
+        android.graphics.Bitmap $r11;
+        com.nostra13.universalimageloader.core.decode.ImageDecodingInfo $r7;
+        java.lang.String $r1, $r2, $r8;
+
+        r0 := @this: com.nostra13.universalimageloader.core.LoadAndDisplayImageTask;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r5 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.imageaware.ImageAware imageAware>;
+
+        $r6 = interfaceinvoke $r5.<com.nostra13.universalimageloader.core.imageaware.ImageAware: com.nostra13.universalimageloader.core.assist.ViewScaleType getScaleType()>();
+
+        $r7 = new com.nostra13.universalimageloader.core.decode.ImageDecodingInfo;
+
+        $r8 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String memoryCacheKey>;
+
+        $r2 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String uri>;
+
+        $r3 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.assist.ImageSize targetSize>;
+
+        $r9 = specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.download.ImageDownloader getDownloader()>();
+
+        $r4 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.DisplayImageOptions options>;
+
+        specialinvoke $r7.<com.nostra13.universalimageloader.core.decode.ImageDecodingInfo: void <init>(java.lang.String,java.lang.String,java.lang.String,com.nostra13.universalimageloader.core.assist.ImageSize,com.nostra13.universalimageloader.core.assist.ViewScaleType,com.nostra13.universalimageloader.core.download.ImageDownloader,com.nostra13.universalimageloader.core.DisplayImageOptions)>($r8, $r1, $r2, $r3, $r6, $r9, $r4);
+
+        $r10 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.decode.ImageDecoder decoder>;
+
+        $r11 = interfaceinvoke $r10.<com.nostra13.universalimageloader.core.decode.ImageDecoder: android.graphics.Bitmap decode(com.nostra13.universalimageloader.core.decode.ImageDecodingInfo)>($r7);
+
+        return $r11;
+    }
+
+    private boolean delayIfNeed()
+    {
+        java.lang.Throwable $r5;
+        java.lang.Object[] $r2;
+        long $l1;
+        com.nostra13.universalimageloader.core.DisplayImageOptions $r1;
+        java.lang.Integer $r3;
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask r0;
+        int $i0;
+        java.lang.String $r4;
+        boolean $z0;
+
+        r0 := @this: com.nostra13.universalimageloader.core.LoadAndDisplayImageTask;
+
+        $r1 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.DisplayImageOptions options>;
+
+        $z0 = virtualinvoke $r1.<com.nostra13.universalimageloader.core.DisplayImageOptions: boolean shouldDelayBeforeLoading()>();
+
+        if $z0 == 0 goto label6;
+
+        $r2 = newarray (java.lang.Object)[2];
+
+        $r1 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.DisplayImageOptions options>;
+
+        $i0 = virtualinvoke $r1.<com.nostra13.universalimageloader.core.DisplayImageOptions: int getDelayBeforeLoading()>();
+
+        $r3 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        $r2[0] = $r3;
+
+        $r4 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String memoryCacheKey>;
+
+        $r2[1] = $r4;
+
+        staticinvoke <com.nostra13.universalimageloader.utils.L: void d(java.lang.String,java.lang.Object[])>("Delay %d ms before loading...  [%s]", $r2);
+
+        $r1 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.DisplayImageOptions options>;
+
+     label1:
+        $i0 = virtualinvoke $r1.<com.nostra13.universalimageloader.core.DisplayImageOptions: int getDelayBeforeLoading()>();
+
+     label2:
+        $l1 = (long) $i0;
+
+     label3:
+        staticinvoke <java.lang.Thread: void sleep(long)>($l1);
+
+     label4:
+        $z0 = specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: boolean isTaskNotActual()>();
+
+        return $z0;
+
+     label5:
+        $r5 := @caughtexception;
+
+        $r2 = newarray (java.lang.Object)[1];
+
+        $r4 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String memoryCacheKey>;
+
+        $r2[0] = $r4;
+
+        staticinvoke <com.nostra13.universalimageloader.utils.L: void e(java.lang.String,java.lang.Object[])>("Task was interrupted [%s]", $r2);
+
+        return 1;
+
+     label6:
+        return 0;
+
+        catch java.lang.InterruptedException from label1 to label2 with label5;
+        catch java.lang.InterruptedException from label3 to label4 with label5;
+    }
+
+    private boolean downloadImage()
+    {
+        com.nostra13.universalimageloader.core.ImageLoaderConfiguration $r6;
+        com.nostra13.universalimageloader.cache.disc.DiskCache $r7;
+        com.nostra13.universalimageloader.core.DisplayImageOptions $r3;
+        com.nostra13.universalimageloader.core.download.ImageDownloader $r1;
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask r0;
+        java.lang.Object $r4;
+        java.lang.String $r2;
+        java.io.InputStream $r5;
+        boolean $z0;
+
+        r0 := @this: com.nostra13.universalimageloader.core.LoadAndDisplayImageTask;
+
+        $r1 = specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.download.ImageDownloader getDownloader()>();
+
+        $r2 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String uri>;
+
+        $r3 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.DisplayImageOptions options>;
+
+        $r4 = virtualinvoke $r3.<com.nostra13.universalimageloader.core.DisplayImageOptions: java.lang.Object getExtraForDownloader()>();
+
+        $r5 = interfaceinvoke $r1.<com.nostra13.universalimageloader.core.download.ImageDownloader: java.io.InputStream getStream(java.lang.String,java.lang.Object)>($r2, $r4);
+
+        $r6 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoaderConfiguration configuration>;
+
+        $r7 = $r6.<com.nostra13.universalimageloader.core.ImageLoaderConfiguration: com.nostra13.universalimageloader.cache.disc.DiskCache diskCache>;
+
+        $r2 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String uri>;
+
+        $z0 = interfaceinvoke $r7.<com.nostra13.universalimageloader.cache.disc.DiskCache: boolean save(java.lang.String,java.io.InputStream,com.nostra13.universalimageloader.utils.IoUtils$CopyListener)>($r2, $r5, r0);
+
+        return $z0;
+    }
+
+    private void fireCancelEvent()
+    {
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask r0;
+        com.nostra13.universalimageloader.core.ImageLoaderEngine $r2;
+        android.os.Handler $r1;
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$3 $r3;
+        boolean $z0;
+
+        r0 := @this: com.nostra13.universalimageloader.core.LoadAndDisplayImageTask;
+
+        $z0 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: boolean syncLoading>;
+
+        if $z0 != 0 goto label2;
+
+        $z0 = specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: boolean isTaskInterrupted()>();
+
+        if $z0 == 0 goto label1;
+
+        return;
+
+     label1:
+        $r3 = new com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$3;
+
+        specialinvoke $r3.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$3: void <init>(com.nostra13.universalimageloader.core.LoadAndDisplayImageTask)>(r0);
+
+        $r1 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: android.os.Handler handler>;
+
+        $r2 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoaderEngine engine>;
+
+        staticinvoke <com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: void runTask(java.lang.Runnable,boolean,android.os.Handler,com.nostra13.universalimageloader.core.ImageLoaderEngine)>($r3, 0, $r1, $r2);
+
+     label2:
+        return;
+    }
+
+    private void fireFailEvent(com.nostra13.universalimageloader.core.assist.FailReason$FailType, java.lang.Throwable)
+    {
+        java.lang.Throwable $r2;
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask r0;
+        com.nostra13.universalimageloader.core.assist.FailReason$FailType $r1;
+        com.nostra13.universalimageloader.core.ImageLoaderEngine $r4;
+        android.os.Handler $r3;
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$2 $r5;
+        boolean $z0;
+
+        r0 := @this: com.nostra13.universalimageloader.core.LoadAndDisplayImageTask;
+
+        $r1 := @parameter0: com.nostra13.universalimageloader.core.assist.FailReason$FailType;
+
+        $r2 := @parameter1: java.lang.Throwable;
+
+        $z0 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: boolean syncLoading>;
+
+        if $z0 != 0 goto label2;
+
+        $z0 = specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: boolean isTaskInterrupted()>();
+
+        if $z0 != 0 goto label2;
+
+        $z0 = specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: boolean isTaskNotActual()>();
+
+        if $z0 == 0 goto label1;
+
+        return;
+
+     label1:
+        $r5 = new com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$2;
+
+        specialinvoke $r5.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$2: void <init>(com.nostra13.universalimageloader.core.LoadAndDisplayImageTask,com.nostra13.universalimageloader.core.assist.FailReason$FailType,java.lang.Throwable)>(r0, $r1, $r2);
+
+        $r3 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: android.os.Handler handler>;
+
+        $r4 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoaderEngine engine>;
+
+        staticinvoke <com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: void runTask(java.lang.Runnable,boolean,android.os.Handler,com.nostra13.universalimageloader.core.ImageLoaderEngine)>($r5, 0, $r3, $r4);
+
+     label2:
+        return;
+    }
+
+    private boolean fireProgressEvent(int, int)
+    {
+        com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener $r3;
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$1 $r4;
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask r0;
+        com.nostra13.universalimageloader.core.ImageLoaderEngine $r2;
+        android.os.Handler $r1;
+        int $i0, $i1;
+        boolean $z0;
+
+        r0 := @this: com.nostra13.universalimageloader.core.LoadAndDisplayImageTask;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $z0 = specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: boolean isTaskInterrupted()>();
+
+        if $z0 != 0 goto label3;
+
+        $z0 = specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: boolean isTaskNotActual()>();
+
+        if $z0 == 0 goto label1;
+
+        return 0;
+
+     label1:
+        $r3 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.listener.ImageLoadingProgressListener progressListener>;
+
+        if $r3 == null goto label2;
+
+        $r4 = new com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$1;
+
+        specialinvoke $r4.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$1: void <init>(com.nostra13.universalimageloader.core.LoadAndDisplayImageTask,int,int)>(r0, $i0, $i1);
+
+        $r1 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: android.os.Handler handler>;
+
+        $r2 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoaderEngine engine>;
+
+        staticinvoke <com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: void runTask(java.lang.Runnable,boolean,android.os.Handler,com.nostra13.universalimageloader.core.ImageLoaderEngine)>($r4, 0, $r1, $r2);
+
+     label2:
+        return 1;
+
+     label3:
+        return 0;
+    }
+
+    private com.nostra13.universalimageloader.core.download.ImageDownloader getDownloader()
+    {
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask r0;
+        com.nostra13.universalimageloader.core.ImageLoaderEngine $r1;
+        com.nostra13.universalimageloader.core.download.ImageDownloader r2;
+        boolean $z0;
+
+        r0 := @this: com.nostra13.universalimageloader.core.LoadAndDisplayImageTask;
+
+        $r1 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoaderEngine engine>;
+
+        $z0 = virtualinvoke $r1.<com.nostra13.universalimageloader.core.ImageLoaderEngine: boolean isNetworkDenied()>();
+
+        if $z0 == 0 goto label1;
+
+        r2 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.download.ImageDownloader networkDeniedDownloader>;
+
+        return r2;
+
+     label1:
+        $r1 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoaderEngine engine>;
+
+        $z0 = virtualinvoke $r1.<com.nostra13.universalimageloader.core.ImageLoaderEngine: boolean isSlowNetwork()>();
+
+        if $z0 == 0 goto label2;
+
+        r2 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.download.ImageDownloader slowNetworkDownloader>;
+
+        return r2;
+
+     label2:
+        r2 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.download.ImageDownloader downloader>;
+
+        return r2;
+    }
+
+    private boolean isTaskInterrupted()
+    {
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask r0;
+        java.lang.Object[] $r1;
+        java.lang.String $r2;
+        boolean $z0;
+
+        r0 := @this: com.nostra13.universalimageloader.core.LoadAndDisplayImageTask;
+
+        $z0 = staticinvoke <java.lang.Thread: boolean interrupted()>();
+
+        if $z0 == 0 goto label1;
+
+        $r1 = newarray (java.lang.Object)[1];
+
+        $r2 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String memoryCacheKey>;
+
+        $r1[0] = $r2;
+
+        staticinvoke <com.nostra13.universalimageloader.utils.L: void d(java.lang.String,java.lang.Object[])>("Task was interrupted [%s]", $r1);
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    private boolean isTaskNotActual()
+    {
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask r0;
+        boolean $z0;
+
+        r0 := @this: com.nostra13.universalimageloader.core.LoadAndDisplayImageTask;
+
+        $z0 = specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: boolean isViewCollected()>();
+
+        if $z0 != 0 goto label1;
+
+        $z0 = specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: boolean isViewReused()>();
+
+        if $z0 == 0 goto label2;
+
+     label1:
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    private boolean isViewCollected()
+    {
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask r0;
+        java.lang.Object[] $r1;
+        com.nostra13.universalimageloader.core.imageaware.ImageAware $r3;
+        java.lang.String $r2;
+        boolean $z0;
+
+        r0 := @this: com.nostra13.universalimageloader.core.LoadAndDisplayImageTask;
+
+        $r3 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.imageaware.ImageAware imageAware>;
+
+        $z0 = interfaceinvoke $r3.<com.nostra13.universalimageloader.core.imageaware.ImageAware: boolean isCollected()>();
+
+        if $z0 == 0 goto label1;
+
+        $r1 = newarray (java.lang.Object)[1];
+
+        $r2 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String memoryCacheKey>;
+
+        $r1[0] = $r2;
+
+        staticinvoke <com.nostra13.universalimageloader.utils.L: void d(java.lang.String,java.lang.Object[])>("ImageAware was collected by GC. Task is cancelled. [%s]", $r1);
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    private boolean isViewReused()
+    {
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask r0;
+        com.nostra13.universalimageloader.core.ImageLoaderEngine $r2;
+        java.lang.Object[] $r5;
+        com.nostra13.universalimageloader.core.imageaware.ImageAware $r3;
+        java.lang.String $r1, $r4;
+        boolean $z0;
+
+        r0 := @this: com.nostra13.universalimageloader.core.LoadAndDisplayImageTask;
+
+        $r2 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoaderEngine engine>;
+
+        $r3 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.imageaware.ImageAware imageAware>;
+
+        $r1 = virtualinvoke $r2.<com.nostra13.universalimageloader.core.ImageLoaderEngine: java.lang.String getLoadingUriForView(com.nostra13.universalimageloader.core.imageaware.ImageAware)>($r3);
+
+        $r4 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String memoryCacheKey>;
+
+        $z0 = virtualinvoke $r4.<java.lang.String: boolean equals(java.lang.Object)>($r1);
+
+        if $z0 != 0 goto label2;
+
+        $z0 = 1;
+
+     label1:
+        if $z0 == 0 goto label3;
+
+        $r5 = newarray (java.lang.Object)[1];
+
+        $r1 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String memoryCacheKey>;
+
+        $r5[0] = $r1;
+
+        staticinvoke <com.nostra13.universalimageloader.utils.L: void d(java.lang.String,java.lang.Object[])>("ImageAware is reused for another image. Task is cancelled. [%s]", $r5);
+
+        return 1;
+
+     label2:
+        $z0 = 0;
+
+        goto label1;
+
+     label3:
+        return 0;
+    }
+
+    private boolean resizeAndSaveImage(int, int)
+    {
+        java.lang.Object[] $r19;
+        com.nostra13.universalimageloader.core.process.BitmapProcessor $r18;
+        com.nostra13.universalimageloader.core.assist.ImageSize $r1;
+        com.nostra13.universalimageloader.core.download.ImageDownloader$Scheme $r11;
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask r0;
+        com.nostra13.universalimageloader.core.assist.ViewScaleType $r2;
+        int $i0, $i1;
+        com.nostra13.universalimageloader.core.decode.ImageDecodingInfo $r10;
+        java.lang.String $r5, $r12, $r13;
+        com.nostra13.universalimageloader.core.DisplayImageOptions$Builder $r7;
+        boolean $z0;
+        com.nostra13.universalimageloader.core.decode.ImageDecoder $r15;
+        com.nostra13.universalimageloader.core.ImageLoaderConfiguration $r3;
+        com.nostra13.universalimageloader.cache.disc.DiskCache $r4;
+        com.nostra13.universalimageloader.core.DisplayImageOptions $r8;
+        java.io.File $r6;
+        com.nostra13.universalimageloader.core.download.ImageDownloader $r14;
+        android.graphics.Bitmap $r16, $r17;
+        com.nostra13.universalimageloader.core.assist.ImageScaleType $r9;
+
+        r0 := @this: com.nostra13.universalimageloader.core.LoadAndDisplayImageTask;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $r3 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoaderConfiguration configuration>;
+
+        $r4 = $r3.<com.nostra13.universalimageloader.core.ImageLoaderConfiguration: com.nostra13.universalimageloader.cache.disc.DiskCache diskCache>;
+
+        $r5 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String uri>;
+
+        $r6 = interfaceinvoke $r4.<com.nostra13.universalimageloader.cache.disc.DiskCache: java.io.File get(java.lang.String)>($r5);
+
+        if $r6 == null goto label2;
+
+        $z0 = virtualinvoke $r6.<java.io.File: boolean exists()>();
+
+        if $z0 == 0 goto label2;
+
+        $r1 = new com.nostra13.universalimageloader.core.assist.ImageSize;
+
+        specialinvoke $r1.<com.nostra13.universalimageloader.core.assist.ImageSize: void <init>(int,int)>($i0, $i1);
+
+        $r7 = new com.nostra13.universalimageloader.core.DisplayImageOptions$Builder;
+
+        specialinvoke $r7.<com.nostra13.universalimageloader.core.DisplayImageOptions$Builder: void <init>()>();
+
+        $r8 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.DisplayImageOptions options>;
+
+        $r7 = virtualinvoke $r7.<com.nostra13.universalimageloader.core.DisplayImageOptions$Builder: com.nostra13.universalimageloader.core.DisplayImageOptions$Builder cloneFrom(com.nostra13.universalimageloader.core.DisplayImageOptions)>($r8);
+
+        $r9 = <com.nostra13.universalimageloader.core.assist.ImageScaleType: com.nostra13.universalimageloader.core.assist.ImageScaleType IN_SAMPLE_INT>;
+
+        $r7 = virtualinvoke $r7.<com.nostra13.universalimageloader.core.DisplayImageOptions$Builder: com.nostra13.universalimageloader.core.DisplayImageOptions$Builder imageScaleType(com.nostra13.universalimageloader.core.assist.ImageScaleType)>($r9);
+
+        $r8 = virtualinvoke $r7.<com.nostra13.universalimageloader.core.DisplayImageOptions$Builder: com.nostra13.universalimageloader.core.DisplayImageOptions build()>();
+
+        $r10 = new com.nostra13.universalimageloader.core.decode.ImageDecodingInfo;
+
+        $r5 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String memoryCacheKey>;
+
+        $r11 = <com.nostra13.universalimageloader.core.download.ImageDownloader$Scheme: com.nostra13.universalimageloader.core.download.ImageDownloader$Scheme FILE>;
+
+        $r12 = virtualinvoke $r6.<java.io.File: java.lang.String getAbsolutePath()>();
+
+        $r12 = virtualinvoke $r11.<com.nostra13.universalimageloader.core.download.ImageDownloader$Scheme: java.lang.String wrap(java.lang.String)>($r12);
+
+        $r13 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String uri>;
+
+        $r2 = <com.nostra13.universalimageloader.core.assist.ViewScaleType: com.nostra13.universalimageloader.core.assist.ViewScaleType FIT_INSIDE>;
+
+        $r14 = specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.download.ImageDownloader getDownloader()>();
+
+        specialinvoke $r10.<com.nostra13.universalimageloader.core.decode.ImageDecodingInfo: void <init>(java.lang.String,java.lang.String,java.lang.String,com.nostra13.universalimageloader.core.assist.ImageSize,com.nostra13.universalimageloader.core.assist.ViewScaleType,com.nostra13.universalimageloader.core.download.ImageDownloader,com.nostra13.universalimageloader.core.DisplayImageOptions)>($r5, $r12, $r13, $r1, $r2, $r14, $r8);
+
+        $r15 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.decode.ImageDecoder decoder>;
+
+        $r16 = interfaceinvoke $r15.<com.nostra13.universalimageloader.core.decode.ImageDecoder: android.graphics.Bitmap decode(com.nostra13.universalimageloader.core.decode.ImageDecodingInfo)>($r10);
+
+        $r17 = $r16;
+
+        if $r16 == null goto label1;
+
+        $r3 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoaderConfiguration configuration>;
+
+        $r18 = $r3.<com.nostra13.universalimageloader.core.ImageLoaderConfiguration: com.nostra13.universalimageloader.core.process.BitmapProcessor processorForDiskCache>;
+
+        if $r18 == null goto label1;
+
+        $r19 = newarray (java.lang.Object)[1];
+
+        $r5 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String memoryCacheKey>;
+
+        $r19[0] = $r5;
+
+        staticinvoke <com.nostra13.universalimageloader.utils.L: void d(java.lang.String,java.lang.Object[])>("Process image before cache on disk [%s]", $r19);
+
+        $r3 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoaderConfiguration configuration>;
+
+        $r18 = $r3.<com.nostra13.universalimageloader.core.ImageLoaderConfiguration: com.nostra13.universalimageloader.core.process.BitmapProcessor processorForDiskCache>;
+
+        $r16 = interfaceinvoke $r18.<com.nostra13.universalimageloader.core.process.BitmapProcessor: android.graphics.Bitmap process(android.graphics.Bitmap)>($r16);
+
+        $r17 = $r16;
+
+        if $r16 != null goto label1;
+
+        $r19 = newarray (java.lang.Object)[1];
+
+        $r5 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String memoryCacheKey>;
+
+        $r19[0] = $r5;
+
+        staticinvoke <com.nostra13.universalimageloader.utils.L: void e(java.lang.String,java.lang.Object[])>("Bitmap processor for disk cache returned null [%s]", $r19);
+
+     label1:
+        if $r17 == null goto label2;
+
+        $r3 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoaderConfiguration configuration>;
+
+        $r4 = $r3.<com.nostra13.universalimageloader.core.ImageLoaderConfiguration: com.nostra13.universalimageloader.cache.disc.DiskCache diskCache>;
+
+        $r5 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String uri>;
+
+        $z0 = interfaceinvoke $r4.<com.nostra13.universalimageloader.cache.disc.DiskCache: boolean save(java.lang.String,android.graphics.Bitmap)>($r5, $r17);
+
+        virtualinvoke $r17.<android.graphics.Bitmap: void recycle()>();
+
+        return $z0;
+
+     label2:
+        return 0;
+    }
+
+    static void runTask(java.lang.Runnable, boolean, android.os.Handler, com.nostra13.universalimageloader.core.ImageLoaderEngine)
+    {
+        com.nostra13.universalimageloader.core.ImageLoaderEngine $r2;
+        android.os.Handler $r1;
+        java.lang.Runnable $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.Runnable;
+
+        $z0 := @parameter1: boolean;
+
+        $r1 := @parameter2: android.os.Handler;
+
+        $r2 := @parameter3: com.nostra13.universalimageloader.core.ImageLoaderEngine;
+
+        if $z0 == 0 goto label1;
+
+        interfaceinvoke $r0.<java.lang.Runnable: void run()>();
+
+        return;
+
+     label1:
+        if $r1 != null goto label2;
+
+        virtualinvoke $r2.<com.nostra13.universalimageloader.core.ImageLoaderEngine: void fireCallback(java.lang.Runnable)>($r0);
+
+        return;
+
+     label2:
+        virtualinvoke $r1.<android.os.Handler: boolean post(java.lang.Runnable)>($r0);
+
+        return;
+    }
+
+    private boolean tryCacheImageOnDisk()
+    {
+        java.lang.Throwable $r4;
+        java.lang.Object[] $r2;
+        com.nostra13.universalimageloader.core.ImageLoaderConfiguration $r3;
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask r0;
+        int $i0, $i1;
+        java.lang.String $r1;
+        boolean $z0;
+
+        r0 := @this: com.nostra13.universalimageloader.core.LoadAndDisplayImageTask;
+
+        $r2 = newarray (java.lang.Object)[1];
+
+        $r1 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String memoryCacheKey>;
+
+        $r2[0] = $r1;
+
+        staticinvoke <com.nostra13.universalimageloader.utils.L: void d(java.lang.String,java.lang.Object[])>("Cache image on disk [%s]", $r2);
+
+     label1:
+        $z0 = specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: boolean downloadImage()>();
+
+     label2:
+        if $z0 == 0 goto label7;
+
+        $r3 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoaderConfiguration configuration>;
+
+        $i0 = $r3.<com.nostra13.universalimageloader.core.ImageLoaderConfiguration: int maxImageWidthForDiskCache>;
+
+        $r3 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoaderConfiguration configuration>;
+
+        $i1 = $r3.<com.nostra13.universalimageloader.core.ImageLoaderConfiguration: int maxImageHeightForDiskCache>;
+
+        if $i0 > 0 goto label3;
+
+        if $i1 <= 0 goto label7;
+
+     label3:
+        $r2 = newarray (java.lang.Object)[1];
+
+        $r1 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String memoryCacheKey>;
+
+        $r2[0] = $r1;
+
+     label4:
+        staticinvoke <com.nostra13.universalimageloader.utils.L: void d(java.lang.String,java.lang.Object[])>("Resize image in disk cache [%s]", $r2);
+
+        specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: boolean resizeAndSaveImage(int,int)>($i0, $i1);
+
+     label5:
+        return $z0;
+
+     label6:
+        $r4 := @caughtexception;
+
+        staticinvoke <com.nostra13.universalimageloader.utils.L: void e(java.lang.Throwable)>($r4);
+
+        return 0;
+
+     label7:
+        return $z0;
+
+        catch java.io.IOException from label1 to label2 with label6;
+        catch java.io.IOException from label4 to label5 with label6;
+    }
+
+    private android.graphics.Bitmap tryLoadBitmap()
+    {
+        java.lang.Throwable $r13, $r15, $r16, $r19, $r20, $r21;
+        java.lang.Object[] $r5;
+        com.nostra13.universalimageloader.core.download.ImageDownloader$Scheme $r7;
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask r0;
+        com.nostra13.universalimageloader.core.assist.LoadedFrom $r6;
+        int $i0;
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException $r14;
+        java.lang.String $r3, $r10;
+        boolean $z0;
+        com.nostra13.universalimageloader.core.ImageLoaderConfiguration $r1;
+        com.nostra13.universalimageloader.cache.disc.DiskCache $r2;
+        com.nostra13.universalimageloader.core.DisplayImageOptions $r9;
+        java.io.File $r4;
+        com.nostra13.universalimageloader.core.assist.FailReason$FailType $r12;
+        android.graphics.Bitmap $r8, $r11;
+        java.lang.OutOfMemoryError $r17, $r18;
+
+        r0 := @this: com.nostra13.universalimageloader.core.LoadAndDisplayImageTask;
+
+     label01:
+        $r1 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoaderConfiguration configuration>;
+
+        $r2 = $r1.<com.nostra13.universalimageloader.core.ImageLoaderConfiguration: com.nostra13.universalimageloader.cache.disc.DiskCache diskCache>;
+
+        $r3 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String uri>;
+
+     label02:
+        $r4 = interfaceinvoke $r2.<com.nostra13.universalimageloader.cache.disc.DiskCache: java.io.File get(java.lang.String)>($r3);
+
+     label03:
+        if $r4 == null goto label53;
+
+     label04:
+        $z0 = virtualinvoke $r4.<java.io.File: boolean exists()>();
+
+     label05:
+        if $z0 == 0 goto label53;
+
+     label06:
+        $r5 = newarray (java.lang.Object)[1];
+
+        $r3 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String memoryCacheKey>;
+
+        $r5[0] = $r3;
+
+     label07:
+        staticinvoke <com.nostra13.universalimageloader.utils.L: void d(java.lang.String,java.lang.Object[])>("Load image from disk cache [%s]", $r5);
+
+     label08:
+        $r6 = <com.nostra13.universalimageloader.core.assist.LoadedFrom: com.nostra13.universalimageloader.core.assist.LoadedFrom DISC_CACHE>;
+
+     label09:
+        r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.assist.LoadedFrom loadedFrom> = $r6;
+
+     label10:
+        specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: void checkTaskNotActual()>();
+
+     label11:
+        $r7 = <com.nostra13.universalimageloader.core.download.ImageDownloader$Scheme: com.nostra13.universalimageloader.core.download.ImageDownloader$Scheme FILE>;
+
+     label12:
+        $r3 = virtualinvoke $r4.<java.io.File: java.lang.String getAbsolutePath()>();
+
+        $r3 = virtualinvoke $r7.<com.nostra13.universalimageloader.core.download.ImageDownloader$Scheme: java.lang.String wrap(java.lang.String)>($r3);
+
+        $r8 = specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: android.graphics.Bitmap decodeImage(java.lang.String)>($r3);
+
+     label13:
+        if $r8 == null goto label18;
+
+     label14:
+        $i0 = virtualinvoke $r8.<android.graphics.Bitmap: int getWidth()>();
+
+     label15:
+        if $i0 <= 0 goto label18;
+
+     label16:
+        $i0 = virtualinvoke $r8.<android.graphics.Bitmap: int getHeight()>();
+
+     label17:
+        if $i0 > 0 goto label54;
+
+     label18:
+        $r5 = newarray (java.lang.Object)[1];
+
+        $r3 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String memoryCacheKey>;
+
+        $r5[0] = $r3;
+
+     label19:
+        staticinvoke <com.nostra13.universalimageloader.utils.L: void d(java.lang.String,java.lang.Object[])>("Load image from network [%s]", $r5);
+
+     label20:
+        $r6 = <com.nostra13.universalimageloader.core.assist.LoadedFrom: com.nostra13.universalimageloader.core.assist.LoadedFrom NETWORK>;
+
+     label21:
+        r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.assist.LoadedFrom loadedFrom> = $r6;
+
+        $r3 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String uri>;
+
+        $r9 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.DisplayImageOptions options>;
+
+     label22:
+        $z0 = virtualinvoke $r9.<com.nostra13.universalimageloader.core.DisplayImageOptions: boolean isCacheOnDisk()>();
+
+     label23:
+        if $z0 == 0 goto label31;
+
+     label24:
+        $z0 = specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: boolean tryCacheImageOnDisk()>();
+
+     label25:
+        if $z0 == 0 goto label31;
+
+     label26:
+        $r1 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoaderConfiguration configuration>;
+
+        $r2 = $r1.<com.nostra13.universalimageloader.core.ImageLoaderConfiguration: com.nostra13.universalimageloader.cache.disc.DiskCache diskCache>;
+
+        $r10 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String uri>;
+
+     label27:
+        $r4 = interfaceinvoke $r2.<com.nostra13.universalimageloader.cache.disc.DiskCache: java.io.File get(java.lang.String)>($r10);
+
+     label28:
+        if $r4 == null goto label31;
+
+     label29:
+        $r7 = <com.nostra13.universalimageloader.core.download.ImageDownloader$Scheme: com.nostra13.universalimageloader.core.download.ImageDownloader$Scheme FILE>;
+
+     label30:
+        $r3 = virtualinvoke $r4.<java.io.File: java.lang.String getAbsolutePath()>();
+
+        $r3 = virtualinvoke $r7.<com.nostra13.universalimageloader.core.download.ImageDownloader$Scheme: java.lang.String wrap(java.lang.String)>($r3);
+
+     label31:
+        specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: void checkTaskNotActual()>();
+
+        $r11 = specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: android.graphics.Bitmap decodeImage(java.lang.String)>($r3);
+
+     label32:
+        $r8 = $r11;
+
+        if $r11 == null goto label37;
+
+     label33:
+        $i0 = virtualinvoke $r11.<android.graphics.Bitmap: int getWidth()>();
+
+     label34:
+        if $i0 <= 0 goto label37;
+
+     label35:
+        $i0 = virtualinvoke $r11.<android.graphics.Bitmap: int getHeight()>();
+
+     label36:
+        if $i0 > 0 goto label55;
+
+     label37:
+        $r12 = <com.nostra13.universalimageloader.core.assist.FailReason$FailType: com.nostra13.universalimageloader.core.assist.FailReason$FailType DECODING_ERROR>;
+
+     label38:
+        specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: void fireFailEvent(com.nostra13.universalimageloader.core.assist.FailReason$FailType,java.lang.Throwable)>($r12, null);
+
+     label39:
+        return $r11;
+
+     label40:
+        $r13 := @caughtexception;
+
+        $r8 = null;
+
+     label41:
+        $r12 = <com.nostra13.universalimageloader.core.assist.FailReason$FailType: com.nostra13.universalimageloader.core.assist.FailReason$FailType NETWORK_DENIED>;
+
+        specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: void fireFailEvent(com.nostra13.universalimageloader.core.assist.FailReason$FailType,java.lang.Throwable)>($r12, null);
+
+        return $r8;
+
+     label42:
+        $r14 := @caughtexception;
+
+        throw $r14;
+
+     label43:
+        $r15 := @caughtexception;
+
+        $r8 = null;
+
+        $r16 = $r15;
+
+     label44:
+        staticinvoke <com.nostra13.universalimageloader.utils.L: void e(java.lang.Throwable)>($r16);
+
+        $r12 = <com.nostra13.universalimageloader.core.assist.FailReason$FailType: com.nostra13.universalimageloader.core.assist.FailReason$FailType IO_ERROR>;
+
+        specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: void fireFailEvent(com.nostra13.universalimageloader.core.assist.FailReason$FailType,java.lang.Throwable)>($r12, $r16);
+
+        return $r8;
+
+     label45:
+        $r17 := @caughtexception;
+
+        $r8 = null;
+
+        $r18 = $r17;
+
+     label46:
+        staticinvoke <com.nostra13.universalimageloader.utils.L: void e(java.lang.Throwable)>($r18);
+
+        $r12 = <com.nostra13.universalimageloader.core.assist.FailReason$FailType: com.nostra13.universalimageloader.core.assist.FailReason$FailType OUT_OF_MEMORY>;
+
+        specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: void fireFailEvent(com.nostra13.universalimageloader.core.assist.FailReason$FailType,java.lang.Throwable)>($r12, $r18);
+
+        return $r8;
+
+     label47:
+        $r19 := @caughtexception;
+
+        $r8 = null;
+
+        $r20 = $r19;
+
+     label48:
+        staticinvoke <com.nostra13.universalimageloader.utils.L: void e(java.lang.Throwable)>($r20);
+
+        $r12 = <com.nostra13.universalimageloader.core.assist.FailReason$FailType: com.nostra13.universalimageloader.core.assist.FailReason$FailType UNKNOWN>;
+
+        specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: void fireFailEvent(com.nostra13.universalimageloader.core.assist.FailReason$FailType,java.lang.Throwable)>($r12, $r20);
+
+        return $r8;
+
+     label49:
+        $r20 := @caughtexception;
+
+        goto label48;
+
+     label50:
+        $r18 := @caughtexception;
+
+        goto label46;
+
+     label51:
+        $r16 := @caughtexception;
+
+        goto label44;
+
+     label52:
+        $r21 := @caughtexception;
+
+        goto label41;
+
+     label53:
+        $r8 = null;
+
+        goto label13;
+
+     label54:
+        return $r8;
+
+     label55:
+        return $r11;
+
+        catch java.lang.IllegalStateException from label02 to label03 with label40;
+        catch java.lang.IllegalStateException from label04 to label05 with label40;
+        catch java.lang.IllegalStateException from label07 to label08 with label40;
+        catch java.lang.IllegalStateException from label10 to label11 with label40;
+        catch java.lang.IllegalStateException from label12 to label13 with label40;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label02 to label03 with label42;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label04 to label05 with label42;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label07 to label08 with label42;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label10 to label11 with label42;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label12 to label13 with label42;
+        catch java.io.IOException from label02 to label03 with label43;
+        catch java.io.IOException from label04 to label05 with label43;
+        catch java.io.IOException from label07 to label08 with label43;
+        catch java.io.IOException from label10 to label11 with label43;
+        catch java.io.IOException from label12 to label13 with label43;
+        catch java.lang.OutOfMemoryError from label02 to label03 with label45;
+        catch java.lang.OutOfMemoryError from label04 to label05 with label45;
+        catch java.lang.OutOfMemoryError from label07 to label09 with label45;
+        catch java.lang.OutOfMemoryError from label10 to label13 with label45;
+        catch java.lang.Throwable from label01 to label03 with label47;
+        catch java.lang.Throwable from label04 to label05 with label47;
+        catch java.lang.Throwable from label06 to label13 with label47;
+        catch java.lang.IllegalStateException from label14 to label15 with label52;
+        catch java.lang.IllegalStateException from label16 to label17 with label52;
+        catch java.lang.IllegalStateException from label19 to label20 with label52;
+        catch java.lang.IllegalStateException from label22 to label23 with label52;
+        catch java.lang.IllegalStateException from label24 to label25 with label52;
+        catch java.lang.IllegalStateException from label27 to label28 with label52;
+        catch java.lang.IllegalStateException from label30 to label31 with label52;
+        catch java.lang.IllegalStateException from label31 to label32 with label52;
+        catch java.lang.IllegalStateException from label33 to label34 with label52;
+        catch java.lang.IllegalStateException from label35 to label36 with label52;
+        catch java.lang.IllegalStateException from label38 to label39 with label52;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label14 to label15 with label42;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label16 to label17 with label42;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label19 to label20 with label42;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label22 to label23 with label42;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label24 to label25 with label42;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label27 to label28 with label42;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label30 to label31 with label42;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label31 to label32 with label42;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label33 to label34 with label42;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label35 to label36 with label42;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label38 to label39 with label42;
+        catch java.io.IOException from label14 to label15 with label51;
+        catch java.io.IOException from label16 to label17 with label51;
+        catch java.io.IOException from label19 to label20 with label51;
+        catch java.io.IOException from label22 to label23 with label51;
+        catch java.io.IOException from label24 to label25 with label51;
+        catch java.io.IOException from label27 to label28 with label51;
+        catch java.io.IOException from label30 to label31 with label51;
+        catch java.io.IOException from label31 to label32 with label51;
+        catch java.io.IOException from label33 to label34 with label51;
+        catch java.io.IOException from label35 to label36 with label51;
+        catch java.io.IOException from label38 to label39 with label51;
+        catch java.lang.OutOfMemoryError from label14 to label15 with label50;
+        catch java.lang.OutOfMemoryError from label16 to label17 with label50;
+        catch java.lang.OutOfMemoryError from label19 to label21 with label50;
+        catch java.lang.OutOfMemoryError from label22 to label23 with label50;
+        catch java.lang.OutOfMemoryError from label24 to label25 with label50;
+        catch java.lang.OutOfMemoryError from label27 to label28 with label50;
+        catch java.lang.OutOfMemoryError from label29 to label31 with label50;
+        catch java.lang.OutOfMemoryError from label31 to label32 with label50;
+        catch java.lang.OutOfMemoryError from label33 to label34 with label50;
+        catch java.lang.OutOfMemoryError from label35 to label36 with label50;
+        catch java.lang.OutOfMemoryError from label37 to label39 with label50;
+        catch java.lang.Throwable from label14 to label15 with label49;
+        catch java.lang.Throwable from label16 to label17 with label49;
+        catch java.lang.Throwable from label18 to label23 with label49;
+        catch java.lang.Throwable from label24 to label25 with label49;
+        catch java.lang.Throwable from label26 to label28 with label49;
+        catch java.lang.Throwable from label29 to label31 with label49;
+        catch java.lang.Throwable from label31 to label32 with label49;
+        catch java.lang.Throwable from label33 to label34 with label49;
+        catch java.lang.Throwable from label35 to label36 with label49;
+        catch java.lang.Throwable from label37 to label39 with label49;
+    }
+
+    private boolean waitIfPaused()
+    {
+        java.lang.Throwable $r7, $r8;
+        java.lang.Object[] $r4;
+        java.util.concurrent.atomic.AtomicBoolean $r2;
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask r0;
+        com.nostra13.universalimageloader.core.ImageLoaderEngine $r1;
+        java.lang.Object $r3, $r6;
+        java.lang.String $r5;
+        boolean $z0;
+
+        r0 := @this: com.nostra13.universalimageloader.core.LoadAndDisplayImageTask;
+
+        $r1 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoaderEngine engine>;
+
+        $r2 = virtualinvoke $r1.<com.nostra13.universalimageloader.core.ImageLoaderEngine: java.util.concurrent.atomic.AtomicBoolean getPause()>();
+
+        $z0 = virtualinvoke $r2.<java.util.concurrent.atomic.AtomicBoolean: boolean get()>();
+
+        if $z0 == 0 goto label06;
+
+        $r1 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoaderEngine engine>;
+
+        $r3 = virtualinvoke $r1.<com.nostra13.universalimageloader.core.ImageLoaderEngine: java.lang.Object getPauseLock()>();
+
+        entermonitor $r3;
+
+     label01:
+        $z0 = virtualinvoke $r2.<java.util.concurrent.atomic.AtomicBoolean: boolean get()>();
+
+        if $z0 == 0 goto label05;
+
+        $r4 = newarray (java.lang.Object)[1];
+
+        $r5 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String memoryCacheKey>;
+
+        $r4[0] = $r5;
+
+        staticinvoke <com.nostra13.universalimageloader.utils.L: void d(java.lang.String,java.lang.Object[])>("ImageLoader is paused. Waiting...  [%s]", $r4);
+
+     label02:
+        $r1 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoaderEngine engine>;
+
+     label03:
+        $r6 = virtualinvoke $r1.<com.nostra13.universalimageloader.core.ImageLoaderEngine: java.lang.Object getPauseLock()>();
+
+        virtualinvoke $r6.<java.lang.Object: void wait()>();
+
+     label04:
+        $r4 = newarray (java.lang.Object)[1];
+
+        $r5 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String memoryCacheKey>;
+
+        $r4[0] = $r5;
+
+        staticinvoke <com.nostra13.universalimageloader.utils.L: void d(java.lang.String,java.lang.Object[])>(".. Resume loading [%s]", $r4);
+
+     label05:
+        exitmonitor $r3;
+
+     label06:
+        $z0 = specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: boolean isTaskNotActual()>();
+
+        return $z0;
+
+     label07:
+        $r7 := @caughtexception;
+
+     label08:
+        $r4 = newarray (java.lang.Object)[1];
+
+        $r5 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String memoryCacheKey>;
+
+        $r4[0] = $r5;
+
+        staticinvoke <com.nostra13.universalimageloader.utils.L: void e(java.lang.String,java.lang.Object[])>("Task was interrupted [%s]", $r4);
+
+        exitmonitor $r3;
+
+     label09:
+        return 1;
+
+     label10:
+        $r8 := @caughtexception;
+
+        exitmonitor $r3;
+
+        throw $r8;
+
+        catch java.lang.Throwable from label01 to label02 with label10;
+        catch java.lang.InterruptedException from label03 to label04 with label07;
+        catch java.lang.Throwable from label02 to label04 with label10;
+        catch java.lang.Throwable from label04 to label06 with label10;
+        catch java.lang.Throwable from label08 to label09 with label10;
+    }
+
+    final java.lang.String getLoadingUri()
+    {
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask r0;
+        java.lang.String r1;
+
+        r0 := @this: com.nostra13.universalimageloader.core.LoadAndDisplayImageTask;
+
+        r1 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String uri>;
+
+        return r1;
+    }
+
+    public final boolean onBytesCopied(int, int)
+    {
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask r0;
+        int $i0, $i1;
+        boolean $z0;
+
+        r0 := @this: com.nostra13.universalimageloader.core.LoadAndDisplayImageTask;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $z0 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: boolean syncLoading>;
+
+        if $z0 != 0 goto label1;
+
+        $z0 = specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: boolean fireProgressEvent(int,int)>($i0, $i1);
+
+        if $z0 == 0 goto label2;
+
+     label1:
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    public final void run()
+    {
+        java.lang.Throwable $r17;
+        java.lang.Object[] $r3;
+        com.nostra13.universalimageloader.core.process.BitmapProcessor $r11;
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask r0;
+        com.nostra13.universalimageloader.core.ImageLoaderEngine $r13;
+        com.nostra13.universalimageloader.core.assist.LoadedFrom $r14;
+        android.os.Handler $r15;
+        com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException $r16;
+        java.lang.String $r4;
+        boolean $z0;
+        java.util.concurrent.locks.ReentrantLock $r2;
+        com.nostra13.universalimageloader.core.DisplayBitmapTask $r12;
+        com.nostra13.universalimageloader.core.ImageLoaderConfiguration $r5;
+        com.nostra13.universalimageloader.core.DisplayImageOptions $r10;
+        android.graphics.Bitmap $r8, $r9;
+        com.nostra13.universalimageloader.cache.memory.MemoryCache $r6;
+        java.lang.Object $r7;
+        com.nostra13.universalimageloader.core.ImageLoadingInfo $r1;
+
+        r0 := @this: com.nostra13.universalimageloader.core.LoadAndDisplayImageTask;
+
+        $z0 = specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: boolean waitIfPaused()>();
+
+        if $z0 == 0 goto label01;
+
+        return;
+
+     label01:
+        $z0 = specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: boolean delayIfNeed()>();
+
+        if $z0 != 0 goto label51;
+
+        $r1 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoadingInfo imageLoadingInfo>;
+
+        $r2 = $r1.<com.nostra13.universalimageloader.core.ImageLoadingInfo: java.util.concurrent.locks.ReentrantLock loadFromUriLock>;
+
+        $r3 = newarray (java.lang.Object)[1];
+
+        $r4 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String memoryCacheKey>;
+
+        $r3[0] = $r4;
+
+        staticinvoke <com.nostra13.universalimageloader.utils.L: void d(java.lang.String,java.lang.Object[])>("Start display image task [%s]", $r3);
+
+        $z0 = virtualinvoke $r2.<java.util.concurrent.locks.ReentrantLock: boolean isLocked()>();
+
+        if $z0 == 0 goto label02;
+
+        $r3 = newarray (java.lang.Object)[1];
+
+        $r4 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String memoryCacheKey>;
+
+        $r3[0] = $r4;
+
+        staticinvoke <com.nostra13.universalimageloader.utils.L: void d(java.lang.String,java.lang.Object[])>("Image already is loading. Waiting... [%s]", $r3);
+
+     label02:
+        virtualinvoke $r2.<java.util.concurrent.locks.ReentrantLock: void lock()>();
+
+     label03:
+        specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: void checkTaskNotActual()>();
+
+     label04:
+        $r5 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoaderConfiguration configuration>;
+
+        $r6 = $r5.<com.nostra13.universalimageloader.core.ImageLoaderConfiguration: com.nostra13.universalimageloader.cache.memory.MemoryCache memoryCache>;
+
+        $r4 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String memoryCacheKey>;
+
+     label05:
+        $r7 = interfaceinvoke $r6.<com.nostra13.universalimageloader.cache.memory.MemoryCache: java.lang.Object get(java.lang.Object)>($r4);
+
+     label06:
+        $r8 = (android.graphics.Bitmap) $r7;
+
+     label07:
+        if $r8 == null goto label10;
+
+     label08:
+        $z0 = virtualinvoke $r8.<android.graphics.Bitmap: boolean isRecycled()>();
+
+     label09:
+        if $z0 == 0 goto label44;
+
+     label10:
+        $r9 = specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: android.graphics.Bitmap tryLoadBitmap()>();
+
+     label11:
+        $r8 = $r9;
+
+        if $r9 != null goto label12;
+
+        virtualinvoke $r2.<java.util.concurrent.locks.ReentrantLock: void unlock()>();
+
+        return;
+
+     label12:
+        specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: void checkTaskNotActual()>();
+
+        specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: void checkTaskInterrupted()>();
+
+     label13:
+        $r10 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.DisplayImageOptions options>;
+
+     label14:
+        $z0 = virtualinvoke $r10.<com.nostra13.universalimageloader.core.DisplayImageOptions: boolean shouldPreProcess()>();
+
+     label15:
+        if $z0 == 0 goto label23;
+
+     label16:
+        $r3 = newarray (java.lang.Object)[1];
+
+        $r4 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String memoryCacheKey>;
+
+        $r3[0] = $r4;
+
+     label17:
+        staticinvoke <com.nostra13.universalimageloader.utils.L: void d(java.lang.String,java.lang.Object[])>("PreProcess image before caching in memory [%s]", $r3);
+
+     label18:
+        $r10 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.DisplayImageOptions options>;
+
+     label19:
+        $r11 = virtualinvoke $r10.<com.nostra13.universalimageloader.core.DisplayImageOptions: com.nostra13.universalimageloader.core.process.BitmapProcessor getPreProcessor()>();
+
+        $r9 = interfaceinvoke $r11.<com.nostra13.universalimageloader.core.process.BitmapProcessor: android.graphics.Bitmap process(android.graphics.Bitmap)>($r9);
+
+     label20:
+        $r8 = $r9;
+
+        if $r9 != null goto label23;
+
+     label21:
+        $r3 = newarray (java.lang.Object)[1];
+
+        $r4 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String memoryCacheKey>;
+
+        $r3[0] = $r4;
+
+     label22:
+        staticinvoke <com.nostra13.universalimageloader.utils.L: void e(java.lang.String,java.lang.Object[])>("Pre-processor returned null [%s]", $r3);
+
+     label23:
+        if $r8 == null goto label42;
+
+     label24:
+        $r10 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.DisplayImageOptions options>;
+
+     label25:
+        $z0 = virtualinvoke $r10.<com.nostra13.universalimageloader.core.DisplayImageOptions: boolean isCacheInMemory()>();
+
+     label26:
+        if $z0 == 0 goto label31;
+
+     label27:
+        $r3 = newarray (java.lang.Object)[1];
+
+        $r4 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String memoryCacheKey>;
+
+        $r3[0] = $r4;
+
+     label28:
+        staticinvoke <com.nostra13.universalimageloader.utils.L: void d(java.lang.String,java.lang.Object[])>("Cache image in memory [%s]", $r3);
+
+     label29:
+        $r5 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoaderConfiguration configuration>;
+
+        $r6 = $r5.<com.nostra13.universalimageloader.core.ImageLoaderConfiguration: com.nostra13.universalimageloader.cache.memory.MemoryCache memoryCache>;
+
+        $r4 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String memoryCacheKey>;
+
+     label30:
+        interfaceinvoke $r6.<com.nostra13.universalimageloader.cache.memory.MemoryCache: boolean put(java.lang.Object,java.lang.Object)>($r4, $r8);
+
+     label31:
+        if $r8 == null goto label42;
+
+     label32:
+        $r10 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.DisplayImageOptions options>;
+
+     label33:
+        $z0 = virtualinvoke $r10.<com.nostra13.universalimageloader.core.DisplayImageOptions: boolean shouldPostProcess()>();
+
+     label34:
+        if $z0 == 0 goto label42;
+
+     label35:
+        $r3 = newarray (java.lang.Object)[1];
+
+        $r4 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String memoryCacheKey>;
+
+        $r3[0] = $r4;
+
+     label36:
+        staticinvoke <com.nostra13.universalimageloader.utils.L: void d(java.lang.String,java.lang.Object[])>("PostProcess image before displaying [%s]", $r3);
+
+     label37:
+        $r10 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.DisplayImageOptions options>;
+
+     label38:
+        $r11 = virtualinvoke $r10.<com.nostra13.universalimageloader.core.DisplayImageOptions: com.nostra13.universalimageloader.core.process.BitmapProcessor getPostProcessor()>();
+
+        $r9 = interfaceinvoke $r11.<com.nostra13.universalimageloader.core.process.BitmapProcessor: android.graphics.Bitmap process(android.graphics.Bitmap)>($r8);
+
+     label39:
+        $r8 = $r9;
+
+        if $r9 != null goto label42;
+
+     label40:
+        $r3 = newarray (java.lang.Object)[1];
+
+        $r4 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String memoryCacheKey>;
+
+        $r3[0] = $r4;
+
+     label41:
+        staticinvoke <com.nostra13.universalimageloader.utils.L: void e(java.lang.String,java.lang.Object[])>("Post-processor returned null [%s]", $r3);
+
+     label42:
+        specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: void checkTaskNotActual()>();
+
+        specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: void checkTaskInterrupted()>();
+
+     label43:
+        virtualinvoke $r2.<java.util.concurrent.locks.ReentrantLock: void unlock()>();
+
+        $r12 = new com.nostra13.universalimageloader.core.DisplayBitmapTask;
+
+        $r1 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoadingInfo imageLoadingInfo>;
+
+        $r13 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoaderEngine engine>;
+
+        $r14 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.assist.LoadedFrom loadedFrom>;
+
+        specialinvoke $r12.<com.nostra13.universalimageloader.core.DisplayBitmapTask: void <init>(android.graphics.Bitmap,com.nostra13.universalimageloader.core.ImageLoadingInfo,com.nostra13.universalimageloader.core.ImageLoaderEngine,com.nostra13.universalimageloader.core.assist.LoadedFrom)>($r8, $r1, $r13, $r14);
+
+        $z0 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: boolean syncLoading>;
+
+        $r15 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: android.os.Handler handler>;
+
+        $r13 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.ImageLoaderEngine engine>;
+
+        staticinvoke <com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: void runTask(java.lang.Runnable,boolean,android.os.Handler,com.nostra13.universalimageloader.core.ImageLoaderEngine)>($r12, $z0, $r15, $r13);
+
+        return;
+
+     label44:
+        $r14 = <com.nostra13.universalimageloader.core.assist.LoadedFrom: com.nostra13.universalimageloader.core.assist.LoadedFrom MEMORY_CACHE>;
+
+        r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: com.nostra13.universalimageloader.core.assist.LoadedFrom loadedFrom> = $r14;
+
+        $r3 = newarray (java.lang.Object)[1];
+
+        $r4 = r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String memoryCacheKey>;
+
+        $r3[0] = $r4;
+
+     label45:
+        staticinvoke <com.nostra13.universalimageloader.utils.L: void d(java.lang.String,java.lang.Object[])>("...Get cached bitmap from memory after waiting. [%s]", $r3);
+
+     label46:
+        goto label31;
+
+     label47:
+        $r16 := @caughtexception;
+
+     label48:
+        specialinvoke r0.<com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: void fireCancelEvent()>();
+
+     label49:
+        virtualinvoke $r2.<java.util.concurrent.locks.ReentrantLock: void unlock()>();
+
+        return;
+
+     label50:
+        $r17 := @caughtexception;
+
+        virtualinvoke $r2.<java.util.concurrent.locks.ReentrantLock: void unlock()>();
+
+        throw $r17;
+
+     label51:
+        return;
+
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label03 to label04 with label47;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label05 to label06 with label47;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label08 to label09 with label47;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label10 to label11 with label47;
+        catch java.lang.Throwable from label03 to label07 with label50;
+        catch java.lang.Throwable from label08 to label09 with label50;
+        catch java.lang.Throwable from label10 to label11 with label50;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label12 to label13 with label47;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label14 to label15 with label47;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label17 to label18 with label47;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label19 to label20 with label47;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label22 to label23 with label47;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label25 to label26 with label47;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label28 to label29 with label47;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label30 to label31 with label47;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label33 to label34 with label47;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label36 to label37 with label47;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label38 to label39 with label47;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label41 to label43 with label47;
+        catch java.lang.Throwable from label12 to label15 with label50;
+        catch java.lang.Throwable from label16 to label20 with label50;
+        catch java.lang.Throwable from label21 to label23 with label50;
+        catch java.lang.Throwable from label24 to label26 with label50;
+        catch java.lang.Throwable from label27 to label31 with label50;
+        catch java.lang.Throwable from label32 to label34 with label50;
+        catch java.lang.Throwable from label35 to label39 with label50;
+        catch java.lang.Throwable from label40 to label43 with label50;
+        catch com.nostra13.universalimageloader.core.LoadAndDisplayImageTask$TaskCancelledException from label45 to label46 with label47;
+        catch java.lang.Throwable from label44 to label46 with label50;
+        catch java.lang.Throwable from label48 to label49 with label50;
+    }
+
+    public static void <clinit>()
+    {
+        <com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String LOG_WAITING_FOR_RESUME> = "ImageLoader is paused. Waiting...  [%s]";
+
+        <com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String LOG_WAITING_FOR_IMAGE_LOADED> = "Image already is loading. Waiting... [%s]";
+
+        <com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String LOG_TASK_INTERRUPTED> = "Task was interrupted [%s]";
+
+        <com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String LOG_TASK_CANCELLED_IMAGEAWARE_REUSED> = "ImageAware is reused for another image. Task is cancelled. [%s]";
+
+        <com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String LOG_TASK_CANCELLED_IMAGEAWARE_COLLECTED> = "ImageAware was collected by GC. Task is cancelled. [%s]";
+
+        <com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String LOG_START_DISPLAY_IMAGE_TASK> = "Start display image task [%s]";
+
+        <com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String LOG_RESUME_AFTER_PAUSE> = ".. Resume loading [%s]";
+
+        <com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String LOG_RESIZE_CACHED_IMAGE_FILE> = "Resize image in disk cache [%s]";
+
+        <com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String LOG_PROCESS_IMAGE_BEFORE_CACHE_ON_DISK> = "Process image before cache on disk [%s]";
+
+        <com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String LOG_PREPROCESS_IMAGE> = "PreProcess image before caching in memory [%s]";
+
+        <com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String LOG_POSTPROCESS_IMAGE> = "PostProcess image before displaying [%s]";
+
+        <com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String LOG_LOAD_IMAGE_FROM_NETWORK> = "Load image from network [%s]";
+
+        <com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String LOG_LOAD_IMAGE_FROM_DISK_CACHE> = "Load image from disk cache [%s]";
+
+        <com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String LOG_GET_IMAGE_FROM_MEMORY_CACHE_AFTER_WAITING> = "...Get cached bitmap from memory after waiting. [%s]";
+
+        <com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String LOG_DELAY_BEFORE_LOADING> = "Delay %d ms before loading...  [%s]";
+
+        <com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String LOG_CACHE_IMAGE_ON_DISK> = "Cache image on disk [%s]";
+
+        <com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String LOG_CACHE_IMAGE_IN_MEMORY> = "Cache image in memory [%s]";
+
+        <com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String ERROR_PROCESSOR_FOR_DISK_CACHE_NULL> = "Bitmap processor for disk cache returned null [%s]";
+
+        <com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String ERROR_PRE_PROCESSOR_NULL> = "Pre-processor returned null [%s]";
+
+        <com.nostra13.universalimageloader.core.LoadAndDisplayImageTask: java.lang.String ERROR_POST_PROCESSOR_NULL> = "Post-processor returned null [%s]";
+
+        return;
+    }
+}

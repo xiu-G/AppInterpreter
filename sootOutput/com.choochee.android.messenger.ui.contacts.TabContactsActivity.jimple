@@ -1,0 +1,1370 @@
+public class com.choochee.android.messenger.ui.contacts.TabContactsActivity extends android.app.Activity implements com.choochee.android.messenger.util.ChooCheeImListener$IReceiver, android.content.SyncStatusObserver
+{
+    public static final java.lang.String EXTRA_CONTACTS;
+    public static final java.lang.String EXTRA_LASTNAME;
+    public static final java.lang.String EXTRA_REQUERY_CONTACTS;
+    public static final java.lang.String EXTRA_SEARCH;
+    public static final java.lang.String EXTRA_SELECT_MULTIPLE_CONTACTS;
+    public static final java.lang.String EXTRA_SORT_ORDER;
+    private static final int MODULAS_THROTTLE_SYNC_STATUS;
+    public static final java.lang.String MSG_QUEUE_REMOVED;
+    public static final java.lang.String STATE_SEARCH;
+    public static final java.lang.String STATE_SELECTED_CONTACTS;
+    public static final java.lang.String STATE_SELECT_MULTIPLE_CONTACTS;
+    private static final java.lang.String TAG;
+    public static final int TIMEOUT_CONTACT_SYNC_WAIT;
+    private static android.widget.ListView mContactsList;
+    com.choochee.android.messenger.ui.contacts.MessagesContactsAdapter adapter;
+    private android.content.BroadcastReceiver broadcastReceiver;
+    private android.widget.ImageButton btnClearX;
+    private android.text.TextWatcher filterTextWatcher;
+    private android.view.View$OnClickListener mClearText;
+    android.database.ContentObserver mContentObserver;
+    private android.widget.EditText mEditSearch;
+    private android.widget.TextView mEmptyList;
+    private java.lang.Object mHandleSyncStatusChange;
+    private android.content.AsyncQueryHandler mHandler;
+    private android.os.Handler mHandler2;
+    private com.choochee.android.messenger.ui.contacts.TabContactsActivity$ConfigState mState;
+    private java.lang.String search;
+    java.lang.String searchTextInEditBox;
+    private boolean selectMultiple;
+    private java.lang.String[] selectedContacts;
+    public android.content.Intent ipcIntent;
+    public android.content.Intent ipcResultIntent;
+
+    public void <init>()
+    {
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity$7 $r3;
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity r0;
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity$6 $r2;
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity$3 $r1;
+
+        r0 := @this: com.choochee.android.messenger.ui.contacts.TabContactsActivity;
+
+        specialinvoke r0.<android.app.Activity: void <init>()>();
+
+        r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.database.ContentObserver mContentObserver> = null;
+
+        r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: boolean selectMultiple> = 0;
+
+        r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: java.lang.String[] selectedContacts> = null;
+
+        r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: java.lang.String search> = null;
+
+        r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: com.choochee.android.messenger.ui.contacts.TabContactsActivity$ConfigState mState> = null;
+
+        r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.content.AsyncQueryHandler mHandler> = null;
+
+        r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: java.lang.Object mHandleSyncStatusChange> = null;
+
+        $r1 = new com.choochee.android.messenger.ui.contacts.TabContactsActivity$3;
+
+        specialinvoke $r1.<com.choochee.android.messenger.ui.contacts.TabContactsActivity$3: void <init>(com.choochee.android.messenger.ui.contacts.TabContactsActivity)>(r0);
+
+        r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.view.View$OnClickListener mClearText> = $r1;
+
+        $r2 = new com.choochee.android.messenger.ui.contacts.TabContactsActivity$6;
+
+        specialinvoke $r2.<com.choochee.android.messenger.ui.contacts.TabContactsActivity$6: void <init>(com.choochee.android.messenger.ui.contacts.TabContactsActivity)>(r0);
+
+        r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.text.TextWatcher filterTextWatcher> = $r2;
+
+        $r3 = new com.choochee.android.messenger.ui.contacts.TabContactsActivity$7;
+
+        specialinvoke $r3.<com.choochee.android.messenger.ui.contacts.TabContactsActivity$7: void <init>(com.choochee.android.messenger.ui.contacts.TabContactsActivity)>(r0);
+
+        r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.content.BroadcastReceiver broadcastReceiver> = $r3;
+
+        return;
+    }
+
+    static android.database.Cursor access$100(com.choochee.android.messenger.ui.contacts.TabContactsActivity, java.lang.String, boolean)
+    {
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity $r0;
+        java.lang.String $r1;
+        boolean $z0;
+        android.database.Cursor $r2;
+
+        $r0 := @parameter0: com.choochee.android.messenger.ui.contacts.TabContactsActivity;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $z0 := @parameter2: boolean;
+
+        $r2 = specialinvoke $r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.database.Cursor getChooCheeContacts(java.lang.String,boolean)>($r1, 0);
+
+        return $r2;
+    }
+
+    static void access$200(com.choochee.android.messenger.ui.contacts.TabContactsActivity, android.content.Context)
+    {
+        android.content.Context $r1;
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity $r0;
+
+        $r0 := @parameter0: com.choochee.android.messenger.ui.contacts.TabContactsActivity;
+
+        $r1 := @parameter1: android.content.Context;
+
+        specialinvoke $r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: void decideEmptyViewText(android.content.Context)>($r1);
+
+        return;
+    }
+
+    static android.widget.EditText access$300(com.choochee.android.messenger.ui.contacts.TabContactsActivity)
+    {
+        android.widget.EditText r1;
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity $r0;
+
+        $r0 := @parameter0: com.choochee.android.messenger.ui.contacts.TabContactsActivity;
+
+        r1 = $r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.widget.EditText mEditSearch>;
+
+        return r1;
+    }
+
+    static void access$400(com.choochee.android.messenger.ui.contacts.TabContactsActivity)
+    {
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity $r0;
+
+        $r0 := @parameter0: com.choochee.android.messenger.ui.contacts.TabContactsActivity;
+
+        specialinvoke $r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: void refreshContactList()>();
+
+        return;
+    }
+
+    static boolean access$500(com.choochee.android.messenger.ui.contacts.TabContactsActivity)
+    {
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity $r0;
+        boolean z0;
+
+        $r0 := @parameter0: com.choochee.android.messenger.ui.contacts.TabContactsActivity;
+
+        z0 = $r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: boolean selectMultiple>;
+
+        return z0;
+    }
+
+    static android.widget.ListView access$600()
+    {
+        android.widget.ListView r0;
+
+        r0 = <com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.widget.ListView mContactsList>;
+
+        return r0;
+    }
+
+    private void checkDisplaySyncProgress(android.content.Intent)
+    {
+        com.choochee.android.messenger.syncadapter.ChooCheeSyncProgress r2;
+        android.os.Bundle r3, $r6;
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity r0;
+        android.content.Intent $r1;
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity$5 $r7;
+        java.lang.StringBuilder $r5;
+        java.lang.String $r4;
+        boolean $z0;
+
+        r0 := @this: com.choochee.android.messenger.ui.contacts.TabContactsActivity;
+
+        $r1 := @parameter0: android.content.Intent;
+
+        if $r1 == null goto label3;
+
+        $r4 = virtualinvoke $r1.<android.content.Intent: java.lang.String toString()>();
+
+     label1:
+        staticinvoke <com.choochee.android.messenger.util.Logs: void d(java.lang.String,java.lang.String)>("TabContactsActivity", $r4);
+
+        if $r1 == null goto label5;
+
+        $r4 = virtualinvoke $r1.<android.content.Intent: java.lang.String getAction()>();
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r4);
+
+        if $z0 != 0 goto label4;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("getAction() = ");
+
+        $r4 = virtualinvoke $r1.<android.content.Intent: java.lang.String getAction()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void d(java.lang.String,java.lang.String)>("TabContactsActivity", $r4);
+
+     label2:
+        if $r1 == null goto label5;
+
+        $r4 = virtualinvoke $r1.<android.content.Intent: java.lang.String getAction()>();
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r4);
+
+        if $z0 != 0 goto label5;
+
+        $r4 = virtualinvoke $r1.<android.content.Intent: java.lang.String getAction()>();
+
+        $z0 = virtualinvoke $r4.<java.lang.String: boolean equals(java.lang.Object)>("com.choochee.android.messenger.choocheesyncprogress.ACTION_NOTIFICATION_SYNC_PROGRESS");
+
+        if $z0 == 0 goto label5;
+
+        r3 = new android.os.Bundle;
+
+        $r6 = virtualinvoke $r1.<android.content.Intent: android.os.Bundle getExtras()>();
+
+        specialinvoke r3.<android.os.Bundle: void <init>(android.os.Bundle)>($r6);
+
+        r2 = new com.choochee.android.messenger.syncadapter.ChooCheeSyncProgress;
+
+        specialinvoke r2.<com.choochee.android.messenger.syncadapter.ChooCheeSyncProgress: void <init>(android.content.Context,android.os.Bundle)>(r0, r3);
+
+        $r7 = new com.choochee.android.messenger.ui.contacts.TabContactsActivity$5;
+
+        specialinvoke $r7.<com.choochee.android.messenger.ui.contacts.TabContactsActivity$5: void <init>(com.choochee.android.messenger.ui.contacts.TabContactsActivity)>(r0);
+
+        virtualinvoke r2.<com.choochee.android.messenger.syncadapter.ChooCheeSyncProgress: void setOnDismissListener(android.content.DialogInterface$OnDismissListener)>($r7);
+
+        virtualinvoke r2.<com.choochee.android.messenger.syncadapter.ChooCheeSyncProgress: void show()>();
+
+        return;
+
+     label3:
+        $r4 = "(null-intent)";
+
+        goto label1;
+
+     label4:
+        staticinvoke <com.choochee.android.messenger.util.Logs: void d(java.lang.String,java.lang.String)>("TabContactsActivity", "getAction() isEmpty");
+
+        goto label2;
+
+     label5:
+        return;
+    }
+
+    private void decideEmptyViewText(android.content.Context)
+    {
+        android.content.Context $r1;
+        android.accounts.Account $r4;
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity r0;
+        com.choochee.android.messenger.om.Application $r2;
+        android.widget.TextView $r6;
+        int $i0;
+        java.lang.Boolean $r5;
+        com.choochee.android.messenger.util.UserProfile $r3;
+        android.widget.ListView $r7;
+        boolean $z0;
+
+        r0 := @this: com.choochee.android.messenger.ui.contacts.TabContactsActivity;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r1 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.content.Context getApplicationContext()>();
+
+        $r2 = staticinvoke <com.choochee.android.messenger.om.Application: com.choochee.android.messenger.om.Application getInstance()>();
+
+        $r3 = virtualinvoke $r2.<com.choochee.android.messenger.om.Application: com.choochee.android.messenger.util.UserProfile getUserProfile()>();
+
+        $r4 = staticinvoke <com.choochee.android.messenger.syncadapter.ChooCheeSyncAdapter: android.accounts.Account lookupChoocheeAccount(java.lang.String,android.content.Context,com.choochee.android.messenger.util.UserProfile,java.lang.String)>("TabContactsActivity", $r1, $r3, "com.revvl.android.messenger");
+
+        $r5 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(0);
+
+        if $r4 == null goto label3;
+
+        $z0 = staticinvoke <android.content.ContentResolver: boolean isSyncActive(android.accounts.Account,java.lang.String)>($r4, "com.android.contacts");
+
+        if $z0 != 0 goto label1;
+
+        $z0 = staticinvoke <android.content.ContentResolver: boolean isSyncPending(android.accounts.Account,java.lang.String)>($r4, "com.android.contacts");
+
+        if $z0 == 0 goto label5;
+
+     label1:
+        $z0 = 1;
+
+     label2:
+        $r5 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>($z0);
+
+     label3:
+        $r6 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.widget.TextView mEmptyList>;
+
+        $z0 = virtualinvoke $r5.<java.lang.Boolean: boolean booleanValue()>();
+
+        if $z0 == 0 goto label6;
+
+        $i0 = 2131427496;
+
+     label4:
+        virtualinvoke $r6.<android.widget.TextView: void setText(int)>($i0);
+
+        $r7 = <com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.widget.ListView mContactsList>;
+
+        $r6 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.widget.TextView mEmptyList>;
+
+        virtualinvoke $r7.<android.widget.ListView: void setEmptyView(android.view.View)>($r6);
+
+        return;
+
+     label5:
+        $z0 = 0;
+
+        goto label2;
+
+     label6:
+        $i0 = 2131427458;
+
+        goto label4;
+    }
+
+    private android.database.Cursor getChooCheeContacts(java.lang.String, boolean)
+    {
+        android.content.AsyncQueryHandler $r8;
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity$8 $r11;
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity r0;
+        android.net.Uri r1;
+        java.lang.String[] r2;
+        android.content.ContentResolver $r6;
+        int $i0;
+        java.lang.StringBuilder $r4, $r10;
+        java.lang.String $r3, $r5, r7;
+        boolean $z0, $z1;
+        android.database.Cursor $r9;
+
+        r0 := @this: com.choochee.android.messenger.ui.contacts.TabContactsActivity;
+
+        $r3 := @parameter0: java.lang.String;
+
+        $z0 := @parameter1: boolean;
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("In getChooCheeContacts: searchString = ");
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void d(java.lang.String,java.lang.String)>("TabContactsActivity", $r5);
+
+        $r3 = virtualinvoke $r3.<java.lang.String: java.lang.String replace(java.lang.CharSequence,java.lang.CharSequence)>("\'", "\'\'");
+
+        $r6 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.content.ContentResolver getContentResolver()>();
+
+        r1 = <com.choochee.android.messenger.cws.ChooCheeContentProvider$ChooCheeCM: android.net.Uri GETCHOOCHEE_CONTACTS>;
+
+        $z1 = specialinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: boolean isShowContactOffline()>();
+
+        r2 = newarray (java.lang.String)[16];
+
+        r2[0] = "_id";
+
+        r2[1] = "accountid";
+
+        r2[2] = "providerid";
+
+        r2[3] = "typeindicator";
+
+        r2[4] = "displayname";
+
+        r2[5] = "username";
+
+        r2[6] = "userid";
+
+        r2[7] = "lastname";
+
+        r2[8] = "username";
+
+        r2[9] = "nickname";
+
+        r2[10] = "firstname";
+
+        r2[11] = "registereduser";
+
+        r2[12] = "registereduservalue";
+
+        r2[13] = "status";
+
+        r2[14] = "statusvalue";
+
+        r2[15] = "contact_status";
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("userid IS NOT NULL");
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" AND ");
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("contact_status");
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" = \'");
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>(7);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\'");
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        r7 = $r5;
+
+        if $z1 != 0 goto label1;
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" AND ");
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("status");
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" NOT LIKE ");
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" \'%offline%\' ");
+
+        r7 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label1:
+        $z1 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r3);
+
+        if $z1 != 0 goto label2;
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(r7);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" AND (displayname LIKE \'%");
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("%\')");
+
+        r7 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label2:
+        if $z0 == 0 goto label4;
+
+        $r8 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.content.AsyncQueryHandler mHandler>;
+
+        if $r8 != null goto label3;
+
+        $r11 = new com.choochee.android.messenger.ui.contacts.TabContactsActivity$8;
+
+        $r6 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.content.ContentResolver getContentResolver()>();
+
+        specialinvoke $r11.<com.choochee.android.messenger.ui.contacts.TabContactsActivity$8: void <init>(com.choochee.android.messenger.ui.contacts.TabContactsActivity,android.content.ContentResolver)>(r0, $r6);
+
+        r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.content.AsyncQueryHandler mHandler> = $r11;
+
+     label3:
+        $r8 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.content.AsyncQueryHandler mHandler>;
+
+        virtualinvoke $r8.<android.content.AsyncQueryHandler: void startQuery(int,java.lang.Object,android.net.Uri,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String)>(-1, null, r1, r2, r7, null, "(registereduservalue + statusvalue) ASC, displayname ASC ");
+
+        return null;
+
+     label4:
+        $r9 = virtualinvoke $r6.<android.content.ContentResolver: android.database.Cursor query(android.net.Uri,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String)>(r1, r2, r7, null, "(registereduservalue + statusvalue) ASC, displayname ASC ");
+
+        if $r9 == null goto label5;
+
+        $r10 = new java.lang.StringBuilder;
+
+        specialinvoke $r10.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r10.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("received ");
+
+        $i0 = interfaceinvoke $r9.<android.database.Cursor: int getCount()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" records");
+
+        $r3 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void i(java.lang.String,java.lang.String)>("TabContactsActivity", $r3);
+
+     label5:
+        return $r9;
+    }
+
+    private void initialize(android.os.Bundle)
+    {
+        android.os.Bundle $r1;
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity r0;
+        java.lang.String[] $r3;
+        android.content.Intent $r4;
+        java.lang.String $r2;
+        boolean $z0;
+
+        r0 := @this: com.choochee.android.messenger.ui.contacts.TabContactsActivity;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        if $r1 == null goto label1;
+
+        $z0 = virtualinvoke $r1.<android.os.Bundle: boolean getBoolean(java.lang.String)>("state.tabcontactactivity.selectmultiple");
+
+        r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: boolean selectMultiple> = $z0;
+
+        $r2 = virtualinvoke $r1.<android.os.Bundle: java.lang.String getString(java.lang.String)>("state.tabcontactactivity.search");
+
+        r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: java.lang.String search> = $r2;
+
+        $r3 = virtualinvoke $r1.<android.os.Bundle: java.lang.String[] getStringArray(java.lang.String)>("state.tabcontactactivity.selectedcontacts");
+
+        r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: java.lang.String[] selectedContacts> = $r3;
+
+        return;
+
+     label1:
+        $r4 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.content.Intent getIntent()>();
+
+        $r1 = virtualinvoke $r4.<android.content.Intent: android.os.Bundle getExtras()>();
+
+        if $r1 == null goto label2;
+
+        $z0 = virtualinvoke $r1.<android.os.Bundle: boolean getBoolean(java.lang.String)>("extra.tabcontactactivity.SELECT_MULTIPLE_CONTACTS");
+
+        r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: boolean selectMultiple> = $z0;
+
+        $r2 = virtualinvoke $r1.<android.os.Bundle: java.lang.String getString(java.lang.String)>("extra.tabcontactactivity.SEARCH");
+
+        r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: java.lang.String search> = $r2;
+
+        $r3 = virtualinvoke $r1.<android.os.Bundle: java.lang.String[] getStringArray(java.lang.String)>("extra.tabcontactactivity.CONTACTS");
+
+        r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: java.lang.String[] selectedContacts> = $r3;
+
+     label2:
+        return;
+    }
+
+    private boolean isShowContactOffline()
+    {
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity r0;
+        boolean $z0;
+
+        r0 := @this: com.choochee.android.messenger.ui.contacts.TabContactsActivity;
+
+        $z0 = staticinvoke <com.choochee.android.messenger.util.StoredPrefs: boolean getOfflineMode(android.content.Context)>(r0);
+
+        return $z0;
+    }
+
+    private void refreshContactList()
+    {
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity r0;
+        java.lang.String r1;
+        android.widget.EditText $r2;
+        android.text.Editable $r3;
+
+        r0 := @this: com.choochee.android.messenger.ui.contacts.TabContactsActivity;
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void d(java.lang.String,java.lang.String)>("TabContactsActivity", "In refreshContactList");
+
+        r1 = null;
+
+        $r2 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.widget.EditText mEditSearch>;
+
+        if $r2 == null goto label1;
+
+        $r2 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.widget.EditText mEditSearch>;
+
+        $r3 = virtualinvoke $r2.<android.widget.EditText: android.text.Editable getEditableText()>();
+
+        r1 = virtualinvoke $r3.<java.lang.Object: java.lang.String toString()>();
+
+        r1 = virtualinvoke r1.<java.lang.String: java.lang.String trim()>();
+
+     label1:
+        specialinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.database.Cursor getChooCheeContacts(java.lang.String,boolean)>(r1, 1);
+
+        return;
+    }
+
+    protected void onCreate(android.os.Bundle)
+    {
+        android.widget.ImageButton $r12;
+        android.widget.LinearLayout $r16;
+        android.os.Bundle $r1, $r8;
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity$ConfigState $r3;
+        android.view.View$OnClickListener $r13;
+        android.content.Intent $r5;
+        android.view.View $r9;
+        java.lang.String $r7;
+        boolean z0;
+        com.choochee.android.messenger.util.ChooCheeImListener $r4;
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity r0;
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity$2 $r17;
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity$1 $r19;
+        android.widget.TextView $r18;
+        java.lang.Object $r2;
+        java.lang.StringBuilder $r6;
+        android.widget.ListView $r14;
+        android.view.Window $r15;
+        android.widget.EditText $r10;
+        android.text.TextWatcher $r11;
+
+        r0 := @this: com.choochee.android.messenger.ui.contacts.TabContactsActivity;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke r0.<android.app.Activity: void onCreate(android.os.Bundle)>($r1);
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void i(java.lang.String,java.lang.String)>("TabContactsActivity", "onCreate");
+
+        virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: boolean requestWindowFeature(int)>(1);
+
+        virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: void setContentView(int)>(2130903090);
+
+        $r2 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: java.lang.Object getLastNonConfigurationInstance()>();
+
+        $r3 = (com.choochee.android.messenger.ui.contacts.TabContactsActivity$ConfigState) $r2;
+
+        r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: com.choochee.android.messenger.ui.contacts.TabContactsActivity$ConfigState mState> = $r3;
+
+        $r3 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: com.choochee.android.messenger.ui.contacts.TabContactsActivity$ConfigState mState>;
+
+        if $r3 == null goto label07;
+
+        z0 = 1;
+
+     label01:
+        if z0 == 0 goto label08;
+
+        $r3 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: com.choochee.android.messenger.ui.contacts.TabContactsActivity$ConfigState mState>;
+
+        $r4 = $r3.<com.choochee.android.messenger.ui.contacts.TabContactsActivity$ConfigState: com.choochee.android.messenger.util.ChooCheeImListener mReceiver>;
+
+        virtualinvoke $r4.<com.choochee.android.messenger.util.ChooCheeImListener: void setReceiver(com.choochee.android.messenger.util.ChooCheeImListener$IReceiver)>(r0);
+
+     label02:
+        $r5 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.content.Intent getIntent()>();
+
+        if $r5 == null goto label11;
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("getIntent() = ");
+
+        $r5 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.content.Intent getIntent()>();
+
+        $r7 = virtualinvoke $r5.<android.content.Intent: java.lang.String toString()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void d(java.lang.String,java.lang.String)>("TabContactsActivity", $r7);
+
+        $r5 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.content.Intent getIntent()>();
+
+        $r7 = virtualinvoke $r5.<android.content.Intent: java.lang.String getAction()>();
+
+        z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r7);
+
+        if z0 != 0 goto label09;
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("action = ");
+
+        $r5 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.content.Intent getIntent()>();
+
+        $r7 = virtualinvoke $r5.<android.content.Intent: java.lang.String getAction()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void d(java.lang.String,java.lang.String)>("TabContactsActivity", $r7);
+
+     label03:
+        $r5 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.content.Intent getIntent()>();
+
+        $r8 = virtualinvoke $r5.<android.content.Intent: android.os.Bundle getExtras()>();
+
+        if $r8 == null goto label10;
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("getIntent().getExtras() = ");
+
+        $r5 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.content.Intent getIntent()>();
+
+        $r8 = virtualinvoke $r5.<android.content.Intent: android.os.Bundle getExtras()>();
+
+        $r7 = virtualinvoke $r8.<android.os.Bundle: java.lang.String toString()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void d(java.lang.String,java.lang.String)>("TabContactsActivity", $r7);
+
+        $r5 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.content.Intent getIntent()>();
+
+        $r7 = virtualinvoke $r5.<android.content.Intent: java.lang.String getAction()>();
+
+        z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>($r7);
+
+        if z0 != 0 goto label04;
+
+        $r5 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.content.Intent getIntent()>();
+
+        $r7 = virtualinvoke $r5.<android.content.Intent: java.lang.String getAction()>();
+
+        z0 = virtualinvoke $r7.<java.lang.String: boolean equals(java.lang.Object)>("com.choochee.android.messenger.choocheesyncprogress.ACTION_NOTIFICATION_SYNC_PROGRESS");
+
+        if z0 == 0 goto label04;
+
+        $r5 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.content.Intent getIntent()>();
+
+        specialinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: void checkDisplaySyncProgress(android.content.Intent)>($r5);
+
+     label04:
+        specialinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: void initialize(android.os.Bundle)>($r1);
+
+        $r9 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.view.View findViewById(int)>(2131362037);
+
+        $r10 = (android.widget.EditText) $r9;
+
+        r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.widget.EditText mEditSearch> = $r10;
+
+        $r10 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.widget.EditText mEditSearch>;
+
+        virtualinvoke $r10.<android.widget.EditText: void setVisibility(int)>(0);
+
+        $r7 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: java.lang.String search>;
+
+        if $r7 == null goto label05;
+
+        $r10 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.widget.EditText mEditSearch>;
+
+        $r7 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: java.lang.String search>;
+
+        virtualinvoke $r10.<android.widget.EditText: void setText(java.lang.CharSequence)>($r7);
+
+     label05:
+        $r10 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.widget.EditText mEditSearch>;
+
+        $r11 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.text.TextWatcher filterTextWatcher>;
+
+        virtualinvoke $r10.<android.widget.EditText: void addTextChangedListener(android.text.TextWatcher)>($r11);
+
+        $r9 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.view.View findViewById(int)>(2131362038);
+
+        $r12 = (android.widget.ImageButton) $r9;
+
+        r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.widget.ImageButton btnClearX> = $r12;
+
+        $r12 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.widget.ImageButton btnClearX>;
+
+        $r13 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.view.View$OnClickListener mClearText>;
+
+        virtualinvoke $r12.<android.widget.ImageButton: void setOnClickListener(android.view.View$OnClickListener)>($r13);
+
+        $r9 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.view.View findViewById(int)>(2131361891);
+
+        $r14 = (android.widget.ListView) $r9;
+
+        <com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.widget.ListView mContactsList> = $r14;
+
+        $r15 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.view.Window getWindow()>();
+
+        virtualinvoke $r15.<android.view.Window: void setSoftInputMode(int)>(3);
+
+        specialinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: void refreshContactList()>();
+
+        z0 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: boolean selectMultiple>;
+
+        if z0 == 0 goto label12;
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void d(java.lang.String,java.lang.String)>("TabContactsActivity", "In selectMultiple");
+
+        $r14 = <com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.widget.ListView mContactsList>;
+
+        virtualinvoke $r14.<android.widget.ListView: void setItemsCanFocus(boolean)>(0);
+
+        $r14 = <com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.widget.ListView mContactsList>;
+
+        virtualinvoke $r14.<android.widget.ListView: void setChoiceMode(int)>(2);
+
+        $r9 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.view.View findViewById(int)>(2131361902);
+
+        $r16 = (android.widget.LinearLayout) $r9;
+
+        virtualinvoke $r16.<android.widget.LinearLayout: void setVisibility(int)>(0);
+
+     label06:
+        $r17 = new com.choochee.android.messenger.ui.contacts.TabContactsActivity$2;
+
+        specialinvoke $r17.<com.choochee.android.messenger.ui.contacts.TabContactsActivity$2: void <init>(com.choochee.android.messenger.ui.contacts.TabContactsActivity)>(r0);
+
+        r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.os.Handler mHandler2> = $r17;
+
+        $r9 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.view.View findViewById(int)>(2131362039);
+
+        $r18 = (android.widget.TextView) $r9;
+
+        r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.widget.TextView mEmptyList> = $r18;
+
+        $r14 = <com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.widget.ListView mContactsList>;
+
+        virtualinvoke $r14.<android.widget.ListView: void setTextFilterEnabled(boolean)>(1);
+
+        return;
+
+     label07:
+        z0 = 0;
+
+        goto label01;
+
+     label08:
+        $r3 = new com.choochee.android.messenger.ui.contacts.TabContactsActivity$ConfigState;
+
+        specialinvoke $r3.<com.choochee.android.messenger.ui.contacts.TabContactsActivity$ConfigState: void <init>(com.choochee.android.messenger.ui.contacts.TabContactsActivity$1)>(null);
+
+        r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: com.choochee.android.messenger.ui.contacts.TabContactsActivity$ConfigState mState> = $r3;
+
+        $r3 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: com.choochee.android.messenger.ui.contacts.TabContactsActivity$ConfigState mState>;
+
+        $r4 = $r3.<com.choochee.android.messenger.ui.contacts.TabContactsActivity$ConfigState: com.choochee.android.messenger.util.ChooCheeImListener mReceiver>;
+
+        virtualinvoke $r4.<com.choochee.android.messenger.util.ChooCheeImListener: void setReceiver(com.choochee.android.messenger.util.ChooCheeImListener$IReceiver)>(r0);
+
+        goto label02;
+
+     label09:
+        staticinvoke <com.choochee.android.messenger.util.Logs: void w(java.lang.String,java.lang.String)>("TabContactsActivity", "getIntent().getAction() is null");
+
+        goto label03;
+
+     label10:
+        staticinvoke <com.choochee.android.messenger.util.Logs: void w(java.lang.String,java.lang.String)>("TabContactsActivity", "getIntent().getExtras() is null");
+
+        goto label04;
+
+     label11:
+        staticinvoke <com.choochee.android.messenger.util.Logs: void w(java.lang.String,java.lang.String)>("TabContactsActivity", "getIntent() is null");
+
+        goto label04;
+
+     label12:
+        $r14 = <com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.widget.ListView mContactsList>;
+
+        $r19 = new com.choochee.android.messenger.ui.contacts.TabContactsActivity$1;
+
+        specialinvoke $r19.<com.choochee.android.messenger.ui.contacts.TabContactsActivity$1: void <init>(com.choochee.android.messenger.ui.contacts.TabContactsActivity)>(r0);
+
+        virtualinvoke $r14.<android.widget.ListView: void setOnItemClickListener(android.widget.AdapterView$OnItemClickListener)>($r19);
+
+        goto label06;
+    }
+
+    protected void onDestroy()
+    {
+        android.widget.EditText $r1;
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity r0;
+        android.text.TextWatcher $r2;
+
+        r0 := @this: com.choochee.android.messenger.ui.contacts.TabContactsActivity;
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void i(java.lang.String,java.lang.String)>("TabContactsActivity", "onDestroy");
+
+        $r1 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.widget.EditText mEditSearch>;
+
+        if $r1 == null goto label1;
+
+        $r1 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.widget.EditText mEditSearch>;
+
+        $r2 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.text.TextWatcher filterTextWatcher>;
+
+        virtualinvoke $r1.<android.widget.EditText: void removeTextChangedListener(android.text.TextWatcher)>($r2);
+
+     label1:
+        specialinvoke r0.<android.app.Activity: void onDestroy()>();
+
+        return;
+    }
+
+    public void onPause()
+    {
+        android.content.ContentResolver $r1;
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity r0;
+        java.lang.Object $r4;
+        android.content.BroadcastReceiver $r2;
+        android.database.ContentObserver $r3;
+
+        r0 := @this: com.choochee.android.messenger.ui.contacts.TabContactsActivity;
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void i(java.lang.String,java.lang.String)>("TabContactsActivity", "onPause");
+
+        $r2 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.content.BroadcastReceiver broadcastReceiver>;
+
+        virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: void unregisterReceiver(android.content.BroadcastReceiver)>($r2);
+
+        $r1 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.content.ContentResolver getContentResolver()>();
+
+        $r3 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.database.ContentObserver mContentObserver>;
+
+        virtualinvoke $r1.<android.content.ContentResolver: void unregisterContentObserver(android.database.ContentObserver)>($r3);
+
+        $r4 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: java.lang.Object mHandleSyncStatusChange>;
+
+        if $r4 == null goto label1;
+
+        $r4 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: java.lang.Object mHandleSyncStatusChange>;
+
+        staticinvoke <android.content.ContentResolver: void removeStatusChangeListener(java.lang.Object)>($r4);
+
+     label1:
+        specialinvoke r0.<android.app.Activity: void onPause()>();
+
+        return;
+    }
+
+    public void onReceiveResult(int, android.os.Bundle)
+    {
+        android.os.Bundle $r1;
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity r0;
+        int $i0;
+        android.view.View $r4;
+        com.choochee.android.messenger.ui.PostExecuteDialog r5;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r3;
+        boolean $z0;
+
+        r0 := @this: com.choochee.android.messenger.ui.contacts.TabContactsActivity;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: android.os.Bundle;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("In onReceiveResult: resultCode = ");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void d(java.lang.String,java.lang.String)>("TabContactsActivity", $r3);
+
+        if $i0 != 140 goto label4;
+
+        $z0 = staticinvoke <android.util.Log: boolean isLoggable(java.lang.String,int)>("TabContactsActivity", 2);
+
+        if $z0 == 0 goto label1;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("onReceiveResult -> (");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(") resultData: [");
+
+        $r3 = virtualinvoke $r1.<android.os.Bundle: java.lang.String toString()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("]");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void v(java.lang.String,java.lang.String)>("TabContactsActivity", $r3);
+
+     label1:
+        lookupswitch($i0)
+        {
+            case 6: goto label3;
+            case 13: goto label5;
+            case 16: goto label6;
+            default: goto label2;
+        };
+
+     label2:
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Unhandled reqeustResult: onReceiveResult -> (");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(") resultData: [");
+
+        $r3 = virtualinvoke $r1.<android.os.Bundle: java.lang.String toString()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("]");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void e(java.lang.String,java.lang.String)>("TabContactsActivity", $r3);
+
+     label3:
+        return;
+
+     label4:
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("onReceiveResult -> (");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(") resultData: [");
+
+        $r3 = virtualinvoke $r1.<android.os.Bundle: java.lang.String toString()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("]");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void d(java.lang.String,java.lang.String)>("TabContactsActivity", $r3);
+
+        goto label1;
+
+     label5:
+        $r4 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.view.View findViewById(int)>(2131361805);
+
+        virtualinvoke $r4.<android.view.View: void setEnabled(boolean)>(1);
+
+        $r4 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.view.View findViewById(int)>(2131361822);
+
+        virtualinvoke $r4.<android.view.View: void setVisibility(int)>(8);
+
+        $r4 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.view.View findViewById(int)>(2131361804);
+
+        virtualinvoke $r4.<android.view.View: void setVisibility(int)>(8);
+
+        $r4 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.view.View findViewById(int)>(2131361811);
+
+        virtualinvoke $r4.<android.view.View: void setVisibility(int)>(8);
+
+        r5 = new com.choochee.android.messenger.ui.PostExecuteDialog;
+
+        specialinvoke r5.<com.choochee.android.messenger.ui.PostExecuteDialog: void <init>(android.content.Context,android.os.Bundle)>(r0, $r1);
+
+        virtualinvoke r5.<com.choochee.android.messenger.ui.PostExecuteDialog: void show()>();
+
+        return;
+
+     label6:
+        r5 = new com.choochee.android.messenger.ui.PostExecuteDialog;
+
+        specialinvoke r5.<com.choochee.android.messenger.ui.PostExecuteDialog: void <init>(android.content.Context,android.os.Bundle)>(r0, $r1);
+
+        virtualinvoke r5.<com.choochee.android.messenger.ui.PostExecuteDialog: void show()>();
+
+        return;
+    }
+
+    public void onResume()
+    {
+        com.choochee.android.messenger.events.PushEventType $r6;
+        android.content.AsyncQueryHandler $r11;
+        android.content.Context $r1;
+        com.choochee.android.messenger.ui.contacts.MessagesContactsAdapter $r2;
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity r0;
+        android.content.IntentFilter $r5;
+        android.net.Uri $r12;
+        android.content.BroadcastReceiver $r4;
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity$4 $r10;
+        android.database.ContentObserver $r9;
+        android.content.ContentResolver $r8;
+        java.lang.Object $r13;
+        java.lang.String $r7;
+        android.database.Cursor $r3;
+
+        r0 := @this: com.choochee.android.messenger.ui.contacts.TabContactsActivity;
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void i(java.lang.String,java.lang.String)>("TabContactsActivity", "onResume");
+
+        specialinvoke r0.<android.app.Activity: void onResume()>();
+
+        $r1 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.content.Context getApplicationContext()>();
+
+        specialinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: void decideEmptyViewText(android.content.Context)>($r1);
+
+        $r2 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: com.choochee.android.messenger.ui.contacts.MessagesContactsAdapter adapter>;
+
+        if $r2 == null goto label1;
+
+        $r2 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: com.choochee.android.messenger.ui.contacts.MessagesContactsAdapter adapter>;
+
+        $r3 = virtualinvoke $r2.<com.choochee.android.messenger.ui.contacts.MessagesContactsAdapter: android.database.Cursor getCursor()>();
+
+        if $r3 == null goto label1;
+
+        specialinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: void refreshContactList()>();
+
+     label1:
+        $r4 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.content.BroadcastReceiver broadcastReceiver>;
+
+        $r5 = new android.content.IntentFilter;
+
+        $r6 = <com.choochee.android.messenger.events.PushEventType: com.choochee.android.messenger.events.PushEventType presence>;
+
+        $r7 = virtualinvoke $r6.<com.choochee.android.messenger.events.PushEventType: java.lang.String name()>();
+
+        specialinvoke $r5.<android.content.IntentFilter: void <init>(java.lang.String)>($r7);
+
+        virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.content.Intent registerReceiver(android.content.BroadcastReceiver,android.content.IntentFilter)>($r4, $r5);
+
+        $r8 = virtualinvoke r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.content.ContentResolver getContentResolver()>();
+
+        $r9 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.database.ContentObserver mContentObserver>;
+
+        if $r9 != null goto label2;
+
+        $r10 = new com.choochee.android.messenger.ui.contacts.TabContactsActivity$4;
+
+        $r11 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.content.AsyncQueryHandler mHandler>;
+
+        specialinvoke $r10.<com.choochee.android.messenger.ui.contacts.TabContactsActivity$4: void <init>(com.choochee.android.messenger.ui.contacts.TabContactsActivity,android.os.Handler)>(r0, $r11);
+
+        r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.database.ContentObserver mContentObserver> = $r10;
+
+     label2:
+        $r12 = <com.choochee.android.messenger.cws.ChooCheeContentProvider$ChooCheeCM: android.net.Uri GETCHOOCHEE_CONTACTS>;
+
+        $r9 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.database.ContentObserver mContentObserver>;
+
+        virtualinvoke $r8.<android.content.ContentResolver: void registerContentObserver(android.net.Uri,boolean,android.database.ContentObserver)>($r12, 1, $r9);
+
+        $r13 = staticinvoke <android.content.ContentResolver: java.lang.Object addStatusChangeListener(int,android.content.SyncStatusObserver)>(6, r0);
+
+        r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: java.lang.Object mHandleSyncStatusChange> = $r13;
+
+        return;
+    }
+
+    protected void onSaveInstanceState(android.os.Bundle)
+    {
+        android.os.Bundle $r1;
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity r0;
+        java.lang.String[] $r6;
+        android.text.Editable $r4;
+        java.lang.StringBuilder $r5;
+        java.lang.String r2;
+        android.widget.EditText $r3;
+        boolean $z0;
+
+        r0 := @this: com.choochee.android.messenger.ui.contacts.TabContactsActivity;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke r0.<android.app.Activity: void onSaveInstanceState(android.os.Bundle)>($r1);
+
+        r2 = null;
+
+        $r3 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.widget.EditText mEditSearch>;
+
+        if $r3 == null goto label1;
+
+        $r3 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.widget.EditText mEditSearch>;
+
+        $r4 = virtualinvoke $r3.<android.widget.EditText: android.text.Editable getEditableText()>();
+
+        r2 = virtualinvoke $r4.<java.lang.Object: java.lang.String toString()>();
+
+        r2 = virtualinvoke r2.<java.lang.String: java.lang.String trim()>();
+
+     label1:
+        if r2 == null goto label2;
+
+        virtualinvoke $r1.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("state.tabcontactactivity.search", r2);
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("In onSaveInstanceState: Saved searchTerm = ");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(r2);
+
+        r2 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void d(java.lang.String,java.lang.String)>("TabContactsActivity", r2);
+
+     label2:
+        $z0 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: boolean selectMultiple>;
+
+        virtualinvoke $r1.<android.os.Bundle: void putBoolean(java.lang.String,boolean)>("state.tabcontactactivity.selectmultiple", $z0);
+
+        $r6 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: java.lang.String[] selectedContacts>;
+
+        if $r6 == null goto label3;
+
+        $r6 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: java.lang.String[] selectedContacts>;
+
+        virtualinvoke $r1.<android.os.Bundle: void putStringArray(java.lang.String,java.lang.String[])>("state.tabcontactactivity.selectedcontacts", $r6);
+
+     label3:
+        return;
+    }
+
+    public void onStatusChanged(int)
+    {
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity r0;
+        android.os.Handler $r3;
+        int $i0;
+        java.lang.StringBuilder $r1;
+        java.lang.String $r2;
+
+        r0 := @this: com.choochee.android.messenger.ui.contacts.TabContactsActivity;
+
+        $i0 := @parameter0: int;
+
+        lookupswitch($i0)
+        {
+            case 2: goto label2;
+            case 3: goto label1;
+            case 4: goto label2;
+            default: goto label1;
+        };
+
+     label1:
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Unexpected status change value: ");
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void e(java.lang.String,java.lang.String)>("TabContactsActivity", $r2);
+
+        return;
+
+     label2:
+        $r3 = r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.os.Handler mHandler2>;
+
+        virtualinvoke $r3.<android.os.Handler: boolean sendEmptyMessage(int)>($i0);
+
+        return;
+    }
+
+    public void onStop()
+    {
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity r0;
+
+        r0 := @this: com.choochee.android.messenger.ui.contacts.TabContactsActivity;
+
+        r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.database.ContentObserver mContentObserver> = null;
+
+        r0.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: java.lang.Object mHandleSyncStatusChange> = null;
+
+        staticinvoke <com.choochee.android.messenger.util.Logs: void i(java.lang.String,java.lang.String)>("TabContactsActivity", "onStop");
+
+        specialinvoke r0.<android.app.Activity: void onStop()>();
+
+        return;
+    }
+
+    public android.content.Intent getIntent()
+    {
+        android.content.Intent $r0;
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity this;
+
+        this := @this: com.choochee.android.messenger.ui.contacts.TabContactsActivity;
+
+        $r0 = this.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.content.Intent ipcIntent>;
+
+        return $r0;
+    }
+
+    public void setIntent(android.content.Intent)
+    {
+        android.content.Intent parameter0;
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity this;
+
+        this := @this: com.choochee.android.messenger.ui.contacts.TabContactsActivity;
+
+        parameter0 := @parameter0: android.content.Intent;
+
+        this.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.content.Intent ipcIntent> = parameter0;
+
+        return;
+    }
+
+    public void setResult(int, android.content.Intent)
+    {
+        int parameter0;
+        android.content.Intent parameter1;
+        com.choochee.android.messenger.ui.contacts.TabContactsActivity this;
+
+        this := @this: com.choochee.android.messenger.ui.contacts.TabContactsActivity;
+
+        parameter0 := @parameter0: int;
+
+        parameter1 := @parameter1: android.content.Intent;
+
+        this.<com.choochee.android.messenger.ui.contacts.TabContactsActivity: android.content.Intent ipcResultIntent> = parameter1;
+
+        return;
+    }
+
+    public static void <clinit>()
+    {
+        <com.choochee.android.messenger.ui.contacts.TabContactsActivity: int TIMEOUT_CONTACT_SYNC_WAIT> = 1000;
+
+        <com.choochee.android.messenger.ui.contacts.TabContactsActivity: java.lang.String TAG> = "TabContactsActivity";
+
+        <com.choochee.android.messenger.ui.contacts.TabContactsActivity: java.lang.String STATE_SELECT_MULTIPLE_CONTACTS> = "state.tabcontactactivity.selectmultiple";
+
+        <com.choochee.android.messenger.ui.contacts.TabContactsActivity: java.lang.String STATE_SELECTED_CONTACTS> = "state.tabcontactactivity.selectedcontacts";
+
+        <com.choochee.android.messenger.ui.contacts.TabContactsActivity: java.lang.String STATE_SEARCH> = "state.tabcontactactivity.search";
+
+        <com.choochee.android.messenger.ui.contacts.TabContactsActivity: java.lang.String MSG_QUEUE_REMOVED> = "extra.tabcontactactivity.QUEUE_REMOVED";
+
+        <com.choochee.android.messenger.ui.contacts.TabContactsActivity: int MODULAS_THROTTLE_SYNC_STATUS> = 10;
+
+        <com.choochee.android.messenger.ui.contacts.TabContactsActivity: java.lang.String EXTRA_SORT_ORDER> = "extra.tabcontactactivity.SORT_ORDER";
+
+        <com.choochee.android.messenger.ui.contacts.TabContactsActivity: java.lang.String EXTRA_SELECT_MULTIPLE_CONTACTS> = "extra.tabcontactactivity.SELECT_MULTIPLE_CONTACTS";
+
+        <com.choochee.android.messenger.ui.contacts.TabContactsActivity: java.lang.String EXTRA_SEARCH> = "extra.tabcontactactivity.SEARCH";
+
+        <com.choochee.android.messenger.ui.contacts.TabContactsActivity: java.lang.String EXTRA_REQUERY_CONTACTS> = "extra.tabcontactactivity.REQUERY_CONTACTS";
+
+        <com.choochee.android.messenger.ui.contacts.TabContactsActivity: java.lang.String EXTRA_LASTNAME> = "extra.tabcontactactivity.LASTNAME";
+
+        <com.choochee.android.messenger.ui.contacts.TabContactsActivity: java.lang.String EXTRA_CONTACTS> = "extra.tabcontactactivity.CONTACTS";
+
+        return;
+    }
+}

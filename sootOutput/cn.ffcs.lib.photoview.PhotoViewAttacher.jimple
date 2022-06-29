@@ -1,0 +1,2229 @@
+public class cn.ffcs.lib.photoview.PhotoViewAttacher extends java.lang.Object implements cn.ffcs.lib.photoview.IPhotoView, android.view.View$OnTouchListener, cn.ffcs.lib.photoview.VersionedGestureDetector$OnGestureListener, android.view.GestureDetector$OnDoubleTapListener, android.view.ViewTreeObserver$OnGlobalLayoutListener
+{
+    static final boolean DEBUG;
+    public static final float DEFAULT_MAX_SCALE;
+    public static final float DEFAULT_MID_SCALE;
+    public static final float DEFAULT_MIN_SCALE;
+    static final int EDGE_BOTH;
+    static final int EDGE_LEFT;
+    static final int EDGE_NONE;
+    static final int EDGE_RIGHT;
+    static final java.lang.String LOG_TAG;
+    private static float mImageViewHeight;
+    private static float mImageViewWidth;
+    private boolean mAllowParentInterceptOnEdge;
+    private final android.graphics.Matrix mBaseMatrix;
+    private cn.ffcs.lib.photoview.PhotoViewAttacher$FlingRunnable mCurrentFlingRunnable;
+    private final android.graphics.RectF mDisplayRect;
+    private final android.graphics.Matrix mDrawMatrix;
+    private android.view.GestureDetector mGestureDetector;
+    private java.lang.ref.WeakReference mImageView;
+    private int mIvBottom;
+    private int mIvLeft;
+    private int mIvRight;
+    private int mIvTop;
+    private android.view.View$OnLongClickListener mLongClickListener;
+    private cn.ffcs.lib.photoview.PhotoViewAttacher$OnMatrixChangedListener mMatrixChangeListener;
+    private final float[] mMatrixValues;
+    private float mMaxScale;
+    private float mMidScale;
+    private float mMinScale;
+    private cn.ffcs.lib.photoview.PhotoViewAttacher$OnDoubleTapListener mOnDoubleTapListener;
+    private cn.ffcs.lib.photoview.PhotoViewAttacher$OnSingleTapListener mOnSingleTapListener;
+    private cn.ffcs.lib.photoview.PhotoViewAttacher$OnPhotoTapListener mPhotoTapListener;
+    private cn.ffcs.lib.photoview.VersionedGestureDetector mScaleDragDetector;
+    private android.widget.ImageView$ScaleType mScaleType;
+    private int mScrollEdge;
+    private final android.graphics.Matrix mSuppMatrix;
+    private cn.ffcs.lib.photoview.PhotoViewAttacher$OnViewTapListener mViewTapListener;
+    private android.view.ViewTreeObserver mViewTreeObserver;
+    private boolean mZoomEnabled;
+
+    static void <clinit>()
+    {
+        boolean $z0;
+
+        <cn.ffcs.lib.photoview.PhotoViewAttacher: java.lang.String LOG_TAG> = "PhotoViewAttacher";
+
+        <cn.ffcs.lib.photoview.PhotoViewAttacher: int EDGE_RIGHT> = 1;
+
+        <cn.ffcs.lib.photoview.PhotoViewAttacher: int EDGE_NONE> = -1;
+
+        <cn.ffcs.lib.photoview.PhotoViewAttacher: int EDGE_LEFT> = 0;
+
+        <cn.ffcs.lib.photoview.PhotoViewAttacher: int EDGE_BOTH> = 2;
+
+        <cn.ffcs.lib.photoview.PhotoViewAttacher: float DEFAULT_MIN_SCALE> = 1.0F;
+
+        <cn.ffcs.lib.photoview.PhotoViewAttacher: float DEFAULT_MID_SCALE> = 1.75F;
+
+        <cn.ffcs.lib.photoview.PhotoViewAttacher: float DEFAULT_MAX_SCALE> = 3.0F;
+
+        <cn.ffcs.lib.photoview.PhotoViewAttacher: boolean DEBUG> = 0;
+
+        $z0 = staticinvoke <android.util.Log: boolean isLoggable(java.lang.String,int)>("PhotoViewAttacher", 3);
+
+        <cn.ffcs.lib.photoview.PhotoViewAttacher: boolean DEBUG> = $z0;
+
+        <cn.ffcs.lib.photoview.PhotoViewAttacher: float mImageViewWidth> = 0.0F;
+
+        <cn.ffcs.lib.photoview.PhotoViewAttacher: float mImageViewHeight> = 0.0F;
+
+        return;
+    }
+
+    public void <init>(android.widget.ImageView)
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher$1 $r2;
+        android.graphics.RectF $r4;
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        android.content.Context $r9;
+        cn.ffcs.lib.photoview.VersionedGestureDetector $r10;
+        android.view.GestureDetector $r11;
+        android.widget.ImageView$ScaleType $r6;
+        android.widget.ImageView $r1;
+        float[] $r5;
+        android.view.ViewTreeObserver $r8;
+        android.graphics.Matrix $r3;
+        java.lang.ref.WeakReference $r7;
+        boolean $z0;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $r1 := @parameter0: android.widget.ImageView;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: float mMinScale> = 1.0F;
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: float mMidScale> = 1.75F;
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: float mMaxScale> = 3.0F;
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: boolean mAllowParentInterceptOnEdge> = 1;
+
+        $r3 = new android.graphics.Matrix;
+
+        specialinvoke $r3.<android.graphics.Matrix: void <init>()>();
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.Matrix mBaseMatrix> = $r3;
+
+        $r3 = new android.graphics.Matrix;
+
+        specialinvoke $r3.<android.graphics.Matrix: void <init>()>();
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.Matrix mDrawMatrix> = $r3;
+
+        $r3 = new android.graphics.Matrix;
+
+        specialinvoke $r3.<android.graphics.Matrix: void <init>()>();
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.Matrix mSuppMatrix> = $r3;
+
+        $r4 = new android.graphics.RectF;
+
+        specialinvoke $r4.<android.graphics.RectF: void <init>()>();
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.RectF mDisplayRect> = $r4;
+
+        $r5 = newarray (float)[9];
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: float[] mMatrixValues> = $r5;
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: int mScrollEdge> = 2;
+
+        $r6 = <android.widget.ImageView$ScaleType: android.widget.ImageView$ScaleType FIT_XY>;
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.widget.ImageView$ScaleType mScaleType> = $r6;
+
+        $r7 = new java.lang.ref.WeakReference;
+
+        specialinvoke $r7.<java.lang.ref.WeakReference: void <init>(java.lang.Object)>($r1);
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: java.lang.ref.WeakReference mImageView> = $r7;
+
+        virtualinvoke $r1.<android.widget.ImageView: void setOnTouchListener(android.view.View$OnTouchListener)>(r0);
+
+        $r8 = virtualinvoke $r1.<android.widget.ImageView: android.view.ViewTreeObserver getViewTreeObserver()>();
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.view.ViewTreeObserver mViewTreeObserver> = $r8;
+
+        $r8 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.view.ViewTreeObserver mViewTreeObserver>;
+
+        virtualinvoke $r8.<android.view.ViewTreeObserver: void addOnGlobalLayoutListener(android.view.ViewTreeObserver$OnGlobalLayoutListener)>(r0);
+
+        staticinvoke <cn.ffcs.lib.photoview.PhotoViewAttacher: void setImageViewScaleTypeMatrix(android.widget.ImageView)>($r1);
+
+        $z0 = virtualinvoke $r1.<android.widget.ImageView: boolean isInEditMode()>();
+
+        if $z0 != 0 goto label1;
+
+        $r9 = virtualinvoke $r1.<android.widget.ImageView: android.content.Context getContext()>();
+
+        $r10 = staticinvoke <cn.ffcs.lib.photoview.VersionedGestureDetector: cn.ffcs.lib.photoview.VersionedGestureDetector newInstance(android.content.Context,cn.ffcs.lib.photoview.VersionedGestureDetector$OnGestureListener)>($r9, r0);
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: cn.ffcs.lib.photoview.VersionedGestureDetector mScaleDragDetector> = $r10;
+
+        $r11 = new android.view.GestureDetector;
+
+        $r9 = virtualinvoke $r1.<android.widget.ImageView: android.content.Context getContext()>();
+
+        $r2 = new cn.ffcs.lib.photoview.PhotoViewAttacher$1;
+
+        specialinvoke $r2.<cn.ffcs.lib.photoview.PhotoViewAttacher$1: void <init>(cn.ffcs.lib.photoview.PhotoViewAttacher)>(r0);
+
+        specialinvoke $r11.<android.view.GestureDetector: void <init>(android.content.Context,android.view.GestureDetector$OnGestureListener)>($r9, $r2);
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.view.GestureDetector mGestureDetector> = $r11;
+
+        $r11 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.view.GestureDetector mGestureDetector>;
+
+        virtualinvoke $r11.<android.view.GestureDetector: void setOnDoubleTapListener(android.view.GestureDetector$OnDoubleTapListener)>(r0);
+
+        virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: void setZoomable(boolean)>(1);
+
+     label1:
+        return;
+    }
+
+    static android.view.View$OnLongClickListener access$000(cn.ffcs.lib.photoview.PhotoViewAttacher)
+    {
+        android.view.View$OnLongClickListener r1;
+        cn.ffcs.lib.photoview.PhotoViewAttacher $r0;
+
+        $r0 := @parameter0: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        r1 = $r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.view.View$OnLongClickListener mLongClickListener>;
+
+        return r1;
+    }
+
+    static java.lang.ref.WeakReference access$100(cn.ffcs.lib.photoview.PhotoViewAttacher)
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher $r0;
+        java.lang.ref.WeakReference r1;
+
+        $r0 := @parameter0: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        r1 = $r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: java.lang.ref.WeakReference mImageView>;
+
+        return r1;
+    }
+
+    static android.graphics.Matrix access$200(cn.ffcs.lib.photoview.PhotoViewAttacher)
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher $r0;
+        android.graphics.Matrix r1;
+
+        $r0 := @parameter0: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        r1 = $r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.Matrix mSuppMatrix>;
+
+        return r1;
+    }
+
+    static void access$300(cn.ffcs.lib.photoview.PhotoViewAttacher)
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher $r0;
+
+        $r0 := @parameter0: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        specialinvoke $r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: void checkAndDisplayMatrix()>();
+
+        return;
+    }
+
+    static void access$400(cn.ffcs.lib.photoview.PhotoViewAttacher, android.graphics.Matrix)
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher $r0;
+        android.graphics.Matrix $r1;
+
+        $r0 := @parameter0: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $r1 := @parameter1: android.graphics.Matrix;
+
+        specialinvoke $r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: void setImageViewMatrix(android.graphics.Matrix)>($r1);
+
+        return;
+    }
+
+    private void cancelFling()
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        cn.ffcs.lib.photoview.PhotoViewAttacher$FlingRunnable $r1;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $r1 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: cn.ffcs.lib.photoview.PhotoViewAttacher$FlingRunnable mCurrentFlingRunnable>;
+
+        if $r1 == null goto label1;
+
+        $r1 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: cn.ffcs.lib.photoview.PhotoViewAttacher$FlingRunnable mCurrentFlingRunnable>;
+
+        virtualinvoke $r1.<cn.ffcs.lib.photoview.PhotoViewAttacher$FlingRunnable: void cancelFling()>();
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: cn.ffcs.lib.photoview.PhotoViewAttacher$FlingRunnable mCurrentFlingRunnable> = null;
+
+     label1:
+        return;
+    }
+
+    private void checkAndDisplayMatrix()
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        android.graphics.Matrix $r1;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        specialinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: void checkMatrixBounds()>();
+
+        $r1 = virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.Matrix getDisplayMatrix()>();
+
+        specialinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: void setImageViewMatrix(android.graphics.Matrix)>($r1);
+
+        return;
+    }
+
+    private void checkImageViewScaleType()
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        java.lang.IllegalStateException $r4;
+        android.widget.ImageView$ScaleType $r2, $r3;
+        android.widget.ImageView $r1;
+        boolean $z0;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $r1 = virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.widget.ImageView getImageView()>();
+
+        if $r1 == null goto label1;
+
+        $z0 = $r1 instanceof cn.ffcs.lib.photoview.PhotoView;
+
+        if $z0 != 0 goto label1;
+
+        $r2 = virtualinvoke $r1.<android.widget.ImageView: android.widget.ImageView$ScaleType getScaleType()>();
+
+        $r3 = <android.widget.ImageView$ScaleType: android.widget.ImageView$ScaleType MATRIX>;
+
+        if $r2 == $r3 goto label1;
+
+        $r4 = new java.lang.IllegalStateException;
+
+        specialinvoke $r4.<java.lang.IllegalStateException: void <init>(java.lang.String)>("The ImageView\'s ScaleType has been changed since attaching a PhotoViewAttacher");
+
+        throw $r4;
+
+     label1:
+        return;
+    }
+
+    private void checkMatrixBounds()
+    {
+        android.graphics.RectF $r3;
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        android.widget.ImageView$ScaleType $r5;
+        android.widget.ImageView $r1;
+        byte $b1;
+        int[] $r4;
+        int $i0, $i2;
+        float $f0, $f1, f2, f3, $f4;
+        android.graphics.Matrix $r2;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $r1 = virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.widget.ImageView getImageView()>();
+
+        if $r1 != null goto label01;
+
+        return;
+
+     label01:
+        $r2 = virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.Matrix getDisplayMatrix()>();
+
+        $r3 = specialinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.RectF getDisplayRect(android.graphics.Matrix)>($r2);
+
+        if $r3 == null goto label16;
+
+        $f0 = virtualinvoke $r3.<android.graphics.RectF: float height()>();
+
+        $f1 = virtualinvoke $r3.<android.graphics.RectF: float width()>();
+
+        f2 = 0.0F;
+
+        f3 = 0.0F;
+
+        $i0 = virtualinvoke $r1.<android.widget.ImageView: int getHeight()>();
+
+        $f4 = (float) $i0;
+
+        $b1 = $f0 cmpg $f4;
+
+        $i2 = (int) $b1;
+
+        if $i2 > 0 goto label09;
+
+        $r4 = <cn.ffcs.lib.photoview.PhotoViewAttacher$2: int[] $SwitchMap$android$widget$ImageView$ScaleType>;
+
+        $r5 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.widget.ImageView$ScaleType mScaleType>;
+
+        $i2 = virtualinvoke $r5.<android.widget.ImageView$ScaleType: int ordinal()>();
+
+        $i2 = $r4[$i2];
+
+        lookupswitch($i2)
+        {
+            case 2: goto label07;
+            case 3: goto label08;
+            default: goto label02;
+        };
+
+     label02:
+        f3 = (float) $i0;
+
+        f3 = f3 - $f0;
+
+        f3 = f3 / 2.0F;
+
+        $f0 = $r3.<android.graphics.RectF: float top>;
+
+        f3 = f3 - $f0;
+
+     label03:
+        $i0 = virtualinvoke $r1.<android.widget.ImageView: int getWidth()>();
+
+        $f0 = (float) $i0;
+
+        $b1 = $f1 cmpg $f0;
+
+        $i2 = (int) $b1;
+
+        if $i2 > 0 goto label13;
+
+        $r4 = <cn.ffcs.lib.photoview.PhotoViewAttacher$2: int[] $SwitchMap$android$widget$ImageView$ScaleType>;
+
+        $r5 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.widget.ImageView$ScaleType mScaleType>;
+
+        $i2 = virtualinvoke $r5.<android.widget.ImageView$ScaleType: int ordinal()>();
+
+        $i2 = $r4[$i2];
+
+        lookupswitch($i2)
+        {
+            case 2: goto label11;
+            case 3: goto label12;
+            default: goto label04;
+        };
+
+     label04:
+        f2 = (float) $i0;
+
+        f2 = f2 - $f1;
+
+        f2 = f2 / 2.0F;
+
+        $f1 = $r3.<android.graphics.RectF: float left>;
+
+        f2 = f2 - $f1;
+
+     label05:
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: int mScrollEdge> = 2;
+
+     label06:
+        $r2 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.Matrix mSuppMatrix>;
+
+        virtualinvoke $r2.<android.graphics.Matrix: boolean postTranslate(float,float)>(f2, f3);
+
+        return;
+
+     label07:
+        f3 = $r3.<android.graphics.RectF: float top>;
+
+        f3 = neg f3;
+
+        goto label03;
+
+     label08:
+        f3 = (float) $i0;
+
+        f3 = f3 - $f0;
+
+        $f0 = $r3.<android.graphics.RectF: float top>;
+
+        f3 = f3 - $f0;
+
+        goto label03;
+
+     label09:
+        $f0 = $r3.<android.graphics.RectF: float top>;
+
+        $b1 = $f0 cmpl 0.0F;
+
+        $i2 = (int) $b1;
+
+        if $i2 <= 0 goto label10;
+
+        f3 = $r3.<android.graphics.RectF: float top>;
+
+        f3 = neg f3;
+
+        goto label03;
+
+     label10:
+        $f0 = $r3.<android.graphics.RectF: float bottom>;
+
+        $f4 = (float) $i0;
+
+        $b1 = $f0 cmpg $f4;
+
+        $i2 = (int) $b1;
+
+        if $i2 >= 0 goto label03;
+
+        f3 = (float) $i0;
+
+        $f0 = $r3.<android.graphics.RectF: float bottom>;
+
+        f3 = f3 - $f0;
+
+        goto label03;
+
+     label11:
+        f2 = $r3.<android.graphics.RectF: float left>;
+
+        f2 = neg f2;
+
+        goto label05;
+
+     label12:
+        f2 = (float) $i0;
+
+        f2 = f2 - $f1;
+
+        $f1 = $r3.<android.graphics.RectF: float left>;
+
+        f2 = f2 - $f1;
+
+        goto label05;
+
+     label13:
+        $f1 = $r3.<android.graphics.RectF: float left>;
+
+        $b1 = $f1 cmpl 0.0F;
+
+        $i2 = (int) $b1;
+
+        if $i2 <= 0 goto label14;
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: int mScrollEdge> = 0;
+
+        f2 = $r3.<android.graphics.RectF: float left>;
+
+        f2 = neg f2;
+
+        goto label06;
+
+     label14:
+        $f1 = $r3.<android.graphics.RectF: float right>;
+
+        $f0 = (float) $i0;
+
+        $b1 = $f1 cmpg $f0;
+
+        $i2 = (int) $b1;
+
+        if $i2 >= 0 goto label15;
+
+        f2 = (float) $i0;
+
+        $f1 = $r3.<android.graphics.RectF: float right>;
+
+        f2 = f2 - $f1;
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: int mScrollEdge> = 1;
+
+        goto label06;
+
+     label15:
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: int mScrollEdge> = -1;
+
+        goto label06;
+
+     label16:
+        return;
+    }
+
+    private static void checkZoomLevels(float, float, float)
+    {
+        byte $b0;
+        int $i1;
+        float $f0, $f1, $f2;
+        java.lang.IllegalArgumentException $r0;
+
+        $f0 := @parameter0: float;
+
+        $f1 := @parameter1: float;
+
+        $f2 := @parameter2: float;
+
+        $b0 = $f0 cmpl $f1;
+
+        $i1 = (int) $b0;
+
+        if $i1 < 0 goto label1;
+
+        $r0 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r0.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("MinZoom should be less than MidZoom");
+
+        throw $r0;
+
+     label1:
+        $b0 = $f1 cmpl $f2;
+
+        $i1 = (int) $b0;
+
+        if $i1 < 0 goto label2;
+
+        $r0 = new java.lang.IllegalArgumentException;
+
+        specialinvoke $r0.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>("MidZoom should be less than MaxZoom");
+
+        throw $r0;
+
+     label2:
+        return;
+    }
+
+    private android.graphics.RectF getDisplayRect(android.graphics.Matrix)
+    {
+        android.graphics.RectF $r4;
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        android.widget.ImageView $r2;
+        android.graphics.drawable.Drawable $r3;
+        int $i0;
+        float $f0, $f1;
+        android.graphics.Matrix $r1;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $r1 := @parameter0: android.graphics.Matrix;
+
+        $r2 = virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.widget.ImageView getImageView()>();
+
+        if $r2 == null goto label1;
+
+        $r3 = virtualinvoke $r2.<android.widget.ImageView: android.graphics.drawable.Drawable getDrawable()>();
+
+        if $r3 == null goto label1;
+
+        $r4 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.RectF mDisplayRect>;
+
+        $i0 = virtualinvoke $r3.<android.graphics.drawable.Drawable: int getIntrinsicWidth()>();
+
+        $f0 = (float) $i0;
+
+        $i0 = virtualinvoke $r3.<android.graphics.drawable.Drawable: int getIntrinsicHeight()>();
+
+        $f1 = (float) $i0;
+
+        virtualinvoke $r4.<android.graphics.RectF: void set(float,float,float,float)>(0.0F, 0.0F, $f0, $f1);
+
+        $r4 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.RectF mDisplayRect>;
+
+        virtualinvoke $r1.<android.graphics.Matrix: boolean mapRect(android.graphics.RectF)>($r4);
+
+        $r4 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.RectF mDisplayRect>;
+
+        return $r4;
+
+     label1:
+        return null;
+    }
+
+    private float getValue(android.graphics.Matrix, int)
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        int $i0;
+        float $f0;
+        float[] $r2;
+        android.graphics.Matrix $r1;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $r1 := @parameter0: android.graphics.Matrix;
+
+        $i0 := @parameter1: int;
+
+        $r2 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: float[] mMatrixValues>;
+
+        virtualinvoke $r1.<android.graphics.Matrix: void getValues(float[])>($r2);
+
+        $r2 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: float[] mMatrixValues>;
+
+        $f0 = $r2[0];
+
+        return $f0;
+    }
+
+    private static boolean hasDrawable(android.widget.ImageView)
+    {
+        android.widget.ImageView $r0;
+        android.graphics.drawable.Drawable $r1;
+
+        $r0 := @parameter0: android.widget.ImageView;
+
+        if $r0 == null goto label1;
+
+        $r1 = virtualinvoke $r0.<android.widget.ImageView: android.graphics.drawable.Drawable getDrawable()>();
+
+        if $r1 == null goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    private static boolean isSupportedScaleType(android.widget.ImageView$ScaleType)
+    {
+        int[] $r1;
+        android.widget.ImageView$ScaleType $r0;
+        int $i0;
+        java.lang.StringBuilder $r3;
+        java.lang.String $r4;
+        java.lang.IllegalArgumentException $r2;
+
+        $r0 := @parameter0: android.widget.ImageView$ScaleType;
+
+        if $r0 != null goto label1;
+
+        return 0;
+
+     label1:
+        $r1 = <cn.ffcs.lib.photoview.PhotoViewAttacher$2: int[] $SwitchMap$android$widget$ImageView$ScaleType>;
+
+        $i0 = virtualinvoke $r0.<android.widget.ImageView$ScaleType: int ordinal()>();
+
+        $i0 = $r1[$i0];
+
+        lookupswitch($i0)
+        {
+            case 1: goto label3;
+            default: goto label2;
+        };
+
+     label2:
+        return 1;
+
+     label3:
+        $r2 = new java.lang.IllegalArgumentException;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r0.<android.widget.ImageView$ScaleType: java.lang.String name()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" is not supported in PhotoView");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r2.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r4);
+
+        throw $r2;
+    }
+
+    private void resetMatrix()
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        android.graphics.Matrix $r1;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $r1 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.Matrix mSuppMatrix>;
+
+        virtualinvoke $r1.<android.graphics.Matrix: void reset()>();
+
+        $r1 = virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.Matrix getDisplayMatrix()>();
+
+        specialinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: void setImageViewMatrix(android.graphics.Matrix)>($r1);
+
+        specialinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: void checkMatrixBounds()>();
+
+        return;
+    }
+
+    private void setImageViewMatrix(android.graphics.Matrix)
+    {
+        android.graphics.RectF $r4;
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        android.widget.ImageView $r2;
+        byte $b1;
+        cn.ffcs.lib.photoview.PhotoViewAttacher$OnMatrixChangedListener $r5;
+        int $i0;
+        float $f0, $f1;
+        android.graphics.Matrix $r1, $r3;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $r1 := @parameter0: android.graphics.Matrix;
+
+        $r2 = virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.widget.ImageView getImageView()>();
+
+        if $r2 == null goto label3;
+
+        specialinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: void checkImageViewScaleType()>();
+
+        $r3 = virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.Matrix getDisplayMatrix()>();
+
+        $r4 = specialinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.RectF getDisplayRect(android.graphics.Matrix)>($r3);
+
+        if $r4 == null goto label2;
+
+        $f0 = virtualinvoke $r4.<android.graphics.RectF: float height()>();
+
+        $i0 = virtualinvoke $r2.<android.widget.ImageView: int getHeight()>();
+
+        $f1 = (float) $i0;
+
+        $f1 = $f1 / 1.5F;
+
+        $b1 = $f0 cmpl $f1;
+
+        $i0 = (int) $b1;
+
+        if $i0 <= 0 goto label1;
+
+        virtualinvoke $r2.<android.widget.ImageView: void setImageMatrix(android.graphics.Matrix)>($r1);
+
+     label1:
+        $r5 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: cn.ffcs.lib.photoview.PhotoViewAttacher$OnMatrixChangedListener mMatrixChangeListener>;
+
+        if $r5 == null goto label3;
+
+        $r4 = specialinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.RectF getDisplayRect(android.graphics.Matrix)>($r1);
+
+        if $r4 == null goto label3;
+
+        $r5 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: cn.ffcs.lib.photoview.PhotoViewAttacher$OnMatrixChangedListener mMatrixChangeListener>;
+
+        interfaceinvoke $r5.<cn.ffcs.lib.photoview.PhotoViewAttacher$OnMatrixChangedListener: void onMatrixChanged(android.graphics.RectF)>($r4);
+
+        return;
+
+     label2:
+        virtualinvoke $r2.<android.widget.ImageView: void setImageMatrix(android.graphics.Matrix)>($r1);
+
+        goto label1;
+
+     label3:
+        return;
+    }
+
+    private static void setImageViewScaleTypeMatrix(android.widget.ImageView)
+    {
+        android.widget.ImageView $r0;
+        boolean $z0;
+        android.widget.ImageView$ScaleType $r1;
+
+        $r0 := @parameter0: android.widget.ImageView;
+
+        if $r0 == null goto label2;
+
+        $z0 = $r0 instanceof cn.ffcs.lib.photoview.PhotoView;
+
+        if $z0 == 0 goto label1;
+
+        return;
+
+     label1:
+        $r1 = <android.widget.ImageView$ScaleType: android.widget.ImageView$ScaleType MATRIX>;
+
+        virtualinvoke $r0.<android.widget.ImageView: void setScaleType(android.widget.ImageView$ScaleType)>($r1);
+
+     label2:
+        return;
+    }
+
+    private void updateBaseMatrix(android.graphics.drawable.Drawable)
+    {
+        android.widget.ImageView $r4;
+        android.graphics.drawable.Drawable $r1;
+        int[] $r8;
+        int $i0, $i1;
+        android.graphics.Matrix $r5;
+        android.graphics.RectF r2, r3;
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        android.widget.ImageView$ScaleType $r6, $r7;
+        android.graphics.Matrix$ScaleToFit $r9;
+        float f0, f1, f2, f3;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $r1 := @parameter0: android.graphics.drawable.Drawable;
+
+        $r4 = virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.widget.ImageView getImageView()>();
+
+        if $r4 == null goto label10;
+
+        if $r1 != null goto label01;
+
+        return;
+
+     label01:
+        f2 = <cn.ffcs.lib.photoview.PhotoViewAttacher: float mImageViewWidth>;
+
+        f1 = <cn.ffcs.lib.photoview.PhotoViewAttacher: float mImageViewHeight>;
+
+        $i0 = virtualinvoke $r1.<android.graphics.drawable.Drawable: int getIntrinsicWidth()>();
+
+        $i1 = virtualinvoke $r1.<android.graphics.drawable.Drawable: int getIntrinsicHeight()>();
+
+        $r5 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.Matrix mBaseMatrix>;
+
+        virtualinvoke $r5.<android.graphics.Matrix: void reset()>();
+
+        f3 = (float) $i0;
+
+        f3 = f2 / f3;
+
+        f0 = (float) $i1;
+
+        f0 = f1 / f0;
+
+        $r6 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.widget.ImageView$ScaleType mScaleType>;
+
+        $r7 = <android.widget.ImageView$ScaleType: android.widget.ImageView$ScaleType CENTER>;
+
+        if $r6 != $r7 goto label03;
+
+        $r5 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.Matrix mBaseMatrix>;
+
+        f3 = (float) $i0;
+
+        f2 = f2 - f3;
+
+        f2 = f2 / 2.0F;
+
+        f3 = (float) $i1;
+
+        f1 = f1 - f3;
+
+        f1 = f1 / 2.0F;
+
+        virtualinvoke $r5.<android.graphics.Matrix: boolean postTranslate(float,float)>(f2, f1);
+
+     label02:
+        specialinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: void resetMatrix()>();
+
+        return;
+
+     label03:
+        $r6 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.widget.ImageView$ScaleType mScaleType>;
+
+        $r7 = <android.widget.ImageView$ScaleType: android.widget.ImageView$ScaleType CENTER_CROP>;
+
+        if $r6 != $r7 goto label04;
+
+        f3 = staticinvoke <java.lang.Math: float max(float,float)>(f3, f0);
+
+        $r5 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.Matrix mBaseMatrix>;
+
+        virtualinvoke $r5.<android.graphics.Matrix: boolean postScale(float,float)>(f3, f3);
+
+        $r5 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.Matrix mBaseMatrix>;
+
+        f0 = (float) $i0;
+
+        f0 = f0 * f3;
+
+        f2 = f2 - f0;
+
+        f2 = f2 / 2.0F;
+
+        f0 = (float) $i1;
+
+        f3 = f0 * f3;
+
+        f1 = f1 - f3;
+
+        f1 = f1 / 2.0F;
+
+        virtualinvoke $r5.<android.graphics.Matrix: boolean postTranslate(float,float)>(f2, f1);
+
+        goto label02;
+
+     label04:
+        $r6 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.widget.ImageView$ScaleType mScaleType>;
+
+        $r7 = <android.widget.ImageView$ScaleType: android.widget.ImageView$ScaleType CENTER_INSIDE>;
+
+        if $r6 != $r7 goto label05;
+
+        f3 = staticinvoke <java.lang.Math: float min(float,float)>(f3, f0);
+
+        f3 = staticinvoke <java.lang.Math: float min(float,float)>(1.0F, f3);
+
+        $r5 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.Matrix mBaseMatrix>;
+
+        virtualinvoke $r5.<android.graphics.Matrix: boolean postScale(float,float)>(f3, f3);
+
+        $r5 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.Matrix mBaseMatrix>;
+
+        f0 = (float) $i0;
+
+        f0 = f0 * f3;
+
+        f2 = f2 - f0;
+
+        f2 = f2 / 2.0F;
+
+        f0 = (float) $i1;
+
+        f3 = f0 * f3;
+
+        f1 = f1 - f3;
+
+        f1 = f1 / 2.0F;
+
+        virtualinvoke $r5.<android.graphics.Matrix: boolean postTranslate(float,float)>(f2, f1);
+
+        goto label02;
+
+     label05:
+        r3 = new android.graphics.RectF;
+
+        f3 = (float) $i0;
+
+        f0 = (float) $i1;
+
+        specialinvoke r3.<android.graphics.RectF: void <init>(float,float,float,float)>(0.0F, 0.0F, f3, f0);
+
+        r2 = new android.graphics.RectF;
+
+        specialinvoke r2.<android.graphics.RectF: void <init>(float,float,float,float)>(0.0F, 0.0F, f2, f1);
+
+        $r8 = <cn.ffcs.lib.photoview.PhotoViewAttacher$2: int[] $SwitchMap$android$widget$ImageView$ScaleType>;
+
+        $r6 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.widget.ImageView$ScaleType mScaleType>;
+
+        $i0 = virtualinvoke $r6.<android.widget.ImageView$ScaleType: int ordinal()>();
+
+        $i0 = $r8[$i0];
+
+        lookupswitch($i0)
+        {
+            case 2: goto label06;
+            case 3: goto label08;
+            case 4: goto label07;
+            case 5: goto label09;
+            default: goto label02;
+        };
+
+     label06:
+        $r5 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.Matrix mBaseMatrix>;
+
+        $r9 = <android.graphics.Matrix$ScaleToFit: android.graphics.Matrix$ScaleToFit START>;
+
+        virtualinvoke $r5.<android.graphics.Matrix: boolean setRectToRect(android.graphics.RectF,android.graphics.RectF,android.graphics.Matrix$ScaleToFit)>(r3, r2, $r9);
+
+        goto label02;
+
+     label07:
+        $r5 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.Matrix mBaseMatrix>;
+
+        $r9 = <android.graphics.Matrix$ScaleToFit: android.graphics.Matrix$ScaleToFit CENTER>;
+
+        virtualinvoke $r5.<android.graphics.Matrix: boolean setRectToRect(android.graphics.RectF,android.graphics.RectF,android.graphics.Matrix$ScaleToFit)>(r3, r2, $r9);
+
+        goto label02;
+
+     label08:
+        $r5 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.Matrix mBaseMatrix>;
+
+        $r9 = <android.graphics.Matrix$ScaleToFit: android.graphics.Matrix$ScaleToFit END>;
+
+        virtualinvoke $r5.<android.graphics.Matrix: boolean setRectToRect(android.graphics.RectF,android.graphics.RectF,android.graphics.Matrix$ScaleToFit)>(r3, r2, $r9);
+
+        goto label02;
+
+     label09:
+        $r5 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.Matrix mBaseMatrix>;
+
+        $r9 = <android.graphics.Matrix$ScaleToFit: android.graphics.Matrix$ScaleToFit FILL>;
+
+        virtualinvoke $r5.<android.graphics.Matrix: boolean setRectToRect(android.graphics.RectF,android.graphics.RectF,android.graphics.Matrix$ScaleToFit)>(r3, r2, $r9);
+
+        goto label02;
+
+     label10:
+        return;
+    }
+
+    public final boolean canZoom()
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        boolean z0;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        z0 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: boolean mZoomEnabled>;
+
+        return z0;
+    }
+
+    public final void cleanup()
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        android.widget.ImageView $r3;
+        android.view.ViewTreeObserver $r4;
+        java.lang.Object $r2;
+        java.lang.ref.WeakReference $r1;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $r1 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: java.lang.ref.WeakReference mImageView>;
+
+        if $r1 == null goto label1;
+
+        $r1 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: java.lang.ref.WeakReference mImageView>;
+
+        $r2 = virtualinvoke $r1.<java.lang.ref.WeakReference: java.lang.Object get()>();
+
+        $r3 = (android.widget.ImageView) $r2;
+
+        $r4 = virtualinvoke $r3.<android.widget.ImageView: android.view.ViewTreeObserver getViewTreeObserver()>();
+
+        virtualinvoke $r4.<android.view.ViewTreeObserver: void removeGlobalOnLayoutListener(android.view.ViewTreeObserver$OnGlobalLayoutListener)>(r0);
+
+     label1:
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.view.ViewTreeObserver mViewTreeObserver> = null;
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: cn.ffcs.lib.photoview.PhotoViewAttacher$OnMatrixChangedListener mMatrixChangeListener> = null;
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: cn.ffcs.lib.photoview.PhotoViewAttacher$OnPhotoTapListener mPhotoTapListener> = null;
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: cn.ffcs.lib.photoview.PhotoViewAttacher$OnViewTapListener mViewTapListener> = null;
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: java.lang.ref.WeakReference mImageView> = null;
+
+        return;
+    }
+
+    protected android.graphics.Matrix getDisplayMatrix()
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        android.graphics.Matrix $r1, $r2;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $r1 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.Matrix mDrawMatrix>;
+
+        $r2 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.Matrix mBaseMatrix>;
+
+        virtualinvoke $r1.<android.graphics.Matrix: void set(android.graphics.Matrix)>($r2);
+
+        $r1 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.Matrix mDrawMatrix>;
+
+        $r2 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.Matrix mSuppMatrix>;
+
+        virtualinvoke $r1.<android.graphics.Matrix: boolean postConcat(android.graphics.Matrix)>($r2);
+
+        $r1 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.Matrix mDrawMatrix>;
+
+        return $r1;
+    }
+
+    public final android.graphics.RectF getDisplayRect()
+    {
+        android.graphics.RectF $r2;
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        android.graphics.Matrix $r1;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        specialinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: void checkMatrixBounds()>();
+
+        $r1 = virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.Matrix getDisplayMatrix()>();
+
+        $r2 = specialinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.RectF getDisplayRect(android.graphics.Matrix)>($r1);
+
+        return $r2;
+    }
+
+    public final android.widget.ImageView getImageView()
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        android.widget.ImageView r2;
+        java.lang.Object $r1;
+        java.lang.ref.WeakReference $r3;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        r2 = null;
+
+        $r3 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: java.lang.ref.WeakReference mImageView>;
+
+        if $r3 == null goto label1;
+
+        $r3 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: java.lang.ref.WeakReference mImageView>;
+
+        $r1 = virtualinvoke $r3.<java.lang.ref.WeakReference: java.lang.Object get()>();
+
+        r2 = (android.widget.ImageView) $r1;
+
+     label1:
+        if r2 != null goto label2;
+
+        virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: void cleanup()>();
+
+     label2:
+        return r2;
+    }
+
+    public float getMaxScale()
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        float f0;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        f0 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: float mMaxScale>;
+
+        return f0;
+    }
+
+    public float getMidScale()
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        float f0;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        f0 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: float mMidScale>;
+
+        return f0;
+    }
+
+    public float getMinScale()
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        float f0;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        f0 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: float mMinScale>;
+
+        return f0;
+    }
+
+    public final float getScale()
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        float $f0;
+        android.graphics.Matrix $r1;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $r1 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.Matrix mSuppMatrix>;
+
+        $f0 = specialinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: float getValue(android.graphics.Matrix,int)>($r1, 0);
+
+        return $f0;
+    }
+
+    public final android.widget.ImageView$ScaleType getScaleType()
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        android.widget.ImageView$ScaleType r1;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        r1 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.widget.ImageView$ScaleType mScaleType>;
+
+        return r1;
+    }
+
+    public final boolean onDoubleTap(android.view.MotionEvent)
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        java.lang.ArrayIndexOutOfBoundsException $r3;
+        cn.ffcs.lib.photoview.PhotoViewAttacher$OnDoubleTapListener $r2;
+        byte $b0;
+        android.view.MotionEvent $r1;
+        int $i1;
+        float $f0, $f1, $f2, $f3;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $r1 := @parameter0: android.view.MotionEvent;
+
+     label1:
+        $f0 = virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: float getScale()>();
+
+        $f1 = virtualinvoke $r1.<android.view.MotionEvent: float getX()>();
+
+        $f2 = virtualinvoke $r1.<android.view.MotionEvent: float getY()>();
+
+     label2:
+        $f3 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: float mMidScale>;
+
+        $b0 = $f0 cmpg $f3;
+
+        $i1 = (int) $b0;
+
+        if $i1 >= 0 goto label6;
+
+        $f0 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: float mMidScale>;
+
+     label3:
+        virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: void zoomTo(float,float,float)>($f0, $f1, $f2);
+
+     label4:
+        $r2 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: cn.ffcs.lib.photoview.PhotoViewAttacher$OnDoubleTapListener mOnDoubleTapListener>;
+
+        if $r2 == null goto label5;
+
+        $r2 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: cn.ffcs.lib.photoview.PhotoViewAttacher$OnDoubleTapListener mOnDoubleTapListener>;
+
+        interfaceinvoke $r2.<cn.ffcs.lib.photoview.PhotoViewAttacher$OnDoubleTapListener: void onDoubleTap()>();
+
+     label5:
+        return 1;
+
+     label6:
+        $f0 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: float mMinScale>;
+
+     label7:
+        virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: void zoomTo(float,float,float)>($f0, $f1, $f2);
+
+     label8:
+        goto label4;
+
+     label9:
+        $r3 := @caughtexception;
+
+        goto label4;
+
+        catch java.lang.ArrayIndexOutOfBoundsException from label1 to label2 with label9;
+        catch java.lang.ArrayIndexOutOfBoundsException from label3 to label4 with label9;
+        catch java.lang.ArrayIndexOutOfBoundsException from label7 to label8 with label9;
+    }
+
+    public final boolean onDoubleTapEvent(android.view.MotionEvent)
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        android.view.MotionEvent $r1;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $r1 := @parameter0: android.view.MotionEvent;
+
+        return 0;
+    }
+
+    public final void onDrag(float, float)
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        java.lang.Float $r2;
+        cn.ffcs.lib.photoview.VersionedGestureDetector $r6;
+        android.view.ViewParent $r7;
+        java.lang.Object[] $r1;
+        android.widget.ImageView $r4;
+        byte $b1;
+        int $i0;
+        float $f0, $f1;
+        java.lang.String $r3;
+        android.graphics.Matrix $r5;
+        boolean $z0;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $f0 := @parameter0: float;
+
+        $f1 := @parameter1: float;
+
+        $z0 = <cn.ffcs.lib.photoview.PhotoViewAttacher: boolean DEBUG>;
+
+        if $z0 == 0 goto label1;
+
+        $r1 = newarray (java.lang.Object)[2];
+
+        $r2 = staticinvoke <java.lang.Float: java.lang.Float valueOf(float)>($f0);
+
+        $r1[0] = $r2;
+
+        $r2 = staticinvoke <java.lang.Float: java.lang.Float valueOf(float)>($f1);
+
+        $r1[1] = $r2;
+
+        $r3 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("onDrag: dx: %.2f. dy: %.2f", $r1);
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("PhotoViewAttacher", $r3);
+
+     label1:
+        $r4 = virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.widget.ImageView getImageView()>();
+
+        if $r4 == null goto label4;
+
+        $z0 = staticinvoke <cn.ffcs.lib.photoview.PhotoViewAttacher: boolean hasDrawable(android.widget.ImageView)>($r4);
+
+        if $z0 == 0 goto label4;
+
+        $r5 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.Matrix mSuppMatrix>;
+
+        virtualinvoke $r5.<android.graphics.Matrix: boolean postTranslate(float,float)>($f0, $f1);
+
+        specialinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: void checkAndDisplayMatrix()>();
+
+        $z0 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: boolean mAllowParentInterceptOnEdge>;
+
+        if $z0 == 0 goto label4;
+
+        $r6 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: cn.ffcs.lib.photoview.VersionedGestureDetector mScaleDragDetector>;
+
+        $z0 = virtualinvoke $r6.<cn.ffcs.lib.photoview.VersionedGestureDetector: boolean isScaling()>();
+
+        if $z0 != 0 goto label4;
+
+        $i0 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: int mScrollEdge>;
+
+        if $i0 == 2 goto label3;
+
+        $i0 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: int mScrollEdge>;
+
+        if $i0 != 0 goto label2;
+
+        $b1 = $f0 cmpl 1.0F;
+
+        $i0 = (int) $b1;
+
+        if $i0 >= 0 goto label3;
+
+     label2:
+        $i0 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: int mScrollEdge>;
+
+        if $i0 != 1 goto label4;
+
+        $b1 = $f0 cmpg -1.0F;
+
+        $i0 = (int) $b1;
+
+        if $i0 > 0 goto label4;
+
+     label3:
+        $r7 = virtualinvoke $r4.<android.widget.ImageView: android.view.ViewParent getParent()>();
+
+        interfaceinvoke $r7.<android.view.ViewParent: void requestDisallowInterceptTouchEvent(boolean)>(0);
+
+     label4:
+        return;
+    }
+
+    public final void onFling(float, float, float, float)
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        android.content.Context $r5;
+        android.widget.ImageView $r3;
+        cn.ffcs.lib.photoview.PhotoViewAttacher$FlingRunnable $r4;
+        int $i0, $i1, $i2, $i3;
+        float $f0, $f1, $f2, $f3;
+        java.lang.StringBuilder $r1;
+        java.lang.String $r2;
+        boolean $z0;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $f0 := @parameter0: float;
+
+        $f1 := @parameter1: float;
+
+        $f2 := @parameter2: float;
+
+        $f3 := @parameter3: float;
+
+        $z0 = <cn.ffcs.lib.photoview.PhotoViewAttacher: boolean DEBUG>;
+
+        if $z0 == 0 goto label1;
+
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("onFling. sX: ");
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(float)>($f0);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" sY: ");
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(float)>($f1);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" Vx: ");
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(float)>($f2);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" Vy: ");
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(float)>($f3);
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("PhotoViewAttacher", $r2);
+
+     label1:
+        $r3 = virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.widget.ImageView getImageView()>();
+
+        $z0 = staticinvoke <cn.ffcs.lib.photoview.PhotoViewAttacher: boolean hasDrawable(android.widget.ImageView)>($r3);
+
+        if $z0 == 0 goto label2;
+
+        $r4 = new cn.ffcs.lib.photoview.PhotoViewAttacher$FlingRunnable;
+
+        $r5 = virtualinvoke $r3.<android.widget.ImageView: android.content.Context getContext()>();
+
+        specialinvoke $r4.<cn.ffcs.lib.photoview.PhotoViewAttacher$FlingRunnable: void <init>(cn.ffcs.lib.photoview.PhotoViewAttacher,android.content.Context)>(r0, $r5);
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: cn.ffcs.lib.photoview.PhotoViewAttacher$FlingRunnable mCurrentFlingRunnable> = $r4;
+
+        $r4 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: cn.ffcs.lib.photoview.PhotoViewAttacher$FlingRunnable mCurrentFlingRunnable>;
+
+        $i2 = virtualinvoke $r3.<android.widget.ImageView: int getWidth()>();
+
+        $i3 = virtualinvoke $r3.<android.widget.ImageView: int getHeight()>();
+
+        $i0 = (int) $f2;
+
+        $i1 = (int) $f3;
+
+        virtualinvoke $r4.<cn.ffcs.lib.photoview.PhotoViewAttacher$FlingRunnable: void fling(int,int,int,int)>($i2, $i3, $i0, $i1);
+
+        $r4 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: cn.ffcs.lib.photoview.PhotoViewAttacher$FlingRunnable mCurrentFlingRunnable>;
+
+        virtualinvoke $r3.<android.widget.ImageView: boolean post(java.lang.Runnable)>($r4);
+
+        return;
+
+     label2:
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: boolean mZoomEnabled> = 0;
+
+        return;
+    }
+
+    public final void onGlobalLayout()
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        android.widget.ImageView $r1;
+        android.graphics.drawable.Drawable $r2;
+        int $i0, $i1, $i2, $i3, $i4;
+        float $f0;
+        boolean $z0;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $r1 = virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.widget.ImageView getImageView()>();
+
+        if $r1 == null goto label2;
+
+        $i0 = virtualinvoke $r1.<android.widget.ImageView: int getWidth()>();
+
+        if $i0 <= 0 goto label1;
+
+        $i0 = virtualinvoke $r1.<android.widget.ImageView: int getWidth()>();
+
+        $f0 = (float) $i0;
+
+        virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: void setImageViewWidth(float)>($f0);
+
+     label1:
+        $i0 = virtualinvoke $r1.<android.widget.ImageView: int getHeight()>();
+
+        if $i0 <= 0 goto label2;
+
+        $i0 = virtualinvoke $r1.<android.widget.ImageView: int getHeight()>();
+
+        $f0 = (float) $i0;
+
+        virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: void setImageViewHeight(float)>($f0);
+
+     label2:
+        if $r1 == null goto label4;
+
+        $z0 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: boolean mZoomEnabled>;
+
+        if $z0 == 0 goto label4;
+
+        $i0 = virtualinvoke $r1.<android.widget.ImageView: int getTop()>();
+
+        $i1 = virtualinvoke $r1.<android.widget.ImageView: int getRight()>();
+
+        $i2 = virtualinvoke $r1.<android.widget.ImageView: int getBottom()>();
+
+        $i3 = virtualinvoke $r1.<android.widget.ImageView: int getLeft()>();
+
+        $i4 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: int mIvTop>;
+
+        if $i0 != $i4 goto label3;
+
+        $i4 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: int mIvBottom>;
+
+        if $i2 != $i4 goto label3;
+
+        $i4 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: int mIvLeft>;
+
+        if $i3 != $i4 goto label3;
+
+        $i4 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: int mIvRight>;
+
+        if $i1 == $i4 goto label4;
+
+     label3:
+        $r2 = virtualinvoke $r1.<android.widget.ImageView: android.graphics.drawable.Drawable getDrawable()>();
+
+        specialinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: void updateBaseMatrix(android.graphics.drawable.Drawable)>($r2);
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: int mIvTop> = $i0;
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: int mIvRight> = $i1;
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: int mIvBottom> = $i2;
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: int mIvLeft> = $i3;
+
+     label4:
+        return;
+    }
+
+    public final void onScale(float, float, float)
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        java.lang.Float $r2;
+        java.lang.Object[] $r1;
+        android.widget.ImageView $r4;
+        byte $b0;
+        int $i1;
+        float $f0, $f1, $f2, $f3, $f4;
+        java.lang.String $r3;
+        android.graphics.Matrix $r5;
+        boolean $z0;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $f0 := @parameter0: float;
+
+        $f1 := @parameter1: float;
+
+        $f2 := @parameter2: float;
+
+        $z0 = <cn.ffcs.lib.photoview.PhotoViewAttacher: boolean DEBUG>;
+
+        if $z0 == 0 goto label1;
+
+        $r1 = newarray (java.lang.Object)[3];
+
+        $r2 = staticinvoke <java.lang.Float: java.lang.Float valueOf(float)>($f0);
+
+        $r1[0] = $r2;
+
+        $r2 = staticinvoke <java.lang.Float: java.lang.Float valueOf(float)>($f1);
+
+        $r1[1] = $r2;
+
+        $r2 = staticinvoke <java.lang.Float: java.lang.Float valueOf(float)>($f2);
+
+        $r1[2] = $r2;
+
+        $r3 = staticinvoke <java.lang.String: java.lang.String format(java.lang.String,java.lang.Object[])>("onScale: scale: %.2f. fX: %.2f. fY: %.2f", $r1);
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("PhotoViewAttacher", $r3);
+
+     label1:
+        $r4 = virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.widget.ImageView getImageView()>();
+
+        $z0 = staticinvoke <cn.ffcs.lib.photoview.PhotoViewAttacher: boolean hasDrawable(android.widget.ImageView)>($r4);
+
+        if $z0 == 0 goto label3;
+
+        $f3 = virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: float getScale()>();
+
+        $f4 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: float mMaxScale>;
+
+        $b0 = $f3 cmpg $f4;
+
+        $i1 = (int) $b0;
+
+        if $i1 < 0 goto label2;
+
+        $b0 = $f0 cmpg 1.0F;
+
+        $i1 = (int) $b0;
+
+        if $i1 >= 0 goto label3;
+
+     label2:
+        $r5 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.Matrix mSuppMatrix>;
+
+        virtualinvoke $r5.<android.graphics.Matrix: boolean postScale(float,float,float,float)>($f0, $f0, $f1, $f2);
+
+        specialinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: void checkAndDisplayMatrix()>();
+
+     label3:
+        return;
+    }
+
+    public final boolean onSingleTapConfirmed(android.view.MotionEvent)
+    {
+        android.graphics.RectF $r4;
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        cn.ffcs.lib.photoview.PhotoViewAttacher$OnSingleTapListener $r6;
+        android.widget.ImageView $r2;
+        cn.ffcs.lib.photoview.PhotoViewAttacher$OnViewTapListener $r5;
+        cn.ffcs.lib.photoview.PhotoViewAttacher$OnPhotoTapListener $r3;
+        android.view.MotionEvent $r1;
+        float f0, f1, $f2;
+        boolean $z0;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $r1 := @parameter0: android.view.MotionEvent;
+
+        $r2 = virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.widget.ImageView getImageView()>();
+
+        if $r2 == null goto label2;
+
+        $r3 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: cn.ffcs.lib.photoview.PhotoViewAttacher$OnPhotoTapListener mPhotoTapListener>;
+
+        if $r3 == null goto label1;
+
+        $r4 = virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.RectF getDisplayRect()>();
+
+        if $r4 == null goto label1;
+
+        f0 = virtualinvoke $r1.<android.view.MotionEvent: float getX()>();
+
+        f1 = virtualinvoke $r1.<android.view.MotionEvent: float getY()>();
+
+        $z0 = virtualinvoke $r4.<android.graphics.RectF: boolean contains(float,float)>(f0, f1);
+
+        if $z0 == 0 goto label1;
+
+        $f2 = $r4.<android.graphics.RectF: float left>;
+
+        f0 = f0 - $f2;
+
+        $f2 = virtualinvoke $r4.<android.graphics.RectF: float width()>();
+
+        f0 = f0 / $f2;
+
+        $f2 = $r4.<android.graphics.RectF: float top>;
+
+        f1 = f1 - $f2;
+
+        $f2 = virtualinvoke $r4.<android.graphics.RectF: float height()>();
+
+        f1 = f1 / $f2;
+
+        $r3 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: cn.ffcs.lib.photoview.PhotoViewAttacher$OnPhotoTapListener mPhotoTapListener>;
+
+        interfaceinvoke $r3.<cn.ffcs.lib.photoview.PhotoViewAttacher$OnPhotoTapListener: void onPhotoTap(android.view.View,float,float)>($r2, f0, f1);
+
+        return 1;
+
+     label1:
+        $r5 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: cn.ffcs.lib.photoview.PhotoViewAttacher$OnViewTapListener mViewTapListener>;
+
+        if $r5 == null goto label2;
+
+        $r5 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: cn.ffcs.lib.photoview.PhotoViewAttacher$OnViewTapListener mViewTapListener>;
+
+        f1 = virtualinvoke $r1.<android.view.MotionEvent: float getX()>();
+
+        f0 = virtualinvoke $r1.<android.view.MotionEvent: float getY()>();
+
+        interfaceinvoke $r5.<cn.ffcs.lib.photoview.PhotoViewAttacher$OnViewTapListener: void onViewTap(android.view.View,float,float)>($r2, f1, f0);
+
+     label2:
+        $r6 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: cn.ffcs.lib.photoview.PhotoViewAttacher$OnSingleTapListener mOnSingleTapListener>;
+
+        if $r6 == null goto label3;
+
+        $r6 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: cn.ffcs.lib.photoview.PhotoViewAttacher$OnSingleTapListener mOnSingleTapListener>;
+
+        interfaceinvoke $r6.<cn.ffcs.lib.photoview.PhotoViewAttacher$OnSingleTapListener: void onSingleTapConfirmed()>();
+
+     label3:
+        return 0;
+    }
+
+    public final boolean onTouch(android.view.View, android.view.MotionEvent)
+    {
+        android.view.GestureDetector $r3;
+        android.view.ViewParent $r5;
+        byte $b1;
+        cn.ffcs.lib.photoview.PhotoViewAttacher$AnimatedZoomRunnable $r8, $r9;
+        android.view.MotionEvent $r2;
+        int $i0;
+        android.view.View $r1;
+        boolean z0, $z1;
+        android.graphics.RectF $r7;
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        cn.ffcs.lib.photoview.VersionedGestureDetector $r4;
+        java.lang.Exception $r6;
+        float $f0, $f1, $f2, $f3;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $r1 := @parameter0: android.view.View;
+
+        $r2 := @parameter1: android.view.MotionEvent;
+
+        z0 = 0;
+
+     label01:
+        $z1 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: boolean mZoomEnabled>;
+
+     label02:
+        if $z1 == 0 goto label22;
+
+     label03:
+        $i0 = virtualinvoke $r2.<android.view.MotionEvent: int getAction()>();
+
+     label04:
+        lookupswitch($i0)
+        {
+            case 0: goto label13;
+            case 1: goto label16;
+            case 2: goto label05;
+            case 3: goto label16;
+            default: goto label05;
+        };
+
+     label05:
+        $r3 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.view.GestureDetector mGestureDetector>;
+
+     label06:
+        if $r3 == null goto label09;
+
+     label07:
+        $r3 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.view.GestureDetector mGestureDetector>;
+
+        $z1 = virtualinvoke $r3.<android.view.GestureDetector: boolean onTouchEvent(android.view.MotionEvent)>($r2);
+
+     label08:
+        if $z1 == 0 goto label09;
+
+        z0 = 1;
+
+     label09:
+        $r4 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: cn.ffcs.lib.photoview.VersionedGestureDetector mScaleDragDetector>;
+
+     label10:
+        if $r4 == null goto label30;
+
+     label11:
+        $r4 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: cn.ffcs.lib.photoview.VersionedGestureDetector mScaleDragDetector>;
+
+        $z1 = virtualinvoke $r4.<cn.ffcs.lib.photoview.VersionedGestureDetector: boolean onTouchEvent(android.view.MotionEvent)>($r2);
+
+     label12:
+        if $z1 == 0 goto label30;
+
+        return 1;
+
+     label13:
+        $r5 = virtualinvoke $r1.<android.view.View: android.view.ViewParent getParent()>();
+
+        interfaceinvoke $r5.<android.view.ViewParent: void requestDisallowInterceptTouchEvent(boolean)>(1);
+
+     label14:
+        goto label05;
+
+     label15:
+        $r6 := @caughtexception;
+
+        return z0;
+
+     label16:
+        $f0 = virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: float getScale()>();
+
+        $f1 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: float mMinScale>;
+
+     label17:
+        $b1 = $f0 cmpg $f1;
+
+        $i0 = (int) $b1;
+
+        if $i0 >= 0 goto label05;
+
+     label18:
+        $r7 = virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.graphics.RectF getDisplayRect()>();
+
+     label19:
+        if $r7 == null goto label05;
+
+        $r9 = new cn.ffcs.lib.photoview.PhotoViewAttacher$AnimatedZoomRunnable;
+
+        $r8 = $r9;
+
+     label20:
+        $f1 = virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: float getScale()>();
+
+        $f0 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: float mMinScale>;
+
+        $f2 = virtualinvoke $r7.<android.graphics.RectF: float centerX()>();
+
+        $f3 = virtualinvoke $r7.<android.graphics.RectF: float centerY()>();
+
+        specialinvoke $r9.<cn.ffcs.lib.photoview.PhotoViewAttacher$AnimatedZoomRunnable: void <init>(cn.ffcs.lib.photoview.PhotoViewAttacher,float,float,float,float)>(r0, $f1, $f0, $f2, $f3);
+
+        virtualinvoke $r1.<android.view.View: boolean post(java.lang.Runnable)>($r8);
+
+     label21:
+        z0 = 1;
+
+        goto label05;
+
+     label22:
+        $r3 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.view.GestureDetector mGestureDetector>;
+
+     label23:
+        if $r3 == null goto label26;
+
+     label24:
+        $r3 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.view.GestureDetector mGestureDetector>;
+
+        $z1 = virtualinvoke $r3.<android.view.GestureDetector: boolean onTouchEvent(android.view.MotionEvent)>($r2);
+
+     label25:
+        if $z1 == 0 goto label26;
+
+        z0 = 1;
+
+     label26:
+        $r4 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: cn.ffcs.lib.photoview.VersionedGestureDetector mScaleDragDetector>;
+
+     label27:
+        if $r4 == null goto label30;
+
+     label28:
+        $r4 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: cn.ffcs.lib.photoview.VersionedGestureDetector mScaleDragDetector>;
+
+        $z1 = virtualinvoke $r4.<cn.ffcs.lib.photoview.VersionedGestureDetector: boolean onTouchEvent(android.view.MotionEvent)>($r2);
+
+     label29:
+        if $z1 == 0 goto label30;
+
+        return 1;
+
+     label30:
+        return z0;
+
+        catch java.lang.Exception from label01 to label02 with label15;
+        catch java.lang.Exception from label03 to label04 with label15;
+        catch java.lang.Exception from label05 to label06 with label15;
+        catch java.lang.Exception from label07 to label08 with label15;
+        catch java.lang.Exception from label09 to label10 with label15;
+        catch java.lang.Exception from label11 to label12 with label15;
+        catch java.lang.Exception from label13 to label14 with label15;
+        catch java.lang.Exception from label16 to label17 with label15;
+        catch java.lang.Exception from label18 to label19 with label15;
+        catch java.lang.Exception from label20 to label21 with label15;
+        catch java.lang.Exception from label22 to label23 with label15;
+        catch java.lang.Exception from label24 to label25 with label15;
+        catch java.lang.Exception from label26 to label27 with label15;
+        catch java.lang.Exception from label28 to label29 with label15;
+    }
+
+    public void setAllowParentInterceptOnEdge(boolean)
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        boolean $z0;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $z0 := @parameter0: boolean;
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: boolean mAllowParentInterceptOnEdge> = $z0;
+
+        return;
+    }
+
+    public void setImageViewHeight(float)
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        float $f0;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $f0 := @parameter0: float;
+
+        <cn.ffcs.lib.photoview.PhotoViewAttacher: float mImageViewHeight> = $f0;
+
+        return;
+    }
+
+    public void setImageViewWidth(float)
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        float $f0;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $f0 := @parameter0: float;
+
+        <cn.ffcs.lib.photoview.PhotoViewAttacher: float mImageViewWidth> = $f0;
+
+        return;
+    }
+
+    public void setMaxScale(float)
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        float $f0, $f1, $f2;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $f0 := @parameter0: float;
+
+        $f1 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: float mMinScale>;
+
+        $f2 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: float mMidScale>;
+
+        staticinvoke <cn.ffcs.lib.photoview.PhotoViewAttacher: void checkZoomLevels(float,float,float)>($f1, $f2, $f0);
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: float mMaxScale> = $f0;
+
+        return;
+    }
+
+    public void setMidScale(float)
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        float $f0, $f1, $f2;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $f0 := @parameter0: float;
+
+        $f1 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: float mMinScale>;
+
+        $f2 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: float mMaxScale>;
+
+        staticinvoke <cn.ffcs.lib.photoview.PhotoViewAttacher: void checkZoomLevels(float,float,float)>($f1, $f0, $f2);
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: float mMidScale> = $f0;
+
+        return;
+    }
+
+    public void setMinScale(float)
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        float $f0, $f1, $f2;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $f0 := @parameter0: float;
+
+        $f1 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: float mMidScale>;
+
+        $f2 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: float mMaxScale>;
+
+        staticinvoke <cn.ffcs.lib.photoview.PhotoViewAttacher: void checkZoomLevels(float,float,float)>($f0, $f1, $f2);
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: float mMinScale> = $f0;
+
+        return;
+    }
+
+    public void setOnDoubleTapListener(cn.ffcs.lib.photoview.PhotoViewAttacher$OnDoubleTapListener)
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        cn.ffcs.lib.photoview.PhotoViewAttacher$OnDoubleTapListener $r1;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $r1 := @parameter0: cn.ffcs.lib.photoview.PhotoViewAttacher$OnDoubleTapListener;
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: cn.ffcs.lib.photoview.PhotoViewAttacher$OnDoubleTapListener mOnDoubleTapListener> = $r1;
+
+        return;
+    }
+
+    public final void setOnLongClickListener(android.view.View$OnLongClickListener)
+    {
+        android.view.View$OnLongClickListener $r1;
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $r1 := @parameter0: android.view.View$OnLongClickListener;
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.view.View$OnLongClickListener mLongClickListener> = $r1;
+
+        return;
+    }
+
+    public final void setOnMatrixChangeListener(cn.ffcs.lib.photoview.PhotoViewAttacher$OnMatrixChangedListener)
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        cn.ffcs.lib.photoview.PhotoViewAttacher$OnMatrixChangedListener $r1;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $r1 := @parameter0: cn.ffcs.lib.photoview.PhotoViewAttacher$OnMatrixChangedListener;
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: cn.ffcs.lib.photoview.PhotoViewAttacher$OnMatrixChangedListener mMatrixChangeListener> = $r1;
+
+        return;
+    }
+
+    public final void setOnPhotoTapListener(cn.ffcs.lib.photoview.PhotoViewAttacher$OnPhotoTapListener)
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher$OnPhotoTapListener $r1;
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $r1 := @parameter0: cn.ffcs.lib.photoview.PhotoViewAttacher$OnPhotoTapListener;
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: cn.ffcs.lib.photoview.PhotoViewAttacher$OnPhotoTapListener mPhotoTapListener> = $r1;
+
+        return;
+    }
+
+    public void setOnSingleTapListener(cn.ffcs.lib.photoview.PhotoViewAttacher$OnSingleTapListener)
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        cn.ffcs.lib.photoview.PhotoViewAttacher$OnSingleTapListener $r1;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $r1 := @parameter0: cn.ffcs.lib.photoview.PhotoViewAttacher$OnSingleTapListener;
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: cn.ffcs.lib.photoview.PhotoViewAttacher$OnSingleTapListener mOnSingleTapListener> = $r1;
+
+        return;
+    }
+
+    public final void setOnViewTapListener(cn.ffcs.lib.photoview.PhotoViewAttacher$OnViewTapListener)
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        cn.ffcs.lib.photoview.PhotoViewAttacher$OnViewTapListener $r1;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $r1 := @parameter0: cn.ffcs.lib.photoview.PhotoViewAttacher$OnViewTapListener;
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: cn.ffcs.lib.photoview.PhotoViewAttacher$OnViewTapListener mViewTapListener> = $r1;
+
+        return;
+    }
+
+    public final void setScaleType(android.widget.ImageView$ScaleType)
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        android.widget.ImageView$ScaleType $r1, $r2;
+        boolean $z0;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $r1 := @parameter0: android.widget.ImageView$ScaleType;
+
+        $z0 = staticinvoke <cn.ffcs.lib.photoview.PhotoViewAttacher: boolean isSupportedScaleType(android.widget.ImageView$ScaleType)>($r1);
+
+        if $z0 == 0 goto label1;
+
+        $r2 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.widget.ImageView$ScaleType mScaleType>;
+
+        if $r1 == $r2 goto label1;
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.widget.ImageView$ScaleType mScaleType> = $r1;
+
+        virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: void update()>();
+
+     label1:
+        return;
+    }
+
+    public final void setZoomable(boolean)
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        boolean $z0;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $z0 := @parameter0: boolean;
+
+        r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: boolean mZoomEnabled> = $z0;
+
+        virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: void update()>();
+
+        return;
+    }
+
+    public final void update()
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        android.widget.ImageView $r1;
+        android.graphics.drawable.Drawable $r2;
+        boolean $z0;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $r1 = virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.widget.ImageView getImageView()>();
+
+        if $r1 == null goto label2;
+
+        $z0 = r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: boolean mZoomEnabled>;
+
+        if $z0 == 0 goto label1;
+
+        staticinvoke <cn.ffcs.lib.photoview.PhotoViewAttacher: void setImageViewScaleTypeMatrix(android.widget.ImageView)>($r1);
+
+        $r2 = virtualinvoke $r1.<android.widget.ImageView: android.graphics.drawable.Drawable getDrawable()>();
+
+        specialinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: void updateBaseMatrix(android.graphics.drawable.Drawable)>($r2);
+
+        return;
+
+     label1:
+        specialinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: void resetMatrix()>();
+
+     label2:
+        return;
+    }
+
+    public final void zoomTo(float, float, float)
+    {
+        cn.ffcs.lib.photoview.PhotoViewAttacher r0;
+        cn.ffcs.lib.photoview.PhotoViewAttacher$AnimatedZoomRunnable $r1;
+        android.widget.ImageView $r2;
+        float $f0, $f1, $f2, $f3;
+
+        r0 := @this: cn.ffcs.lib.photoview.PhotoViewAttacher;
+
+        $f0 := @parameter0: float;
+
+        $f1 := @parameter1: float;
+
+        $f2 := @parameter2: float;
+
+        $r2 = virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: android.widget.ImageView getImageView()>();
+
+        if $r2 == null goto label1;
+
+        $r1 = new cn.ffcs.lib.photoview.PhotoViewAttacher$AnimatedZoomRunnable;
+
+        $f3 = virtualinvoke r0.<cn.ffcs.lib.photoview.PhotoViewAttacher: float getScale()>();
+
+        specialinvoke $r1.<cn.ffcs.lib.photoview.PhotoViewAttacher$AnimatedZoomRunnable: void <init>(cn.ffcs.lib.photoview.PhotoViewAttacher,float,float,float,float)>(r0, $f3, $f0, $f1, $f2);
+
+        virtualinvoke $r2.<android.widget.ImageView: boolean post(java.lang.Runnable)>($r1);
+
+     label1:
+        return;
+    }
+}

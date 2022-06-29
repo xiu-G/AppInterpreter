@@ -1,0 +1,237 @@
+public class com.google.android.c2dm.C2DMessaging extends java.lang.Object
+{
+    public static final java.lang.String BACKOFF;
+    private static final long DEFAULT_BACKOFF;
+    public static final java.lang.String EXTRA_APPLICATION_PENDING_INTENT;
+    public static final java.lang.String EXTRA_SENDER;
+    public static final java.lang.String GSF_PACKAGE;
+    public static final java.lang.String LAST_REGISTRATION_CHANGE;
+    static final java.lang.String PREFERENCE;
+    public static final java.lang.String REQUEST_REGISTRATION_INTENT;
+    public static final java.lang.String REQUEST_UNREGISTRATION_INTENT;
+    public static android.content.Context gContext;
+
+    public void <init>()
+    {
+        com.google.android.c2dm.C2DMessaging r0;
+
+        r0 := @this: com.google.android.c2dm.C2DMessaging;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    static void clearRegistrationId(android.content.Context)
+    {
+        android.content.SharedPreferences$Editor $r2;
+        android.content.Context $r0;
+        android.content.SharedPreferences $r1;
+        long $l0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r0 = <com.google.android.c2dm.C2DMessaging: android.content.Context gContext>;
+
+        $r1 = virtualinvoke $r0.<android.content.Context: android.content.SharedPreferences getSharedPreferences(java.lang.String,int)>("com.google.android.c2dm", 0);
+
+        $r2 = interfaceinvoke $r1.<android.content.SharedPreferences: android.content.SharedPreferences$Editor edit()>();
+
+        interfaceinvoke $r2.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putString(java.lang.String,java.lang.String)>("dm_registration", "");
+
+        $l0 = staticinvoke <java.lang.System: long currentTimeMillis()>();
+
+        interfaceinvoke $r2.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putLong(java.lang.String,long)>("last_registration_change", $l0);
+
+        interfaceinvoke $r2.<android.content.SharedPreferences$Editor: boolean commit()>();
+
+        return;
+    }
+
+    static long getBackoff(android.content.Context)
+    {
+        android.content.Context $r0;
+        long $l0;
+        android.content.SharedPreferences $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = virtualinvoke $r0.<android.content.Context: android.content.SharedPreferences getSharedPreferences(java.lang.String,int)>("com.google.android.c2dm", 0);
+
+        $l0 = interfaceinvoke $r1.<android.content.SharedPreferences: long getLong(java.lang.String,long)>("backoff", 30000L);
+
+        return $l0;
+    }
+
+    public static long getLastRegistrationChange(android.content.Context)
+    {
+        android.content.Context $r0;
+        long $l0;
+        android.content.SharedPreferences $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = virtualinvoke $r0.<android.content.Context: android.content.SharedPreferences getSharedPreferences(java.lang.String,int)>("com.google.android.c2dm", 0);
+
+        $l0 = interfaceinvoke $r1.<android.content.SharedPreferences: long getLong(java.lang.String,long)>("last_registration_change", 0L);
+
+        return $l0;
+    }
+
+    public static java.lang.String getRegistrationId(android.content.Context)
+    {
+        android.content.Context $r0;
+        java.lang.String $r2;
+        android.content.SharedPreferences $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 = virtualinvoke $r0.<android.content.Context: android.content.SharedPreferences getSharedPreferences(java.lang.String,int)>("com.google.android.c2dm", 0);
+
+        $r2 = interfaceinvoke $r1.<android.content.SharedPreferences: java.lang.String getString(java.lang.String,java.lang.String)>("dm_registration", "");
+
+        return $r2;
+    }
+
+    public static void register(android.content.Context, java.lang.String)
+    {
+        android.content.Context $r0;
+        android.content.Intent r2, $r4;
+        java.lang.String $r1;
+        android.app.PendingIntent $r3;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        <com.google.android.c2dm.C2DMessaging: android.content.Context gContext> = $r0;
+
+        r2 = new android.content.Intent;
+
+        specialinvoke r2.<android.content.Intent: void <init>(java.lang.String)>("com.google.android.c2dm.intent.REGISTER");
+
+        virtualinvoke r2.<android.content.Intent: android.content.Intent setPackage(java.lang.String)>("com.google.android.gsf");
+
+        $r4 = new android.content.Intent;
+
+        specialinvoke $r4.<android.content.Intent: void <init>()>();
+
+        $r3 = staticinvoke <android.app.PendingIntent: android.app.PendingIntent getBroadcast(android.content.Context,int,android.content.Intent,int)>($r0, 0, $r4, 0);
+
+        virtualinvoke r2.<android.content.Intent: android.content.Intent putExtra(java.lang.String,android.os.Parcelable)>("app", $r3);
+
+        virtualinvoke r2.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("sender", $r1);
+
+        virtualinvoke $r0.<android.content.Context: android.content.ComponentName startService(android.content.Intent)>(r2);
+
+        return;
+    }
+
+    static void setBackoff(android.content.Context, long)
+    {
+        android.content.SharedPreferences$Editor $r2;
+        android.content.Context $r0;
+        android.content.SharedPreferences $r1;
+        long $l0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $l0 := @parameter1: long;
+
+        $r1 = virtualinvoke $r0.<android.content.Context: android.content.SharedPreferences getSharedPreferences(java.lang.String,int)>("com.google.android.c2dm", 0);
+
+        $r2 = interfaceinvoke $r1.<android.content.SharedPreferences: android.content.SharedPreferences$Editor edit()>();
+
+        interfaceinvoke $r2.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putLong(java.lang.String,long)>("backoff", $l0);
+
+        interfaceinvoke $r2.<android.content.SharedPreferences$Editor: boolean commit()>();
+
+        return;
+    }
+
+    static void setRegistrationId(android.content.Context, java.lang.String)
+    {
+        android.content.SharedPreferences$Editor $r3;
+        android.content.Context $r0;
+        android.content.SharedPreferences $r2;
+        java.lang.String $r1;
+
+        $r0 := @parameter0: android.content.Context;
+
+        $r1 := @parameter1: java.lang.String;
+
+        if $r1 == "" goto label2;
+
+        if $r1 != null goto label1;
+
+        return;
+
+     label1:
+        staticinvoke <com.entaz.c2dm.C2dmManager: void sendRegId(java.lang.String)>($r1);
+
+        $r0 = <com.google.android.c2dm.C2DMessaging: android.content.Context gContext>;
+
+        $r2 = virtualinvoke $r0.<android.content.Context: android.content.SharedPreferences getSharedPreferences(java.lang.String,int)>("com.google.android.c2dm", 0);
+
+        $r3 = interfaceinvoke $r2.<android.content.SharedPreferences: android.content.SharedPreferences$Editor edit()>();
+
+        interfaceinvoke $r3.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putString(java.lang.String,java.lang.String)>("dm_registration", $r1);
+
+        interfaceinvoke $r3.<android.content.SharedPreferences$Editor: boolean commit()>();
+
+     label2:
+        return;
+    }
+
+    public static void unregister(android.content.Context)
+    {
+        android.content.Context $r0;
+        android.content.Intent r1, $r3;
+        android.app.PendingIntent $r2;
+
+        $r0 := @parameter0: android.content.Context;
+
+        <com.google.android.c2dm.C2DMessaging: android.content.Context gContext> = $r0;
+
+        r1 = new android.content.Intent;
+
+        specialinvoke r1.<android.content.Intent: void <init>(java.lang.String)>("com.google.android.c2dm.intent.UNREGISTER");
+
+        virtualinvoke r1.<android.content.Intent: android.content.Intent setPackage(java.lang.String)>("com.google.android.gsf");
+
+        $r3 = new android.content.Intent;
+
+        specialinvoke $r3.<android.content.Intent: void <init>()>();
+
+        $r2 = staticinvoke <android.app.PendingIntent: android.app.PendingIntent getBroadcast(android.content.Context,int,android.content.Intent,int)>($r0, 0, $r3, 0);
+
+        virtualinvoke r1.<android.content.Intent: android.content.Intent putExtra(java.lang.String,android.os.Parcelable)>("app", $r2);
+
+        virtualinvoke $r0.<android.content.Context: android.content.ComponentName startService(android.content.Intent)>(r1);
+
+        return;
+    }
+
+    public static void <clinit>()
+    {
+        <com.google.android.c2dm.C2DMessaging: java.lang.String REQUEST_UNREGISTRATION_INTENT> = "com.google.android.c2dm.intent.UNREGISTER";
+
+        <com.google.android.c2dm.C2DMessaging: java.lang.String REQUEST_REGISTRATION_INTENT> = "com.google.android.c2dm.intent.REGISTER";
+
+        <com.google.android.c2dm.C2DMessaging: java.lang.String PREFERENCE> = "com.google.android.c2dm";
+
+        <com.google.android.c2dm.C2DMessaging: java.lang.String LAST_REGISTRATION_CHANGE> = "last_registration_change";
+
+        <com.google.android.c2dm.C2DMessaging: java.lang.String GSF_PACKAGE> = "com.google.android.gsf";
+
+        <com.google.android.c2dm.C2DMessaging: java.lang.String EXTRA_SENDER> = "sender";
+
+        <com.google.android.c2dm.C2DMessaging: java.lang.String EXTRA_APPLICATION_PENDING_INTENT> = "app";
+
+        <com.google.android.c2dm.C2DMessaging: long DEFAULT_BACKOFF> = 30000L;
+
+        <com.google.android.c2dm.C2DMessaging: java.lang.String BACKOFF> = "backoff";
+
+        return;
+    }
+}

@@ -1,0 +1,101 @@
+public class proguard.io.DirectoryPump extends java.lang.Object implements proguard.io.DataEntryPump
+{
+    private final java.io.File directory;
+
+    public void <init>(java.io.File)
+    {
+        proguard.io.DirectoryPump r0;
+        java.io.File $r1;
+
+        r0 := @this: proguard.io.DirectoryPump;
+
+        $r1 := @parameter0: java.io.File;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<proguard.io.DirectoryPump: java.io.File directory> = $r1;
+
+        return;
+    }
+
+    private void readFiles(java.io.File, proguard.io.DataEntryReader) throws java.io.IOException
+    {
+        java.io.File $r1, $r4;
+        proguard.io.FileDataEntry $r3;
+        proguard.io.DirectoryPump r0;
+        int $i0, $i1;
+        proguard.io.DataEntryReader $r2;
+        java.io.File[] $r5;
+        boolean $z0;
+
+        r0 := @this: proguard.io.DirectoryPump;
+
+        $r1 := @parameter0: java.io.File;
+
+        $r2 := @parameter1: proguard.io.DataEntryReader;
+
+        $r3 = new proguard.io.FileDataEntry;
+
+        $r4 = r0.<proguard.io.DirectoryPump: java.io.File directory>;
+
+        specialinvoke $r3.<proguard.io.FileDataEntry: void <init>(java.io.File,java.io.File)>($r4, $r1);
+
+        interfaceinvoke $r2.<proguard.io.DataEntryReader: void read(proguard.io.DataEntry)>($r3);
+
+        $z0 = virtualinvoke $r1.<java.io.File: boolean isDirectory()>();
+
+        if $z0 == 0 goto label2;
+
+        $r5 = virtualinvoke $r1.<java.io.File: java.io.File[] listFiles()>();
+
+        $i0 = 0;
+
+     label1:
+        $i1 = lengthof $r5;
+
+        if $i0 >= $i1 goto label2;
+
+        $r1 = $r5[$i0];
+
+        specialinvoke r0.<proguard.io.DirectoryPump: void readFiles(java.io.File,proguard.io.DataEntryReader)>($r1, $r2);
+
+        $i0 = $i0 + 1;
+
+        goto label1;
+
+     label2:
+        return;
+    }
+
+    public void pumpDataEntries(proguard.io.DataEntryReader) throws java.io.IOException
+    {
+        proguard.io.DirectoryPump r0;
+        java.io.IOException $r3;
+        proguard.io.DataEntryReader $r1;
+        java.io.File $r2;
+        boolean $z0;
+
+        r0 := @this: proguard.io.DirectoryPump;
+
+        $r1 := @parameter0: proguard.io.DataEntryReader;
+
+        $r2 = r0.<proguard.io.DirectoryPump: java.io.File directory>;
+
+        $z0 = virtualinvoke $r2.<java.io.File: boolean exists()>();
+
+        if $z0 != 0 goto label1;
+
+        $r3 = new java.io.IOException;
+
+        specialinvoke $r3.<java.io.IOException: void <init>(java.lang.String)>("No such file or directory");
+
+        throw $r3;
+
+     label1:
+        $r2 = r0.<proguard.io.DirectoryPump: java.io.File directory>;
+
+        specialinvoke r0.<proguard.io.DirectoryPump: void readFiles(java.io.File,proguard.io.DataEntryReader)>($r2, $r1);
+
+        return;
+    }
+}

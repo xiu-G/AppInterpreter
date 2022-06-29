@@ -1,0 +1,691 @@
+public class mpp.mpp2010.mpp2010 extends android.app.Activity
+{
+    final java.lang.String LOGTAG;
+    final int SELECT_PICTURE;
+    final int TAKE_PICTURE;
+    android.content.Context ctx;
+    private android.net.Uri imageUri;
+    android.widget.ImageView pictureImageView;
+    private android.net.Uri pictureUri;
+    private boolean rrr;
+    private java.io.File tmpPhoto;
+    public android.content.Intent ipcIntent;
+    public android.content.Intent ipcResultIntent;
+
+    public void <init>()
+    {
+        mpp.mpp2010.mpp2010 r0;
+
+        r0 := @this: mpp.mpp2010.mpp2010;
+
+        specialinvoke r0.<android.app.Activity: void <init>()>();
+
+        r0.<mpp.mpp2010.mpp2010: java.lang.String LOGTAG> = "debug";
+
+        r0.<mpp.mpp2010.mpp2010: int TAKE_PICTURE> = 12345;
+
+        r0.<mpp.mpp2010.mpp2010: int SELECT_PICTURE> = 54321;
+
+        r0.<mpp.mpp2010.mpp2010: android.net.Uri pictureUri> = null;
+
+        r0.<mpp.mpp2010.mpp2010: android.content.Context ctx> = r0;
+
+        return;
+    }
+
+    static void access$0(mpp.mpp2010.mpp2010, java.io.File)
+    {
+        mpp.mpp2010.mpp2010 $r0;
+        java.io.File $r1;
+
+        $r0 := @parameter0: mpp.mpp2010.mpp2010;
+
+        $r1 := @parameter1: java.io.File;
+
+        $r0.<mpp.mpp2010.mpp2010: java.io.File tmpPhoto> = $r1;
+
+        return;
+    }
+
+    static java.io.File access$1(mpp.mpp2010.mpp2010)
+    {
+        mpp.mpp2010.mpp2010 $r0;
+        java.io.File r1;
+
+        $r0 := @parameter0: mpp.mpp2010.mpp2010;
+
+        r1 = $r0.<mpp.mpp2010.mpp2010: java.io.File tmpPhoto>;
+
+        return r1;
+    }
+
+    static void access$2(mpp.mpp2010.mpp2010, android.net.Uri)
+    {
+        android.net.Uri $r1;
+        mpp.mpp2010.mpp2010 $r0;
+
+        $r0 := @parameter0: mpp.mpp2010.mpp2010;
+
+        $r1 := @parameter1: android.net.Uri;
+
+        $r0.<mpp.mpp2010.mpp2010: android.net.Uri imageUri> = $r1;
+
+        return;
+    }
+
+    static android.net.Uri access$3(mpp.mpp2010.mpp2010)
+    {
+        android.net.Uri r1;
+        mpp.mpp2010.mpp2010 $r0;
+
+        $r0 := @parameter0: mpp.mpp2010.mpp2010;
+
+        r1 = $r0.<mpp.mpp2010.mpp2010: android.net.Uri pictureUri>;
+
+        return r1;
+    }
+
+    static boolean access$4(mpp.mpp2010.mpp2010)
+    {
+        mpp.mpp2010.mpp2010 $r0;
+        boolean z0;
+
+        $r0 := @parameter0: mpp.mpp2010.mpp2010;
+
+        z0 = $r0.<mpp.mpp2010.mpp2010: boolean rrr>;
+
+        return z0;
+    }
+
+    private android.graphics.Bitmap makeDuplicatePicture(android.net.Uri) throws java.io.IOException, java.net.URISyntaxException
+    {
+        android.os.ParcelFileDescriptor $r9;
+        android.net.Uri $r1;
+        long $l0;
+        android.content.Intent $r13;
+        android.content.ContentResolver $r8;
+        int $i1, $i2;
+        android.graphics.Bitmap$CompressFormat $r12;
+        java.lang.String $r7;
+        boolean $z0;
+        mpp.mpp2010.mpp2010 r0;
+        java.io.FileOutputStream r2;
+        java.io.File r4, $r5;
+        android.graphics.Bitmap $r11;
+        java.lang.StringBuilder $r6;
+        android.graphics.BitmapFactory$Options r3;
+        java.io.InputStream $r10;
+
+        r0 := @this: mpp.mpp2010.mpp2010;
+
+        $r1 := @parameter0: android.net.Uri;
+
+        $r5 = virtualinvoke r0.<mpp.mpp2010.mpp2010: java.io.File getCacheDir()>();
+
+        r4 = new java.io.File;
+
+        $r6 = new java.lang.StringBuilder;
+
+        $r7 = virtualinvoke $r5.<java.io.File: java.lang.String getAbsolutePath()>();
+
+        $r7 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r7);
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>(java.lang.String)>($r7);
+
+        $r7 = <java.io.File: java.lang.String separator>;
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("mpp_pic.png");
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke r4.<java.io.File: void <init>(java.lang.String)>($r7);
+
+        $r8 = virtualinvoke r0.<mpp.mpp2010.mpp2010: android.content.ContentResolver getContentResolver()>();
+
+        $r9 = virtualinvoke $r8.<android.content.ContentResolver: android.os.ParcelFileDescriptor openFileDescriptor(android.net.Uri,java.lang.String)>($r1, "r");
+
+        if $r9 == null goto label1;
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>(java.lang.String)>("  originalUri file size = ");
+
+        $l0 = virtualinvoke $r9.<android.os.ParcelFileDescriptor: long getStatSize()>();
+
+        $l0 = $l0 / 1024L;
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" KBs");
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("debug", $r7);
+
+     label1:
+        $r8 = virtualinvoke r0.<mpp.mpp2010.mpp2010: android.content.ContentResolver getContentResolver()>();
+
+        $r10 = virtualinvoke $r8.<android.content.ContentResolver: java.io.InputStream openInputStream(android.net.Uri)>($r1);
+
+        r3 = new android.graphics.BitmapFactory$Options;
+
+        specialinvoke r3.<android.graphics.BitmapFactory$Options: void <init>()>();
+
+        r3.<android.graphics.BitmapFactory$Options: boolean inJustDecodeBounds> = 1;
+
+        staticinvoke <android.graphics.BitmapFactory: android.graphics.Bitmap decodeStream(java.io.InputStream,android.graphics.Rect,android.graphics.BitmapFactory$Options)>($r10, null, r3);
+
+        $i1 = r3.<android.graphics.BitmapFactory$Options: int outHeight>;
+
+        $i2 = r3.<android.graphics.BitmapFactory$Options: int outWidth>;
+
+        if $i1 < $i2 goto label5;
+
+        r0.<mpp.mpp2010.mpp2010: boolean rrr> = 1;
+
+     label2:
+        $i1 = r3.<android.graphics.BitmapFactory$Options: int outWidth>;
+
+        if $i1 > 512 goto label6;
+
+        r3.<android.graphics.BitmapFactory$Options: int inSampleSize> = 1;
+
+     label3:
+        $r8 = virtualinvoke r0.<mpp.mpp2010.mpp2010: android.content.ContentResolver getContentResolver()>();
+
+        $r10 = virtualinvoke $r8.<android.content.ContentResolver: java.io.InputStream openInputStream(android.net.Uri)>($r1);
+
+        r3.<android.graphics.BitmapFactory$Options: boolean inJustDecodeBounds> = 0;
+
+        $r11 = staticinvoke <android.graphics.BitmapFactory: android.graphics.Bitmap decodeStream(java.io.InputStream,android.graphics.Rect,android.graphics.BitmapFactory$Options)>($r10, null, r3);
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>(java.lang.String)>("my_w=");
+
+        $i1 = virtualinvoke $r11.<android.graphics.Bitmap: int getWidth()>();
+
+        $r7 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i1);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("  my_h=");
+
+        $i1 = virtualinvoke $r11.<android.graphics.Bitmap: int getWidth()>();
+
+        $r7 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i1);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("XD", $r7);
+
+        $z0 = virtualinvoke r4.<java.io.File: boolean exists()>();
+
+        if $z0 == 0 goto label4;
+
+        virtualinvoke r4.<java.io.File: boolean delete()>();
+
+     label4:
+        r2 = new java.io.FileOutputStream;
+
+        specialinvoke r2.<java.io.FileOutputStream: void <init>(java.io.File)>(r4);
+
+        $r12 = <android.graphics.Bitmap$CompressFormat: android.graphics.Bitmap$CompressFormat JPEG>;
+
+        virtualinvoke $r11.<android.graphics.Bitmap: boolean compress(android.graphics.Bitmap$CompressFormat,int,java.io.OutputStream)>($r12, 85, r2);
+
+        virtualinvoke $r10.<java.io.InputStream: void close()>();
+
+        virtualinvoke r2.<java.io.FileOutputStream: void close()>();
+
+        $r1 = staticinvoke <android.net.Uri: android.net.Uri fromFile(java.io.File)>(r4);
+
+        r0.<mpp.mpp2010.mpp2010: android.net.Uri pictureUri> = $r1;
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>(java.lang.String)>("  new saved picture file size = ");
+
+        $r8 = virtualinvoke r0.<mpp.mpp2010.mpp2010: android.content.ContentResolver getContentResolver()>();
+
+        $r1 = r0.<mpp.mpp2010.mpp2010: android.net.Uri pictureUri>;
+
+        $r9 = virtualinvoke $r8.<android.content.ContentResolver: android.os.ParcelFileDescriptor openFileDescriptor(android.net.Uri,java.lang.String)>($r1, "r");
+
+        $l0 = virtualinvoke $r9.<android.os.ParcelFileDescriptor: long getStatSize()>();
+
+        $l0 = $l0 / 1024L;
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(long)>($l0);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("KBs");
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("debug", $r7);
+
+        $r8 = virtualinvoke r0.<mpp.mpp2010.mpp2010: android.content.ContentResolver getContentResolver()>();
+
+        staticinvoke <android.provider.MediaStore$Images$Media: java.lang.String insertImage(android.content.ContentResolver,android.graphics.Bitmap,java.lang.String,java.lang.String)>($r8, $r11, "", "");
+
+        $r13 = new android.content.Intent;
+
+        $r6 = new java.lang.StringBuilder;
+
+        specialinvoke $r6.<java.lang.StringBuilder: void <init>(java.lang.String)>("file://");
+
+        r4 = staticinvoke <android.os.Environment: java.io.File getExternalStorageDirectory()>();
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>(r4);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r1 = staticinvoke <android.net.Uri: android.net.Uri parse(java.lang.String)>($r7);
+
+        specialinvoke $r13.<android.content.Intent: void <init>(java.lang.String,android.net.Uri)>("android.intent.action.MEDIA_MOUNTED", $r1);
+
+        virtualinvoke r0.<mpp.mpp2010.mpp2010: void sendBroadcast(android.content.Intent)>($r13);
+
+        return $r11;
+
+     label5:
+        r0.<mpp.mpp2010.mpp2010: boolean rrr> = 0;
+
+        goto label2;
+
+     label6:
+        $i1 = r3.<android.graphics.BitmapFactory$Options: int outWidth>;
+
+        if $i1 > 1024 goto label7;
+
+        r3.<android.graphics.BitmapFactory$Options: int inSampleSize> = 2;
+
+        goto label3;
+
+     label7:
+        $i1 = r3.<android.graphics.BitmapFactory$Options: int outWidth>;
+
+        if $i1 > 2048 goto label8;
+
+        r3.<android.graphics.BitmapFactory$Options: int inSampleSize> = 4;
+
+        goto label3;
+
+     label8:
+        $i1 = r3.<android.graphics.BitmapFactory$Options: int outWidth>;
+
+        if $i1 > 4096 goto label9;
+
+        r3.<android.graphics.BitmapFactory$Options: int inSampleSize> = 8;
+
+        goto label3;
+
+     label9:
+        r3.<android.graphics.BitmapFactory$Options: int inSampleSize> = 16;
+
+        goto label3;
+    }
+
+    boolean CheckNetwork()
+    {
+        android.net.ConnectivityManager r2;
+        mpp.mpp2010.mpp2010 r0;
+        android.widget.Toast $r5;
+        android.net.NetworkInfo $r3, $r4;
+        java.lang.Object $r1;
+        boolean $z0;
+
+        r0 := @this: mpp.mpp2010.mpp2010;
+
+        $r1 = virtualinvoke r0.<mpp.mpp2010.mpp2010: java.lang.Object getSystemService(java.lang.String)>("connectivity");
+
+        r2 = (android.net.ConnectivityManager) $r1;
+
+        $r3 = virtualinvoke r2.<android.net.ConnectivityManager: android.net.NetworkInfo getNetworkInfo(int)>(1);
+
+        $r4 = virtualinvoke r2.<android.net.ConnectivityManager: android.net.NetworkInfo getNetworkInfo(int)>(0);
+
+        $z0 = virtualinvoke $r3.<android.net.NetworkInfo: boolean isAvailable()>();
+
+        if $z0 != 0 goto label1;
+
+        $z0 = virtualinvoke $r4.<android.net.NetworkInfo: boolean isAvailable()>();
+
+        if $z0 != 0 goto label1;
+
+        $r5 = staticinvoke <android.widget.Toast: android.widget.Toast makeText(android.content.Context,java.lang.CharSequence,int)>(r0, "No Network !", 1);
+
+        virtualinvoke $r5.<android.widget.Toast: void show()>();
+
+        return 0;
+
+     label1:
+        return 1;
+    }
+
+    protected void onActivityResult(int, int, android.content.Intent)
+    {
+        java.lang.Throwable $r11, $r12;
+        android.net.Uri r2;
+        android.widget.ImageView $r7;
+        android.content.Intent $r1;
+        long $l2;
+        byte $b3;
+        android.content.ContentResolver $r3;
+        android.widget.Toast $r10;
+        int $i0, $i1;
+        java.lang.String $r6;
+        mpp.mpp2010.mpp2010 r0;
+        java.io.File $r4;
+        java.lang.Exception $r9;
+        android.graphics.Bitmap $r8;
+        java.lang.StringBuilder $r5, $r13;
+
+        r0 := @this: mpp.mpp2010.mpp2010;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $r1 := @parameter2: android.content.Intent;
+
+        $r1 = virtualinvoke r0.<mpp.mpp2010.mpp2010: android.content.Intent getIntent()>();
+
+        lookupswitch($i0)
+        {
+            case 12345: goto label02;
+            case 54321: goto label12;
+            default: goto label01;
+        };
+
+     label01:
+        specialinvoke r0.<android.app.Activity: void onActivityResult(int,int,android.content.Intent)>($i0, $i1, $r1);
+
+        return;
+
+     label02:
+        if $i1 != -1 goto label17;
+
+        r2 = r0.<mpp.mpp2010.mpp2010: android.net.Uri imageUri>;
+
+        $r3 = virtualinvoke r0.<mpp.mpp2010.mpp2010: android.content.ContentResolver getContentResolver()>();
+
+        virtualinvoke $r3.<android.content.ContentResolver: void notifyChange(android.net.Uri,android.database.ContentObserver)>(r2, null);
+
+        staticinvoke <java.lang.System: void gc()>();
+
+     label03:
+        $r4 = r0.<mpp.mpp2010.mpp2010: java.io.File tmpPhoto>;
+
+        $l2 = virtualinvoke $r4.<java.io.File: long length()>();
+
+     label04:
+        $b3 = $l2 cmp 0L;
+
+        $i0 = (int) $b3;
+
+        if $i0 <= 0 goto label10;
+
+        $r13 = new java.lang.StringBuilder;
+
+        $r5 = $r13;
+
+     label05:
+        specialinvoke $r13.<java.lang.StringBuilder: void <init>(java.lang.String)>("Uri=");
+
+        r2 = r0.<mpp.mpp2010.mpp2010: android.net.Uri imageUri>;
+
+        $r6 = virtualinvoke r2.<android.net.Uri: java.lang.String toString()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("debug", $r6);
+
+        r2 = r0.<mpp.mpp2010.mpp2010: android.net.Uri imageUri>;
+
+        r0.<mpp.mpp2010.mpp2010: android.net.Uri pictureUri> = r2;
+
+     label06:
+        $r13 = new java.lang.StringBuilder;
+
+        $r5 = $r13;
+
+     label07:
+        specialinvoke $r13.<java.lang.StringBuilder: void <init>(java.lang.String)>("picUri=");
+
+        r2 = r0.<mpp.mpp2010.mpp2010: android.net.Uri pictureUri>;
+
+        $r6 = virtualinvoke r2.<android.net.Uri: java.lang.String toString()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("debug", $r6);
+
+        $r7 = r0.<mpp.mpp2010.mpp2010: android.widget.ImageView pictureImageView>;
+
+        r2 = r0.<mpp.mpp2010.mpp2010: android.net.Uri imageUri>;
+
+        $r8 = specialinvoke r0.<mpp.mpp2010.mpp2010: android.graphics.Bitmap makeDuplicatePicture(android.net.Uri)>(r2);
+
+        virtualinvoke $r7.<android.widget.ImageView: void setImageBitmap(android.graphics.Bitmap)>($r8);
+
+        $r4 = r0.<mpp.mpp2010.mpp2010: java.io.File tmpPhoto>;
+
+        virtualinvoke $r4.<java.io.File: boolean delete()>();
+
+     label08:
+        return;
+
+     label09:
+        $r9 := @caughtexception;
+
+        $r10 = staticinvoke <android.widget.Toast: android.widget.Toast makeText(android.content.Context,java.lang.CharSequence,int)>(r0, "Failed to load", 0);
+
+        virtualinvoke $r10.<android.widget.Toast: void show()>();
+
+        $r6 = virtualinvoke $r9.<java.lang.Exception: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("Camera", $r6);
+
+        return;
+
+     label10:
+        $r7 = r0.<mpp.mpp2010.mpp2010: android.widget.ImageView pictureImageView>;
+
+        r2 = virtualinvoke $r1.<android.content.Intent: android.net.Uri getData()>();
+
+        $r8 = specialinvoke r0.<mpp.mpp2010.mpp2010: android.graphics.Bitmap makeDuplicatePicture(android.net.Uri)>(r2);
+
+        virtualinvoke $r7.<android.widget.ImageView: void setImageBitmap(android.graphics.Bitmap)>($r8);
+
+     label11:
+        return;
+
+     label12:
+        if $i1 != -1 goto label17;
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("debug", "Select Picture");
+
+        $r13 = new java.lang.StringBuilder;
+
+        specialinvoke $r13.<java.lang.StringBuilder: void <init>(java.lang.String)>("\t data.toURI() = ");
+
+        $r6 = virtualinvoke $r1.<android.content.Intent: java.lang.String toURI()>();
+
+        $r5 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("debug", $r6);
+
+        $r13 = new java.lang.StringBuilder;
+
+        specialinvoke $r13.<java.lang.StringBuilder: void <init>(java.lang.String)>("\t data.getData() = ");
+
+        r2 = virtualinvoke $r1.<android.content.Intent: android.net.Uri getData()>();
+
+        $r5 = virtualinvoke $r13.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>(r2);
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int d(java.lang.String,java.lang.String)>("debug", $r6);
+
+        staticinvoke <java.lang.System: void gc()>();
+
+        $r7 = r0.<mpp.mpp2010.mpp2010: android.widget.ImageView pictureImageView>;
+
+     label13:
+        r2 = virtualinvoke $r1.<android.content.Intent: android.net.Uri getData()>();
+
+        $r8 = specialinvoke r0.<mpp.mpp2010.mpp2010: android.graphics.Bitmap makeDuplicatePicture(android.net.Uri)>(r2);
+
+        virtualinvoke $r7.<android.widget.ImageView: void setImageBitmap(android.graphics.Bitmap)>($r8);
+
+     label14:
+        return;
+
+     label15:
+        $r11 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("debug", "iv.setImageBitmap(makeDuplicatePicture(data.getData())); fail!!!", $r11);
+
+        return;
+
+     label16:
+        $r12 := @caughtexception;
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("debug", "iv.setImageBitmap(makeDuplicatePicture(data.getData())); fail!!!", $r12);
+
+     label17:
+        return;
+
+        catch java.lang.Exception from label03 to label04 with label09;
+        catch java.lang.Exception from label05 to label06 with label09;
+        catch java.lang.Exception from label07 to label08 with label09;
+        catch java.lang.Exception from label10 to label11 with label09;
+        catch java.io.IOException from label13 to label14 with label15;
+        catch java.net.URISyntaxException from label13 to label14 with label16;
+    }
+
+    public void onCreate(android.os.Bundle)
+    {
+        android.widget.ImageButton r4;
+        android.os.Bundle $r1;
+        mpp.mpp2010.mpp2010 r0;
+        android.widget.ImageView $r8;
+        mpp.mpp2010.mpp2010$1 $r5;
+        mpp.mpp2010.mpp2010$2 $r6;
+        mpp.mpp2010.mpp2010$3 $r7;
+        com.google.android.apps.analytics.GoogleAnalyticsTracker $r2;
+        android.view.View $r3;
+
+        r0 := @this: mpp.mpp2010.mpp2010;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke r0.<android.app.Activity: void onCreate(android.os.Bundle)>($r1);
+
+        virtualinvoke r0.<mpp.mpp2010.mpp2010: void setContentView(int)>(2130903043);
+
+        virtualinvoke r0.<mpp.mpp2010.mpp2010: boolean CheckNetwork()>();
+
+        $r2 = staticinvoke <com.google.android.apps.analytics.GoogleAnalyticsTracker: com.google.android.apps.analytics.GoogleAnalyticsTracker getInstance()>();
+
+        virtualinvoke $r2.<com.google.android.apps.analytics.GoogleAnalyticsTracker: void start(java.lang.String,android.content.Context)>("UA-20720033-1", r0);
+
+        virtualinvoke $r2.<com.google.android.apps.analytics.GoogleAnalyticsTracker: void trackPageView(java.lang.String)>("/main");
+
+        virtualinvoke $r2.<com.google.android.apps.analytics.GoogleAnalyticsTracker: boolean dispatch()>();
+
+        virtualinvoke $r2.<com.google.android.apps.analytics.GoogleAnalyticsTracker: void stop()>();
+
+        $r3 = virtualinvoke r0.<mpp.mpp2010.mpp2010: android.view.View findViewById(int)>(2131099665);
+
+        r4 = (android.widget.ImageButton) $r3;
+
+        $r5 = new mpp.mpp2010.mpp2010$1;
+
+        specialinvoke $r5.<mpp.mpp2010.mpp2010$1: void <init>(mpp.mpp2010.mpp2010)>(r0);
+
+        virtualinvoke r4.<android.widget.ImageButton: void setOnClickListener(android.view.View$OnClickListener)>($r5);
+
+        $r3 = virtualinvoke r0.<mpp.mpp2010.mpp2010: android.view.View findViewById(int)>(2131099666);
+
+        r4 = (android.widget.ImageButton) $r3;
+
+        $r6 = new mpp.mpp2010.mpp2010$2;
+
+        specialinvoke $r6.<mpp.mpp2010.mpp2010$2: void <init>(mpp.mpp2010.mpp2010)>(r0);
+
+        virtualinvoke r4.<android.widget.ImageButton: void setOnClickListener(android.view.View$OnClickListener)>($r6);
+
+        $r3 = virtualinvoke r0.<mpp.mpp2010.mpp2010: android.view.View findViewById(int)>(2131099667);
+
+        r4 = (android.widget.ImageButton) $r3;
+
+        $r7 = new mpp.mpp2010.mpp2010$3;
+
+        specialinvoke $r7.<mpp.mpp2010.mpp2010$3: void <init>(mpp.mpp2010.mpp2010)>(r0);
+
+        virtualinvoke r4.<android.widget.ImageButton: void setOnClickListener(android.view.View$OnClickListener)>($r7);
+
+        $r3 = virtualinvoke r0.<mpp.mpp2010.mpp2010: android.view.View findViewById(int)>(2131099664);
+
+        $r8 = (android.widget.ImageView) $r3;
+
+        r0.<mpp.mpp2010.mpp2010: android.widget.ImageView pictureImageView> = $r8;
+
+        return;
+    }
+
+    public android.content.Intent getIntent()
+    {
+        android.content.Intent $r0;
+        mpp.mpp2010.mpp2010 this;
+
+        this := @this: mpp.mpp2010.mpp2010;
+
+        $r0 = this.<mpp.mpp2010.mpp2010: android.content.Intent ipcIntent>;
+
+        return $r0;
+    }
+
+    public void setIntent(android.content.Intent)
+    {
+        android.content.Intent parameter0;
+        mpp.mpp2010.mpp2010 this;
+
+        this := @this: mpp.mpp2010.mpp2010;
+
+        parameter0 := @parameter0: android.content.Intent;
+
+        this.<mpp.mpp2010.mpp2010: android.content.Intent ipcIntent> = parameter0;
+
+        return;
+    }
+
+    public void setResult(int, android.content.Intent)
+    {
+        int parameter0;
+        android.content.Intent parameter1;
+        mpp.mpp2010.mpp2010 this;
+
+        this := @this: mpp.mpp2010.mpp2010;
+
+        parameter0 := @parameter0: int;
+
+        parameter1 := @parameter1: android.content.Intent;
+
+        this.<mpp.mpp2010.mpp2010: android.content.Intent ipcResultIntent> = parameter1;
+
+        return;
+    }
+}

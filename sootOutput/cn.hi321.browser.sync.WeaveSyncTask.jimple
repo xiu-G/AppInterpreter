@@ -1,0 +1,1060 @@
+public class cn.hi321.browser.sync.WeaveSyncTask extends android.os.AsyncTask
+{
+    private static final java.lang.String WEAVE_HEADER_TYPE;
+    private static final java.lang.String WEAVE_PATH;
+    private static final java.lang.String WEAVE_VALUE_BOOKMARK;
+    private static final java.lang.String WEAVE_VALUE_DELETED;
+    private static final java.lang.String WEAVE_VALUE_FOLDER;
+    private static final java.lang.String WEAVE_VALUE_ID;
+    private static final java.lang.String WEAVE_VALUE_ITEM;
+    private static final java.lang.String WEAVE_VALUE_PARENT_ID;
+    private static final java.lang.String WEAVE_VALUE_TITLE;
+    private static final java.lang.String WEAVE_VALUE_URI;
+    private static cn.hi321.browser.weave.client.WeaveFactory mWeaveFactory;
+    private android.content.ContentResolver mContentResolver;
+    private android.content.Context mContext;
+    private boolean mFullSync;
+    private cn.hi321.browser.sync.ISyncListener mListener;
+
+    static void <clinit>()
+    {
+        <cn.hi321.browser.sync.WeaveSyncTask: java.lang.String WEAVE_VALUE_URI> = "bmkUri";
+
+        <cn.hi321.browser.sync.WeaveSyncTask: java.lang.String WEAVE_VALUE_TITLE> = "title";
+
+        <cn.hi321.browser.sync.WeaveSyncTask: java.lang.String WEAVE_VALUE_PARENT_ID> = "parentid";
+
+        <cn.hi321.browser.sync.WeaveSyncTask: java.lang.String WEAVE_VALUE_ITEM> = "item";
+
+        <cn.hi321.browser.sync.WeaveSyncTask: java.lang.String WEAVE_VALUE_ID> = "id";
+
+        <cn.hi321.browser.sync.WeaveSyncTask: java.lang.String WEAVE_VALUE_FOLDER> = "folder";
+
+        <cn.hi321.browser.sync.WeaveSyncTask: java.lang.String WEAVE_VALUE_DELETED> = "deleted";
+
+        <cn.hi321.browser.sync.WeaveSyncTask: java.lang.String WEAVE_VALUE_BOOKMARK> = "bookmark";
+
+        <cn.hi321.browser.sync.WeaveSyncTask: java.lang.String WEAVE_PATH> = "/storage/bookmarks";
+
+        <cn.hi321.browser.sync.WeaveSyncTask: java.lang.String WEAVE_HEADER_TYPE> = "type";
+
+        <cn.hi321.browser.sync.WeaveSyncTask: cn.hi321.browser.weave.client.WeaveFactory mWeaveFactory> = null;
+
+        return;
+    }
+
+    public void <init>(android.content.Context, cn.hi321.browser.sync.ISyncListener)
+    {
+        cn.hi321.browser.sync.WeaveSyncTask r0;
+        android.content.Context $r1;
+        android.content.ContentResolver $r3;
+        cn.hi321.browser.sync.ISyncListener $r2;
+
+        r0 := @this: cn.hi321.browser.sync.WeaveSyncTask;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: cn.hi321.browser.sync.ISyncListener;
+
+        specialinvoke r0.<android.os.AsyncTask: void <init>()>();
+
+        r0.<cn.hi321.browser.sync.WeaveSyncTask: boolean mFullSync> = 0;
+
+        r0.<cn.hi321.browser.sync.WeaveSyncTask: android.content.Context mContext> = $r1;
+
+        $r3 = virtualinvoke $r1.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        r0.<cn.hi321.browser.sync.WeaveSyncTask: android.content.ContentResolver mContentResolver> = $r3;
+
+        r0.<cn.hi321.browser.sync.WeaveSyncTask: cn.hi321.browser.sync.ISyncListener mListener> = $r2;
+
+        return;
+    }
+
+    private void doSync(cn.hi321.browser.weave.client.WeaveAccountInfo, cn.hi321.browser.weave.client.UserWeave, java.util.List) throws cn.hi321.browser.weave.client.WeaveException, org.json.JSONException, java.io.IOException, java.security.GeneralSecurityException
+    {
+        android.content.Context $r6;
+        android.net.Uri $r8;
+        java.lang.Integer $r11;
+        java.util.ArrayList r4;
+        cn.hi321.browser.weave.client.WeaveAccountInfo $r1;
+        org.json.JSONObject $r15;
+        android.content.ContentResolver $r7;
+        int i0, i1, $i2;
+        java.lang.Boolean $r20;
+        java.lang.String $r16, $r17, $r18;
+        boolean $z0, $z1;
+        android.content.ContentValues[] r5;
+        java.util.Iterator $r9;
+        cn.hi321.browser.weave.client.UserWeave $r2;
+        cn.hi321.browser.sync.WeaveSyncTask r0;
+        java.util.List r3;
+        char[] $r14;
+        java.lang.Object $r12;
+        cn.hi321.browser.weave.client.WeaveBasicObject r13;
+        android.content.ContentValues r19;
+        java.lang.Integer[] $r10;
+
+        r0 := @this: cn.hi321.browser.sync.WeaveSyncTask;
+
+        $r1 := @parameter0: cn.hi321.browser.weave.client.WeaveAccountInfo;
+
+        $r2 := @parameter1: cn.hi321.browser.weave.client.UserWeave;
+
+        r3 := @parameter2: java.util.List;
+
+        i1 = 0;
+
+        i0 = interfaceinvoke r3.<java.util.List: int size()>();
+
+        r4 = new java.util.ArrayList;
+
+        specialinvoke r4.<java.util.ArrayList: void <init>()>();
+
+        $r6 = r0.<cn.hi321.browser.sync.WeaveSyncTask: android.content.Context mContext>;
+
+        $r7 = virtualinvoke $r6.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        $r8 = <cn.hi321.browser.providers.WeaveColumns: android.net.Uri CONTENT_URI>;
+
+        virtualinvoke $r7.<android.content.ContentResolver: int delete(android.net.Uri,java.lang.String,java.lang.String[])>($r8, null, null);
+
+        $r9 = interfaceinvoke r3.<java.util.List: java.util.Iterator iterator()>();
+
+     label01:
+        $z0 = interfaceinvoke $r9.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 != 0 goto label04;
+
+     label02:
+        i1 = 0;
+
+        i0 = interfaceinvoke r4.<java.util.List: int size()>();
+
+        r5 = newarray (android.content.ContentValues)[i0];
+
+        $r9 = interfaceinvoke r4.<java.util.List: java.util.Iterator iterator()>();
+
+     label03:
+        $z0 = interfaceinvoke $r9.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 != 0 goto label13;
+
+        $r10 = newarray (java.lang.Integer)[3];
+
+        $r11 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(3);
+
+        $r10[0] = $r11;
+
+        $r11 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(0);
+
+        $r10[1] = $r11;
+
+        $r11 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(0);
+
+        $r10[2] = $r11;
+
+        virtualinvoke r0.<cn.hi321.browser.sync.WeaveSyncTask: void publishProgress(java.lang.Object[])>($r10);
+
+        $r6 = r0.<cn.hi321.browser.sync.WeaveSyncTask: android.content.Context mContext>;
+
+        $r7 = virtualinvoke $r6.<android.content.Context: android.content.ContentResolver getContentResolver()>();
+
+        $r8 = <cn.hi321.browser.providers.WeaveColumns: android.net.Uri CONTENT_URI>;
+
+        virtualinvoke $r7.<android.content.ContentResolver: int bulkInsert(android.net.Uri,android.content.ContentValues[])>($r8, r5);
+
+        return;
+
+     label04:
+        $r12 = interfaceinvoke $r9.<java.util.Iterator: java.lang.Object next()>();
+
+        r13 = (cn.hi321.browser.weave.client.WeaveBasicObject) $r12;
+
+        $r14 = virtualinvoke $r1.<cn.hi321.browser.weave.client.WeaveAccountInfo: char[] getSecret()>();
+
+        $r15 = virtualinvoke r13.<cn.hi321.browser.weave.client.WeaveBasicObject: org.json.JSONObject getEncryptedPayload(cn.hi321.browser.weave.client.UserWeave,char[])>($r2, $r14);
+
+        i1 = i1 + 1;
+
+        $z0 = virtualinvoke $r15.<org.json.JSONObject: boolean has(java.lang.String)>("type");
+
+        if $z0 == 0 goto label09;
+
+        $r16 = virtualinvoke $r15.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("type");
+
+        $z0 = virtualinvoke $r16.<java.lang.String: boolean equals(java.lang.Object)>("bookmark");
+
+        if $z0 != 0 goto label05;
+
+        $r16 = virtualinvoke $r15.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("type");
+
+        $z0 = virtualinvoke $r16.<java.lang.String: boolean equals(java.lang.Object)>("folder");
+
+        if $z0 == 0 goto label09;
+
+     label05:
+        $z0 = virtualinvoke $r15.<org.json.JSONObject: boolean has(java.lang.String)>("title");
+
+        if $z0 == 0 goto label09;
+
+        $r16 = virtualinvoke $r15.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("type");
+
+        $z0 = virtualinvoke $r16.<java.lang.String: boolean equals(java.lang.Object)>("folder");
+
+        $r16 = virtualinvoke $r15.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("title");
+
+        $z1 = virtualinvoke $r15.<org.json.JSONObject: boolean has(java.lang.String)>("id");
+
+        if $z1 == 0 goto label10;
+
+        $r17 = virtualinvoke $r15.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("id");
+
+     label06:
+        $z1 = virtualinvoke $r15.<org.json.JSONObject: boolean has(java.lang.String)>("parentid");
+
+        if $z1 == 0 goto label11;
+
+        $r18 = virtualinvoke $r15.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("parentid");
+
+     label07:
+        if $r16 == null goto label09;
+
+        $i2 = virtualinvoke $r16.<java.lang.String: int length()>();
+
+        if $i2 <= 0 goto label09;
+
+        r19 = new android.content.ContentValues;
+
+        specialinvoke r19.<android.content.ContentValues: void <init>()>();
+
+        virtualinvoke r19.<android.content.ContentValues: void put(java.lang.String,java.lang.String)>("title", $r16);
+
+        virtualinvoke r19.<android.content.ContentValues: void put(java.lang.String,java.lang.String)>("weave_id", $r17);
+
+        virtualinvoke r19.<android.content.ContentValues: void put(java.lang.String,java.lang.String)>("weave_parent_id", $r18);
+
+        if $z0 == 0 goto label12;
+
+        $r20 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(1);
+
+        virtualinvoke r19.<android.content.ContentValues: void put(java.lang.String,java.lang.Boolean)>("folder", $r20);
+
+     label08:
+        interfaceinvoke r4.<java.util.List: boolean add(java.lang.Object)>(r19);
+
+     label09:
+        $r10 = newarray (java.lang.Integer)[3];
+
+        $r11 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(2);
+
+        $r10[0] = $r11;
+
+        $r11 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(i1);
+
+        $r10[1] = $r11;
+
+        $r11 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(i0);
+
+        $r10[2] = $r11;
+
+        virtualinvoke r0.<cn.hi321.browser.sync.WeaveSyncTask: void publishProgress(java.lang.Object[])>($r10);
+
+        $z0 = virtualinvoke r0.<cn.hi321.browser.sync.WeaveSyncTask: boolean isCancelled()>();
+
+        if $z0 == 0 goto label01;
+
+        goto label02;
+
+     label10:
+        $r17 = null;
+
+        goto label06;
+
+     label11:
+        $r18 = null;
+
+        goto label07;
+
+     label12:
+        $r16 = virtualinvoke $r15.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("bmkUri");
+
+        $r20 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(0);
+
+        virtualinvoke r19.<android.content.ContentValues: void put(java.lang.String,java.lang.Boolean)>("folder", $r20);
+
+        virtualinvoke r19.<android.content.ContentValues: void put(java.lang.String,java.lang.String)>("url", $r16);
+
+        goto label08;
+
+     label13:
+        $r12 = interfaceinvoke $r9.<java.util.Iterator: java.lang.Object next()>();
+
+        r19 = (android.content.ContentValues) $r12;
+
+        r5[i1] = r19;
+
+        i1 = i1 + 1;
+
+        goto label03;
+    }
+
+    private void doSyncByDelta(cn.hi321.browser.weave.client.WeaveAccountInfo, cn.hi321.browser.weave.client.UserWeave, java.util.List) throws cn.hi321.browser.weave.client.WeaveException, org.json.JSONException, java.io.IOException, java.security.GeneralSecurityException
+    {
+        long $l3;
+        java.lang.Integer $r13;
+        cn.hi321.browser.weave.client.WeaveAccountInfo $r1;
+        org.json.JSONObject $r9;
+        byte $b4;
+        android.content.ContentResolver $r11;
+        int i0, $i1, $i2;
+        java.lang.Boolean $r16;
+        java.lang.String $r10, $r14, $r15;
+        boolean $z0, $z1;
+        java.util.Iterator $r5;
+        cn.hi321.browser.weave.client.UserWeave $r2;
+        cn.hi321.browser.sync.WeaveSyncTask r0;
+        java.util.List r3;
+        char[] $r8;
+        java.lang.Object $r6;
+        android.content.ContentValues r4;
+        cn.hi321.browser.weave.client.WeaveBasicObject r7;
+        java.lang.Integer[] $r12;
+
+        r0 := @this: cn.hi321.browser.sync.WeaveSyncTask;
+
+        $r1 := @parameter0: cn.hi321.browser.weave.client.WeaveAccountInfo;
+
+        $r2 := @parameter1: cn.hi321.browser.weave.client.UserWeave;
+
+        r3 := @parameter2: java.util.List;
+
+        i0 = 0;
+
+        $i1 = interfaceinvoke r3.<java.util.List: int size()>();
+
+        $r5 = interfaceinvoke r3.<java.util.List: java.util.Iterator iterator()>();
+
+     label01:
+        $z0 = interfaceinvoke $r5.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 != 0 goto label02;
+
+        return;
+
+     label02:
+        $r6 = interfaceinvoke $r5.<java.util.Iterator: java.lang.Object next()>();
+
+        r7 = (cn.hi321.browser.weave.client.WeaveBasicObject) $r6;
+
+        $r8 = virtualinvoke $r1.<cn.hi321.browser.weave.client.WeaveAccountInfo: char[] getSecret()>();
+
+        $r9 = virtualinvoke r7.<cn.hi321.browser.weave.client.WeaveBasicObject: org.json.JSONObject getEncryptedPayload(cn.hi321.browser.weave.client.UserWeave,char[])>($r2, $r8);
+
+        i0 = i0 + 1;
+
+        $z0 = virtualinvoke $r9.<org.json.JSONObject: boolean has(java.lang.String)>("type");
+
+        if $z0 == 0 goto label04;
+
+        $r10 = virtualinvoke $r9.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("type");
+
+        $z0 = virtualinvoke $r10.<java.lang.String: boolean equals(java.lang.Object)>("item");
+
+        if $z0 == 0 goto label06;
+
+        $z0 = virtualinvoke $r9.<org.json.JSONObject: boolean has(java.lang.String)>("deleted");
+
+        if $z0 == 0 goto label06;
+
+        $z0 = virtualinvoke $r9.<org.json.JSONObject: boolean getBoolean(java.lang.String)>("deleted");
+
+        if $z0 == 0 goto label06;
+
+        $z0 = virtualinvoke $r9.<org.json.JSONObject: boolean has(java.lang.String)>("id");
+
+        if $z0 == 0 goto label05;
+
+        $r10 = virtualinvoke $r9.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("id");
+
+     label03:
+        if $r10 == null goto label04;
+
+        $i2 = virtualinvoke $r10.<java.lang.String: int length()>();
+
+        if $i2 <= 0 goto label04;
+
+        $r11 = r0.<cn.hi321.browser.sync.WeaveSyncTask: android.content.ContentResolver mContentResolver>;
+
+        staticinvoke <cn.hi321.browser.providers.BookmarksProviderWrapper: void deleteWeaveBookmarkByWeaveId(android.content.ContentResolver,java.lang.String)>($r11, $r10);
+
+     label04:
+        $r12 = newarray (java.lang.Integer)[3];
+
+        $r13 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(2);
+
+        $r12[0] = $r13;
+
+        $r13 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(i0);
+
+        $r12[1] = $r13;
+
+        $r13 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i1);
+
+        $r12[2] = $r13;
+
+        virtualinvoke r0.<cn.hi321.browser.sync.WeaveSyncTask: void publishProgress(java.lang.Object[])>($r12);
+
+        $z0 = virtualinvoke r0.<cn.hi321.browser.sync.WeaveSyncTask: boolean isCancelled()>();
+
+        if $z0 == 0 goto label01;
+
+        return;
+
+     label05:
+        $r10 = null;
+
+        goto label03;
+
+     label06:
+        $r10 = virtualinvoke $r9.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("type");
+
+        $z0 = virtualinvoke $r10.<java.lang.String: boolean equals(java.lang.Object)>("bookmark");
+
+        if $z0 != 0 goto label07;
+
+        $r10 = virtualinvoke $r9.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("type");
+
+        $z0 = virtualinvoke $r10.<java.lang.String: boolean equals(java.lang.Object)>("folder");
+
+        if $z0 == 0 goto label04;
+
+     label07:
+        $z0 = virtualinvoke $r9.<org.json.JSONObject: boolean has(java.lang.String)>("id");
+
+        if $z0 == 0 goto label11;
+
+        $r10 = virtualinvoke $r9.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("id");
+
+     label08:
+        if $r10 == null goto label04;
+
+        $i2 = virtualinvoke $r10.<java.lang.String: int length()>();
+
+        if $i2 <= 0 goto label04;
+
+        $r14 = virtualinvoke $r9.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("type");
+
+        $z0 = virtualinvoke $r14.<java.lang.String: boolean equals(java.lang.Object)>("folder");
+
+        $r14 = virtualinvoke $r9.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("title");
+
+        $z1 = virtualinvoke $r9.<org.json.JSONObject: boolean has(java.lang.String)>("parentid");
+
+        if $z1 == 0 goto label12;
+
+        $r15 = virtualinvoke $r9.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("parentid");
+
+     label09:
+        r4 = new android.content.ContentValues;
+
+        specialinvoke r4.<android.content.ContentValues: void <init>()>();
+
+        virtualinvoke r4.<android.content.ContentValues: void put(java.lang.String,java.lang.String)>("weave_id", $r10);
+
+        virtualinvoke r4.<android.content.ContentValues: void put(java.lang.String,java.lang.String)>("weave_parent_id", $r15);
+
+        virtualinvoke r4.<android.content.ContentValues: void put(java.lang.String,java.lang.String)>("title", $r14);
+
+        if $z0 == 0 goto label13;
+
+        $r16 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(1);
+
+        virtualinvoke r4.<android.content.ContentValues: void put(java.lang.String,java.lang.Boolean)>("folder", $r16);
+
+     label10:
+        $r11 = r0.<cn.hi321.browser.sync.WeaveSyncTask: android.content.ContentResolver mContentResolver>;
+
+        $l3 = staticinvoke <cn.hi321.browser.providers.BookmarksProviderWrapper: long getWeaveBookmarkIdByWeaveId(android.content.ContentResolver,java.lang.String)>($r11, $r10);
+
+        $b4 = $l3 cmp -1L;
+
+        if $b4 != 0 goto label14;
+
+        $r11 = r0.<cn.hi321.browser.sync.WeaveSyncTask: android.content.ContentResolver mContentResolver>;
+
+        staticinvoke <cn.hi321.browser.providers.BookmarksProviderWrapper: void insertWeaveBookmark(android.content.ContentResolver,android.content.ContentValues)>($r11, r4);
+
+        goto label04;
+
+     label11:
+        $r10 = null;
+
+        goto label08;
+
+     label12:
+        $r15 = null;
+
+        goto label09;
+
+     label13:
+        $r14 = virtualinvoke $r9.<org.json.JSONObject: java.lang.String getString(java.lang.String)>("bmkUri");
+
+        $r16 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(0);
+
+        virtualinvoke r4.<android.content.ContentValues: void put(java.lang.String,java.lang.Boolean)>("folder", $r16);
+
+        virtualinvoke r4.<android.content.ContentValues: void put(java.lang.String,java.lang.String)>("url", $r14);
+
+        goto label10;
+
+     label14:
+        $r11 = r0.<cn.hi321.browser.sync.WeaveSyncTask: android.content.ContentResolver mContentResolver>;
+
+        staticinvoke <cn.hi321.browser.providers.BookmarksProviderWrapper: void updateWeaveBookmark(android.content.ContentResolver,long,android.content.ContentValues)>($r11, $l3, r4);
+
+        goto label04;
+    }
+
+    private cn.hi321.browser.weave.client.QueryResult getCollection(cn.hi321.browser.weave.client.UserWeave, java.lang.String, cn.hi321.browser.weave.client.QueryParams) throws cn.hi321.browser.weave.client.WeaveException
+    {
+        cn.hi321.browser.sync.WeaveSyncTask r0;
+        cn.hi321.browser.weave.client.QueryResult $r6;
+        cn.hi321.browser.weave.client.UserWeave $r1;
+        cn.hi321.browser.weave.client.QueryParams r3;
+        java.lang.StringBuilder $r4;
+        java.lang.String $r2;
+        java.net.URI $r5;
+
+        r0 := @this: cn.hi321.browser.sync.WeaveSyncTask;
+
+        $r1 := @parameter0: cn.hi321.browser.weave.client.UserWeave;
+
+        $r2 := @parameter1: java.lang.String;
+
+        r3 := @parameter2: cn.hi321.browser.weave.client.QueryParams;
+
+        if r3 != null goto label1;
+
+        r3 = new cn.hi321.browser.weave.client.QueryParams;
+
+        specialinvoke r3.<cn.hi321.browser.weave.client.QueryParams: void <init>()>();
+
+     label1:
+        $r4 = new java.lang.StringBuilder;
+
+        $r2 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>("/storage/bookmarks");
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>(java.lang.String)>($r2);
+
+        $r2 = virtualinvoke r3.<cn.hi321.browser.weave.client.QueryParams: java.lang.String toQueryString()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r2 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r5 = virtualinvoke $r1.<cn.hi321.browser.weave.client.UserWeave: java.net.URI buildSyncUriFromSubpath(java.lang.String)>($r2);
+
+        $r6 = virtualinvoke $r1.<cn.hi321.browser.weave.client.UserWeave: cn.hi321.browser.weave.client.QueryResult getWboCollection(java.net.URI)>($r5);
+
+        return $r6;
+    }
+
+    private java.util.Date getLastModified(cn.hi321.browser.weave.client.UserWeave) throws cn.hi321.browser.weave.client.WeaveException
+    {
+        cn.hi321.browser.weave.client.QueryResult $r4;
+        cn.hi321.browser.weave.client.UserWeave $r1;
+        java.util.Date $r7;
+        long $l0;
+        cn.hi321.browser.sync.WeaveSyncTask r0;
+        org.json.JSONException r2;
+        org.json.JSONObject r6;
+        java.lang.Object $r5;
+        cn.hi321.browser.weave.client.UserWeave$HashNode $r3;
+        cn.hi321.browser.weave.client.WeaveException $r8;
+        boolean $z0;
+
+        r0 := @this: cn.hi321.browser.sync.WeaveSyncTask;
+
+        $r1 := @parameter0: cn.hi321.browser.weave.client.UserWeave;
+
+        $r3 = <cn.hi321.browser.weave.client.UserWeave$HashNode: cn.hi321.browser.weave.client.UserWeave$HashNode INFO_COLLECTIONS>;
+
+     label01:
+        $r4 = virtualinvoke $r1.<cn.hi321.browser.weave.client.UserWeave: cn.hi321.browser.weave.client.QueryResult getNode(cn.hi321.browser.weave.client.UserWeave$HashNode)>($r3);
+
+        $r5 = virtualinvoke $r4.<cn.hi321.browser.weave.client.QueryResult: java.lang.Object getValue()>();
+
+     label02:
+        r6 = (org.json.JSONObject) $r5;
+
+     label03:
+        $z0 = virtualinvoke r6.<org.json.JSONObject: boolean has(java.lang.String)>("bookmarks");
+
+     label04:
+        if $z0 == 0 goto label09;
+
+     label05:
+        $l0 = virtualinvoke r6.<org.json.JSONObject: long getLong(java.lang.String)>("bookmarks");
+
+     label06:
+        $r7 = new java.util.Date;
+
+        $l0 = 1000L * $l0;
+
+     label07:
+        specialinvoke $r7.<java.util.Date: void <init>(long)>($l0);
+
+     label08:
+        return $r7;
+
+     label09:
+        return null;
+
+     label10:
+        r2 := @caughtexception;
+
+        $r8 = new cn.hi321.browser.weave.client.WeaveException;
+
+        specialinvoke $r8.<cn.hi321.browser.weave.client.WeaveException: void <init>(java.lang.Throwable)>(r2);
+
+        throw $r8;
+
+        catch org.json.JSONException from label01 to label02 with label10;
+        catch org.json.JSONException from label03 to label04 with label10;
+        catch org.json.JSONException from label05 to label06 with label10;
+        catch org.json.JSONException from label07 to label08 with label10;
+    }
+
+    private static cn.hi321.browser.weave.client.WeaveFactory getWeaveFactory()
+    {
+        cn.hi321.browser.weave.client.WeaveFactory $r0;
+
+        $r0 = <cn.hi321.browser.sync.WeaveSyncTask: cn.hi321.browser.weave.client.WeaveFactory mWeaveFactory>;
+
+        if $r0 != null goto label1;
+
+        $r0 = new cn.hi321.browser.weave.client.WeaveFactory;
+
+        specialinvoke $r0.<cn.hi321.browser.weave.client.WeaveFactory: void <init>(boolean)>(1);
+
+        <cn.hi321.browser.sync.WeaveSyncTask: cn.hi321.browser.weave.client.WeaveFactory mWeaveFactory> = $r0;
+
+     label1:
+        $r0 = <cn.hi321.browser.sync.WeaveSyncTask: cn.hi321.browser.weave.client.WeaveFactory mWeaveFactory>;
+
+        return $r0;
+    }
+
+    protected transient volatile java.lang.Object doInBackground(java.lang.Object[])
+    {
+        cn.hi321.browser.sync.WeaveSyncTask r0;
+        java.lang.Throwable $r1;
+        java.lang.Object[] $r2;
+        cn.hi321.browser.weave.client.WeaveAccountInfo[] $r3;
+
+        r0 := @this: cn.hi321.browser.sync.WeaveSyncTask;
+
+        $r2 := @parameter0: java.lang.Object[];
+
+        $r3 = (cn.hi321.browser.weave.client.WeaveAccountInfo[]) $r2;
+
+        $r1 = virtualinvoke r0.<cn.hi321.browser.sync.WeaveSyncTask: java.lang.Throwable doInBackground(cn.hi321.browser.weave.client.WeaveAccountInfo[])>($r3);
+
+        return $r1;
+    }
+
+    protected transient java.lang.Throwable doInBackground(cn.hi321.browser.weave.client.WeaveAccountInfo[])
+    {
+        cn.hi321.browser.weave.client.WeaveFactory $r5;
+        java.lang.Throwable r20, r21;
+        android.content.Context $r11;
+        cn.hi321.browser.weave.client.QueryResult $r14;
+        cn.hi321.browser.weave.client.WeaveAccountInfo[] $r1;
+        java.util.Date $r10, $r23;
+        cn.hi321.browser.weave.client.QueryParams r13, $r22;
+        long $l0, $l1;
+        java.lang.Integer $r4;
+        cn.hi321.browser.weave.client.WeaveAccountInfo r2;
+        org.json.JSONException r19;
+        java.security.GeneralSecurityException $r25;
+        byte $b2;
+        android.content.ContentResolver $r17;
+        int $i3;
+        java.net.URI $r6;
+        java.lang.String $r7, $r8;
+        boolean $z0;
+        cn.hi321.browser.weave.client.UserWeave $r9;
+        java.io.IOException $r24;
+        cn.hi321.browser.sync.WeaveSyncTask r0;
+        java.util.List r16;
+        android.content.SharedPreferences $r12;
+        java.lang.Object $r15;
+        java.lang.Integer[] $r3;
+        cn.hi321.browser.weave.client.WeaveException r18;
+
+        r0 := @this: cn.hi321.browser.sync.WeaveSyncTask;
+
+        $r1 := @parameter0: cn.hi321.browser.weave.client.WeaveAccountInfo[];
+
+        $r3 = newarray (java.lang.Integer)[3];
+
+     label01:
+        $r4 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(0);
+
+     label02:
+        $r3[0] = $r4;
+
+     label03:
+        $r4 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(0);
+
+     label04:
+        $r3[1] = $r4;
+
+     label05:
+        $r4 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(0);
+
+     label06:
+        $r3[2] = $r4;
+
+     label07:
+        virtualinvoke r0.<cn.hi321.browser.sync.WeaveSyncTask: void publishProgress(java.lang.Object[])>($r3);
+
+     label08:
+        r2 = $r1[0];
+
+     label09:
+        $r5 = staticinvoke <cn.hi321.browser.sync.WeaveSyncTask: cn.hi321.browser.weave.client.WeaveFactory getWeaveFactory()>();
+
+        $r6 = virtualinvoke r2.<cn.hi321.browser.weave.client.WeaveAccountInfo: java.net.URI getServer()>();
+
+        $r7 = virtualinvoke r2.<cn.hi321.browser.weave.client.WeaveAccountInfo: java.lang.String getUsername()>();
+
+        $r8 = virtualinvoke r2.<cn.hi321.browser.weave.client.WeaveAccountInfo: java.lang.String getPassword()>();
+
+        $r9 = virtualinvoke $r5.<cn.hi321.browser.weave.client.WeaveFactory: cn.hi321.browser.weave.client.UserWeave createUserWeave(java.net.URI,java.lang.String,java.lang.String)>($r6, $r7, $r8);
+
+        $r10 = specialinvoke r0.<cn.hi321.browser.sync.WeaveSyncTask: java.util.Date getLastModified(cn.hi321.browser.weave.client.UserWeave)>($r9);
+
+        $l0 = virtualinvoke $r10.<java.util.Date: long getTime()>();
+
+     label10:
+        $r11 = r0.<cn.hi321.browser.sync.WeaveSyncTask: android.content.Context mContext>;
+
+     label11:
+        $r12 = staticinvoke <android.preference.PreferenceManager: android.content.SharedPreferences getDefaultSharedPreferences(android.content.Context)>($r11);
+
+        $l1 = interfaceinvoke $r12.<android.content.SharedPreferences: long getLong(java.lang.String,long)>("PREFERENCE_WEAVE_LAST_SYNC_DATE", -1L);
+
+     label12:
+        $b2 = $l0 cmp $l1;
+
+        $i3 = (int) $b2;
+
+        if $i3 <= 0 goto label39;
+
+        $r3 = newarray (java.lang.Integer)[3];
+
+     label13:
+        $r4 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(1);
+
+     label14:
+        $r3[0] = $r4;
+
+     label15:
+        $r4 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(0);
+
+     label16:
+        $r3[1] = $r4;
+
+     label17:
+        $r4 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(0);
+
+     label18:
+        $r3[2] = $r4;
+
+     label19:
+        virtualinvoke r0.<cn.hi321.browser.sync.WeaveSyncTask: void publishProgress(java.lang.Object[])>($r3);
+
+     label20:
+        $b2 = $l1 cmp 0L;
+
+        $i3 = (int) $b2;
+
+        if $i3 > 0 goto label29;
+
+        $z0 = 1;
+
+     label21:
+        r0.<cn.hi321.browser.sync.WeaveSyncTask: boolean mFullSync> = $z0;
+
+        r13 = null;
+
+        $z0 = r0.<cn.hi321.browser.sync.WeaveSyncTask: boolean mFullSync>;
+
+        if $z0 != 0 goto label30;
+
+        $r22 = new cn.hi321.browser.weave.client.QueryParams;
+
+        r13 = $r22;
+
+     label22:
+        specialinvoke $r22.<cn.hi321.browser.weave.client.QueryParams: void <init>()>();
+
+        virtualinvoke r13.<cn.hi321.browser.weave.client.QueryParams: cn.hi321.browser.weave.client.QueryParams setFull(boolean)>(0);
+
+     label23:
+        $r23 = new java.util.Date;
+
+        $r10 = $r23;
+
+     label24:
+        specialinvoke $r23.<java.util.Date: void <init>(long)>($l1);
+
+        virtualinvoke r13.<cn.hi321.browser.weave.client.QueryParams: cn.hi321.browser.weave.client.QueryParams setNewer(java.util.Date)>($r10);
+
+     label25:
+        $r14 = specialinvoke r0.<cn.hi321.browser.sync.WeaveSyncTask: cn.hi321.browser.weave.client.QueryResult getCollection(cn.hi321.browser.weave.client.UserWeave,java.lang.String,cn.hi321.browser.weave.client.QueryParams)>($r9, "/storage/bookmarks", r13);
+
+        $r15 = virtualinvoke $r14.<cn.hi321.browser.weave.client.QueryResult: java.lang.Object getValue()>();
+
+     label26:
+        r16 = (java.util.List) $r15;
+
+        $z0 = r0.<cn.hi321.browser.sync.WeaveSyncTask: boolean mFullSync>;
+
+        if $z0 == 0 goto label34;
+
+     label27:
+        specialinvoke r0.<cn.hi321.browser.sync.WeaveSyncTask: void doSync(cn.hi321.browser.weave.client.WeaveAccountInfo,cn.hi321.browser.weave.client.UserWeave,java.util.List)>(r2, $r9, r16);
+
+     label28:
+        return null;
+
+     label29:
+        $z0 = 0;
+
+        goto label21;
+
+     label30:
+        $r17 = r0.<cn.hi321.browser.sync.WeaveSyncTask: android.content.ContentResolver mContentResolver>;
+
+     label31:
+        staticinvoke <cn.hi321.browser.providers.BookmarksProviderWrapper: void clearWeaveBookmarks(android.content.ContentResolver)>($r17);
+
+     label32:
+        goto label25;
+
+     label33:
+        r18 := @caughtexception;
+
+        virtualinvoke r18.<cn.hi321.browser.weave.client.WeaveException: void printStackTrace()>();
+
+        return r18;
+
+     label34:
+        specialinvoke r0.<cn.hi321.browser.sync.WeaveSyncTask: void doSyncByDelta(cn.hi321.browser.weave.client.WeaveAccountInfo,cn.hi321.browser.weave.client.UserWeave,java.util.List)>(r2, $r9, r16);
+
+     label35:
+        return null;
+
+     label36:
+        r19 := @caughtexception;
+
+        virtualinvoke r19.<org.json.JSONException: void printStackTrace()>();
+
+        return r19;
+
+     label37:
+        r20 := @caughtexception;
+
+        $r24 = (java.io.IOException) r20;
+
+        virtualinvoke $r24.<java.io.IOException: void printStackTrace()>();
+
+        return r20;
+
+     label38:
+        r21 := @caughtexception;
+
+        $r25 = (java.security.GeneralSecurityException) r21;
+
+        virtualinvoke $r25.<java.security.GeneralSecurityException: void printStackTrace()>();
+
+        return r21;
+
+     label39:
+        return null;
+
+        catch cn.hi321.browser.weave.client.WeaveException from label01 to label02 with label33;
+        catch cn.hi321.browser.weave.client.WeaveException from label03 to label04 with label33;
+        catch cn.hi321.browser.weave.client.WeaveException from label05 to label06 with label33;
+        catch cn.hi321.browser.weave.client.WeaveException from label07 to label08 with label33;
+        catch cn.hi321.browser.weave.client.WeaveException from label09 to label10 with label33;
+        catch cn.hi321.browser.weave.client.WeaveException from label11 to label12 with label33;
+        catch cn.hi321.browser.weave.client.WeaveException from label13 to label14 with label33;
+        catch cn.hi321.browser.weave.client.WeaveException from label15 to label16 with label33;
+        catch cn.hi321.browser.weave.client.WeaveException from label17 to label18 with label33;
+        catch cn.hi321.browser.weave.client.WeaveException from label19 to label20 with label33;
+        catch cn.hi321.browser.weave.client.WeaveException from label22 to label23 with label33;
+        catch cn.hi321.browser.weave.client.WeaveException from label24 to label26 with label33;
+        catch cn.hi321.browser.weave.client.WeaveException from label27 to label28 with label33;
+        catch cn.hi321.browser.weave.client.WeaveException from label31 to label32 with label33;
+        catch org.json.JSONException from label01 to label02 with label36;
+        catch org.json.JSONException from label03 to label04 with label36;
+        catch org.json.JSONException from label05 to label06 with label36;
+        catch org.json.JSONException from label07 to label08 with label36;
+        catch org.json.JSONException from label09 to label10 with label36;
+        catch org.json.JSONException from label11 to label12 with label36;
+        catch org.json.JSONException from label13 to label14 with label36;
+        catch org.json.JSONException from label15 to label16 with label36;
+        catch org.json.JSONException from label17 to label18 with label36;
+        catch org.json.JSONException from label19 to label20 with label36;
+        catch org.json.JSONException from label22 to label23 with label36;
+        catch org.json.JSONException from label24 to label26 with label36;
+        catch org.json.JSONException from label27 to label28 with label36;
+        catch org.json.JSONException from label31 to label32 with label36;
+        catch java.io.IOException from label01 to label02 with label37;
+        catch java.io.IOException from label03 to label04 with label37;
+        catch java.io.IOException from label05 to label06 with label37;
+        catch java.io.IOException from label07 to label08 with label37;
+        catch java.io.IOException from label09 to label10 with label37;
+        catch java.io.IOException from label11 to label12 with label37;
+        catch java.io.IOException from label13 to label14 with label37;
+        catch java.io.IOException from label15 to label16 with label37;
+        catch java.io.IOException from label17 to label18 with label37;
+        catch java.io.IOException from label19 to label20 with label37;
+        catch java.io.IOException from label22 to label23 with label37;
+        catch java.io.IOException from label24 to label26 with label37;
+        catch java.io.IOException from label27 to label28 with label37;
+        catch java.io.IOException from label31 to label32 with label37;
+        catch java.security.GeneralSecurityException from label01 to label02 with label38;
+        catch java.security.GeneralSecurityException from label03 to label04 with label38;
+        catch java.security.GeneralSecurityException from label05 to label06 with label38;
+        catch java.security.GeneralSecurityException from label07 to label08 with label38;
+        catch java.security.GeneralSecurityException from label09 to label10 with label38;
+        catch java.security.GeneralSecurityException from label11 to label12 with label38;
+        catch java.security.GeneralSecurityException from label13 to label14 with label38;
+        catch java.security.GeneralSecurityException from label15 to label16 with label38;
+        catch java.security.GeneralSecurityException from label17 to label18 with label38;
+        catch java.security.GeneralSecurityException from label19 to label20 with label38;
+        catch java.security.GeneralSecurityException from label22 to label23 with label38;
+        catch java.security.GeneralSecurityException from label24 to label26 with label38;
+        catch java.security.GeneralSecurityException from label27 to label28 with label38;
+        catch java.security.GeneralSecurityException from label31 to label32 with label38;
+        catch cn.hi321.browser.weave.client.WeaveException from label34 to label35 with label33;
+        catch org.json.JSONException from label34 to label35 with label36;
+        catch java.io.IOException from label34 to label35 with label37;
+        catch java.security.GeneralSecurityException from label34 to label35 with label38;
+    }
+
+    public boolean isFullSync()
+    {
+        cn.hi321.browser.sync.WeaveSyncTask r0;
+        boolean z0;
+
+        r0 := @this: cn.hi321.browser.sync.WeaveSyncTask;
+
+        z0 = r0.<cn.hi321.browser.sync.WeaveSyncTask: boolean mFullSync>;
+
+        return z0;
+    }
+
+    protected void onCancelled()
+    {
+        cn.hi321.browser.sync.WeaveSyncTask r0;
+        cn.hi321.browser.sync.ISyncListener $r1;
+
+        r0 := @this: cn.hi321.browser.sync.WeaveSyncTask;
+
+        $r1 = r0.<cn.hi321.browser.sync.WeaveSyncTask: cn.hi321.browser.sync.ISyncListener mListener>;
+
+        interfaceinvoke $r1.<cn.hi321.browser.sync.ISyncListener: void onSyncCancelled()>();
+
+        specialinvoke r0.<android.os.AsyncTask: void onCancelled()>();
+
+        return;
+    }
+
+    protected volatile void onPostExecute(java.lang.Object)
+    {
+        cn.hi321.browser.sync.WeaveSyncTask r0;
+        java.lang.Throwable $r2;
+        java.lang.Object $r1;
+
+        r0 := @this: cn.hi321.browser.sync.WeaveSyncTask;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 = (java.lang.Throwable) $r1;
+
+        virtualinvoke r0.<cn.hi321.browser.sync.WeaveSyncTask: void onPostExecute(java.lang.Throwable)>($r2);
+
+        return;
+    }
+
+    protected void onPostExecute(java.lang.Throwable)
+    {
+        cn.hi321.browser.sync.WeaveSyncTask r0;
+        java.lang.Throwable $r1;
+        cn.hi321.browser.sync.ISyncListener $r2;
+
+        r0 := @this: cn.hi321.browser.sync.WeaveSyncTask;
+
+        $r1 := @parameter0: java.lang.Throwable;
+
+        $r2 = r0.<cn.hi321.browser.sync.WeaveSyncTask: cn.hi321.browser.sync.ISyncListener mListener>;
+
+        interfaceinvoke $r2.<cn.hi321.browser.sync.ISyncListener: void onSyncEnd(java.lang.Throwable)>($r1);
+
+        return;
+    }
+
+    protected transient void onProgressUpdate(java.lang.Integer[])
+    {
+        cn.hi321.browser.sync.WeaveSyncTask r0;
+        cn.hi321.browser.sync.ISyncListener $r2;
+        int $i0, $i1, $i2;
+        java.lang.Integer $r3;
+        java.lang.Integer[] $r1;
+
+        r0 := @this: cn.hi321.browser.sync.WeaveSyncTask;
+
+        $r1 := @parameter0: java.lang.Integer[];
+
+        $r2 = r0.<cn.hi321.browser.sync.WeaveSyncTask: cn.hi321.browser.sync.ISyncListener mListener>;
+
+        $r3 = $r1[0];
+
+        $i0 = virtualinvoke $r3.<java.lang.Integer: int intValue()>();
+
+        $r3 = $r1[1];
+
+        $i1 = virtualinvoke $r3.<java.lang.Integer: int intValue()>();
+
+        $r3 = $r1[2];
+
+        $i2 = virtualinvoke $r3.<java.lang.Integer: int intValue()>();
+
+        interfaceinvoke $r2.<cn.hi321.browser.sync.ISyncListener: void onSyncProgress(int,int,int)>($i0, $i1, $i2);
+
+        return;
+    }
+
+    protected transient volatile void onProgressUpdate(java.lang.Object[])
+    {
+        cn.hi321.browser.sync.WeaveSyncTask r0;
+        java.lang.Object[] $r1;
+        java.lang.Integer[] $r2;
+
+        r0 := @this: cn.hi321.browser.sync.WeaveSyncTask;
+
+        $r1 := @parameter0: java.lang.Object[];
+
+        $r2 = (java.lang.Integer[]) $r1;
+
+        virtualinvoke r0.<cn.hi321.browser.sync.WeaveSyncTask: void onProgressUpdate(java.lang.Integer[])>($r2);
+
+        return;
+    }
+}

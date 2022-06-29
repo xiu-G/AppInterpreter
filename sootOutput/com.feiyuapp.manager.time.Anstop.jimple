@@ -1,0 +1,917 @@
+public class com.feiyuapp.manager.time.Anstop extends android.app.Activity
+{
+    private static final int ABOUT_DIALOG;
+    private static final int ABOUT_ITEM;
+    private static final int COUNTDOWN;
+    private static final int LAP;
+    private static final int LOAD_ITEM;
+    private static final int MENU_ABOUT;
+    private static final int MENU_LOAD;
+    private static final int MENU_MODE_GROUP;
+    private static final int MENU_SAVE;
+    private static final int MENU_SETTINGS;
+    private static final int MODE_COUNTDOWN;
+    private static final int MODE_LAP;
+    private static final int MODE_STOP;
+    private static final int SAVE_DIALOG;
+    private static final int SAVE_ITEM;
+    private static final int SETTINGS_ACTIVITY;
+    private static final int SETTINGS_ITEM;
+    private static final int STOP;
+    private static final int VIEW_SIZE;
+    com.feiyuapp.manager.time.AccelerometerListener al;
+    com.feiyuapp.manager.time.Clock clock;
+    private int current;
+    com.feiyuapp.manager.time.anstopDbAdapter dbHelper;
+    android.widget.TextView dsecondsView;
+    android.widget.Spinner hourSpinner;
+    android.widget.TextView hourView;
+    android.widget.Button lapButton;
+    android.widget.TextView lapView;
+    private int laps;
+    android.content.Context mContext;
+    android.widget.Spinner minSpinner;
+    android.widget.TextView minView;
+    android.view.MenuItem modeMenuItem;
+    android.widget.Button refreshButton;
+    android.widget.Button resetButton;
+    android.view.MenuItem saveMenuItem;
+    android.widget.Spinner secSpinner;
+    android.widget.TextView secondsView;
+    android.widget.Button showmenu;
+    android.widget.Button startButton;
+    android.os.Vibrator vib;
+    public android.content.Intent ipcIntent;
+    public android.content.Intent ipcResultIntent;
+
+    public void <init>()
+    {
+        com.feiyuapp.manager.time.Anstop r0;
+
+        r0 := @this: com.feiyuapp.manager.time.Anstop;
+
+        specialinvoke r0.<android.app.Activity: void <init>()>();
+
+        r0.<com.feiyuapp.manager.time.Anstop: int laps> = 1;
+
+        return;
+    }
+
+    static void access$0(com.feiyuapp.manager.time.Anstop, int)
+    {
+        int $i0;
+        com.feiyuapp.manager.time.Anstop $r0;
+
+        $r0 := @parameter0: com.feiyuapp.manager.time.Anstop;
+
+        $i0 := @parameter1: int;
+
+        $r0.<com.feiyuapp.manager.time.Anstop: int laps> = $i0;
+
+        return;
+    }
+
+    static int access$1(com.feiyuapp.manager.time.Anstop)
+    {
+        int i0;
+        com.feiyuapp.manager.time.Anstop $r0;
+
+        $r0 := @parameter0: com.feiyuapp.manager.time.Anstop;
+
+        i0 = $r0.<com.feiyuapp.manager.time.Anstop: int laps>;
+
+        return i0;
+    }
+
+    static int access$2(com.feiyuapp.manager.time.Anstop)
+    {
+        int i0;
+        com.feiyuapp.manager.time.Anstop $r0;
+
+        $r0 := @parameter0: com.feiyuapp.manager.time.Anstop;
+
+        i0 = $r0.<com.feiyuapp.manager.time.Anstop: int current>;
+
+        return i0;
+    }
+
+    private void readSettings()
+    {
+        android.content.Context $r1;
+        com.feiyuapp.manager.time.Anstop r0;
+        com.feiyuapp.manager.time.AccelerometerListener $r3;
+        com.feiyuapp.manager.time.Clock $r4;
+        android.content.SharedPreferences $r2;
+        java.lang.Object $r5;
+        android.os.Vibrator $r6;
+        boolean $z0;
+
+        r0 := @this: com.feiyuapp.manager.time.Anstop;
+
+        $r1 = r0.<com.feiyuapp.manager.time.Anstop: android.content.Context mContext>;
+
+        $r2 = staticinvoke <android.preference.PreferenceManager: android.content.SharedPreferences getDefaultSharedPreferences(android.content.Context)>($r1);
+
+        $z0 = interfaceinvoke $r2.<android.content.SharedPreferences: boolean getBoolean(java.lang.String,boolean)>("use_motion_sensor", 0);
+
+        if $z0 == 0 goto label2;
+
+        $r3 = new com.feiyuapp.manager.time.AccelerometerListener;
+
+        $r4 = r0.<com.feiyuapp.manager.time.Anstop: com.feiyuapp.manager.time.Clock clock>;
+
+        specialinvoke $r3.<com.feiyuapp.manager.time.AccelerometerListener: void <init>(android.app.Activity,com.feiyuapp.manager.time.Clock)>(r0, $r4);
+
+        r0.<com.feiyuapp.manager.time.Anstop: com.feiyuapp.manager.time.AccelerometerListener al> = $r3;
+
+        $r3 = r0.<com.feiyuapp.manager.time.Anstop: com.feiyuapp.manager.time.AccelerometerListener al>;
+
+        virtualinvoke $r3.<com.feiyuapp.manager.time.AccelerometerListener: void start()>();
+
+     label1:
+        $z0 = interfaceinvoke $r2.<android.content.SharedPreferences: boolean getBoolean(java.lang.String,boolean)>("vibrate", 1);
+
+        if $z0 == 0 goto label3;
+
+        $r5 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: java.lang.Object getSystemService(java.lang.String)>("vibrator");
+
+        $r6 = (android.os.Vibrator) $r5;
+
+        r0.<com.feiyuapp.manager.time.Anstop: android.os.Vibrator vib> = $r6;
+
+        return;
+
+     label2:
+        $r3 = r0.<com.feiyuapp.manager.time.Anstop: com.feiyuapp.manager.time.AccelerometerListener al>;
+
+        if $r3 == null goto label1;
+
+        $r3 = r0.<com.feiyuapp.manager.time.Anstop: com.feiyuapp.manager.time.AccelerometerListener al>;
+
+        virtualinvoke $r3.<com.feiyuapp.manager.time.AccelerometerListener: void stop()>();
+
+        goto label1;
+
+     label3:
+        r0.<com.feiyuapp.manager.time.Anstop: android.os.Vibrator vib> = null;
+
+        return;
+    }
+
+    public void countdown()
+    {
+        com.feiyuapp.manager.time.Anstop r0;
+        com.feiyuapp.manager.time.Anstop$refreshButtonListener $r7;
+        android.widget.Spinner $r3;
+        android.widget.ArrayAdapter $r4;
+        android.widget.TextView $r2;
+        com.feiyuapp.manager.time.Anstop$startButtonListener $r6;
+        android.view.View $r1;
+        android.widget.Button $r5;
+
+        r0 := @this: com.feiyuapp.manager.time.Anstop;
+
+        virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: void setContentView(int)>(2130903047);
+
+        $r1 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.view.View findViewById(int)>(2131099683);
+
+        $r2 = (android.widget.TextView) $r1;
+
+        r0.<com.feiyuapp.manager.time.Anstop: android.widget.TextView dsecondsView> = $r2;
+
+        $r1 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.view.View findViewById(int)>(2131099681);
+
+        $r2 = (android.widget.TextView) $r1;
+
+        r0.<com.feiyuapp.manager.time.Anstop: android.widget.TextView secondsView> = $r2;
+
+        $r1 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.view.View findViewById(int)>(2131099679);
+
+        $r2 = (android.widget.TextView) $r1;
+
+        r0.<com.feiyuapp.manager.time.Anstop: android.widget.TextView minView> = $r2;
+
+        $r1 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.view.View findViewById(int)>(2131099676);
+
+        $r2 = (android.widget.TextView) $r1;
+
+        r0.<com.feiyuapp.manager.time.Anstop: android.widget.TextView hourView> = $r2;
+
+        $r1 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.view.View findViewById(int)>(2131099680);
+
+        $r2 = (android.widget.TextView) $r1;
+
+        virtualinvoke $r2.<android.widget.TextView: void setTextSize(float)>(50.0F);
+
+        $r1 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.view.View findViewById(int)>(2131099682);
+
+        $r2 = (android.widget.TextView) $r1;
+
+        virtualinvoke $r2.<android.widget.TextView: void setTextSize(float)>(50.0F);
+
+        $r2 = r0.<com.feiyuapp.manager.time.Anstop: android.widget.TextView dsecondsView>;
+
+        virtualinvoke $r2.<android.widget.TextView: void setTextSize(float)>(60.0F);
+
+        $r2 = r0.<com.feiyuapp.manager.time.Anstop: android.widget.TextView secondsView>;
+
+        virtualinvoke $r2.<android.widget.TextView: void setTextSize(float)>(60.0F);
+
+        $r2 = r0.<com.feiyuapp.manager.time.Anstop: android.widget.TextView minView>;
+
+        virtualinvoke $r2.<android.widget.TextView: void setTextSize(float)>(60.0F);
+
+        $r2 = r0.<com.feiyuapp.manager.time.Anstop: android.widget.TextView hourView>;
+
+        virtualinvoke $r2.<android.widget.TextView: void setTextSize(float)>(30.0F);
+
+        $r1 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.view.View findViewById(int)>(2131099694);
+
+        $r3 = (android.widget.Spinner) $r1;
+
+        r0.<com.feiyuapp.manager.time.Anstop: android.widget.Spinner secSpinner> = $r3;
+
+        $r1 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.view.View findViewById(int)>(2131099691);
+
+        $r3 = (android.widget.Spinner) $r1;
+
+        r0.<com.feiyuapp.manager.time.Anstop: android.widget.Spinner minSpinner> = $r3;
+
+        $r1 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.view.View findViewById(int)>(2131099688);
+
+        $r3 = (android.widget.Spinner) $r1;
+
+        r0.<com.feiyuapp.manager.time.Anstop: android.widget.Spinner hourSpinner> = $r3;
+
+        $r4 = staticinvoke <android.widget.ArrayAdapter: android.widget.ArrayAdapter createFromResource(android.content.Context,int,int)>(r0, 2131230720, 17367048);
+
+        virtualinvoke $r4.<android.widget.ArrayAdapter: void setDropDownViewResource(int)>(17367049);
+
+        $r3 = r0.<com.feiyuapp.manager.time.Anstop: android.widget.Spinner secSpinner>;
+
+        virtualinvoke $r3.<android.widget.Spinner: void setAdapter(android.widget.SpinnerAdapter)>($r4);
+
+        $r3 = r0.<com.feiyuapp.manager.time.Anstop: android.widget.Spinner minSpinner>;
+
+        virtualinvoke $r3.<android.widget.Spinner: void setAdapter(android.widget.SpinnerAdapter)>($r4);
+
+        $r3 = r0.<com.feiyuapp.manager.time.Anstop: android.widget.Spinner hourSpinner>;
+
+        virtualinvoke $r3.<android.widget.Spinner: void setAdapter(android.widget.SpinnerAdapter)>($r4);
+
+        $r1 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.view.View findViewById(int)>(2131099684);
+
+        $r5 = (android.widget.Button) $r1;
+
+        r0.<com.feiyuapp.manager.time.Anstop: android.widget.Button startButton> = $r5;
+
+        $r5 = r0.<com.feiyuapp.manager.time.Anstop: android.widget.Button startButton>;
+
+        $r6 = new com.feiyuapp.manager.time.Anstop$startButtonListener;
+
+        specialinvoke $r6.<com.feiyuapp.manager.time.Anstop$startButtonListener: void <init>(com.feiyuapp.manager.time.Anstop,com.feiyuapp.manager.time.Anstop$startButtonListener)>(r0, null);
+
+        virtualinvoke $r5.<android.widget.Button: void setOnClickListener(android.view.View$OnClickListener)>($r6);
+
+        $r1 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.view.View findViewById(int)>(2131099685);
+
+        $r5 = (android.widget.Button) $r1;
+
+        r0.<com.feiyuapp.manager.time.Anstop: android.widget.Button refreshButton> = $r5;
+
+        $r5 = r0.<com.feiyuapp.manager.time.Anstop: android.widget.Button refreshButton>;
+
+        $r7 = new com.feiyuapp.manager.time.Anstop$refreshButtonListener;
+
+        specialinvoke $r7.<com.feiyuapp.manager.time.Anstop$refreshButtonListener: void <init>(com.feiyuapp.manager.time.Anstop,com.feiyuapp.manager.time.Anstop$refreshButtonListener)>(r0, null);
+
+        virtualinvoke $r5.<android.widget.Button: void setOnClickListener(android.view.View$OnClickListener)>($r7);
+
+        r0.<com.feiyuapp.manager.time.Anstop: int current> = 1;
+
+        return;
+    }
+
+    public void lap()
+    {
+        android.widget.TextView $r2;
+        com.feiyuapp.manager.time.Anstop$resetButtonListener $r6;
+        com.feiyuapp.manager.time.Anstop$startButtonListener $r5;
+        com.feiyuapp.manager.time.Anstop$lapButtonListener $r4;
+        com.feiyuapp.manager.time.Anstop r0;
+        android.view.View $r1;
+        android.widget.Button $r3;
+
+        r0 := @this: com.feiyuapp.manager.time.Anstop;
+
+        virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: void setContentView(int)>(2130903061);
+
+        $r1 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.view.View findViewById(int)>(2131099683);
+
+        $r2 = (android.widget.TextView) $r1;
+
+        r0.<com.feiyuapp.manager.time.Anstop: android.widget.TextView dsecondsView> = $r2;
+
+        $r1 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.view.View findViewById(int)>(2131099681);
+
+        $r2 = (android.widget.TextView) $r1;
+
+        r0.<com.feiyuapp.manager.time.Anstop: android.widget.TextView secondsView> = $r2;
+
+        $r1 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.view.View findViewById(int)>(2131099679);
+
+        $r2 = (android.widget.TextView) $r1;
+
+        r0.<com.feiyuapp.manager.time.Anstop: android.widget.TextView minView> = $r2;
+
+        $r1 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.view.View findViewById(int)>(2131099676);
+
+        $r2 = (android.widget.TextView) $r1;
+
+        r0.<com.feiyuapp.manager.time.Anstop: android.widget.TextView hourView> = $r2;
+
+        $r1 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.view.View findViewById(int)>(2131099680);
+
+        $r2 = (android.widget.TextView) $r1;
+
+        virtualinvoke $r2.<android.widget.TextView: void setTextSize(float)>(50.0F);
+
+        $r1 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.view.View findViewById(int)>(2131099682);
+
+        $r2 = (android.widget.TextView) $r1;
+
+        virtualinvoke $r2.<android.widget.TextView: void setTextSize(float)>(50.0F);
+
+        $r2 = r0.<com.feiyuapp.manager.time.Anstop: android.widget.TextView dsecondsView>;
+
+        virtualinvoke $r2.<android.widget.TextView: void setTextSize(float)>(60.0F);
+
+        $r2 = r0.<com.feiyuapp.manager.time.Anstop: android.widget.TextView secondsView>;
+
+        virtualinvoke $r2.<android.widget.TextView: void setTextSize(float)>(60.0F);
+
+        $r2 = r0.<com.feiyuapp.manager.time.Anstop: android.widget.TextView minView>;
+
+        virtualinvoke $r2.<android.widget.TextView: void setTextSize(float)>(60.0F);
+
+        $r2 = r0.<com.feiyuapp.manager.time.Anstop: android.widget.TextView hourView>;
+
+        virtualinvoke $r2.<android.widget.TextView: void setTextSize(float)>(30.0F);
+
+        $r1 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.view.View findViewById(int)>(2131099753);
+
+        $r2 = (android.widget.TextView) $r1;
+
+        r0.<com.feiyuapp.manager.time.Anstop: android.widget.TextView lapView> = $r2;
+
+        $r2 = r0.<com.feiyuapp.manager.time.Anstop: android.widget.TextView lapView>;
+
+        virtualinvoke $r2.<android.widget.TextView: void setTextSize(float)>(30.0F);
+
+        $r1 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.view.View findViewById(int)>(2131099751);
+
+        $r3 = (android.widget.Button) $r1;
+
+        r0.<com.feiyuapp.manager.time.Anstop: android.widget.Button lapButton> = $r3;
+
+        $r3 = r0.<com.feiyuapp.manager.time.Anstop: android.widget.Button lapButton>;
+
+        $r4 = new com.feiyuapp.manager.time.Anstop$lapButtonListener;
+
+        specialinvoke $r4.<com.feiyuapp.manager.time.Anstop$lapButtonListener: void <init>(com.feiyuapp.manager.time.Anstop,com.feiyuapp.manager.time.Anstop$lapButtonListener)>(r0, null);
+
+        virtualinvoke $r3.<android.widget.Button: void setOnClickListener(android.view.View$OnClickListener)>($r4);
+
+        $r1 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.view.View findViewById(int)>(2131099684);
+
+        $r3 = (android.widget.Button) $r1;
+
+        r0.<com.feiyuapp.manager.time.Anstop: android.widget.Button startButton> = $r3;
+
+        $r3 = r0.<com.feiyuapp.manager.time.Anstop: android.widget.Button startButton>;
+
+        $r5 = new com.feiyuapp.manager.time.Anstop$startButtonListener;
+
+        specialinvoke $r5.<com.feiyuapp.manager.time.Anstop$startButtonListener: void <init>(com.feiyuapp.manager.time.Anstop,com.feiyuapp.manager.time.Anstop$startButtonListener)>(r0, null);
+
+        virtualinvoke $r3.<android.widget.Button: void setOnClickListener(android.view.View$OnClickListener)>($r5);
+
+        $r1 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.view.View findViewById(int)>(2131099750);
+
+        $r3 = (android.widget.Button) $r1;
+
+        r0.<com.feiyuapp.manager.time.Anstop: android.widget.Button resetButton> = $r3;
+
+        $r3 = r0.<com.feiyuapp.manager.time.Anstop: android.widget.Button resetButton>;
+
+        $r6 = new com.feiyuapp.manager.time.Anstop$resetButtonListener;
+
+        specialinvoke $r6.<com.feiyuapp.manager.time.Anstop$resetButtonListener: void <init>(com.feiyuapp.manager.time.Anstop,com.feiyuapp.manager.time.Anstop$resetButtonListener)>(r0, null);
+
+        virtualinvoke $r3.<android.widget.Button: void setOnClickListener(android.view.View$OnClickListener)>($r6);
+
+        r0.<com.feiyuapp.manager.time.Anstop: int current> = 2;
+
+        return;
+    }
+
+    protected void onActivityResult(int, int, android.content.Intent)
+    {
+        int $i0, $i1;
+        com.feiyuapp.manager.time.Anstop r0;
+        android.content.Intent $r1;
+
+        r0 := @this: com.feiyuapp.manager.time.Anstop;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $r1 := @parameter2: android.content.Intent;
+
+        virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.content.Intent getIntent()>();
+
+        specialinvoke r0.<com.feiyuapp.manager.time.Anstop: void readSettings()>();
+
+        return;
+    }
+
+    public void onCreate(android.os.Bundle)
+    {
+        android.content.Context $r10;
+        android.os.Bundle $r1;
+        com.feiyuapp.manager.time.Anstop r0;
+        com.feiyuapp.manager.time.Clock $r7;
+        android.widget.TextView $r5;
+        com.feiyuapp.manager.time.Anstop$resetButtonListener $r9;
+        com.feiyuapp.manager.time.Anstop$startButtonListener $r8;
+        android.view.View $r2;
+        android.widget.Button $r3;
+        com.feiyuapp.manager.time.anstopDbAdapter $r6;
+        com.feiyuapp.manager.time.Anstop$1 $r4;
+
+        r0 := @this: com.feiyuapp.manager.time.Anstop;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke r0.<android.app.Activity: void onCreate(android.os.Bundle)>($r1);
+
+        virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: void setContentView(int)>(2130903097);
+
+        $r2 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.view.View findViewById(int)>(2131099672);
+
+        $r3 = (android.widget.Button) $r2;
+
+        r0.<com.feiyuapp.manager.time.Anstop: android.widget.Button showmenu> = $r3;
+
+        $r3 = r0.<com.feiyuapp.manager.time.Anstop: android.widget.Button showmenu>;
+
+        $r4 = new com.feiyuapp.manager.time.Anstop$1;
+
+        specialinvoke $r4.<com.feiyuapp.manager.time.Anstop$1: void <init>(com.feiyuapp.manager.time.Anstop)>(r0);
+
+        virtualinvoke $r3.<android.widget.Button: void setOnClickListener(android.view.View$OnClickListener)>($r4);
+
+        $r2 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.view.View findViewById(int)>(2131099683);
+
+        $r5 = (android.widget.TextView) $r2;
+
+        r0.<com.feiyuapp.manager.time.Anstop: android.widget.TextView dsecondsView> = $r5;
+
+        $r2 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.view.View findViewById(int)>(2131099681);
+
+        $r5 = (android.widget.TextView) $r2;
+
+        r0.<com.feiyuapp.manager.time.Anstop: android.widget.TextView secondsView> = $r5;
+
+        $r2 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.view.View findViewById(int)>(2131099679);
+
+        $r5 = (android.widget.TextView) $r2;
+
+        r0.<com.feiyuapp.manager.time.Anstop: android.widget.TextView minView> = $r5;
+
+        $r2 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.view.View findViewById(int)>(2131099676);
+
+        $r5 = (android.widget.TextView) $r2;
+
+        r0.<com.feiyuapp.manager.time.Anstop: android.widget.TextView hourView> = $r5;
+
+        $r2 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.view.View findViewById(int)>(2131099680);
+
+        $r5 = (android.widget.TextView) $r2;
+
+        virtualinvoke $r5.<android.widget.TextView: void setTextSize(float)>(50.0F);
+
+        $r2 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.view.View findViewById(int)>(2131099682);
+
+        $r5 = (android.widget.TextView) $r2;
+
+        virtualinvoke $r5.<android.widget.TextView: void setTextSize(float)>(50.0F);
+
+        $r5 = r0.<com.feiyuapp.manager.time.Anstop: android.widget.TextView dsecondsView>;
+
+        virtualinvoke $r5.<android.widget.TextView: void setTextSize(float)>(60.0F);
+
+        $r5 = r0.<com.feiyuapp.manager.time.Anstop: android.widget.TextView secondsView>;
+
+        virtualinvoke $r5.<android.widget.TextView: void setTextSize(float)>(60.0F);
+
+        $r5 = r0.<com.feiyuapp.manager.time.Anstop: android.widget.TextView minView>;
+
+        virtualinvoke $r5.<android.widget.TextView: void setTextSize(float)>(60.0F);
+
+        $r5 = r0.<com.feiyuapp.manager.time.Anstop: android.widget.TextView hourView>;
+
+        virtualinvoke $r5.<android.widget.TextView: void setTextSize(float)>(30.0F);
+
+        $r6 = new com.feiyuapp.manager.time.anstopDbAdapter;
+
+        specialinvoke $r6.<com.feiyuapp.manager.time.anstopDbAdapter: void <init>(android.content.Context)>(r0);
+
+        r0.<com.feiyuapp.manager.time.Anstop: com.feiyuapp.manager.time.anstopDbAdapter dbHelper> = $r6;
+
+        $r6 = r0.<com.feiyuapp.manager.time.Anstop: com.feiyuapp.manager.time.anstopDbAdapter dbHelper>;
+
+        virtualinvoke $r6.<com.feiyuapp.manager.time.anstopDbAdapter: com.feiyuapp.manager.time.anstopDbAdapter open()>();
+
+        $r7 = new com.feiyuapp.manager.time.Clock;
+
+        specialinvoke $r7.<com.feiyuapp.manager.time.Clock: void <init>(com.feiyuapp.manager.time.Anstop)>(r0);
+
+        r0.<com.feiyuapp.manager.time.Anstop: com.feiyuapp.manager.time.Clock clock> = $r7;
+
+        $r2 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.view.View findViewById(int)>(2131099684);
+
+        $r3 = (android.widget.Button) $r2;
+
+        r0.<com.feiyuapp.manager.time.Anstop: android.widget.Button startButton> = $r3;
+
+        $r3 = r0.<com.feiyuapp.manager.time.Anstop: android.widget.Button startButton>;
+
+        $r8 = new com.feiyuapp.manager.time.Anstop$startButtonListener;
+
+        specialinvoke $r8.<com.feiyuapp.manager.time.Anstop$startButtonListener: void <init>(com.feiyuapp.manager.time.Anstop,com.feiyuapp.manager.time.Anstop$startButtonListener)>(r0, null);
+
+        virtualinvoke $r3.<android.widget.Button: void setOnClickListener(android.view.View$OnClickListener)>($r8);
+
+        $r2 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.view.View findViewById(int)>(2131099750);
+
+        $r3 = (android.widget.Button) $r2;
+
+        r0.<com.feiyuapp.manager.time.Anstop: android.widget.Button resetButton> = $r3;
+
+        $r3 = r0.<com.feiyuapp.manager.time.Anstop: android.widget.Button resetButton>;
+
+        $r9 = new com.feiyuapp.manager.time.Anstop$resetButtonListener;
+
+        specialinvoke $r9.<com.feiyuapp.manager.time.Anstop$resetButtonListener: void <init>(com.feiyuapp.manager.time.Anstop,com.feiyuapp.manager.time.Anstop$resetButtonListener)>(r0, null);
+
+        virtualinvoke $r3.<android.widget.Button: void setOnClickListener(android.view.View$OnClickListener)>($r9);
+
+        $r10 = virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: android.content.Context getApplicationContext()>();
+
+        r0.<com.feiyuapp.manager.time.Anstop: android.content.Context mContext> = $r10;
+
+        specialinvoke r0.<com.feiyuapp.manager.time.Anstop: void readSettings()>();
+
+        r0.<com.feiyuapp.manager.time.Anstop: int current> = 0;
+
+        return;
+    }
+
+    protected android.app.Dialog onCreateDialog(int)
+    {
+        com.feiyuapp.manager.time.Anstop r0;
+        android.app.AlertDialog $r5;
+        com.feiyuapp.manager.time.Anstop$4 $r7;
+        com.feiyuapp.manager.time.Anstop$3 $r6;
+        android.app.AlertDialog$Builder r1, $r4;
+        int $i0;
+        com.feiyuapp.manager.time.Anstop$2 $r3;
+        android.widget.EditText r2;
+
+        r0 := @this: com.feiyuapp.manager.time.Anstop;
+
+        $i0 := @parameter0: int;
+
+        lookupswitch($i0)
+        {
+            case 0: goto label2;
+            case 1: goto label3;
+            default: goto label1;
+        };
+
+     label1:
+        return null;
+
+     label2:
+        r1 = new android.app.AlertDialog$Builder;
+
+        specialinvoke r1.<android.app.AlertDialog$Builder: void <init>(android.content.Context)>(r0);
+
+        $r4 = virtualinvoke r1.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setMessage(int)>(2131296271);
+
+        $r4 = virtualinvoke $r4.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setCancelable(boolean)>(1);
+
+        $r3 = new com.feiyuapp.manager.time.Anstop$2;
+
+        specialinvoke $r3.<com.feiyuapp.manager.time.Anstop$2: void <init>(com.feiyuapp.manager.time.Anstop)>(r0);
+
+        virtualinvoke $r4.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setPositiveButton(java.lang.CharSequence,android.content.DialogInterface$OnClickListener)>("Ok", $r3);
+
+        $r5 = virtualinvoke r1.<android.app.AlertDialog$Builder: android.app.AlertDialog create()>();
+
+        return $r5;
+
+     label3:
+        r1 = new android.app.AlertDialog$Builder;
+
+        specialinvoke r1.<android.app.AlertDialog$Builder: void <init>(android.content.Context)>(r0);
+
+        virtualinvoke r1.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setTitle(int)>(2131296272);
+
+        virtualinvoke r1.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setMessage(int)>(2131296274);
+
+        r2 = new android.widget.EditText;
+
+        specialinvoke r2.<android.widget.EditText: void <init>(android.content.Context)>(r0);
+
+        virtualinvoke r1.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setView(android.view.View)>(r2);
+
+        $r6 = new com.feiyuapp.manager.time.Anstop$3;
+
+        specialinvoke $r6.<com.feiyuapp.manager.time.Anstop$3: void <init>(com.feiyuapp.manager.time.Anstop,android.widget.EditText)>(r0, r2);
+
+        virtualinvoke r1.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setPositiveButton(java.lang.CharSequence,android.content.DialogInterface$OnClickListener)>("Ok", $r6);
+
+        $r7 = new com.feiyuapp.manager.time.Anstop$4;
+
+        specialinvoke $r7.<com.feiyuapp.manager.time.Anstop$4: void <init>(com.feiyuapp.manager.time.Anstop)>(r0);
+
+        virtualinvoke r1.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setNegativeButton(int,android.content.DialogInterface$OnClickListener)>(2131296286, $r7);
+
+        virtualinvoke r1.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setCancelable(boolean)>(0);
+
+        $r5 = virtualinvoke r1.<android.app.AlertDialog$Builder: android.app.AlertDialog create()>();
+
+        return $r5;
+    }
+
+    public boolean onCreateOptionsMenu(android.view.Menu)
+    {
+        android.view.Menu $r1;
+        com.feiyuapp.manager.time.Anstop r0;
+        android.view.SubMenu $r3;
+        com.feiyuapp.manager.time.Clock $r4;
+        android.view.MenuItem $r2;
+        boolean $z0;
+
+        r0 := @this: com.feiyuapp.manager.time.Anstop;
+
+        $r1 := @parameter0: android.view.Menu;
+
+        $r2 = interfaceinvoke $r1.<android.view.Menu: android.view.MenuItem add(int,int,int,int)>(8, 9, 0, 2131296272);
+
+        $r2 = interfaceinvoke $r2.<android.view.MenuItem: android.view.MenuItem setIcon(int)>(17301582);
+
+        r0.<com.feiyuapp.manager.time.Anstop: android.view.MenuItem saveMenuItem> = $r2;
+
+        $r2 = interfaceinvoke $r1.<android.view.Menu: android.view.MenuItem add(int,int,int,int)>(10, 11, 0, 2131296273);
+
+        interfaceinvoke $r2.<android.view.MenuItem: android.view.MenuItem setIcon(int)>(17301589);
+
+        $r3 = interfaceinvoke $r1.<android.view.Menu: android.view.SubMenu addSubMenu(int)>(2131296285);
+
+        $r3 = interfaceinvoke $r3.<android.view.SubMenu: android.view.SubMenu setIcon(int)>(17301573);
+
+        interfaceinvoke $r3.<android.view.SubMenu: android.view.MenuItem add(int,int,int,int)>(0, 1, 0, 2131296269);
+
+        interfaceinvoke $r3.<android.view.SubMenu: android.view.MenuItem add(int,int,int,int)>(0, 2, 0, 2131296268);
+
+        interfaceinvoke $r3.<android.view.SubMenu: android.view.MenuItem add(int,int,int,int)>(0, 3, 0, 2131296270);
+
+        interfaceinvoke $r3.<android.view.SubMenu: void setGroupCheckable(int,boolean,boolean)>(0, 1, 1);
+
+        $r2 = interfaceinvoke $r3.<android.view.SubMenu: android.view.MenuItem getItem()>();
+
+        r0.<com.feiyuapp.manager.time.Anstop: android.view.MenuItem modeMenuItem> = $r2;
+
+        $r4 = r0.<com.feiyuapp.manager.time.Anstop: com.feiyuapp.manager.time.Clock clock>;
+
+        $z0 = $r4.<com.feiyuapp.manager.time.Clock: boolean isStarted>;
+
+        if $z0 == 0 goto label1;
+
+        $r2 = r0.<com.feiyuapp.manager.time.Anstop: android.view.MenuItem modeMenuItem>;
+
+        interfaceinvoke $r2.<android.view.MenuItem: android.view.MenuItem setEnabled(boolean)>(0);
+
+        $r2 = r0.<com.feiyuapp.manager.time.Anstop: android.view.MenuItem saveMenuItem>;
+
+        interfaceinvoke $r2.<android.view.MenuItem: android.view.MenuItem setEnabled(boolean)>(0);
+
+     label1:
+        $r2 = interfaceinvoke $r1.<android.view.Menu: android.view.MenuItem add(int,int,int,int)>(4, 5, 0, 2131296259);
+
+        interfaceinvoke $r2.<android.view.MenuItem: android.view.MenuItem setIcon(int)>(17301577);
+
+        $r2 = interfaceinvoke $r1.<android.view.Menu: android.view.MenuItem add(int,int,int,int)>(6, 7, 0, 2131296267);
+
+        interfaceinvoke $r2.<android.view.MenuItem: android.view.MenuItem setIcon(int)>(17301569);
+
+        return 1;
+    }
+
+    public boolean onOptionsItemSelected(android.view.MenuItem)
+    {
+        android.os.Bundle $r3;
+        int $i0;
+        com.feiyuapp.manager.time.Anstop r0;
+        android.content.Intent r2;
+        com.feiyuapp.manager.time.Clock $r4;
+        android.view.MenuItem $r1;
+
+        r0 := @this: com.feiyuapp.manager.time.Anstop;
+
+        $r1 := @parameter0: android.view.MenuItem;
+
+        r2 = new android.content.Intent;
+
+        specialinvoke r2.<android.content.Intent: void <init>()>();
+
+        $i0 = interfaceinvoke $r1.<android.view.MenuItem: int getItemId()>();
+
+        lookupswitch($i0)
+        {
+            case 1: goto label3;
+            case 2: goto label5;
+            case 3: goto label4;
+            case 4: goto label1;
+            case 5: goto label2;
+            case 6: goto label1;
+            case 7: goto label6;
+            case 8: goto label1;
+            case 9: goto label7;
+            case 10: goto label1;
+            case 11: goto label8;
+            default: goto label1;
+        };
+
+     label1:
+        return 0;
+
+     label2:
+        virtualinvoke r2.<android.content.Intent: android.content.Intent setClass(android.content.Context,java.lang.Class)>(r0, class "Lcom/feiyuapp/manager/time/settingsActivity;");
+
+        virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: void startActivityForResult(android.content.Intent,int)>(r2, 0);
+
+        specialinvoke r0.<com.feiyuapp.manager.time.Anstop: void readSettings()>();
+
+        return 1;
+
+     label3:
+        $r3 = new android.os.Bundle;
+
+        specialinvoke $r3.<android.os.Bundle: void <init>()>();
+
+        virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: void onCreate(android.os.Bundle)>($r3);
+
+        $r4 = r0.<com.feiyuapp.manager.time.Anstop: com.feiyuapp.manager.time.Clock clock>;
+
+        $r4.<com.feiyuapp.manager.time.Clock: int v> = 0;
+
+        return 1;
+
+     label4:
+        virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: void countdown()>();
+
+        $r4 = r0.<com.feiyuapp.manager.time.Anstop: com.feiyuapp.manager.time.Clock clock>;
+
+        $r4.<com.feiyuapp.manager.time.Clock: int v> = 1;
+
+        return 1;
+
+     label5:
+        virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: void lap()>();
+
+        $r4 = r0.<com.feiyuapp.manager.time.Anstop: com.feiyuapp.manager.time.Clock clock>;
+
+        $r4.<com.feiyuapp.manager.time.Clock: int v> = 0;
+
+        return 1;
+
+     label6:
+        virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: void showDialog(int)>(0);
+
+        return 1;
+
+     label7:
+        virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: void showDialog(int)>(1);
+
+        return 1;
+
+     label8:
+        virtualinvoke r2.<android.content.Intent: android.content.Intent setClass(android.content.Context,java.lang.Class)>(r0, class "Lcom/feiyuapp/manager/time/loadActivity;");
+
+        virtualinvoke r0.<com.feiyuapp.manager.time.Anstop: void startActivity(android.content.Intent)>(r2);
+
+        return 1;
+    }
+
+    public void openOptionsMenu()
+    {
+        com.feiyuapp.manager.time.Anstop r0;
+
+        r0 := @this: com.feiyuapp.manager.time.Anstop;
+
+        specialinvoke r0.<android.app.Activity: void openOptionsMenu()>();
+
+        return;
+    }
+
+    public android.content.Intent getIntent()
+    {
+        com.feiyuapp.manager.time.Anstop this;
+        android.content.Intent $r0;
+
+        this := @this: com.feiyuapp.manager.time.Anstop;
+
+        $r0 = this.<com.feiyuapp.manager.time.Anstop: android.content.Intent ipcIntent>;
+
+        return $r0;
+    }
+
+    public void setIntent(android.content.Intent)
+    {
+        com.feiyuapp.manager.time.Anstop this;
+        android.content.Intent parameter0;
+
+        this := @this: com.feiyuapp.manager.time.Anstop;
+
+        parameter0 := @parameter0: android.content.Intent;
+
+        this.<com.feiyuapp.manager.time.Anstop: android.content.Intent ipcIntent> = parameter0;
+
+        return;
+    }
+
+    public void setResult(int, android.content.Intent)
+    {
+        int parameter0;
+        com.feiyuapp.manager.time.Anstop this;
+        android.content.Intent parameter1;
+
+        this := @this: com.feiyuapp.manager.time.Anstop;
+
+        parameter0 := @parameter0: int;
+
+        parameter1 := @parameter1: android.content.Intent;
+
+        this.<com.feiyuapp.manager.time.Anstop: android.content.Intent ipcResultIntent> = parameter1;
+
+        return;
+    }
+
+    public static void <clinit>()
+    {
+        <com.feiyuapp.manager.time.Anstop: int VIEW_SIZE> = 60;
+
+        <com.feiyuapp.manager.time.Anstop: int STOP> = 0;
+
+        <com.feiyuapp.manager.time.Anstop: int SETTINGS_ITEM> = 5;
+
+        <com.feiyuapp.manager.time.Anstop: int SETTINGS_ACTIVITY> = 0;
+
+        <com.feiyuapp.manager.time.Anstop: int SAVE_ITEM> = 9;
+
+        <com.feiyuapp.manager.time.Anstop: int SAVE_DIALOG> = 1;
+
+        <com.feiyuapp.manager.time.Anstop: int MODE_STOP> = 1;
+
+        <com.feiyuapp.manager.time.Anstop: int MODE_LAP> = 2;
+
+        <com.feiyuapp.manager.time.Anstop: int MODE_COUNTDOWN> = 3;
+
+        <com.feiyuapp.manager.time.Anstop: int MENU_SETTINGS> = 4;
+
+        <com.feiyuapp.manager.time.Anstop: int MENU_SAVE> = 8;
+
+        <com.feiyuapp.manager.time.Anstop: int MENU_MODE_GROUP> = 0;
+
+        <com.feiyuapp.manager.time.Anstop: int MENU_LOAD> = 10;
+
+        <com.feiyuapp.manager.time.Anstop: int MENU_ABOUT> = 6;
+
+        <com.feiyuapp.manager.time.Anstop: int LOAD_ITEM> = 11;
+
+        <com.feiyuapp.manager.time.Anstop: int LAP> = 2;
+
+        <com.feiyuapp.manager.time.Anstop: int COUNTDOWN> = 1;
+
+        <com.feiyuapp.manager.time.Anstop: int ABOUT_ITEM> = 7;
+
+        <com.feiyuapp.manager.time.Anstop: int ABOUT_DIALOG> = 0;
+
+        return;
+    }
+}

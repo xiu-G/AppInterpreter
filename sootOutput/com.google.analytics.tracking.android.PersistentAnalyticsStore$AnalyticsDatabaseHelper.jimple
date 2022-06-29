@@ -1,0 +1,453 @@
+class com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper extends android.database.sqlite.SQLiteOpenHelper
+{
+    private boolean mBadDatabase;
+    private long mLastDatabaseCheckTime;
+    final com.google.analytics.tracking.android.PersistentAnalyticsStore this$0;
+
+    void <init>(com.google.analytics.tracking.android.PersistentAnalyticsStore, android.content.Context, java.lang.String)
+    {
+        android.content.Context $r2;
+        com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper r0;
+        com.google.analytics.tracking.android.PersistentAnalyticsStore $r1;
+        java.lang.String $r3;
+
+        r0 := @this: com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper;
+
+        $r1 := @parameter0: com.google.analytics.tracking.android.PersistentAnalyticsStore;
+
+        $r2 := @parameter1: android.content.Context;
+
+        $r3 := @parameter2: java.lang.String;
+
+        r0.<com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper: com.google.analytics.tracking.android.PersistentAnalyticsStore this$0> = $r1;
+
+        specialinvoke r0.<android.database.sqlite.SQLiteOpenHelper: void <init>(android.content.Context,java.lang.String,android.database.sqlite.SQLiteDatabase$CursorFactory,int)>($r2, $r3, null, 1);
+
+        r0.<com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper: long mLastDatabaseCheckTime> = 0L;
+
+        return;
+    }
+
+    private boolean tablePresent(java.lang.String, android.database.sqlite.SQLiteDatabase)
+    {
+        java.lang.Throwable $r7, $r9, $r10, $r11;
+        com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper r0;
+        java.lang.String[] $r3, $r5;
+        android.database.sqlite.SQLiteDatabase $r2;
+        java.lang.StringBuilder $r8;
+        java.lang.String $r1;
+        android.database.Cursor $r4, $r6;
+        boolean $z0;
+
+        r0 := @this: com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: android.database.sqlite.SQLiteDatabase;
+
+        $r4 = null;
+
+     label01:
+        $r5 = newarray (java.lang.String)[1];
+
+        $r5[0] = "name";
+
+        $r3 = newarray (java.lang.String)[1];
+
+        $r3[0] = $r1;
+
+     label02:
+        $r6 = virtualinvoke $r2.<android.database.sqlite.SQLiteDatabase: android.database.Cursor query(java.lang.String,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String,java.lang.String,java.lang.String)>("SQLITE_MASTER", $r5, "name=?", $r3, null, null, null);
+
+     label03:
+        $z0 = interfaceinvoke $r6.<android.database.Cursor: boolean moveToFirst()>();
+
+     label04:
+        if $r6 == null goto label15;
+
+        interfaceinvoke $r6.<android.database.Cursor: void close()>();
+
+        return $z0;
+
+     label05:
+        $r7 := @caughtexception;
+
+        $r4 = null;
+
+     label06:
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>(java.lang.String)>("Error querying for table ");
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.google.analytics.tracking.android.Log: void w(java.lang.String)>($r1);
+
+     label07:
+        if $r4 == null goto label08;
+
+        interfaceinvoke $r4.<android.database.Cursor: void close()>();
+
+     label08:
+        return 0;
+
+     label09:
+        $r9 := @caughtexception;
+
+     label10:
+        if $r4 == null goto label11;
+
+        interfaceinvoke $r4.<android.database.Cursor: void close()>();
+
+     label11:
+        throw $r9;
+
+     label12:
+        $r9 := @caughtexception;
+
+        $r4 = $r6;
+
+        goto label10;
+
+     label13:
+        $r10 := @caughtexception;
+
+        $r9 = $r10;
+
+        goto label10;
+
+     label14:
+        $r11 := @caughtexception;
+
+        $r4 = $r6;
+
+        goto label06;
+
+     label15:
+        return $z0;
+
+        catch android.database.sqlite.SQLiteException from label02 to label03 with label05;
+        catch java.lang.Throwable from label01 to label03 with label09;
+        catch android.database.sqlite.SQLiteException from label03 to label04 with label14;
+        catch java.lang.Throwable from label03 to label04 with label12;
+        catch java.lang.Throwable from label06 to label07 with label13;
+    }
+
+    private void validateColumnsPresent(android.database.sqlite.SQLiteDatabase)
+    {
+        java.lang.Throwable $r7;
+        com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper r0;
+        java.lang.String[] $r4;
+        java.util.HashSet $r2;
+        android.database.sqlite.SQLiteDatabase $r1;
+        android.database.sqlite.SQLiteException $r6;
+        int $i0, $i1;
+        java.lang.String $r5;
+        boolean $z0, $z1;
+        android.database.Cursor $r3;
+
+        r0 := @this: com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper;
+
+        $r1 := @parameter0: android.database.sqlite.SQLiteDatabase;
+
+        $z0 = 0;
+
+        $r3 = virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: android.database.Cursor rawQuery(java.lang.String,java.lang.String[])>("SELECT * FROM hits2 WHERE 0", null);
+
+        $r2 = new java.util.HashSet;
+
+        specialinvoke $r2.<java.util.HashSet: void <init>()>();
+
+     label01:
+        $r4 = interfaceinvoke $r3.<android.database.Cursor: java.lang.String[] getColumnNames()>();
+
+     label02:
+        $i0 = 0;
+
+     label03:
+        $i1 = lengthof $r4;
+
+     label04:
+        if $i0 >= $i1 goto label07;
+
+     label05:
+        $r5 = $r4[$i0];
+
+        interfaceinvoke $r2.<java.util.Set: boolean add(java.lang.Object)>($r5);
+
+     label06:
+        $i0 = $i0 + 1;
+
+        goto label03;
+
+     label07:
+        interfaceinvoke $r3.<android.database.Cursor: void close()>();
+
+        $z1 = interfaceinvoke $r2.<java.util.Set: boolean remove(java.lang.Object)>("hit_id");
+
+        if $z1 == 0 goto label08;
+
+        $z1 = interfaceinvoke $r2.<java.util.Set: boolean remove(java.lang.Object)>("hit_url");
+
+        if $z1 == 0 goto label08;
+
+        $z1 = interfaceinvoke $r2.<java.util.Set: boolean remove(java.lang.Object)>("hit_string");
+
+        if $z1 == 0 goto label08;
+
+        $z1 = interfaceinvoke $r2.<java.util.Set: boolean remove(java.lang.Object)>("hit_time");
+
+        if $z1 != 0 goto label10;
+
+     label08:
+        $r6 = new android.database.sqlite.SQLiteException;
+
+        specialinvoke $r6.<android.database.sqlite.SQLiteException: void <init>(java.lang.String)>("Database column missing");
+
+        throw $r6;
+
+     label09:
+        $r7 := @caughtexception;
+
+        interfaceinvoke $r3.<android.database.Cursor: void close()>();
+
+        throw $r7;
+
+     label10:
+        $z1 = interfaceinvoke $r2.<java.util.Set: boolean remove(java.lang.Object)>("hit_app_id");
+
+        if $z1 != 0 goto label11;
+
+        $z0 = 1;
+
+     label11:
+        $z1 = interfaceinvoke $r2.<java.util.Set: boolean isEmpty()>();
+
+        if $z1 != 0 goto label12;
+
+        $r6 = new android.database.sqlite.SQLiteException;
+
+        specialinvoke $r6.<android.database.sqlite.SQLiteException: void <init>(java.lang.String)>("Database has extra columns");
+
+        throw $r6;
+
+     label12:
+        if $z0 == 0 goto label13;
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>("ALTER TABLE hits2 ADD COLUMN hit_app_id");
+
+     label13:
+        return;
+
+        catch java.lang.Throwable from label01 to label02 with label09;
+        catch java.lang.Throwable from label03 to label04 with label09;
+        catch java.lang.Throwable from label05 to label06 with label09;
+    }
+
+    public android.database.sqlite.SQLiteDatabase getWritableDatabase()
+    {
+        java.lang.Throwable $r5;
+        android.content.Context $r6;
+        com.google.analytics.tracking.android.Clock $r2;
+        com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper r0;
+        long $l0, $l1;
+        java.io.File $r8;
+        android.database.sqlite.SQLiteDatabase $r3, $r4;
+        android.database.sqlite.SQLiteException $r9;
+        byte $b2;
+        int $i3;
+        com.google.analytics.tracking.android.PersistentAnalyticsStore $r1;
+        java.lang.String $r7;
+        boolean $z0;
+
+        r0 := @this: com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper;
+
+        $z0 = r0.<com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper: boolean mBadDatabase>;
+
+        if $z0 == 0 goto label1;
+
+        $l0 = r0.<com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper: long mLastDatabaseCheckTime>;
+
+        $l0 = $l0 + 3600000L;
+
+        $r1 = r0.<com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper: com.google.analytics.tracking.android.PersistentAnalyticsStore this$0>;
+
+        $r2 = staticinvoke <com.google.analytics.tracking.android.PersistentAnalyticsStore: com.google.analytics.tracking.android.Clock access$000(com.google.analytics.tracking.android.PersistentAnalyticsStore)>($r1);
+
+        $l1 = interfaceinvoke $r2.<com.google.analytics.tracking.android.Clock: long currentTimeMillis()>();
+
+        $b2 = $l0 cmp $l1;
+
+        $i3 = (int) $b2;
+
+        if $i3 <= 0 goto label1;
+
+        $r9 = new android.database.sqlite.SQLiteException;
+
+        specialinvoke $r9.<android.database.sqlite.SQLiteException: void <init>(java.lang.String)>("Database creation failed");
+
+        throw $r9;
+
+     label1:
+        $r3 = null;
+
+        r0.<com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper: boolean mBadDatabase> = 1;
+
+        $r1 = r0.<com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper: com.google.analytics.tracking.android.PersistentAnalyticsStore this$0>;
+
+        $r2 = staticinvoke <com.google.analytics.tracking.android.PersistentAnalyticsStore: com.google.analytics.tracking.android.Clock access$000(com.google.analytics.tracking.android.PersistentAnalyticsStore)>($r1);
+
+        $l0 = interfaceinvoke $r2.<com.google.analytics.tracking.android.Clock: long currentTimeMillis()>();
+
+        r0.<com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper: long mLastDatabaseCheckTime> = $l0;
+
+     label2:
+        $r4 = specialinvoke r0.<android.database.sqlite.SQLiteOpenHelper: android.database.sqlite.SQLiteDatabase getWritableDatabase()>();
+
+     label3:
+        $r3 = $r4;
+
+     label4:
+        if $r3 != null goto label5;
+
+        $r3 = specialinvoke r0.<android.database.sqlite.SQLiteOpenHelper: android.database.sqlite.SQLiteDatabase getWritableDatabase()>();
+
+     label5:
+        r0.<com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper: boolean mBadDatabase> = 0;
+
+        return $r3;
+
+     label6:
+        $r5 := @caughtexception;
+
+        $r1 = r0.<com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper: com.google.analytics.tracking.android.PersistentAnalyticsStore this$0>;
+
+        $r6 = staticinvoke <com.google.analytics.tracking.android.PersistentAnalyticsStore: android.content.Context access$200(com.google.analytics.tracking.android.PersistentAnalyticsStore)>($r1);
+
+        $r1 = r0.<com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper: com.google.analytics.tracking.android.PersistentAnalyticsStore this$0>;
+
+        $r7 = staticinvoke <com.google.analytics.tracking.android.PersistentAnalyticsStore: java.lang.String access$100(com.google.analytics.tracking.android.PersistentAnalyticsStore)>($r1);
+
+        $r8 = virtualinvoke $r6.<android.content.Context: java.io.File getDatabasePath(java.lang.String)>($r7);
+
+        virtualinvoke $r8.<java.io.File: boolean delete()>();
+
+        goto label4;
+
+        catch android.database.sqlite.SQLiteException from label2 to label3 with label6;
+    }
+
+    boolean isBadDatabase()
+    {
+        com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper r0;
+        boolean z0;
+
+        r0 := @this: com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper;
+
+        z0 = r0.<com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper: boolean mBadDatabase>;
+
+        return z0;
+    }
+
+    public void onCreate(android.database.sqlite.SQLiteDatabase)
+    {
+        android.database.sqlite.SQLiteDatabase $r1;
+        com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper r0;
+        java.lang.String $r2;
+
+        r0 := @this: com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper;
+
+        $r1 := @parameter0: android.database.sqlite.SQLiteDatabase;
+
+        $r2 = virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: java.lang.String getPath()>();
+
+        staticinvoke <com.google.analytics.tracking.android.FutureApis: boolean setOwnerOnlyReadWrite(java.lang.String)>($r2);
+
+        return;
+    }
+
+    public void onOpen(android.database.sqlite.SQLiteDatabase)
+    {
+        java.lang.Throwable $r4;
+        android.database.sqlite.SQLiteDatabase $r1;
+        int $i0;
+        com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper r0;
+        java.lang.String $r3;
+        android.database.Cursor $r2;
+        boolean $z0;
+
+        r0 := @this: com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper;
+
+        $r1 := @parameter0: android.database.sqlite.SQLiteDatabase;
+
+        $i0 = <android.os.Build$VERSION: int SDK_INT>;
+
+        if $i0 >= 15 goto label3;
+
+        $r2 = virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: android.database.Cursor rawQuery(java.lang.String,java.lang.String[])>("PRAGMA journal_mode=memory", null);
+
+     label1:
+        interfaceinvoke $r2.<android.database.Cursor: boolean moveToFirst()>();
+
+     label2:
+        interfaceinvoke $r2.<android.database.Cursor: void close()>();
+
+     label3:
+        $z0 = specialinvoke r0.<com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper: boolean tablePresent(java.lang.String,android.database.sqlite.SQLiteDatabase)>("hits2", $r1);
+
+        if $z0 != 0 goto label5;
+
+        $r3 = staticinvoke <com.google.analytics.tracking.android.PersistentAnalyticsStore: java.lang.String access$300()>();
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>($r3);
+
+        return;
+
+     label4:
+        $r4 := @caughtexception;
+
+        interfaceinvoke $r2.<android.database.Cursor: void close()>();
+
+        throw $r4;
+
+     label5:
+        specialinvoke r0.<com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper: void validateColumnsPresent(android.database.sqlite.SQLiteDatabase)>($r1);
+
+        return;
+
+        catch java.lang.Throwable from label1 to label2 with label4;
+    }
+
+    public void onUpgrade(android.database.sqlite.SQLiteDatabase, int, int)
+    {
+        android.database.sqlite.SQLiteDatabase $r1;
+        int $i0, $i1;
+        com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper r0;
+
+        r0 := @this: com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper;
+
+        $r1 := @parameter0: android.database.sqlite.SQLiteDatabase;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        return;
+    }
+
+    void setBadDatabase(boolean)
+    {
+        com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper r0;
+        boolean $z0;
+
+        r0 := @this: com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper;
+
+        $z0 := @parameter0: boolean;
+
+        r0.<com.google.analytics.tracking.android.PersistentAnalyticsStore$AnalyticsDatabaseHelper: boolean mBadDatabase> = $z0;
+
+        return;
+    }
+}

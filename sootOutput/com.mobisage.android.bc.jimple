@@ -1,0 +1,177 @@
+final class com.mobisage.android.bc extends android.webkit.WebViewClient
+{
+
+    private void <init>()
+    {
+        com.mobisage.android.bc r0;
+
+        r0 := @this: com.mobisage.android.bc;
+
+        specialinvoke r0.<android.webkit.WebViewClient: void <init>()>();
+
+        return;
+    }
+
+    void <init>(byte)
+    {
+        com.mobisage.android.bc r0;
+        byte $b0;
+
+        r0 := @this: com.mobisage.android.bc;
+
+        $b0 := @parameter0: byte;
+
+        specialinvoke r0.<com.mobisage.android.bc: void <init>()>();
+
+        return;
+    }
+
+    public final boolean shouldOverrideUrlLoading(android.webkit.WebView, java.lang.String)
+    {
+        android.content.Context $r5;
+        android.os.Bundle $r14;
+        java.net.URL $r3;
+        android.net.Uri $r9;
+        android.content.Intent $r13;
+        android.widget.Toast $r11;
+        int $i0;
+        java.lang.String $r2, $r4;
+        android.webkit.WebView $r1;
+        boolean $z0;
+        java.io.File $r10;
+        java.lang.Exception $r12;
+        android.app.DownloadManager $r7;
+        com.mobisage.android.bc r0;
+        java.lang.Object $r6;
+        android.app.DownloadManager$Request $r8;
+
+        r0 := @this: com.mobisage.android.bc;
+
+        $r1 := @parameter0: android.webkit.WebView;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 = new java.net.URL;
+
+     label01:
+        specialinvoke $r3.<java.net.URL: void <init>(java.lang.String)>($r2);
+
+        $r4 = virtualinvoke $r3.<java.net.URL: java.lang.String getPath()>();
+
+        $i0 = virtualinvoke $r4.<java.lang.String: int lastIndexOf(java.lang.String)>(".");
+
+     label02:
+        $i0 = $i0 + 1;
+
+     label03:
+        $r4 = virtualinvoke $r4.<java.lang.String: java.lang.String substring(int)>($i0);
+
+        $z0 = virtualinvoke $r4.<java.lang.String: boolean equals(java.lang.Object)>("apk");
+
+     label04:
+        if $z0 == 0 goto label08;
+
+        $i0 = <android.os.Build$VERSION: int SDK_INT>;
+
+        if $i0 < 9 goto label09;
+
+        $r5 = <com.mobisage.android.br: android.content.Context h>;
+
+     label05:
+        $r6 = virtualinvoke $r5.<android.content.Context: java.lang.Object getSystemService(java.lang.String)>("download");
+
+        $r7 = (android.app.DownloadManager) $r6;
+
+     label06:
+        $r8 = new android.app.DownloadManager$Request;
+
+     label07:
+        $r9 = staticinvoke <android.net.Uri: android.net.Uri parse(java.lang.String)>($r2);
+
+        specialinvoke $r8.<android.app.DownloadManager$Request: void <init>(android.net.Uri)>($r9);
+
+        virtualinvoke $r8.<android.app.DownloadManager$Request: android.app.DownloadManager$Request setMimeType(java.lang.String)>("application/vnd.android.package-archive");
+
+        virtualinvoke $r7.<android.app.DownloadManager: long enqueue(android.app.DownloadManager$Request)>($r8);
+
+     label08:
+        $z0 = specialinvoke r0.<android.webkit.WebViewClient: boolean shouldOverrideUrlLoading(android.webkit.WebView,java.lang.String)>($r1, $r2);
+
+        return $z0;
+
+     label09:
+        $r10 = staticinvoke <android.os.Environment: java.io.File getExternalStorageDirectory()>();
+
+        $z0 = virtualinvoke $r10.<java.io.File: boolean exists()>();
+
+     label10:
+        if $z0 != 0 goto label14;
+
+        $r5 = <com.mobisage.android.br: android.content.Context h>;
+
+     label11:
+        $r11 = staticinvoke <android.widget.Toast: android.widget.Toast makeText(android.content.Context,java.lang.CharSequence,int)>($r5, "Can\'t find sdcard!", 5);
+
+        virtualinvoke $r11.<android.widget.Toast: void show()>();
+
+     label12:
+        goto label08;
+
+     label13:
+        $r12 := @caughtexception;
+
+        goto label08;
+
+     label14:
+        $r13 = new android.content.Intent;
+
+        $r5 = <com.mobisage.android.br: android.content.Context h>;
+
+     label15:
+        specialinvoke $r13.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>($r5, class "Lcom/mobisage/android/MobiSageApkService;");
+
+     label16:
+        $r14 = new android.os.Bundle;
+
+     label17:
+        specialinvoke $r14.<android.os.Bundle: void <init>()>();
+
+        virtualinvoke $r14.<android.os.Bundle: void putInt(java.lang.String,int)>("action", 0);
+
+        virtualinvoke $r14.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("lpg", $r2);
+
+     label18:
+        $r10 = new java.io.File;
+
+     label19:
+        $r4 = virtualinvoke $r3.<java.net.URL: java.lang.String getFile()>();
+
+        specialinvoke $r10.<java.io.File: void <init>(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r10.<java.io.File: java.lang.String getName()>();
+
+        virtualinvoke $r14.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("name", $r4);
+
+        virtualinvoke $r13.<android.content.Intent: android.content.Intent putExtra(java.lang.String,android.os.Bundle)>("ExtraData", $r14);
+
+     label20:
+        $r5 = <com.mobisage.android.br: android.content.Context h>;
+
+     label21:
+        virtualinvoke $r5.<android.content.Context: android.content.ComponentName startService(android.content.Intent)>($r13);
+
+     label22:
+        goto label08;
+
+        catch java.lang.Exception from label01 to label02 with label13;
+        catch java.lang.Exception from label03 to label04 with label13;
+        catch java.lang.Exception from label05 to label06 with label13;
+        catch java.lang.Exception from label07 to label08 with label13;
+        catch java.lang.Exception from label09 to label10 with label13;
+        catch java.lang.Exception from label11 to label12 with label13;
+        catch java.lang.Exception from label15 to label16 with label13;
+        catch java.lang.Exception from label17 to label18 with label13;
+        catch java.lang.Exception from label19 to label20 with label13;
+        catch java.lang.Exception from label21 to label22 with label13;
+    }
+}

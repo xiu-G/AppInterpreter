@@ -1,0 +1,474 @@
+public class com.peercom.ImageDownloaderTask extends android.os.AsyncTask
+{
+    private java.lang.ref.WeakReference imageViewReference;
+    public java.lang.String targetUrl;
+    public java.lang.String url;
+
+    public void <init>(java.lang.String, android.widget.ImageView)
+    {
+        com.peercom.ImageDownloaderTask r0;
+        android.widget.ImageView $r2;
+        java.lang.String $r1;
+        java.lang.ref.WeakReference $r3;
+
+        r0 := @this: com.peercom.ImageDownloaderTask;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: android.widget.ImageView;
+
+        specialinvoke r0.<android.os.AsyncTask: void <init>()>();
+
+        r0.<com.peercom.ImageDownloaderTask: java.lang.String targetUrl> = $r1;
+
+        $r3 = new java.lang.ref.WeakReference;
+
+        specialinvoke $r3.<java.lang.ref.WeakReference: void <init>(java.lang.Object)>($r2);
+
+        r0.<com.peercom.ImageDownloaderTask: java.lang.ref.WeakReference imageViewReference> = $r3;
+
+        return;
+    }
+
+    static android.graphics.Bitmap downloadBitmap(java.lang.String)
+    {
+        org.apache.http.impl.client.DefaultHttpClient r6;
+        java.lang.Throwable r17, r18, r22, r23;
+        org.apache.http.StatusLine $r9;
+        int $i0;
+        android.graphics.Bitmap$CompressFormat r16;
+        java.lang.String r0, $r2, $r4, $r5;
+        boolean $z0;
+        com.peercom.ImageDownloaderTask$FlushedInputStream r14;
+        org.apache.http.HttpEntity $r11;
+        java.io.FileOutputStream r12;
+        java.io.File $r1;
+        java.lang.Exception r19, r20, r21, r24;
+        org.apache.http.client.methods.HttpGet r7, r10;
+        android.graphics.Bitmap $r15;
+        org.apache.http.HttpResponse $r8;
+        java.lang.StringBuilder r3;
+        java.io.InputStream $r13;
+
+        r0 := @parameter0: java.lang.String;
+
+        $r1 = staticinvoke <android.os.Environment: java.io.File getExternalStorageDirectory()>();
+
+        $r2 = virtualinvoke $r1.<java.io.File: java.lang.String getAbsolutePath()>();
+
+        r3 = new java.lang.StringBuilder;
+
+        specialinvoke r3.<java.lang.StringBuilder: void <init>(java.lang.String)>("http://www.ishoot.co.kr/thumbnail/?id=");
+
+        r3 = virtualinvoke r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(r0);
+
+        r3 = virtualinvoke r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("&thumbtype=Y");
+
+        $r4 = virtualinvoke r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        r3 = new java.lang.StringBuilder;
+
+        $r5 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r2);
+
+        specialinvoke r3.<java.lang.StringBuilder: void <init>(java.lang.String)>($r5);
+
+        r3 = virtualinvoke r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/ishoot/iShootThumbnail/");
+
+        $r5 = virtualinvoke r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r1 = new java.io.File;
+
+        specialinvoke $r1.<java.io.File: void <init>(java.lang.String,java.lang.String)>($r2, "ishoot");
+
+        $z0 = virtualinvoke $r1.<java.io.File: boolean exists()>();
+
+        if $z0 != 0 goto label01;
+
+        virtualinvoke $r1.<java.io.File: boolean mkdirs()>();
+
+     label01:
+        $r1 = new java.io.File;
+
+        r3 = new java.lang.StringBuilder;
+
+        $r2 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r2);
+
+        specialinvoke r3.<java.lang.StringBuilder: void <init>(java.lang.String)>($r2);
+
+        r3 = virtualinvoke r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/ishoot");
+
+        $r2 = virtualinvoke r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r1.<java.io.File: void <init>(java.lang.String,java.lang.String)>($r2, "iShootThumbnail");
+
+        $z0 = virtualinvoke $r1.<java.io.File: boolean exists()>();
+
+        if $z0 != 0 goto label02;
+
+        virtualinvoke $r1.<java.io.File: boolean mkdirs()>();
+
+     label02:
+        r3 = new java.lang.StringBuilder;
+
+        $r5 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r5);
+
+        specialinvoke r3.<java.lang.StringBuilder: void <init>(java.lang.String)>($r5);
+
+        r3 = virtualinvoke r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(r0);
+
+        $r5 = virtualinvoke r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        r3 = new java.lang.StringBuilder;
+
+        $r5 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r5);
+
+        specialinvoke r3.<java.lang.StringBuilder: void <init>(java.lang.String)>($r5);
+
+        r3 = virtualinvoke r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(".dat");
+
+        $r5 = virtualinvoke r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r1 = new java.io.File;
+
+        specialinvoke $r1.<java.io.File: void <init>(java.lang.String)>($r5);
+
+        $z0 = virtualinvoke $r1.<java.io.File: boolean isFile()>();
+
+        if $z0 != 0 goto label36;
+
+        r6 = new org.apache.http.impl.client.DefaultHttpClient;
+
+        specialinvoke r6.<org.apache.http.impl.client.DefaultHttpClient: void <init>()>();
+
+        r7 = new org.apache.http.client.methods.HttpGet;
+
+        specialinvoke r7.<org.apache.http.client.methods.HttpGet: void <init>(java.lang.String)>($r4);
+
+     label03:
+        $r8 = interfaceinvoke r6.<org.apache.http.client.HttpClient: org.apache.http.HttpResponse execute(org.apache.http.client.methods.HttpUriRequest)>(r7);
+
+        $r9 = interfaceinvoke $r8.<org.apache.http.HttpResponse: org.apache.http.StatusLine getStatusLine()>();
+
+        $i0 = interfaceinvoke $r9.<org.apache.http.StatusLine: int getStatusCode()>();
+
+     label04:
+        if $i0 == 200 goto label12;
+
+        r3 = new java.lang.StringBuilder;
+
+     label05:
+        specialinvoke r3.<java.lang.StringBuilder: void <init>(java.lang.String)>("ImageDownloader_Error ");
+
+        r3 = virtualinvoke r3.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        r3 = virtualinvoke r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" while retrieving bitmap from ");
+
+        r3 = virtualinvoke r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>("ishoot", $r4);
+
+     label06:
+        r3 = new java.lang.StringBuilder;
+
+     label07:
+        specialinvoke r3.<java.lang.StringBuilder: void <init>(java.lang.String)>("http://www.ishoot.co.kr/thumbnail/?id=");
+
+        r3 = virtualinvoke r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(r0);
+
+        r3 = virtualinvoke r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("&thumbtype=N");
+
+        r0 = virtualinvoke r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label08:
+        r6 = new org.apache.http.impl.client.DefaultHttpClient;
+
+     label09:
+        specialinvoke r6.<org.apache.http.impl.client.DefaultHttpClient: void <init>()>();
+
+     label10:
+        r10 = new org.apache.http.client.methods.HttpGet;
+
+     label11:
+        specialinvoke r10.<org.apache.http.client.methods.HttpGet: void <init>(java.lang.String)>(r0);
+
+        $r8 = interfaceinvoke r6.<org.apache.http.client.HttpClient: org.apache.http.HttpResponse execute(org.apache.http.client.methods.HttpUriRequest)>(r10);
+
+     label12:
+        $r11 = interfaceinvoke $r8.<org.apache.http.HttpResponse: org.apache.http.HttpEntity getEntity()>();
+
+     label13:
+        if $r11 == null goto label35;
+
+     label14:
+        r12 = new java.io.FileOutputStream;
+
+     label15:
+        specialinvoke r12.<java.io.FileOutputStream: void <init>(java.io.File)>($r1);
+
+     label16:
+        $r13 = interfaceinvoke $r11.<org.apache.http.HttpEntity: java.io.InputStream getContent()>();
+
+     label17:
+        r14 = new com.peercom.ImageDownloaderTask$FlushedInputStream;
+
+        specialinvoke r14.<com.peercom.ImageDownloaderTask$FlushedInputStream: void <init>(java.io.InputStream)>($r13);
+
+        $r15 = staticinvoke <android.graphics.BitmapFactory: android.graphics.Bitmap decodeStream(java.io.InputStream)>(r14);
+
+        $r15 = staticinvoke <android.graphics.Bitmap: android.graphics.Bitmap createScaledBitmap(android.graphics.Bitmap,int,int,boolean)>($r15, 339, 188, 1);
+
+     label18:
+        r16 = <android.graphics.Bitmap$CompressFormat: android.graphics.Bitmap$CompressFormat JPEG>;
+
+     label19:
+        $z0 = virtualinvoke $r15.<android.graphics.Bitmap: boolean compress(android.graphics.Bitmap$CompressFormat,int,java.io.OutputStream)>(r16, 75, r12);
+
+     label20:
+        if $z0 != 0 goto label22;
+
+     label21:
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("ishoot", "ImageCache : fail to compress");
+
+     label22:
+        if r12 == null goto label24;
+
+     label23:
+        virtualinvoke r12.<java.io.FileOutputStream: void flush()>();
+
+        virtualinvoke r12.<java.io.FileOutputStream: void close()>();
+
+     label24:
+        if $r13 == null goto label26;
+
+     label25:
+        virtualinvoke $r13.<java.io.InputStream: void close()>();
+
+     label26:
+        interfaceinvoke $r11.<org.apache.http.HttpEntity: void consumeContent()>();
+
+     label27:
+        return $r15;
+
+     label28:
+        r17 := @caughtexception;
+
+        r12 = null;
+
+        goto label16;
+
+     label29:
+        r18 := @caughtexception;
+
+        r17 = r18;
+
+        $r13 = null;
+
+     label30:
+        if $r13 == null goto label32;
+
+     label31:
+        virtualinvoke $r13.<java.io.InputStream: void close()>();
+
+     label32:
+        interfaceinvoke $r11.<org.apache.http.HttpEntity: void consumeContent()>();
+
+        throw r17;
+
+     label33:
+        r19 := @caughtexception;
+
+     label34:
+        virtualinvoke r7.<org.apache.http.client.methods.HttpGet: void abort()>();
+
+     label35:
+        return null;
+
+     label36:
+        $r15 = staticinvoke <android.graphics.BitmapFactory: android.graphics.Bitmap decodeFile(java.lang.String)>($r5);
+
+        return $r15;
+
+     label37:
+        r20 := @caughtexception;
+
+        goto label34;
+
+     label38:
+        r21 := @caughtexception;
+
+        goto label34;
+
+     label39:
+        r22 := @caughtexception;
+
+        r17 = r22;
+
+        $r13 = null;
+
+        goto label30;
+
+     label40:
+        r23 := @caughtexception;
+
+        r17 = r23;
+
+        goto label30;
+
+     label41:
+        r24 := @caughtexception;
+
+        goto label24;
+
+        catch java.lang.Exception from label03 to label04 with label37;
+        catch java.lang.Exception from label05 to label06 with label37;
+        catch java.lang.Exception from label07 to label08 with label37;
+        catch java.lang.Exception from label09 to label10 with label38;
+        catch java.lang.Exception from label11 to label12 with label38;
+        catch java.lang.Exception from label12 to label13 with label33;
+        catch java.io.FileNotFoundException from label15 to label16 with label28;
+        catch java.lang.Throwable from label14 to label16 with label29;
+        catch java.lang.Throwable from label16 to label17 with label39;
+        catch java.lang.Throwable from label17 to label18 with label40;
+        catch java.lang.Exception from label19 to label20 with label41;
+        catch java.lang.Exception from label21 to label22 with label41;
+        catch java.lang.Exception from label23 to label24 with label41;
+        catch java.lang.Throwable from label18 to label20 with label40;
+        catch java.lang.Throwable from label21 to label22 with label40;
+        catch java.lang.Throwable from label23 to label24 with label40;
+        catch java.lang.Exception from label25 to label27 with label33;
+        catch java.lang.Exception from label31 to label33 with label33;
+    }
+
+    private com.peercom.ImageDownloaderTask getBitmapDownloaderTask(android.widget.ImageView)
+    {
+        com.peercom.ImageDownloader$DownloadedDrawable $r3;
+        com.peercom.ImageDownloaderTask r0;
+        android.widget.ImageView $r1;
+        android.graphics.drawable.Drawable $r2;
+        boolean $z0;
+
+        r0 := @this: com.peercom.ImageDownloaderTask;
+
+        $r1 := @parameter0: android.widget.ImageView;
+
+        if $r1 == null goto label1;
+
+        $r2 = virtualinvoke $r1.<android.widget.ImageView: android.graphics.drawable.Drawable getDrawable()>();
+
+        $z0 = $r2 instanceof com.peercom.ImageDownloader$DownloadedDrawable;
+
+        if $z0 == 0 goto label1;
+
+        $r3 = (com.peercom.ImageDownloader$DownloadedDrawable) $r2;
+
+        r0 = virtualinvoke $r3.<com.peercom.ImageDownloader$DownloadedDrawable: com.peercom.ImageDownloaderTask getBitmapDownloaderTask()>();
+
+        return r0;
+
+     label1:
+        return null;
+    }
+
+    protected transient android.graphics.Bitmap doInBackground(java.lang.String[])
+    {
+        com.peercom.ImageDownloaderTask r0;
+        android.graphics.Bitmap $r2;
+        java.lang.String[] $r1;
+        java.lang.String $r3;
+
+        r0 := @this: com.peercom.ImageDownloaderTask;
+
+        $r1 := @parameter0: java.lang.String[];
+
+        $r3 = $r1[0];
+
+        $r2 = staticinvoke <com.peercom.ImageDownloaderTask: android.graphics.Bitmap downloadBitmap(java.lang.String)>($r3);
+
+        return $r2;
+    }
+
+    protected transient volatile java.lang.Object doInBackground(java.lang.Object[])
+    {
+        java.lang.Object[] $r2;
+        com.peercom.ImageDownloaderTask r0;
+        android.graphics.Bitmap $r1;
+        java.lang.String[] $r3;
+
+        r0 := @this: com.peercom.ImageDownloaderTask;
+
+        $r2 := @parameter0: java.lang.Object[];
+
+        $r3 = (java.lang.String[]) $r2;
+
+        $r1 = virtualinvoke r0.<com.peercom.ImageDownloaderTask: android.graphics.Bitmap doInBackground(java.lang.String[])>($r3);
+
+        return $r1;
+    }
+
+    protected void onPostExecute(android.graphics.Bitmap)
+    {
+        com.peercom.ImageDownloaderTask r0, $r6;
+        android.widget.ImageView r5;
+        java.util.HashMap $r7;
+        android.graphics.Bitmap $r2;
+        java.lang.Object $r4;
+        java.lang.String $r1;
+        java.lang.ref.WeakReference $r3;
+        boolean $z0;
+
+        r0 := @this: com.peercom.ImageDownloaderTask;
+
+        $r2 := @parameter0: android.graphics.Bitmap;
+
+        $z0 = virtualinvoke r0.<com.peercom.ImageDownloaderTask: boolean isCancelled()>();
+
+        if $z0 == 0 goto label1;
+
+        $r2 = null;
+
+     label1:
+        $r3 = r0.<com.peercom.ImageDownloaderTask: java.lang.ref.WeakReference imageViewReference>;
+
+        if $r3 == null goto label2;
+
+        $r3 = r0.<com.peercom.ImageDownloaderTask: java.lang.ref.WeakReference imageViewReference>;
+
+        $r4 = virtualinvoke $r3.<java.lang.ref.WeakReference: java.lang.Object get()>();
+
+        r5 = (android.widget.ImageView) $r4;
+
+        $r6 = specialinvoke r0.<com.peercom.ImageDownloaderTask: com.peercom.ImageDownloaderTask getBitmapDownloaderTask(android.widget.ImageView)>(r5);
+
+        if r0 != $r6 goto label2;
+
+        $r7 = <com.peercom.ImageDownloader: java.util.HashMap mImageCache>;
+
+        $r1 = r0.<com.peercom.ImageDownloaderTask: java.lang.String targetUrl>;
+
+        virtualinvoke $r7.<java.util.HashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r1, $r2);
+
+        virtualinvoke r5.<android.widget.ImageView: void setImageBitmap(android.graphics.Bitmap)>($r2);
+
+     label2:
+        return;
+    }
+
+    protected volatile void onPostExecute(java.lang.Object)
+    {
+        java.lang.Object $r1;
+        com.peercom.ImageDownloaderTask r0;
+        android.graphics.Bitmap $r2;
+
+        r0 := @this: com.peercom.ImageDownloaderTask;
+
+        $r1 := @parameter0: java.lang.Object;
+
+        $r2 = (android.graphics.Bitmap) $r1;
+
+        virtualinvoke r0.<com.peercom.ImageDownloaderTask: void onPostExecute(android.graphics.Bitmap)>($r2);
+
+        return;
+    }
+}

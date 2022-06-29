@@ -1,0 +1,1327 @@
+public class cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager extends java.lang.Thread
+{
+    private static final int MAX_DOWNLOAD_THREAD_COUNT;
+    private static final int MAX_TASK_COUNT;
+    public static java.lang.Boolean isRunning;
+    private android.content.Context mContext;
+    private java.util.List mDownloadingTasks;
+    private java.util.List mPausingTasks;
+    private cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue mTaskQueue;
+
+    static void <clinit>()
+    {
+        java.lang.Boolean $r0;
+
+        <cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: int MAX_TASK_COUNT> = 100;
+
+        <cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: int MAX_DOWNLOAD_THREAD_COUNT> = 3;
+
+        $r0 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(0);
+
+        <cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.lang.Boolean isRunning> = $r0;
+
+        return;
+    }
+
+    public void <init>(android.content.Context)
+    {
+        android.content.Context $r1;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager r0;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue $r2;
+        java.util.ArrayList $r3;
+
+        r0 := @this: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager;
+
+        $r1 := @parameter0: android.content.Context;
+
+        specialinvoke r0.<java.lang.Thread: void <init>()>();
+
+        r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: android.content.Context mContext> = $r1;
+
+        $r2 = new cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue;
+
+        specialinvoke $r2.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue: void <init>(cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager)>(r0);
+
+        r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue mTaskQueue> = $r2;
+
+        $r3 = new java.util.ArrayList;
+
+        specialinvoke $r3.<java.util.ArrayList: void <init>()>();
+
+        r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mDownloadingTasks> = $r3;
+
+        $r3 = new java.util.ArrayList;
+
+        specialinvoke $r3.<java.util.ArrayList: void <init>()>();
+
+        r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mPausingTasks> = $r3;
+
+        return;
+    }
+
+    static android.content.Context access$000(cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager)
+    {
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager $r0;
+        android.content.Context r1;
+
+        $r0 := @parameter0: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager;
+
+        r1 = $r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: android.content.Context mContext>;
+
+        return r1;
+    }
+
+    static java.util.List access$100(cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager)
+    {
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager $r0;
+        java.util.List r1;
+
+        $r0 := @parameter0: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager;
+
+        r1 = $r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mDownloadingTasks>;
+
+        return r1;
+    }
+
+    private void addTask(cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask)
+    {
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask $r1;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager r0;
+        java.lang.String $r2;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue $r3;
+        boolean $z0;
+
+        r0 := @this: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager;
+
+        $r1 := @parameter0: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask;
+
+        $r2 = virtualinvoke $r1.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask: java.lang.String getUrl()>();
+
+        specialinvoke r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: void broadcastAddTask(java.lang.String)>($r2);
+
+        $r3 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue mTaskQueue>;
+
+        virtualinvoke $r3.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue: void offer(cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask)>($r1);
+
+        $z0 = virtualinvoke r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: boolean isAlive()>();
+
+        if $z0 != 0 goto label1;
+
+        virtualinvoke r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: void startManage()>();
+
+     label1:
+        return;
+    }
+
+    private void broadcastAddTask(java.lang.String)
+    {
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager r0;
+        java.lang.String $r1;
+
+        r0 := @this: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        specialinvoke r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: void broadcastAddTask(java.lang.String,boolean)>($r1, 0);
+
+        return;
+    }
+
+    private void broadcastAddTask(java.lang.String, boolean)
+    {
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager r0;
+        java.lang.String $r1;
+        boolean $z0;
+
+        r0 := @this: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $z0 := @parameter1: boolean;
+
+        return;
+    }
+
+    private cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask newDownloadTask(java.lang.String) throws java.net.MalformedURLException
+    {
+        android.content.Context $r4;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask $r3;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$1 r2;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager r0;
+        java.lang.String $r1, $r5;
+
+        r0 := @this: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r2 = new cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$1;
+
+        specialinvoke r2.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$1: void <init>(cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager)>(r0);
+
+        $r3 = new cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask;
+
+        $r4 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: android.content.Context mContext>;
+
+        $r5 = <cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.util.StorageUtils: java.lang.String FILE_ROOT>;
+
+        specialinvoke $r3.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask: void <init>(android.content.Context,java.lang.String,java.lang.String,cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTaskListener)>($r4, $r1, $r5, r2);
+
+        return $r3;
+    }
+
+    public void DeleteByUrlList(java.util.List)
+    {
+        android.content.Context $r5;
+        android.content.Intent r2;
+        java.util.List r1;
+        int i0, $i1;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager r0;
+        java.lang.Object $r3;
+        java.lang.String r4;
+        boolean $z0;
+
+        r0 := @this: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager;
+
+        r1 := @parameter0: java.util.List;
+
+        i0 = 0;
+
+     label1:
+        $i1 = interfaceinvoke r1.<java.util.List: int size()>();
+
+        if i0 >= $i1 goto label3;
+
+        $r3 = interfaceinvoke r1.<java.util.List: java.lang.Object get(int)>(i0);
+
+        r4 = (java.lang.String) $r3;
+
+        $z0 = staticinvoke <android.text.TextUtils: boolean isEmpty(java.lang.CharSequence)>(r4);
+
+        if $z0 != 0 goto label2;
+
+        virtualinvoke r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: void deleteTask(java.lang.String)>(r4);
+
+     label2:
+        r2 = new android.content.Intent;
+
+        specialinvoke r2.<android.content.Intent: void <init>(java.lang.String)>("com.ffcs.offprint.download");
+
+        virtualinvoke r2.<android.content.Intent: android.content.Intent putExtra(java.lang.String,int)>("type", 4);
+
+        $r3 = interfaceinvoke r1.<java.util.List: java.lang.Object get(int)>(i0);
+
+        r4 = (java.lang.String) $r3;
+
+        virtualinvoke r2.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("url", r4);
+
+        $r5 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: android.content.Context mContext>;
+
+        virtualinvoke $r5.<android.content.Context: void sendBroadcast(android.content.Intent)>(r2);
+
+        i0 = i0 + 1;
+
+        goto label1;
+
+     label3:
+        return;
+    }
+
+    public void addTask(java.lang.String)
+    {
+        java.lang.Throwable r2;
+        android.content.Context $r3;
+        java.net.MalformedURLException $r6;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask $r5;
+        android.widget.Toast $r4;
+        int $i0;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager r0;
+        java.lang.String $r1;
+        boolean $z0;
+
+        r0 := @this: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $z0 = staticinvoke <cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.util.StorageUtils: boolean isSDCardPresent()>();
+
+        if $z0 != 0 goto label1;
+
+        $r3 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: android.content.Context mContext>;
+
+        $r4 = staticinvoke <android.widget.Toast: android.widget.Toast makeText(android.content.Context,java.lang.CharSequence,int)>($r3, "\u672a\u53d1\u73b0SD\u5361", 1);
+
+        virtualinvoke $r4.<android.widget.Toast: void show()>();
+
+        return;
+
+     label1:
+        $z0 = staticinvoke <cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.util.StorageUtils: boolean isSdCardWrittenable()>();
+
+        if $z0 != 0 goto label2;
+
+        $r3 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: android.content.Context mContext>;
+
+        $r4 = staticinvoke <android.widget.Toast: android.widget.Toast makeText(android.content.Context,java.lang.CharSequence,int)>($r3, "SD\u5361\u4e0d\u80fd\u8bfb\u5199", 1);
+
+        virtualinvoke $r4.<android.widget.Toast: void show()>();
+
+        return;
+
+     label2:
+        $i0 = virtualinvoke r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: int getTotalTaskCount()>();
+
+        if $i0 < 100 goto label3;
+
+        $r3 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: android.content.Context mContext>;
+
+        $r4 = staticinvoke <android.widget.Toast: android.widget.Toast makeText(android.content.Context,java.lang.CharSequence,int)>($r3, "\u4efb\u52a1\u5217\u8868\u5df2\u6ee1", 1);
+
+        virtualinvoke $r4.<android.widget.Toast: void show()>();
+
+        return;
+
+     label3:
+        $r5 = specialinvoke r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask newDownloadTask(java.lang.String)>($r1);
+
+        specialinvoke r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: void addTask(cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask)>($r5);
+
+     label4:
+        return;
+
+     label5:
+        r2 := @caughtexception;
+
+        $r6 = (java.net.MalformedURLException) r2;
+
+        virtualinvoke $r6.<java.net.MalformedURLException: void printStackTrace()>();
+
+        return;
+
+        catch java.net.MalformedURLException from label3 to label4 with label5;
+    }
+
+    public void checkUncompleteTasks()
+    {
+        android.content.Context $r1;
+        java.util.List $r2;
+        int $i0, $i1;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager r0;
+        java.lang.Object $r3;
+        java.lang.String $r4;
+
+        r0 := @this: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager;
+
+        $r1 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: android.content.Context mContext>;
+
+        $r2 = staticinvoke <cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.util.ConfigUtils: java.util.List getURLArray(android.content.Context)>($r1);
+
+        $i0 = interfaceinvoke $r2.<java.util.List: int size()>();
+
+        if $i0 < 0 goto label2;
+
+        $i0 = 0;
+
+     label1:
+        $i1 = interfaceinvoke $r2.<java.util.List: int size()>();
+
+        if $i0 >= $i1 goto label2;
+
+        $r3 = interfaceinvoke $r2.<java.util.List: java.lang.Object get(int)>($i0);
+
+        $r4 = (java.lang.String) $r3;
+
+        virtualinvoke r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: void addTask(java.lang.String)>($r4);
+
+        $i0 = $i0 + 1;
+
+        goto label1;
+
+     label2:
+        return;
+    }
+
+    public void close()
+    {
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager r0;
+        java.lang.Boolean $r1;
+
+        r0 := @this: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager;
+
+        $r1 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(0);
+
+        <cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.lang.Boolean isRunning> = $r1;
+
+        virtualinvoke r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: void pauseAllTask()>();
+
+        virtualinvoke r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: void stop()>();
+
+        return;
+    }
+
+    public void completeTask(cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask)
+    {
+        java.lang.Throwable $r8;
+        android.content.Context $r4;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.BaseApplication $r5;
+        android.content.Intent r2;
+        java.util.List $r3;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask $r1;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.db.DBManager $r6;
+        int $i0;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager r0;
+        java.lang.String $r7;
+        boolean $z0;
+
+        r0 := @this: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager;
+
+        $r1 := @parameter0: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask;
+
+        entermonitor r0;
+
+     label1:
+        $r3 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mDownloadingTasks>;
+
+        $z0 = interfaceinvoke $r3.<java.util.List: boolean contains(java.lang.Object)>($r1);
+
+        if $z0 == 0 goto label2;
+
+        $r4 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: android.content.Context mContext>;
+
+        $r3 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mDownloadingTasks>;
+
+        $i0 = interfaceinvoke $r3.<java.util.List: int indexOf(java.lang.Object)>($r1);
+
+        staticinvoke <cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.util.ConfigUtils: void clearURL(android.content.Context,int)>($r4, $i0);
+
+        $r3 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mDownloadingTasks>;
+
+        interfaceinvoke $r3.<java.util.List: boolean remove(java.lang.Object)>($r1);
+
+        $r5 = staticinvoke <cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.BaseApplication: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.BaseApplication getInstance()>();
+
+        $r6 = staticinvoke <cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.db.DBManager: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.db.DBManager getInstance(android.content.Context)>($r5);
+
+        $r7 = virtualinvoke $r1.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask: java.lang.String getUrl()>();
+
+        virtualinvoke $r6.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.db.DBManager: void updateCartoon(java.lang.String,java.lang.String)>($r7, "4");
+
+        r2 = new android.content.Intent;
+
+        specialinvoke r2.<android.content.Intent: void <init>(java.lang.String)>("com.ffcs.offprint.download");
+
+        virtualinvoke r2.<android.content.Intent: android.content.Intent putExtra(java.lang.String,int)>("type", 1);
+
+        $r7 = virtualinvoke $r1.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask: java.lang.String getUrl()>();
+
+        virtualinvoke r2.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("url", $r7);
+
+        $r4 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: android.content.Context mContext>;
+
+        virtualinvoke $r4.<android.content.Context: void sendBroadcast(android.content.Intent)>(r2);
+
+     label2:
+        exitmonitor r0;
+
+        return;
+
+     label3:
+        $r8 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r8;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void continueTask(cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask)
+    {
+        java.lang.Throwable $r7;
+        java.util.List $r2;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask $r1;
+        int i0, $i1;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager r0;
+        java.lang.StringBuilder $r4;
+        java.lang.Object $r5;
+        java.lang.String $r6;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue $r3;
+
+        r0 := @this: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager;
+
+        $r1 := @parameter0: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask;
+
+        entermonitor r0;
+
+        if $r1 == null goto label6;
+
+     label1:
+        $r2 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mPausingTasks>;
+
+        interfaceinvoke $r2.<java.util.List: boolean remove(java.lang.Object)>($r1);
+
+        $r3 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue mTaskQueue>;
+
+        virtualinvoke $r3.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue: void offer(cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask)>($r1);
+
+        i0 = 0;
+
+     label2:
+        $r2 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mPausingTasks>;
+
+        $i1 = interfaceinvoke $r2.<java.util.List: int size()>();
+
+        if i0 >= $i1 goto label3;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" mPausingTasks ");
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>(i0);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" ");
+
+        $r2 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mPausingTasks>;
+
+        $r5 = interfaceinvoke $r2.<java.util.List: java.lang.Object get(int)>(i0);
+
+        $r1 = (cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask) $r5;
+
+        $r6 = virtualinvoke $r1.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask: java.lang.String getUrl()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r6 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("ctag", $r6);
+
+        i0 = i0 + 1;
+
+        goto label2;
+
+     label3:
+        i0 = 0;
+
+     label4:
+        $r3 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue mTaskQueue>;
+
+        $i1 = virtualinvoke $r3.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue: int size()>();
+
+        if i0 >= $i1 goto label6;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" mTaskQueue ");
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>(i0);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" ");
+
+        $r3 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue mTaskQueue>;
+
+        $r1 = virtualinvoke $r3.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask get(int)>(i0);
+
+        $r6 = virtualinvoke $r1.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask: java.lang.String getUrl()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r6 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("ctag", $r6);
+
+     label5:
+        i0 = i0 + 1;
+
+        goto label4;
+
+     label6:
+        exitmonitor r0;
+
+        return;
+
+     label7:
+        $r7 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r7;
+
+        catch java.lang.Throwable from label1 to label5 with label7;
+    }
+
+    public void continueTask(java.lang.String)
+    {
+        java.lang.Throwable $r2;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager r0;
+        java.lang.String $r1;
+
+        r0 := @this: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        entermonitor r0;
+
+     label1:
+        virtualinvoke r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: void addTask(java.lang.String)>($r1);
+
+     label2:
+        exitmonitor r0;
+
+        return;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void deleteTask(java.lang.String)
+    {
+        java.lang.Throwable $r9;
+        java.io.File r6;
+        java.util.List $r2;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask r4;
+        int i0, $i1;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager r0;
+        java.lang.Object $r3;
+        java.lang.StringBuilder $r7;
+        java.lang.String $r1, $r5;
+        boolean $z0;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue $r8;
+
+        r0 := @this: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        entermonitor r0;
+
+        i0 = 0;
+
+     label01:
+        $r2 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mDownloadingTasks>;
+
+        $i1 = interfaceinvoke $r2.<java.util.List: int size()>();
+
+        if i0 >= $i1 goto label05;
+
+        $r2 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mDownloadingTasks>;
+
+        $r3 = interfaceinvoke $r2.<java.util.List: java.lang.Object get(int)>(i0);
+
+        r4 = (cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask) $r3;
+
+        if r4 == null goto label04;
+
+        $r5 = virtualinvoke r4.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask: java.lang.String getUrl()>();
+
+        $z0 = virtualinvoke $r5.<java.lang.String: boolean equals(java.lang.Object)>($r1);
+
+        if $z0 == 0 goto label04;
+
+        r6 = new java.io.File;
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>()>();
+
+        $r1 = <cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.util.StorageUtils: java.lang.String FILE_ROOT>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke r4.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask: java.lang.String getUrl()>();
+
+        $r1 = staticinvoke <cn.ffcs.lib.utils.NetworkUtils: java.lang.String getFileNameFromUrl(java.lang.String)>($r1);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke r6.<java.io.File: void <init>(java.lang.String)>($r1);
+
+        $z0 = virtualinvoke r6.<java.io.File: boolean exists()>();
+
+        if $z0 == 0 goto label02;
+
+        virtualinvoke r6.<java.io.File: boolean delete()>();
+
+     label02:
+        virtualinvoke r4.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask: void onCancelled()>();
+
+        virtualinvoke r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: void completeTask(cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask)>(r4);
+
+     label03:
+        exitmonitor r0;
+
+        return;
+
+     label04:
+        i0 = i0 + 1;
+
+        goto label01;
+
+     label05:
+        i0 = 0;
+
+     label06:
+        $r8 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue mTaskQueue>;
+
+        $i1 = virtualinvoke $r8.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue: int size()>();
+
+        if i0 >= $i1 goto label08;
+
+        $r8 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue mTaskQueue>;
+
+        r4 = virtualinvoke $r8.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask get(int)>(i0);
+
+        if r4 == null goto label07;
+
+        $r5 = virtualinvoke r4.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask: java.lang.String getUrl()>();
+
+        $z0 = virtualinvoke $r5.<java.lang.String: boolean equals(java.lang.Object)>($r1);
+
+        if $z0 == 0 goto label07;
+
+        $r8 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue mTaskQueue>;
+
+        virtualinvoke $r8.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue: boolean remove(cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask)>(r4);
+
+     label07:
+        i0 = i0 + 1;
+
+        goto label06;
+
+     label08:
+        i0 = 0;
+
+     label09:
+        $r2 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mPausingTasks>;
+
+        $i1 = interfaceinvoke $r2.<java.util.List: int size()>();
+
+        if i0 >= $i1 goto label11;
+
+        $r2 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mPausingTasks>;
+
+        $r3 = interfaceinvoke $r2.<java.util.List: java.lang.Object get(int)>(i0);
+
+        r4 = (cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask) $r3;
+
+        if r4 == null goto label10;
+
+        $r5 = virtualinvoke r4.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask: java.lang.String getUrl()>();
+
+        $z0 = virtualinvoke $r5.<java.lang.String: boolean equals(java.lang.Object)>($r1);
+
+        if $z0 == 0 goto label10;
+
+        $r2 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mPausingTasks>;
+
+        interfaceinvoke $r2.<java.util.List: boolean remove(java.lang.Object)>(r4);
+
+     label10:
+        i0 = i0 + 1;
+
+        goto label09;
+
+     label11:
+        r6 = new java.io.File;
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>()>();
+
+        $r5 = <cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.util.StorageUtils: java.lang.String FILE_ROOT>;
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = staticinvoke <cn.ffcs.lib.utils.NetworkUtils: java.lang.String getFileNameFromUrl(java.lang.String)>($r1);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke r6.<java.io.File: void <init>(java.lang.String)>($r5);
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>()>();
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" ;;  ");
+
+        $z0 = virtualinvoke r6.<java.io.File: boolean exists()>();
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(boolean)>($z0);
+
+        $r1 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("tag", $r1);
+
+        $z0 = virtualinvoke r6.<java.io.File: boolean exists()>();
+
+        if $z0 == 0 goto label03;
+
+        virtualinvoke r6.<java.io.File: boolean delete()>();
+
+     label12:
+        goto label03;
+
+     label13:
+        $r9 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r9;
+
+        catch java.lang.Throwable from label01 to label03 with label13;
+        catch java.lang.Throwable from label06 to label12 with label13;
+    }
+
+    public int getDownloadingTaskCount()
+    {
+        int $i0;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager r0;
+        java.util.List $r1;
+
+        r0 := @this: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager;
+
+        $r1 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mDownloadingTasks>;
+
+        $i0 = interfaceinvoke $r1.<java.util.List: int size()>();
+
+        return $i0;
+    }
+
+    public int getPausingTaskCount()
+    {
+        int $i0;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager r0;
+        java.util.List $r1;
+
+        r0 := @this: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager;
+
+        $r1 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mPausingTasks>;
+
+        $i0 = interfaceinvoke $r1.<java.util.List: int size()>();
+
+        return $i0;
+    }
+
+    public int getQueueTaskCount()
+    {
+        int $i0;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager r0;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue $r1;
+
+        r0 := @this: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager;
+
+        $r1 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue mTaskQueue>;
+
+        $i0 = virtualinvoke $r1.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue: int size()>();
+
+        return $i0;
+    }
+
+    public cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask getTask(int)
+    {
+        java.util.List $r1;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask $r3;
+        int $i0, $i1;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager r0;
+        java.lang.Object $r4;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue $r2;
+
+        r0 := @this: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager;
+
+        $i0 := @parameter0: int;
+
+        $r1 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mDownloadingTasks>;
+
+        $i1 = interfaceinvoke $r1.<java.util.List: int size()>();
+
+        if $i0 < $i1 goto label1;
+
+        $r2 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue mTaskQueue>;
+
+        $r1 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mDownloadingTasks>;
+
+        $i1 = interfaceinvoke $r1.<java.util.List: int size()>();
+
+        $i0 = $i0 - $i1;
+
+        $r3 = virtualinvoke $r2.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask get(int)>($i0);
+
+        return $r3;
+
+     label1:
+        $r1 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mDownloadingTasks>;
+
+        $r4 = interfaceinvoke $r1.<java.util.List: java.lang.Object get(int)>($i0);
+
+        $r3 = (cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask) $r4;
+
+        return $r3;
+    }
+
+    public int getTotalTaskCount()
+    {
+        int $i0, $i1;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager r0;
+
+        r0 := @this: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager;
+
+        $i0 = virtualinvoke r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: int getQueueTaskCount()>();
+
+        $i1 = virtualinvoke r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: int getDownloadingTaskCount()>();
+
+        $i0 = $i0 + $i1;
+
+        $i1 = virtualinvoke r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: int getPausingTaskCount()>();
+
+        $i0 = $i0 + $i1;
+
+        return $i0;
+    }
+
+    public boolean hasTask(java.lang.String)
+    {
+        java.util.List $r2;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask r4;
+        int i0, $i1;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager r0;
+        java.lang.Object $r3;
+        java.lang.String $r1, $r5;
+        boolean $z0;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue $r6;
+
+        r0 := @this: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        i0 = 0;
+
+     label1:
+        $r2 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mDownloadingTasks>;
+
+        $i1 = interfaceinvoke $r2.<java.util.List: int size()>();
+
+        if i0 >= $i1 goto label3;
+
+        $r2 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mDownloadingTasks>;
+
+        $r3 = interfaceinvoke $r2.<java.util.List: java.lang.Object get(int)>(i0);
+
+        r4 = (cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask) $r3;
+
+        $r5 = virtualinvoke r4.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask: java.lang.String getUrl()>();
+
+        $z0 = virtualinvoke $r5.<java.lang.String: boolean equals(java.lang.Object)>($r1);
+
+        if $z0 == 0 goto label2;
+
+        return 1;
+
+     label2:
+        i0 = i0 + 1;
+
+        goto label1;
+
+     label3:
+        i0 = 0;
+
+     label4:
+        $r6 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue mTaskQueue>;
+
+        $i1 = virtualinvoke $r6.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue: int size()>();
+
+        if i0 >= $i1 goto label5;
+
+        $r6 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue mTaskQueue>;
+
+        virtualinvoke $r6.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask get(int)>(i0);
+
+        i0 = i0 + 1;
+
+        goto label4;
+
+     label5:
+        return 0;
+    }
+
+    public boolean isRunning()
+    {
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager r0;
+        java.lang.Boolean $r1;
+        boolean $z0;
+
+        r0 := @this: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager;
+
+        $r1 = <cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.lang.Boolean isRunning>;
+
+        $z0 = virtualinvoke $r1.<java.lang.Boolean: boolean booleanValue()>();
+
+        return $z0;
+    }
+
+    public void pauseAllTask()
+    {
+        java.lang.Throwable $r5;
+        java.util.List $r3;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask $r2;
+        int i0, $i1;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager r0;
+        java.lang.Object $r4;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue $r1;
+
+        r0 := @this: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager;
+
+        entermonitor r0;
+
+        i0 = 0;
+
+     label1:
+        $r1 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue mTaskQueue>;
+
+        $i1 = virtualinvoke $r1.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue: int size()>();
+
+        if i0 >= $i1 goto label2;
+
+        $r1 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue mTaskQueue>;
+
+        $r2 = virtualinvoke $r1.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask get(int)>(i0);
+
+        $r1 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue mTaskQueue>;
+
+        virtualinvoke $r1.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue: boolean remove(cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask)>($r2);
+
+        $r3 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mPausingTasks>;
+
+        interfaceinvoke $r3.<java.util.List: boolean add(java.lang.Object)>($r2);
+
+        i0 = i0 + 1;
+
+        goto label1;
+
+     label2:
+        i0 = 0;
+
+     label3:
+        $r3 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mDownloadingTasks>;
+
+        $i1 = interfaceinvoke $r3.<java.util.List: int size()>();
+
+        if i0 >= $i1 goto label5;
+
+        $r3 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mDownloadingTasks>;
+
+        $r4 = interfaceinvoke $r3.<java.util.List: java.lang.Object get(int)>(i0);
+
+        $r2 = (cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask) $r4;
+
+        if $r2 == null goto label4;
+
+        virtualinvoke r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: void pauseTask(cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask)>($r2);
+
+     label4:
+        i0 = i0 + 1;
+
+        goto label3;
+
+     label5:
+        exitmonitor r0;
+
+        return;
+
+     label6:
+        $r5 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r5;
+
+        catch java.lang.Throwable from label1 to label4 with label6;
+    }
+
+    public void pauseTask(cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask)
+    {
+        java.lang.Throwable $r5;
+        java.util.List $r2;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask $r1;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager r0;
+        java.lang.StringBuilder $r3;
+        java.lang.String $r4;
+
+        r0 := @this: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager;
+
+        $r1 := @parameter0: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask;
+
+        entermonitor r0;
+
+        if $r1 == null goto label2;
+
+     label1:
+        virtualinvoke $r1.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask: void onCancelled()>();
+
+        $r2 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mDownloadingTasks>;
+
+        interfaceinvoke $r2.<java.util.List: boolean remove(java.lang.Object)>($r1);
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" pauser Task ");
+
+        $r4 = virtualinvoke $r1.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask: java.lang.String getUrl()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("ctag", $r4);
+
+     label2:
+        exitmonitor r0;
+
+        return;
+
+     label3:
+        $r5 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r5;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void pauseTask(java.lang.String)
+    {
+        java.lang.Throwable $r7;
+        java.util.List $r2;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask r4;
+        int i0, $i1;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager r0;
+        java.lang.Object $r3;
+        java.lang.StringBuilder $r5;
+        java.lang.String $r1, $r6;
+        boolean $z0;
+
+        r0 := @this: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager;
+
+        $r1 := @parameter0: java.lang.String;
+
+        entermonitor r0;
+
+        i0 = 0;
+
+     label1:
+        $r2 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mDownloadingTasks>;
+
+        $i1 = interfaceinvoke $r2.<java.util.List: int size()>();
+
+        if i0 >= $i1 goto label3;
+
+        $r2 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mDownloadingTasks>;
+
+        $r3 = interfaceinvoke $r2.<java.util.List: java.lang.Object get(int)>(i0);
+
+        r4 = (cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask) $r3;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" mDownloadingTasks ");
+
+        $r6 = virtualinvoke r4.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask: java.lang.String getUrl()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("ctag", $r6);
+
+        if r4 == null goto label2;
+
+        $r6 = virtualinvoke r4.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask: java.lang.String getUrl()>();
+
+        $z0 = virtualinvoke $r6.<java.lang.String: boolean equals(java.lang.Object)>($r1);
+
+        if $z0 == 0 goto label2;
+
+        virtualinvoke r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: void pauseTask(cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask)>(r4);
+
+     label2:
+        i0 = i0 + 1;
+
+        goto label1;
+
+     label3:
+        exitmonitor r0;
+
+        return;
+
+     label4:
+        $r7 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r7;
+
+        catch java.lang.Throwable from label1 to label2 with label4;
+    }
+
+    public void reBroadcastAddAllTask()
+    {
+        java.util.List $r1;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask r3;
+        int i0, $i1;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager r0;
+        java.lang.Object $r2;
+        java.lang.String $r4;
+        boolean $z0;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue $r5;
+
+        r0 := @this: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager;
+
+        i0 = 0;
+
+     label1:
+        $r1 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mDownloadingTasks>;
+
+        $i1 = interfaceinvoke $r1.<java.util.List: int size()>();
+
+        if i0 >= $i1 goto label2;
+
+        $r1 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mDownloadingTasks>;
+
+        $r2 = interfaceinvoke $r1.<java.util.List: java.lang.Object get(int)>(i0);
+
+        r3 = (cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask) $r2;
+
+        $r4 = virtualinvoke r3.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask: java.lang.String getUrl()>();
+
+        $z0 = virtualinvoke r3.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask: boolean isInterrupt()>();
+
+        specialinvoke r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: void broadcastAddTask(java.lang.String,boolean)>($r4, $z0);
+
+        i0 = i0 + 1;
+
+        goto label1;
+
+     label2:
+        i0 = 0;
+
+     label3:
+        $r5 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue mTaskQueue>;
+
+        $i1 = virtualinvoke $r5.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue: int size()>();
+
+        if i0 >= $i1 goto label4;
+
+        $r5 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue mTaskQueue>;
+
+        r3 = virtualinvoke $r5.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask get(int)>(i0);
+
+        $r4 = virtualinvoke r3.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask: java.lang.String getUrl()>();
+
+        specialinvoke r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: void broadcastAddTask(java.lang.String)>($r4);
+
+        i0 = i0 + 1;
+
+        goto label3;
+
+     label4:
+        i0 = 0;
+
+     label5:
+        $r1 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mPausingTasks>;
+
+        $i1 = interfaceinvoke $r1.<java.util.List: int size()>();
+
+        if i0 >= $i1 goto label6;
+
+        $r1 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mPausingTasks>;
+
+        $r2 = interfaceinvoke $r1.<java.util.List: java.lang.Object get(int)>(i0);
+
+        r3 = (cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask) $r2;
+
+        $r4 = virtualinvoke r3.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask: java.lang.String getUrl()>();
+
+        specialinvoke r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: void broadcastAddTask(java.lang.String)>($r4);
+
+        i0 = i0 + 1;
+
+        goto label5;
+
+     label6:
+        return;
+    }
+
+    public void run()
+    {
+        java.util.List $r4;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask $r3;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager r0;
+        java.lang.Boolean $r1;
+        java.lang.Void[] $r5;
+        boolean $z0;
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue $r2;
+
+        r0 := @this: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager;
+
+        specialinvoke r0.<java.lang.Thread: void run()>();
+
+     label1:
+        $r1 = <cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.lang.Boolean isRunning>;
+
+        $z0 = virtualinvoke $r1.<java.lang.Boolean: boolean booleanValue()>();
+
+        if $z0 == 0 goto label2;
+
+        $r2 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue mTaskQueue>;
+
+        $r3 = virtualinvoke $r2.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager$TaskQueue: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask poll()>();
+
+        $r4 = r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.util.List mDownloadingTasks>;
+
+        interfaceinvoke $r4.<java.util.List: boolean add(java.lang.Object)>($r3);
+
+        $r5 = newarray (java.lang.Void)[0];
+
+        virtualinvoke $r3.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadTask: android.os.AsyncTask execute(java.lang.Object[])>($r5);
+
+        goto label1;
+
+     label2:
+        return;
+    }
+
+    public void startManage()
+    {
+        cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager r0;
+        java.lang.Boolean $r1;
+
+        r0 := @this: cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager;
+
+        $r1 = staticinvoke <java.lang.Boolean: java.lang.Boolean valueOf(boolean)>(1);
+
+        <cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: java.lang.Boolean isRunning> = $r1;
+
+        virtualinvoke r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: void start()>();
+
+        virtualinvoke r0.<cn.ffcs.dh201211062200085386xxx001052.cartoonplayer.download.DownloadManager: void checkUncompleteTasks()>();
+
+        return;
+    }
+}

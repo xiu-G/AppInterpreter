@@ -1,0 +1,221 @@
+public abstract class org.ksoap2.transport.Transport extends java.lang.Object
+{
+    public boolean debug;
+    protected java.net.Proxy proxy;
+    public java.lang.String requestDump;
+    public java.lang.String responseDump;
+    protected int timeout;
+    protected java.lang.String url;
+    private java.lang.String xmlVersionTag;
+
+    public void <init>()
+    {
+        org.ksoap2.transport.Transport r0;
+
+        r0 := @this: org.ksoap2.transport.Transport;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<org.ksoap2.transport.Transport: int timeout> = 20000;
+
+        r0.<org.ksoap2.transport.Transport: java.lang.String xmlVersionTag> = "";
+
+        return;
+    }
+
+    public void <init>(java.lang.String)
+    {
+        org.ksoap2.transport.Transport r0;
+        java.lang.String $r1;
+
+        r0 := @this: org.ksoap2.transport.Transport;
+
+        $r1 := @parameter0: java.lang.String;
+
+        specialinvoke r0.<org.ksoap2.transport.Transport: void <init>(java.net.Proxy,java.lang.String)>(null, $r1);
+
+        return;
+    }
+
+    public void <init>(java.lang.String, int)
+    {
+        int $i0;
+        org.ksoap2.transport.Transport r0;
+        java.lang.String $r1;
+
+        r0 := @this: org.ksoap2.transport.Transport;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $i0 := @parameter1: int;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<org.ksoap2.transport.Transport: int timeout> = 20000;
+
+        r0.<org.ksoap2.transport.Transport: java.lang.String xmlVersionTag> = "";
+
+        r0.<org.ksoap2.transport.Transport: java.lang.String url> = $r1;
+
+        r0.<org.ksoap2.transport.Transport: int timeout> = $i0;
+
+        return;
+    }
+
+    public void <init>(java.net.Proxy, java.lang.String)
+    {
+        org.ksoap2.transport.Transport r0;
+        java.lang.String $r2;
+        java.net.Proxy $r1;
+
+        r0 := @this: org.ksoap2.transport.Transport;
+
+        $r1 := @parameter0: java.net.Proxy;
+
+        $r2 := @parameter1: java.lang.String;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<org.ksoap2.transport.Transport: int timeout> = 20000;
+
+        r0.<org.ksoap2.transport.Transport: java.lang.String xmlVersionTag> = "";
+
+        r0.<org.ksoap2.transport.Transport: java.net.Proxy proxy> = null;
+
+        r0.<org.ksoap2.transport.Transport: java.lang.String url> = $r2;
+
+        return;
+    }
+
+    public abstract java.util.List call(java.lang.String, org.ksoap2.SoapEnvelope, java.util.List) throws java.io.IOException, org.xmlpull.v1.XmlPullParserException;
+
+    public void call(java.lang.String, org.ksoap2.SoapEnvelope) throws java.io.IOException, org.xmlpull.v1.XmlPullParserException
+    {
+        org.ksoap2.transport.Transport r0;
+        java.lang.String $r1;
+        org.ksoap2.SoapEnvelope $r2;
+
+        r0 := @this: org.ksoap2.transport.Transport;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: org.ksoap2.SoapEnvelope;
+
+        virtualinvoke r0.<org.ksoap2.transport.Transport: java.util.List call(java.lang.String,org.ksoap2.SoapEnvelope,java.util.List)>($r1, $r2, null);
+
+        return;
+    }
+
+    protected byte[] createRequestData(org.ksoap2.SoapEnvelope) throws java.io.IOException
+    {
+        byte[] $r5;
+        org.ksoap2.SoapEnvelope $r1;
+        java.io.ByteArrayOutputStream r2;
+        org.ksoap2.transport.Transport r0;
+        java.lang.String $r4;
+        org.kxml2.io.KXmlSerializer r3;
+
+        r0 := @this: org.ksoap2.transport.Transport;
+
+        $r1 := @parameter0: org.ksoap2.SoapEnvelope;
+
+        r2 = new java.io.ByteArrayOutputStream;
+
+        specialinvoke r2.<java.io.ByteArrayOutputStream: void <init>()>();
+
+        $r4 = r0.<org.ksoap2.transport.Transport: java.lang.String xmlVersionTag>;
+
+        $r5 = virtualinvoke $r4.<java.lang.String: byte[] getBytes()>();
+
+        virtualinvoke r2.<java.io.ByteArrayOutputStream: void write(byte[])>($r5);
+
+        r3 = new org.kxml2.io.KXmlSerializer;
+
+        specialinvoke r3.<org.kxml2.io.KXmlSerializer: void <init>()>();
+
+        interfaceinvoke r3.<org.xmlpull.v1.XmlSerializer: void setOutput(java.io.OutputStream,java.lang.String)>(r2, null);
+
+        virtualinvoke $r1.<org.ksoap2.SoapEnvelope: void write(org.xmlpull.v1.XmlSerializer)>(r3);
+
+        interfaceinvoke r3.<org.xmlpull.v1.XmlSerializer: void flush()>();
+
+        virtualinvoke r2.<java.io.ByteArrayOutputStream: void write(int)>(13);
+
+        virtualinvoke r2.<java.io.ByteArrayOutputStream: void write(int)>(10);
+
+        virtualinvoke r2.<java.io.ByteArrayOutputStream: void flush()>();
+
+        $r5 = virtualinvoke r2.<java.io.ByteArrayOutputStream: byte[] toByteArray()>();
+
+        return $r5;
+    }
+
+    public abstract java.lang.String getHost();
+
+    public abstract java.lang.String getPath();
+
+    public abstract int getPort();
+
+    protected void parseResponse(org.ksoap2.SoapEnvelope, java.io.InputStream) throws org.xmlpull.v1.XmlPullParserException, java.io.IOException
+    {
+        org.kxml2.io.KXmlParser r3;
+        org.ksoap2.SoapEnvelope $r1;
+        org.ksoap2.transport.Transport r0;
+        java.io.InputStream $r2;
+
+        r0 := @this: org.ksoap2.transport.Transport;
+
+        $r1 := @parameter0: org.ksoap2.SoapEnvelope;
+
+        $r2 := @parameter1: java.io.InputStream;
+
+        r3 = new org.kxml2.io.KXmlParser;
+
+        specialinvoke r3.<org.kxml2.io.KXmlParser: void <init>()>();
+
+        interfaceinvoke r3.<org.xmlpull.v1.XmlPullParser: void setFeature(java.lang.String,boolean)>("http://xmlpull.org/v1/doc/features.html#process-namespaces", 1);
+
+        interfaceinvoke r3.<org.xmlpull.v1.XmlPullParser: void setInput(java.io.InputStream,java.lang.String)>($r2, null);
+
+        virtualinvoke $r1.<org.ksoap2.SoapEnvelope: void parse(org.xmlpull.v1.XmlPullParser)>(r3);
+
+        return;
+    }
+
+    public void reset()
+    {
+        org.ksoap2.transport.Transport r0;
+
+        r0 := @this: org.ksoap2.transport.Transport;
+
+        return;
+    }
+
+    public void setUrl(java.lang.String)
+    {
+        org.ksoap2.transport.Transport r0;
+        java.lang.String $r1;
+
+        r0 := @this: org.ksoap2.transport.Transport;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r0.<org.ksoap2.transport.Transport: java.lang.String url> = $r1;
+
+        return;
+    }
+
+    public void setXmlVersionTag(java.lang.String)
+    {
+        org.ksoap2.transport.Transport r0;
+        java.lang.String $r1;
+
+        r0 := @this: org.ksoap2.transport.Transport;
+
+        $r1 := @parameter0: java.lang.String;
+
+        r0.<org.ksoap2.transport.Transport: java.lang.String xmlVersionTag> = $r1;
+
+        return;
+    }
+}

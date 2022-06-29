@@ -1,0 +1,373 @@
+public class com.tencent.tauth.AuthActivity extends android.app.Activity
+{
+    private static final java.lang.String ACTION_ADD_TO_QQFAVORITES;
+    public static final java.lang.String ACTION_KEY;
+    private static final java.lang.String ACTION_SEND_TO_MY_COMPUTER;
+    private static final java.lang.String ACTION_SHARE_TO_QQ;
+    private static final java.lang.String ACTION_SHARE_TO_QZONE;
+    private static final java.lang.String ACTION_SHARE_TO_TROOP_BAR;
+    private static final java.lang.String TAG;
+    private static int mShareQzoneBackTime;
+    public android.content.Intent ipcIntent;
+    public android.content.Intent ipcResultIntent;
+
+    static void <clinit>()
+    {
+        <com.tencent.tauth.AuthActivity: java.lang.String TAG> = "AuthActivity";
+
+        <com.tencent.tauth.AuthActivity: java.lang.String ACTION_SHARE_TO_TROOP_BAR> = "shareToTroopBar";
+
+        <com.tencent.tauth.AuthActivity: java.lang.String ACTION_SHARE_TO_QZONE> = "shareToQzone";
+
+        <com.tencent.tauth.AuthActivity: java.lang.String ACTION_SHARE_TO_QQ> = "shareToQQ";
+
+        <com.tencent.tauth.AuthActivity: java.lang.String ACTION_SEND_TO_MY_COMPUTER> = "sendToMyComputer";
+
+        <com.tencent.tauth.AuthActivity: java.lang.String ACTION_KEY> = "action";
+
+        <com.tencent.tauth.AuthActivity: java.lang.String ACTION_ADD_TO_QQFAVORITES> = "addToQQFavorites";
+
+        <com.tencent.tauth.AuthActivity: int mShareQzoneBackTime> = 0;
+
+        return;
+    }
+
+    public void <init>()
+    {
+        com.tencent.tauth.AuthActivity r0;
+
+        r0 := @this: com.tencent.tauth.AuthActivity;
+
+        specialinvoke r0.<android.app.Activity: void <init>()>();
+
+        return;
+    }
+
+    private void execAuthCallback(android.os.Bundle, java.lang.String)
+    {
+        android.os.Bundle $r1;
+        com.tencent.tauth.AuthActivity r0;
+        com.tencent.tauth.IUiListener $r6;
+        org.json.JSONObject $r9, $r10;
+        com.tencent.connect.auth.AuthDialog $r7;
+        com.tencent.connect.auth.AuthMap $r3;
+        int $i0;
+        com.tencent.connect.auth.AuthMap$Auth $r5;
+        java.lang.String $r2, $r4, $r8;
+        boolean $z0;
+
+        r0 := @this: com.tencent.tauth.AuthActivity;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 = staticinvoke <com.tencent.connect.auth.AuthMap: com.tencent.connect.auth.AuthMap getInstance()>();
+
+        $r4 = virtualinvoke $r1.<android.os.Bundle: java.lang.String getString(java.lang.String)>("serial");
+
+        $r5 = virtualinvoke $r3.<com.tencent.connect.auth.AuthMap: com.tencent.connect.auth.AuthMap$Auth get(java.lang.String)>($r4);
+
+        if $r5 == null goto label2;
+
+        $i0 = virtualinvoke $r2.<java.lang.String: int indexOf(java.lang.String)>("://cancel");
+
+        if $i0 == -1 goto label3;
+
+        $r6 = $r5.<com.tencent.connect.auth.AuthMap$Auth: com.tencent.tauth.IUiListener listener>;
+
+        interfaceinvoke $r6.<com.tencent.tauth.IUiListener: void onCancel()>();
+
+        $r7 = $r5.<com.tencent.connect.auth.AuthMap$Auth: com.tencent.connect.auth.AuthDialog dialog>;
+
+        virtualinvoke $r7.<com.tencent.connect.auth.AuthDialog: void dismiss()>();
+
+     label1:
+        virtualinvoke $r3.<com.tencent.connect.auth.AuthMap: void remove(java.lang.String)>($r4);
+
+     label2:
+        virtualinvoke r0.<com.tencent.tauth.AuthActivity: void finish()>();
+
+        return;
+
+     label3:
+        $r2 = virtualinvoke $r1.<android.os.Bundle: java.lang.String getString(java.lang.String)>("access_token");
+
+        if $r2 == null goto label4;
+
+        $r8 = $r5.<com.tencent.connect.auth.AuthMap$Auth: java.lang.String key>;
+
+        $r2 = virtualinvoke $r3.<com.tencent.connect.auth.AuthMap: java.lang.String decode(java.lang.String,java.lang.String)>($r2, $r8);
+
+        virtualinvoke $r1.<android.os.Bundle: void putString(java.lang.String,java.lang.String)>("access_token", $r2);
+
+     label4:
+        $r2 = staticinvoke <com.tencent.open.utils.Util: java.lang.String encodeUrl(android.os.Bundle)>($r1);
+
+        $r10 = new org.json.JSONObject;
+
+        specialinvoke $r10.<org.json.JSONObject: void <init>()>();
+
+        $r9 = staticinvoke <com.tencent.open.utils.Util: org.json.JSONObject decodeUrlToJson(org.json.JSONObject,java.lang.String)>($r10, $r2);
+
+        $r2 = virtualinvoke $r9.<org.json.JSONObject: java.lang.String optString(java.lang.String)>("cb");
+
+        $r8 = "";
+
+        $z0 = virtualinvoke $r8.<java.lang.String: boolean equals(java.lang.Object)>($r2);
+
+        if $z0 != 0 goto label5;
+
+        $r7 = $r5.<com.tencent.connect.auth.AuthMap$Auth: com.tencent.connect.auth.AuthDialog dialog>;
+
+        $r8 = virtualinvoke $r9.<org.json.JSONObject: java.lang.String toString()>();
+
+        virtualinvoke $r7.<com.tencent.connect.auth.AuthDialog: void callJs(java.lang.String,java.lang.String)>($r2, $r8);
+
+        goto label1;
+
+     label5:
+        $r6 = $r5.<com.tencent.connect.auth.AuthMap$Auth: com.tencent.tauth.IUiListener listener>;
+
+        interfaceinvoke $r6.<com.tencent.tauth.IUiListener: void onComplete(java.lang.Object)>($r9);
+
+        $r7 = $r5.<com.tencent.connect.auth.AuthMap$Auth: com.tencent.connect.auth.AuthDialog dialog>;
+
+        virtualinvoke $r7.<com.tencent.connect.auth.AuthDialog: void dismiss()>();
+
+        goto label1;
+    }
+
+    private void handleActionUri(android.net.Uri)
+    {
+        android.os.Bundle $r4;
+        com.tencent.tauth.AuthActivity r0;
+        android.net.Uri $r1;
+        android.content.Intent $r7;
+        com.tencent.tauth.IUiListener $r9;
+        int $i0;
+        java.lang.StringBuilder $r5;
+        java.lang.Object $r8;
+        java.lang.String $r2, $r3, $r6;
+        boolean $z0;
+
+        r0 := @this: com.tencent.tauth.AuthActivity;
+
+        $r1 := @parameter0: android.net.Uri;
+
+        if $r1 == null goto label1;
+
+        $r2 = virtualinvoke $r1.<android.net.Uri: java.lang.String toString()>();
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>("");
+
+        if $z0 == 0 goto label2;
+
+     label1:
+        virtualinvoke r0.<com.tencent.tauth.AuthActivity: void finish()>();
+
+        return;
+
+     label2:
+        $r2 = virtualinvoke $r1.<android.net.Uri: java.lang.String toString()>();
+
+        $i0 = virtualinvoke $r2.<java.lang.String: int indexOf(java.lang.String)>("#");
+
+        $i0 = $i0 + 1;
+
+        $r3 = virtualinvoke $r2.<java.lang.String: java.lang.String substring(int)>($i0);
+
+        $r4 = staticinvoke <com.tencent.open.utils.Util: android.os.Bundle decodeUrl(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r4.<android.os.Bundle: java.lang.String getString(java.lang.String)>("action");
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("-->handleActionUri, action: ");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.tencent.open.a.b: void b(java.lang.String,java.lang.String)>("AuthActivity", $r6);
+
+        if $r3 != null goto label3;
+
+        specialinvoke r0.<com.tencent.tauth.AuthActivity: void execAuthCallback(android.os.Bundle,java.lang.String)>($r4, $r2);
+
+        return;
+
+     label3:
+        $z0 = virtualinvoke $r3.<java.lang.String: boolean equals(java.lang.Object)>("shareToQQ");
+
+        if $z0 != 0 goto label4;
+
+        $z0 = virtualinvoke $r3.<java.lang.String: boolean equals(java.lang.Object)>("shareToQzone");
+
+        if $z0 != 0 goto label4;
+
+        $z0 = virtualinvoke $r3.<java.lang.String: boolean equals(java.lang.Object)>("sendToMyComputer");
+
+        if $z0 != 0 goto label4;
+
+        $z0 = virtualinvoke $r3.<java.lang.String: boolean equals(java.lang.Object)>("shareToTroopBar");
+
+        if $z0 == 0 goto label6;
+
+     label4:
+        $z0 = virtualinvoke $r3.<java.lang.String: boolean equals(java.lang.Object)>("shareToQzone");
+
+        if $z0 == 0 goto label5;
+
+        $r2 = staticinvoke <com.tencent.open.utils.SystemUtils: java.lang.String getAppVersionName(android.content.Context,java.lang.String)>(r0, "com.tencent.mobileqq");
+
+        if $r2 == null goto label5;
+
+        $i0 = staticinvoke <com.tencent.open.utils.SystemUtils: int compareQQVersion(android.content.Context,java.lang.String)>(r0, "5.2.0");
+
+        if $i0 >= 0 goto label5;
+
+        $i0 = <com.tencent.tauth.AuthActivity: int mShareQzoneBackTime>;
+
+        $i0 = $i0 + 1;
+
+        <com.tencent.tauth.AuthActivity: int mShareQzoneBackTime> = $i0;
+
+        $i0 = <com.tencent.tauth.AuthActivity: int mShareQzoneBackTime>;
+
+        if $i0 != 2 goto label5;
+
+        <com.tencent.tauth.AuthActivity: int mShareQzoneBackTime> = 0;
+
+        virtualinvoke r0.<com.tencent.tauth.AuthActivity: void finish()>();
+
+        return;
+
+     label5:
+        $r7 = new android.content.Intent;
+
+        specialinvoke $r7.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>(r0, class "Lcom/tencent/connect/common/AssistActivity;");
+
+        virtualinvoke $r7.<android.content.Intent: android.content.Intent putExtras(android.os.Bundle)>($r4);
+
+        virtualinvoke $r7.<android.content.Intent: android.content.Intent setFlags(int)>(603979776);
+
+        <com.tencent.connect.common.AssistActivity: boolean hackShareBack> = 1;
+
+        virtualinvoke r0.<com.tencent.tauth.AuthActivity: void startActivity(android.content.Intent)>($r7);
+
+        virtualinvoke r0.<com.tencent.tauth.AuthActivity: void finish()>();
+
+        return;
+
+     label6:
+        $z0 = virtualinvoke $r3.<java.lang.String: boolean equals(java.lang.Object)>("addToQQFavorites");
+
+        if $z0 == 0 goto label8;
+
+        $r7 = virtualinvoke r0.<com.tencent.tauth.AuthActivity: android.content.Intent getIntent()>();
+
+        virtualinvoke $r7.<android.content.Intent: android.content.Intent putExtras(android.os.Bundle)>($r4);
+
+        virtualinvoke $r7.<android.content.Intent: android.content.Intent putExtra(java.lang.String,java.lang.String)>("key_action", "action_share");
+
+        $r8 = staticinvoke <com.tencent.open.utils.TemporaryStorage: java.lang.Object get(java.lang.String)>($r3);
+
+        if $r8 == null goto label7;
+
+        $r9 = (com.tencent.tauth.IUiListener) $r8;
+
+        staticinvoke <com.tencent.connect.common.BaseApi: void handleDataToListener(android.content.Intent,com.tencent.tauth.IUiListener)>($r7, $r9);
+
+     label7:
+        virtualinvoke r0.<com.tencent.tauth.AuthActivity: void finish()>();
+
+        return;
+
+     label8:
+        specialinvoke r0.<com.tencent.tauth.AuthActivity: void execAuthCallback(android.os.Bundle,java.lang.String)>($r4, $r2);
+
+        return;
+    }
+
+    protected void onCreate(android.os.Bundle)
+    {
+        android.os.Bundle $r1;
+        com.tencent.tauth.AuthActivity r0;
+        android.net.Uri $r3;
+        android.content.Intent $r2;
+        java.lang.StringBuilder $r4;
+        java.lang.String $r5;
+
+        r0 := @this: com.tencent.tauth.AuthActivity;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke r0.<android.app.Activity: void onCreate(android.os.Bundle)>($r1);
+
+        $r2 = virtualinvoke r0.<com.tencent.tauth.AuthActivity: android.content.Intent getIntent()>();
+
+        $r3 = virtualinvoke $r2.<android.content.Intent: android.net.Uri getData()>();
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("-->onCreate, uri: ");
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>($r3);
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <com.tencent.open.a.b: void b(java.lang.String,java.lang.String)>("AuthActivity", $r5);
+
+        specialinvoke r0.<com.tencent.tauth.AuthActivity: void handleActionUri(android.net.Uri)>($r3);
+
+        return;
+    }
+
+    public android.content.Intent getIntent()
+    {
+        android.content.Intent $r0;
+        com.tencent.tauth.AuthActivity this;
+
+        this := @this: com.tencent.tauth.AuthActivity;
+
+        $r0 = this.<com.tencent.tauth.AuthActivity: android.content.Intent ipcIntent>;
+
+        return $r0;
+    }
+
+    public void setIntent(android.content.Intent)
+    {
+        android.content.Intent parameter0;
+        com.tencent.tauth.AuthActivity this;
+
+        this := @this: com.tencent.tauth.AuthActivity;
+
+        parameter0 := @parameter0: android.content.Intent;
+
+        this.<com.tencent.tauth.AuthActivity: android.content.Intent ipcIntent> = parameter0;
+
+        return;
+    }
+
+    public void setResult(int, android.content.Intent)
+    {
+        int parameter0;
+        android.content.Intent parameter1;
+        com.tencent.tauth.AuthActivity this;
+
+        this := @this: com.tencent.tauth.AuthActivity;
+
+        parameter0 := @parameter0: int;
+
+        parameter1 := @parameter1: android.content.Intent;
+
+        this.<com.tencent.tauth.AuthActivity: android.content.Intent ipcResultIntent> = parameter1;
+
+        return;
+    }
+}

@@ -1,0 +1,1071 @@
+public class cn.trinea.android.common.util.FileUtils extends java.lang.Object
+{
+    public static final java.lang.String FILE_EXTENSION_SEPARATOR;
+
+    public void <init>()
+    {
+        cn.trinea.android.common.util.FileUtils r0;
+
+        r0 := @this: cn.trinea.android.common.util.FileUtils;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        return;
+    }
+
+    public static boolean copyFile(java.lang.String, java.lang.String)
+    {
+        java.lang.Throwable $r4;
+        java.lang.String $r0, $r1;
+        java.lang.RuntimeException $r2;
+        java.io.FileInputStream $r3;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r3 = new java.io.FileInputStream;
+
+     label1:
+        specialinvoke $r3.<java.io.FileInputStream: void <init>(java.lang.String)>($r0);
+
+     label2:
+        $z0 = staticinvoke <cn.trinea.android.common.util.FileUtils: boolean writeFile(java.lang.String,java.io.InputStream)>($r1, $r3);
+
+        return $z0;
+
+     label3:
+        $r4 := @caughtexception;
+
+        $r2 = new java.lang.RuntimeException;
+
+        specialinvoke $r2.<java.lang.RuntimeException: void <init>(java.lang.String,java.lang.Throwable)>("FileNotFoundException occurred. ", $r4);
+
+        throw $r2;
+
+        catch java.io.FileNotFoundException from label1 to label2 with label3;
+    }
+
+    public static boolean deleteFile(java.lang.String)
+    {
+        int $i0, $i1;
+        java.lang.String $r0;
+        java.io.File[] $r2;
+        java.io.File $r1, $r3;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $i0 = 0;
+
+        $z0 = staticinvoke <cn.trinea.android.common.util.StringUtils: boolean isBlank(java.lang.String)>($r0);
+
+        if $z0 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        $r1 = new java.io.File;
+
+        specialinvoke $r1.<java.io.File: void <init>(java.lang.String)>($r0);
+
+        $z0 = virtualinvoke $r1.<java.io.File: boolean exists()>();
+
+        if $z0 == 0 goto label8;
+
+        $z0 = virtualinvoke $r1.<java.io.File: boolean isFile()>();
+
+        if $z0 == 0 goto label2;
+
+        $z0 = virtualinvoke $r1.<java.io.File: boolean delete()>();
+
+        return $z0;
+
+     label2:
+        $z0 = virtualinvoke $r1.<java.io.File: boolean isDirectory()>();
+
+        if $z0 != 0 goto label3;
+
+        return 0;
+
+     label3:
+        $r2 = virtualinvoke $r1.<java.io.File: java.io.File[] listFiles()>();
+
+        $i1 = lengthof $r2;
+
+     label4:
+        if $i0 < $i1 goto label5;
+
+        $z0 = virtualinvoke $r1.<java.io.File: boolean delete()>();
+
+        return $z0;
+
+     label5:
+        $r3 = $r2[$i0];
+
+        $z0 = virtualinvoke $r3.<java.io.File: boolean isFile()>();
+
+        if $z0 == 0 goto label7;
+
+        virtualinvoke $r3.<java.io.File: boolean delete()>();
+
+     label6:
+        $i0 = $i0 + 1;
+
+        goto label4;
+
+     label7:
+        $z0 = virtualinvoke $r3.<java.io.File: boolean isDirectory()>();
+
+        if $z0 == 0 goto label6;
+
+        $r0 = virtualinvoke $r3.<java.io.File: java.lang.String getAbsolutePath()>();
+
+        staticinvoke <cn.trinea.android.common.util.FileUtils: boolean deleteFile(java.lang.String)>($r0);
+
+        goto label6;
+
+     label8:
+        return 1;
+    }
+
+    public static java.lang.String getFileExtension(java.lang.String)
+    {
+        int $i0, $i1;
+        java.lang.String $r0, $r1;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $z0 = staticinvoke <cn.trinea.android.common.util.StringUtils: boolean isBlank(java.lang.String)>($r0);
+
+        if $z0 == 0 goto label1;
+
+        return $r0;
+
+     label1:
+        $i0 = virtualinvoke $r0.<java.lang.String: int lastIndexOf(java.lang.String)>(".");
+
+        $r1 = <java.io.File: java.lang.String separator>;
+
+        $i1 = virtualinvoke $r0.<java.lang.String: int lastIndexOf(java.lang.String)>($r1);
+
+        if $i0 != -1 goto label2;
+
+        return "";
+
+     label2:
+        if $i1 < $i0 goto label3;
+
+        return "";
+
+     label3:
+        $i0 = $i0 + 1;
+
+        $r0 = virtualinvoke $r0.<java.lang.String: java.lang.String substring(int)>($i0);
+
+        return $r0;
+    }
+
+    public static java.lang.String getFileName(java.lang.String)
+    {
+        int $i0, $i1;
+        java.lang.String $r0, $r1;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $z0 = staticinvoke <cn.trinea.android.common.util.StringUtils: boolean isEmpty(java.lang.String)>($r0);
+
+        if $z0 == 0 goto label1;
+
+        return $r0;
+
+     label1:
+        $r1 = <java.io.File: java.lang.String separator>;
+
+        $i0 = virtualinvoke $r0.<java.lang.String: int lastIndexOf(java.lang.String)>($r1);
+
+        $i1 = -1;
+
+        if $i0 == $i1 goto label2;
+
+        $i0 = $i0 + 1;
+
+        $r0 = virtualinvoke $r0.<java.lang.String: java.lang.String substring(int)>($i0);
+
+     label2:
+        return $r0;
+    }
+
+    public static java.lang.String getFileNameWithoutExtension(java.lang.String)
+    {
+        int $i0, $i1, $i2;
+        java.lang.String $r0, $r1;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $z0 = staticinvoke <cn.trinea.android.common.util.StringUtils: boolean isEmpty(java.lang.String)>($r0);
+
+        if $z0 == 0 goto label1;
+
+        return $r0;
+
+     label1:
+        $i0 = virtualinvoke $r0.<java.lang.String: int lastIndexOf(java.lang.String)>(".");
+
+        $r1 = <java.io.File: java.lang.String separator>;
+
+        $i1 = virtualinvoke $r0.<java.lang.String: int lastIndexOf(java.lang.String)>($r1);
+
+        $i2 = -1;
+
+        if $i1 != $i2 goto label2;
+
+        $i1 = -1;
+
+        if $i0 == $i1 goto label5;
+
+        $r0 = virtualinvoke $r0.<java.lang.String: java.lang.String substring(int,int)>(0, $i0);
+
+        return $r0;
+
+     label2:
+        $i2 = -1;
+
+        if $i0 != $i2 goto label3;
+
+        $i0 = $i1 + 1;
+
+        $r0 = virtualinvoke $r0.<java.lang.String: java.lang.String substring(int)>($i0);
+
+        return $r0;
+
+     label3:
+        if $i1 >= $i0 goto label4;
+
+        $i1 = $i1 + 1;
+
+        $r0 = virtualinvoke $r0.<java.lang.String: java.lang.String substring(int,int)>($i1, $i0);
+
+        return $r0;
+
+     label4:
+        $i0 = $i1 + 1;
+
+        $r0 = virtualinvoke $r0.<java.lang.String: java.lang.String substring(int)>($i0);
+
+     label5:
+        return $r0;
+    }
+
+    public static long getFileSize(java.lang.String)
+    {
+        long $l0;
+        java.lang.String $r0;
+        java.io.File $r1;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $z0 = staticinvoke <cn.trinea.android.common.util.StringUtils: boolean isBlank(java.lang.String)>($r0);
+
+        if $z0 == 0 goto label1;
+
+        return -1L;
+
+     label1:
+        $r1 = new java.io.File;
+
+        specialinvoke $r1.<java.io.File: void <init>(java.lang.String)>($r0);
+
+        $z0 = virtualinvoke $r1.<java.io.File: boolean exists()>();
+
+        if $z0 == 0 goto label2;
+
+        $z0 = virtualinvoke $r1.<java.io.File: boolean isFile()>();
+
+        if $z0 == 0 goto label2;
+
+        $l0 = virtualinvoke $r1.<java.io.File: long length()>();
+
+        return $l0;
+
+     label2:
+        return -1L;
+    }
+
+    public static java.lang.String getFolderName(java.lang.String)
+    {
+        int $i0;
+        java.lang.String $r0, $r1;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $z0 = staticinvoke <cn.trinea.android.common.util.StringUtils: boolean isEmpty(java.lang.String)>($r0);
+
+        if $z0 == 0 goto label1;
+
+        return $r0;
+
+     label1:
+        $r1 = <java.io.File: java.lang.String separator>;
+
+        $i0 = virtualinvoke $r0.<java.lang.String: int lastIndexOf(java.lang.String)>($r1);
+
+        if $i0 != -1 goto label2;
+
+        return "";
+
+     label2:
+        $r0 = virtualinvoke $r0.<java.lang.String: java.lang.String substring(int,int)>(0, $i0);
+
+        return $r0;
+    }
+
+    public static boolean isFileExist(java.lang.String)
+    {
+        java.lang.String $r0;
+        java.io.File $r1;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $z0 = staticinvoke <cn.trinea.android.common.util.StringUtils: boolean isBlank(java.lang.String)>($r0);
+
+        if $z0 == 0 goto label1;
+
+        return 0;
+
+     label1:
+        $r1 = new java.io.File;
+
+        specialinvoke $r1.<java.io.File: void <init>(java.lang.String)>($r0);
+
+        $z0 = virtualinvoke $r1.<java.io.File: boolean exists()>();
+
+        if $z0 == 0 goto label2;
+
+        $z0 = virtualinvoke $r1.<java.io.File: boolean isFile()>();
+
+        if $z0 == 0 goto label2;
+
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    public static boolean isFolderExist(java.lang.String)
+    {
+        java.lang.String $r0;
+        java.io.File $r1;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $z0 = staticinvoke <cn.trinea.android.common.util.StringUtils: boolean isBlank(java.lang.String)>($r0);
+
+        if $z0 == 0 goto label1;
+
+        return 0;
+
+     label1:
+        $r1 = new java.io.File;
+
+        specialinvoke $r1.<java.io.File: void <init>(java.lang.String)>($r0);
+
+        $z0 = virtualinvoke $r1.<java.io.File: boolean exists()>();
+
+        if $z0 == 0 goto label2;
+
+        $z0 = virtualinvoke $r1.<java.io.File: boolean isDirectory()>();
+
+        if $z0 == 0 goto label2;
+
+        return 1;
+
+     label2:
+        return 0;
+    }
+
+    public static boolean makeDirs(java.lang.String)
+    {
+        java.lang.String $r0;
+        java.io.File $r1;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r0 = staticinvoke <cn.trinea.android.common.util.FileUtils: java.lang.String getFolderName(java.lang.String)>($r0);
+
+        $z0 = staticinvoke <cn.trinea.android.common.util.StringUtils: boolean isEmpty(java.lang.String)>($r0);
+
+        if $z0 == 0 goto label1;
+
+        return 0;
+
+     label1:
+        $r1 = new java.io.File;
+
+        specialinvoke $r1.<java.io.File: void <init>(java.lang.String)>($r0);
+
+        $z0 = virtualinvoke $r1.<java.io.File: boolean exists()>();
+
+        if $z0 == 0 goto label2;
+
+        $z0 = virtualinvoke $r1.<java.io.File: boolean isDirectory()>();
+
+        if $z0 == 0 goto label2;
+
+        return 1;
+
+     label2:
+        $z0 = virtualinvoke $r1.<java.io.File: boolean mkdirs()>();
+
+        return $z0;
+    }
+
+    public static boolean makeFolders(java.lang.String)
+    {
+        java.lang.String $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $z0 = staticinvoke <cn.trinea.android.common.util.FileUtils: boolean makeDirs(java.lang.String)>($r0);
+
+        return $z0;
+    }
+
+    public static java.lang.StringBuilder readFile(java.lang.String, java.lang.String)
+    {
+        java.lang.Throwable $r7, $r9, $r10, $r11, $r12, $r13;
+        java.io.FileInputStream $r5;
+        java.lang.RuntimeException $r8;
+        java.io.InputStreamReader $r4;
+        java.io.File $r2;
+        java.lang.StringBuilder $r3;
+        java.lang.String $r0, $r1;
+        java.io.BufferedReader $r6;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 = new java.io.File;
+
+        specialinvoke $r2.<java.io.File: void <init>(java.lang.String)>($r0);
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>("");
+
+        $z0 = virtualinvoke $r2.<java.io.File: boolean isFile()>();
+
+        if $z0 != 0 goto label01;
+
+        return null;
+
+     label01:
+        $r4 = new java.io.InputStreamReader;
+
+        $r5 = new java.io.FileInputStream;
+
+     label02:
+        specialinvoke $r5.<java.io.FileInputStream: void <init>(java.io.File)>($r2);
+
+        specialinvoke $r4.<java.io.InputStreamReader: void <init>(java.io.InputStream,java.lang.String)>($r5, $r1);
+
+     label03:
+        $r6 = new java.io.BufferedReader;
+
+     label04:
+        specialinvoke $r6.<java.io.BufferedReader: void <init>(java.io.Reader)>($r4);
+
+     label05:
+        $r0 = virtualinvoke $r6.<java.io.BufferedReader: java.lang.String readLine()>();
+
+     label06:
+        if $r0 != null goto label10;
+
+     label07:
+        virtualinvoke $r6.<java.io.BufferedReader: void close()>();
+
+     label08:
+        virtualinvoke $r6.<java.io.BufferedReader: void close()>();
+
+     label09:
+        return $r3;
+
+     label10:
+        $r1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>("");
+
+     label11:
+        if $z0 != 0 goto label13;
+
+     label12:
+        virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\r\n");
+
+     label13:
+        virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r0);
+
+     label14:
+        goto label05;
+
+     label15:
+        $r7 := @caughtexception;
+
+     label16:
+        $r8 = new java.lang.RuntimeException;
+
+        specialinvoke $r8.<java.lang.RuntimeException: void <init>(java.lang.String,java.lang.Throwable)>("IOException occurred. ", $r7);
+
+        throw $r8;
+
+     label17:
+        $r9 := @caughtexception;
+
+     label18:
+        if $r6 == null goto label20;
+
+     label19:
+        virtualinvoke $r6.<java.io.BufferedReader: void close()>();
+
+     label20:
+        throw $r9;
+
+     label21:
+        $r10 := @caughtexception;
+
+        $r8 = new java.lang.RuntimeException;
+
+        specialinvoke $r8.<java.lang.RuntimeException: void <init>(java.lang.String,java.lang.Throwable)>("IOException occurred. ", $r10);
+
+        throw $r8;
+
+     label22:
+        $r11 := @caughtexception;
+
+        $r8 = new java.lang.RuntimeException;
+
+        specialinvoke $r8.<java.lang.RuntimeException: void <init>(java.lang.String,java.lang.Throwable)>("IOException occurred. ", $r11);
+
+        throw $r8;
+
+     label23:
+        $r12 := @caughtexception;
+
+        $r6 = null;
+
+        $r9 = $r12;
+
+        goto label18;
+
+     label24:
+        $r9 := @caughtexception;
+
+        goto label18;
+
+     label25:
+        $r13 := @caughtexception;
+
+        $r6 = null;
+
+        $r7 = $r13;
+
+        goto label16;
+
+        catch java.io.IOException from label02 to label03 with label25;
+        catch java.io.IOException from label04 to label05 with label25;
+        catch java.lang.Throwable from label01 to label05 with label23;
+        catch java.io.IOException from label05 to label06 with label15;
+        catch java.io.IOException from label07 to label08 with label15;
+        catch java.lang.Throwable from label05 to label06 with label24;
+        catch java.lang.Throwable from label07 to label08 with label24;
+        catch java.io.IOException from label08 to label09 with label21;
+        catch java.io.IOException from label10 to label11 with label15;
+        catch java.io.IOException from label12 to label14 with label15;
+        catch java.lang.Throwable from label10 to label11 with label24;
+        catch java.lang.Throwable from label12 to label14 with label24;
+        catch java.lang.Throwable from label16 to label17 with label17;
+        catch java.io.IOException from label19 to label20 with label22;
+    }
+
+    public static java.util.List readFileToList(java.lang.String, java.lang.String)
+    {
+        java.lang.Throwable $r7, $r9, $r10, $r11, $r12, $r13;
+        java.io.FileInputStream $r2;
+        java.lang.RuntimeException $r8;
+        java.io.InputStreamReader $r5;
+        java.io.File $r3;
+        java.util.ArrayList $r4;
+        java.lang.String $r0, $r1;
+        java.io.BufferedReader $r6;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r3 = new java.io.File;
+
+        specialinvoke $r3.<java.io.File: void <init>(java.lang.String)>($r0);
+
+        $r4 = new java.util.ArrayList;
+
+        specialinvoke $r4.<java.util.ArrayList: void <init>()>();
+
+        $z0 = virtualinvoke $r3.<java.io.File: boolean isFile()>();
+
+        if $z0 != 0 goto label01;
+
+        return null;
+
+     label01:
+        $r5 = new java.io.InputStreamReader;
+
+        $r2 = new java.io.FileInputStream;
+
+     label02:
+        specialinvoke $r2.<java.io.FileInputStream: void <init>(java.io.File)>($r3);
+
+        specialinvoke $r5.<java.io.InputStreamReader: void <init>(java.io.InputStream,java.lang.String)>($r2, $r1);
+
+     label03:
+        $r6 = new java.io.BufferedReader;
+
+     label04:
+        specialinvoke $r6.<java.io.BufferedReader: void <init>(java.io.Reader)>($r5);
+
+     label05:
+        $r0 = virtualinvoke $r6.<java.io.BufferedReader: java.lang.String readLine()>();
+
+     label06:
+        if $r0 != null goto label10;
+
+     label07:
+        virtualinvoke $r6.<java.io.BufferedReader: void close()>();
+
+     label08:
+        virtualinvoke $r6.<java.io.BufferedReader: void close()>();
+
+     label09:
+        return $r4;
+
+     label10:
+        interfaceinvoke $r4.<java.util.List: boolean add(java.lang.Object)>($r0);
+
+     label11:
+        goto label05;
+
+     label12:
+        $r7 := @caughtexception;
+
+     label13:
+        $r8 = new java.lang.RuntimeException;
+
+        specialinvoke $r8.<java.lang.RuntimeException: void <init>(java.lang.String,java.lang.Throwable)>("IOException occurred. ", $r7);
+
+        throw $r8;
+
+     label14:
+        $r9 := @caughtexception;
+
+     label15:
+        if $r6 == null goto label17;
+
+     label16:
+        virtualinvoke $r6.<java.io.BufferedReader: void close()>();
+
+     label17:
+        throw $r9;
+
+     label18:
+        $r10 := @caughtexception;
+
+        $r8 = new java.lang.RuntimeException;
+
+        specialinvoke $r8.<java.lang.RuntimeException: void <init>(java.lang.String,java.lang.Throwable)>("IOException occurred. ", $r10);
+
+        throw $r8;
+
+     label19:
+        $r11 := @caughtexception;
+
+        $r8 = new java.lang.RuntimeException;
+
+        specialinvoke $r8.<java.lang.RuntimeException: void <init>(java.lang.String,java.lang.Throwable)>("IOException occurred. ", $r11);
+
+        throw $r8;
+
+     label20:
+        $r12 := @caughtexception;
+
+        $r6 = null;
+
+        $r9 = $r12;
+
+        goto label15;
+
+     label21:
+        $r9 := @caughtexception;
+
+        goto label15;
+
+     label22:
+        $r13 := @caughtexception;
+
+        $r6 = null;
+
+        $r7 = $r13;
+
+        goto label13;
+
+        catch java.io.IOException from label02 to label03 with label22;
+        catch java.io.IOException from label04 to label05 with label22;
+        catch java.lang.Throwable from label01 to label05 with label20;
+        catch java.io.IOException from label05 to label06 with label12;
+        catch java.io.IOException from label07 to label08 with label12;
+        catch java.lang.Throwable from label05 to label06 with label21;
+        catch java.lang.Throwable from label07 to label08 with label21;
+        catch java.io.IOException from label08 to label09 with label18;
+        catch java.io.IOException from label10 to label11 with label12;
+        catch java.lang.Throwable from label10 to label11 with label21;
+        catch java.lang.Throwable from label13 to label14 with label14;
+        catch java.io.IOException from label16 to label17 with label19;
+    }
+
+    public static boolean writeFile(java.io.File, java.io.InputStream)
+    {
+        java.io.File $r0;
+        java.io.InputStream $r1;
+        boolean $z0;
+
+        $r0 := @parameter0: java.io.File;
+
+        $r1 := @parameter1: java.io.InputStream;
+
+        $z0 = staticinvoke <cn.trinea.android.common.util.FileUtils: boolean writeFile(java.io.File,java.io.InputStream,boolean)>($r0, $r1, 0);
+
+        return $z0;
+    }
+
+    public static boolean writeFile(java.io.File, java.io.InputStream, boolean)
+    {
+        java.lang.Throwable $r5, $r7, $r8, $r9, $r10;
+        byte[] $r4;
+        java.io.FileOutputStream $r3, $r11;
+        java.lang.RuntimeException $r6, $r12;
+        java.io.File $r0;
+        int $i0;
+        java.lang.String $r2;
+        java.io.InputStream $r1;
+        boolean $z0;
+
+        $r0 := @parameter0: java.io.File;
+
+        $r1 := @parameter1: java.io.InputStream;
+
+        $z0 := @parameter2: boolean;
+
+     label01:
+        $r2 = virtualinvoke $r0.<java.io.File: java.lang.String getAbsolutePath()>();
+
+        staticinvoke <cn.trinea.android.common.util.FileUtils: boolean makeDirs(java.lang.String)>($r2);
+
+     label02:
+        $r11 = new java.io.FileOutputStream;
+
+     label03:
+        $r3 = $r11;
+
+     label04:
+        specialinvoke $r11.<java.io.FileOutputStream: void <init>(java.io.File,boolean)>($r0, 0);
+
+     label05:
+        $r4 = newarray (byte)[1024];
+
+     label06:
+        $i0 = virtualinvoke $r1.<java.io.InputStream: int read(byte[])>($r4);
+
+     label07:
+        if $i0 != -1 goto label11;
+
+     label08:
+        virtualinvoke $r3.<java.io.OutputStream: void flush()>();
+
+     label09:
+        virtualinvoke $r3.<java.io.OutputStream: void close()>();
+
+        virtualinvoke $r1.<java.io.InputStream: void close()>();
+
+     label10:
+        return 1;
+
+     label11:
+        virtualinvoke $r3.<java.io.OutputStream: void write(byte[],int,int)>($r4, 0, $i0);
+
+     label12:
+        goto label06;
+
+     label13:
+        $r5 := @caughtexception;
+
+     label14:
+        $r12 = new java.lang.RuntimeException;
+
+     label15:
+        $r6 = $r12;
+
+     label16:
+        specialinvoke $r12.<java.lang.RuntimeException: void <init>(java.lang.String,java.lang.Throwable)>("FileNotFoundException occurred. ", $r5);
+
+        throw $r6;
+
+     label17:
+        $r7 := @caughtexception;
+
+     label18:
+        if $r3 == null goto label20;
+
+     label19:
+        virtualinvoke $r3.<java.io.OutputStream: void close()>();
+
+        virtualinvoke $r1.<java.io.InputStream: void close()>();
+
+     label20:
+        throw $r7;
+
+     label21:
+        $r8 := @caughtexception;
+
+        $r12 = new java.lang.RuntimeException;
+
+        specialinvoke $r12.<java.lang.RuntimeException: void <init>(java.lang.String,java.lang.Throwable)>("IOException occurred. ", $r8);
+
+        throw $r12;
+
+     label22:
+        $r9 := @caughtexception;
+
+        $r3 = null;
+
+     label23:
+        $r12 = new java.lang.RuntimeException;
+
+     label24:
+        $r6 = $r12;
+
+     label25:
+        specialinvoke $r12.<java.lang.RuntimeException: void <init>(java.lang.String,java.lang.Throwable)>("IOException occurred. ", $r9);
+
+        throw $r6;
+
+     label26:
+        $r10 := @caughtexception;
+
+        $r12 = new java.lang.RuntimeException;
+
+        specialinvoke $r12.<java.lang.RuntimeException: void <init>(java.lang.String,java.lang.Throwable)>("IOException occurred. ", $r10);
+
+        throw $r12;
+
+     label27:
+        $r7 := @caughtexception;
+
+        $r3 = null;
+
+        goto label18;
+
+     label28:
+        $r9 := @caughtexception;
+
+        goto label23;
+
+     label29:
+        $r5 := @caughtexception;
+
+        $r3 = null;
+
+        goto label14;
+
+        catch java.io.FileNotFoundException from label01 to label02 with label29;
+        catch java.io.FileNotFoundException from label04 to label05 with label29;
+        catch java.io.IOException from label01 to label02 with label22;
+        catch java.io.IOException from label04 to label05 with label22;
+        catch java.lang.Throwable from label01 to label03 with label27;
+        catch java.lang.Throwable from label04 to label05 with label27;
+        catch java.io.FileNotFoundException from label06 to label07 with label13;
+        catch java.io.FileNotFoundException from label08 to label09 with label13;
+        catch java.io.IOException from label06 to label07 with label28;
+        catch java.io.IOException from label08 to label09 with label28;
+        catch java.lang.Throwable from label06 to label07 with label17;
+        catch java.lang.Throwable from label08 to label09 with label17;
+        catch java.io.IOException from label09 to label10 with label21;
+        catch java.io.FileNotFoundException from label11 to label12 with label13;
+        catch java.io.IOException from label11 to label12 with label28;
+        catch java.lang.Throwable from label11 to label12 with label17;
+        catch java.lang.Throwable from label14 to label15 with label17;
+        catch java.lang.Throwable from label16 to label17 with label17;
+        catch java.io.IOException from label19 to label20 with label26;
+        catch java.lang.Throwable from label23 to label24 with label17;
+        catch java.lang.Throwable from label25 to label26 with label17;
+    }
+
+    public static boolean writeFile(java.lang.String, java.io.InputStream)
+    {
+        java.lang.String $r0;
+        java.io.InputStream $r1;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: java.io.InputStream;
+
+        $z0 = staticinvoke <cn.trinea.android.common.util.FileUtils: boolean writeFile(java.lang.String,java.io.InputStream,boolean)>($r0, $r1, 0);
+
+        return $z0;
+    }
+
+    public static boolean writeFile(java.lang.String, java.io.InputStream, boolean)
+    {
+        java.lang.String $r0;
+        java.io.File $r2;
+        java.io.InputStream $r1;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: java.io.InputStream;
+
+        $z0 := @parameter2: boolean;
+
+        if $r0 == null goto label2;
+
+        $r2 = new java.io.File;
+
+        specialinvoke $r2.<java.io.File: void <init>(java.lang.String)>($r0);
+
+     label1:
+        $z0 = staticinvoke <cn.trinea.android.common.util.FileUtils: boolean writeFile(java.io.File,java.io.InputStream,boolean)>($r2, $r1, 0);
+
+        return $z0;
+
+     label2:
+        $r2 = null;
+
+        goto label1;
+    }
+
+    public static boolean writeFile(java.lang.String, java.lang.String, boolean)
+    {
+        java.lang.Throwable $r3, $r5, $r6, $r7;
+        java.io.FileWriter $r2;
+        java.lang.RuntimeException $r4;
+        java.lang.String $r0, $r1;
+        boolean $z0;
+
+        $r0 := @parameter0: java.lang.String;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $z0 := @parameter2: boolean;
+
+     label01:
+        staticinvoke <cn.trinea.android.common.util.FileUtils: boolean makeDirs(java.lang.String)>($r0);
+
+     label02:
+        $r2 = new java.io.FileWriter;
+
+     label03:
+        specialinvoke $r2.<java.io.FileWriter: void <init>(java.lang.String,boolean)>($r0, $z0);
+
+     label04:
+        virtualinvoke $r2.<java.io.FileWriter: void write(java.lang.String)>($r1);
+
+        virtualinvoke $r2.<java.io.FileWriter: void close()>();
+
+     label05:
+        virtualinvoke $r2.<java.io.FileWriter: void close()>();
+
+     label06:
+        return 1;
+
+     label07:
+        $r3 := @caughtexception;
+
+        $r4 = new java.lang.RuntimeException;
+
+        specialinvoke $r4.<java.lang.RuntimeException: void <init>(java.lang.String,java.lang.Throwable)>("IOException occurred. ", $r3);
+
+        throw $r4;
+
+     label08:
+        $r5 := @caughtexception;
+
+        $r2 = null;
+
+     label09:
+        $r4 = new java.lang.RuntimeException;
+
+        specialinvoke $r4.<java.lang.RuntimeException: void <init>(java.lang.String,java.lang.Throwable)>("IOException occurred. ", $r5);
+
+        throw $r4;
+
+     label10:
+        $r6 := @caughtexception;
+
+     label11:
+        if $r2 == null goto label13;
+
+     label12:
+        virtualinvoke $r2.<java.io.FileWriter: void close()>();
+
+     label13:
+        throw $r6;
+
+     label14:
+        $r7 := @caughtexception;
+
+        $r4 = new java.lang.RuntimeException;
+
+        specialinvoke $r4.<java.lang.RuntimeException: void <init>(java.lang.String,java.lang.Throwable)>("IOException occurred. ", $r7);
+
+        throw $r4;
+
+     label15:
+        $r6 := @caughtexception;
+
+        $r2 = null;
+
+        goto label11;
+
+     label16:
+        $r5 := @caughtexception;
+
+        goto label09;
+
+        catch java.io.IOException from label01 to label02 with label08;
+        catch java.io.IOException from label03 to label04 with label08;
+        catch java.lang.Throwable from label01 to label04 with label15;
+        catch java.io.IOException from label04 to label05 with label16;
+        catch java.lang.Throwable from label04 to label05 with label10;
+        catch java.io.IOException from label05 to label06 with label07;
+        catch java.lang.Throwable from label09 to label10 with label10;
+        catch java.io.IOException from label12 to label13 with label14;
+    }
+
+    public static void <clinit>()
+    {
+        <cn.trinea.android.common.util.FileUtils: java.lang.String FILE_EXTENSION_SEPARATOR> = ".";
+
+        return;
+    }
+}

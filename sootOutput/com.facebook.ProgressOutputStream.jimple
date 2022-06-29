@@ -1,0 +1,387 @@
+class com.facebook.ProgressOutputStream extends java.io.FilterOutputStream implements com.facebook.RequestOutputStream
+{
+    private long batchProgress;
+    private com.facebook.RequestProgress currentRequestProgress;
+    private long lastReportedProgress;
+    private long maxProgress;
+    private final java.util.Map progressMap;
+    private final com.facebook.RequestBatch requests;
+    private final long threshold;
+
+    void <init>(java.io.OutputStream, com.facebook.RequestBatch, java.util.Map, long)
+    {
+        java.io.OutputStream $r1;
+        com.facebook.RequestBatch $r2;
+        com.facebook.ProgressOutputStream r0;
+        java.util.Map r3;
+        long $l0;
+
+        r0 := @this: com.facebook.ProgressOutputStream;
+
+        $r1 := @parameter0: java.io.OutputStream;
+
+        $r2 := @parameter1: com.facebook.RequestBatch;
+
+        r3 := @parameter2: java.util.Map;
+
+        $l0 := @parameter3: long;
+
+        specialinvoke r0.<java.io.FilterOutputStream: void <init>(java.io.OutputStream)>($r1);
+
+        r0.<com.facebook.ProgressOutputStream: com.facebook.RequestBatch requests> = $r2;
+
+        r0.<com.facebook.ProgressOutputStream: java.util.Map progressMap> = r3;
+
+        r0.<com.facebook.ProgressOutputStream: long maxProgress> = $l0;
+
+        $l0 = staticinvoke <com.facebook.Settings: long getOnProgressThreshold()>();
+
+        r0.<com.facebook.ProgressOutputStream: long threshold> = $l0;
+
+        return;
+    }
+
+    static com.facebook.RequestBatch access$0(com.facebook.ProgressOutputStream)
+    {
+        com.facebook.RequestBatch r1;
+        com.facebook.ProgressOutputStream $r0;
+
+        $r0 := @parameter0: com.facebook.ProgressOutputStream;
+
+        r1 = $r0.<com.facebook.ProgressOutputStream: com.facebook.RequestBatch requests>;
+
+        return r1;
+    }
+
+    static long access$1(com.facebook.ProgressOutputStream)
+    {
+        long l0;
+        com.facebook.ProgressOutputStream $r0;
+
+        $r0 := @parameter0: com.facebook.ProgressOutputStream;
+
+        l0 = $r0.<com.facebook.ProgressOutputStream: long batchProgress>;
+
+        return l0;
+    }
+
+    static long access$2(com.facebook.ProgressOutputStream)
+    {
+        long l0;
+        com.facebook.ProgressOutputStream $r0;
+
+        $r0 := @parameter0: com.facebook.ProgressOutputStream;
+
+        l0 = $r0.<com.facebook.ProgressOutputStream: long maxProgress>;
+
+        return l0;
+    }
+
+    private void addProgress(long)
+    {
+        com.facebook.RequestProgress $r1;
+        byte $b3;
+        com.facebook.ProgressOutputStream r0;
+        int $i4;
+        long $l0, $l1, $l2;
+
+        r0 := @this: com.facebook.ProgressOutputStream;
+
+        $l0 := @parameter0: long;
+
+        $r1 = r0.<com.facebook.ProgressOutputStream: com.facebook.RequestProgress currentRequestProgress>;
+
+        if $r1 == null goto label1;
+
+        $r1 = r0.<com.facebook.ProgressOutputStream: com.facebook.RequestProgress currentRequestProgress>;
+
+        virtualinvoke $r1.<com.facebook.RequestProgress: void addProgress(long)>($l0);
+
+     label1:
+        $l1 = r0.<com.facebook.ProgressOutputStream: long batchProgress>;
+
+        $l0 = $l1 + $l0;
+
+        r0.<com.facebook.ProgressOutputStream: long batchProgress> = $l0;
+
+        $l0 = r0.<com.facebook.ProgressOutputStream: long batchProgress>;
+
+        $l2 = r0.<com.facebook.ProgressOutputStream: long lastReportedProgress>;
+
+        $l1 = r0.<com.facebook.ProgressOutputStream: long threshold>;
+
+        $l1 = $l2 + $l1;
+
+        $b3 = $l0 cmp $l1;
+
+        $i4 = (int) $b3;
+
+        if $i4 >= 0 goto label2;
+
+        $l0 = r0.<com.facebook.ProgressOutputStream: long batchProgress>;
+
+        $l1 = r0.<com.facebook.ProgressOutputStream: long maxProgress>;
+
+        $b3 = $l0 cmp $l1;
+
+        $i4 = (int) $b3;
+
+        if $i4 < 0 goto label3;
+
+     label2:
+        specialinvoke r0.<com.facebook.ProgressOutputStream: void reportBatchProgress()>();
+
+     label3:
+        return;
+    }
+
+    private void reportBatchProgress()
+    {
+        java.util.Iterator $r3;
+        long $l0, $l1;
+        com.facebook.RequestBatch$Callback r5;
+        com.facebook.RequestBatch$OnProgressCallback r7;
+        com.facebook.RequestBatch $r1;
+        java.util.List $r2;
+        byte $b2;
+        com.facebook.ProgressOutputStream r0;
+        android.os.Handler $r6;
+        com.facebook.ProgressOutputStream$1 $r8;
+        int $i3;
+        java.lang.Object $r4;
+        boolean $z0;
+
+        r0 := @this: com.facebook.ProgressOutputStream;
+
+        $l1 = r0.<com.facebook.ProgressOutputStream: long batchProgress>;
+
+        $l0 = r0.<com.facebook.ProgressOutputStream: long lastReportedProgress>;
+
+        $b2 = $l1 cmp $l0;
+
+        $i3 = (int) $b2;
+
+        if $i3 <= 0 goto label4;
+
+        $r1 = r0.<com.facebook.ProgressOutputStream: com.facebook.RequestBatch requests>;
+
+        $r2 = virtualinvoke $r1.<com.facebook.RequestBatch: java.util.List getCallbacks()>();
+
+        $r3 = interfaceinvoke $r2.<java.util.List: java.util.Iterator iterator()>();
+
+     label1:
+        $z0 = interfaceinvoke $r3.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 != 0 goto label2;
+
+        $l0 = r0.<com.facebook.ProgressOutputStream: long batchProgress>;
+
+        r0.<com.facebook.ProgressOutputStream: long lastReportedProgress> = $l0;
+
+        return;
+
+     label2:
+        $r4 = interfaceinvoke $r3.<java.util.Iterator: java.lang.Object next()>();
+
+        r5 = (com.facebook.RequestBatch$Callback) $r4;
+
+        $z0 = r5 instanceof com.facebook.RequestBatch$OnProgressCallback;
+
+        if $z0 == 0 goto label1;
+
+        $r1 = r0.<com.facebook.ProgressOutputStream: com.facebook.RequestBatch requests>;
+
+        $r6 = virtualinvoke $r1.<com.facebook.RequestBatch: android.os.Handler getCallbackHandler()>();
+
+        r7 = (com.facebook.RequestBatch$OnProgressCallback) r5;
+
+        if $r6 != null goto label3;
+
+        $r1 = r0.<com.facebook.ProgressOutputStream: com.facebook.RequestBatch requests>;
+
+        $l0 = r0.<com.facebook.ProgressOutputStream: long batchProgress>;
+
+        $l1 = r0.<com.facebook.ProgressOutputStream: long maxProgress>;
+
+        interfaceinvoke r7.<com.facebook.RequestBatch$OnProgressCallback: void onBatchProgress(com.facebook.RequestBatch,long,long)>($r1, $l0, $l1);
+
+        goto label1;
+
+     label3:
+        $r8 = new com.facebook.ProgressOutputStream$1;
+
+        specialinvoke $r8.<com.facebook.ProgressOutputStream$1: void <init>(com.facebook.ProgressOutputStream,com.facebook.RequestBatch$OnProgressCallback)>(r0, r7);
+
+        virtualinvoke $r6.<android.os.Handler: boolean post(java.lang.Runnable)>($r8);
+
+        goto label1;
+
+     label4:
+        return;
+    }
+
+    public void close() throws java.io.IOException
+    {
+        com.facebook.RequestProgress r5;
+        java.util.Iterator $r3;
+        com.facebook.ProgressOutputStream r0;
+        java.util.Map $r1;
+        java.util.Collection $r2;
+        java.lang.Object $r4;
+        boolean $z0;
+
+        r0 := @this: com.facebook.ProgressOutputStream;
+
+        specialinvoke r0.<java.io.FilterOutputStream: void close()>();
+
+        $r1 = r0.<com.facebook.ProgressOutputStream: java.util.Map progressMap>;
+
+        $r2 = interfaceinvoke $r1.<java.util.Map: java.util.Collection values()>();
+
+        $r3 = interfaceinvoke $r2.<java.util.Collection: java.util.Iterator iterator()>();
+
+     label1:
+        $z0 = interfaceinvoke $r3.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 != 0 goto label2;
+
+        specialinvoke r0.<com.facebook.ProgressOutputStream: void reportBatchProgress()>();
+
+        return;
+
+     label2:
+        $r4 = interfaceinvoke $r3.<java.util.Iterator: java.lang.Object next()>();
+
+        r5 = (com.facebook.RequestProgress) $r4;
+
+        virtualinvoke r5.<com.facebook.RequestProgress: void reportProgress()>();
+
+        goto label1;
+    }
+
+    long getBatchProgress()
+    {
+        long l0;
+        com.facebook.ProgressOutputStream r0;
+
+        r0 := @this: com.facebook.ProgressOutputStream;
+
+        l0 = r0.<com.facebook.ProgressOutputStream: long batchProgress>;
+
+        return l0;
+    }
+
+    long getMaxProgress()
+    {
+        long l0;
+        com.facebook.ProgressOutputStream r0;
+
+        r0 := @this: com.facebook.ProgressOutputStream;
+
+        l0 = r0.<com.facebook.ProgressOutputStream: long maxProgress>;
+
+        return l0;
+    }
+
+    public void setCurrentRequest(com.facebook.Request)
+    {
+        com.facebook.RequestProgress $r4;
+        com.facebook.ProgressOutputStream r0;
+        java.util.Map $r3;
+        com.facebook.Request $r1;
+        java.lang.Object $r2;
+
+        r0 := @this: com.facebook.ProgressOutputStream;
+
+        $r1 := @parameter0: com.facebook.Request;
+
+        if $r1 == null goto label2;
+
+        $r3 = r0.<com.facebook.ProgressOutputStream: java.util.Map progressMap>;
+
+        $r2 = interfaceinvoke $r3.<java.util.Map: java.lang.Object get(java.lang.Object)>($r1);
+
+        $r4 = (com.facebook.RequestProgress) $r2;
+
+     label1:
+        r0.<com.facebook.ProgressOutputStream: com.facebook.RequestProgress currentRequestProgress> = $r4;
+
+        return;
+
+     label2:
+        $r4 = null;
+
+        goto label1;
+    }
+
+    public void write(int) throws java.io.IOException
+    {
+        int $i0;
+        java.io.OutputStream $r1;
+        com.facebook.ProgressOutputStream r0;
+
+        r0 := @this: com.facebook.ProgressOutputStream;
+
+        $i0 := @parameter0: int;
+
+        $r1 = r0.<com.facebook.ProgressOutputStream: java.io.OutputStream out>;
+
+        virtualinvoke $r1.<java.io.OutputStream: void write(int)>($i0);
+
+        specialinvoke r0.<com.facebook.ProgressOutputStream: void addProgress(long)>(1L);
+
+        return;
+    }
+
+    public void write(byte[]) throws java.io.IOException
+    {
+        java.io.OutputStream $r2;
+        byte[] $r1;
+        com.facebook.ProgressOutputStream r0;
+        int $i0;
+        long $l1;
+
+        r0 := @this: com.facebook.ProgressOutputStream;
+
+        $r1 := @parameter0: byte[];
+
+        $r2 = r0.<com.facebook.ProgressOutputStream: java.io.OutputStream out>;
+
+        virtualinvoke $r2.<java.io.OutputStream: void write(byte[])>($r1);
+
+        $i0 = lengthof $r1;
+
+        $l1 = (long) $i0;
+
+        specialinvoke r0.<com.facebook.ProgressOutputStream: void addProgress(long)>($l1);
+
+        return;
+    }
+
+    public void write(byte[], int, int) throws java.io.IOException
+    {
+        java.io.OutputStream $r2;
+        byte[] $r1;
+        com.facebook.ProgressOutputStream r0;
+        int $i0, $i1;
+        long $l2;
+
+        r0 := @this: com.facebook.ProgressOutputStream;
+
+        $r1 := @parameter0: byte[];
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $r2 = r0.<com.facebook.ProgressOutputStream: java.io.OutputStream out>;
+
+        virtualinvoke $r2.<java.io.OutputStream: void write(byte[],int,int)>($r1, $i0, $i1);
+
+        $l2 = (long) $i1;
+
+        specialinvoke r0.<com.facebook.ProgressOutputStream: void addProgress(long)>($l2);
+
+        return;
+    }
+}

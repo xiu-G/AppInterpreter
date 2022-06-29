@@ -1,0 +1,677 @@
+public abstract class cn.qitu.db.SDSQLiteOpenHelper extends java.lang.Object
+{
+    private static final boolean DEBUG_STRICT_READONLY;
+    private static final java.lang.String TAG;
+    private final android.content.Context mContext;
+    private android.database.sqlite.SQLiteDatabase mDatabase;
+    private boolean mEnableWriteAheadLogging;
+    private final android.database.DatabaseErrorHandler mErrorHandler;
+    private final android.database.sqlite.SQLiteDatabase$CursorFactory mFactory;
+    private boolean mIsInitializing;
+    private final java.lang.String mName;
+    private final int mNewVersion;
+
+    static void <clinit>()
+    {
+        java.lang.Class $r1;
+        java.lang.String $r0;
+
+        $r1 = class "Landroid/database/sqlite/SQLiteOpenHelper;";
+
+        $r0 = virtualinvoke $r1.<java.lang.Class: java.lang.String getSimpleName()>();
+
+        <cn.qitu.db.SDSQLiteOpenHelper: java.lang.String TAG> = $r0;
+
+        return;
+    }
+
+    public void <init>(android.content.Context, java.lang.String, android.database.sqlite.SQLiteDatabase$CursorFactory, int)
+    {
+        android.content.Context $r1;
+        android.database.sqlite.SQLiteDatabase$CursorFactory $r3;
+        int $i0;
+        java.lang.String $r2;
+        cn.qitu.db.SDSQLiteOpenHelper r0;
+
+        r0 := @this: cn.qitu.db.SDSQLiteOpenHelper;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: android.database.sqlite.SQLiteDatabase$CursorFactory;
+
+        $i0 := @parameter3: int;
+
+        specialinvoke r0.<cn.qitu.db.SDSQLiteOpenHelper: void <init>(android.content.Context,java.lang.String,android.database.sqlite.SQLiteDatabase$CursorFactory,int,android.database.DatabaseErrorHandler)>($r1, $r2, null, 2, null);
+
+        return;
+    }
+
+    public void <init>(android.content.Context, java.lang.String, android.database.sqlite.SQLiteDatabase$CursorFactory, int, android.database.DatabaseErrorHandler)
+    {
+        android.content.Context $r1;
+        android.database.sqlite.SQLiteDatabase$CursorFactory $r3;
+        int $i0;
+        android.database.DatabaseErrorHandler $r4;
+        java.lang.String $r2;
+        cn.qitu.db.SDSQLiteOpenHelper r0;
+
+        r0 := @this: cn.qitu.db.SDSQLiteOpenHelper;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $r3 := @parameter2: android.database.sqlite.SQLiteDatabase$CursorFactory;
+
+        $i0 := @parameter3: int;
+
+        $r4 := @parameter4: android.database.DatabaseErrorHandler;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        goto label1;
+
+     label1:
+        r0.<cn.qitu.db.SDSQLiteOpenHelper: android.content.Context mContext> = $r1;
+
+        r0.<cn.qitu.db.SDSQLiteOpenHelper: java.lang.String mName> = $r2;
+
+        r0.<cn.qitu.db.SDSQLiteOpenHelper: android.database.sqlite.SQLiteDatabase$CursorFactory mFactory> = null;
+
+        r0.<cn.qitu.db.SDSQLiteOpenHelper: int mNewVersion> = 2;
+
+        r0.<cn.qitu.db.SDSQLiteOpenHelper: android.database.DatabaseErrorHandler mErrorHandler> = null;
+
+        return;
+    }
+
+    private android.database.sqlite.SQLiteDatabase getDatabaseLocked(boolean)
+    {
+        java.lang.Throwable $r6, $r7, $r11, $r14;
+        java.lang.IllegalStateException $r2;
+        android.database.sqlite.SQLiteDatabase $r1, $r8;
+        android.database.sqlite.SQLiteException $r3;
+        int $i0, $i1;
+        java.lang.String $r5, $r12;
+        cn.qitu.db.SDSQLiteOpenHelper r0;
+        boolean $z0, $z1;
+        java.io.File $r9;
+        android.database.sqlite.SQLiteDatabase$CursorFactory $r10;
+        java.lang.StringBuilder $r4;
+
+        r0 := @this: cn.qitu.db.SDSQLiteOpenHelper;
+
+        $z0 := @parameter0: boolean;
+
+        $r1 = r0.<cn.qitu.db.SDSQLiteOpenHelper: android.database.sqlite.SQLiteDatabase mDatabase>;
+
+        if $r1 == null goto label01;
+
+        $r1 = r0.<cn.qitu.db.SDSQLiteOpenHelper: android.database.sqlite.SQLiteDatabase mDatabase>;
+
+        $z1 = virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: boolean isOpen()>();
+
+        if $z1 != 0 goto label02;
+
+        r0.<cn.qitu.db.SDSQLiteOpenHelper: android.database.sqlite.SQLiteDatabase mDatabase> = null;
+
+     label01:
+        $z1 = r0.<cn.qitu.db.SDSQLiteOpenHelper: boolean mIsInitializing>;
+
+        if $z1 == 0 goto label03;
+
+        $r2 = new java.lang.IllegalStateException;
+
+        specialinvoke $r2.<java.lang.IllegalStateException: void <init>(java.lang.String)>("getDatabase called recursively");
+
+        throw $r2;
+
+     label02:
+        $r1 = r0.<cn.qitu.db.SDSQLiteOpenHelper: android.database.sqlite.SQLiteDatabase mDatabase>;
+
+        $z1 = virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: boolean isReadOnly()>();
+
+        if $z1 != 0 goto label01;
+
+        $r1 = r0.<cn.qitu.db.SDSQLiteOpenHelper: android.database.sqlite.SQLiteDatabase mDatabase>;
+
+        return $r1;
+
+     label03:
+        $r1 = r0.<cn.qitu.db.SDSQLiteOpenHelper: android.database.sqlite.SQLiteDatabase mDatabase>;
+
+     label04:
+        r0.<cn.qitu.db.SDSQLiteOpenHelper: boolean mIsInitializing> = 1;
+
+     label05:
+        if $r1 == null goto label15;
+
+     label06:
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: boolean isReadOnly()>();
+
+     label07:
+        virtualinvoke r0.<cn.qitu.db.SDSQLiteOpenHelper: void onConfigure(android.database.sqlite.SQLiteDatabase)>($r1);
+
+        $i0 = virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: int getVersion()>();
+
+        $i1 = r0.<cn.qitu.db.SDSQLiteOpenHelper: int mNewVersion>;
+
+     label08:
+        if $i0 == $i1 goto label32;
+
+     label09:
+        $z0 = virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: boolean isReadOnly()>();
+
+     label10:
+        if $z0 == 0 goto label27;
+
+     label11:
+        $r3 = new android.database.sqlite.SQLiteException;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>(java.lang.String)>("Can\'t upgrade read-only database from version ");
+
+        $i0 = virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: int getVersion()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" to ");
+
+        $i0 = r0.<cn.qitu.db.SDSQLiteOpenHelper: int mNewVersion>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(": ");
+
+        $r5 = r0.<cn.qitu.db.SDSQLiteOpenHelper: java.lang.String mName>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r3.<android.database.sqlite.SQLiteException: void <init>(java.lang.String)>($r5);
+
+        throw $r3;
+
+     label12:
+        $r6 := @caughtexception;
+
+        $r7 = $r6;
+
+     label13:
+        r0.<cn.qitu.db.SDSQLiteOpenHelper: boolean mIsInitializing> = 0;
+
+        if $r1 == null goto label14;
+
+        $r8 = r0.<cn.qitu.db.SDSQLiteOpenHelper: android.database.sqlite.SQLiteDatabase mDatabase>;
+
+        if $r1 == $r8 goto label14;
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+     label14:
+        throw $r7;
+
+     label15:
+        $r5 = r0.<cn.qitu.db.SDSQLiteOpenHelper: java.lang.String mName>;
+
+     label16:
+        if $r5 != null goto label19;
+
+     label17:
+        $r8 = staticinvoke <android.database.sqlite.SQLiteDatabase: android.database.sqlite.SQLiteDatabase create(android.database.sqlite.SQLiteDatabase$CursorFactory)>(null);
+
+     label18:
+        $r1 = $r8;
+
+        goto label07;
+
+     label19:
+        $r5 = r0.<cn.qitu.db.SDSQLiteOpenHelper: java.lang.String mName>;
+
+     label20:
+        $r9 = virtualinvoke r0.<cn.qitu.db.SDSQLiteOpenHelper: java.io.File getDatabasePath(java.lang.String)>($r5);
+
+        $r5 = virtualinvoke $r9.<java.io.File: java.lang.String getPath()>();
+
+     label21:
+        $r10 = r0.<cn.qitu.db.SDSQLiteOpenHelper: android.database.sqlite.SQLiteDatabase$CursorFactory mFactory>;
+
+     label22:
+        $r8 = staticinvoke <android.database.sqlite.SQLiteDatabase: android.database.sqlite.SQLiteDatabase openOrCreateDatabase(java.lang.String,android.database.sqlite.SQLiteDatabase$CursorFactory)>($r5, $r10);
+
+     label23:
+        $r1 = $r8;
+
+        goto label07;
+
+     label24:
+        $r11 := @caughtexception;
+
+     label25:
+        throw $r11;
+
+     label26:
+        $r7 := @caughtexception;
+
+        goto label13;
+
+     label27:
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void beginTransaction()>();
+
+     label28:
+        if $i0 != 0 goto label37;
+
+     label29:
+        virtualinvoke r0.<cn.qitu.db.SDSQLiteOpenHelper: void onCreate(android.database.sqlite.SQLiteDatabase)>($r1);
+
+     label30:
+        $i0 = r0.<cn.qitu.db.SDSQLiteOpenHelper: int mNewVersion>;
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void setVersion(int)>($i0);
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void setTransactionSuccessful()>();
+
+     label31:
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void endTransaction()>();
+
+     label32:
+        virtualinvoke r0.<cn.qitu.db.SDSQLiteOpenHelper: void onOpen(android.database.sqlite.SQLiteDatabase)>($r1);
+
+        $z0 = virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: boolean isReadOnly()>();
+
+     label33:
+        if $z0 == 0 goto label35;
+
+     label34:
+        $r5 = <cn.qitu.db.SDSQLiteOpenHelper: java.lang.String TAG>;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>(java.lang.String)>("Opened ");
+
+        $r12 = r0.<cn.qitu.db.SDSQLiteOpenHelper: java.lang.String mName>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r12);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" in read-only mode");
+
+        $r12 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int w(java.lang.String,java.lang.String)>($r5, $r12);
+
+     label35:
+        r0.<cn.qitu.db.SDSQLiteOpenHelper: android.database.sqlite.SQLiteDatabase mDatabase> = $r1;
+
+     label36:
+        r0.<cn.qitu.db.SDSQLiteOpenHelper: boolean mIsInitializing> = 0;
+
+        if $r1 == null goto label45;
+
+        $r8 = r0.<cn.qitu.db.SDSQLiteOpenHelper: android.database.sqlite.SQLiteDatabase mDatabase>;
+
+        if $r1 == $r8 goto label45;
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+        return $r1;
+
+     label37:
+        $i1 = r0.<cn.qitu.db.SDSQLiteOpenHelper: int mNewVersion>;
+
+     label38:
+        if $i0 <= $i1 goto label43;
+
+     label39:
+        $i1 = r0.<cn.qitu.db.SDSQLiteOpenHelper: int mNewVersion>;
+
+        virtualinvoke r0.<cn.qitu.db.SDSQLiteOpenHelper: void onDowngrade(android.database.sqlite.SQLiteDatabase,int,int)>($r1, $i0, $i1);
+
+     label40:
+        goto label30;
+
+     label41:
+        $r14 := @caughtexception;
+
+     label42:
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void endTransaction()>();
+
+        throw $r14;
+
+     label43:
+        $i1 = r0.<cn.qitu.db.SDSQLiteOpenHelper: int mNewVersion>;
+
+        virtualinvoke r0.<cn.qitu.db.SDSQLiteOpenHelper: void onUpgrade(android.database.sqlite.SQLiteDatabase,int,int)>($r1, $i0, $i1);
+
+     label44:
+        goto label30;
+
+     label45:
+        return $r1;
+
+        catch java.lang.Throwable from label04 to label05 with label26;
+        catch java.lang.Throwable from label06 to label07 with label26;
+        catch java.lang.Throwable from label07 to label08 with label12;
+        catch java.lang.Throwable from label09 to label10 with label12;
+        catch java.lang.Throwable from label11 to label12 with label12;
+        catch java.lang.Throwable from label15 to label16 with label26;
+        catch java.lang.Throwable from label17 to label18 with label26;
+        catch android.database.sqlite.SQLiteException from label20 to label21 with label24;
+        catch android.database.sqlite.SQLiteException from label22 to label23 with label24;
+        catch java.lang.Throwable from label19 to label23 with label26;
+        catch java.lang.Throwable from label25 to label26 with label26;
+        catch java.lang.Throwable from label27 to label28 with label12;
+        catch java.lang.Throwable from label29 to label31 with label41;
+        catch java.lang.Throwable from label31 to label33 with label12;
+        catch java.lang.Throwable from label34 to label36 with label12;
+        catch java.lang.Throwable from label37 to label38 with label41;
+        catch java.lang.Throwable from label39 to label40 with label41;
+        catch java.lang.Throwable from label42 to label43 with label12;
+        catch java.lang.Throwable from label43 to label44 with label41;
+    }
+
+    public void close()
+    {
+        java.lang.Throwable $r2;
+        java.lang.IllegalStateException $r1;
+        android.database.sqlite.SQLiteDatabase $r3;
+        cn.qitu.db.SDSQLiteOpenHelper r0;
+        boolean $z0;
+
+        r0 := @this: cn.qitu.db.SDSQLiteOpenHelper;
+
+        entermonitor r0;
+
+     label1:
+        $z0 = r0.<cn.qitu.db.SDSQLiteOpenHelper: boolean mIsInitializing>;
+
+        if $z0 == 0 goto label3;
+
+        $r1 = new java.lang.IllegalStateException;
+
+        specialinvoke $r1.<java.lang.IllegalStateException: void <init>(java.lang.String)>("Closed during initialization");
+
+        throw $r1;
+
+     label2:
+        $r2 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r2;
+
+     label3:
+        $r3 = r0.<cn.qitu.db.SDSQLiteOpenHelper: android.database.sqlite.SQLiteDatabase mDatabase>;
+
+        if $r3 == null goto label4;
+
+        $r3 = r0.<cn.qitu.db.SDSQLiteOpenHelper: android.database.sqlite.SQLiteDatabase mDatabase>;
+
+        $z0 = virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: boolean isOpen()>();
+
+        if $z0 == 0 goto label4;
+
+        $r3 = r0.<cn.qitu.db.SDSQLiteOpenHelper: android.database.sqlite.SQLiteDatabase mDatabase>;
+
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+        r0.<cn.qitu.db.SDSQLiteOpenHelper: android.database.sqlite.SQLiteDatabase mDatabase> = null;
+
+     label4:
+        exitmonitor r0;
+
+        return;
+
+        catch java.lang.Throwable from label1 to label2 with label2;
+        catch java.lang.Throwable from label3 to label4 with label2;
+    }
+
+    public java.lang.String getDatabaseName()
+    {
+        java.lang.String r1;
+        cn.qitu.db.SDSQLiteOpenHelper r0;
+
+        r0 := @this: cn.qitu.db.SDSQLiteOpenHelper;
+
+        r1 = r0.<cn.qitu.db.SDSQLiteOpenHelper: java.lang.String mName>;
+
+        return r1;
+    }
+
+    public java.io.File getDatabasePath(java.lang.String)
+    {
+        java.lang.StringBuilder $r4;
+        java.lang.String $r1, $r3;
+        cn.qitu.db.SDSQLiteOpenHelper r0;
+        java.io.File $r2;
+        boolean $z0;
+
+        r0 := @this: cn.qitu.db.SDSQLiteOpenHelper;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = new java.io.File;
+
+        $r3 = <cn.qitu.e.b: java.lang.String f>;
+
+        specialinvoke $r2.<java.io.File: void <init>(java.lang.String)>($r3);
+
+        $z0 = virtualinvoke $r2.<java.io.File: boolean exists()>();
+
+        if $z0 != 0 goto label1;
+
+        virtualinvoke $r2.<java.io.File: boolean mkdirs()>();
+
+     label1:
+        $r2 = new java.io.File;
+
+        $r4 = new java.lang.StringBuilder;
+
+        $r3 = <cn.qitu.e.b: java.lang.String f>;
+
+        $r3 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r3);
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>(java.lang.String)>($r3);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/");
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r2.<java.io.File: void <init>(java.lang.String)>($r1);
+
+        return $r2;
+    }
+
+    public android.database.sqlite.SQLiteDatabase getReadableDatabase()
+    {
+        java.lang.Throwable $r2;
+        android.database.sqlite.SQLiteDatabase $r1;
+        cn.qitu.db.SDSQLiteOpenHelper r0;
+
+        r0 := @this: cn.qitu.db.SDSQLiteOpenHelper;
+
+        entermonitor r0;
+
+     label1:
+        $r1 = specialinvoke r0.<cn.qitu.db.SDSQLiteOpenHelper: android.database.sqlite.SQLiteDatabase getDatabaseLocked(boolean)>(0);
+
+        exitmonitor r0;
+
+     label2:
+        return $r1;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public android.database.sqlite.SQLiteDatabase getWritableDatabase()
+    {
+        java.lang.Throwable $r2;
+        android.database.sqlite.SQLiteDatabase $r1;
+        cn.qitu.db.SDSQLiteOpenHelper r0;
+
+        r0 := @this: cn.qitu.db.SDSQLiteOpenHelper;
+
+        entermonitor r0;
+
+     label1:
+        $r1 = specialinvoke r0.<cn.qitu.db.SDSQLiteOpenHelper: android.database.sqlite.SQLiteDatabase getDatabaseLocked(boolean)>(1);
+
+        exitmonitor r0;
+
+     label2:
+        return $r1;
+
+     label3:
+        $r2 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public void onConfigure(android.database.sqlite.SQLiteDatabase)
+    {
+        android.database.sqlite.SQLiteDatabase $r1;
+        cn.qitu.db.SDSQLiteOpenHelper r0;
+
+        r0 := @this: cn.qitu.db.SDSQLiteOpenHelper;
+
+        $r1 := @parameter0: android.database.sqlite.SQLiteDatabase;
+
+        return;
+    }
+
+    public abstract void onCreate(android.database.sqlite.SQLiteDatabase);
+
+    public void onDowngrade(android.database.sqlite.SQLiteDatabase, int, int)
+    {
+        android.database.sqlite.SQLiteDatabase $r1;
+        android.database.sqlite.SQLiteException $r2;
+        int $i0, $i1;
+        java.lang.StringBuilder $r3;
+        java.lang.String $r4;
+        cn.qitu.db.SDSQLiteOpenHelper r0;
+
+        r0 := @this: cn.qitu.db.SDSQLiteOpenHelper;
+
+        $r1 := @parameter0: android.database.sqlite.SQLiteDatabase;
+
+        $i0 := @parameter1: int;
+
+        $i1 := @parameter2: int;
+
+        $r2 = new android.database.sqlite.SQLiteException;
+
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>("Can\'t downgrade database from version ");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" to ");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i1);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r2.<android.database.sqlite.SQLiteException: void <init>(java.lang.String)>($r4);
+
+        throw $r2;
+    }
+
+    public void onOpen(android.database.sqlite.SQLiteDatabase)
+    {
+        android.database.sqlite.SQLiteDatabase $r1;
+        cn.qitu.db.SDSQLiteOpenHelper r0;
+
+        r0 := @this: cn.qitu.db.SDSQLiteOpenHelper;
+
+        $r1 := @parameter0: android.database.sqlite.SQLiteDatabase;
+
+        return;
+    }
+
+    public abstract void onUpgrade(android.database.sqlite.SQLiteDatabase, int, int);
+
+    public void setWriteAheadLoggingEnabled(boolean)
+    {
+        java.lang.Throwable $r2;
+        android.database.sqlite.SQLiteDatabase $r1;
+        cn.qitu.db.SDSQLiteOpenHelper r0;
+        boolean $z0, $z1;
+
+        r0 := @this: cn.qitu.db.SDSQLiteOpenHelper;
+
+        $z0 := @parameter0: boolean;
+
+        entermonitor r0;
+
+     label1:
+        $z1 = r0.<cn.qitu.db.SDSQLiteOpenHelper: boolean mEnableWriteAheadLogging>;
+
+        if $z1 == $z0 goto label3;
+
+        $r1 = r0.<cn.qitu.db.SDSQLiteOpenHelper: android.database.sqlite.SQLiteDatabase mDatabase>;
+
+        if $r1 == null goto label2;
+
+        $r1 = r0.<cn.qitu.db.SDSQLiteOpenHelper: android.database.sqlite.SQLiteDatabase mDatabase>;
+
+        $z1 = virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: boolean isOpen()>();
+
+        if $z1 == 0 goto label2;
+
+        $r1 = r0.<cn.qitu.db.SDSQLiteOpenHelper: android.database.sqlite.SQLiteDatabase mDatabase>;
+
+        $z1 = virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: boolean isReadOnly()>();
+
+        if $z1 != 0 goto label2;
+
+        if $z0 == 0 goto label5;
+
+        $r1 = r0.<cn.qitu.db.SDSQLiteOpenHelper: android.database.sqlite.SQLiteDatabase mDatabase>;
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: boolean enableWriteAheadLogging()>();
+
+     label2:
+        r0.<cn.qitu.db.SDSQLiteOpenHelper: boolean mEnableWriteAheadLogging> = $z0;
+
+     label3:
+        exitmonitor r0;
+
+     label4:
+        return;
+
+     label5:
+        $r1 = r0.<cn.qitu.db.SDSQLiteOpenHelper: android.database.sqlite.SQLiteDatabase mDatabase>;
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void disableWriteAheadLogging()>();
+
+     label6:
+        goto label2;
+
+     label7:
+        $r2 := @caughtexception;
+
+        exitmonitor r0;
+
+        throw $r2;
+
+        catch java.lang.Throwable from label1 to label4 with label7;
+        catch java.lang.Throwable from label5 to label6 with label7;
+    }
+}

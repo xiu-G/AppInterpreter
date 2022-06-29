@@ -1,0 +1,547 @@
+public class com.parse.ParseInstallation extends com.parse.ParseObject
+{
+    static final java.lang.String CLASS_NAME;
+    private static final java.lang.String STORAGE_LOCATION;
+    private static final java.lang.String TAG;
+    static com.parse.ParseInstallation currentInstallation;
+    private static final java.util.List readonlyFields;
+
+    static void <clinit>()
+    {
+        java.util.List $r0;
+        java.lang.String[] $r1;
+
+        <com.parse.ParseInstallation: java.lang.String TAG> = "com.parse.ParseInstallation";
+
+        <com.parse.ParseInstallation: java.lang.String STORAGE_LOCATION> = "currentInstallation";
+
+        <com.parse.ParseInstallation: java.lang.String CLASS_NAME> = "_Installation";
+
+        <com.parse.ParseInstallation: com.parse.ParseInstallation currentInstallation> = null;
+
+        $r1 = newarray (java.lang.String)[4];
+
+        $r1[0] = "deviceType";
+
+        $r1[1] = "installationId";
+
+        $r1[2] = "deviceToken";
+
+        $r1[3] = "timeZone";
+
+        $r0 = staticinvoke <java.util.Arrays: java.util.List asList(java.lang.Object[])>($r1);
+
+        <com.parse.ParseInstallation: java.util.List readonlyFields> = $r0;
+
+        return;
+    }
+
+    void <init>()
+    {
+        com.parse.ParseInstallation r0;
+        java.lang.String $r1;
+
+        r0 := @this: com.parse.ParseInstallation;
+
+        specialinvoke r0.<com.parse.ParseObject: void <init>(java.lang.String)>("_Installation");
+
+        specialinvoke r0.<com.parse.ParseObject: void put(java.lang.String,java.lang.Object)>("deviceType", "android");
+
+        $r1 = staticinvoke <com.parse.ParseInstallation: java.lang.String getOrCreateCurrentInstallationId()>();
+
+        specialinvoke r0.<com.parse.ParseObject: void put(java.lang.String,java.lang.Object)>("installationId", $r1);
+
+        return;
+    }
+
+    static void clearCurrentInstallationFromDisk(android.content.Context)
+    {
+        java.lang.Throwable $r1;
+        android.content.Context $r0;
+
+        $r0 := @parameter0: android.content.Context;
+
+        entermonitor class "Lcom/parse/ParseInstallation;";
+
+     label1:
+        <com.parse.ParseInstallation: com.parse.ParseInstallation currentInstallation> = null;
+
+        staticinvoke <com.parse.ParseObject: void deleteDiskObject(android.content.Context,java.lang.String)>($r0, "currentInstallation");
+
+     label2:
+        exitmonitor class "Lcom/parse/ParseInstallation;";
+
+        return;
+
+     label3:
+        $r1 := @caughtexception;
+
+        exitmonitor class "Lcom/parse/ParseInstallation;";
+
+        throw $r1;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    public static com.parse.ParseInstallation getCurrentInstallation()
+    {
+        java.lang.Throwable $r3;
+        android.content.Context $r2;
+        com.parse.ParseInstallation $r1;
+        com.parse.ParseObject $r0;
+
+        entermonitor class "Lcom/parse/ParseInstallation;";
+
+     label1:
+        $r1 = <com.parse.ParseInstallation: com.parse.ParseInstallation currentInstallation>;
+
+        if $r1 == null goto label3;
+
+        $r1 = <com.parse.ParseInstallation: com.parse.ParseInstallation currentInstallation>;
+
+     label2:
+        exitmonitor class "Lcom/parse/ParseInstallation;";
+
+        return $r1;
+
+     label3:
+        $r2 = <com.parse.Parse: android.content.Context applicationContext>;
+
+        $r0 = staticinvoke <com.parse.ParseInstallation: com.parse.ParseObject getFromDisk(android.content.Context,java.lang.String)>($r2, "currentInstallation");
+
+        if $r0 != null goto label5;
+
+        $r1 = new com.parse.ParseInstallation;
+
+        specialinvoke $r1.<com.parse.ParseInstallation: void <init>()>();
+
+        <com.parse.ParseInstallation: com.parse.ParseInstallation currentInstallation> = $r1;
+
+     label4:
+        $r1 = <com.parse.ParseInstallation: com.parse.ParseInstallation currentInstallation>;
+
+        goto label2;
+
+     label5:
+        $r1 = (com.parse.ParseInstallation) $r0;
+
+        <com.parse.ParseInstallation: com.parse.ParseInstallation currentInstallation> = $r1;
+
+        staticinvoke <com.parse.Parse: void logV(java.lang.String,java.lang.String)>("com.parse.ParseInstallation", "Successfully deserialized Installation object");
+
+     label6:
+        goto label4;
+
+     label7:
+        $r3 := @caughtexception;
+
+        exitmonitor class "Lcom/parse/ParseInstallation;";
+
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label2 with label7;
+        catch java.lang.Throwable from label3 to label6 with label7;
+    }
+
+    private static java.lang.String getOrCreateCurrentInstallationId()
+    {
+        java.lang.Throwable $r8, $r10, $r11, $r12, $r13, $r14, $r15, $r16;
+        java.io.RandomAccessFile $r4, $r7;
+        byte[] $r9;
+        long $l0;
+        int $i1;
+        java.lang.String $r1, $r6;
+        boolean $z0;
+        com.parse.ParseInstallation $r0;
+        java.util.UUID $r5;
+        java.io.File $r2, $r3;
+
+        entermonitor class "Lcom/parse/ParseInstallation;";
+
+     label01:
+        $r0 = <com.parse.ParseInstallation: com.parse.ParseInstallation currentInstallation>;
+
+        if $r0 == null goto label03;
+
+        $r0 = <com.parse.ParseInstallation: com.parse.ParseInstallation currentInstallation>;
+
+        $r1 = virtualinvoke $r0.<com.parse.ParseInstallation: java.lang.String getInstallationId()>();
+
+     label02:
+        exitmonitor class "Lcom/parse/ParseInstallation;";
+
+        return $r1;
+
+     label03:
+        $r2 = new java.io.File;
+
+        $r3 = staticinvoke <com.parse.Parse: java.io.File getParseDir()>();
+
+        specialinvoke $r2.<java.io.File: void <init>(java.io.File,java.lang.String)>($r3, "installationId");
+
+     label04:
+        $r4 = null;
+
+     label05:
+        $z0 = virtualinvoke $r2.<java.io.File: boolean exists()>();
+
+     label06:
+        if $z0 != 0 goto label14;
+
+     label07:
+        $r5 = staticinvoke <java.util.UUID: java.util.UUID randomUUID()>();
+
+        $r6 = virtualinvoke $r5.<java.util.UUID: java.lang.String toString()>();
+
+     label08:
+        $r1 = $r6;
+
+        $r7 = new java.io.RandomAccessFile;
+
+     label09:
+        specialinvoke $r7.<java.io.RandomAccessFile: void <init>(java.io.File,java.lang.String)>($r2, "rw");
+
+     label10:
+        virtualinvoke $r7.<java.io.RandomAccessFile: void writeBytes(java.lang.String)>($r6);
+
+        virtualinvoke $r7.<java.io.RandomAccessFile: void close()>();
+
+     label11:
+        virtualinvoke $r7.<java.io.RandomAccessFile: void close()>();
+
+     label12:
+        goto label02;
+
+     label13:
+        $r8 := @caughtexception;
+
+        goto label02;
+
+     label14:
+        staticinvoke <com.parse.Parse: void logV(java.lang.String,java.lang.String)>("com.parse.ParseInstallation", "Reading legacy file for installation ID");
+
+     label15:
+        $r7 = new java.io.RandomAccessFile;
+
+     label16:
+        specialinvoke $r7.<java.io.RandomAccessFile: void <init>(java.io.File,java.lang.String)>($r2, "r");
+
+     label17:
+        $l0 = virtualinvoke $r7.<java.io.RandomAccessFile: long length()>();
+
+     label18:
+        $i1 = (int) $l0;
+
+        $r9 = newarray (byte)[$i1];
+
+     label19:
+        virtualinvoke $r7.<java.io.RandomAccessFile: void readFully(byte[])>($r9);
+
+     label20:
+        $r1 = new java.lang.String;
+
+     label21:
+        specialinvoke $r1.<java.lang.String: void <init>(byte[])>($r9);
+
+     label22:
+        virtualinvoke $r7.<java.io.RandomAccessFile: void close()>();
+
+     label23:
+        goto label02;
+
+     label24:
+        $r10 := @caughtexception;
+
+        goto label02;
+
+     label25:
+        $r11 := @caughtexception;
+
+        $r7 = null;
+
+     label26:
+        $r5 = staticinvoke <java.util.UUID: java.util.UUID randomUUID()>();
+
+        $r1 = virtualinvoke $r5.<java.util.UUID: java.lang.String toString()>();
+
+     label27:
+        if $r7 == null goto label02;
+
+     label28:
+        virtualinvoke $r7.<java.io.RandomAccessFile: void close()>();
+
+     label29:
+        goto label02;
+
+     label30:
+        $r12 := @caughtexception;
+
+        goto label02;
+
+     label31:
+        $r13 := @caughtexception;
+
+     label32:
+        if $r4 == null goto label34;
+
+     label33:
+        virtualinvoke $r4.<java.io.RandomAccessFile: void close()>();
+
+     label34:
+        throw $r13;
+
+     label35:
+        $r14 := @caughtexception;
+
+        exitmonitor class "Lcom/parse/ParseInstallation;";
+
+        throw $r14;
+
+     label36:
+        $r15 := @caughtexception;
+
+        goto label34;
+
+     label37:
+        $r13 := @caughtexception;
+
+        $r4 = $r7;
+
+        goto label32;
+
+     label38:
+        $r13 := @caughtexception;
+
+        $r4 = $r7;
+
+        goto label32;
+
+     label39:
+        $r13 := @caughtexception;
+
+        $r4 = $r7;
+
+        goto label32;
+
+     label40:
+        $r16 := @caughtexception;
+
+        goto label26;
+
+        catch java.lang.Throwable from label01 to label02 with label35;
+        catch java.lang.Throwable from label03 to label04 with label35;
+        catch java.io.IOException from label05 to label06 with label25;
+        catch java.io.IOException from label07 to label08 with label25;
+        catch java.io.IOException from label09 to label10 with label25;
+        catch java.lang.Throwable from label05 to label10 with label31;
+        catch java.io.IOException from label10 to label11 with label40;
+        catch java.lang.Throwable from label10 to label11 with label37;
+        catch java.io.IOException from label11 to label12 with label13;
+        catch java.lang.Throwable from label11 to label12 with label35;
+        catch java.io.IOException from label14 to label15 with label25;
+        catch java.io.IOException from label16 to label17 with label25;
+        catch java.lang.Throwable from label14 to label17 with label31;
+        catch java.io.IOException from label17 to label18 with label40;
+        catch java.io.IOException from label19 to label20 with label40;
+        catch java.io.IOException from label21 to label22 with label40;
+        catch java.lang.Throwable from label17 to label22 with label38;
+        catch java.io.IOException from label22 to label23 with label24;
+        catch java.lang.Throwable from label22 to label23 with label35;
+        catch java.lang.Throwable from label26 to label27 with label39;
+        catch java.io.IOException from label28 to label29 with label30;
+        catch java.lang.Throwable from label28 to label29 with label35;
+        catch java.io.IOException from label33 to label34 with label36;
+        catch java.lang.Throwable from label33 to label34 with label35;
+        catch java.lang.Throwable from label34 to label35 with label35;
+    }
+
+    private static void maybeFlushToDisk(com.parse.ParseInstallation)
+    {
+        java.lang.Throwable $r3;
+        android.content.Context $r2;
+        com.parse.ParseInstallation $r0, $r1;
+
+        $r0 := @parameter0: com.parse.ParseInstallation;
+
+        entermonitor class "Lcom/parse/ParseInstallation;";
+
+     label1:
+        $r1 = <com.parse.ParseInstallation: com.parse.ParseInstallation currentInstallation>;
+
+        if $r1 != $r0 goto label2;
+
+        $r2 = <com.parse.Parse: android.content.Context applicationContext>;
+
+        virtualinvoke $r0.<com.parse.ParseInstallation: void saveToDisk(android.content.Context,java.lang.String)>($r2, "currentInstallation");
+
+     label2:
+        exitmonitor class "Lcom/parse/ParseInstallation;";
+
+        return;
+
+     label3:
+        $r3 := @caughtexception;
+
+        exitmonitor class "Lcom/parse/ParseInstallation;";
+
+        throw $r3;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    private void updateTimezone()
+    {
+        com.parse.ParseInstallation r0;
+        java.util.TimeZone $r1;
+        int $i0;
+        java.lang.String $r2;
+
+        r0 := @this: com.parse.ParseInstallation;
+
+        $r1 = staticinvoke <java.util.TimeZone: java.util.TimeZone getDefault()>();
+
+        $r2 = virtualinvoke $r1.<java.util.TimeZone: java.lang.String getID()>();
+
+        $i0 = virtualinvoke $r2.<java.lang.String: int indexOf(int)>(47);
+
+        if $i0 <= 0 goto label1;
+
+        specialinvoke r0.<com.parse.ParseObject: void put(java.lang.String,java.lang.Object)>("timeZone", $r2);
+
+     label1:
+        return;
+    }
+
+    void checkKeyIsMutable(java.lang.String)
+    {
+        com.parse.ParseInstallation r0;
+        java.util.List $r2;
+        java.lang.StringBuilder $r4;
+        java.lang.String $r1;
+        java.lang.IllegalArgumentException $r3;
+        boolean $z0;
+
+        r0 := @this: com.parse.ParseInstallation;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = <com.parse.ParseInstallation: java.util.List readonlyFields>;
+
+        $z0 = interfaceinvoke $r2.<java.util.List: boolean contains(java.lang.Object)>($r1);
+
+        if $z0 == 0 goto label1;
+
+        $r3 = new java.lang.IllegalArgumentException;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>(java.lang.String)>("Cannot change ");
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" property of an installation object.");
+
+        $r1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r3.<java.lang.IllegalArgumentException: void <init>(java.lang.String)>($r1);
+
+        throw $r3;
+
+     label1:
+        return;
+    }
+
+    public com.parse.ParseObject fetch()
+    {
+        com.parse.ParseInstallation r0;
+        java.lang.String $r1;
+        com.parse.ParseObject $r2;
+
+        r0 := @this: com.parse.ParseInstallation;
+
+        $r1 = virtualinvoke r0.<com.parse.ParseInstallation: java.lang.String getObjectId()>();
+
+        if $r1 != null goto label1;
+
+        virtualinvoke r0.<com.parse.ParseInstallation: void save()>();
+
+     label1:
+        $r2 = specialinvoke r0.<com.parse.ParseObject: com.parse.ParseObject fetch()>();
+
+        staticinvoke <com.parse.ParseInstallation: void maybeFlushToDisk(com.parse.ParseInstallation)>(r0);
+
+        return $r2;
+    }
+
+    public java.lang.String getInstallationId()
+    {
+        com.parse.ParseInstallation r0;
+        java.lang.String $r1;
+
+        r0 := @this: com.parse.ParseInstallation;
+
+        $r1 = virtualinvoke r0.<com.parse.ParseInstallation: java.lang.String getString(java.lang.String)>("installationId");
+
+        return $r1;
+    }
+
+    public void put(java.lang.String, java.lang.Object)
+    {
+        com.parse.ParseInstallation r0;
+        java.lang.Object $r2;
+        java.lang.String $r1;
+
+        r0 := @this: com.parse.ParseInstallation;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.Object;
+
+        virtualinvoke r0.<com.parse.ParseInstallation: void checkKeyIsMutable(java.lang.String)>($r1);
+
+        specialinvoke r0.<com.parse.ParseObject: void put(java.lang.String,java.lang.Object)>($r1, $r2);
+
+        return;
+    }
+
+    public void remove(java.lang.String)
+    {
+        com.parse.ParseInstallation r0;
+        java.lang.String $r1;
+
+        r0 := @this: com.parse.ParseInstallation;
+
+        $r1 := @parameter0: java.lang.String;
+
+        virtualinvoke r0.<com.parse.ParseInstallation: void checkKeyIsMutable(java.lang.String)>($r1);
+
+        specialinvoke r0.<com.parse.ParseObject: void remove(java.lang.String)>($r1);
+
+        return;
+    }
+
+    protected void save(boolean)
+    {
+        com.parse.ParseInstallation r0;
+        boolean $z0;
+
+        r0 := @this: com.parse.ParseInstallation;
+
+        $z0 := @parameter0: boolean;
+
+        specialinvoke r0.<com.parse.ParseInstallation: void updateTimezone()>();
+
+        if $z0 == 0 goto label1;
+
+        virtualinvoke r0.<com.parse.ParseInstallation: void checkIfRunning(boolean)>(1);
+
+     label1:
+        specialinvoke r0.<com.parse.ParseObject: void save(boolean)>(0);
+
+        staticinvoke <com.parse.ParseInstallation: void maybeFlushToDisk(com.parse.ParseInstallation)>(r0);
+
+        virtualinvoke r0.<com.parse.ParseInstallation: void finishedRunning()>();
+
+        return;
+    }
+}

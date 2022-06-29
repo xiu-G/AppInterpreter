@@ -1,0 +1,3148 @@
+public class org.kxml2.wap.WbxmlParser extends java.lang.Object implements org.xmlpull.v1.XmlPullParser
+{
+    static final java.lang.String HEX_DIGITS;
+    private static final java.lang.String ILLEGAL_TYPE;
+    private static final java.lang.String UNEXPECTED_EOF;
+    public static final int WAP_EXTENSION;
+    private int ATTR_START_TABLE;
+    private int ATTR_VALUE_TABLE;
+    private int TAG_TABLE;
+    private java.lang.String[] attrStartTable;
+    private java.lang.String[] attrValueTable;
+    private int attributeCount;
+    private java.lang.String[] attributes;
+    private java.util.Hashtable cacheStringTable;
+    private boolean degenerated;
+    private int depth;
+    private java.lang.String[] elementStack;
+    private java.lang.String encoding;
+    private java.io.InputStream in;
+    private boolean isWhitespace;
+    private java.lang.String name;
+    private java.lang.String namespace;
+    private int nextId;
+    private int[] nspCounts;
+    private java.lang.String[] nspStack;
+    private java.lang.String prefix;
+    private boolean processNsp;
+    private int publicIdentifierId;
+    private byte[] stringTable;
+    private java.util.Vector tables;
+    private java.lang.String[] tagTable;
+    private java.lang.String text;
+    private int type;
+    private int version;
+    private int wapCode;
+    private java.lang.Object wapExtensionData;
+
+    public void <init>()
+    {
+        java.util.Vector $r3;
+        int[] $r2;
+        org.kxml2.wap.WbxmlParser r0;
+        int $i0;
+        java.lang.String[] $r1;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        r0.<org.kxml2.wap.WbxmlParser: int TAG_TABLE> = 0;
+
+        r0.<org.kxml2.wap.WbxmlParser: int ATTR_START_TABLE> = 1;
+
+        r0.<org.kxml2.wap.WbxmlParser: int ATTR_VALUE_TABLE> = 2;
+
+        r0.<org.kxml2.wap.WbxmlParser: java.util.Hashtable cacheStringTable> = null;
+
+        $r1 = newarray (java.lang.String)[16];
+
+        r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] elementStack> = $r1;
+
+        $r1 = newarray (java.lang.String)[8];
+
+        r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] nspStack> = $r1;
+
+        $r2 = newarray (int)[4];
+
+        r0.<org.kxml2.wap.WbxmlParser: int[] nspCounts> = $r2;
+
+        $r1 = newarray (java.lang.String)[16];
+
+        r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attributes> = $r1;
+
+        $i0 = -2;
+
+        r0.<org.kxml2.wap.WbxmlParser: int nextId> = $i0;
+
+        $r3 = new java.util.Vector;
+
+        specialinvoke $r3.<java.util.Vector: void <init>()>();
+
+        r0.<org.kxml2.wap.WbxmlParser: java.util.Vector tables> = $r3;
+
+        return;
+    }
+
+    private final boolean adjustNsp() throws org.xmlpull.v1.XmlPullParserException
+    {
+        java.lang.String[] $r1, $r5;
+        int[] $r4;
+        org.kxml2.wap.WbxmlParser r0;
+        int i0, $i1, $i2, $i3;
+        java.lang.String r2, $r3, $r7;
+        boolean z0, $z1;
+        java.lang.RuntimeException $r9;
+        java.lang.StringBuilder $r6, $r8;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        z0 = 0;
+
+        i0 = 0;
+
+     label01:
+        $i1 = r0.<org.kxml2.wap.WbxmlParser: int attributeCount>;
+
+        $i1 = $i1 << 2;
+
+        if i0 >= $i1 goto label07;
+
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attributes>;
+
+        $i1 = i0 + 2;
+
+        r2 = $r1[$i1];
+
+        $i1 = virtualinvoke r2.<java.lang.String: int indexOf(int)>(58);
+
+        if $i1 == -1 goto label04;
+
+        $r3 = virtualinvoke r2.<java.lang.String: java.lang.String substring(int,int)>(0, $i1);
+
+        $i1 = $i1 + 1;
+
+        r2 = virtualinvoke r2.<java.lang.String: java.lang.String substring(int)>($i1);
+
+     label02:
+        $z1 = virtualinvoke $r3.<java.lang.String: boolean equals(java.lang.Object)>("xmlns");
+
+        if $z1 != 0 goto label05;
+
+        z0 = 1;
+
+     label03:
+        i0 = i0 + 4;
+
+        goto label01;
+
+     label04:
+        $z1 = virtualinvoke r2.<java.lang.String: boolean equals(java.lang.Object)>("xmlns");
+
+        if $z1 == 0 goto label03;
+
+        $r3 = r2;
+
+        r2 = null;
+
+        goto label02;
+
+     label05:
+        $r4 = r0.<org.kxml2.wap.WbxmlParser: int[] nspCounts>;
+
+        $i1 = r0.<org.kxml2.wap.WbxmlParser: int depth>;
+
+        $i2 = $r4[$i1];
+
+        $i3 = $i2 + 1;
+
+        $r4[$i1] = $i3;
+
+        $i1 = $i2 << 1;
+
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] nspStack>;
+
+        $i2 = $i1 + 2;
+
+        $r1 = specialinvoke r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] ensureCapacity(java.lang.String[],int)>($r1, $i2);
+
+        r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] nspStack> = $r1;
+
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] nspStack>;
+
+        $r1[$i1] = r2;
+
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] nspStack>;
+
+        $i1 = $i1 + 1;
+
+        $r5 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attributes>;
+
+        $i2 = i0 + 3;
+
+        $r3 = $r5[$i2];
+
+        $r1[$i1] = $r3;
+
+        if r2 == null goto label06;
+
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attributes>;
+
+        $i1 = i0 + 3;
+
+        $r3 = $r1[$i1];
+
+        $z1 = virtualinvoke $r3.<java.lang.String: boolean equals(java.lang.Object)>("");
+
+        if $z1 == 0 goto label06;
+
+        specialinvoke r0.<org.kxml2.wap.WbxmlParser: void exception(java.lang.String)>("illegal empty namespace");
+
+     label06:
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attributes>;
+
+        $i1 = i0 + 4;
+
+        $r5 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attributes>;
+
+        $i2 = r0.<org.kxml2.wap.WbxmlParser: int attributeCount>;
+
+        $i2 = $i2 + -1;
+
+        r0.<org.kxml2.wap.WbxmlParser: int attributeCount> = $i2;
+
+        $i2 = $i2 << 2;
+
+        $i2 = $i2 - i0;
+
+        staticinvoke <java.lang.System: void arraycopy(java.lang.Object,int,java.lang.Object,int,int)>($r1, $i1, $r5, i0, $i2);
+
+        i0 = i0 + -4;
+
+        goto label03;
+
+     label07:
+        if z0 == 0 goto label14;
+
+        i0 = r0.<org.kxml2.wap.WbxmlParser: int attributeCount>;
+
+        i0 = i0 << 2;
+
+        i0 = i0 + -4;
+
+     label08:
+        if i0 < 0 goto label14;
+
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attributes>;
+
+        $i1 = i0 + 2;
+
+        $r3 = $r1[$i1];
+
+        $i1 = virtualinvoke $r3.<java.lang.String: int indexOf(int)>(58);
+
+        if $i1 != 0 goto label09;
+
+        $r9 = new java.lang.RuntimeException;
+
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>()>();
+
+        $r6 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("illegal attribute name: ");
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" at ");
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>(r0);
+
+        $r3 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r9.<java.lang.RuntimeException: void <init>(java.lang.String)>($r3);
+
+        throw $r9;
+
+     label09:
+        if $i1 == -1 goto label13;
+
+        $r7 = virtualinvoke $r3.<java.lang.String: java.lang.String substring(int,int)>(0, $i1);
+
+        $i1 = $i1 + 1;
+
+        $r3 = virtualinvoke $r3.<java.lang.String: java.lang.String substring(int)>($i1);
+
+        r2 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: java.lang.String getNamespace(java.lang.String)>($r7);
+
+        if r2 != null goto label10;
+
+        $r9 = new java.lang.RuntimeException;
+
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>()>();
+
+        $r6 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Undefined Prefix: ");
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" in ");
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>(r0);
+
+        $r3 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r9.<java.lang.RuntimeException: void <init>(java.lang.String)>($r3);
+
+        throw $r9;
+
+     label10:
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attributes>;
+
+        $r1[i0] = r2;
+
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attributes>;
+
+        $i1 = i0 + 1;
+
+        $r1[$i1] = $r7;
+
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attributes>;
+
+        $i1 = i0 + 2;
+
+        $r1[$i1] = $r3;
+
+        $i1 = r0.<org.kxml2.wap.WbxmlParser: int attributeCount>;
+
+        $i1 = $i1 << 2;
+
+        $i1 = $i1 + -4;
+
+     label11:
+        if $i1 <= i0 goto label13;
+
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attributes>;
+
+        $i2 = $i1 + 2;
+
+        $r7 = $r1[$i2];
+
+        $z1 = virtualinvoke $r3.<java.lang.String: boolean equals(java.lang.Object)>($r7);
+
+        if $z1 == 0 goto label12;
+
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attributes>;
+
+        $r7 = $r1[$i1];
+
+        $z1 = virtualinvoke r2.<java.lang.String: boolean equals(java.lang.Object)>($r7);
+
+        if $z1 == 0 goto label12;
+
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>()>();
+
+        $r6 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Duplicate Attribute: {");
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(r2);
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("}");
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r7 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke r0.<org.kxml2.wap.WbxmlParser: void exception(java.lang.String)>($r7);
+
+     label12:
+        $i1 = $i1 + -4;
+
+        goto label11;
+
+     label13:
+        i0 = i0 + -4;
+
+        goto label08;
+
+     label14:
+        $r3 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String name>;
+
+        i0 = virtualinvoke $r3.<java.lang.String: int indexOf(int)>(58);
+
+        if i0 != 0 goto label17;
+
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>()>();
+
+        $r6 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("illegal tag name: ");
+
+        $r3 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String name>;
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke r0.<org.kxml2.wap.WbxmlParser: void exception(java.lang.String)>($r3);
+
+     label15:
+        $r3 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String prefix>;
+
+        $r3 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: java.lang.String getNamespace(java.lang.String)>($r3);
+
+        r0.<org.kxml2.wap.WbxmlParser: java.lang.String namespace> = $r3;
+
+        $r3 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String namespace>;
+
+        if $r3 != null goto label18;
+
+        $r3 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String prefix>;
+
+        if $r3 == null goto label16;
+
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>()>();
+
+        $r6 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("undefined prefix: ");
+
+        $r3 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String prefix>;
+
+        $r6 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r6.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke r0.<org.kxml2.wap.WbxmlParser: void exception(java.lang.String)>($r3);
+
+     label16:
+        r0.<org.kxml2.wap.WbxmlParser: java.lang.String namespace> = "";
+
+        return z0;
+
+     label17:
+        if i0 == -1 goto label15;
+
+        $r3 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String name>;
+
+        $r3 = virtualinvoke $r3.<java.lang.String: java.lang.String substring(int,int)>(0, i0);
+
+        r0.<org.kxml2.wap.WbxmlParser: java.lang.String prefix> = $r3;
+
+        $r3 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String name>;
+
+        i0 = i0 + 1;
+
+        $r3 = virtualinvoke $r3.<java.lang.String: java.lang.String substring(int)>(i0);
+
+        r0.<org.kxml2.wap.WbxmlParser: java.lang.String name> = $r3;
+
+        goto label15;
+
+     label18:
+        return z0;
+    }
+
+    private final java.lang.String[] ensureCapacity(java.lang.String[], int)
+    {
+        org.kxml2.wap.WbxmlParser r0;
+        int $i0, $i1;
+        java.lang.String[] r1, r2;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        r2 := @parameter0: java.lang.String[];
+
+        $i0 := @parameter1: int;
+
+        $i1 = lengthof r2;
+
+        if $i1 < $i0 goto label1;
+
+        return r2;
+
+     label1:
+        $i0 = $i0 + 16;
+
+        r1 = newarray (java.lang.String)[$i0];
+
+        $i0 = lengthof r2;
+
+        staticinvoke <java.lang.System: void arraycopy(java.lang.Object,int,java.lang.Object,int,int)>(r2, 0, r1, 0, $i0);
+
+        return r1;
+    }
+
+    private final void exception(java.lang.String) throws org.xmlpull.v1.XmlPullParserException
+    {
+        org.xmlpull.v1.XmlPullParserException $r2;
+        java.lang.String $r1;
+        org.kxml2.wap.WbxmlParser r0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = new org.xmlpull.v1.XmlPullParserException;
+
+        specialinvoke $r2.<org.xmlpull.v1.XmlPullParserException: void <init>(java.lang.String,org.xmlpull.v1.XmlPullParser,java.lang.Throwable)>($r1, r0, null);
+
+        throw $r2;
+    }
+
+    private final void nextImpl() throws java.io.IOException, org.xmlpull.v1.XmlPullParserException
+    {
+        char c0;
+        java.lang.String[] $r1;
+        java.lang.RuntimeException $r6;
+        org.kxml2.wap.WbxmlParser r0;
+        int i1, $i2;
+        java.lang.StringBuilder $r3, $r5;
+        java.lang.Object $r4;
+        java.lang.String $r2;
+        boolean $z0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        i1 = r0.<org.kxml2.wap.WbxmlParser: int type>;
+
+        if i1 != 3 goto label01;
+
+        i1 = r0.<org.kxml2.wap.WbxmlParser: int depth>;
+
+        i1 = i1 + -1;
+
+        r0.<org.kxml2.wap.WbxmlParser: int depth> = i1;
+
+     label01:
+        $z0 = r0.<org.kxml2.wap.WbxmlParser: boolean degenerated>;
+
+        if $z0 == 0 goto label02;
+
+        r0.<org.kxml2.wap.WbxmlParser: int type> = 3;
+
+        r0.<org.kxml2.wap.WbxmlParser: boolean degenerated> = 0;
+
+        return;
+
+     label02:
+        r0.<org.kxml2.wap.WbxmlParser: java.lang.String text> = null;
+
+        r0.<org.kxml2.wap.WbxmlParser: java.lang.String prefix> = null;
+
+        r0.<org.kxml2.wap.WbxmlParser: java.lang.String name> = null;
+
+        i1 = specialinvoke r0.<org.kxml2.wap.WbxmlParser: int peekId()>();
+
+     label03:
+        if i1 != 0 goto label04;
+
+        r0.<org.kxml2.wap.WbxmlParser: int nextId> = -2;
+
+        i1 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: int readByte()>();
+
+        specialinvoke r0.<org.kxml2.wap.WbxmlParser: void selectPage(int,boolean)>(i1, 1);
+
+        i1 = specialinvoke r0.<org.kxml2.wap.WbxmlParser: int peekId()>();
+
+        goto label03;
+
+     label04:
+        r0.<org.kxml2.wap.WbxmlParser: int nextId> = -2;
+
+        lookupswitch(i1)
+        {
+            case -1: goto label06;
+            case 1: goto label07;
+            case 2: goto label08;
+            case 3: goto label09;
+            case 64: goto label10;
+            case 65: goto label10;
+            case 66: goto label10;
+            case 67: goto label11;
+            case 128: goto label10;
+            case 129: goto label10;
+            case 130: goto label10;
+            case 131: goto label12;
+            case 192: goto label10;
+            case 193: goto label10;
+            case 194: goto label10;
+            case 195: goto label10;
+            default: goto label05;
+        };
+
+     label05:
+        virtualinvoke r0.<org.kxml2.wap.WbxmlParser: void parseElement(int)>(i1);
+
+        return;
+
+     label06:
+        r0.<org.kxml2.wap.WbxmlParser: int type> = 1;
+
+        return;
+
+     label07:
+        i1 = r0.<org.kxml2.wap.WbxmlParser: int depth>;
+
+        i1 = i1 + -1;
+
+        i1 = i1 << 2;
+
+        r0.<org.kxml2.wap.WbxmlParser: int type> = 3;
+
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] elementStack>;
+
+        $r2 = $r1[i1];
+
+        r0.<org.kxml2.wap.WbxmlParser: java.lang.String namespace> = $r2;
+
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] elementStack>;
+
+        $i2 = i1 + 1;
+
+        $r2 = $r1[$i2];
+
+        r0.<org.kxml2.wap.WbxmlParser: java.lang.String prefix> = $r2;
+
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] elementStack>;
+
+        i1 = i1 + 2;
+
+        $r2 = $r1[i1];
+
+        r0.<org.kxml2.wap.WbxmlParser: java.lang.String name> = $r2;
+
+        return;
+
+     label08:
+        r0.<org.kxml2.wap.WbxmlParser: int type> = 6;
+
+        i1 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: int readInt()>();
+
+        c0 = (char) i1;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(char)>(c0);
+
+        $r2 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        r0.<org.kxml2.wap.WbxmlParser: java.lang.String text> = $r2;
+
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("#");
+
+        i1 = (int) c0;
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>(i1);
+
+        $r2 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        r0.<org.kxml2.wap.WbxmlParser: java.lang.String name> = $r2;
+
+        return;
+
+     label09:
+        r0.<org.kxml2.wap.WbxmlParser: int type> = 4;
+
+        $r2 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: java.lang.String readStrI()>();
+
+        r0.<org.kxml2.wap.WbxmlParser: java.lang.String text> = $r2;
+
+        return;
+
+     label10:
+        r0.<org.kxml2.wap.WbxmlParser: int type> = 64;
+
+        r0.<org.kxml2.wap.WbxmlParser: int wapCode> = i1;
+
+        $r4 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: java.lang.Object parseWapExtension(int)>(i1);
+
+        r0.<org.kxml2.wap.WbxmlParser: java.lang.Object wapExtensionData> = $r4;
+
+        return;
+
+     label11:
+        $r6 = new java.lang.RuntimeException;
+
+        specialinvoke $r6.<java.lang.RuntimeException: void <init>(java.lang.String)>("PI curr. not supp.");
+
+        throw $r6;
+
+     label12:
+        r0.<org.kxml2.wap.WbxmlParser: int type> = 4;
+
+        $r2 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: java.lang.String readStrT()>();
+
+        r0.<org.kxml2.wap.WbxmlParser: java.lang.String text> = $r2;
+
+        return;
+    }
+
+    private int peekId() throws java.io.IOException
+    {
+        int $i0;
+        org.kxml2.wap.WbxmlParser r0;
+        java.io.InputStream $r1;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $i0 = r0.<org.kxml2.wap.WbxmlParser: int nextId>;
+
+        if $i0 != -2 goto label1;
+
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.io.InputStream in>;
+
+        $i0 = virtualinvoke $r1.<java.io.InputStream: int read()>();
+
+        r0.<org.kxml2.wap.WbxmlParser: int nextId> = $i0;
+
+     label1:
+        $i0 = r0.<org.kxml2.wap.WbxmlParser: int nextId>;
+
+        return $i0;
+    }
+
+    private void selectPage(int, boolean) throws org.xmlpull.v1.XmlPullParserException
+    {
+        java.lang.String[] $r5;
+        java.util.Vector $r1;
+        org.kxml2.wap.WbxmlParser r0;
+        int $i0, $i1, $i2;
+        java.lang.StringBuilder $r2;
+        java.lang.Object $r4;
+        java.lang.String $r3;
+        boolean $z0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $i0 := @parameter0: int;
+
+        $z0 := @parameter1: boolean;
+
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.util.Vector tables>;
+
+        $i1 = virtualinvoke $r1.<java.util.Vector: int size()>();
+
+        if $i1 != 0 goto label1;
+
+        if $i0 != 0 goto label1;
+
+        return;
+
+     label1:
+        $i1 = $i0 * 3;
+
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.util.Vector tables>;
+
+        $i2 = virtualinvoke $r1.<java.util.Vector: int size()>();
+
+        if $i1 <= $i2 goto label2;
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Code Page ");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" undefined!");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke r0.<org.kxml2.wap.WbxmlParser: void exception(java.lang.String)>($r3);
+
+     label2:
+        if $z0 == 0 goto label3;
+
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.util.Vector tables>;
+
+        $i0 = $i0 * 3;
+
+        $i1 = r0.<org.kxml2.wap.WbxmlParser: int TAG_TABLE>;
+
+        $i0 = $i0 + $i1;
+
+        $r4 = virtualinvoke $r1.<java.util.Vector: java.lang.Object elementAt(int)>($i0);
+
+        $r5 = (java.lang.String[]) $r4;
+
+        r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] tagTable> = $r5;
+
+        return;
+
+     label3:
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.util.Vector tables>;
+
+        $i1 = $i0 * 3;
+
+        $i2 = r0.<org.kxml2.wap.WbxmlParser: int ATTR_START_TABLE>;
+
+        $i1 = $i1 + $i2;
+
+        $r4 = virtualinvoke $r1.<java.util.Vector: java.lang.Object elementAt(int)>($i1);
+
+        $r5 = (java.lang.String[]) $r4;
+
+        r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attrStartTable> = $r5;
+
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.util.Vector tables>;
+
+        $i0 = $i0 * 3;
+
+        $i1 = r0.<org.kxml2.wap.WbxmlParser: int ATTR_VALUE_TABLE>;
+
+        $i0 = $i0 + $i1;
+
+        $r4 = virtualinvoke $r1.<java.util.Vector: java.lang.Object elementAt(int)>($i0);
+
+        $r5 = (java.lang.String[]) $r4;
+
+        r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attrValueTable> = $r5;
+
+        return;
+    }
+
+    private final void setTable(int, int, java.lang.String[])
+    {
+        byte[] $r2;
+        java.lang.String[] $r1;
+        java.lang.RuntimeException $r3;
+        java.util.Vector $r4;
+        org.kxml2.wap.WbxmlParser r0;
+        int $i0, $i1, $i2, $i3;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $r1 := @parameter2: java.lang.String[];
+
+        $r2 = r0.<org.kxml2.wap.WbxmlParser: byte[] stringTable>;
+
+        if $r2 == null goto label1;
+
+        $r3 = new java.lang.RuntimeException;
+
+        specialinvoke $r3.<java.lang.RuntimeException: void <init>(java.lang.String)>("setXxxTable must be called before setInput!");
+
+        throw $r3;
+
+     label1:
+        $r4 = r0.<org.kxml2.wap.WbxmlParser: java.util.Vector tables>;
+
+        $i2 = virtualinvoke $r4.<java.util.Vector: int size()>();
+
+        $i3 = $i0 * 3;
+
+        $i3 = $i3 + 3;
+
+        if $i2 >= $i3 goto label2;
+
+        $r4 = r0.<org.kxml2.wap.WbxmlParser: java.util.Vector tables>;
+
+        virtualinvoke $r4.<java.util.Vector: void addElement(java.lang.Object)>(null);
+
+        goto label1;
+
+     label2:
+        $r4 = r0.<org.kxml2.wap.WbxmlParser: java.util.Vector tables>;
+
+        $i0 = $i0 * 3;
+
+        $i0 = $i0 + $i1;
+
+        virtualinvoke $r4.<java.util.Vector: void setElementAt(java.lang.Object,int)>($r1, $i0);
+
+        return;
+    }
+
+    public void defineEntityReplacementText(java.lang.String, java.lang.String) throws org.xmlpull.v1.XmlPullParserException
+    {
+        java.lang.String $r1, $r2;
+        org.kxml2.wap.WbxmlParser r0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        return;
+    }
+
+    public int getAttributeCount()
+    {
+        int i0;
+        org.kxml2.wap.WbxmlParser r0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        i0 = r0.<org.kxml2.wap.WbxmlParser: int attributeCount>;
+
+        return i0;
+    }
+
+    public java.lang.String getAttributeName(int)
+    {
+        java.lang.IndexOutOfBoundsException $r1;
+        org.kxml2.wap.WbxmlParser r0;
+        int $i0, $i1;
+        java.lang.String[] $r2;
+        java.lang.String $r3;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $i0 := @parameter0: int;
+
+        $i1 = r0.<org.kxml2.wap.WbxmlParser: int attributeCount>;
+
+        if $i0 < $i1 goto label1;
+
+        $r1 = new java.lang.IndexOutOfBoundsException;
+
+        specialinvoke $r1.<java.lang.IndexOutOfBoundsException: void <init>()>();
+
+        throw $r1;
+
+     label1:
+        $r2 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attributes>;
+
+        $i0 = $i0 << 2;
+
+        $i0 = $i0 + 2;
+
+        $r3 = $r2[$i0];
+
+        return $r3;
+    }
+
+    public java.lang.String getAttributeNamespace(int)
+    {
+        java.lang.IndexOutOfBoundsException $r1;
+        org.kxml2.wap.WbxmlParser r0;
+        int $i0, $i1;
+        java.lang.String[] $r2;
+        java.lang.String $r3;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $i0 := @parameter0: int;
+
+        $i1 = r0.<org.kxml2.wap.WbxmlParser: int attributeCount>;
+
+        if $i0 < $i1 goto label1;
+
+        $r1 = new java.lang.IndexOutOfBoundsException;
+
+        specialinvoke $r1.<java.lang.IndexOutOfBoundsException: void <init>()>();
+
+        throw $r1;
+
+     label1:
+        $r2 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attributes>;
+
+        $i0 = $i0 << 2;
+
+        $r3 = $r2[$i0];
+
+        return $r3;
+    }
+
+    public java.lang.String getAttributePrefix(int)
+    {
+        java.lang.IndexOutOfBoundsException $r1;
+        org.kxml2.wap.WbxmlParser r0;
+        int $i0, $i1;
+        java.lang.String[] $r2;
+        java.lang.String $r3;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $i0 := @parameter0: int;
+
+        $i1 = r0.<org.kxml2.wap.WbxmlParser: int attributeCount>;
+
+        if $i0 < $i1 goto label1;
+
+        $r1 = new java.lang.IndexOutOfBoundsException;
+
+        specialinvoke $r1.<java.lang.IndexOutOfBoundsException: void <init>()>();
+
+        throw $r1;
+
+     label1:
+        $r2 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attributes>;
+
+        $i0 = $i0 << 2;
+
+        $i0 = $i0 + 1;
+
+        $r3 = $r2[$i0];
+
+        return $r3;
+    }
+
+    public java.lang.String getAttributeType(int)
+    {
+        int $i0;
+        org.kxml2.wap.WbxmlParser r0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $i0 := @parameter0: int;
+
+        return "CDATA";
+    }
+
+    public java.lang.String getAttributeValue(int)
+    {
+        java.lang.IndexOutOfBoundsException $r1;
+        org.kxml2.wap.WbxmlParser r0;
+        int $i0, $i1;
+        java.lang.String[] $r2;
+        java.lang.String $r3;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $i0 := @parameter0: int;
+
+        $i1 = r0.<org.kxml2.wap.WbxmlParser: int attributeCount>;
+
+        if $i0 < $i1 goto label1;
+
+        $r1 = new java.lang.IndexOutOfBoundsException;
+
+        specialinvoke $r1.<java.lang.IndexOutOfBoundsException: void <init>()>();
+
+        throw $r1;
+
+     label1:
+        $r2 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attributes>;
+
+        $i0 = $i0 << 2;
+
+        $i0 = $i0 + 3;
+
+        $r3 = $r2[$i0];
+
+        return $r3;
+    }
+
+    public java.lang.String getAttributeValue(java.lang.String, java.lang.String)
+    {
+        java.lang.String[] $r3;
+        org.kxml2.wap.WbxmlParser r0;
+        int $i0, $i1;
+        java.lang.String $r1, $r2, $r4;
+        boolean $z0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+        $i0 = r0.<org.kxml2.wap.WbxmlParser: int attributeCount>;
+
+        $i0 = $i0 << 2;
+
+        $i0 = $i0 + -4;
+
+     label1:
+        if $i0 < 0 goto label4;
+
+        $r3 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attributes>;
+
+        $i1 = $i0 + 2;
+
+        $r4 = $r3[$i1];
+
+        $z0 = virtualinvoke $r4.<java.lang.String: boolean equals(java.lang.Object)>($r2);
+
+        if $z0 == 0 goto label3;
+
+        if $r1 == null goto label2;
+
+        $r3 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attributes>;
+
+        $r4 = $r3[$i0];
+
+        $z0 = virtualinvoke $r4.<java.lang.String: boolean equals(java.lang.Object)>($r1);
+
+        if $z0 == 0 goto label3;
+
+     label2:
+        $r3 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attributes>;
+
+        $i0 = $i0 + 3;
+
+        $r1 = $r3[$i0];
+
+        return $r1;
+
+     label3:
+        $i0 = $i0 + -4;
+
+        goto label1;
+
+     label4:
+        return null;
+    }
+
+    public int getColumnNumber()
+    {
+        org.kxml2.wap.WbxmlParser r0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        return -1;
+    }
+
+    public int getDepth()
+    {
+        int i0;
+        org.kxml2.wap.WbxmlParser r0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        i0 = r0.<org.kxml2.wap.WbxmlParser: int depth>;
+
+        return i0;
+    }
+
+    public int getEventType() throws org.xmlpull.v1.XmlPullParserException
+    {
+        int i0;
+        org.kxml2.wap.WbxmlParser r0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        i0 = r0.<org.kxml2.wap.WbxmlParser: int type>;
+
+        return i0;
+    }
+
+    public boolean getFeature(java.lang.String)
+    {
+        org.kxml2.wap.WbxmlParser r0;
+        java.lang.String $r1, $r2;
+        boolean $z0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = "http://xmlpull.org/v1/doc/features.html#process-namespaces";
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>($r1);
+
+        if $z0 == 0 goto label1;
+
+        $z0 = r0.<org.kxml2.wap.WbxmlParser: boolean processNsp>;
+
+        return $z0;
+
+     label1:
+        return 0;
+    }
+
+    public java.lang.String getInputEncoding()
+    {
+        java.lang.String r1;
+        org.kxml2.wap.WbxmlParser r0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String encoding>;
+
+        return r1;
+    }
+
+    public int getLineNumber()
+    {
+        org.kxml2.wap.WbxmlParser r0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        return -1;
+    }
+
+    public java.lang.String getName()
+    {
+        java.lang.String r1;
+        org.kxml2.wap.WbxmlParser r0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String name>;
+
+        return r1;
+    }
+
+    public java.lang.String getNamespace()
+    {
+        java.lang.String r1;
+        org.kxml2.wap.WbxmlParser r0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String namespace>;
+
+        return r1;
+    }
+
+    public java.lang.String getNamespace(java.lang.String)
+    {
+        org.kxml2.wap.WbxmlParser r0;
+        int $i0;
+        java.lang.String[] $r3;
+        java.lang.String $r1, $r2;
+        boolean $z0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = "xml";
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>($r1);
+
+        if $z0 == 0 goto label1;
+
+        return "http://www.w3.org/XML/1998/namespace";
+
+     label1:
+        $r2 = "xmlns";
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>($r1);
+
+        if $z0 == 0 goto label2;
+
+        return "http://www.w3.org/2000/xmlns/";
+
+     label2:
+        $i0 = r0.<org.kxml2.wap.WbxmlParser: int depth>;
+
+        $i0 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: int getNamespaceCount(int)>($i0);
+
+        $i0 = $i0 << 1;
+
+        $i0 = $i0 + -2;
+
+     label3:
+        if $i0 < 0 goto label6;
+
+        if $r1 != null goto label4;
+
+        $r3 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] nspStack>;
+
+        $r2 = $r3[$i0];
+
+        if $r2 != null goto label5;
+
+        $r3 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] nspStack>;
+
+        $i0 = $i0 + 1;
+
+        $r1 = $r3[$i0];
+
+        return $r1;
+
+     label4:
+        $r3 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] nspStack>;
+
+        $r2 = $r3[$i0];
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>($r2);
+
+        if $z0 == 0 goto label5;
+
+        $r3 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] nspStack>;
+
+        $i0 = $i0 + 1;
+
+        $r1 = $r3[$i0];
+
+        return $r1;
+
+     label5:
+        $i0 = $i0 + -2;
+
+        goto label3;
+
+     label6:
+        return null;
+    }
+
+    public int getNamespaceCount(int)
+    {
+        java.lang.IndexOutOfBoundsException $r1;
+        int[] $r2;
+        org.kxml2.wap.WbxmlParser r0;
+        int $i0, $i1;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $i0 := @parameter0: int;
+
+        $i1 = r0.<org.kxml2.wap.WbxmlParser: int depth>;
+
+        if $i0 <= $i1 goto label1;
+
+        $r1 = new java.lang.IndexOutOfBoundsException;
+
+        specialinvoke $r1.<java.lang.IndexOutOfBoundsException: void <init>()>();
+
+        throw $r1;
+
+     label1:
+        $r2 = r0.<org.kxml2.wap.WbxmlParser: int[] nspCounts>;
+
+        $i0 = $r2[$i0];
+
+        return $i0;
+    }
+
+    public java.lang.String getNamespacePrefix(int)
+    {
+        org.kxml2.wap.WbxmlParser r0;
+        int $i0;
+        java.lang.String[] $r1;
+        java.lang.String $r2;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $i0 := @parameter0: int;
+
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] nspStack>;
+
+        $i0 = $i0 << 1;
+
+        $r2 = $r1[$i0];
+
+        return $r2;
+    }
+
+    public java.lang.String getNamespaceUri(int)
+    {
+        org.kxml2.wap.WbxmlParser r0;
+        int $i0;
+        java.lang.String[] $r1;
+        java.lang.String $r2;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $i0 := @parameter0: int;
+
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] nspStack>;
+
+        $i0 = $i0 << 1;
+
+        $i0 = $i0 + 1;
+
+        $r2 = $r1[$i0];
+
+        return $r2;
+    }
+
+    public java.lang.String getPositionDescription()
+    {
+        java.lang.String[] $r2;
+        java.lang.StringBuffer r1;
+        org.kxml2.wap.WbxmlParser r0;
+        int i0, $i1, $i2;
+        java.lang.StringBuilder $r4;
+        java.lang.String $r3, r5;
+        boolean $z0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        r1 = new java.lang.StringBuffer;
+
+        i0 = r0.<org.kxml2.wap.WbxmlParser: int type>;
+
+        $r2 = <org.kxml2.wap.WbxmlParser: java.lang.String[] TYPES>;
+
+        $i1 = lengthof $r2;
+
+        if i0 >= $i1 goto label08;
+
+        $r2 = <org.kxml2.wap.WbxmlParser: java.lang.String[] TYPES>;
+
+        i0 = r0.<org.kxml2.wap.WbxmlParser: int type>;
+
+        $r3 = $r2[i0];
+
+     label01:
+        specialinvoke r1.<java.lang.StringBuffer: void <init>(java.lang.String)>($r3);
+
+        virtualinvoke r1.<java.lang.StringBuffer: java.lang.StringBuffer append(char)>(32);
+
+        i0 = r0.<org.kxml2.wap.WbxmlParser: int type>;
+
+        if i0 == 2 goto label02;
+
+        i0 = r0.<org.kxml2.wap.WbxmlParser: int type>;
+
+        if i0 != 3 goto label11;
+
+     label02:
+        $z0 = r0.<org.kxml2.wap.WbxmlParser: boolean degenerated>;
+
+        if $z0 == 0 goto label03;
+
+        virtualinvoke r1.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("(empty) ");
+
+     label03:
+        virtualinvoke r1.<java.lang.StringBuffer: java.lang.StringBuffer append(char)>(60);
+
+        i0 = r0.<org.kxml2.wap.WbxmlParser: int type>;
+
+        if i0 != 3 goto label04;
+
+        virtualinvoke r1.<java.lang.StringBuffer: java.lang.StringBuffer append(char)>(47);
+
+     label04:
+        $r3 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String prefix>;
+
+        if $r3 == null goto label05;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("{");
+
+        $r3 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String namespace>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("}");
+
+        $r3 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String prefix>;
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(":");
+
+        $r3 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke r1.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r3);
+
+     label05:
+        $r3 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String name>;
+
+        virtualinvoke r1.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r3);
+
+        i0 = r0.<org.kxml2.wap.WbxmlParser: int attributeCount>;
+
+        i0 = i0 << 2;
+
+        $i1 = 0;
+
+     label06:
+        if $i1 >= i0 goto label09;
+
+        virtualinvoke r1.<java.lang.StringBuffer: java.lang.StringBuffer append(char)>(32);
+
+        $r2 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attributes>;
+
+        $i2 = $i1 + 1;
+
+        $r3 = $r2[$i2];
+
+        if $r3 == null goto label07;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("{");
+
+        $r2 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attributes>;
+
+        $r3 = $r2[$i1];
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("}");
+
+        $r2 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attributes>;
+
+        $i2 = $i1 + 1;
+
+        $r3 = $r2[$i2];
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(":");
+
+        $r3 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke r1.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r3);
+
+     label07:
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r2 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attributes>;
+
+        $i2 = $i1 + 2;
+
+        $r3 = $r2[$i2];
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("=\'");
+
+        $r2 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attributes>;
+
+        $i2 = $i1 + 3;
+
+        $r3 = $r2[$i2];
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\'");
+
+        $r3 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke r1.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r3);
+
+        $i1 = $i1 + 4;
+
+        goto label06;
+
+     label08:
+        $r3 = "unknown";
+
+        goto label01;
+
+     label09:
+        virtualinvoke r1.<java.lang.StringBuffer: java.lang.StringBuffer append(char)>(62);
+
+     label10:
+        $r3 = virtualinvoke r1.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        return $r3;
+
+     label11:
+        i0 = r0.<org.kxml2.wap.WbxmlParser: int type>;
+
+        if i0 == 7 goto label10;
+
+        i0 = r0.<org.kxml2.wap.WbxmlParser: int type>;
+
+        if i0 == 4 goto label12;
+
+        $r3 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: java.lang.String getText()>();
+
+        virtualinvoke r1.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r3);
+
+        goto label10;
+
+     label12:
+        $z0 = r0.<org.kxml2.wap.WbxmlParser: boolean isWhitespace>;
+
+        if $z0 == 0 goto label13;
+
+        virtualinvoke r1.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>("(whitespace)");
+
+        goto label10;
+
+     label13:
+        $r3 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: java.lang.String getText()>();
+
+        r5 = $r3;
+
+        i0 = virtualinvoke $r3.<java.lang.String: int length()>();
+
+        if i0 <= 16 goto label14;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.String: java.lang.String substring(int,int)>(0, 16);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("...");
+
+        r5 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label14:
+        virtualinvoke r1.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>(r5);
+
+        goto label10;
+    }
+
+    public java.lang.String getPrefix()
+    {
+        java.lang.String r1;
+        org.kxml2.wap.WbxmlParser r0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String prefix>;
+
+        return r1;
+    }
+
+    public java.lang.Object getProperty(java.lang.String)
+    {
+        java.lang.String $r1;
+        org.kxml2.wap.WbxmlParser r0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $r1 := @parameter0: java.lang.String;
+
+        return null;
+    }
+
+    public java.lang.String getText()
+    {
+        java.lang.String r1;
+        org.kxml2.wap.WbxmlParser r0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String text>;
+
+        return r1;
+    }
+
+    public char[] getTextCharacters(int[])
+    {
+        int[] $r1;
+        org.kxml2.wap.WbxmlParser r0;
+        int $i0;
+        char[] r3;
+        java.lang.String $r2, $r4;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $r1 := @parameter0: int[];
+
+        $i0 = r0.<org.kxml2.wap.WbxmlParser: int type>;
+
+        if $i0 < 4 goto label1;
+
+        $r1[0] = 0;
+
+        $r2 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String text>;
+
+        $i0 = virtualinvoke $r2.<java.lang.String: int length()>();
+
+        $r1[1] = $i0;
+
+        $r2 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String text>;
+
+        $i0 = virtualinvoke $r2.<java.lang.String: int length()>();
+
+        r3 = newarray (char)[$i0];
+
+        $r2 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String text>;
+
+        $r4 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String text>;
+
+        $i0 = virtualinvoke $r4.<java.lang.String: int length()>();
+
+        virtualinvoke $r2.<java.lang.String: void getChars(int,int,char[],int)>(0, $i0, r3, 0);
+
+        return r3;
+
+     label1:
+        $i0 = -1;
+
+        $r1[0] = $i0;
+
+        $i0 = -1;
+
+        $r1[1] = $i0;
+
+        return null;
+    }
+
+    public int getWapCode()
+    {
+        int i0;
+        org.kxml2.wap.WbxmlParser r0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        i0 = r0.<org.kxml2.wap.WbxmlParser: int wapCode>;
+
+        return i0;
+    }
+
+    public java.lang.Object getWapExtensionData()
+    {
+        java.lang.Object r1;
+        org.kxml2.wap.WbxmlParser r0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.Object wapExtensionData>;
+
+        return r1;
+    }
+
+    public boolean isAttributeDefault(int)
+    {
+        int $i0;
+        org.kxml2.wap.WbxmlParser r0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $i0 := @parameter0: int;
+
+        return 0;
+    }
+
+    public boolean isEmptyElementTag() throws org.xmlpull.v1.XmlPullParserException
+    {
+        int $i0;
+        org.kxml2.wap.WbxmlParser r0;
+        boolean z0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $i0 = r0.<org.kxml2.wap.WbxmlParser: int type>;
+
+        if $i0 == 2 goto label1;
+
+        specialinvoke r0.<org.kxml2.wap.WbxmlParser: void exception(java.lang.String)>("Wrong event type");
+
+     label1:
+        z0 = r0.<org.kxml2.wap.WbxmlParser: boolean degenerated>;
+
+        return z0;
+    }
+
+    public boolean isWhitespace() throws org.xmlpull.v1.XmlPullParserException
+    {
+        int $i0;
+        org.kxml2.wap.WbxmlParser r0;
+        boolean z0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $i0 = r0.<org.kxml2.wap.WbxmlParser: int type>;
+
+        if $i0 == 4 goto label1;
+
+        $i0 = r0.<org.kxml2.wap.WbxmlParser: int type>;
+
+        if $i0 == 7 goto label1;
+
+        $i0 = r0.<org.kxml2.wap.WbxmlParser: int type>;
+
+        if $i0 == 5 goto label1;
+
+        specialinvoke r0.<org.kxml2.wap.WbxmlParser: void exception(java.lang.String)>("Wrong event type");
+
+     label1:
+        z0 = r0.<org.kxml2.wap.WbxmlParser: boolean isWhitespace>;
+
+        return z0;
+    }
+
+    public int next() throws org.xmlpull.v1.XmlPullParserException, java.io.IOException
+    {
+        org.kxml2.wap.WbxmlParser r0;
+        int i0, $i1;
+        java.lang.StringBuilder $r3;
+        java.lang.String $r1, $r2;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        r0.<org.kxml2.wap.WbxmlParser: boolean isWhitespace> = 1;
+
+        i0 = 9999;
+
+     label1:
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String text>;
+
+        specialinvoke r0.<org.kxml2.wap.WbxmlParser: void nextImpl()>();
+
+        $i1 = r0.<org.kxml2.wap.WbxmlParser: int type>;
+
+        if $i1 >= i0 goto label2;
+
+        i0 = r0.<org.kxml2.wap.WbxmlParser: int type>;
+
+     label2:
+        if i0 > 5 goto label1;
+
+        if i0 < 4 goto label5;
+
+        if $r1 == null goto label4;
+
+        $r2 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String text>;
+
+        if $r2 != null goto label7;
+
+     label3:
+        r0.<org.kxml2.wap.WbxmlParser: java.lang.String text> = $r1;
+
+     label4:
+        $i1 = specialinvoke r0.<org.kxml2.wap.WbxmlParser: int peekId()>();
+
+        lookupswitch($i1)
+        {
+            case 2: goto label1;
+            case 3: goto label1;
+            case 4: goto label1;
+            case 68: goto label1;
+            case 131: goto label1;
+            case 132: goto label1;
+            case 196: goto label1;
+            default: goto label5;
+        };
+
+     label5:
+        r0.<org.kxml2.wap.WbxmlParser: int type> = i0;
+
+        i0 = r0.<org.kxml2.wap.WbxmlParser: int type>;
+
+        if i0 <= 4 goto label6;
+
+        r0.<org.kxml2.wap.WbxmlParser: int type> = 4;
+
+     label6:
+        i0 = r0.<org.kxml2.wap.WbxmlParser: int type>;
+
+        return i0;
+
+     label7:
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String text>;
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        goto label3;
+    }
+
+    public int nextTag() throws org.xmlpull.v1.XmlPullParserException, java.io.IOException
+    {
+        int $i0;
+        org.kxml2.wap.WbxmlParser r0;
+        boolean $z0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        virtualinvoke r0.<org.kxml2.wap.WbxmlParser: int next()>();
+
+        $i0 = r0.<org.kxml2.wap.WbxmlParser: int type>;
+
+        if $i0 != 4 goto label1;
+
+        $z0 = r0.<org.kxml2.wap.WbxmlParser: boolean isWhitespace>;
+
+        if $z0 == 0 goto label1;
+
+        virtualinvoke r0.<org.kxml2.wap.WbxmlParser: int next()>();
+
+     label1:
+        $i0 = r0.<org.kxml2.wap.WbxmlParser: int type>;
+
+        if $i0 == 3 goto label2;
+
+        $i0 = r0.<org.kxml2.wap.WbxmlParser: int type>;
+
+        if $i0 == 2 goto label2;
+
+        specialinvoke r0.<org.kxml2.wap.WbxmlParser: void exception(java.lang.String)>("unexpected type");
+
+     label2:
+        $i0 = r0.<org.kxml2.wap.WbxmlParser: int type>;
+
+        return $i0;
+    }
+
+    public java.lang.String nextText() throws org.xmlpull.v1.XmlPullParserException, java.io.IOException
+    {
+        int $i0;
+        java.lang.String $r1;
+        org.kxml2.wap.WbxmlParser r0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $i0 = r0.<org.kxml2.wap.WbxmlParser: int type>;
+
+        if $i0 == 2 goto label1;
+
+        specialinvoke r0.<org.kxml2.wap.WbxmlParser: void exception(java.lang.String)>("precondition: START_TAG");
+
+     label1:
+        virtualinvoke r0.<org.kxml2.wap.WbxmlParser: int next()>();
+
+        $i0 = r0.<org.kxml2.wap.WbxmlParser: int type>;
+
+        if $i0 != 4 goto label3;
+
+        $r1 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: java.lang.String getText()>();
+
+        virtualinvoke r0.<org.kxml2.wap.WbxmlParser: int next()>();
+
+     label2:
+        $i0 = r0.<org.kxml2.wap.WbxmlParser: int type>;
+
+        if $i0 == 3 goto label4;
+
+        specialinvoke r0.<org.kxml2.wap.WbxmlParser: void exception(java.lang.String)>("END_TAG expected");
+
+        return $r1;
+
+     label3:
+        $r1 = "";
+
+        goto label2;
+
+     label4:
+        return $r1;
+    }
+
+    public int nextToken() throws org.xmlpull.v1.XmlPullParserException, java.io.IOException
+    {
+        int i0;
+        org.kxml2.wap.WbxmlParser r0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        r0.<org.kxml2.wap.WbxmlParser: boolean isWhitespace> = 1;
+
+        specialinvoke r0.<org.kxml2.wap.WbxmlParser: void nextImpl()>();
+
+        i0 = r0.<org.kxml2.wap.WbxmlParser: int type>;
+
+        return i0;
+    }
+
+    void parseElement(int) throws java.io.IOException, org.xmlpull.v1.XmlPullParserException
+    {
+        java.lang.String[] $r2;
+        int[] r1, $r4, $r5;
+        org.kxml2.wap.WbxmlParser r0;
+        int $i0, $i1, $i2;
+        java.lang.StringBuilder $r7, $r8;
+        java.lang.String $r3, $r6;
+        boolean $z0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $i0 := @parameter0: int;
+
+        r0.<org.kxml2.wap.WbxmlParser: int type> = 2;
+
+        $r2 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] tagTable>;
+
+        $i1 = $i0 & 63;
+
+        $r3 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: java.lang.String resolveId(java.lang.String[],int)>($r2, $i1);
+
+        r0.<org.kxml2.wap.WbxmlParser: java.lang.String name> = $r3;
+
+        r0.<org.kxml2.wap.WbxmlParser: int attributeCount> = 0;
+
+        $i1 = $i0 & 128;
+
+        if $i1 == 0 goto label01;
+
+        virtualinvoke r0.<org.kxml2.wap.WbxmlParser: void readAttr()>();
+
+     label01:
+        $i0 = $i0 & 64;
+
+        if $i0 != 0 goto label07;
+
+        $z0 = 1;
+
+     label02:
+        r0.<org.kxml2.wap.WbxmlParser: boolean degenerated> = $z0;
+
+        $i0 = r0.<org.kxml2.wap.WbxmlParser: int depth>;
+
+        $i1 = $i0 + 1;
+
+        r0.<org.kxml2.wap.WbxmlParser: int depth> = $i1;
+
+        $i0 = $i0 << 2;
+
+        $r2 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] elementStack>;
+
+        $i1 = $i0 + 4;
+
+        $r2 = specialinvoke r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] ensureCapacity(java.lang.String[],int)>($r2, $i1);
+
+        r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] elementStack> = $r2;
+
+        $r2 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] elementStack>;
+
+        $i1 = $i0 + 3;
+
+        $r3 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String name>;
+
+        $r2[$i1] = $r3;
+
+        $i1 = r0.<org.kxml2.wap.WbxmlParser: int depth>;
+
+        r1 = r0.<org.kxml2.wap.WbxmlParser: int[] nspCounts>;
+
+        $i2 = lengthof r1;
+
+        if $i1 < $i2 goto label03;
+
+        $i1 = r0.<org.kxml2.wap.WbxmlParser: int depth>;
+
+        $i1 = $i1 + 4;
+
+        r1 = newarray (int)[$i1];
+
+        $r4 = r0.<org.kxml2.wap.WbxmlParser: int[] nspCounts>;
+
+        $r5 = r0.<org.kxml2.wap.WbxmlParser: int[] nspCounts>;
+
+        $i1 = lengthof $r5;
+
+        staticinvoke <java.lang.System: void arraycopy(java.lang.Object,int,java.lang.Object,int,int)>($r4, 0, r1, 0, $i1);
+
+        r0.<org.kxml2.wap.WbxmlParser: int[] nspCounts> = r1;
+
+     label03:
+        r1 = r0.<org.kxml2.wap.WbxmlParser: int[] nspCounts>;
+
+        $i1 = r0.<org.kxml2.wap.WbxmlParser: int depth>;
+
+        $r4 = r0.<org.kxml2.wap.WbxmlParser: int[] nspCounts>;
+
+        $i2 = r0.<org.kxml2.wap.WbxmlParser: int depth>;
+
+        $i2 = $i2 + -1;
+
+        $i2 = $r4[$i2];
+
+        r1[$i1] = $i2;
+
+        $i1 = r0.<org.kxml2.wap.WbxmlParser: int attributeCount>;
+
+        $i1 = $i1 + -1;
+
+     label04:
+        if $i1 <= 0 goto label09;
+
+        $i2 = 0;
+
+     label05:
+        if $i2 >= $i1 goto label08;
+
+        $r3 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: java.lang.String getAttributeName(int)>($i1);
+
+        $r6 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: java.lang.String getAttributeName(int)>($i2);
+
+        $z0 = virtualinvoke $r3.<java.lang.String: boolean equals(java.lang.Object)>($r6);
+
+        if $z0 == 0 goto label06;
+
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>()>();
+
+        $r7 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Duplicate Attribute: ");
+
+        $r3 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: java.lang.String getAttributeName(int)>($i1);
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke r0.<org.kxml2.wap.WbxmlParser: void exception(java.lang.String)>($r3);
+
+     label06:
+        $i2 = $i2 + 1;
+
+        goto label05;
+
+     label07:
+        $z0 = 0;
+
+        goto label02;
+
+     label08:
+        $i1 = $i1 + -1;
+
+        goto label04;
+
+     label09:
+        $z0 = r0.<org.kxml2.wap.WbxmlParser: boolean processNsp>;
+
+        if $z0 == 0 goto label11;
+
+        specialinvoke r0.<org.kxml2.wap.WbxmlParser: boolean adjustNsp()>();
+
+     label10:
+        $r2 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] elementStack>;
+
+        $r3 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String namespace>;
+
+        $r2[$i0] = $r3;
+
+        $r2 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] elementStack>;
+
+        $i1 = $i0 + 1;
+
+        $r3 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String prefix>;
+
+        $r2[$i1] = $r3;
+
+        $r2 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] elementStack>;
+
+        $i0 = $i0 + 2;
+
+        $r3 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String name>;
+
+        $r2[$i0] = $r3;
+
+        return;
+
+     label11:
+        r0.<org.kxml2.wap.WbxmlParser: java.lang.String namespace> = "";
+
+        goto label10;
+    }
+
+    public java.lang.Object parseWapExtension(int) throws java.io.IOException, org.xmlpull.v1.XmlPullParserException
+    {
+        byte[] r4;
+        java.lang.Integer r3;
+        org.kxml2.wap.WbxmlParser r0;
+        int $i0, $i1;
+        java.lang.StringBuilder $r1;
+        java.lang.String $r2;
+        java.io.InputStream $r5;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $i0 := @parameter0: int;
+
+        lookupswitch($i0)
+        {
+            case 64: goto label3;
+            case 65: goto label3;
+            case 66: goto label3;
+            case 128: goto label4;
+            case 129: goto label4;
+            case 130: goto label4;
+            case 192: goto label2;
+            case 193: goto label2;
+            case 194: goto label2;
+            case 195: goto label5;
+            default: goto label1;
+        };
+
+     label1:
+        $r1 = new java.lang.StringBuilder;
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>()>();
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("illegal id: ");
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r2 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke r0.<org.kxml2.wap.WbxmlParser: void exception(java.lang.String)>($r2);
+
+     label2:
+        return null;
+
+     label3:
+        $r2 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: java.lang.String readStrI()>();
+
+        return $r2;
+
+     label4:
+        r3 = new java.lang.Integer;
+
+        $i0 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: int readInt()>();
+
+        specialinvoke r3.<java.lang.Integer: void <init>(int)>($i0);
+
+        return r3;
+
+     label5:
+        $i1 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: int readInt()>();
+
+        $i0 = $i1;
+
+        r4 = newarray (byte)[$i1];
+
+     label6:
+        if $i0 <= 0 goto label7;
+
+        $r5 = r0.<org.kxml2.wap.WbxmlParser: java.io.InputStream in>;
+
+        $i1 = lengthof r4;
+
+        $i1 = $i1 - $i0;
+
+        $i1 = virtualinvoke $r5.<java.io.InputStream: int read(byte[],int,int)>(r4, $i1, $i0);
+
+        $i0 = $i0 - $i1;
+
+        goto label6;
+
+     label7:
+        return r4;
+    }
+
+    public void readAttr() throws java.io.IOException, org.xmlpull.v1.XmlPullParserException
+    {
+        java.lang.String[] $r1;
+        char $c3;
+        java.lang.StringBuffer r4, $r6;
+        org.kxml2.wap.WbxmlParser r0;
+        int $i0, i1, $i2;
+        java.lang.Object $r5;
+        java.lang.String $r2, r3;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        i1 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: int readByte()>();
+
+        $i0 = 0;
+
+     label01:
+        if i1 == 1 goto label17;
+
+     label02:
+        if i1 != 0 goto label03;
+
+        i1 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: int readByte()>();
+
+        specialinvoke r0.<org.kxml2.wap.WbxmlParser: void selectPage(int,boolean)>(i1, 0);
+
+        i1 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: int readByte()>();
+
+        goto label02;
+
+     label03:
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attrStartTable>;
+
+        $r2 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: java.lang.String resolveId(java.lang.String[],int)>($r1, i1);
+
+        r3 = $r2;
+
+        i1 = virtualinvoke $r2.<java.lang.String: int indexOf(int)>(61);
+
+        if i1 != -1 goto label10;
+
+        $r6 = new java.lang.StringBuffer;
+
+        r4 = $r6;
+
+        specialinvoke $r6.<java.lang.StringBuffer: void <init>()>();
+
+     label04:
+        i1 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: int readByte()>();
+
+     label05:
+        if i1 > 128 goto label07;
+
+        if i1 == 0 goto label07;
+
+        if i1 == 2 goto label07;
+
+        if i1 == 3 goto label07;
+
+        if i1 == 131 goto label07;
+
+        if i1 < 64 goto label06;
+
+        if i1 <= 66 goto label07;
+
+     label06:
+        if i1 < 128 goto label16;
+
+        if i1 > 130 goto label16;
+
+     label07:
+        lookupswitch(i1)
+        {
+            case 0: goto label11;
+            case 2: goto label12;
+            case 3: goto label13;
+            case 64: goto label14;
+            case 65: goto label14;
+            case 66: goto label14;
+            case 128: goto label14;
+            case 129: goto label14;
+            case 130: goto label14;
+            case 131: goto label15;
+            case 192: goto label14;
+            case 193: goto label14;
+            case 194: goto label14;
+            case 195: goto label14;
+            default: goto label08;
+        };
+
+     label08:
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attrValueTable>;
+
+        $r2 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: java.lang.String resolveId(java.lang.String[],int)>($r1, i1);
+
+        virtualinvoke r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r2);
+
+     label09:
+        i1 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: int readByte()>();
+
+        goto label05;
+
+     label10:
+        $r6 = new java.lang.StringBuffer;
+
+        r4 = $r6;
+
+        $i2 = i1 + 1;
+
+        r3 = virtualinvoke $r2.<java.lang.String: java.lang.String substring(int)>($i2);
+
+        specialinvoke $r6.<java.lang.StringBuffer: void <init>(java.lang.String)>(r3);
+
+        r3 = virtualinvoke $r2.<java.lang.String: java.lang.String substring(int,int)>(0, i1);
+
+        goto label04;
+
+     label11:
+        i1 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: int readByte()>();
+
+        specialinvoke r0.<org.kxml2.wap.WbxmlParser: void selectPage(int,boolean)>(i1, 0);
+
+        goto label09;
+
+     label12:
+        i1 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: int readInt()>();
+
+        $c3 = (char) i1;
+
+        virtualinvoke r4.<java.lang.StringBuffer: java.lang.StringBuffer append(char)>($c3);
+
+        goto label09;
+
+     label13:
+        $r2 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: java.lang.String readStrI()>();
+
+        virtualinvoke r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r2);
+
+        goto label09;
+
+     label14:
+        $r5 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: java.lang.Object parseWapExtension(int)>(i1);
+
+        $r2 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: java.lang.String resolveWapExtension(int,java.lang.Object)>(i1, $r5);
+
+        virtualinvoke r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r2);
+
+        goto label09;
+
+     label15:
+        $r2 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: java.lang.String readStrT()>();
+
+        virtualinvoke r4.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r2);
+
+        goto label09;
+
+     label16:
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attributes>;
+
+        $i2 = $i0 + 4;
+
+        $r1 = specialinvoke r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] ensureCapacity(java.lang.String[],int)>($r1, $i2);
+
+        r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attributes> = $r1;
+
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attributes>;
+
+        $i2 = $i0 + 1;
+
+        $r1[$i0] = "";
+
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attributes>;
+
+        $i0 = $i2 + 1;
+
+        $r1[$i2] = null;
+
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attributes>;
+
+        $i2 = $i0 + 1;
+
+        $r1[$i0] = r3;
+
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String[] attributes>;
+
+        $i0 = $i2 + 1;
+
+        r3 = virtualinvoke r4.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        $r1[$i2] = r3;
+
+        $i2 = r0.<org.kxml2.wap.WbxmlParser: int attributeCount>;
+
+        $i2 = $i2 + 1;
+
+        r0.<org.kxml2.wap.WbxmlParser: int attributeCount> = $i2;
+
+        goto label01;
+
+     label17:
+        return;
+    }
+
+    int readByte() throws java.io.IOException
+    {
+        org.kxml2.wap.WbxmlParser r0;
+        int $i0;
+        java.io.IOException $r2;
+        java.io.InputStream $r1;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.io.InputStream in>;
+
+        $i0 = virtualinvoke $r1.<java.io.InputStream: int read()>();
+
+        if $i0 != -1 goto label1;
+
+        $r2 = new java.io.IOException;
+
+        specialinvoke $r2.<java.io.IOException: void <init>(java.lang.String)>("Unexpected EOF");
+
+        throw $r2;
+
+     label1:
+        return $i0;
+    }
+
+    int readInt() throws java.io.IOException
+    {
+        org.kxml2.wap.WbxmlParser r0;
+        int $i0, $i1, $i2;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $i0 = 0;
+
+     label1:
+        $i1 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: int readByte()>();
+
+        $i2 = $i0 << 7;
+
+        $i0 = $i1 & 127;
+
+        $i0 = $i2 | $i0;
+
+        $i1 = $i1 & 128;
+
+        if $i1 != 0 goto label1;
+
+        return $i0;
+    }
+
+    java.lang.String readStrI() throws java.io.IOException
+    {
+        byte[] $r3;
+        java.io.ByteArrayOutputStream r1, $r5;
+        java.io.IOException $r7;
+        org.kxml2.wap.WbxmlParser r0;
+        int $i0;
+        java.lang.String $r4, $r6;
+        boolean z0;
+        java.io.InputStream $r2;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $r5 = new java.io.ByteArrayOutputStream;
+
+        r1 = $r5;
+
+        specialinvoke $r5.<java.io.ByteArrayOutputStream: void <init>()>();
+
+        z0 = 1;
+
+     label1:
+        $r2 = r0.<org.kxml2.wap.WbxmlParser: java.io.InputStream in>;
+
+        $i0 = virtualinvoke $r2.<java.io.InputStream: int read()>();
+
+        if $i0 != 0 goto label2;
+
+        r0.<org.kxml2.wap.WbxmlParser: boolean isWhitespace> = z0;
+
+        $r6 = new java.lang.String;
+
+        $r3 = virtualinvoke r1.<java.io.ByteArrayOutputStream: byte[] toByteArray()>();
+
+        $r4 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String encoding>;
+
+        specialinvoke $r6.<java.lang.String: void <init>(byte[],java.lang.String)>($r3, $r4);
+
+        virtualinvoke r1.<java.io.ByteArrayOutputStream: void close()>();
+
+        return $r6;
+
+     label2:
+        if $i0 != -1 goto label3;
+
+        $r7 = new java.io.IOException;
+
+        specialinvoke $r7.<java.io.IOException: void <init>(java.lang.String)>("Unexpected EOF");
+
+        throw $r7;
+
+     label3:
+        if $i0 <= 32 goto label4;
+
+        z0 = 0;
+
+     label4:
+        virtualinvoke r1.<java.io.ByteArrayOutputStream: void write(int)>($i0);
+
+        goto label1;
+    }
+
+    java.lang.String readStrT() throws java.io.IOException
+    {
+        byte[] $r5;
+        java.lang.Integer $r3;
+        byte $b3;
+        org.kxml2.wap.WbxmlParser r0;
+        int $i0, i1, $i2;
+        java.lang.Object $r4;
+        java.lang.String $r1, r6;
+        java.util.Hashtable $r2;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $i0 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: int readInt()>();
+
+        $r2 = r0.<org.kxml2.wap.WbxmlParser: java.util.Hashtable cacheStringTable>;
+
+        if $r2 != null goto label1;
+
+        $r2 = new java.util.Hashtable;
+
+        specialinvoke $r2.<java.util.Hashtable: void <init>()>();
+
+        r0.<org.kxml2.wap.WbxmlParser: java.util.Hashtable cacheStringTable> = $r2;
+
+     label1:
+        $r2 = r0.<org.kxml2.wap.WbxmlParser: java.util.Hashtable cacheStringTable>;
+
+        $r3 = new java.lang.Integer;
+
+        specialinvoke $r3.<java.lang.Integer: void <init>(int)>($i0);
+
+        $r4 = virtualinvoke $r2.<java.util.Hashtable: java.lang.Object get(java.lang.Object)>($r3);
+
+        $r1 = (java.lang.String) $r4;
+
+        if $r1 != null goto label4;
+
+        i1 = $i0;
+
+     label2:
+        $r5 = r0.<org.kxml2.wap.WbxmlParser: byte[] stringTable>;
+
+        $i2 = lengthof $r5;
+
+        if i1 >= $i2 goto label3;
+
+        $r5 = r0.<org.kxml2.wap.WbxmlParser: byte[] stringTable>;
+
+        $b3 = $r5[i1];
+
+        if $b3 == 0 goto label3;
+
+        i1 = i1 + 1;
+
+        goto label2;
+
+     label3:
+        r6 = new java.lang.String;
+
+        $r5 = r0.<org.kxml2.wap.WbxmlParser: byte[] stringTable>;
+
+        i1 = i1 - $i0;
+
+        $r1 = r0.<org.kxml2.wap.WbxmlParser: java.lang.String encoding>;
+
+        specialinvoke r6.<java.lang.String: void <init>(byte[],int,int,java.lang.String)>($r5, $i0, i1, $r1);
+
+        $r2 = r0.<org.kxml2.wap.WbxmlParser: java.util.Hashtable cacheStringTable>;
+
+        $r3 = new java.lang.Integer;
+
+        specialinvoke $r3.<java.lang.Integer: void <init>(int)>($i0);
+
+        virtualinvoke $r2.<java.util.Hashtable: java.lang.Object put(java.lang.Object,java.lang.Object)>($r3, r6);
+
+        return r6;
+
+     label4:
+        return $r1;
+    }
+
+    public void require(int, java.lang.String, java.lang.String) throws org.xmlpull.v1.XmlPullParserException, java.io.IOException
+    {
+        java.lang.String[] $r6;
+        org.kxml2.wap.WbxmlParser r0;
+        int $i0, $i1;
+        java.lang.StringBuilder $r4, $r5;
+        java.lang.String $r1, $r2, $r3;
+        boolean $z0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: java.lang.String;
+
+        $r2 := @parameter2: java.lang.String;
+
+        $i1 = r0.<org.kxml2.wap.WbxmlParser: int type>;
+
+        if $i0 != $i1 goto label2;
+
+        if $r1 == null goto label1;
+
+        $r3 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: java.lang.String getNamespace()>();
+
+        $z0 = virtualinvoke $r1.<java.lang.String: boolean equals(java.lang.Object)>($r3);
+
+        if $z0 == 0 goto label2;
+
+     label1:
+        if $r2 == null goto label5;
+
+        $r3 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: java.lang.String getName()>();
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>($r3);
+
+        if $z0 != 0 goto label5;
+
+     label2:
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("expected: ");
+
+        if $i0 != 64 goto label4;
+
+        $r1 = "WAP Ext.";
+
+     label3:
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke r0.<org.kxml2.wap.WbxmlParser: void exception(java.lang.String)>($r1);
+
+        return;
+
+     label4:
+        $r5 = new java.lang.StringBuilder;
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r6 = <org.kxml2.wap.WbxmlParser: java.lang.String[] TYPES>;
+
+        $r3 = $r6[$i0];
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" {");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("}");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r1 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        goto label3;
+
+     label5:
+        return;
+    }
+
+    java.lang.String resolveId(java.lang.String[], int) throws java.io.IOException
+    {
+        java.lang.String[] $r1;
+        java.io.IOException $r5;
+        org.kxml2.wap.WbxmlParser r0;
+        int $i0, i1, $i2;
+        java.lang.StringBuilder $r3, $r4;
+        java.lang.String $r2;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $r1 := @parameter0: java.lang.String[];
+
+        $i0 := @parameter1: int;
+
+        i1 = $i0 & 127;
+
+        i1 = i1 + -5;
+
+        if i1 != -1 goto label1;
+
+        r0.<org.kxml2.wap.WbxmlParser: int wapCode> = -1;
+
+        $r2 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: java.lang.String readStrT()>();
+
+        return $r2;
+
+     label1:
+        if i1 < 0 goto label2;
+
+        if $r1 == null goto label2;
+
+        $i2 = lengthof $r1;
+
+        if i1 >= $i2 goto label2;
+
+        $r2 = $r1[i1];
+
+        if $r2 != null goto label3;
+
+     label2:
+        $r5 = new java.io.IOException;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("id ");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(" undef.");
+
+        $r2 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r5.<java.io.IOException: void <init>(java.lang.String)>($r2);
+
+        throw $r5;
+
+     label3:
+        $i0 = i1 + 5;
+
+        r0.<org.kxml2.wap.WbxmlParser: int wapCode> = $i0;
+
+        $r2 = $r1[i1];
+
+        return $r2;
+    }
+
+    protected java.lang.String resolveWapExtension(int, java.lang.Object)
+    {
+        byte[] r3;
+        char $c3;
+        byte $b2;
+        java.lang.StringBuffer r1, $r6;
+        org.kxml2.wap.WbxmlParser r0;
+        int $i0, $i1;
+        java.lang.Object r2;
+        java.lang.StringBuilder $r5, $r7;
+        java.lang.String $r4;
+        boolean $z0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $i0 := @parameter0: int;
+
+        r2 := @parameter1: java.lang.Object;
+
+        $z0 = r2 instanceof byte[];
+
+        if $z0 == 0 goto label3;
+
+        $r6 = new java.lang.StringBuffer;
+
+        r1 = $r6;
+
+        specialinvoke $r6.<java.lang.StringBuffer: void <init>()>();
+
+        r3 = (byte[]) r2;
+
+        $i0 = 0;
+
+     label1:
+        $i1 = lengthof r3;
+
+        if $i0 >= $i1 goto label2;
+
+        $r4 = "0123456789abcdef";
+
+        $b2 = r3[$i0];
+
+        $i1 = (int) $b2;
+
+        $i1 = $i1 >> 4;
+
+        $i1 = $i1 & 15;
+
+        $c3 = virtualinvoke $r4.<java.lang.String: char charAt(int)>($i1);
+
+        virtualinvoke r1.<java.lang.StringBuffer: java.lang.StringBuffer append(char)>($c3);
+
+        $r4 = "0123456789abcdef";
+
+        $b2 = r3[$i0];
+
+        $b2 = $b2 & 15;
+
+        $i1 = (int) $b2;
+
+        $c3 = virtualinvoke $r4.<java.lang.String: char charAt(int)>($i1);
+
+        virtualinvoke r1.<java.lang.StringBuffer: java.lang.StringBuffer append(char)>($c3);
+
+        $i0 = $i0 + 1;
+
+        goto label1;
+
+     label2:
+        $r4 = virtualinvoke r1.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        return $r4;
+
+     label3:
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>()>();
+
+        $r5 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("$(");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.Object)>(r2);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(")");
+
+        $r4 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        return $r4;
+    }
+
+    public void setAttrStartTable(int, java.lang.String[])
+    {
+        org.kxml2.wap.WbxmlParser r0;
+        int $i0, $i1;
+        java.lang.String[] $r1;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: java.lang.String[];
+
+        $i1 = r0.<org.kxml2.wap.WbxmlParser: int ATTR_START_TABLE>;
+
+        specialinvoke r0.<org.kxml2.wap.WbxmlParser: void setTable(int,int,java.lang.String[])>($i0, $i1, $r1);
+
+        return;
+    }
+
+    public void setAttrValueTable(int, java.lang.String[])
+    {
+        org.kxml2.wap.WbxmlParser r0;
+        int $i0, $i1;
+        java.lang.String[] $r1;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: java.lang.String[];
+
+        $i1 = r0.<org.kxml2.wap.WbxmlParser: int ATTR_VALUE_TABLE>;
+
+        specialinvoke r0.<org.kxml2.wap.WbxmlParser: void setTable(int,int,java.lang.String[])>($i0, $i1, $r1);
+
+        return;
+    }
+
+    public void setFeature(java.lang.String, boolean) throws org.xmlpull.v1.XmlPullParserException
+    {
+        org.kxml2.wap.WbxmlParser r0;
+        java.lang.StringBuilder $r3;
+        java.lang.String $r1, $r2;
+        boolean $z0, $z1;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $z0 := @parameter1: boolean;
+
+        $r2 = "http://xmlpull.org/v1/doc/features.html#process-namespaces";
+
+        $z1 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>($r1);
+
+        if $z1 == 0 goto label1;
+
+        r0.<org.kxml2.wap.WbxmlParser: boolean processNsp> = $z0;
+
+        return;
+
+     label1:
+        $r3 = new java.lang.StringBuilder;
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("unsupported feature: ");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke r0.<org.kxml2.wap.WbxmlParser: void exception(java.lang.String)>($r1);
+
+        return;
+    }
+
+    public void setInput(java.io.InputStream, java.lang.String) throws org.xmlpull.v1.XmlPullParserException
+    {
+        java.lang.Throwable r3;
+        byte[] $r6;
+        org.kxml2.wap.WbxmlParser r0;
+        int $i0, i1, $i2;
+        java.lang.StringBuilder $r5;
+        java.lang.String $r2;
+        java.io.UnsupportedEncodingException $r4;
+        java.io.InputStream $r1;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $r1 := @parameter0: java.io.InputStream;
+
+        $r2 := @parameter1: java.lang.String;
+
+        r0.<org.kxml2.wap.WbxmlParser: java.io.InputStream in> = $r1;
+
+     label01:
+        $i0 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: int readByte()>();
+
+     label02:
+        r0.<org.kxml2.wap.WbxmlParser: int version> = $i0;
+
+     label03:
+        $i0 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: int readInt()>();
+
+     label04:
+        r0.<org.kxml2.wap.WbxmlParser: int publicIdentifierId> = $i0;
+
+        $i0 = r0.<org.kxml2.wap.WbxmlParser: int publicIdentifierId>;
+
+        if $i0 != 0 goto label06;
+
+     label05:
+        virtualinvoke r0.<org.kxml2.wap.WbxmlParser: int readInt()>();
+
+     label06:
+        $i0 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: int readInt()>();
+
+     label07:
+        if $r2 != null goto label20;
+
+        lookupswitch($i0)
+        {
+            case 4: goto label11;
+            case 106: goto label19;
+            default: goto label08;
+        };
+
+     label08:
+        $r4 = new java.io.UnsupportedEncodingException;
+
+        $r5 = new java.lang.StringBuilder;
+
+     label09:
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>()>();
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(int)>($i0);
+
+        $r2 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r4.<java.io.UnsupportedEncodingException: void <init>(java.lang.String)>($r2);
+
+        throw $r4;
+
+     label10:
+        r3 := @caughtexception;
+
+        specialinvoke r0.<org.kxml2.wap.WbxmlParser: void exception(java.lang.String)>("Illegal input format");
+
+        return;
+
+     label11:
+        r0.<org.kxml2.wap.WbxmlParser: java.lang.String encoding> = "ISO-8859-1";
+
+     label12:
+        $i0 = virtualinvoke r0.<org.kxml2.wap.WbxmlParser: int readInt()>();
+
+     label13:
+        $r6 = newarray (byte)[$i0];
+
+        r0.<org.kxml2.wap.WbxmlParser: byte[] stringTable> = $r6;
+
+        i1 = 0;
+
+     label14:
+        if i1 >= $i0 goto label17;
+
+        $r6 = r0.<org.kxml2.wap.WbxmlParser: byte[] stringTable>;
+
+        $i2 = $i0 - i1;
+
+     label15:
+        $i2 = virtualinvoke $r1.<java.io.InputStream: int read(byte[],int,int)>($r6, i1, $i2);
+
+     label16:
+        if $i2 > 0 goto label21;
+
+     label17:
+        specialinvoke r0.<org.kxml2.wap.WbxmlParser: void selectPage(int,boolean)>(0, 1);
+
+        specialinvoke r0.<org.kxml2.wap.WbxmlParser: void selectPage(int,boolean)>(0, 0);
+
+     label18:
+        return;
+
+     label19:
+        r0.<org.kxml2.wap.WbxmlParser: java.lang.String encoding> = "UTF-8";
+
+        goto label12;
+
+     label20:
+        r0.<org.kxml2.wap.WbxmlParser: java.lang.String encoding> = $r2;
+
+        goto label12;
+
+     label21:
+        i1 = i1 + $i2;
+
+        goto label14;
+
+        catch java.io.IOException from label01 to label02 with label10;
+        catch java.io.IOException from label03 to label04 with label10;
+        catch java.io.IOException from label05 to label07 with label10;
+        catch java.io.IOException from label09 to label10 with label10;
+        catch java.io.IOException from label12 to label13 with label10;
+        catch java.io.IOException from label15 to label16 with label10;
+        catch java.io.IOException from label17 to label18 with label10;
+    }
+
+    public void setInput(java.io.Reader) throws org.xmlpull.v1.XmlPullParserException
+    {
+        java.io.Reader $r1;
+        org.kxml2.wap.WbxmlParser r0;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $r1 := @parameter0: java.io.Reader;
+
+        specialinvoke r0.<org.kxml2.wap.WbxmlParser: void exception(java.lang.String)>("InputStream required");
+
+        return;
+    }
+
+    public void setProperty(java.lang.String, java.lang.Object) throws org.xmlpull.v1.XmlPullParserException
+    {
+        org.xmlpull.v1.XmlPullParserException $r3;
+        org.kxml2.wap.WbxmlParser r0;
+        java.lang.Object $r2;
+        java.lang.StringBuilder $r4;
+        java.lang.String $r1;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.Object;
+
+        $r3 = new org.xmlpull.v1.XmlPullParserException;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>()>();
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("unsupported property: ");
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r3.<org.xmlpull.v1.XmlPullParserException: void <init>(java.lang.String)>($r1);
+
+        throw $r3;
+    }
+
+    public void setTagTable(int, java.lang.String[])
+    {
+        org.kxml2.wap.WbxmlParser r0;
+        int $i0, $i1;
+        java.lang.String[] $r1;
+
+        r0 := @this: org.kxml2.wap.WbxmlParser;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: java.lang.String[];
+
+        $i1 = r0.<org.kxml2.wap.WbxmlParser: int TAG_TABLE>;
+
+        specialinvoke r0.<org.kxml2.wap.WbxmlParser: void setTable(int,int,java.lang.String[])>($i0, $i1, $r1);
+
+        return;
+    }
+
+    public static void <clinit>()
+    {
+        <org.kxml2.wap.WbxmlParser: int WAP_EXTENSION> = 64;
+
+        <org.kxml2.wap.WbxmlParser: java.lang.String UNEXPECTED_EOF> = "Unexpected EOF";
+
+        <org.kxml2.wap.WbxmlParser: java.lang.String ILLEGAL_TYPE> = "Wrong event type";
+
+        <org.kxml2.wap.WbxmlParser: java.lang.String HEX_DIGITS> = "0123456789abcdef";
+
+        return;
+    }
+}

@@ -1,0 +1,2125 @@
+public class seio.eaccount.main.Entry extends android.app.Activity
+{
+    private static final java.lang.String METHOD_NAME;
+    private static final java.lang.String METHOD_NAME_SUB;
+    private static final java.lang.String NAMESPACE;
+    private static java.lang.String SOAP_ACTION;
+    private static java.lang.String SOAP_ACTION_SUB;
+    private static java.lang.String URL;
+    static int inti;
+    static java.util.Timer timer;
+    static android.widget.TextView txtceshi;
+    private final java.lang.String DATABASE_PATH;
+    private final java.lang.String PATH_CONFIG;
+    private final java.lang.String PATH_USE;
+    boolean cancel;
+    int downLoadFileSize;
+    android.app.ProgressDialog downloaddialog;
+    int fileSize;
+    public android.os.Handler handler;
+    private android.os.Handler handlerdown;
+    private android.os.Handler handlerjihuo;
+    int intisfirst;
+    boolean isNetworkAvailable;
+    private final android.content.BroadcastReceiver mBatteryReceiver;
+    android.app.ProgressDialog m_pDialog;
+    int newversion;
+    java.lang.String strnw;
+    public android.content.Intent ipcIntent;
+    public android.content.Intent ipcResultIntent;
+
+    static void <clinit>()
+    {
+        <seio.eaccount.main.Entry: java.lang.String NAMESPACE> = "http://tempuri.org/";
+
+        <seio.eaccount.main.Entry: java.lang.String METHOD_NAME_SUB> = "SubmitUseInfo";
+
+        <seio.eaccount.main.Entry: java.lang.String METHOD_NAME> = "GetUpdateInfo";
+
+        <seio.eaccount.main.Entry: int inti> = 0;
+
+        <seio.eaccount.main.Entry: java.lang.String URL> = "http://www.kuaijihui.com:8081/WS_IKJ.asmx";
+
+        <seio.eaccount.main.Entry: java.lang.String SOAP_ACTION> = "http://tempuri.org/GetUpdateInfo";
+
+        <seio.eaccount.main.Entry: java.lang.String SOAP_ACTION_SUB> = "http://tempuri.org/SubmitUseInfo";
+
+        return;
+    }
+
+    public void <init>()
+    {
+        seio.eaccount.main.Entry$3 $r6;
+        seio.eaccount.main.Entry$4 $r7;
+        seio.eaccount.main.Entry$1 $r4;
+        seio.eaccount.main.Entry$2 $r5;
+        java.io.File $r2;
+        seio.eaccount.main.Entry r0;
+        java.lang.StringBuilder $r1;
+        java.lang.String $r3;
+
+        r0 := @this: seio.eaccount.main.Entry;
+
+        specialinvoke r0.<android.app.Activity: void <init>()>();
+
+        $r1 = new java.lang.StringBuilder;
+
+        $r2 = staticinvoke <android.os.Environment: java.io.File getExternalStorageDirectory()>();
+
+        $r3 = virtualinvoke $r2.<java.io.File: java.lang.String getAbsolutePath()>();
+
+        $r3 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r3);
+
+        specialinvoke $r1.<java.lang.StringBuilder: void <init>(java.lang.String)>($r3);
+
+        $r1 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/ekj_lephone");
+
+        $r3 = virtualinvoke $r1.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        r0.<seio.eaccount.main.Entry: java.lang.String DATABASE_PATH> = $r3;
+
+        r0.<seio.eaccount.main.Entry: java.lang.String PATH_USE> = "MyData";
+
+        r0.<seio.eaccount.main.Entry: int newversion> = 10;
+
+        r0.<seio.eaccount.main.Entry: boolean cancel> = 1;
+
+        r0.<seio.eaccount.main.Entry: boolean isNetworkAvailable> = 1;
+
+        r0.<seio.eaccount.main.Entry: java.lang.String PATH_CONFIG> = "Config";
+
+        $r4 = new seio.eaccount.main.Entry$1;
+
+        specialinvoke $r4.<seio.eaccount.main.Entry$1: void <init>(seio.eaccount.main.Entry)>(r0);
+
+        r0.<seio.eaccount.main.Entry: android.content.BroadcastReceiver mBatteryReceiver> = $r4;
+
+        $r5 = new seio.eaccount.main.Entry$2;
+
+        specialinvoke $r5.<seio.eaccount.main.Entry$2: void <init>(seio.eaccount.main.Entry)>(r0);
+
+        r0.<seio.eaccount.main.Entry: android.os.Handler handler> = $r5;
+
+        $r6 = new seio.eaccount.main.Entry$3;
+
+        specialinvoke $r6.<seio.eaccount.main.Entry$3: void <init>(seio.eaccount.main.Entry)>(r0);
+
+        r0.<seio.eaccount.main.Entry: android.os.Handler handlerjihuo> = $r6;
+
+        $r7 = new seio.eaccount.main.Entry$4;
+
+        specialinvoke $r7.<seio.eaccount.main.Entry$4: void <init>(seio.eaccount.main.Entry)>(r0);
+
+        r0.<seio.eaccount.main.Entry: android.os.Handler handlerdown> = $r7;
+
+        return;
+    }
+
+    private int CheckVersion()
+    {
+        android.content.pm.PackageManager $r4;
+        android.content.pm.PackageInfo $r6;
+        java.lang.Integer $r7;
+        java.lang.Exception $r9;
+        seio.eaccount.main.Entry r0;
+        org.ksoap2.serialization.SoapObject r3, $r10;
+        org.ksoap2.transport.AndroidHttpTransport r2, $r11;
+        org.ksoap2.serialization.SoapSerializationEnvelope r1, $r12;
+        int i0;
+        java.lang.Object r8;
+        java.lang.String $r5;
+
+        r0 := @this: seio.eaccount.main.Entry;
+
+     label01:
+        $r4 = virtualinvoke r0.<seio.eaccount.main.Entry: android.content.pm.PackageManager getPackageManager()>();
+
+        $r5 = virtualinvoke r0.<seio.eaccount.main.Entry: java.lang.String getPackageName()>();
+
+        $r6 = virtualinvoke $r4.<android.content.pm.PackageManager: android.content.pm.PackageInfo getPackageInfo(java.lang.String,int)>($r5, 0);
+
+        i0 = $r6.<android.content.pm.PackageInfo: int versionCode>;
+
+     label02:
+        $r10 = new org.ksoap2.serialization.SoapObject;
+
+        r3 = $r10;
+
+     label03:
+        specialinvoke $r10.<org.ksoap2.serialization.SoapObject: void <init>(java.lang.String,java.lang.String)>("http://tempuri.org/", "GetUpdateInfo");
+
+        $r7 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(2);
+
+        virtualinvoke r3.<org.ksoap2.serialization.SoapObject: org.ksoap2.serialization.SoapObject addProperty(java.lang.String,java.lang.Object)>("_Version", $r7);
+
+        $r7 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(i0);
+
+        virtualinvoke r3.<org.ksoap2.serialization.SoapObject: org.ksoap2.serialization.SoapObject addProperty(java.lang.String,java.lang.Object)>("_Edition", $r7);
+
+     label04:
+        $r11 = new org.ksoap2.transport.AndroidHttpTransport;
+
+        r2 = $r11;
+
+        $r5 = <seio.eaccount.main.Entry: java.lang.String URL>;
+
+     label05:
+        specialinvoke $r11.<org.ksoap2.transport.AndroidHttpTransport: void <init>(java.lang.String)>($r5);
+
+        r2.<org.ksoap2.transport.AndroidHttpTransport: boolean debug> = 1;
+
+     label06:
+        $r12 = new org.ksoap2.serialization.SoapSerializationEnvelope;
+
+        r1 = $r12;
+
+     label07:
+        specialinvoke $r12.<org.ksoap2.serialization.SoapSerializationEnvelope: void <init>(int)>(110);
+
+        r1.<org.ksoap2.serialization.SoapSerializationEnvelope: java.lang.Object bodyOut> = r3;
+
+        r1.<org.ksoap2.serialization.SoapSerializationEnvelope: boolean dotNet> = 1;
+
+        virtualinvoke r1.<org.ksoap2.serialization.SoapSerializationEnvelope: void setOutputSoapObject(java.lang.Object)>(r3);
+
+     label08:
+        $r5 = <seio.eaccount.main.Entry: java.lang.String SOAP_ACTION>;
+
+     label09:
+        virtualinvoke r2.<org.ksoap2.transport.AndroidHttpTransport: void call(java.lang.String,org.ksoap2.SoapEnvelope)>($r5, r1);
+
+        r8 = r1.<org.ksoap2.serialization.SoapSerializationEnvelope: java.lang.Object bodyIn>;
+
+        r3 = (org.ksoap2.serialization.SoapObject) r8;
+
+        r8 = virtualinvoke r3.<org.ksoap2.serialization.SoapObject: java.lang.Object getProperty(java.lang.String)>("GetUpdateInfoResult");
+
+        $r5 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>(r8);
+
+        $r7 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(java.lang.String)>($r5);
+
+        i0 = virtualinvoke $r7.<java.lang.Integer: int intValue()>();
+
+     label10:
+        return i0;
+
+     label11:
+        $r9 := @caughtexception;
+
+        r0.<seio.eaccount.main.Entry: boolean isNetworkAvailable> = 0;
+
+        virtualinvoke $r9.<java.lang.Exception: void printStackTrace()>();
+
+        return -2;
+
+        catch java.lang.Exception from label01 to label02 with label11;
+        catch java.lang.Exception from label03 to label04 with label11;
+        catch java.lang.Exception from label05 to label06 with label11;
+        catch java.lang.Exception from label07 to label08 with label11;
+        catch java.lang.Exception from label09 to label10 with label11;
+    }
+
+    private void SubmitUseInfo()
+    {
+        java.lang.Integer $r11;
+        java.lang.Exception $r12;
+        seio.eaccount.main.Entry r0;
+        org.ksoap2.serialization.SoapObject r3;
+        org.ksoap2.transport.AndroidHttpTransport r2;
+        org.ksoap2.serialization.SoapSerializationEnvelope r1;
+        android.telephony.TelephonyManager r7;
+        java.lang.Object $r6;
+        java.lang.String $r5, $r8, $r9, $r10;
+        android.database.Cursor $r4;
+
+        r0 := @this: seio.eaccount.main.Entry;
+
+     label01:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("test", "weeeeeeeeeeeerrrrrrrrr");
+
+        $r4 = staticinvoke <seio.eaccount.main.Entry: android.database.Cursor getpassport()>();
+
+        interfaceinvoke $r4.<android.database.Cursor: int getCount()>();
+
+        interfaceinvoke $r4.<android.database.Cursor: boolean moveToFirst()>();
+
+        $r5 = interfaceinvoke $r4.<android.database.Cursor: java.lang.String getString(int)>(0);
+
+        $r6 = virtualinvoke r0.<seio.eaccount.main.Entry: java.lang.Object getSystemService(java.lang.String)>("phone");
+
+        r7 = (android.telephony.TelephonyManager) $r6;
+
+        $r8 = virtualinvoke r7.<android.telephony.TelephonyManager: java.lang.String getDeviceId()>();
+
+        $r9 = virtualinvoke r7.<android.telephony.TelephonyManager: java.lang.String getLine1Number()>();
+
+        virtualinvoke r7.<android.telephony.TelephonyManager: java.lang.String getSimSerialNumber()>();
+
+        $r10 = virtualinvoke r7.<android.telephony.TelephonyManager: java.lang.String getSubscriberId()>();
+
+     label02:
+        r3 = new org.ksoap2.serialization.SoapObject;
+
+     label03:
+        specialinvoke r3.<org.ksoap2.serialization.SoapObject: void <init>(java.lang.String,java.lang.String)>("http://tempuri.org/", "SubmitUseInfo");
+
+        virtualinvoke r3.<org.ksoap2.serialization.SoapObject: org.ksoap2.serialization.SoapObject addProperty(java.lang.String,java.lang.Object)>("_Passport", $r5);
+
+        $r11 = staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>(2);
+
+        virtualinvoke r3.<org.ksoap2.serialization.SoapObject: org.ksoap2.serialization.SoapObject addProperty(java.lang.String,java.lang.Object)>("_Version", $r11);
+
+        virtualinvoke r3.<org.ksoap2.serialization.SoapObject: org.ksoap2.serialization.SoapObject addProperty(java.lang.String,java.lang.Object)>("_PhoneNumber", $r9);
+
+        virtualinvoke r3.<org.ksoap2.serialization.SoapObject: org.ksoap2.serialization.SoapObject addProperty(java.lang.String,java.lang.Object)>("_Imsi", $r10);
+
+        virtualinvoke r3.<org.ksoap2.serialization.SoapObject: org.ksoap2.serialization.SoapObject addProperty(java.lang.String,java.lang.Object)>("_Imei", $r8);
+
+     label04:
+        $r5 = <android.os.Build: java.lang.String MODEL>;
+
+     label05:
+        virtualinvoke r3.<org.ksoap2.serialization.SoapObject: org.ksoap2.serialization.SoapObject addProperty(java.lang.String,java.lang.Object)>("_PhoneModel", $r5);
+
+     label06:
+        r2 = new org.ksoap2.transport.AndroidHttpTransport;
+
+        $r5 = <seio.eaccount.main.Entry: java.lang.String URL>;
+
+     label07:
+        specialinvoke r2.<org.ksoap2.transport.AndroidHttpTransport: void <init>(java.lang.String)>($r5);
+
+        r2.<org.ksoap2.transport.AndroidHttpTransport: boolean debug> = 1;
+
+     label08:
+        r1 = new org.ksoap2.serialization.SoapSerializationEnvelope;
+
+     label09:
+        specialinvoke r1.<org.ksoap2.serialization.SoapSerializationEnvelope: void <init>(int)>(110);
+
+        r1.<org.ksoap2.serialization.SoapSerializationEnvelope: java.lang.Object bodyOut> = r3;
+
+        r1.<org.ksoap2.serialization.SoapSerializationEnvelope: boolean dotNet> = 1;
+
+        virtualinvoke r1.<org.ksoap2.serialization.SoapSerializationEnvelope: void setOutputSoapObject(java.lang.Object)>(r3);
+
+     label10:
+        $r5 = <seio.eaccount.main.Entry: java.lang.String SOAP_ACTION_SUB>;
+
+     label11:
+        virtualinvoke r2.<org.ksoap2.transport.AndroidHttpTransport: void call(java.lang.String,org.ksoap2.SoapEnvelope)>($r5, r1);
+
+     label12:
+        return;
+
+     label13:
+        $r12 := @caughtexception;
+
+        virtualinvoke $r12.<java.lang.Exception: void printStackTrace()>();
+
+        return;
+
+        catch java.lang.Exception from label01 to label02 with label13;
+        catch java.lang.Exception from label03 to label04 with label13;
+        catch java.lang.Exception from label05 to label06 with label13;
+        catch java.lang.Exception from label07 to label08 with label13;
+        catch java.lang.Exception from label09 to label10 with label13;
+        catch java.lang.Exception from label11 to label12 with label13;
+    }
+
+    private void UpdataLastCheckDate(java.lang.String)
+    {
+        seio.eaccount.main.Entry r0;
+        android.database.sqlite.SQLiteDatabase $r3;
+        java.lang.StringBuilder $r4;
+        java.lang.String $r1, $r2;
+        boolean $z0;
+
+        r0 := @this: seio.eaccount.main.Entry;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = staticinvoke <seio.eaccount.common.EACommon: java.lang.String GetConfigDB()>();
+
+        $r3 = staticinvoke <android.database.sqlite.SQLiteDatabase: android.database.sqlite.SQLiteDatabase openOrCreateDatabase(java.lang.String,android.database.sqlite.SQLiteDatabase$CursorFactory)>($r2, null);
+
+        $z0 = virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: boolean isOpen()>();
+
+        if $z0 == 0 goto label1;
+
+        $r4 = new java.lang.StringBuilder;
+
+        specialinvoke $r4.<java.lang.StringBuilder: void <init>(java.lang.String)>("update TBL_Config set CFG_LastCheckUpdateDate=\'");
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r4 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\'");
+
+        $r1 = virtualinvoke $r4.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>($r1);
+
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+     label1:
+        return;
+    }
+
+    private void UpdateConfigLastAuthenticDate()
+    {
+        java.util.Date $r6;
+        java.text.SimpleDateFormat r1;
+        java.lang.Exception $r7;
+        seio.eaccount.main.Entry r0;
+        android.database.sqlite.SQLiteDatabase $r3;
+        java.util.Calendar $r4;
+        int $i0, $i1, $i2;
+        java.lang.StringBuilder $r5;
+        java.lang.String $r2;
+        boolean $z0;
+
+        r0 := @this: seio.eaccount.main.Entry;
+
+     label01:
+        $r2 = staticinvoke <seio.eaccount.common.EACommon: java.lang.String GetConfigDB()>();
+
+        $r3 = staticinvoke <android.database.sqlite.SQLiteDatabase: android.database.sqlite.SQLiteDatabase openOrCreateDatabase(java.lang.String,android.database.sqlite.SQLiteDatabase$CursorFactory)>($r2, null);
+
+        $z0 = virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: boolean isOpen()>();
+
+     label02:
+        if $z0 == 0 goto label14;
+
+        r1 = new java.text.SimpleDateFormat;
+
+     label03:
+        specialinvoke r1.<java.text.SimpleDateFormat: void <init>(java.lang.String)>("yyyy-MM-dd");
+
+        $r4 = staticinvoke <java.util.Calendar: java.util.Calendar getInstance()>();
+
+        $i0 = virtualinvoke $r4.<java.util.Calendar: int get(int)>(1);
+
+        $i1 = virtualinvoke $r4.<java.util.Calendar: int get(int)>(2);
+
+        $i2 = virtualinvoke $r4.<java.util.Calendar: int get(int)>(5);
+
+     label04:
+        r1 = new java.text.SimpleDateFormat;
+
+     label05:
+        specialinvoke r1.<java.text.SimpleDateFormat: void <init>(java.lang.String)>("yyyy-MM-dd");
+
+     label06:
+        $r5 = new java.lang.StringBuilder;
+
+     label07:
+        $r2 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i0);
+
+        $r2 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r2);
+
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>(java.lang.String)>($r2);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("-");
+
+     label08:
+        $i0 = $i1 + 1;
+
+     label09:
+        $r2 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i0);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("-");
+
+        $r2 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i2);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r2 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r6 = virtualinvoke r1.<java.text.DateFormat: java.util.Date parse(java.lang.String)>($r2);
+
+        $r2 = virtualinvoke r1.<java.text.DateFormat: java.lang.String format(java.util.Date)>($r6);
+
+     label10:
+        $r5 = new java.lang.StringBuilder;
+
+     label11:
+        specialinvoke $r5.<java.lang.StringBuilder: void <init>(java.lang.String)>("update TBL_Config set CFG_LastAuthenticDate = \'");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r2);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\'");
+
+        $r2 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>($r2);
+
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+     label12:
+        return;
+
+     label13:
+        $r7 := @caughtexception;
+
+        $r2 = virtualinvoke $r7.<java.lang.Exception: java.lang.String getMessage()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("tag:", $r2);
+
+     label14:
+        return;
+
+        catch java.lang.Exception from label01 to label02 with label13;
+        catch java.lang.Exception from label03 to label04 with label13;
+        catch java.lang.Exception from label05 to label06 with label13;
+        catch java.lang.Exception from label07 to label08 with label13;
+        catch java.lang.Exception from label09 to label10 with label13;
+        catch java.lang.Exception from label11 to label12 with label13;
+    }
+
+    static boolean access$0(seio.eaccount.main.Entry)
+    {
+        seio.eaccount.main.Entry $r0;
+        boolean $z0;
+
+        $r0 := @parameter0: seio.eaccount.main.Entry;
+
+        $z0 = specialinvoke $r0.<seio.eaccount.main.Entry: boolean checkpswstatebyconfig()>();
+
+        return $z0;
+    }
+
+    static void access$1(seio.eaccount.main.Entry)
+    {
+        seio.eaccount.main.Entry $r0;
+
+        $r0 := @parameter0: seio.eaccount.main.Entry;
+
+        specialinvoke $r0.<seio.eaccount.main.Entry: void UpdateConfigLastAuthenticDate()>();
+
+        return;
+    }
+
+    private boolean checkconfig()
+    {
+        seio.eaccount.main.Entry r0;
+        java.lang.String $r2;
+        java.io.File r1;
+        boolean $z0;
+
+        r0 := @this: seio.eaccount.main.Entry;
+
+        $r2 = staticinvoke <seio.eaccount.common.EACommon: java.lang.String GetConfigDB()>();
+
+        r1 = new java.io.File;
+
+        specialinvoke r1.<java.io.File: void <init>(java.lang.String)>($r2);
+
+        $z0 = virtualinvoke r1.<java.io.File: boolean exists()>();
+
+        if $z0 == 0 goto label1;
+
+        return 1;
+
+     label1:
+        return 0;
+    }
+
+    private void checkisfirst()
+    {
+        java.io.File r1;
+        seio.eaccount.main.Entry r0;
+        int i0, $i1, $i2, $i3, $i4;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r3;
+        java.io.File[] $r4, $r5, $r6;
+        boolean $z0;
+
+        r0 := @this: seio.eaccount.main.Entry;
+
+        r1 = new java.io.File;
+
+        $r2 = new java.lang.StringBuilder;
+
+        $r3 = r0.<seio.eaccount.main.Entry: java.lang.String DATABASE_PATH>;
+
+        $r3 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r3);
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>($r3);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("MyData");
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke r1.<java.io.File: void <init>(java.lang.String)>($r3);
+
+        $z0 = virtualinvoke r1.<java.io.File: boolean exists()>();
+
+        if $z0 != 0 goto label01;
+
+        r0.<seio.eaccount.main.Entry: int intisfirst> = 0;
+
+        return;
+
+     label01:
+        $r4 = virtualinvoke r1.<java.io.File: java.io.File[] listFiles()>();
+
+        i0 = 0;
+
+     label02:
+        $i1 = lengthof $r4;
+
+        if i0 < $i1 goto label03;
+
+        i0 = lengthof $r4;
+
+        if i0 != 0 goto label14;
+
+        r0.<seio.eaccount.main.Entry: int intisfirst> = 0;
+
+        return;
+
+     label03:
+        r1 = $r4[i0];
+
+        $z0 = virtualinvoke r1.<java.io.File: boolean isDirectory()>();
+
+        if $z0 == 0 goto label05;
+
+        r1 = $r4[i0];
+
+        $r5 = virtualinvoke r1.<java.io.File: java.io.File[] listFiles()>();
+
+        $i1 = 0;
+
+     label04:
+        $i2 = lengthof $r5;
+
+        if $i1 < $i2 goto label06;
+
+     label05:
+        i0 = i0 + 1;
+
+        goto label02;
+
+     label06:
+        r1 = $r5[$i1];
+
+        $z0 = virtualinvoke r1.<java.io.File: boolean isDirectory()>();
+
+        if $z0 == 0 goto label08;
+
+        r1 = $r5[i0];
+
+        $r6 = virtualinvoke r1.<java.io.File: java.io.File[] listFiles()>();
+
+        $i2 = 0;
+
+     label07:
+        $i3 = lengthof $r6;
+
+        if $i2 < $i3 goto label09;
+
+     label08:
+        $i1 = $i1 + 1;
+
+        goto label04;
+
+     label09:
+        r1 = $r6[$i2];
+
+        $z0 = virtualinvoke r1.<java.io.File: boolean isDirectory()>();
+
+        if $z0 != 0 goto label10;
+
+        r1 = $r6[$i2];
+
+        $r3 = virtualinvoke r1.<java.io.File: java.lang.String getName()>();
+
+        $i3 = virtualinvoke $r3.<java.lang.String: int lastIndexOf(java.lang.String)>(".");
+
+        $i3 = $i3 + 1;
+
+        $i4 = virtualinvoke $r3.<java.lang.String: int length()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.String: java.lang.String substring(int,int)>($i3, $i4);
+
+        $z0 = virtualinvoke $r3.<java.lang.String: boolean equals(java.lang.Object)>("ekj");
+
+        if $z0 == 0 goto label11;
+
+        r0.<seio.eaccount.main.Entry: int intisfirst> = 1;
+
+     label10:
+        $i2 = $i2 + 1;
+
+        goto label07;
+
+     label11:
+        $z0 = virtualinvoke $r3.<java.lang.String: boolean equals(java.lang.Object)>("ekj-journal-journal");
+
+        if $z0 == 0 goto label12;
+
+        r1 = $r6[$i2];
+
+        $r3 = virtualinvoke r1.<java.io.File: java.lang.String getPath()>();
+
+        r1 = new java.io.File;
+
+        specialinvoke r1.<java.io.File: void <init>(java.lang.String)>($r3);
+
+        specialinvoke r0.<seio.eaccount.main.Entry: void deletethenFile(java.io.File)>(r1);
+
+        goto label10;
+
+     label12:
+        $z0 = virtualinvoke $r3.<java.lang.String: boolean equals(java.lang.Object)>("ekj-journal");
+
+        if $z0 == 0 goto label13;
+
+        r1 = $r6[$i2];
+
+        $r3 = virtualinvoke r1.<java.io.File: java.lang.String getPath()>();
+
+        r1 = new java.io.File;
+
+        specialinvoke r1.<java.io.File: void <init>(java.lang.String)>($r3);
+
+        specialinvoke r0.<seio.eaccount.main.Entry: void deletethenFile(java.io.File)>(r1);
+
+        goto label10;
+
+     label13:
+        r0.<seio.eaccount.main.Entry: int intisfirst> = 0;
+
+        goto label10;
+
+     label14:
+        return;
+    }
+
+    private boolean checkpswstate()
+    {
+        java.lang.String[] r1;
+        java.lang.Exception $r5;
+        seio.eaccount.main.Entry r0;
+        android.database.sqlite.SQLiteDatabase $r3;
+        int $i0;
+        java.lang.String $r2;
+        boolean $z0;
+        android.database.Cursor $r4;
+
+        r0 := @this: seio.eaccount.main.Entry;
+
+        $r2 = staticinvoke <seio.eaccount.common.EACommon: java.lang.String GetDB()>();
+
+        if $r2 != null goto label1;
+
+        return 0;
+
+     label1:
+        $r3 = staticinvoke <android.database.sqlite.SQLiteDatabase: android.database.sqlite.SQLiteDatabase openOrCreateDatabase(java.lang.String,android.database.sqlite.SQLiteDatabase$CursorFactory)>($r2, null);
+
+        r1 = newarray (java.lang.String)[1];
+
+        r1[0] = "AWI_PwdLockingStatus";
+
+        $z0 = virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: boolean isOpen()>();
+
+        if $z0 == 0 goto label6;
+
+     label2:
+        $r4 = virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: android.database.Cursor query(java.lang.String,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String,java.lang.String,java.lang.String)>("TBL_AccountWrapInfo", r1, null, null, null, null, null);
+
+        $i0 = interfaceinvoke $r4.<android.database.Cursor: int getCount()>();
+
+        staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        interfaceinvoke $r4.<android.database.Cursor: boolean moveToFirst()>();
+
+        $r2 = interfaceinvoke $r4.<android.database.Cursor: java.lang.String getString(int)>(0);
+
+        interfaceinvoke $r4.<android.database.Cursor: void close()>();
+
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>("0");
+
+     label3:
+        if $z0 == 0 goto label4;
+
+        return 0;
+
+     label4:
+        return 1;
+
+     label5:
+        $r5 := @caughtexception;
+
+        $r2 = virtualinvoke $r5.<java.lang.Exception: java.lang.String getMessage()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("tag:", $r2);
+
+     label6:
+        return 0;
+
+        catch java.lang.Exception from label2 to label3 with label5;
+    }
+
+    private boolean checkpswstatebyconfig()
+    {
+        java.lang.String[] r1;
+        java.lang.Exception $r5;
+        seio.eaccount.main.Entry r0;
+        android.database.sqlite.SQLiteDatabase $r3;
+        int $i0;
+        java.lang.String $r2;
+        boolean $z0;
+        android.database.Cursor $r4;
+
+        r0 := @this: seio.eaccount.main.Entry;
+
+        $r2 = staticinvoke <seio.eaccount.common.EACommon: java.lang.String GetConfigDB()>();
+
+        if $r2 != null goto label1;
+
+        return 0;
+
+     label1:
+        $r3 = staticinvoke <android.database.sqlite.SQLiteDatabase: android.database.sqlite.SQLiteDatabase openOrCreateDatabase(java.lang.String,android.database.sqlite.SQLiteDatabase$CursorFactory)>($r2, null);
+
+        r1 = newarray (java.lang.String)[1];
+
+        r1[0] = "CFG_PwdLockingStatus";
+
+        $z0 = virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: boolean isOpen()>();
+
+        if $z0 == 0 goto label6;
+
+     label2:
+        $r4 = virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: android.database.Cursor query(java.lang.String,java.lang.String[],java.lang.String,java.lang.String[],java.lang.String,java.lang.String,java.lang.String)>("TBL_Config", r1, null, null, null, null, null);
+
+        $i0 = interfaceinvoke $r4.<android.database.Cursor: int getCount()>();
+
+        staticinvoke <java.lang.Integer: java.lang.Integer valueOf(int)>($i0);
+
+        interfaceinvoke $r4.<android.database.Cursor: boolean moveToFirst()>();
+
+        $r2 = interfaceinvoke $r4.<android.database.Cursor: java.lang.String getString(int)>(0);
+
+        interfaceinvoke $r4.<android.database.Cursor: void close()>();
+
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+        $z0 = virtualinvoke $r2.<java.lang.String: boolean equals(java.lang.Object)>("0");
+
+     label3:
+        if $z0 == 0 goto label4;
+
+        return 0;
+
+     label4:
+        return 1;
+
+     label5:
+        $r5 := @caughtexception;
+
+        $r2 = virtualinvoke $r5.<java.lang.Exception: java.lang.String getMessage()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("tag:", $r2);
+
+     label6:
+        return 0;
+
+        catch java.lang.Exception from label2 to label3 with label5;
+    }
+
+    private android.database.sqlite.SQLiteDatabase copyconfigdgtofile()
+    {
+        byte[] r1;
+        java.io.FileOutputStream r2;
+        java.io.File r5;
+        java.lang.Exception $r10;
+        seio.eaccount.main.Entry r0;
+        android.database.sqlite.SQLiteDatabase $r9;
+        int $i0;
+        java.lang.StringBuilder $r3;
+        java.lang.String $r4, $r6;
+        boolean $z0;
+        android.content.res.Resources $r7;
+        java.io.InputStream $r8;
+
+        r0 := @this: seio.eaccount.main.Entry;
+
+        $r3 = new java.lang.StringBuilder;
+
+     label01:
+        $r4 = r0.<seio.eaccount.main.Entry: java.lang.String DATABASE_PATH>;
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r4);
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Config");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Config.ekj");
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label02:
+        r5 = new java.io.File;
+
+     label03:
+        $r6 = r0.<seio.eaccount.main.Entry: java.lang.String DATABASE_PATH>;
+
+        specialinvoke r5.<java.io.File: void <init>(java.lang.String)>($r6);
+
+        $z0 = virtualinvoke r5.<java.io.File: boolean exists()>();
+
+     label04:
+        if $z0 != 0 goto label06;
+
+     label05:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("databaseFilename", "dir.exists()");
+
+        virtualinvoke r5.<java.io.File: boolean mkdir()>();
+
+     label06:
+        r5 = new java.io.File;
+
+        $r3 = new java.lang.StringBuilder;
+
+     label07:
+        $r6 = r0.<seio.eaccount.main.Entry: java.lang.String DATABASE_PATH>;
+
+        $r6 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r6);
+
+        specialinvoke $r3.<java.lang.StringBuilder: void <init>(java.lang.String)>($r6);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/");
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("Config");
+
+        $r6 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke r5.<java.io.File: void <init>(java.lang.String)>($r6);
+
+        $z0 = virtualinvoke r5.<java.io.File: boolean exists()>();
+
+     label08:
+        if $z0 != 0 goto label10;
+
+     label09:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("databaseFilename", "dir.exists()");
+
+        virtualinvoke r5.<java.io.File: boolean mkdir()>();
+
+     label10:
+        r5 = new java.io.File;
+
+     label11:
+        specialinvoke r5.<java.io.File: void <init>(java.lang.String)>($r4);
+
+        $z0 = virtualinvoke r5.<java.io.File: boolean exists()>();
+
+     label12:
+        if $z0 != 0 goto label20;
+
+     label13:
+        $r7 = virtualinvoke r0.<seio.eaccount.main.Entry: android.content.res.Resources getResources()>();
+
+        $r8 = virtualinvoke $r7.<android.content.res.Resources: java.io.InputStream openRawResource(int)>(2130968576);
+
+     label14:
+        r2 = new java.io.FileOutputStream;
+
+     label15:
+        specialinvoke r2.<java.io.FileOutputStream: void <init>(java.lang.String)>($r4);
+
+     label16:
+        r1 = newarray (byte)[8192];
+
+     label17:
+        $i0 = virtualinvoke $r8.<java.io.InputStream: int read(byte[])>(r1);
+
+     label18:
+        if $i0 > 0 goto label22;
+
+     label19:
+        virtualinvoke r2.<java.io.FileOutputStream: void close()>();
+
+        virtualinvoke $r8.<java.io.InputStream: void close()>();
+
+     label20:
+        $r9 = staticinvoke <android.database.sqlite.SQLiteDatabase: android.database.sqlite.SQLiteDatabase openOrCreateDatabase(java.lang.String,android.database.sqlite.SQLiteDatabase$CursorFactory)>($r4, null);
+
+     label21:
+        return $r9;
+
+     label22:
+        virtualinvoke r2.<java.io.FileOutputStream: void write(byte[],int,int)>(r1, 0, $i0);
+
+     label23:
+        goto label17;
+
+     label24:
+        $r10 := @caughtexception;
+
+        return null;
+
+        catch java.lang.Exception from label01 to label02 with label24;
+        catch java.lang.Exception from label03 to label04 with label24;
+        catch java.lang.Exception from label05 to label06 with label24;
+        catch java.lang.Exception from label07 to label08 with label24;
+        catch java.lang.Exception from label09 to label10 with label24;
+        catch java.lang.Exception from label11 to label12 with label24;
+        catch java.lang.Exception from label13 to label14 with label24;
+        catch java.lang.Exception from label15 to label16 with label24;
+        catch java.lang.Exception from label17 to label18 with label24;
+        catch java.lang.Exception from label19 to label21 with label24;
+        catch java.lang.Exception from label22 to label23 with label24;
+    }
+
+    private void deletethenFile(java.io.File)
+    {
+        java.io.PrintStream $r4;
+        java.io.File $r1, $r3;
+        seio.eaccount.main.Entry r0;
+        int i0, $i1;
+        java.io.File[] $r2;
+        boolean $z0;
+
+        r0 := @this: seio.eaccount.main.Entry;
+
+        $r1 := @parameter0: java.io.File;
+
+        $z0 = virtualinvoke $r1.<java.io.File: boolean exists()>();
+
+        if $z0 == 0 goto label4;
+
+        $z0 = virtualinvoke $r1.<java.io.File: boolean isFile()>();
+
+        if $z0 == 0 goto label2;
+
+        virtualinvoke $r1.<java.io.File: boolean delete()>();
+
+     label1:
+        virtualinvoke $r1.<java.io.File: boolean delete()>();
+
+        return;
+
+     label2:
+        $z0 = virtualinvoke $r1.<java.io.File: boolean isDirectory()>();
+
+        if $z0 == 0 goto label1;
+
+        $r2 = virtualinvoke $r1.<java.io.File: java.io.File[] listFiles()>();
+
+        i0 = 0;
+
+     label3:
+        $i1 = lengthof $r2;
+
+        if i0 >= $i1 goto label1;
+
+        $r3 = $r2[i0];
+
+        specialinvoke r0.<seio.eaccount.main.Entry: void deletethenFile(java.io.File)>($r3);
+
+        i0 = i0 + 1;
+
+        goto label3;
+
+     label4:
+        $r4 = <java.lang.System: java.io.PrintStream out>;
+
+        virtualinvoke $r4.<java.io.PrintStream: void println(java.lang.String)>("\u6240\u5220\u9664\u7684\u6587\u4ef6\u4e0d\u5b58\u5728\uff01\n");
+
+        return;
+    }
+
+    public static android.database.Cursor getlastupdatedate()
+    {
+        android.database.sqlite.SQLiteDatabase $r1;
+        java.lang.String $r0;
+        java.lang.Exception $r3;
+        boolean $z0;
+        android.database.Cursor $r2;
+
+        $r0 = staticinvoke <seio.eaccount.common.EACommon: java.lang.String GetConfigDB()>();
+
+        if $r0 != null goto label1;
+
+        return null;
+
+     label1:
+        $r1 = staticinvoke <android.database.sqlite.SQLiteDatabase: android.database.sqlite.SQLiteDatabase openOrCreateDatabase(java.lang.String,android.database.sqlite.SQLiteDatabase$CursorFactory)>($r0, null);
+
+        $z0 = virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: boolean isOpen()>();
+
+        if $z0 == 0 goto label5;
+
+     label2:
+        $r2 = virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: android.database.Cursor rawQuery(java.lang.String,java.lang.String[])>("select CFG_LastCheckUpdateDate from TBL_Config ", null);
+
+        interfaceinvoke $r2.<android.database.Cursor: int getCount()>();
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+     label3:
+        return $r2;
+
+     label4:
+        $r3 := @caughtexception;
+
+        $r0 = virtualinvoke $r3.<java.lang.Exception: java.lang.String getMessage()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("tag:", $r0);
+
+     label5:
+        return null;
+
+        catch java.lang.Exception from label2 to label3 with label4;
+    }
+
+    public static android.database.Cursor getpassport()
+    {
+        android.database.sqlite.SQLiteDatabase $r1;
+        java.lang.String $r0;
+        java.lang.Exception $r3;
+        boolean $z0;
+        android.database.Cursor $r2;
+
+        $r0 = staticinvoke <seio.eaccount.common.EACommon: java.lang.String GetConfigDB()>();
+
+        if $r0 != null goto label1;
+
+        return null;
+
+     label1:
+        $r1 = staticinvoke <android.database.sqlite.SQLiteDatabase: android.database.sqlite.SQLiteDatabase openOrCreateDatabase(java.lang.String,android.database.sqlite.SQLiteDatabase$CursorFactory)>($r0, null);
+
+        $z0 = virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: boolean isOpen()>();
+
+        if $z0 == 0 goto label5;
+
+     label2:
+        $r2 = virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: android.database.Cursor rawQuery(java.lang.String,java.lang.String[])>("select CFG_Authentic from TBL_Config ", null);
+
+        interfaceinvoke $r2.<android.database.Cursor: int getCount()>();
+
+        virtualinvoke $r1.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+     label3:
+        return $r2;
+
+     label4:
+        $r3 := @caughtexception;
+
+        $r0 = virtualinvoke $r3.<java.lang.Exception: java.lang.String getMessage()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String)>("tag:", $r0);
+
+     label5:
+        return null;
+
+        catch java.lang.Exception from label2 to label3 with label4;
+    }
+
+    private void sendMsg(int, java.lang.String)
+    {
+        seio.eaccount.main.Entry r0;
+        android.os.Message r2;
+        android.os.Handler $r3;
+        int $i0;
+        java.lang.String $r1;
+
+        r0 := @this: seio.eaccount.main.Entry;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: java.lang.String;
+
+        r2 = new android.os.Message;
+
+        specialinvoke r2.<android.os.Message: void <init>()>();
+
+        r2.<android.os.Message: int what> = $i0;
+
+        $r3 = r0.<seio.eaccount.main.Entry: android.os.Handler handlerdown>;
+
+        virtualinvoke $r3.<android.os.Handler: boolean sendMessage(android.os.Message)>(r2);
+
+        return;
+    }
+
+    public void DisplayToast(java.lang.String)
+    {
+        seio.eaccount.main.Entry r0;
+        java.lang.String $r1;
+        android.widget.Toast $r2;
+
+        r0 := @this: seio.eaccount.main.Entry;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 = staticinvoke <android.widget.Toast: android.widget.Toast makeText(android.content.Context,java.lang.CharSequence,int)>(r0, "\u8fd0\u884c\u7a0b\u5e8f\u524d\u8bf7\u5148\u63d2\u5165SD\u5361", 1);
+
+        virtualinvoke $r2.<android.widget.Toast: void show()>();
+
+        return;
+    }
+
+    public void down_file(java.lang.String, java.lang.String)
+    {
+        byte[] r3;
+        java.net.URL r5, $r12;
+        seio.eaccount.main.Entry r0;
+        java.net.URLConnection $r7;
+        int $i0, $i1;
+        java.lang.String $r1, $r2, $r6;
+        boolean $z0;
+        java.io.FileOutputStream r4, $r15;
+        java.lang.RuntimeException $r9, $r13;
+        java.lang.Exception $r10;
+        java.lang.StringBuilder $r11, $r14;
+        java.io.InputStream $r8;
+
+        r0 := @this: seio.eaccount.main.Entry;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r2 := @parameter1: java.lang.String;
+
+     label01:
+        $i0 = virtualinvoke $r1.<java.lang.String: int lastIndexOf(java.lang.String)>("/");
+
+     label02:
+        $i0 = $i0 + 1;
+
+     label03:
+        $r6 = virtualinvoke $r1.<java.lang.String: java.lang.String substring(int)>($i0);
+
+     label04:
+        $r12 = new java.net.URL;
+
+        r5 = $r12;
+
+     label05:
+        specialinvoke $r12.<java.net.URL: void <init>(java.lang.String)>("http://www.kuaijihui.com/Products/FileDownload/kuaijihui/iaccounting_lephone.apk");
+
+        $r7 = virtualinvoke r5.<java.net.URL: java.net.URLConnection openConnection()>();
+
+        virtualinvoke $r7.<java.net.URLConnection: void connect()>();
+
+        $r8 = virtualinvoke $r7.<java.net.URLConnection: java.io.InputStream getInputStream()>();
+
+        $i0 = virtualinvoke $r7.<java.net.URLConnection: int getContentLength()>();
+
+        r0.<seio.eaccount.main.Entry: int fileSize> = $i0;
+
+        $i0 = r0.<seio.eaccount.main.Entry: int fileSize>;
+
+     label06:
+        if $i0 > 0 goto label09;
+
+        $r13 = new java.lang.RuntimeException;
+
+        $r9 = $r13;
+
+     label07:
+        specialinvoke $r13.<java.lang.RuntimeException: void <init>(java.lang.String)>("\u65e0\u6cd5\u83b7\u77e5\u6587\u4ef6\u5927\u5c0f ");
+
+        throw $r9;
+
+     label08:
+        $r10 := @caughtexception;
+
+        r0.<seio.eaccount.main.Entry: boolean cancel> = 1;
+
+        specialinvoke r0.<seio.eaccount.main.Entry: void sendMsg(int,java.lang.String)>(-1, "d");
+
+        $r14 = new java.lang.StringBuilder;
+
+        specialinvoke $r14.<java.lang.StringBuilder: void <init>(java.lang.String)>("error: ");
+
+        $r1 = virtualinvoke $r10.<java.lang.Exception: java.lang.String getMessage()>();
+
+        $r11 = virtualinvoke $r14.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r1);
+
+        $r1 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        staticinvoke <android.util.Log: int e(java.lang.String,java.lang.String,java.lang.Throwable)>("tag", $r1, $r10);
+
+        return;
+
+     label09:
+        if $r8 != null goto label11;
+
+        $r13 = new java.lang.RuntimeException;
+
+        $r9 = $r13;
+
+     label10:
+        specialinvoke $r13.<java.lang.RuntimeException: void <init>(java.lang.String)>("stream is null");
+
+        throw $r9;
+
+     label11:
+        $r15 = new java.io.FileOutputStream;
+
+        r4 = $r15;
+
+        $r14 = new java.lang.StringBuilder;
+
+        $r11 = $r14;
+
+     label12:
+        $r1 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>("/sdcard/ekj_lephone/");
+
+        specialinvoke $r14.<java.lang.StringBuilder: void <init>(java.lang.String)>($r1);
+
+        $r11 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r1 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        specialinvoke $r15.<java.io.FileOutputStream: void <init>(java.lang.String)>($r1);
+
+     label13:
+        r3 = newarray (byte)[1024];
+
+     label14:
+        r0.<seio.eaccount.main.Entry: int downLoadFileSize> = 0;
+
+        specialinvoke r0.<seio.eaccount.main.Entry: void sendMsg(int,java.lang.String)>(0, "d");
+
+     label15:
+        $i0 = virtualinvoke $r8.<java.io.InputStream: int read(byte[])>(r3);
+
+        $z0 = r0.<seio.eaccount.main.Entry: boolean cancel>;
+
+     label16:
+        if $z0 == 0 goto label22;
+
+     label17:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("cancel", "cancelcancelcancel");
+
+     label18:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("sendMsg", "sendMsg2222222222222222222222");
+
+        $z0 = r0.<seio.eaccount.main.Entry: boolean cancel>;
+
+     label19:
+        if $z0 != 0 goto label29;
+
+     label20:
+        specialinvoke r0.<seio.eaccount.main.Entry: void sendMsg(int,java.lang.String)>(2, "d");
+
+     label21:
+        return;
+
+     label22:
+        if $i0 != -1 goto label25;
+
+     label23:
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("read", "read1111111111111111111111111");
+
+     label24:
+        goto label18;
+
+     label25:
+        virtualinvoke r4.<java.io.FileOutputStream: void write(byte[],int,int)>(r3, 0, $i0);
+
+        $i1 = r0.<seio.eaccount.main.Entry: int downLoadFileSize>;
+
+     label26:
+        $i0 = $i1 + $i0;
+
+     label27:
+        r0.<seio.eaccount.main.Entry: int downLoadFileSize> = $i0;
+
+        specialinvoke r0.<seio.eaccount.main.Entry: void sendMsg(int,java.lang.String)>(1, "d");
+
+     label28:
+        goto label15;
+
+     label29:
+        return;
+
+        catch java.lang.Exception from label01 to label02 with label08;
+        catch java.lang.Exception from label03 to label04 with label08;
+        catch java.lang.Exception from label05 to label06 with label08;
+        catch java.lang.Exception from label07 to label08 with label08;
+        catch java.lang.Exception from label10 to label11 with label08;
+        catch java.lang.Exception from label12 to label13 with label08;
+        catch java.lang.Exception from label14 to label16 with label08;
+        catch java.lang.Exception from label17 to label19 with label08;
+        catch java.lang.Exception from label20 to label21 with label08;
+        catch java.lang.Exception from label23 to label24 with label08;
+        catch java.lang.Exception from label25 to label26 with label08;
+        catch java.lang.Exception from label27 to label28 with label08;
+    }
+
+    protected void onActivityResult(int, int, android.content.Intent)
+    {
+        seio.eaccount.main.Entry r0;
+        int $i0, $i1, $i2;
+        android.content.Intent $r1;
+        java.lang.String $r2;
+        seio.eaccount.main.Entry$14 $r3;
+
+        r0 := @this: seio.eaccount.main.Entry;
+
+        $i0 := @parameter0: int;
+
+        $i1 := @parameter1: int;
+
+        $r1 := @parameter2: android.content.Intent;
+
+        $r1 = virtualinvoke r0.<seio.eaccount.main.Entry: android.content.Intent getIntent()>();
+
+        specialinvoke r0.<android.app.Activity: void onActivityResult(int,int,android.content.Intent)>($i0, $i1, $r1);
+
+        if $i0 != 1 goto label1;
+
+        if $i1 != -1 goto label1;
+
+        virtualinvoke r0.<seio.eaccount.main.Entry: void finish()>();
+
+     label1:
+        if $i0 != 2 goto label4;
+
+        if $i1 != 0 goto label2;
+
+        $i2 = r0.<seio.eaccount.main.Entry: int newversion>;
+
+        if $i2 != 2 goto label3;
+
+        staticinvoke <android.util.Log: int i(java.lang.String,java.lang.String)>("fanhui", "fahui");
+
+        virtualinvoke r0.<seio.eaccount.main.Entry: void finish()>();
+
+     label2:
+        if $i0 != 2 goto label4;
+
+        if $i1 != -1 goto label4;
+
+        $i0 = r0.<seio.eaccount.main.Entry: int newversion>;
+
+        if $i0 != 2 goto label4;
+
+        $r2 = r0.<seio.eaccount.main.Entry: java.lang.String strnw>;
+
+        specialinvoke r0.<seio.eaccount.main.Entry: void UpdataLastCheckDate(java.lang.String)>($r2);
+
+        return;
+
+     label3:
+        $r3 = new seio.eaccount.main.Entry$14;
+
+        specialinvoke $r3.<seio.eaccount.main.Entry$14: void <init>(seio.eaccount.main.Entry)>(r0);
+
+        virtualinvoke $r3.<seio.eaccount.main.Entry$14: void start()>();
+
+        goto label2;
+
+     label4:
+        return;
+    }
+
+    public void onCreate(android.os.Bundle)
+    {
+        seio.eaccount.main.Entry r0;
+        android.os.Bundle $r1;
+        android.content.IntentFilter $r3;
+        java.lang.String $r4;
+        android.content.BroadcastReceiver $r2;
+        boolean $z0;
+
+        r0 := @this: seio.eaccount.main.Entry;
+
+        $r1 := @parameter0: android.os.Bundle;
+
+        specialinvoke r0.<android.app.Activity: void onCreate(android.os.Bundle)>($r1);
+
+        virtualinvoke r0.<seio.eaccount.main.Entry: boolean requestWindowFeature(int)>(1);
+
+        virtualinvoke r0.<seio.eaccount.main.Entry: boolean requestWindowFeature(int)>(2);
+
+        virtualinvoke r0.<seio.eaccount.main.Entry: void setContentView(int)>(2130903069);
+
+        $r2 = r0.<seio.eaccount.main.Entry: android.content.BroadcastReceiver mBatteryReceiver>;
+
+        $r3 = new android.content.IntentFilter;
+
+        specialinvoke $r3.<android.content.IntentFilter: void <init>(java.lang.String)>("android.intent.action.VIEW");
+
+        virtualinvoke r0.<seio.eaccount.main.Entry: android.content.Intent registerReceiver(android.content.BroadcastReceiver,android.content.IntentFilter)>($r2, $r3);
+
+        $r4 = staticinvoke <android.os.Environment: java.lang.String getExternalStorageState()>();
+
+        $z0 = virtualinvoke $r4.<java.lang.String: boolean equals(java.lang.Object)>("mounted");
+
+        if $z0 != 0 goto label1;
+
+        virtualinvoke r0.<seio.eaccount.main.Entry: void DisplayToast(java.lang.String)>("\u8fd0\u884c\u7a0b\u5e8f\u524d\u8bf7\u5148\u63d2\u5165SD\u5361");
+
+        virtualinvoke r0.<seio.eaccount.main.Entry: void finish()>();
+
+     label1:
+        return;
+    }
+
+    public boolean onKeyDown(int, android.view.KeyEvent)
+    {
+        seio.eaccount.main.Entry r0;
+        android.view.KeyEvent $r1;
+        int $i0;
+        android.content.Intent r2;
+        boolean $z0;
+
+        r0 := @this: seio.eaccount.main.Entry;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: android.view.KeyEvent;
+
+        if $i0 != 4 goto label3;
+
+        $i0 = virtualinvoke $r1.<android.view.KeyEvent: int getRepeatCount()>();
+
+        if $i0 != 0 goto label3;
+
+        $z0 = specialinvoke r0.<seio.eaccount.main.Entry: boolean checkpswstatebyconfig()>();
+
+        if $z0 == 0 goto label2;
+
+        r2 = new android.content.Intent;
+
+        specialinvoke r2.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>(r0, class "Lseio/eaccount/main/CheckPassword;");
+
+        virtualinvoke r0.<seio.eaccount.main.Entry: void startActivity(android.content.Intent)>(r2);
+
+        virtualinvoke r0.<seio.eaccount.main.Entry: void finish()>();
+
+     label1:
+        return 0;
+
+     label2:
+        r2 = new android.content.Intent;
+
+        specialinvoke r2.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>(r0, class "Lseio/eaccount/main/SetEMain;");
+
+        virtualinvoke r0.<seio.eaccount.main.Entry: void startActivity(android.content.Intent)>(r2);
+
+        virtualinvoke r0.<seio.eaccount.main.Entry: void finish()>();
+
+        goto label1;
+
+     label3:
+        return 0;
+    }
+
+    protected void onStart()
+    {
+        seio.eaccount.main.Entry r0;
+        boolean $z0;
+        seio.eaccount.main.Entry$5 $r8, $r20;
+        seio.eaccount.main.Entry$6 $r9, $r21;
+        android.content.IntentFilter $r16;
+        android.content.BroadcastReceiver $r1;
+        java.lang.Exception $r12;
+        android.app.AlertDialog$Builder $r7, $r19;
+        java.lang.StringBuilder $r3, $r18;
+        java.text.SimpleDateFormat $r17;
+        seio.eaccount.main.Entry$10 $r14, $r27;
+        seio.eaccount.main.Entry$11 $r15, $r28;
+        java.util.Calendar $r2;
+        int $i0, $i1, $i2;
+        java.lang.String $r4, $r6;
+        seio.eaccount.main.Entry$7 $r10, $r23;
+        seio.eaccount.main.Entry$8 $r11, $r24;
+        seio.eaccount.main.Entry$9 $r13, $r26;
+        seio.eaccount.main.Entry$12 $r25;
+        android.database.Cursor $r5;
+        seio.eaccount.main.Entry$13 $r22;
+
+        r0 := @this: seio.eaccount.main.Entry;
+
+        specialinvoke r0.<android.app.Activity: void onStart()>();
+
+        $r1 = r0.<seio.eaccount.main.Entry: android.content.BroadcastReceiver mBatteryReceiver>;
+
+        $r16 = new android.content.IntentFilter;
+
+        specialinvoke $r16.<android.content.IntentFilter: void <init>(java.lang.String)>("android.intent.action.VIEW");
+
+        virtualinvoke r0.<seio.eaccount.main.Entry: android.content.Intent registerReceiver(android.content.BroadcastReceiver,android.content.IntentFilter)>($r1, $r16);
+
+     label01:
+        r0.<seio.eaccount.main.Entry: boolean isNetworkAvailable> = 1;
+
+     label02:
+        $r17 = new java.text.SimpleDateFormat;
+
+     label03:
+        specialinvoke $r17.<java.text.SimpleDateFormat: void <init>(java.lang.String)>("yyyy-MM-dd");
+
+        $r2 = staticinvoke <java.util.Calendar: java.util.Calendar getInstance()>();
+
+        $i0 = virtualinvoke $r2.<java.util.Calendar: int get(int)>(1);
+
+        $i1 = virtualinvoke $r2.<java.util.Calendar: int get(int)>(2);
+
+        $i2 = virtualinvoke $r2.<java.util.Calendar: int get(int)>(5);
+
+     label04:
+        $r18 = new java.lang.StringBuilder;
+
+        $r3 = $r18;
+
+     label05:
+        $r4 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i0);
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r4);
+
+        specialinvoke $r18.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("-");
+
+     label06:
+        $i0 = $i1 + 1;
+
+     label07:
+        $r4 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i0);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("-");
+
+        $r4 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i2);
+
+        $r3 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r3.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        r0.<seio.eaccount.main.Entry: java.lang.String strnw> = $r4;
+
+        $r5 = staticinvoke <seio.eaccount.main.Entry: android.database.Cursor getlastupdatedate()>();
+
+        interfaceinvoke $r5.<android.database.Cursor: int getCount()>();
+
+        interfaceinvoke $r5.<android.database.Cursor: boolean moveToFirst()>();
+
+        $r4 = r0.<seio.eaccount.main.Entry: java.lang.String strnw>;
+
+        $r6 = interfaceinvoke $r5.<android.database.Cursor: java.lang.String getString(int)>(0);
+
+        $z0 = virtualinvoke $r4.<java.lang.String: boolean equals(java.lang.Object)>($r6);
+
+     label08:
+        if $z0 != 0 goto label37;
+
+     label09:
+        specialinvoke r0.<seio.eaccount.main.Entry: void SubmitUseInfo()>();
+
+        $i2 = specialinvoke r0.<seio.eaccount.main.Entry: int CheckVersion()>();
+
+        r0.<seio.eaccount.main.Entry: int newversion> = $i2;
+
+        $i2 = r0.<seio.eaccount.main.Entry: int newversion>;
+
+     label10:
+        if $i2 == 2 goto label12;
+
+     label11:
+        $r4 = r0.<seio.eaccount.main.Entry: java.lang.String strnw>;
+
+        specialinvoke r0.<seio.eaccount.main.Entry: void UpdataLastCheckDate(java.lang.String)>($r4);
+
+     label12:
+        r0.<seio.eaccount.main.Entry: boolean cancel> = 0;
+
+        $i2 = r0.<seio.eaccount.main.Entry: int newversion>;
+
+     label13:
+        if $i2 != 1 goto label20;
+
+        $r19 = new android.app.AlertDialog$Builder;
+
+        $r7 = $r19;
+
+     label14:
+        specialinvoke $r19.<android.app.AlertDialog$Builder: void <init>(android.content.Context)>(r0);
+
+        $r7 = virtualinvoke $r7.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setTitle(java.lang.CharSequence)>("\u7a0b\u5e8f\u5347\u7ea7");
+
+        $r7 = virtualinvoke $r7.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setMessage(java.lang.CharSequence)>("\u7a0b\u5e8f\u6709\u65b0\u7248\u672c\uff0c\u73b0\u5728\u5c31\u5347\u7ea7\u5417\uff1f");
+
+     label15:
+        $r20 = new seio.eaccount.main.Entry$5;
+
+        $r8 = $r20;
+
+     label16:
+        specialinvoke $r20.<seio.eaccount.main.Entry$5: void <init>(seio.eaccount.main.Entry)>(r0);
+
+        $r7 = virtualinvoke $r7.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setPositiveButton(java.lang.CharSequence,android.content.DialogInterface$OnClickListener)>("\u662f", $r8);
+
+     label17:
+        $r21 = new seio.eaccount.main.Entry$6;
+
+        $r9 = $r21;
+
+     label18:
+        specialinvoke $r21.<seio.eaccount.main.Entry$6: void <init>(seio.eaccount.main.Entry)>(r0);
+
+        $r7 = virtualinvoke $r7.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setNegativeButton(java.lang.CharSequence,android.content.DialogInterface$OnClickListener)>("\u5426", $r9);
+
+        virtualinvoke $r7.<android.app.AlertDialog$Builder: android.app.AlertDialog show()>();
+
+     label19:
+        $z0 = r0.<seio.eaccount.main.Entry: boolean isNetworkAvailable>;
+
+        if $z0 != 0 goto label40;
+
+        $r22 = new seio.eaccount.main.Entry$13;
+
+        specialinvoke $r22.<seio.eaccount.main.Entry$13: void <init>(seio.eaccount.main.Entry)>(r0);
+
+        virtualinvoke $r22.<seio.eaccount.main.Entry$13: void start()>();
+
+        return;
+
+     label20:
+        $i2 = r0.<seio.eaccount.main.Entry: int newversion>;
+
+     label21:
+        if $i2 != 2 goto label29;
+
+        $r19 = new android.app.AlertDialog$Builder;
+
+        $r7 = $r19;
+
+     label22:
+        specialinvoke $r19.<android.app.AlertDialog$Builder: void <init>(android.content.Context)>(r0);
+
+        $r7 = virtualinvoke $r7.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setTitle(java.lang.CharSequence)>("\u7a0b\u5e8f\u5347\u7ea7");
+
+        $r7 = virtualinvoke $r7.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setMessage(java.lang.CharSequence)>("\u7a0b\u5e8f\u6709\u65b0\u7248\u672c\uff0c\u4e0d\u5347\u7ea7\u5c06\u65e0\u6cd5\u4f7f\u7528\uff01");
+
+     label23:
+        $r23 = new seio.eaccount.main.Entry$7;
+
+        $r10 = $r23;
+
+     label24:
+        specialinvoke $r23.<seio.eaccount.main.Entry$7: void <init>(seio.eaccount.main.Entry)>(r0);
+
+        $r7 = virtualinvoke $r7.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setPositiveButton(java.lang.CharSequence,android.content.DialogInterface$OnClickListener)>("\u662f", $r10);
+
+     label25:
+        $r24 = new seio.eaccount.main.Entry$8;
+
+        $r11 = $r24;
+
+     label26:
+        specialinvoke $r24.<seio.eaccount.main.Entry$8: void <init>(seio.eaccount.main.Entry)>(r0);
+
+        $r7 = virtualinvoke $r7.<android.app.AlertDialog$Builder: android.app.AlertDialog$Builder setNegativeButton(java.lang.CharSequence,android.content.DialogInterface$OnClickListener)>("\u5426", $r11);
+
+        virtualinvoke $r7.<android.app.AlertDialog$Builder: android.app.AlertDialog show()>();
+
+     label27:
+        goto label19;
+
+     label28:
+        $r12 := @caughtexception;
+
+        $r25 = new seio.eaccount.main.Entry$12;
+
+        specialinvoke $r25.<seio.eaccount.main.Entry$12: void <init>(seio.eaccount.main.Entry)>(r0);
+
+        virtualinvoke $r25.<seio.eaccount.main.Entry$12: void start()>();
+
+        goto label19;
+
+     label29:
+        $i2 = r0.<seio.eaccount.main.Entry: int newversion>;
+
+     label30:
+        if $i2 != 0 goto label33;
+
+        $r26 = new seio.eaccount.main.Entry$9;
+
+        $r13 = $r26;
+
+     label31:
+        specialinvoke $r26.<seio.eaccount.main.Entry$9: void <init>(seio.eaccount.main.Entry)>(r0);
+
+        virtualinvoke $r13.<seio.eaccount.main.Entry$9: void start()>();
+
+     label32:
+        goto label19;
+
+     label33:
+        $i2 = r0.<seio.eaccount.main.Entry: int newversion>;
+
+     label34:
+        if $i2 != -1 goto label19;
+
+        $r27 = new seio.eaccount.main.Entry$10;
+
+        $r14 = $r27;
+
+     label35:
+        specialinvoke $r27.<seio.eaccount.main.Entry$10: void <init>(seio.eaccount.main.Entry)>(r0);
+
+        virtualinvoke $r14.<seio.eaccount.main.Entry$10: void start()>();
+
+     label36:
+        goto label19;
+
+     label37:
+        $r28 = new seio.eaccount.main.Entry$11;
+
+        $r15 = $r28;
+
+     label38:
+        specialinvoke $r28.<seio.eaccount.main.Entry$11: void <init>(seio.eaccount.main.Entry)>(r0);
+
+        virtualinvoke $r15.<seio.eaccount.main.Entry$11: void start()>();
+
+     label39:
+        goto label19;
+
+     label40:
+        return;
+
+        catch java.lang.Exception from label01 to label02 with label28;
+        catch java.lang.Exception from label03 to label04 with label28;
+        catch java.lang.Exception from label05 to label06 with label28;
+        catch java.lang.Exception from label07 to label08 with label28;
+        catch java.lang.Exception from label09 to label10 with label28;
+        catch java.lang.Exception from label11 to label13 with label28;
+        catch java.lang.Exception from label14 to label15 with label28;
+        catch java.lang.Exception from label16 to label17 with label28;
+        catch java.lang.Exception from label18 to label19 with label28;
+        catch java.lang.Exception from label20 to label21 with label28;
+        catch java.lang.Exception from label22 to label23 with label28;
+        catch java.lang.Exception from label24 to label25 with label28;
+        catch java.lang.Exception from label26 to label27 with label28;
+        catch java.lang.Exception from label29 to label30 with label28;
+        catch java.lang.Exception from label31 to label32 with label28;
+        catch java.lang.Exception from label33 to label34 with label28;
+        catch java.lang.Exception from label35 to label36 with label28;
+        catch java.lang.Exception from label38 to label39 with label28;
+    }
+
+    public void onStop()
+    {
+        seio.eaccount.main.Entry r0;
+        android.content.BroadcastReceiver $r1;
+
+        r0 := @this: seio.eaccount.main.Entry;
+
+        specialinvoke r0.<android.app.Activity: void onStop()>();
+
+        $r1 = r0.<seio.eaccount.main.Entry: android.content.BroadcastReceiver mBatteryReceiver>;
+
+        virtualinvoke r0.<seio.eaccount.main.Entry: void unregisterReceiver(android.content.BroadcastReceiver)>($r1);
+
+        return;
+    }
+
+    public void setup_flie()
+    {
+        seio.eaccount.main.Entry r0;
+        android.net.Uri $r5;
+        android.content.Intent r1;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r4;
+        java.io.File $r3;
+
+        r0 := @this: seio.eaccount.main.Entry;
+
+        $r2 = new java.lang.StringBuilder;
+
+        $r3 = staticinvoke <android.os.Environment: java.io.File getExternalStorageDirectory()>();
+
+        $r4 = virtualinvoke $r3.<java.io.File: java.lang.String getAbsolutePath()>();
+
+        $r4 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r4);
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>($r4);
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/ekj_lephone");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("/iaccounting_lephone.apk");
+
+        $r4 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        r1 = new android.content.Intent;
+
+        specialinvoke r1.<android.content.Intent: void <init>(java.lang.String)>("android.intent.action.VIEW");
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("file://");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r4);
+
+        $r4 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r5 = staticinvoke <android.net.Uri: android.net.Uri parse(java.lang.String)>($r4);
+
+        virtualinvoke r1.<android.content.Intent: android.content.Intent setDataAndType(android.net.Uri,java.lang.String)>($r5, "application/vnd.android.package-archive");
+
+        virtualinvoke r0.<seio.eaccount.main.Entry: void startActivityForResult(android.content.Intent,int)>(r1, 2);
+
+        return;
+    }
+
+    public void startform()
+    {
+        java.lang.Throwable $r8;
+        java.util.Date $r7;
+        java.text.SimpleDateFormat r1, r2;
+        android.content.Intent $r12;
+        seio.eaccount.main.Entry r0;
+        android.database.sqlite.SQLiteDatabase $r3;
+        java.util.Calendar $r4;
+        android.os.Handler $r10;
+        int $i0, $i1, $i2;
+        java.lang.String $r6;
+        java.text.ParseException $r14;
+        boolean $z0;
+        android.os.Message r9, $r13;
+        java.lang.StringBuilder $r5, $r11;
+
+        r0 := @this: seio.eaccount.main.Entry;
+
+        $z0 = specialinvoke r0.<seio.eaccount.main.Entry: boolean checkconfig()>();
+
+        if $z0 != 0 goto label04;
+
+        $r3 = specialinvoke r0.<seio.eaccount.main.Entry: android.database.sqlite.SQLiteDatabase copyconfigdgtofile()>();
+
+        r1 = new java.text.SimpleDateFormat;
+
+        specialinvoke r1.<java.text.SimpleDateFormat: void <init>(java.lang.String)>("yyyy-MM-dd");
+
+        $r4 = staticinvoke <java.util.Calendar: java.util.Calendar getInstance()>();
+
+        $i0 = virtualinvoke $r4.<java.util.Calendar: int get(int)>(1);
+
+        $i1 = virtualinvoke $r4.<java.util.Calendar: int get(int)>(2);
+
+        $i2 = virtualinvoke $r4.<java.util.Calendar: int get(int)>(5);
+
+        r2 = new java.text.SimpleDateFormat;
+
+        r1 = r2;
+
+        specialinvoke r2.<java.text.SimpleDateFormat: void <init>(java.lang.String)>("yyyy-MM-dd");
+
+        $r11 = new java.lang.StringBuilder;
+
+        $r6 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i0);
+
+        $r6 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r6);
+
+        specialinvoke $r11.<java.lang.StringBuilder: void <init>(java.lang.String)>($r6);
+
+        $r5 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("-");
+
+        $i0 = $i1 + 1;
+
+        $r6 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i0);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("-");
+
+        $r6 = staticinvoke <java.lang.Integer: java.lang.String toString(int)>($i2);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+     label01:
+        $r7 = virtualinvoke r1.<java.text.DateFormat: java.util.Date parse(java.lang.String)>($r6);
+
+        $r6 = virtualinvoke r1.<java.text.DateFormat: java.lang.String format(java.util.Date)>($r7);
+
+     label02:
+        $r11 = new java.lang.StringBuilder;
+
+        $r5 = $r11;
+
+     label03:
+        specialinvoke $r11.<java.lang.StringBuilder: void <init>(java.lang.String)>("update TBL_Config set CFG_LastAuthenticDate = \'");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\',CFG_LastCheckUpdateDate=\'");
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r6);
+
+        $r5 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>("\',CFG_PwdLockingStatus = 0,CFG_FeedbackEmail = \'service@kuaijihui.com\' ");
+
+        $r6 = virtualinvoke $r5.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: void execSQL(java.lang.String)>($r6);
+
+        virtualinvoke $r3.<android.database.sqlite.SQLiteDatabase: void close()>();
+
+     label04:
+        specialinvoke r0.<seio.eaccount.main.Entry: void checkisfirst()>();
+
+        $i2 = r0.<seio.eaccount.main.Entry: int intisfirst>;
+
+        if $i2 != 0 goto label06;
+
+        $r12 = new android.content.Intent;
+
+        specialinvoke $r12.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>(r0, class "Lseio/eaccount/main/InitAccount;");
+
+        virtualinvoke r0.<seio.eaccount.main.Entry: void startActivity(android.content.Intent)>($r12);
+
+        virtualinvoke r0.<seio.eaccount.main.Entry: void finish()>();
+
+        return;
+
+     label05:
+        $r8 := @caughtexception;
+
+        $r14 = (java.text.ParseException) $r8;
+
+        virtualinvoke $r14.<java.text.ParseException: void printStackTrace()>();
+
+        goto label04;
+
+     label06:
+        $i2 = r0.<seio.eaccount.main.Entry: int intisfirst>;
+
+        if $i2 != 1 goto label10;
+
+        $z0 = staticinvoke <seio.eaccount.common.EACommon: boolean IsActivate()>();
+
+        if $z0 == 0 goto label07;
+
+        $r13 = new android.os.Message;
+
+        r9 = $r13;
+
+        specialinvoke $r13.<android.os.Message: void <init>()>();
+
+        r9.<android.os.Message: int what> = 1;
+
+        $r10 = r0.<seio.eaccount.main.Entry: android.os.Handler handlerjihuo>;
+
+        virtualinvoke $r10.<android.os.Handler: boolean sendMessage(android.os.Message)>(r9);
+
+        return;
+
+     label07:
+        $z0 = staticinvoke <seio.eaccount.common.EACommon: boolean IsAuthentic()>();
+
+        if $z0 == 0 goto label08;
+
+        $r13 = new android.os.Message;
+
+        r9 = $r13;
+
+        specialinvoke $r13.<android.os.Message: void <init>()>();
+
+        r9.<android.os.Message: int what> = 2;
+
+        $r10 = r0.<seio.eaccount.main.Entry: android.os.Handler handlerjihuo>;
+
+        virtualinvoke $r10.<android.os.Handler: boolean sendMessage(android.os.Message)>(r9);
+
+        return;
+
+     label08:
+        $z0 = specialinvoke r0.<seio.eaccount.main.Entry: boolean checkpswstatebyconfig()>();
+
+        if $z0 == 0 goto label09;
+
+        $r12 = new android.content.Intent;
+
+        specialinvoke $r12.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>(r0, class "Lseio/eaccount/main/CheckPassword;");
+
+        virtualinvoke r0.<seio.eaccount.main.Entry: void startActivity(android.content.Intent)>($r12);
+
+        virtualinvoke r0.<seio.eaccount.main.Entry: void finish()>();
+
+        return;
+
+     label09:
+        $r12 = new android.content.Intent;
+
+        specialinvoke $r12.<android.content.Intent: void <init>(android.content.Context,java.lang.Class)>(r0, class "Lseio/eaccount/main/SetEMain;");
+
+        virtualinvoke r0.<seio.eaccount.main.Entry: void startActivity(android.content.Intent)>($r12);
+
+        virtualinvoke r0.<seio.eaccount.main.Entry: void finish()>();
+
+     label10:
+        return;
+
+        catch java.text.ParseException from label01 to label02 with label05;
+        catch java.text.ParseException from label03 to label04 with label05;
+    }
+
+    public android.content.Intent getIntent()
+    {
+        seio.eaccount.main.Entry this;
+        android.content.Intent $r0;
+
+        this := @this: seio.eaccount.main.Entry;
+
+        $r0 = this.<seio.eaccount.main.Entry: android.content.Intent ipcIntent>;
+
+        return $r0;
+    }
+
+    public void setIntent(android.content.Intent)
+    {
+        seio.eaccount.main.Entry this;
+        android.content.Intent parameter0;
+
+        this := @this: seio.eaccount.main.Entry;
+
+        parameter0 := @parameter0: android.content.Intent;
+
+        this.<seio.eaccount.main.Entry: android.content.Intent ipcIntent> = parameter0;
+
+        return;
+    }
+
+    public void setResult(int, android.content.Intent)
+    {
+        seio.eaccount.main.Entry this;
+        int parameter0;
+        android.content.Intent parameter1;
+
+        this := @this: seio.eaccount.main.Entry;
+
+        parameter0 := @parameter0: int;
+
+        parameter1 := @parameter1: android.content.Intent;
+
+        this.<seio.eaccount.main.Entry: android.content.Intent ipcResultIntent> = parameter1;
+
+        return;
+    }
+}

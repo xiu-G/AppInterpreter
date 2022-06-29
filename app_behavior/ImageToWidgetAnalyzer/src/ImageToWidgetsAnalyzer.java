@@ -22,6 +22,7 @@ public class ImageToWidgetsAnalyzer {
 		String widimages = args[0];
 		String gator = args[1];
 		String outputfolder =  args[2];
+		// List<String> apks = Files.readAllLines(Paths.get(args[3]));
 		List<String> apks = Files.readAllLines(Paths.get(args[3]));
 		ImageToWidgetsAnalyzer analyzer = new ImageToWidgetsAnalyzer();
 		analyzer.generateImageToMethods(apks,widimages, gator, outputfolder);

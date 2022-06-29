@@ -1,0 +1,405 @@
+class com.facebook.internal.WorkQueue extends java.lang.Object
+{
+    static final boolean $assertionsDisabled;
+    public static final int DEFAULT_MAX_CONCURRENT;
+    private final java.util.concurrent.Executor executor;
+    private final int maxConcurrent;
+    private com.facebook.internal.WorkQueue$WorkNode pendingJobs;
+    private int runningCount;
+    private com.facebook.internal.WorkQueue$WorkNode runningJobs;
+    private final java.lang.Object workLock;
+
+    static void <clinit>()
+    {
+        java.lang.Class $r0;
+        boolean $z0;
+
+        <com.facebook.internal.WorkQueue: int DEFAULT_MAX_CONCURRENT> = 8;
+
+        <com.facebook.internal.WorkQueue: boolean $assertionsDisabled> = 0;
+
+        $r0 = class "Lcom/facebook/internal/WorkQueue;";
+
+        $z0 = virtualinvoke $r0.<java.lang.Class: boolean desiredAssertionStatus()>();
+
+        if $z0 != 0 goto label2;
+
+        $z0 = 1;
+
+     label1:
+        <com.facebook.internal.WorkQueue: boolean $assertionsDisabled> = $z0;
+
+        return;
+
+     label2:
+        $z0 = 0;
+
+        goto label1;
+
+        return;
+    }
+
+    void <init>()
+    {
+        com.facebook.internal.WorkQueue r0;
+
+        r0 := @this: com.facebook.internal.WorkQueue;
+
+        specialinvoke r0.<com.facebook.internal.WorkQueue: void <init>(int)>(8);
+
+        return;
+    }
+
+    void <init>(int)
+    {
+        int $i0;
+        java.util.concurrent.Executor $r1;
+        com.facebook.internal.WorkQueue r0;
+
+        r0 := @this: com.facebook.internal.WorkQueue;
+
+        $i0 := @parameter0: int;
+
+        $r1 = staticinvoke <com.facebook.Settings: java.util.concurrent.Executor getExecutor()>();
+
+        specialinvoke r0.<com.facebook.internal.WorkQueue: void <init>(int,java.util.concurrent.Executor)>($i0, $r1);
+
+        return;
+    }
+
+    void <init>(int, java.util.concurrent.Executor)
+    {
+        java.util.concurrent.Executor $r1;
+        com.facebook.internal.WorkQueue r0;
+        int $i0;
+        java.lang.Object $r2;
+
+        r0 := @this: com.facebook.internal.WorkQueue;
+
+        $i0 := @parameter0: int;
+
+        $r1 := @parameter1: java.util.concurrent.Executor;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        $r2 = new java.lang.Object;
+
+        specialinvoke $r2.<java.lang.Object: void <init>()>();
+
+        r0.<com.facebook.internal.WorkQueue: java.lang.Object workLock> = $r2;
+
+        r0.<com.facebook.internal.WorkQueue: com.facebook.internal.WorkQueue$WorkNode runningJobs> = null;
+
+        r0.<com.facebook.internal.WorkQueue: int runningCount> = 0;
+
+        r0.<com.facebook.internal.WorkQueue: int maxConcurrent> = $i0;
+
+        r0.<com.facebook.internal.WorkQueue: java.util.concurrent.Executor executor> = $r1;
+
+        return;
+    }
+
+    static java.lang.Object access$0(com.facebook.internal.WorkQueue)
+    {
+        java.lang.Object r1;
+        com.facebook.internal.WorkQueue $r0;
+
+        $r0 := @parameter0: com.facebook.internal.WorkQueue;
+
+        r1 = $r0.<com.facebook.internal.WorkQueue: java.lang.Object workLock>;
+
+        return r1;
+    }
+
+    static com.facebook.internal.WorkQueue$WorkNode access$1(com.facebook.internal.WorkQueue)
+    {
+        com.facebook.internal.WorkQueue$WorkNode r1;
+        com.facebook.internal.WorkQueue $r0;
+
+        $r0 := @parameter0: com.facebook.internal.WorkQueue;
+
+        r1 = $r0.<com.facebook.internal.WorkQueue: com.facebook.internal.WorkQueue$WorkNode pendingJobs>;
+
+        return r1;
+    }
+
+    static void access$2(com.facebook.internal.WorkQueue, com.facebook.internal.WorkQueue$WorkNode)
+    {
+        com.facebook.internal.WorkQueue$WorkNode $r1;
+        com.facebook.internal.WorkQueue $r0;
+
+        $r0 := @parameter0: com.facebook.internal.WorkQueue;
+
+        $r1 := @parameter1: com.facebook.internal.WorkQueue$WorkNode;
+
+        $r0.<com.facebook.internal.WorkQueue: com.facebook.internal.WorkQueue$WorkNode pendingJobs> = $r1;
+
+        return;
+    }
+
+    static void access$3(com.facebook.internal.WorkQueue, com.facebook.internal.WorkQueue$WorkNode)
+    {
+        com.facebook.internal.WorkQueue$WorkNode $r1;
+        com.facebook.internal.WorkQueue $r0;
+
+        $r0 := @parameter0: com.facebook.internal.WorkQueue;
+
+        $r1 := @parameter1: com.facebook.internal.WorkQueue$WorkNode;
+
+        specialinvoke $r0.<com.facebook.internal.WorkQueue: void finishItemAndStartNew(com.facebook.internal.WorkQueue$WorkNode)>($r1);
+
+        return;
+    }
+
+    private void execute(com.facebook.internal.WorkQueue$WorkNode)
+    {
+        com.facebook.internal.WorkQueue$1 $r3;
+        java.util.concurrent.Executor $r2;
+        com.facebook.internal.WorkQueue r0;
+        com.facebook.internal.WorkQueue$WorkNode $r1;
+
+        r0 := @this: com.facebook.internal.WorkQueue;
+
+        $r1 := @parameter0: com.facebook.internal.WorkQueue$WorkNode;
+
+        $r2 = r0.<com.facebook.internal.WorkQueue: java.util.concurrent.Executor executor>;
+
+        $r3 = new com.facebook.internal.WorkQueue$1;
+
+        specialinvoke $r3.<com.facebook.internal.WorkQueue$1: void <init>(com.facebook.internal.WorkQueue,com.facebook.internal.WorkQueue$WorkNode)>(r0, $r1);
+
+        interfaceinvoke $r2.<java.util.concurrent.Executor: void execute(java.lang.Runnable)>($r3);
+
+        return;
+    }
+
+    private void finishItemAndStartNew(com.facebook.internal.WorkQueue$WorkNode)
+    {
+        java.lang.Throwable $r5;
+        com.facebook.internal.WorkQueue r0;
+        com.facebook.internal.WorkQueue$WorkNode $r1, $r3, $r4;
+        int $i0, $i1;
+        java.lang.Object $r2;
+
+        r0 := @this: com.facebook.internal.WorkQueue;
+
+        $r1 := @parameter0: com.facebook.internal.WorkQueue$WorkNode;
+
+        $r3 = null;
+
+        $r2 = r0.<com.facebook.internal.WorkQueue: java.lang.Object workLock>;
+
+        entermonitor $r2;
+
+        if $r1 == null goto label2;
+
+     label1:
+        $r4 = r0.<com.facebook.internal.WorkQueue: com.facebook.internal.WorkQueue$WorkNode runningJobs>;
+
+        $r1 = virtualinvoke $r1.<com.facebook.internal.WorkQueue$WorkNode: com.facebook.internal.WorkQueue$WorkNode removeFromList(com.facebook.internal.WorkQueue$WorkNode)>($r4);
+
+        r0.<com.facebook.internal.WorkQueue: com.facebook.internal.WorkQueue$WorkNode runningJobs> = $r1;
+
+        $i0 = r0.<com.facebook.internal.WorkQueue: int runningCount>;
+
+        $i0 = $i0 + -1;
+
+        r0.<com.facebook.internal.WorkQueue: int runningCount> = $i0;
+
+     label2:
+        $i0 = r0.<com.facebook.internal.WorkQueue: int runningCount>;
+
+        $i1 = r0.<com.facebook.internal.WorkQueue: int maxConcurrent>;
+
+        if $i0 >= $i1 goto label3;
+
+        $r3 = r0.<com.facebook.internal.WorkQueue: com.facebook.internal.WorkQueue$WorkNode pendingJobs>;
+
+        if $r3 == null goto label3;
+
+        $r1 = r0.<com.facebook.internal.WorkQueue: com.facebook.internal.WorkQueue$WorkNode pendingJobs>;
+
+        $r1 = virtualinvoke $r3.<com.facebook.internal.WorkQueue$WorkNode: com.facebook.internal.WorkQueue$WorkNode removeFromList(com.facebook.internal.WorkQueue$WorkNode)>($r1);
+
+        r0.<com.facebook.internal.WorkQueue: com.facebook.internal.WorkQueue$WorkNode pendingJobs> = $r1;
+
+        $r1 = r0.<com.facebook.internal.WorkQueue: com.facebook.internal.WorkQueue$WorkNode runningJobs>;
+
+        $r1 = virtualinvoke $r3.<com.facebook.internal.WorkQueue$WorkNode: com.facebook.internal.WorkQueue$WorkNode addToList(com.facebook.internal.WorkQueue$WorkNode,boolean)>($r1, 0);
+
+        r0.<com.facebook.internal.WorkQueue: com.facebook.internal.WorkQueue$WorkNode runningJobs> = $r1;
+
+        $i0 = r0.<com.facebook.internal.WorkQueue: int runningCount>;
+
+        $i0 = $i0 + 1;
+
+        r0.<com.facebook.internal.WorkQueue: int runningCount> = $i0;
+
+        virtualinvoke $r3.<com.facebook.internal.WorkQueue$WorkNode: void setIsRunning(boolean)>(1);
+
+     label3:
+        exitmonitor $r2;
+
+     label4:
+        if $r3 == null goto label6;
+
+        specialinvoke r0.<com.facebook.internal.WorkQueue: void execute(com.facebook.internal.WorkQueue$WorkNode)>($r3);
+
+        return;
+
+     label5:
+        $r5 := @caughtexception;
+
+        exitmonitor $r2;
+
+        throw $r5;
+
+     label6:
+        return;
+
+        catch java.lang.Throwable from label1 to label4 with label5;
+    }
+
+    private void startItem()
+    {
+        com.facebook.internal.WorkQueue r0;
+
+        r0 := @this: com.facebook.internal.WorkQueue;
+
+        specialinvoke r0.<com.facebook.internal.WorkQueue: void finishItemAndStartNew(com.facebook.internal.WorkQueue$WorkNode)>(null);
+
+        return;
+    }
+
+    com.facebook.internal.WorkQueue$WorkItem addActiveWorkItem(java.lang.Runnable)
+    {
+        com.facebook.internal.WorkQueue$WorkItem $r2;
+        java.lang.Runnable $r1;
+        com.facebook.internal.WorkQueue r0;
+
+        r0 := @this: com.facebook.internal.WorkQueue;
+
+        $r1 := @parameter0: java.lang.Runnable;
+
+        $r2 = virtualinvoke r0.<com.facebook.internal.WorkQueue: com.facebook.internal.WorkQueue$WorkItem addActiveWorkItem(java.lang.Runnable,boolean)>($r1, 1);
+
+        return $r2;
+    }
+
+    com.facebook.internal.WorkQueue$WorkItem addActiveWorkItem(java.lang.Runnable, boolean)
+    {
+        java.lang.Throwable $r5;
+        com.facebook.internal.WorkQueue r0;
+        java.lang.Object $r4;
+        java.lang.Runnable $r1;
+        com.facebook.internal.WorkQueue$WorkNode $r2, $r3;
+        boolean $z0;
+
+        r0 := @this: com.facebook.internal.WorkQueue;
+
+        $r1 := @parameter0: java.lang.Runnable;
+
+        $z0 := @parameter1: boolean;
+
+        $r3 = new com.facebook.internal.WorkQueue$WorkNode;
+
+        specialinvoke $r3.<com.facebook.internal.WorkQueue$WorkNode: void <init>(com.facebook.internal.WorkQueue,java.lang.Runnable)>(r0, $r1);
+
+        $r4 = r0.<com.facebook.internal.WorkQueue: java.lang.Object workLock>;
+
+        entermonitor $r4;
+
+     label1:
+        $r2 = r0.<com.facebook.internal.WorkQueue: com.facebook.internal.WorkQueue$WorkNode pendingJobs>;
+
+        $r2 = virtualinvoke $r3.<com.facebook.internal.WorkQueue$WorkNode: com.facebook.internal.WorkQueue$WorkNode addToList(com.facebook.internal.WorkQueue$WorkNode,boolean)>($r2, 1);
+
+        r0.<com.facebook.internal.WorkQueue: com.facebook.internal.WorkQueue$WorkNode pendingJobs> = $r2;
+
+        exitmonitor $r4;
+
+     label2:
+        specialinvoke r0.<com.facebook.internal.WorkQueue: void finishItemAndStartNew(com.facebook.internal.WorkQueue$WorkNode)>(null);
+
+        return $r3;
+
+     label3:
+        $r5 := @caughtexception;
+
+        exitmonitor $r4;
+
+        throw $r5;
+
+        catch java.lang.Throwable from label1 to label2 with label3;
+    }
+
+    void validate()
+    {
+        java.lang.Throwable $r6;
+        com.facebook.internal.WorkQueue r0;
+        java.lang.AssertionError $r5;
+        com.facebook.internal.WorkQueue$WorkNode $r2, $r3, $r4;
+        int $i0, $i1;
+        java.lang.Object $r1;
+        boolean $z0;
+
+        r0 := @this: com.facebook.internal.WorkQueue;
+
+        $r1 = r0.<com.facebook.internal.WorkQueue: java.lang.Object workLock>;
+
+        entermonitor $r1;
+
+        $i0 = 0;
+
+     label1:
+        $r2 = r0.<com.facebook.internal.WorkQueue: com.facebook.internal.WorkQueue$WorkNode runningJobs>;
+
+        if $r2 == null goto label3;
+
+        $r3 = r0.<com.facebook.internal.WorkQueue: com.facebook.internal.WorkQueue$WorkNode runningJobs>;
+
+     label2:
+        virtualinvoke $r3.<com.facebook.internal.WorkQueue$WorkNode: void verify(boolean)>(1);
+
+        $i0 = $i0 + 1;
+
+        $r2 = virtualinvoke $r3.<com.facebook.internal.WorkQueue$WorkNode: com.facebook.internal.WorkQueue$WorkNode getNext()>();
+
+        $r3 = $r2;
+
+        $r4 = r0.<com.facebook.internal.WorkQueue: com.facebook.internal.WorkQueue$WorkNode runningJobs>;
+
+        if $r2 != $r4 goto label2;
+
+     label3:
+        $z0 = <com.facebook.internal.WorkQueue: boolean $assertionsDisabled>;
+
+        if $z0 != 0 goto label5;
+
+        $i1 = r0.<com.facebook.internal.WorkQueue: int runningCount>;
+
+        if $i1 == $i0 goto label5;
+
+        $r5 = new java.lang.AssertionError;
+
+        specialinvoke $r5.<java.lang.AssertionError: void <init>()>();
+
+        throw $r5;
+
+     label4:
+        $r6 := @caughtexception;
+
+        exitmonitor $r1;
+
+        throw $r6;
+
+     label5:
+        exitmonitor $r1;
+
+     label6:
+        return;
+
+        catch java.lang.Throwable from label1 to label4 with label4;
+        catch java.lang.Throwable from label5 to label6 with label4;
+    }
+}

@@ -1,0 +1,556 @@
+public class cn.hi321.browser.media.http.PersistentCookieStore extends java.lang.Object implements org.apache.http.client.CookieStore
+{
+    private static final java.lang.String COOKIE_NAME_PREFIX;
+    private static final java.lang.String COOKIE_NAME_STORE;
+    private static final java.lang.String COOKIE_PREFS;
+    private final android.content.SharedPreferences cookiePrefs;
+    private final java.util.concurrent.ConcurrentHashMap cookies;
+
+    public void <init>(android.content.Context)
+    {
+        cn.hi321.browser.media.http.PersistentCookieStore r0;
+        android.content.Context $r1;
+        java.util.Date $r6;
+        java.util.concurrent.ConcurrentHashMap $r4;
+        java.lang.String[] $r5;
+        android.content.SharedPreferences $r3;
+        int $i0, $i1;
+        java.lang.StringBuilder $r7;
+        org.apache.http.cookie.Cookie $r9;
+        java.lang.String r2, $r8;
+
+        r0 := @this: cn.hi321.browser.media.http.PersistentCookieStore;
+
+        $r1 := @parameter0: android.content.Context;
+
+        $i0 = 0;
+
+        specialinvoke r0.<java.lang.Object: void <init>()>();
+
+        $r3 = virtualinvoke $r1.<android.content.Context: android.content.SharedPreferences getSharedPreferences(java.lang.String,int)>("CookiePrefsFile", 0);
+
+        r0.<cn.hi321.browser.media.http.PersistentCookieStore: android.content.SharedPreferences cookiePrefs> = $r3;
+
+        $r4 = new java.util.concurrent.ConcurrentHashMap;
+
+        specialinvoke $r4.<java.util.concurrent.ConcurrentHashMap: void <init>()>();
+
+        r0.<cn.hi321.browser.media.http.PersistentCookieStore: java.util.concurrent.ConcurrentHashMap cookies> = $r4;
+
+        $r3 = r0.<cn.hi321.browser.media.http.PersistentCookieStore: android.content.SharedPreferences cookiePrefs>;
+
+        r2 = interfaceinvoke $r3.<android.content.SharedPreferences: java.lang.String getString(java.lang.String,java.lang.String)>("names", null);
+
+        if r2 == null goto label4;
+
+        $r5 = staticinvoke <android.text.TextUtils: java.lang.String[] split(java.lang.String,java.lang.String)>(r2, ",");
+
+        $i1 = lengthof $r5;
+
+     label1:
+        if $i0 < $i1 goto label2;
+
+        $r6 = new java.util.Date;
+
+        specialinvoke $r6.<java.util.Date: void <init>()>();
+
+        virtualinvoke r0.<cn.hi321.browser.media.http.PersistentCookieStore: boolean clearExpired(java.util.Date)>($r6);
+
+        return;
+
+     label2:
+        r2 = $r5[$i0];
+
+        $r3 = r0.<cn.hi321.browser.media.http.PersistentCookieStore: android.content.SharedPreferences cookiePrefs>;
+
+        $r7 = new java.lang.StringBuilder;
+
+        specialinvoke $r7.<java.lang.StringBuilder: void <init>(java.lang.String)>("cookie_");
+
+        $r7 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(r2);
+
+        $r8 = virtualinvoke $r7.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r8 = interfaceinvoke $r3.<android.content.SharedPreferences: java.lang.String getString(java.lang.String,java.lang.String)>($r8, null);
+
+        if $r8 == null goto label3;
+
+        $r9 = virtualinvoke r0.<cn.hi321.browser.media.http.PersistentCookieStore: org.apache.http.cookie.Cookie decodeCookie(java.lang.String)>($r8);
+
+        if $r9 == null goto label3;
+
+        $r4 = r0.<cn.hi321.browser.media.http.PersistentCookieStore: java.util.concurrent.ConcurrentHashMap cookies>;
+
+        virtualinvoke $r4.<java.util.concurrent.ConcurrentHashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>(r2, $r9);
+
+     label3:
+        $i0 = $i0 + 1;
+
+        goto label1;
+
+     label4:
+        return;
+    }
+
+    public void addCookie(org.apache.http.cookie.Cookie)
+    {
+        android.content.SharedPreferences$Editor $r7;
+        cn.hi321.browser.media.http.SerializableCookie $r10;
+        cn.hi321.browser.media.http.PersistentCookieStore r0;
+        java.util.Date $r4;
+        java.util.concurrent.ConcurrentHashMap $r5;
+        java.util.Set $r8;
+        android.content.SharedPreferences $r6;
+        org.apache.http.cookie.Cookie $r1;
+        java.lang.StringBuilder $r2;
+        java.lang.String $r3, $r9;
+        boolean $z0;
+
+        r0 := @this: cn.hi321.browser.media.http.PersistentCookieStore;
+
+        $r1 := @parameter0: org.apache.http.cookie.Cookie;
+
+        $r2 = new java.lang.StringBuilder;
+
+        $r3 = interfaceinvoke $r1.<org.apache.http.cookie.Cookie: java.lang.String getName()>();
+
+        $r3 = staticinvoke <java.lang.String: java.lang.String valueOf(java.lang.Object)>($r3);
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>($r3);
+
+        $r3 = interfaceinvoke $r1.<org.apache.http.cookie.Cookie: java.lang.String getDomain()>();
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r4 = new java.util.Date;
+
+        specialinvoke $r4.<java.util.Date: void <init>()>();
+
+        $z0 = interfaceinvoke $r1.<org.apache.http.cookie.Cookie: boolean isExpired(java.util.Date)>($r4);
+
+        if $z0 != 0 goto label2;
+
+        $r5 = r0.<cn.hi321.browser.media.http.PersistentCookieStore: java.util.concurrent.ConcurrentHashMap cookies>;
+
+        virtualinvoke $r5.<java.util.concurrent.ConcurrentHashMap: java.lang.Object put(java.lang.Object,java.lang.Object)>($r3, $r1);
+
+     label1:
+        $r6 = r0.<cn.hi321.browser.media.http.PersistentCookieStore: android.content.SharedPreferences cookiePrefs>;
+
+        $r7 = interfaceinvoke $r6.<android.content.SharedPreferences: android.content.SharedPreferences$Editor edit()>();
+
+        $r5 = r0.<cn.hi321.browser.media.http.PersistentCookieStore: java.util.concurrent.ConcurrentHashMap cookies>;
+
+        $r8 = virtualinvoke $r5.<java.util.concurrent.ConcurrentHashMap: java.util.Set keySet()>();
+
+        $r9 = staticinvoke <android.text.TextUtils: java.lang.String join(java.lang.CharSequence,java.lang.Iterable)>(",", $r8);
+
+        interfaceinvoke $r7.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putString(java.lang.String,java.lang.String)>("names", $r9);
+
+        $r2 = new java.lang.StringBuilder;
+
+        specialinvoke $r2.<java.lang.StringBuilder: void <init>(java.lang.String)>("cookie_");
+
+        $r2 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r3);
+
+        $r3 = virtualinvoke $r2.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        $r10 = new cn.hi321.browser.media.http.SerializableCookie;
+
+        specialinvoke $r10.<cn.hi321.browser.media.http.SerializableCookie: void <init>(org.apache.http.cookie.Cookie)>($r1);
+
+        $r9 = virtualinvoke r0.<cn.hi321.browser.media.http.PersistentCookieStore: java.lang.String encodeCookie(cn.hi321.browser.media.http.SerializableCookie)>($r10);
+
+        interfaceinvoke $r7.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putString(java.lang.String,java.lang.String)>($r3, $r9);
+
+        interfaceinvoke $r7.<android.content.SharedPreferences$Editor: boolean commit()>();
+
+        return;
+
+     label2:
+        $r5 = r0.<cn.hi321.browser.media.http.PersistentCookieStore: java.util.concurrent.ConcurrentHashMap cookies>;
+
+        virtualinvoke $r5.<java.util.concurrent.ConcurrentHashMap: java.lang.Object remove(java.lang.Object)>($r3);
+
+        goto label1;
+    }
+
+    protected java.lang.String byteArrayToHexString(byte[])
+    {
+        cn.hi321.browser.media.http.PersistentCookieStore r0;
+        byte[] $r1;
+        short s1;
+        byte b0;
+        java.lang.StringBuffer r2, $r4;
+        int $i2, $i3, $i4;
+        java.lang.String $r3;
+
+        r0 := @this: cn.hi321.browser.media.http.PersistentCookieStore;
+
+        $r1 := @parameter0: byte[];
+
+        $r4 = new java.lang.StringBuffer;
+
+        r2 = $r4;
+
+        $i2 = lengthof $r1;
+
+        $i2 = $i2 * 2;
+
+        specialinvoke $r4.<java.lang.StringBuffer: void <init>(int)>($i2);
+
+        $i2 = lengthof $r1;
+
+        $i3 = 0;
+
+     label1:
+        if $i3 < $i2 goto label2;
+
+        $r3 = virtualinvoke r2.<java.lang.StringBuffer: java.lang.String toString()>();
+
+        $r3 = virtualinvoke $r3.<java.lang.String: java.lang.String toUpperCase()>();
+
+        return $r3;
+
+     label2:
+        b0 = $r1[$i3];
+
+        s1 = (short) b0;
+
+        s1 = s1 & 255;
+
+        $i4 = (int) s1;
+
+        if $i4 >= 16 goto label3;
+
+        virtualinvoke r2.<java.lang.StringBuffer: java.lang.StringBuffer append(char)>(48);
+
+     label3:
+        $i4 = (int) s1;
+
+        $r3 = staticinvoke <java.lang.Integer: java.lang.String toHexString(int)>($i4);
+
+        virtualinvoke r2.<java.lang.StringBuffer: java.lang.StringBuffer append(java.lang.String)>($r3);
+
+        $i3 = $i3 + 1;
+
+        goto label1;
+    }
+
+    public void clear()
+    {
+        android.content.SharedPreferences$Editor $r2;
+        cn.hi321.browser.media.http.PersistentCookieStore r0;
+        java.util.Iterator $r5;
+        java.util.concurrent.ConcurrentHashMap $r3;
+        java.util.Set $r4;
+        android.content.SharedPreferences $r1;
+        java.lang.Object $r6;
+        java.lang.StringBuilder $r8;
+        java.lang.String r7;
+        boolean $z0;
+
+        r0 := @this: cn.hi321.browser.media.http.PersistentCookieStore;
+
+        $r1 = r0.<cn.hi321.browser.media.http.PersistentCookieStore: android.content.SharedPreferences cookiePrefs>;
+
+        $r2 = interfaceinvoke $r1.<android.content.SharedPreferences: android.content.SharedPreferences$Editor edit()>();
+
+        $r3 = r0.<cn.hi321.browser.media.http.PersistentCookieStore: java.util.concurrent.ConcurrentHashMap cookies>;
+
+        $r4 = virtualinvoke $r3.<java.util.concurrent.ConcurrentHashMap: java.util.Set keySet()>();
+
+        $r5 = interfaceinvoke $r4.<java.util.Set: java.util.Iterator iterator()>();
+
+     label1:
+        $z0 = interfaceinvoke $r5.<java.util.Iterator: boolean hasNext()>();
+
+        if $z0 != 0 goto label2;
+
+        interfaceinvoke $r2.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor remove(java.lang.String)>("names");
+
+        interfaceinvoke $r2.<android.content.SharedPreferences$Editor: boolean commit()>();
+
+        $r3 = r0.<cn.hi321.browser.media.http.PersistentCookieStore: java.util.concurrent.ConcurrentHashMap cookies>;
+
+        virtualinvoke $r3.<java.util.concurrent.ConcurrentHashMap: void clear()>();
+
+        return;
+
+     label2:
+        $r6 = interfaceinvoke $r5.<java.util.Iterator: java.lang.Object next()>();
+
+        r7 = (java.lang.String) $r6;
+
+        $r8 = new java.lang.StringBuilder;
+
+        specialinvoke $r8.<java.lang.StringBuilder: void <init>(java.lang.String)>("cookie_");
+
+        $r8 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>(r7);
+
+        r7 = virtualinvoke $r8.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r2.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor remove(java.lang.String)>(r7);
+
+        goto label1;
+    }
+
+    public boolean clearExpired(java.util.Date)
+    {
+        android.content.SharedPreferences$Editor $r3;
+        cn.hi321.browser.media.http.PersistentCookieStore r0;
+        java.util.Map$Entry r9;
+        java.util.Iterator $r6;
+        java.util.Date $r1;
+        java.util.concurrent.ConcurrentHashMap $r4;
+        java.util.Set $r5;
+        android.content.SharedPreferences $r2;
+        java.lang.Object $r8;
+        org.apache.http.cookie.Cookie r10;
+        java.lang.StringBuilder $r11;
+        java.lang.String $r7;
+        boolean z0, $z1;
+
+        r0 := @this: cn.hi321.browser.media.http.PersistentCookieStore;
+
+        $r1 := @parameter0: java.util.Date;
+
+        z0 = 0;
+
+        $r2 = r0.<cn.hi321.browser.media.http.PersistentCookieStore: android.content.SharedPreferences cookiePrefs>;
+
+        $r3 = interfaceinvoke $r2.<android.content.SharedPreferences: android.content.SharedPreferences$Editor edit()>();
+
+        $r4 = r0.<cn.hi321.browser.media.http.PersistentCookieStore: java.util.concurrent.ConcurrentHashMap cookies>;
+
+        $r5 = virtualinvoke $r4.<java.util.concurrent.ConcurrentHashMap: java.util.Set entrySet()>();
+
+        $r6 = interfaceinvoke $r5.<java.util.Set: java.util.Iterator iterator()>();
+
+     label1:
+        $z1 = interfaceinvoke $r6.<java.util.Iterator: boolean hasNext()>();
+
+        if $z1 != 0 goto label3;
+
+        if z0 == 0 goto label2;
+
+        $r4 = r0.<cn.hi321.browser.media.http.PersistentCookieStore: java.util.concurrent.ConcurrentHashMap cookies>;
+
+        $r5 = virtualinvoke $r4.<java.util.concurrent.ConcurrentHashMap: java.util.Set keySet()>();
+
+        $r7 = staticinvoke <android.text.TextUtils: java.lang.String join(java.lang.CharSequence,java.lang.Iterable)>(",", $r5);
+
+        interfaceinvoke $r3.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor putString(java.lang.String,java.lang.String)>("names", $r7);
+
+     label2:
+        interfaceinvoke $r3.<android.content.SharedPreferences$Editor: boolean commit()>();
+
+        return z0;
+
+     label3:
+        $r8 = interfaceinvoke $r6.<java.util.Iterator: java.lang.Object next()>();
+
+        r9 = (java.util.Map$Entry) $r8;
+
+        $r8 = interfaceinvoke r9.<java.util.Map$Entry: java.lang.Object getKey()>();
+
+        $r7 = (java.lang.String) $r8;
+
+        $r8 = interfaceinvoke r9.<java.util.Map$Entry: java.lang.Object getValue()>();
+
+        r10 = (org.apache.http.cookie.Cookie) $r8;
+
+        $z1 = interfaceinvoke r10.<org.apache.http.cookie.Cookie: boolean isExpired(java.util.Date)>($r1);
+
+        if $z1 == 0 goto label1;
+
+        $r4 = r0.<cn.hi321.browser.media.http.PersistentCookieStore: java.util.concurrent.ConcurrentHashMap cookies>;
+
+        virtualinvoke $r4.<java.util.concurrent.ConcurrentHashMap: java.lang.Object remove(java.lang.Object)>($r7);
+
+        $r11 = new java.lang.StringBuilder;
+
+        specialinvoke $r11.<java.lang.StringBuilder: void <init>(java.lang.String)>("cookie_");
+
+        $r11 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.StringBuilder append(java.lang.String)>($r7);
+
+        $r7 = virtualinvoke $r11.<java.lang.StringBuilder: java.lang.String toString()>();
+
+        interfaceinvoke $r3.<android.content.SharedPreferences$Editor: android.content.SharedPreferences$Editor remove(java.lang.String)>($r7);
+
+        z0 = 1;
+
+        goto label1;
+    }
+
+    protected org.apache.http.cookie.Cookie decodeCookie(java.lang.String)
+    {
+        cn.hi321.browser.media.http.SerializableCookie $r7;
+        cn.hi321.browser.media.http.PersistentCookieStore r0;
+        byte[] $r5;
+        java.io.ObjectInputStream r4;
+        java.lang.Exception r2;
+        java.io.ByteArrayInputStream r3;
+        java.lang.Object $r6;
+        org.apache.http.cookie.Cookie $r8;
+        java.lang.String $r1;
+
+        r0 := @this: cn.hi321.browser.media.http.PersistentCookieStore;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $r5 = virtualinvoke r0.<cn.hi321.browser.media.http.PersistentCookieStore: byte[] hexStringToByteArray(java.lang.String)>($r1);
+
+        r3 = new java.io.ByteArrayInputStream;
+
+        specialinvoke r3.<java.io.ByteArrayInputStream: void <init>(byte[])>($r5);
+
+        r4 = new java.io.ObjectInputStream;
+
+     label1:
+        specialinvoke r4.<java.io.ObjectInputStream: void <init>(java.io.InputStream)>(r3);
+
+        $r6 = virtualinvoke r4.<java.io.ObjectInputStream: java.lang.Object readObject()>();
+
+        $r7 = (cn.hi321.browser.media.http.SerializableCookie) $r6;
+
+        $r8 = virtualinvoke $r7.<cn.hi321.browser.media.http.SerializableCookie: org.apache.http.cookie.Cookie getCookie()>();
+
+     label2:
+        return $r8;
+
+     label3:
+        r2 := @caughtexception;
+
+        virtualinvoke r2.<java.lang.Exception: void printStackTrace()>();
+
+        return null;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+    }
+
+    protected java.lang.String encodeCookie(cn.hi321.browser.media.http.SerializableCookie)
+    {
+        cn.hi321.browser.media.http.SerializableCookie $r1;
+        cn.hi321.browser.media.http.PersistentCookieStore r0;
+        byte[] $r5;
+        java.io.ByteArrayOutputStream r3;
+        java.io.ObjectOutputStream r4;
+        java.lang.String $r6;
+        java.lang.Exception r2;
+
+        r0 := @this: cn.hi321.browser.media.http.PersistentCookieStore;
+
+        $r1 := @parameter0: cn.hi321.browser.media.http.SerializableCookie;
+
+        r3 = new java.io.ByteArrayOutputStream;
+
+        specialinvoke r3.<java.io.ByteArrayOutputStream: void <init>()>();
+
+        r4 = new java.io.ObjectOutputStream;
+
+     label1:
+        specialinvoke r4.<java.io.ObjectOutputStream: void <init>(java.io.OutputStream)>(r3);
+
+        virtualinvoke r4.<java.io.ObjectOutputStream: void writeObject(java.lang.Object)>($r1);
+
+     label2:
+        $r5 = virtualinvoke r3.<java.io.ByteArrayOutputStream: byte[] toByteArray()>();
+
+        $r6 = virtualinvoke r0.<cn.hi321.browser.media.http.PersistentCookieStore: java.lang.String byteArrayToHexString(byte[])>($r5);
+
+        return $r6;
+
+     label3:
+        r2 := @caughtexception;
+
+        return null;
+
+        catch java.lang.Exception from label1 to label2 with label3;
+    }
+
+    public java.util.List getCookies()
+    {
+        cn.hi321.browser.media.http.PersistentCookieStore r0;
+        java.util.Collection $r2;
+        java.util.concurrent.ConcurrentHashMap $r3;
+        java.util.ArrayList $r1;
+
+        r0 := @this: cn.hi321.browser.media.http.PersistentCookieStore;
+
+        $r1 = new java.util.ArrayList;
+
+        $r3 = r0.<cn.hi321.browser.media.http.PersistentCookieStore: java.util.concurrent.ConcurrentHashMap cookies>;
+
+        $r2 = virtualinvoke $r3.<java.util.concurrent.ConcurrentHashMap: java.util.Collection values()>();
+
+        specialinvoke $r1.<java.util.ArrayList: void <init>(java.util.Collection)>($r2);
+
+        return $r1;
+    }
+
+    protected byte[] hexStringToByteArray(java.lang.String)
+    {
+        cn.hi321.browser.media.http.PersistentCookieStore r0;
+        byte[] r2;
+        char $c3;
+        byte $b6;
+        int $i0, $i1, $i2, $i4, $i5;
+        java.lang.String $r1;
+
+        r0 := @this: cn.hi321.browser.media.http.PersistentCookieStore;
+
+        $r1 := @parameter0: java.lang.String;
+
+        $i0 = virtualinvoke $r1.<java.lang.String: int length()>();
+
+        $i1 = $i0 / 2;
+
+        r2 = newarray (byte)[$i1];
+
+        $i1 = 0;
+
+     label1:
+        if $i1 < $i0 goto label2;
+
+        return r2;
+
+     label2:
+        $i2 = $i1 / 2;
+
+        $c3 = virtualinvoke $r1.<java.lang.String: char charAt(int)>($i1);
+
+        $i4 = staticinvoke <java.lang.Character: int digit(char,int)>($c3, 16);
+
+        $i4 = $i4 << 4;
+
+        $i5 = $i1 + 1;
+
+        $c3 = virtualinvoke $r1.<java.lang.String: char charAt(int)>($i5);
+
+        $i5 = staticinvoke <java.lang.Character: int digit(char,int)>($c3, 16);
+
+        $i4 = $i4 + $i5;
+
+        $b6 = (byte) $i4;
+
+        r2[$i2] = $b6;
+
+        $i1 = $i1 + 2;
+
+        goto label1;
+    }
+
+    public static void <clinit>()
+    {
+        <cn.hi321.browser.media.http.PersistentCookieStore: java.lang.String COOKIE_PREFS> = "CookiePrefsFile";
+
+        <cn.hi321.browser.media.http.PersistentCookieStore: java.lang.String COOKIE_NAME_STORE> = "names";
+
+        <cn.hi321.browser.media.http.PersistentCookieStore: java.lang.String COOKIE_NAME_PREFIX> = "cookie_";
+
+        return;
+    }
+}
