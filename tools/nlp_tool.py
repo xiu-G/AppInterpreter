@@ -1,6 +1,12 @@
 import string
 from spiral import ronin
 from math import log
+import enchant
+from nltk.stem.wordnet import WordNetLemmatizer
+from nltk.stem.porter import PorterStemmer
+from nltk import pos_tag
+porter_stemmer= PorterStemmer()
+SPECIAL_WORD_LIST = ['gsm','sms','sim','dns','vpn','usb','gps','url', 'http','sd','mic','tel','mms', 'ad','gsm','dfcp','icc','ims', 'mmtel']
 words_by_frequency = 'words-by-frequency.txt'
 words = open(words_by_frequency).read().split() # 有特殊字符的话直接在其中添加
 wordcost = dict((k, log((i+1)*log(len(words)))) for i,k in enumerate(words))
@@ -65,3 +71,53 @@ def split_string(sentence):
         return ''
     text = strings.translate(str.maketrans('', '', string.punctuation)).lower()
     return text
+
+
+def get_lemmatize_data(words):
+    values=[(words,tag_classes) for (words,tag_classes) in lemmatize_all(words)]
+    words, tags=  [], []
+    for k1, k2 in values:
+        words.append(k1)
+        tags.append(k2)
+    return words, tags
+
+def lemmatize_all(words):
+    wnl = WordNetLemmatizer()
+    for word, tag in pos_tag(words):
+        if word in SPECIAL_WORD_LIST:
+            yield (word, 'NN')
+        elif word.endswith('ing') or word.endswith('ed'):
+            yield (wnl.lemmatize(word, pos='v'), 'VB')
+        elif tag.startswith('NN'):
+            yield (wnl.lemmatize(word, pos='n'), 'NN')
+        elif tag.startswith('VB'):
+            yield (wnl.lemmatize(word, pos='v'), 'VB')
+        elif tag.startswith('JJ'):
+            yield (wnl.lemmatize(word, pos='a'), 'JJ')
+        elif tag.startswith('R'):
+            yield (wnl.lemmatize(word, pos='r'), 'R')
+        else:
+            yield (word, '')
+
+def deal_words(strings, split_dict={}):
+    strings = ' '.join(ronin.split(strings))
+    string_items = strings.translate(str.maketrans('', '', string.punctuation)).lower().split()
+    d = enchant.Dict("en_US")
+    new_items = []
+    for item in string_items:
+        if item in SPECIAL_WORD_LIST:
+            new_items.append(item)
+            split_dict[item] = True
+            continue
+        if item in split_dict:
+            if not split_dict[item]:
+                continue
+            new_items.append(item)
+        else:
+            if not d.check(item) or item.isdigit():
+                split_dict[item] = False
+                continue
+            else:
+                split_dict[item] = True
+                new_items.append(item)
+    return new_items

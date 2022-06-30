@@ -46,6 +46,7 @@ def main(apk_dirs, result_dir):
      
 if __name__ == "__main__":
     # apk_dirs = ['/home/data/xiu/code-translation/code/guibat/apk']
-    apk_dirs = ['/home/data/yuec/DeepIntent/data/example/benign', '/home/data/yuec/DeepIntent/data/example/malicious']
+    # apk_dirs = ['/home/data/yuec/DeepIntent/data/example/benign', '/home/data/yuec/DeepIntent/data/example/malicious'] # finish
+    apk_dirs = ['/home/data/xiu/apks/benign/fromzz']
     result_dir = 'data'
     main(apk_dirs, result_dir)

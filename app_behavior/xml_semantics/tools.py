@@ -129,21 +129,6 @@ def load_python_data(path):
     return data
 
 
-def save_pkl_data(path, data):
-    """Save data in pkl format (save storage space).
-    """
-    with open(path, 'wb') as fo:
-        pickle.dump(data, fo)
-
-
-def load_pkl_data(path):
-    """Load pkl data from given path.
-    """
-    with open(path, 'rb') as fi:
-        data = pickle.load(fi)
-    return data
-
-
 # =========================
 # screen printer
 # =========================

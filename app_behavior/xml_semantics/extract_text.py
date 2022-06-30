@@ -8,7 +8,7 @@ from keras.models import load_model
 from app_behavior.xml_semantics.translate_text import check_default_language
 
 from app_behavior.xml_semantics.conf import check_conf, ExtractionConf
-from app_behavior.xml_semantics.tools import save_pkl_data, ProcessPrinter,image_decompress
+from app_behavior.xml_semantics.tools import ProcessPrinter,image_decompress
 from app_behavior.xml_semantics.load_data import load_data
 from app_behavior.xml_semantics.handle_layout_text import handle_layout_text
 from app_behavior.xml_semantics.handle_embedded_text import extract_drawable_image, load_east_model, extract_embedded_text
@@ -279,9 +279,17 @@ def extract_resource_texts(data_pa, log_level=0):
 
 def execute_with_conf(conf):
     apps = conf.path_apks
+    to_handle_apps = []
+    for i, app in enumerate(apps):
+        app_name = os.path.splitext(os.path.basename(app))[0]
+        result_file = os.path.join(conf.path_save, "results_" + app_name + ".txt")
+        if os.path.exists(result_file):
+            continue
+        to_handle_apps.append(app)
+
     model = load_model(os.path.join(conf.path_result_root, 'final_resources_model.h5'))
     text_dic = {}
-    for i, app in enumerate(apps):
+    for i, app in enumerate(to_handle_apps):
         app_name = os.path.splitext(os.path.basename(app))[0]
         print(str(i) , app_name)
         result_file = os.path.join(conf.path_save, "results_+" + app_name + ".txt")
@@ -383,7 +391,7 @@ def execute_with_conf(conf):
 
         pkl_path = conf.path_save + "/results_" + app_name + ".result"
         # save_pkl_data(conf.path_save, data)
-        save_pkl_data(pkl_path, data)
+        basic_tool.save_pkl_data(pkl_path, data)
         
         basic_tool.mkdir(conf.path_xmlstring)
         basic_tool.write_json(text_dic, xml_string_path)

@@ -1,4 +1,5 @@
 import os
+import pickle
 import subprocess
 import sys
 import codecs
@@ -203,3 +204,17 @@ def run_cmd(time_out, cmd, output):
             return subprocess.run(cmd, stdout=output, stderr=output, timeout=time_out)
         except subprocess.TimeoutExpired:
             return -50
+
+def save_pkl_data(path, data):
+    """Save data in pkl format (save storage space).
+    """
+    with open(path, 'wb') as fo:
+        pickle.dump(data, fo)
+
+
+def load_pkl_data(path):
+    """Load pkl data from given path.
+    """
+    with open(path, 'rb') as fi:
+        data = pickle.load(fi)
+    return data

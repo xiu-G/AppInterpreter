@@ -115,8 +115,8 @@ def run_callgraph(apps, apk_dir, result_dir):
             '--result_dir', result_dir,
         ]
         args, unknown = parser.parse_known_args(args)
-        run_callgraph_apk(args)
-        # p.apply_async(run_callgraph_apk, args=(args))  
+        # run_callgraph_apk(args)
+        p.apply_async(run_callgraph_apk, args=(args))  
     p.close()
     p.join()
 

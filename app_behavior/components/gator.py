@@ -224,6 +224,9 @@ def get_to_handle_apps(apps):
     return to_handle_apps
         
 def main(apps, result_dir):
+    pool = mp.Pool(g_process_size)
+    global g_lock
+    g_lock = mp.Lock()
     print("app total size:", len(apps))
     output_dirs = ["output", "dot_output", "log_output"]
     for output_dir in output_dirs:
@@ -233,8 +236,6 @@ def main(apps, result_dir):
     # skip settings
     to_handle_apps = get_to_handle_apps(apps)
 
-    pool = mp.Pool(g_process_size)
-    g_lock = mp.Lock()
     for i in range(0, len(to_handle_apps)):
         app_path = to_handle_apps[i]
         app = os.path.split(app_path)[1]
@@ -248,8 +249,8 @@ def main(apps, result_dir):
         parser = set_args()
         args, unknown = parser.parse_known_args(args)
         msg = "{}/{}".format(i, len(to_handle_apps))
-        result_gator = run_gator(args, msg)
-        after_gator(result_gator)
+        # result_gator = run_gator(args, msg)
+        # after_gator(result_gator)
         pool.apply_async(func=run_gator,
                          args=(args, msg),
                          callback=after_gator)
