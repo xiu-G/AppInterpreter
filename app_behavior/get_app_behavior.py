@@ -1,27 +1,9 @@
 import os
 from app_behavior.components import gator, wid, image2widget, ic3, callgraph
+from app_behavior.xml_semantics import extract_text
 g_fp_result = "data/gator_result.txt"
 
 from tools import basic_tool
-
-
-def insert_outputmapping(jellybean):
-    tmp_dic = {}
-    file_content = basic_tool.readContentLists(jellybean)
-    for item in file_content:
-        if item.startswith("Permission"):
-            permission = item.split("Permission:")[1].strip()
-            if permission not in tmp_dic:
-                tmp_dic[permission] = []
-        elif item.startswith("<"):
-            tmp = item.split('>')[-1]
-            function = item.replace(tmp,"").strip()
-            tmp_dic[permission].append(function)
-    for permission in tmp_dic:
-        for function in tmp_dic[permission]:
-            insert = "mysql -ucodecomment -ptest123456 -e 'use cc;INSERT INTO outputmapping (Permission, Method) VALUES (\"{}\", \"{}\");'".format(permission, function)
-            # print(insert)
-            os.system(insert)
 
 
 def get_torun_apps(apk_dir, gator_result_file):
@@ -57,6 +39,8 @@ def main(apk_dirs, result_dir):
         image2widget.run_img2widget(apk_dir, result_dir)
         print('callgraph start')
         callgraph.run_callgraph(apps, apk_dir, result_dir)
+        print('text extract')
+        extract_text.main(torun_apps, result_dir)
         
         
      

@@ -2,7 +2,6 @@
 import numpy as np
 import os, errno
 import cv2
-import argparse
 import sys
 np.set_printoptions(threshold=sys.maxsize)
 

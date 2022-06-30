@@ -1,6 +1,5 @@
 # -*- coding: UTF-8 -*-
 
-import os
 import argparse
 from collections import namedtuple
 
@@ -8,10 +7,12 @@ ExtractionConf = namedtuple('TextExtractConf', [
     # path
     'path_pa',              # String, path of program analysis results, could be '.csv' or zipped '.csv'.
     'path_app',             # String, path of decoded Apps.
-    'path_apks',             # String, path of Apps.
+    'path_apks',             # String, list of Apps.
     'path_gator',             # String, path of gator results.
     'path_east',            # String, path of pre-trained EAST model.
     'path_save',            # String, path to save the extracted data.
+    'path_xmlstring',       
+    'path_result_root',          
     # log
     'log_level',            # Int, decide to print how much information to console, could be '0' (silent
                             #      mode, print nothing), '1' (simple mode, only print '.' to indicate the
@@ -52,10 +53,12 @@ class ExtractionConfArgumentParser:
         self.parser = argparse.ArgumentParser(description=desc)
         self.parser.add_argument('--path_pa', type=str, default="")
         self.parser.add_argument('--path_app', type=str, required=True)
-        self.parser.add_argument('--path_apks', type=str, required=True)
+        self.parser.add_argument('--path_apks', type=list, required=True)
         self.parser.add_argument('--path_east', type=str, required=True)
         self.parser.add_argument('--path_save', type=str, required=True)
         self.parser.add_argument('--path_gator', type=str, default="")
+        self.parser.add_argument('--path_xmlstring', type=str, default="")
+        self.parser.add_argument('--path_result_root', type=str, default="")
         self.parser.add_argument('--log_level', type=int, default=1)
         self.parser.add_argument('--layout_text_range', type=str, default='parent')
         self.parser.add_argument('--ocr_width', type=int, default=320)
@@ -69,7 +72,7 @@ class ExtractionConfArgumentParser:
         args = self.parser.parse_args(args)
         return ExtractionConf(
             path_pa=args.path_pa, path_app=args.path_app, path_gator=args.path_gator,path_apks=args.path_apks,
-            path_east=args.path_east, path_save=args.path_save,
+            path_east=args.path_east, path_save=args.path_save, path_xmlstring=args.path_xmlstring, path_result_root=args.path_result_root,
             log_level=args.log_level,
             layout_text_range=args.layout_text_range,
             ocr_width=args.ocr_width, ocr_height=args.ocr_height,

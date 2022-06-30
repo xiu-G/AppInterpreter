@@ -8,9 +8,9 @@ import cv2
 import pytesseract
 import numpy as np
 from PIL import Image
-from resize_icon import resize_image
+from app_behavior.xml_semantics.resize_icon import resize_image
 
-from tools import image_compress, parse_xml_string
+from app_behavior.xml_semantics.tools import image_compress, parse_xml_string
 
 # =========================
 # extract image

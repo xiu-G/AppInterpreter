@@ -3,9 +3,7 @@
 import os
 import codecs
 
-from tools import parse_xml_string
-from translate_text import translate_any_to_english
-
+from app_behavior.xml_semantics.tools import parse_xml_string
 # def handle_layout_text(app_name, img_name, layout, path_decoded, search_range, search_widget=False):
 def handle_layout_text(app_name, id, layout, path_decoded, search_range):
     """Extract texts from layout file.

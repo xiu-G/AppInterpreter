@@ -1,20 +1,20 @@
 # -*- coding: UTF-8 -*-
 
 import os
-import codecs
-import sys
+from tools import basic_tool
 import cv2
 import numpy as np
 from keras.models import load_model
+from app_behavior.xml_semantics.translate_text import check_default_language
 
-from conf import check_conf, ExtractionConf
-from tools import save_pkl_data, ProcessPrinter,image_decompress
-from load_data import load_data
-from handle_layout_text import handle_layout_text
-from handle_embedded_text import extract_drawable_image, load_east_model, extract_embedded_text
-from handle_resource_text import handle_resource_text
-import basic_tool
-from translate_text import translate_any_to_english
+from app_behavior.xml_semantics.conf import check_conf, ExtractionConf
+from app_behavior.xml_semantics.tools import save_pkl_data, ProcessPrinter,image_decompress
+from app_behavior.xml_semantics.load_data import load_data
+from app_behavior.xml_semantics.handle_layout_text import handle_layout_text
+from app_behavior.xml_semantics.handle_embedded_text import extract_drawable_image, load_east_model, extract_embedded_text
+from app_behavior.xml_semantics.handle_resource_text import handle_resource_text
+from app_behavior.xml_semantics.translate_text import translate_any_to_english
+from app_behavior.xml_semantics.conf import ExtractionConfArgumentParser
 
 
 labels = ['location-point'
@@ -206,7 +206,7 @@ def extract_layout_texts(data_pa, path_app, search_range, log_level=0):
 
 
 def get_app2lang(data_pa, layout_texts):
-    from translate_text import check_default_language
+    
 
     # collect all the layout texts appeared in the app
     app_texts = {}  # app -> all the layout texts
@@ -278,21 +278,15 @@ def extract_resource_texts(data_pa, log_level=0):
 
 
 def execute_with_conf(conf):
-    # path_app = conf.path_app
-    # dirs = os.listdir(path_app)
-    path_apks = conf.path_apks
-    print(path_apks)
-    dirs = basic_tool.getAllFiles(path_apks, [], '')
-
-    model = load_model('/home/data/xiu/code-translation/code/DeepIntent/icon-classifier/final_resources_model.h5')
-
-    for i, app_name in enumerate(dirs):
-        print(str(i) ,str(len(dirs)), app_name)
-        app_name = os.path.split(app_name)[-1].split('.apk')[0]
-        if not (os.path.exists("/home/data/xiu/code-translation/code/DeepIntent/data/output/" + app_name + '.apk.json') and os.path.exists("/home/data/xiu/code-translation/code/DeepIntent/data/output/" + app_name + '.json')):
-            continue
-        result_file = conf.path_save + "/results_" + app_name + ".txt"
-        if os.path.exists(result_file) and os.path.getctime(result_file) > 1653924507:#2022-05-30 23:28:27
+    apps = conf.path_apks
+    model = load_model(os.path.join(conf.path_result_root, 'final_resources_model.h5'))
+    text_dic = {}
+    for i, app in enumerate(apps):
+        app_name = os.path.splitext(os.path.basename(app))[0]
+        print(str(i) , app_name)
+        result_file = os.path.join(conf.path_save, "results_+" + app_name + ".txt")
+        xml_string_path = os.path.join(conf.path_xmlstring, app_name + ".txt")
+        if os.path.exists(result_file):
             continue
         # extract drawable images
         print('extracting drawable images')
@@ -374,27 +368,13 @@ def execute_with_conf(conf):
             data.append([texts[i], [data_pa[i][-1]]])   
             # data.append([texts[i], [data_pa[i][-1]]]) 
 
-            # if i == 5:
-            #     sys.exit()   
-
-        # text_data = []
-        # for app_name in xml_dict.keys():
-        #     for xml_name in xml_dict[app_name].keys():
-        #         print(app_name, xml_name)
-        #         texts = handle_layout_text(app_name, '', xml_name,  conf.path_app, 'total', True)
-        #         # if len(texts) > 0:
-        #         #     print(texts)
-        #         #     sys.exit()
-        #         # if len(xml_dict[app_name][xml_name]) > 0:
-        #         #     # data.append([[]+[texts]+xml_name])
-        #         #     for img_name in xml_dict[app_name][xml_name]:
-        #         #         text = handle_layout_text(app_name, img_name, xml_name,  conf.path_app, 'parent')
-        #         #         texts = [item for item in texts if item not in text]
-        #         for text in texts:
-        #             text_data.append([text, [xml_name]])
-                # data.append([[[],texts,[],[],[]], [xml_name]])
-
-        # data = [img_data, text_data]
+        for tmp in data:
+            string_tmp = tmp[0][1][2]
+            android_id = tmp[0][1][0]
+            xml = tmp[1][0]
+            if string_tmp!='':
+                text_dic.setdefault(string_tmp, []).append({'xml':xml,'widget':android_id})
+        basic_tool.mkdir(conf.path_save)
         fp = open(conf.path_save + "/results_" + app_name + ".txt",'w')
         for item in data:
             fp.write(str(item))
@@ -404,10 +384,21 @@ def execute_with_conf(conf):
         pkl_path = conf.path_save + "/results_" + app_name + ".result"
         # save_pkl_data(conf.path_save, data)
         save_pkl_data(pkl_path, data)
+        
+        basic_tool.mkdir(conf.path_xmlstring)
+        basic_tool.write_json(text_dic, xml_string_path)
 
 
-def main(args):
-    from conf import ExtractionConfArgumentParser
+def main(apps, result_dir):
+    args = [
+    '--path_apks', apps,
+    '--path_app',  os.path.join(result_dir, 'decode_dir'),
+    '--path_east', os.path.join(result_dir, 'frozen_east_text_detection.pb'),
+    '--path_save', os.path.join(result_dir, 'text_results'),
+    '--path_gator', os.path.join(result_dir, 'output'),
+    '--path_xmlstring', os.path.join(result_dir, 'strings', 'xml_strings'),
+    '--path_result_root', result_dir,
+    ]
     parser = ExtractionConfArgumentParser()
     args_conf = parser.parse(args)
     execute_with_conf(args_conf)
@@ -417,11 +408,15 @@ if __name__ == '__main__':
     #2) decoded apps, the program assume all the related apps are decoded in one folder,
     #3) pre-trained EAST model (could be download from BaiduYun), which is used in embedded text extraction.
     # /home/data/xiu/apks/BBL
+    apk_dir = ''
+    apps = []
+    result_dir = ''
     args = [
-        '--path_apks', '/home/data/xiu/apks/BBL',
-        '--path_app', '/home/data/xiu/code-translation/code/DeepIntent/data/decode_dir',
-        '--path_east', '/home/data/xiu/code-translation/code/DeepIntent/data/frozen_east_text_detection.pb',
-        '--path_save', './results',
-        '--path_gator', '/home/data/xiu/code-translation/code/DeepIntent/data/output',
+    '--path_apks', apps,
+    '--path_app',  os.path.join(result_dir, 'decode_dir'),
+    '--path_east', os.path.join(result_dir, 'frozen_east_text_detection.pb'),
+    '--path_save', os.path.join(result_dir, 'text_results'),
+    '--path_gator', os.path.join(result_dir, 'output'),
+    '--path_xmlstring', os.path.join(result_dir, 'strings', 'xml_strings'),
     ]
-    main(args)
+    main(apk_dir, result_dir)
