@@ -1,5 +1,6 @@
 import codecs
 import re
+from tools.apk_tool import get_name_from_node
 
 from tools import basic_tool, nlp_tool
 # 词组形式
@@ -147,17 +148,7 @@ def get_api_name(api_lists):
     name2api_dic = {}
     api2name_dic = {}
     for api in api_lists:
-        items = api.split()
-        package = items[0][1:]
-        clazz = package.split('.')[-1].split('<')[0].split(':')[0]
-        function = items[-1].split('(')[0]
-        if clazz+':'+function not in name_dic:
-            name_dic[clazz+':'+function] = ''
-            name2api_dic[clazz+':'+function] = [api]
-        else:
-            name2api_dic[clazz+':'+function].append(api)
-        api2name_dic[api] = clazz+':'+function
-
+        get_name_from_node(api, name2api_dic, api2name_dic, name_dic={})
     return name_dic, name2api_dic, api2name_dic
 
 def save_name():

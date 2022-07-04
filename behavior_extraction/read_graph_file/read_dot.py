@@ -1,4 +1,4 @@
-from read_graph_file import graph_set
+from behavior_extraction.read_graph_file import graph_set
 '''
 construct a graph from gml file
 '''

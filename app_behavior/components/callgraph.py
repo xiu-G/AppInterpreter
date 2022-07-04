@@ -81,6 +81,10 @@ def run_callgraph_apk(args):
     for item in cmd:
         print(item)
     basic_tool.run_cmd(args.time_out, cmd, output)
+    dot_dir = os.path.join(args.result_dir, 'dot_output', os.path.splitext(os.path.basename(args.apk_path,))[0])
+    if len(os.listdir(dot_dir))<1:
+        cmd[-2] = '18'
+        basic_tool.run_cmd(args.time_out, cmd, output)
     output.close()
 
 
@@ -89,8 +93,11 @@ def run_callgraph(apps, apk_dir, result_dir):
     log_dir = os.path.join(result_dir, "dot_logs")
     for i in range(len(apps)):
         dot_log_file = os.path.join(log_dir, os.path.splitext(os.path.basename(apps[i]))[0]+'.txt')
-        if os.path.exists(dot_log_file):
+        dot_dir = os.path.join(result_dir, 'dot_output', os.path.splitext(os.path.basename(apps[i]))[0])
+        if os.path.exists(dot_log_file) and len(os.listdir(dot_dir))>=1:
             continue
+        # if os.path.exists(dot_log_file):
+        #     continue
         to_handle_apps.append(apps[i])
     
     p = mp.Pool(g_process_size)
@@ -116,14 +123,15 @@ def run_callgraph(apps, apk_dir, result_dir):
         ]
         args, unknown = parser.parse_known_args(args)
         # run_callgraph_apk(args)
-        p.apply_async(run_callgraph_apk, args=(args))  
+        p.apply_async(run_callgraph_apk, args=(args,))  
     p.close()
     p.join()
 
 if __name__ == '__main__':
     # apk_dirs = ['/home/data/xiu/code-translation/code/guibat/apk']
-    apk_dirs = ['/home/data/xiu/code-translation/code/guibat/apk']
+    # apk_dirs = ['/home/data/xiu/code-translation/code/guibat/apk']
+    apk_dirs = ['/home/data/yuec/DeepIntent/data/example/benign', '/home/data/yuec/DeepIntent/data/example/malicious'] # finish
     result_dir = 'data'
     for apk_dir in apk_dirs:
         apps = basic_tool.getAllFiles(apk_dir, [], '.apk')
-        run_callgraph(apk_dir, apps, result_dir)
+        run_callgraph(apps, apk_dir, result_dir)

@@ -6,7 +6,25 @@ g_fp_result = "data/gator_result.txt"
 from tools import basic_tool
 
 
-def get_torun_apps(apk_dir, gator_result_file):
+def insert_outputmapping(jellybean):
+    tmp_dic = {}
+    file_content = basic_tool.readContentLists(jellybean)
+    for item in file_content:
+        if item.startswith("Permission"):
+            permission = item.split("Permission:")[1].strip()
+            if permission not in tmp_dic:
+                tmp_dic[permission] = []
+        elif item.startswith("<"):
+            tmp = item.split('>')[-1]
+            function = item.replace(tmp,"").strip()
+            tmp_dic[permission].append(function)
+    for permission in tmp_dic:
+        for function in tmp_dic[permission]:
+            insert = "mysql -ucodecomment -ptest123456 -e 'use cc;INSERT INTO outputmapping (Permission, Method) VALUES (\"{}\", \"{}\");'".format(permission, function)
+            # print(insert)
+            os.system(insert)
+
+def get_torun_apps(apk_dir, result_dir, gator_result_file):
     apk_list = []
     gator_result = basic_tool.readContentLists_withoutbr(gator_result_file)
     apks = basic_tool.getAllFiles(apk_dir, [], '.apk')
@@ -24,7 +42,7 @@ def main(apk_dirs, result_dir):
         apps = basic_tool.getAllFiles(apk_dir, [], '.apk')
         print('gator start')
         gator.main(apps, result_dir)
-        torun_apps = get_torun_apps(apk_dir, g_fp_result)
+        torun_apps = get_torun_apps(apk_dir, result_dir, g_fp_result)
         # once start
         print('wid start')
         if not (os.path.exists('wid_finish.txt') and apk_dir in basic_tool.readContentLists_withoutbr('wid_finish.txt')):
@@ -45,6 +63,7 @@ def main(apk_dirs, result_dir):
         
      
 if __name__ == "__main__":
+    # insert_outputmapping('jellybean_allmappings.txt')
     # apk_dirs = ['/home/data/xiu/code-translation/code/guibat/apk']
     # apk_dirs = ['/home/data/yuec/DeepIntent/data/example/benign', '/home/data/yuec/DeepIntent/data/example/malicious'] # finish
     apk_dirs = ['/home/data/xiu/apks/benign/fromzz']

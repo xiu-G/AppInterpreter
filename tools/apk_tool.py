@@ -113,3 +113,18 @@ def add_google(sdkpath, apk_level, android_jar):
     if len(google_api) != 0:
         android_jar = android_jar + google_api
     return android_jar
+
+def get_name_from_node(node, name2api_dic={}, api2name_dic={}, name_dic={}):
+    items = node.split()
+    package = items[0][1:]
+    clazz = package.split('.')[-1].split('<')[0].split(':')[0]
+    function = items[-1].split('(')[0]
+    if clazz+':'+function not in name_dic:
+        name_dic[clazz+':'+function] = ''
+        name2api_dic[clazz+':'+function] = [node]
+    else:
+        name2api_dic[clazz+':'+function].append(node)
+    api2name_dic[node] = clazz+':'+function
+    return clazz+':'+function
+
+    

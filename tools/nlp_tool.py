@@ -5,12 +5,16 @@ import enchant
 from nltk.stem.wordnet import WordNetLemmatizer
 from nltk.stem.porter import PorterStemmer
 from nltk import pos_tag
+from pattern.en import lemma
 porter_stemmer= PorterStemmer()
 SPECIAL_WORD_LIST = ['gsm','sms','sim','dns','vpn','usb','gps','url', 'http','sd','mic','tel','mms', 'ad','gsm','dfcp','icc','ims', 'mmtel']
 words_by_frequency = 'words-by-frequency.txt'
 words = open(words_by_frequency).read().split() # 有特殊字符的话直接在其中添加
 wordcost = dict((k, log((i+1)*log(len(words)))) for i,k in enumerate(words))
 maxword = max(len(x) for x in words)
+
+def get_lemma(word):
+    return lemma(word)
 
 def is_number(s):
     try: 
@@ -72,14 +76,43 @@ def split_string(sentence):
     text = strings.translate(str.maketrans('', '', string.punctuation)).lower()
     return text
 
+def split_string_del_some_marks(sentence):
+    punctuation = r"""!"#$%&()*+/:;<=>@[\]^_`{|}~"""
+    strings = ronin.split(sentence.replace('-',' '))
+    tmp_string = []
+    for i, s in enumerate(strings):
+        if is_number(s):
+            strings[i]=''
+        else:
+            split_result = infer_spaces(s.lower(), wordcost, maxword)
+            if len(split_result.split()) > 3:
+                tmp_string.append(s)
+            else:
+                tmp_string += split_result.split()
+    strings = ' '.join(tmp_string).strip()
+    if not strings:
+        return ''
+    text = strings.translate(str.maketrans('', '', punctuation)).lower()
+    return text
 
 def get_lemmatize_data(words):
     values=[(words,tag_classes) for (words,tag_classes) in lemmatize_all(words)]
-    words, tags=  [], []
+    # results = get_lemma_from_pattern(words)
+    new_words, tags=  [], []
     for k1, k2 in values:
-        words.append(k1)
+        new_words.append(k1)
         tags.append(k2)
-    return words, tags
+    # for i, word in enumerate(words):
+    #     if new_words[i] != results[i]:
+    #         print(words[i], new_words[i], results[i])
+    return new_words, tags
+    
+
+def get_lemma_from_pattern(words):
+    result = []
+    for word in words:
+        result.append(get_lemma(word))
+    return result
 
 def lemmatize_all(words):
     wnl = WordNetLemmatizer()
@@ -121,3 +154,7 @@ def deal_words(strings, split_dict={}):
                 split_dict[item] = True
                 new_items.append(item)
     return new_items
+
+if __name__ == '__main__':
+    get_lemmatize_data(['log','e'])
+    

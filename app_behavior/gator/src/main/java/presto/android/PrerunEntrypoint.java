@@ -59,7 +59,6 @@ public class PrerunEntrypoint {
     Scene.v().addBasicClass("android.content.DialogInterface$OnKeyListener", SootClass.SIGNATURES);
     Scene.v().addBasicClass("android.content.DialogInterface$OnShowListener", SootClass.SIGNATURES);
     Scene.v().addBasicClass("android.app.AlertDialog", SootClass.SIGNATURES);
-
     Configs.preRun = false;
   }
 }

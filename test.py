@@ -1,6 +1,6 @@
-from logging import handlers
-from re import T
-from tools import basic_tool
+# from logging import handlers
+# from re import T
+# from tools import basic_tool
 
 # file1 = '/mnt/e/WorkSpace/data/dot_output/com.voicenotebook.voicenotebook.apk.wtg.dot'
 # file2 = '/mnt/e/WorkSpace/data/dot_output/2.txt'
@@ -60,5 +60,7 @@ from tools import basic_tool
 #     elif '->' not in key and key not in dic1:
 #         print(key)
 
-dic = basic_tool.read_json(basic_tool.readContentText('/home/data/xiu/code-translation/code/AppInterpreter/data/strings/code_strings/com.voicenotebook.voicenotebook.json'))
-print(dic)
+# dic = basic_tool.read_json(basic_tool.readContentText('/home/data/xiu/code-translation/code/AppInterpreter/data/strings/code_strings/com.voicenotebook.voicenotebook.json'))
+# print(dic)
+# import nltk
+# nltk.download('wordnet')

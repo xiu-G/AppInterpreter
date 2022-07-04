@@ -1,24 +1,24 @@
-import os
-import pickle
+
 import sys
-from tools import basic_tool, nlp_tool
-from behavior_extraction.read_graph_file import read_dot
-from behavior_extraction.conf import cmp, deal_strings, get_file_path, get_items, get_name_of_method, in_filters_words, set_args
+from tools import nlp_tool
+from tools.nlp_tool import get_lemmatize_data
+from behavior_extraction.conf import cmp, deal_strings, get_file_path, get_items, get_name_of_method, get_split_names_from_node, in_filters_words, set_args
+from tools import basic_tool
+import os
 import multiprocessing as mp
-
-g_process_size = 10
+from behavior_extraction.read_graph_file import read_dot
+g_process_size = 30
+g_lock = None
 TIME_OUT_FILE = 'time_out_api_sequence.txt'
+#[png_name, [android_id, text_name, text_content], embedded_texts, AI_predic, parent_layout]
 
-'''
-get widget string
-'''
 def read_layout_string(strings):
     result = []
     for item in strings:
         if item[2] != '':
             result.append(item[2])
     return result
-    
+
 def get_widget_string(strings):
     tmp_result = []
     widget_id = ''
@@ -34,9 +34,24 @@ def get_widget_string(strings):
         tmp_result +=read_layout_string(strings[0][4])
     return tmp_result, widget_id
 
-'''
-tag: app, xml(node xml). widget id
-'''
+def get_node_items(source, result=[]):
+    for item in source:
+        if isinstance(item, list):
+            get_node_items(item, result)
+        else:
+            result.append(item)
+            break
+    return result
+
+def analyze_path(path_list):
+    for path in path_list:
+        paths = get_node_items(path, [])
+        for i, node in enumerate(paths):
+            if 'latitu' in node.lower() or 'camera' in node.lower():
+                print()
+    print()
+        
+
 def get_ui_semantics(semantics, string_dic, semantics_dic, filters_words):
     tag = ''
     widget = semantics['widget']
@@ -52,6 +67,8 @@ def get_ui_semantics(semantics, string_dic, semantics_dic, filters_words):
             tmp_result, tmp_widget_id = get_widget_string(strings)
             tmp_widget_xml = strings[1][0]
             widget_sig = tmp_widget_xml+'.'+tmp_widget_id
+            # if widget_sig == 'fragment_morining_athkar.xml.ShareBtn':
+            #     print()
             if tmp_widget_id == '':
                 keywords_result = deal_strings(tmp_result, string_dic, filters_words)
                 results += keywords_result
@@ -67,14 +84,11 @@ def get_ui_semantics(semantics, string_dic, semantics_dic, filters_words):
     semantics_dic[tag] = results
     return results
 
-
-'''
-save semantics_dic, string_dic
-'''
-# @func_set_timeout(time_limit)
-def contains_important_apis(args, app_semantics, android_path_list):
-    semantics_dic, string_dic, tmp_words_api, tmp_api_words, tmp_words_api_ui, tmp_api_words_ui = {}, {}, {}, {}, {}, {}
-    important_apis, widget_list = [], []
+def contains_important_apis(args, android_path_list, app_semantics):
+    api_to_name_dic = basic_tool.read_json(basic_tool.readContentText(args.api_to_name_dic_path))
+    name_to_api_dic = basic_tool.read_json(basic_tool.readContentText(args.name_to_api_dic_path))
+    semantics_dic, string_dic, attention_ui_match, attention_ui_unmatch = {}, {}, {}, {}
+    suspicious_behavior, important_apis, widget_list, path_list = [], [], [], []
     tag = ''
     for app_semantic in app_semantics:
         widget_list.append(['', [app_semantic]])
@@ -82,9 +96,12 @@ def contains_important_apis(args, app_semantics, android_path_list):
     if not os.path.exists(args.app_result_dir):
         os.makedirs(args.app_result_dir)
     for i, path in enumerate(android_path_list):
+        tmp_suspicious_behavior = []
         path = get_items(path, [])
         important_apis.append('----------------------------')
+        suspicious_path = False
         for j, node in enumerate(path):
+            suspicious = False
             semantics = list(node.values())[0]
             node = list(node.keys())[0]
             if semantics['xml'] == []:
@@ -93,44 +110,38 @@ def contains_important_apis(args, app_semantics, android_path_list):
                 tag = semantics['xml'][0]
             if len(path) > 10000 and tag == 'app':
                 continue
-            split_names = get_name_of_method(node)
-            api_lem_items, api_lem_tags = nlp_tool.get_lemmatize_data(split_names.split())
-            contains, api_keywords = in_filters_words(api_lem_items, args.filters_words)
-            if  not contains:
+            split_names = get_split_names_from_node(node, api_to_name_dic, name_to_api_dic)
+            api_lem_items, api_lem_tags = get_lemmatize_data(split_names)
+            contains, api_keywords = in_filters_words(api_lem_items, args.attention_library)
+            if not contains:
                 continue
             important_apis.append(str(node+'    \t'+str(api_keywords)))
-            ui_keywords = get_ui_semantics(semantics, string_dic, semantics_dic, args.filters_words)
+            ui_keywords = get_ui_semantics(semantics, string_dic, semantics_dic, args.attention_library)
             # add ui keyword
-            app_ui_keywords = get_ui_semantics(app_semantics_dic, string_dic, semantics_dic, args.filters_words)
+            app_ui_keywords = get_ui_semantics(app_semantics_dic, string_dic, semantics_dic, args.attention_library)
+            tmp_words = ''
             words = cmp(api_keywords, ui_keywords)
             words_ui = cmp(api_keywords, app_ui_keywords)
-            if len(words) > 0 and tag != 'app':
-                if node == '<':
-                    print()
-                for word in words:
-                    if (node in tmp_api_words and (word,tag) not in tmp_api_words[node]) or node not in tmp_api_words:
-                        tmp_api_words.setdefault(node, []).append((word,tag))
-                    if (word in tmp_words_api and (node,tag) not in tmp_words_api[word]) or word not in tmp_words_api:
-                        tmp_words_api.setdefault(word, []).append((node,tag))
-            if len(words_ui) > 0:
-                for word in words_ui:
-                    if (node in tmp_api_words_ui and (word,tag) not in tmp_api_words_ui[node]) or node not in tmp_api_words_ui:
-                        tmp_api_words_ui.setdefault(node, []).append((word,tag))
-                    if (word in tmp_words_api_ui and (node,tag) not in tmp_words_api_ui[word]) or word not in tmp_words_api_ui:
-                        tmp_words_api_ui.setdefault(word, []).append((node,tag))
-    basic_tool.write_json(semantics_dic, os.path.join(args.filters_behaviors_dir,"{}_semantics_dic.json".format(args.app_name)))
-    basic_tool.write_json(string_dic, os.path.join(args.filters_behaviors_dir,"{}_string_dic.json".format(args.app_name)))
-    basic_tool.write_json(tmp_words_api, os.path.join(args.filters_behaviors_dir,"{}_attention_words.json".format(args.app_name)))
-    basic_tool.write_json(tmp_words_api_ui, os.path.join(args.filters_behaviors_dir,"{}_attention_words_ui.json".format(args.app_name)))
-    basic_tool.write_json(tmp_api_words, os.path.join(args.filters_behaviors_dir,"{}_attention_apis.json".format(args.app_name)))
-    basic_tool.write_json(tmp_api_words_ui, os.path.join(args.filters_behaviors_dir,"{}_attention_apis_ui.json".format(args.app_name)))
-    basic_tool.writeContentLists(args.important_api_path, important_apis)
+            if len(words) > 0:
+                suspicious = True
+                suspicious_path = True
+            tmp_words = tag+':'+str(words)+'\t'+'app'+str(words_ui)
+            if suspicious:
+                tmp_words = tmp_words+'\t'+'ui-unmatch'
+            tmp_suspicious_behavior.append(node+'\t'+tmp_words)
+        if suspicious_path:
+            suspicious_behavior += tmp_suspicious_behavior
+            suspicious_behavior.append('--------------------------------')
+    basic_tool.writeContentLists(os.path.join(args.app_result_dir,"{}_important_path.txt".format(args.app_name)), important_apis)
+    basic_tool.writeContentLists(os.path.join(args.app_result_dir,"{}_suspicious_behaviors.txt".format(args.app_name)), suspicious_behavior)
 
 
-def extract_important_api(args):
+
+def get_suspicious_behavior(args):
+    # get_attention_words 
     name_apk = os.path.split(args.apk_file)[1]
     app_name = os.path.splitext(name_apk)[0]
-    dot_path, apk_json_path, text_result_path = get_file_path(args.result_dir_root, name_apk, app_name)
+    dot_path, apk_json_path, text_result_path = get_file_path(result_dir, name_apk, app_name)
     output = os.popen("aapt dump badging %s" % args.apk_file).read()
     try:
         packages = output.split("package: name='")[-1].split("'")[0].strip()
@@ -145,74 +156,84 @@ def extract_important_api(args):
     path_list, android_path_list = graph.get_paths(ui_info, widget_info, args.third_libs)
     if path_list==[] and android_path_list==[]:
         return False, dot_path
-    else:
-        contains_important_apis(args, app_semantics, android_path_list)
-        return True, dot_path
+    # ui match an ui unmatch
+    contains_important_apis(args, android_path_list, app_semantics)
+    
+    # ui match save to attention words
+    # ui unmatch save to suspicious behavior 
+    return True, dot_path
 
 def write_timeout_results(result):
     success, dot_path = result
     if success:
         return
-    # g_lock.acquire()
+    g_lock.acquire()
     with open(TIME_OUT_FILE, mode="a") as fo:
         print("{}".format(dot_path), file=fo)
-    # g_lock.release()
-    sys.stdout.flush()
+    g_lock.release()
+    sys.stdout.flush()     
 
-def main(apk_dir, result_dir):
-    apps = basic_tool.getAllFiles(apk_dir, [], '.apk')
+
+def main(apps, result_dir):
+    # apps = basic_tool.getAllFiles(apk_dir, [], '.apk')
     filters_behaviors_dir = os.path.join(result_dir, 'filters_behaviors_dir')
+    attention_file = os.path.join(result_dir, 'attention_library.txt')
+    method_dic_path = os.path.join(result_dir, 'source_words/database/api_list_dir/api_apiname.json')
     third_libs_file = os.path.join(result_dir, 'liteRadar_3rdLibs')
-    filter_words_file = os.path.join(result_dir, 'liteRadar_3rdLibs')
-    api_to_name_file = os.path.join(result_dir, 'source_words/database/api_list_dir/api_apiname.json')
-    args = [
-        '--filters_words', basic_tool.readContentLists_withoutbr(filter_words_file),
-        '--third_libs', basic_tool.readContentLists_withoutbr(third_libs_file),
-        '--api_to_name_file', api_to_name_file,
-        '--filters_behaviors_dir', filters_behaviors_dir,
-    ]
+    third_libs = basic_tool.readContentLists_withoutbr(third_libs_file)
+    result_word_json = os.path.join(result_dir, 'source_words/database/api_list_dir/apiname_api.json')
+    attention_words = basic_tool.readContentLists_withoutbr(attention_file)
+    
     to_handle_apps = []
-    for app in apps:
+    for i, app in enumerate(apps):
         app_name = os.path.splitext(os.path.basename(app))[0]
-        important_api_path = os.path.join(filters_behaviors_dir, app_name,"{}_important_path.txt".format(app_name))
         name_apk = os.path.split(app)[1]
-        if os.path.exists(important_api_path):
-            continue
         time_out = []
         if os.path.exists(TIME_OUT_FILE):
             time_out = basic_tool.readContentLists_withoutbr(TIME_OUT_FILE)
+        suspicious_behavior = os.path.join(filters_behaviors_dir, app_name,"{}_suspicious_behaviors.txt".format(app_name))
+        if os.path.exists(suspicious_behavior):
+            continue
         dot_path, apk_json_path, text_result_path = get_file_path(result_dir, name_apk, app_name)
         if dot_path == '':
             continue 
         elif dot_path in time_out:
             continue
         to_handle_apps.append(app)
-
-    # p = mp.Pool(g_process_size)
-    # global g_lock
-    # g_lock = mp.Lock()
-    for app in to_handle_apps:
+    
+    p = mp.Pool(g_process_size)
+    global g_lock
+    g_lock = mp.Lock()
+    for i, app in enumerate(to_handle_apps):
+        print(str(i), str(len(to_handle_apps)), app)
         name_apk = os.path.split(app)[1]
         app_name = os.path.splitext(name_apk)[0]
+        suspicious_behavior_path = os.path.join(filters_behaviors_dir, app_name,"{}_suspicious_behaviors.txt".format(app_name))
         parser = set_args()
-        args += [
+        args = [
+            '--filters_behaviors_dir', filters_behaviors_dir,
+            '--third_libs', third_libs,
+            '--attention_library', attention_words,
+            '--api_to_name_dic_path', method_dic_path,
+            '--name_to_api_dic_path', result_word_json,
             '-a', app, 
             '--app_result_dir', os.path.join(filters_behaviors_dir, app_name),
-            '--important_api_path', os.path.join(filters_behaviors_dir, app_name,"{}_important_path.txt".format(app_name)),
+            '--suspicious_behavior_path', suspicious_behavior_path,
             '--app_name', app_name,
         ]
         args, unknown = parser.parse_known_args(args)
-        result = extract_important_api(args)
-        write_timeout_results(result)
-        # p.apply_async(func=extract_important_api, 
-        #                 args=(args,),
-        #                 callback=write_timeout_results)    
-    # p.close()
-    # p.join()
-
+        # result = get_suspicious_behavior(args)
+        # write_timeout_results(result)
+        p.apply_async(func=get_suspicious_behavior, 
+                        args=(args,),
+                        callback=write_timeout_results)    
+    p.close()
+    p.join()
+    
 if __name__ == '__main__':
     apk_dirs = ['/home/data/yuec/DeepIntent/data/example/benign', '/home/data/yuec/DeepIntent/data/example/malicious'] # finish
     result_dir = 'data'
+    apps = []
     for apk_dir in apk_dirs:
-        main(apk_dir, result_dir)
-    
+        apps += basic_tool.getAllFiles(apk_dir, [], '.apk')
+    main(apps, result_dir)

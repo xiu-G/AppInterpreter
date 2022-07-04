@@ -14,7 +14,7 @@ from tools.apk_tool import add_google, decode_apk
 
 g_lock = None
 g_skip_handled = True
-g_redo_failed = True
+g_redo_failed = False
 g_fp_result = "data/gator_result.txt"
 g_process_size = 10
 ANDROID_SDK_ROOT = '/home/data/xiu/android-sdk'

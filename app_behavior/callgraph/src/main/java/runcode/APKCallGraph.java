@@ -204,8 +204,10 @@ public class APKCallGraph {
 		 * If mapping is found, build extended static call graph of the app, extract subgraph(s), check API(s) and permission.
 		 */
 		// args = new String[]{
-		// 	"/home/data/xiu/code-translation/code/guibat/apk/com.voicenotebook.voicenotebook.apk",
-		// 	"/home/data/xiu/code-translation/code/guibat/apk",
+		// 	// "/home/data/xiu/code-translation/code/guibat/apk/com.voicenotebook.voicenotebook.apk",
+		// 	// "/home/data/xiu/code-translation/code/guibat/apk",
+		// 	"/home/data/yuec/DeepIntent/data/example/malicious/net.lazyer.wiyun.ppl.yxjd.apk",
+		// 	"/home/data/yuec/DeepIntent/data/example/malicious",
 		// 	"data/img2widgets/", //inputCSVPath
 		// 	"data/permission_output/", //permissionOutput
 		// 	"data/ic3_output/", //ic3Output
@@ -322,6 +324,7 @@ public class APKCallGraph {
         config.setImplicitFlowMode(ImplicitFlowMode.AllImplicitFlows);
         config.setEnableReflection(true);
         config.setWriteOutputFiles(true);
+		config.getCallbackConfig().setMaxAnalysisCallbackDepth(350);
         SetupApplication analyzer = new SetupApplication(config);
 		SootConfigForAndroid sootConf = new SootConfigForAndroid() {
             @Override
@@ -336,10 +339,10 @@ public class APKCallGraph {
 				Options.v().setPhaseOption("cg.spark", "on");
 				Options.v().setPhaseOption("cg.cha", "enabled:true");
 				Options.v().setPhaseOption("cg", "all-reachable:true");
-				Options.v().set_whole_program(true);
 				Options.v().set_allow_phantom_refs(true);
 				Options.v().set_no_writeout_body_releasing(true);
 				Options.v().set_output_format(Options.output_format_jimple);
+				Options.v().set_whole_program(true);
 				PhaseOptions.v().setPhaseOption("tag.ln", "on");
             }
         };
