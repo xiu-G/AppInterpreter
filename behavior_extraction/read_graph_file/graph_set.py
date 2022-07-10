@@ -192,8 +192,6 @@ class graph:
 
 
     def get_subgraph(self, node_start, path_list, android_path_list, ui_info, widget_info, xml_name, lib_num, android_depth, i=0, j=0):
-        if '<net.lepeng.batterydoctor.IgnoreListActivity: void onCreate(android.os.Bundle)>' in node_start:
-            print()
         self.depth += 1
         if self.goon == False:
             return
@@ -201,7 +199,7 @@ class graph:
             self.goon = False
             return
         out_edges = self.find_out_edges(node_start)
-        if len(out_edges) > 100 and ('click' in self.stack[-1].lower() or 'start(' in self.stack[-1].lower() or 'schedule' in self.stack[-1].lower() or 'asynctask execute' in self.stack[-1].lower() or 'sendmessage(' in self.stack[-1].lower()):
+        if 'click' in self.stack[-1].lower() or 'start(' in self.stack[-1].lower() or 'schedule' in self.stack[-1].lower() or 'asynctask execute' in self.stack[-1].lower() or 'sendmessage(' in self.stack[-1].lower():
             stack_dics = {}
             new_out_edges = []
             stacks = self.stack
@@ -209,15 +207,13 @@ class graph:
                 stack_dics[stack.split(':')[0].split('$')[0].strip()]=""
             for out_edge in out_edges:
                 if 'click' not in out_edge.lower() and 'task' not in out_edge.lower() and 'schedule' not in out_edge.lower() and 'execute(' not in out_edge.lower() and 'handleMessage(' not in out_edge.lower() and 'run(' not in out_edge.lower() and 'doinbackground' not in out_edge.lower():
-                    print(out_edge)
                     new_out_edges.append(out_edge)
                 elif out_edge.split(':')[0].split('$')[0].strip() in stack_dics:
                     new_out_edges.append(out_edge)
                 else:
-                    # print(out_edge)
                     pass
             out_edges = new_out_edges
-            print(new_out_edges)
+            # print(new_out_edges)
         elif len(out_edges)>100:
             print(self.stack[-1].lower())
 

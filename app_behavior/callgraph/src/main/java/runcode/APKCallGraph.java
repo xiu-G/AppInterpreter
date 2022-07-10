@@ -453,7 +453,8 @@ public class APKCallGraph {
 							if (expr.getMethod().getSignature().contains("<android.content.Intent: void <init>")){
 								try{
 									String srcMethod = list.get(0).getSignature();
-									String tarActivity = s.getInvokeExprBox().getValue().getUseBoxes().get(1).getValue().toString();
+									java.util.List<ValueBox> boxes = s.getInvokeExprBox().getValue().getUseBoxes();
+									String tarActivity = boxes.get(boxes.size()-1).getValue().toString();
 									if (tarActivity.startsWith("class ")){
 										tarActivity = tarActivity.split("class ")[1].replace("/", ".");
 										if (tarActivity.startsWith("\"L")){
@@ -461,16 +462,23 @@ public class APKCallGraph {
 										}else{
 											tarActivity = tarActivity.substring(1, tarActivity.length()-1);
 										}
+										tarActivity = "toclass###"+tarActivity;
 
 									}else{
-										tarActivity = "";
+										if (tarActivity.length()>5){
+											tarActivity = "actions###"+tarActivity.substring(1, tarActivity.length()-1);
+										}else{
+											tarActivity = "";
+										}
 									}
 									if (!startActivity.containsKey(srcMethod)){
 										ArrayList<String> temp = new ArrayList<>();
 										temp.add(tarActivity);
 										startActivity.put(srcMethod, temp);
 									}else{
-										startActivity.get(srcMethod).add(tarActivity);
+										if (!startActivity.get(srcMethod).contains(tarActivity)){
+											startActivity.get(srcMethod).add(tarActivity);
+										}
 									}
 								}catch(Exception e){
 									System.out.println("Intent Error!");
@@ -550,21 +558,16 @@ public class APKCallGraph {
 
 
 		boolean useic3 = true;
-		int lenguri = 0;
 		if (useic3) {
 			File ic3folder = new File(Paths.get(ic3, apk).toString());
 			File[] listFiles = ic3folder.listFiles();
 			if (listFiles == null) {
 				System.out.println(Paths.get(ic3, apk).toString() + " is null. ");
 			}
-			ArrayList<String> finishedMethods = new ArrayList<String>();
+			// ArrayList<String> finishedMethods = new ArrayList<String>();
 			if (listFiles != null && listFiles.length > 0) {
 				for (File listfile : listFiles) {
-					HashMap<String, HashSet<String>> m2providers = new HashMap<>();
-					HashMap<String, HashSet<String>> m2intents = new HashMap<>();
-					HashMap<String, HashSet<String>> m2extra = new HashMap<>();
-					HashMap<String, ArrayList<String>> iccs = ic3parser.parseFromFile(listfile.getAbsolutePath(),
-							m2providers, m2intents, m2extra);
+					HashMap<String, ArrayList<String>> iccs = ic3parser.parseFromFile(listfile.getAbsolutePath());
 
 					// for service class, you should add an edge from a method
 					for (Entry<String, ArrayList<String>> icc : iccs.entrySet()) {
@@ -572,137 +575,82 @@ public class APKCallGraph {
 						ArrayList<String> toClasses = icc.getValue();
 						MethodNode from = methods.get(fromMethod);
 						if (startActivity.containsKey(from.getSignature())){
-							finishedMethods.add(from.getSignature());
+							// finishedMethods.add(from.getSignature()); //common activity in icc and startactivity
 							ArrayList<String> tmpClasses = startActivity.get(from.getSignature());
 							if(tmpClasses != null){
 								for (String tmpClass: tmpClasses){
-									if (!toClasses.contains(tmpClass)){
+									boolean add = true;
+									if (tmpClass.equals("")){
+										continue;
+									}
+									for (String toclass:toClasses){
+										if (toclass.startsWith(tmpClass)){
+											add = false;
+											break;
+										}
+									}
+									if (add){
 										icc.getValue().add(tmpClass);
 									}
 								}
 							}
 						}
 					}
-					for (String methodTmp: startActivity.keySet()){
-						if (!finishedMethods.contains(methodTmp)){
-							iccs.put(methodTmp, startActivity.get(methodTmp));
-						}
-					}
 					for (Entry<String, ArrayList<String>> icc : iccs.entrySet()) {
 						String fromMethod = icc.getKey();
 						ArrayList<String> toClasses = icc.getValue();
-						HashSet<String> actions = new HashSet<String>();
-						HashSet<String> uris = new HashSet<String>();
-						HashSet<String> extras = new HashSet<String>();
 						if (!methods.containsKey(fromMethod)) {
 							System.out.println("error finding from method: " + fromMethod);
 							continue;
 						}
-						if (m2intents.containsKey(fromMethod)){
-							actions = m2intents.get(fromMethod);
-						}
-						if (m2providers.containsKey(fromMethod)){
-							uris = m2providers.get(fromMethod);
-						}
-						if (m2extra.containsKey(fromMethod)){
-							extras = m2extra.get(fromMethod);
-						}
 						MethodNode from = methods.get(fromMethod);
 						for (String clazz : toClasses) {
 							if (clazz.length() == 0) {
-								// System.out.println("empty clazz");
 								continue;
 							}
-							try{
-								SootClass loadClass = Scene.v().loadClassAndSupport(clazz);
-
-								List<SootMethod> loadMethods = loadClass.getMethods();
-								for (SootMethod loadMethod : loadMethods) {
-									if (loadMethod.getName().startsWith("onCreate")
-											|| loadMethod.getName().startsWith("onStart")) {
-										if (!methods.containsKey(loadMethod.getSignature())) {
+							if (clazz.startsWith("actions###")){
+								String tmpTo = clazz.substring(10).replace("/", "_") + ": void <init>()";
+								if (!methods.containsKey(tmpTo)){
+									nodeId++;
+									methods.put(tmpTo, apkg.new MethodNode(tmpTo, nodeId));
+									jg.addVertex(methods.get(tmpTo));
+								}
+								edgeId++;
+								MethodNode to = methods.get(tmpTo);
+								jg.addEdge(from, to, apkg.new CallEdge(from, to, edgeId));
+							}else if (clazz.startsWith("toclass###")){
+								try{
+									clazz = clazz.substring(10);
+									SootClass loadClass = Scene.v().loadClassAndSupport(clazz);
+									List<SootMethod> loadMethods = loadClass.getMethods();
+									if (loadMethods.size()==0){
+										String tmpTo = clazz + ": void <init>()";
+										if (!methods.containsKey(tmpTo)){
 											nodeId++;
-											methods.put(loadMethod.getSignature(), apkg.new MethodNode(loadMethod, nodeId));
-											jg.addVertex(methods.get(loadMethod.getSignature()));
+											methods.put(tmpTo, apkg.new MethodNode(tmpTo, nodeId));
+											jg.addVertex(methods.get(tmpTo));
 										}
-
 										edgeId++;
-										MethodNode to = methods.get(loadMethod.getSignature());
-										jg.addEdge(from, to, apkg.new CallEdge(from, to, edgeId)); //add by me
+										MethodNode to = methods.get(tmpTo);
+										jg.addEdge(from, to, apkg.new CallEdge(from, to, edgeId));
 									}
-								}
-
-							}catch (Exception e){
-								System.out.println("clazz in ic3 cannot be loaded!");
-							}
-
-						}
-						for (String src: edges.get(fromMethod)){
-							System.out.println(src);
-							if (!src.contains(": void startActivity(")){
-								continue;
-							}else{
-								String tgt = "<" + iccs.get(fromMethod).get(0) + ": void onCreate(android.os.Bundle)>";
-								if (jg.containsVertex(methods.get(tgt)) == true){
-									if (afterICC.containsKey(fromMethod) == false) {
-										List<String> temp = new ArrayList<>();
-										temp.add(src);
-										temp.add(tgt);
-										afterICC.put(fromMethod, temp);
+									for (SootMethod loadMethod : loadMethods) {
+										if (loadMethod.getName().startsWith("onCreate")) {
+											if (!methods.containsKey(loadMethod.getSignature())) {
+												nodeId++;
+												methods.put(loadMethod.getSignature(), apkg.new MethodNode(loadMethod, nodeId));
+												jg.addVertex(methods.get(loadMethod.getSignature()));
+											}
+	
+											edgeId++;
+											MethodNode to = methods.get(loadMethod.getSignature());
+											jg.addEdge(from, to, apkg.new CallEdge(from, to, edgeId)); //add by me
+										}
 									}
-									if (edges.containsKey(src)){
-										edges.get(src).add(tgt);
-									}else{
-										List<String> temp = new ArrayList<>();
-										temp.add(tgt);
-										edges.put(src, temp);
-									}
-									jg.addEdge(methods.get(src), methods.get(tgt), apkg.new CallEdge(methods.get(src), methods.get(tgt), edgeId++));
-								}else{
-									continue;
+								}catch (Exception e){
+									System.out.println("clazz in ic3 cannot be loaded!");
 								}
 							}
-						}
-
-						for (String action: actions){
-							action = "<android.addextras."+action+": void <init>()>";
-							if (!methods.containsKey(action)){
-								nodeId++;
-								methods.put(action, apkg.new MethodNode(action, nodeId));
-								jg.addVertex(methods.get(action));
-							}
-							edgeId++;
-							MethodNode to = methods.get(action);
-							jg.addEdge(from, to, apkg.new CallEdge(from, to, edgeId)); //add by me
-						}
-
-						for (String uri: uris){
-							String tmpURI = "";
-							try{
-								lenguri += 1;
-								tmpURI = "<android.addextras."+uri.split("content://")[1].replace("/", "_") + ": void <init>()>";
-							}catch (Exception e) {
-								continue;
-							}
-							if (!methods.containsKey(tmpURI)){
-								nodeId++;
-								methods.put(tmpURI, apkg.new MethodNode(tmpURI, nodeId));
-								jg.addVertex(methods.get(tmpURI));
-							}
-							edgeId++;
-							MethodNode to = methods.get(tmpURI);
-							jg.addEdge(from, to, apkg.new CallEdge(from, to, edgeId)); //add by me
-						}
-						for (String extra: extras){
-							extra = "<android.addextras."+extra+": void <init>()>";
-							if (!methods.containsKey(extra)){
-								nodeId++;
-								methods.put(extra, apkg.new MethodNode(extra, nodeId));
-								jg.addVertex(methods.get(extra));
-							}
-							edgeId++;
-							MethodNode to = methods.get(extra);
-							jg.addEdge(from, to, apkg.new CallEdge(from, to, edgeId)); //add by me
 						}
 					}
 				}
@@ -880,11 +828,11 @@ public class APKCallGraph {
 				}
 
 				for (String tgt: edges.get(list.get(0))){
-					if (list.get(0).contains(": void startActivity(")){
-						if (afterICC.get(method) == null){
-							continue;
-						}
-					}
+					// if (list.get(0).contains(": void startActivity(")){
+					// 	if (afterICC.get(method) == null){
+					// 		continue;
+					// 	}
+					// }
 					//System.out.println(tgt);
 					if (!subGraph.containsVertex(methods.get(list.get(0)))){
 						subGraph.addVertex(methods.get(list.get(0)));

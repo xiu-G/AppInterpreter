@@ -93,8 +93,8 @@ def contains_important_apis(args, app_semantics, android_path_list):
                 tag = semantics['xml'][0]
             if len(path) > 10000 and tag == 'app':
                 continue
-            split_names = get_name_of_method(node)
-            api_lem_items, api_lem_tags = nlp_tool.get_lemmatize_data(split_names.split())
+            split_names = get_name_of_method(node, {})
+            api_lem_items, api_lem_tags = nlp_tool.get_lemmatize_data(split_names)
             contains, api_keywords = in_filters_words(api_lem_items, args.filters_words)
             if  not contains:
                 continue
@@ -105,8 +105,6 @@ def contains_important_apis(args, app_semantics, android_path_list):
             words = cmp(api_keywords, ui_keywords)
             words_ui = cmp(api_keywords, app_ui_keywords)
             if len(words) > 0 and tag != 'app':
-                if node == '<':
-                    print()
                 for word in words:
                     if (node in tmp_api_words and (word,tag) not in tmp_api_words[node]) or node not in tmp_api_words:
                         tmp_api_words.setdefault(node, []).append((word,tag))
@@ -171,27 +169,27 @@ def main(apk_dir, result_dir):
         '--api_to_name_file', api_to_name_file,
         '--filters_behaviors_dir', filters_behaviors_dir,
     ]
-    to_handle_apps = []
-    for app in apps:
-        app_name = os.path.splitext(os.path.basename(app))[0]
-        important_api_path = os.path.join(filters_behaviors_dir, app_name,"{}_important_path.txt".format(app_name))
-        name_apk = os.path.split(app)[1]
-        if os.path.exists(important_api_path):
-            continue
-        time_out = []
-        if os.path.exists(TIME_OUT_FILE):
-            time_out = basic_tool.readContentLists_withoutbr(TIME_OUT_FILE)
-        dot_path, apk_json_path, text_result_path = get_file_path(result_dir, name_apk, app_name)
-        if dot_path == '':
-            continue 
-        elif dot_path in time_out:
-            continue
-        to_handle_apps.append(app)
+    # to_handle_apps = []
+    # for app in apps:
+    #     app_name = os.path.splitext(os.path.basename(app))[0]
+    #     important_api_path = os.path.join(filters_behaviors_dir, app_name,"{}_important_path.txt".format(app_name))
+    #     name_apk = os.path.split(app)[1]
+    #     if os.path.exists(important_api_path):
+    #         continue
+    #     time_out = []
+    #     if os.path.exists(TIME_OUT_FILE):
+    #         time_out = basic_tool.readContentLists_withoutbr(TIME_OUT_FILE)
+    #     dot_path, apk_json_path, text_result_path = get_file_path(result_dir, name_apk, app_name)
+    #     if dot_path == '':
+    #         continue 
+    #     elif dot_path in time_out:
+    #         continue
+    #     to_handle_apps.append(app)
 
     # p = mp.Pool(g_process_size)
     # global g_lock
     # g_lock = mp.Lock()
-    for app in to_handle_apps:
+    for app in apps:
         name_apk = os.path.split(app)[1]
         app_name = os.path.splitext(name_apk)[0]
         parser = set_args()

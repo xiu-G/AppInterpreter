@@ -8,9 +8,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-
-import com.google.protobuf.Descriptors.FieldDescriptor;
 import com.google.protobuf.TextFormat;
 
 import edu.psu.cse.siis.ic3.Ic3Data;
@@ -27,93 +24,93 @@ public class IC3ProtobufParser {
 	Ic3Data.Application.Builder ic3Builder;
 	HashMap<String, ArrayList<String>> iccs = new HashMap<>();
 
-	public HashMap<String, ArrayList<String>> parseFromFile(String filename,
-			HashMap<String, HashSet<String>> m2providers, HashMap<String, HashSet<String>> m2intents, HashMap<String, HashSet<String>> m2extra)
+	public HashMap<String, ArrayList<String>> parseFromFile(String filename)
 			throws FileNotFoundException, IOException {
 		ic3Builder = Ic3Data.Application.newBuilder();
 		TextFormat.merge(new FileReader(new File(filename)), ic3Builder);
 
 		System.out.println(ic3Builder.toString());
 
-		Map<FieldDescriptor, Object> fields = ic3Builder.getAllFields();
-
 		List<Component> componentsList = ic3Builder.getComponentsList();
 		for (Component component : componentsList) {
 			// System.out.println("========= " + component.getName() + "
 			// =========");
 			List<ExitPoint> exitpoints = component.getExitPointsList();
+			List<Extra> extras = component.getExtrasList();
 			for (ExitPoint exitPoint : exitpoints) {
 				String fromMethod = exitPoint.getInstruction().getMethod();	
-				String toClass = "";
 				List<Intent> intentsList = exitPoint.getIntentsList();
-				HashSet<String> actions = new HashSet<String>();
-				for (Intent intent : intentsList) {
-					List<Attribute> attributesList = intent.getAttributesList();
-					for (Attribute attribute : attributesList) {
-						if (attribute.getKind() == AttributeKind.CLASS) {
-							toClass = attribute.getValue(0).replace("/", ".");
-						}
-						if (attribute.getKind() == AttributeKind.ACTION) {
-							actions.add(attribute.getValue(0));
-						}
-
-					}
-
+				HashSet<String> providerUristrings = new HashSet<String>();
+				if (!iccs.containsKey(fromMethod)) {
+					iccs.put(fromMethod, new ArrayList<String>());
 				}
-				
-				if (actions.size() > 0) {
-					if (!m2intents.containsKey(fromMethod)) {
-						m2intents.put(fromMethod, new HashSet<>());
-					}
-					m2intents.get(fromMethod).addAll(actions);
-				}
-
-				HashSet<String> uristrings = new HashSet<String>();
 				if (exitPoint.getKind() == ComponentKind.PROVIDER) {
 					List<Uri> urisList = exitPoint.getUrisList();
 					for (Uri uri : urisList) {
 						for (Attribute attribute : uri.getAttributesList()) {
 							if (attribute.getKind() == AttributeKind.URI) {
-								uristrings.add(attribute.getValue(0));
+								providerUristrings.add("providerUristrings###"+attribute.getValue(0));
 							}
 						}
 					}
 				}
-				
-				if (uristrings.size() > 0) {
-					if (!m2providers.containsKey(fromMethod)) {
-						m2providers.put(fromMethod, new HashSet<>());
-					}
-					m2providers.get(fromMethod).addAll(uristrings);
-				}
+				for (Intent intent : intentsList) {
+					List<Attribute> attributesList = intent.getAttributesList();
+					String toClass="", action="", type="", uri="", scheme = "";
 
-				System.out.println("CLASS: " + fromMethod + " -> " + toClass + " [" + exitPoint.getKind() + "]");
-				System.out.println("ACTIONS: " + fromMethod + " -> " + actions + " [" + exitPoint.getKind() + "]");
-				System.out.println("PROVIDERS: " + fromMethod + " -> " + uristrings + " [" + exitPoint.getKind() + "]");
-				if (!iccs.containsKey(fromMethod)) {
-					iccs.put(fromMethod, new ArrayList<String>());
+					for (Attribute attribute : attributesList) {
+						if (attribute.getKind() == AttributeKind.CLASS) {
+							toClass = "toclass###"+attribute.getValue(0).replace("/", ".");
+						}
+						else if (attribute.getKind() == AttributeKind.ACTION) {
+							action = attribute.getValue(0);
+						}
+						else if (attribute.getKind() == AttributeKind.TYPE) {
+							type = attribute.getValue(0);
+						}
+						else if (attribute.getKind() == AttributeKind.URI) {
+							uri = attribute.getValue(0);
+						}
+						else if (attribute.getKind() == AttributeKind.SCHEME) {
+							scheme = attribute.getValue(0);
+						}
+					}
+					if (!toClass.equals("") && !toClass.startsWith("(") && !iccs.get(fromMethod).contains(toClass)){
+						iccs.get(fromMethod).add(toClass);
+					}else{
+						if (action.equals("") || action.startsWith("<") || action.startsWith("(")){
+							continue;
+						}else{
+							action = "actions###"+action;
+							if (!scheme.equals("") && !scheme.startsWith("<") && !scheme.startsWith("(")){
+								action = action+"###schemes###"+scheme;
+							}
+							if (!type.equals("") && !type.startsWith("<") && !type.startsWith("(")){
+								action = action+"###types###"+type;
+							}
+							if (!uri.equals("") && !uri.startsWith("<") && !uri.startsWith("(")){
+								action = action+"###uri###"+uri;
+							}
+							if (!iccs.get(fromMethod).contains(action)){
+								iccs.get(fromMethod).add(action);
+							}
+						}
+						
+					}	
+					iccs.get(fromMethod).addAll(providerUristrings);
 				}
-				iccs.get(fromMethod).add(toClass);
+				
 			}
-			// System.out.println("==========================================");
-			// System.out.println();
-			List<Extra> extras = component.getExtrasList();
+			
 			for (Extra extra : extras) {
 				String fromMethod = extra.getInstruction().getMethod();	
-				String extraString = extra.getExtra();
-				// extraString = "android.addextras."+extraString;
-				if (!m2extra.containsKey(fromMethod)) {
-					m2extra.put(fromMethod, new HashSet<>());
-				}
-				m2extra.get(fromMethod).add(extraString);
+				String extraString = "extra###"+extra.getExtra();
 				if (!iccs.containsKey(fromMethod)) {
 					iccs.put(fromMethod, new ArrayList<String>());
 				}
 				iccs.get(fromMethod).add(extraString);
 			}
 		}
-		
-
 		System.out.println("read successfully");
 		return iccs;
 	}

@@ -48,6 +48,7 @@ def print_negative_sentences(contents, text_dic):
         if '/' in line or '_' in line:
             continue
         new_line = nlp_tool.split_string_del_some_marks(line)
+        new_line = translate(new_line)
         new_words = word_tokenize(new_line)
         if len(new_words) > 20:
             continue
@@ -70,6 +71,8 @@ def print_negative_sentences(contents, text_dic):
                 text_dic[line] = ''
 
 if __name__ == '__main__':
+    s = ['Please do not cancel the add-ons below that you do not want to install']
+    print_negative_sentences(s, {})
     text_dir = 'data/strings'
     files = basic_tool.getAllFiles(text_dir, [], '')
     text_dic = {}

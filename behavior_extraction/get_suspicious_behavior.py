@@ -156,11 +156,10 @@ def get_suspicious_behavior(args):
     path_list, android_path_list = graph.get_paths(ui_info, widget_info, args.third_libs)
     if path_list==[] and android_path_list==[]:
         return False, dot_path
-    # ui match an ui unmatch
-    contains_important_apis(args, android_path_list, app_semantics)
-    
+    # ui match an ui unmatch, 
     # ui match save to attention words
     # ui unmatch save to suspicious behavior 
+    contains_important_apis(args, android_path_list, app_semantics)
     return True, dot_path
 
 def write_timeout_results(result):
@@ -229,6 +228,7 @@ def main(apps, result_dir):
                         callback=write_timeout_results)    
     p.close()
     p.join()
+
     
 if __name__ == '__main__':
     apk_dirs = ['/home/data/yuec/DeepIntent/data/example/benign', '/home/data/yuec/DeepIntent/data/example/malicious'] # finish
@@ -236,4 +236,5 @@ if __name__ == '__main__':
     apps = []
     for apk_dir in apk_dirs:
         apps += basic_tool.getAllFiles(apk_dir, [], '.apk')
+    apps = ['/home/data/yuec/DeepIntent/data/example/benign/1311833082_net.lepeng.batterydoctor.apk']
     main(apps, result_dir)
