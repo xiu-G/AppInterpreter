@@ -203,8 +203,8 @@ def main(apps, result_dir):
     p = mp.Pool(g_process_size)
     global g_lock
     g_lock = mp.Lock()
-    for i, app in enumerate(to_handle_apps):
-        print(str(i), str(len(to_handle_apps)), app)
+    for i, app in enumerate(apps):
+        print(str(i), str(len(apps)), app)
         name_apk = os.path.split(app)[1]
         app_name = os.path.splitext(name_apk)[0]
         suspicious_behavior_path = os.path.join(filters_behaviors_dir, app_name,"{}_suspicious_behaviors.txt".format(app_name))
@@ -236,5 +236,4 @@ if __name__ == '__main__':
     apps = []
     for apk_dir in apk_dirs:
         apps += basic_tool.getAllFiles(apk_dir, [], '.apk')
-    apps = ['/home/data/yuec/DeepIntent/data/example/benign/1311833082_net.lepeng.batterydoctor.apk']
     main(apps, result_dir)

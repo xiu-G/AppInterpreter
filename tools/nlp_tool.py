@@ -5,6 +5,8 @@ import enchant
 from nltk.stem.wordnet import WordNetLemmatizer
 from nltk.stem.porter import PorterStemmer
 from nltk import pos_tag
+from googletrans import Translator
+from langdetect import detect
 from pattern.en import lemma
 porter_stemmer= PorterStemmer()
 SPECIAL_WORD_LIST = ['gsm','sms','sim','dns','vpn','usb','gps','url', 'http','sd','mic','tel','mms', 'ad','gsm','dfcp','icc','ims', 'mmtel']
@@ -155,6 +157,19 @@ def deal_words(strings, split_dict={}):
                 new_items.append(item)
     return new_items
 
+
+def translate_google(sentence):
+    try:
+        lang_detected = detect(sentence)
+        if lang_detected == 'en':
+            return sentence
+        translator = Translator()
+        text = translator.translate(sentence, src=lang_detected, dest ='en').text
+        return text
+    except Exception:
+        return None
+
 if __name__ == '__main__':
-    get_lemmatize_data(['log','e'])
+    # get_lemmatize_data(['log','e'])
+    print(translate_google("请不要在下面取消你不想安装的附加软件"))
     

@@ -44,11 +44,18 @@ def word_polarity(test_subset):
     return neg_word_list
 
 def print_negative_sentences(contents, text_dic):
+    finish = {}
     for line in contents:
+        if line in finish:
+            continue
+        finish[line] = ''
         if '/' in line or '_' in line:
             continue
-        new_line = nlp_tool.split_string_del_some_marks(line)
-        new_line = translate(new_line)
+        print(line)
+        new_line = None
+        while new_line is None:
+            new_line = nlp_tool.split_string_del_some_marks(line)
+            new_line = nlp_tool.translate_google(new_line)
         new_words = word_tokenize(new_line)
         if len(new_words) > 20:
             continue
@@ -58,30 +65,23 @@ def print_negative_sentences(contents, text_dic):
         for word in new_words:
             if word in keywordSet:
                 neg_word_list3.append(word)
-        
-        # if len(neg_word_list) >= 1:
-        #     print(line)
-        # if len(neg_word_list2) >= 1:
-        #     print(line)
-        # if len(neg_word_list3) >= 1:
-        #     print(line)
         if (len(neg_word_list) + len(neg_word_list3))>=2 or (len(neg_word_list2) + len(neg_word_list3))>= 2:
-            # print(line)
-            if line not in text_dic:
-                text_dic[line] = ''
+            print(new_line)
+            if new_line not in text_dic:
+                text_dic[new_line] = line
 
 if __name__ == '__main__':
-    s = ['Please do not cancel the add-ons below that you do not want to install']
-    print_negative_sentences(s, {})
     text_dir = 'data/strings'
     files = basic_tool.getAllFiles(text_dir, [], '')
     text_dic = {}
     for f in files:
+        print(f)
         if f.endswith('.txt'):
             contents = list(basic_tool.read_json(basic_tool.readContentText(f)).keys())
         else:
             contents = list(basic_tool.read_json(basic_tool.readContentText(f)).keys())
         print_negative_sentences(contents, text_dic)
+        basic_tool.write_json(text_dic, 'double_negative.json')
     for key in text_dic:
         print(key)
 
